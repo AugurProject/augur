@@ -8,12 +8,12 @@ import {
 
 import {
 {{#Entities}}
-  {{name}} as {{name}}Entity,
+  {{name}}Event as {{name}}Entity,
 {{/Entities}}
 } from '../generated/schema';
 {{#Entities}}
 
-export function handle{{name}}(event: {{name}}Event): void {
+export function handle{{name}}Event(event: {{name}}Event): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new {{name}}Entity(id);
 

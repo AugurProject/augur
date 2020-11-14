@@ -31,11 +31,6 @@ const result = mustache.render(template,{
     buildit('Augur'),
     buildit('AugurTrading'),
     buildit(`ShareToken`),
-  ],
-  templateEntities: [
-    buildit('ParaAugur'),
-    buildit('ParaAugurTrading'),
-    buildit('ParaShareToken')
   ]
 }, {
   contractPartial

@@ -8,13 +8,13 @@ import {
 } from '../generated/AugurTrading/AugurTrading';
 
 import {
-  CancelZeroXOrder as CancelZeroXOrderEntity,
-  MarketVolumeChanged as MarketVolumeChangedEntity,
-  OrderEvent as OrderEventEntity,
-  ProfitLossChanged as ProfitLossChangedEntity,
+  CancelZeroXOrderEvent as CancelZeroXOrderEntity,
+  MarketVolumeChangedEvent as MarketVolumeChangedEntity,
+  OrderEventEvent as OrderEventEntity,
+  ProfitLossChangedEvent as ProfitLossChangedEntity,
 } from '../generated/schema';
 
-export function handleCancelZeroXOrder(event: CancelZeroXOrderEvent): void {
+export function handleCancelZeroXOrderEvent(event: CancelZeroXOrderEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new CancelZeroXOrderEntity(id);
 
@@ -36,7 +36,7 @@ export function handleCancelZeroXOrder(event: CancelZeroXOrderEvent): void {
   entity.save();
 }
 
-export function handleMarketVolumeChanged(event: MarketVolumeChangedEvent): void {
+export function handleMarketVolumeChangedEvent(event: MarketVolumeChangedEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new MarketVolumeChangedEntity(id);
 
@@ -56,7 +56,7 @@ export function handleMarketVolumeChanged(event: MarketVolumeChangedEvent): void
   entity.save();
 }
 
-export function handleOrderEvent(event: OrderEventEvent): void {
+export function handleOrderEventEvent(event: OrderEventEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new OrderEventEntity(id);
 
@@ -78,7 +78,7 @@ export function handleOrderEvent(event: OrderEventEvent): void {
   entity.save();
 }
 
-export function handleProfitLossChanged(event: ProfitLossChangedEvent): void {
+export function handleProfitLossChangedEvent(event: ProfitLossChangedEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new ProfitLossChangedEntity(id);
 

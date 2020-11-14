@@ -1,4 +1,4 @@
-type CompleteSetsPurchased @entity {
+type CompleteSetsPurchasedEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -22,7 +22,7 @@ type CompleteSetsPurchased @entity {
   timestamp: String!
 }
 
-type CompleteSetsSold @entity {
+type CompleteSetsSoldEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -48,7 +48,7 @@ type CompleteSetsSold @entity {
   timestamp: String!
 }
 
-type DesignatedReportStakeChanged @entity {
+type DesignatedReportStakeChangedEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -66,7 +66,7 @@ type DesignatedReportStakeChanged @entity {
   designatedReportStake: String!
 }
 
-type DisputeCrowdsourcerCompleted @entity {
+type DisputeCrowdsourcerCompletedEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -102,7 +102,7 @@ type DisputeCrowdsourcerCompleted @entity {
   timestamp: String!
 }
 
-type DisputeCrowdsourcerContribution @entity {
+type DisputeCrowdsourcerContributionEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -138,7 +138,7 @@ type DisputeCrowdsourcerContribution @entity {
   timestamp: String!
 }
 
-type DisputeCrowdsourcerCreated @entity {
+type DisputeCrowdsourcerCreatedEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -164,7 +164,7 @@ type DisputeCrowdsourcerCreated @entity {
   disputeRound: String!
 }
 
-type DisputeCrowdsourcerRedeemed @entity {
+type DisputeCrowdsourcerRedeemedEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -194,7 +194,7 @@ type DisputeCrowdsourcerRedeemed @entity {
   timestamp: String!
 }
 
-type DisputeWindowCreated @entity {
+type DisputeWindowCreatedEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -218,7 +218,7 @@ type DisputeWindowCreated @entity {
   initial: Boolean!
 }
 
-type FinishDeployment @entity {
+type FinishDeploymentEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -232,7 +232,7 @@ type FinishDeployment @entity {
   transactionHash: String!
 }
 
-type InitialReportSubmitted @entity {
+type InitialReportSubmittedEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -268,7 +268,7 @@ type InitialReportSubmitted @entity {
   timestamp: String!
 }
 
-type InitialReporterRedeemed @entity {
+type InitialReporterRedeemedEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -298,7 +298,7 @@ type InitialReporterRedeemed @entity {
   timestamp: String!
 }
 
-type InitialReporterTransferred @entity {
+type InitialReporterTransferredEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -320,7 +320,7 @@ type InitialReporterTransferred @entity {
   to: String
 }
 
-type MarketCreated @entity {
+type MarketCreatedEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -360,7 +360,7 @@ type MarketCreated @entity {
   timestamp: String!
 }
 
-type MarketFinalized @entity {
+type MarketFinalizedEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -382,7 +382,7 @@ type MarketFinalized @entity {
   winningPayoutNumerators: [String!]!
 }
 
-type MarketMigrated @entity {
+type MarketMigratedEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -402,7 +402,7 @@ type MarketMigrated @entity {
   newUniverse: String
 }
 
-type MarketOIChanged @entity {
+type MarketOIChangedEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -422,7 +422,7 @@ type MarketOIChanged @entity {
   marketOI: String!
 }
 
-type MarketParticipantsDisavowed @entity {
+type MarketParticipantsDisavowedEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -440,29 +440,7 @@ type MarketParticipantsDisavowed @entity {
   market: String
 }
 
-type MarketRepBondTransferred @entity {
-  id: ID!
-
-  blockHash: String!
-
-  blockNumber: Int!
-
-  logIndex: Int!
-
-  name: String!
-
-  transactionHash: String!
-
-  universe: String
-
-  market: String
-
-  from: String
-
-  to: String
-}
-
-type MarketTransferred @entity {
+type MarketRepBondTransferredEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -484,7 +462,29 @@ type MarketTransferred @entity {
   to: String
 }
 
-type NoShowBondChanged @entity {
+type MarketTransferredEvent @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  market: String
+
+  from: String
+
+  to: String
+}
+
+type NoShowBondChangedEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -502,7 +502,7 @@ type NoShowBondChanged @entity {
   noShowBond: String!
 }
 
-type ParticipationTokensRedeemed @entity {
+type ParticipationTokensRedeemedEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -528,7 +528,7 @@ type ParticipationTokensRedeemed @entity {
   timestamp: String!
 }
 
-type RegisterContract @entity {
+type RegisterContractEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -546,7 +546,7 @@ type RegisterContract @entity {
   key: Bytes
 }
 
-type ReportingFeeChanged @entity {
+type ReportingFeeChangedEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -564,7 +564,7 @@ type ReportingFeeChanged @entity {
   reportingFee: String!
 }
 
-type ReportingParticipantDisavowed @entity {
+type ReportingParticipantDisavowedEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -584,7 +584,7 @@ type ReportingParticipantDisavowed @entity {
   reportingParticipant: String
 }
 
-type ShareTokenBalanceChanged @entity {
+type ShareTokenBalanceChangedEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -608,7 +608,7 @@ type ShareTokenBalanceChanged @entity {
   balance: String!
 }
 
-type TimestampSet @entity {
+type TimestampSetEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -624,7 +624,7 @@ type TimestampSet @entity {
   newTimestamp: String!
 }
 
-type TokenBalanceChanged @entity {
+type TokenBalanceChangedEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -652,7 +652,7 @@ type TokenBalanceChanged @entity {
   outcome: String!
 }
 
-type TokensBurned @entity {
+type TokensBurnedEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -680,7 +680,7 @@ type TokensBurned @entity {
   totalSupply: String!
 }
 
-type TokensMinted @entity {
+type TokensMintedEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -708,7 +708,7 @@ type TokensMinted @entity {
   totalSupply: String!
 }
 
-type TokensTransferred @entity {
+type TokensTransferredEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -736,7 +736,7 @@ type TokensTransferred @entity {
   market: String
 }
 
-type TradingProceedsClaimed @entity {
+type TradingProceedsClaimedEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -766,7 +766,7 @@ type TradingProceedsClaimed @entity {
   timestamp: String!
 }
 
-type UniverseCreated @entity {
+type UniverseCreatedEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -788,7 +788,7 @@ type UniverseCreated @entity {
   creationTimestamp: String!
 }
 
-type UniverseForked @entity {
+type UniverseForkedEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -806,7 +806,7 @@ type UniverseForked @entity {
   forkingMarket: String
 }
 
-type ValidityBondChanged @entity {
+type ValidityBondChangedEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -824,7 +824,7 @@ type ValidityBondChanged @entity {
   validityBond: String!
 }
 
-type WarpSyncDataUpdated @entity {
+type WarpSyncDataUpdatedEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -844,7 +844,7 @@ type WarpSyncDataUpdated @entity {
   marketEndTime: String!
 }
 
-type CancelZeroXOrder @entity {
+type CancelZeroXOrderEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -874,7 +874,7 @@ type CancelZeroXOrder @entity {
   orderHash: Bytes
 }
 
-type MarketVolumeChanged @entity {
+type MarketVolumeChangedEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -900,7 +900,7 @@ type MarketVolumeChanged @entity {
   timestamp: String!
 }
 
-type OrderEvent @entity {
+type OrderEventEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -930,7 +930,7 @@ type OrderEvent @entity {
   uint256Data: [String!]!
 }
 
-type ProfitLossChanged @entity {
+type ProfitLossChangedEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -964,7 +964,7 @@ type ProfitLossChanged @entity {
   timestamp: String!
 }
 
-type ApprovalForAll @entity {
+type ApprovalForAllEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -984,7 +984,7 @@ type ApprovalForAll @entity {
   approved: Boolean!
 }
 
-type TransferBatch @entity {
+type TransferBatchEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -1008,7 +1008,7 @@ type TransferBatch @entity {
   values: [String!]!
 }
 
-type TransferSingle @entity {
+type TransferSingleEvent @entity {
   id: ID!
 
   blockHash: String!
@@ -1030,403 +1030,7 @@ type TransferSingle @entity {
   value: String!
 }
 
-type URI @entity {
-  id: ID!
-
-  blockHash: String!
-
-  blockNumber: Int!
-
-  logIndex: Int!
-
-  name: String!
-
-  transactionHash: String!
-
-  value: String!
-}
-
-type CompleteSetsPurchased @entity {
-  id: ID!
-
-  blockHash: String!
-
-  blockNumber: Int!
-
-  logIndex: Int!
-
-  name: String!
-
-  transactionHash: String!
-
-  universe: String
-
-  market: String
-
-  account: String
-
-  numCompleteSets: String!
-
-  timestamp: String!
-
-  para: String
-}
-
-type CompleteSetsSold @entity {
-  id: ID!
-
-  blockHash: String!
-
-  blockNumber: Int!
-
-  logIndex: Int!
-
-  name: String!
-
-  transactionHash: String!
-
-  universe: String
-
-  market: String
-
-  account: String
-
-  numCompleteSets: String!
-
-  fees: String!
-
-  timestamp: String!
-
-  para: String
-}
-
-type FinishDeployment @entity {
-  id: ID!
-
-  blockHash: String!
-
-  blockNumber: Int!
-
-  logIndex: Int!
-
-  name: String!
-
-  transactionHash: String!
-}
-
-type MarketOIChanged @entity {
-  id: ID!
-
-  blockHash: String!
-
-  blockNumber: Int!
-
-  logIndex: Int!
-
-  name: String!
-
-  transactionHash: String!
-
-  universe: String
-
-  market: String
-
-  marketOI: String!
-
-  para: String
-}
-
-type RegisterContract @entity {
-  id: ID!
-
-  blockHash: String!
-
-  blockNumber: Int!
-
-  logIndex: Int!
-
-  name: String!
-
-  transactionHash: String!
-
-  contractAddress: String
-
-  key: Bytes
-}
-
-type ReportingFeeChanged @entity {
-  id: ID!
-
-  blockHash: String!
-
-  blockNumber: Int!
-
-  logIndex: Int!
-
-  name: String!
-
-  transactionHash: String!
-
-  universe: String
-
-  reportingFee: String!
-
-  para: String
-}
-
-type ShareTokenBalanceChanged @entity {
-  id: ID!
-
-  blockHash: String!
-
-  blockNumber: Int!
-
-  logIndex: Int!
-
-  name: String!
-
-  transactionHash: String!
-
-  universe: String
-
-  account: String
-
-  market: String
-
-  outcome: String!
-
-  balance: String!
-
-  para: String
-}
-
-type TradingProceedsClaimed @entity {
-  id: ID!
-
-  blockHash: String!
-
-  blockNumber: Int!
-
-  logIndex: Int!
-
-  name: String!
-
-  transactionHash: String!
-
-  universe: String
-
-  sender: String
-
-  market: String
-
-  outcome: String!
-
-  numShares: String!
-
-  numPayoutTokens: String!
-
-  fees: String!
-
-  timestamp: String!
-
-  para: String
-}
-
-type CancelZeroXOrder @entity {
-  id: ID!
-
-  blockHash: String!
-
-  blockNumber: Int!
-
-  logIndex: Int!
-
-  name: String!
-
-  transactionHash: String!
-
-  universe: String
-
-  market: String
-
-  account: String
-
-  outcome: String!
-
-  price: String!
-
-  amount: String!
-
-  orderType: Int!
-
-  orderHash: Bytes
-
-  para: String
-}
-
-type MarketVolumeChanged @entity {
-  id: ID!
-
-  blockHash: String!
-
-  blockNumber: Int!
-
-  logIndex: Int!
-
-  name: String!
-
-  transactionHash: String!
-
-  universe: String
-
-  market: String
-
-  volume: String!
-
-  outcomeVolumes: [String!]!
-
-  totalTrades: String!
-
-  timestamp: String!
-
-  para: String
-}
-
-type OrderEvent @entity {
-  id: ID!
-
-  blockHash: String!
-
-  blockNumber: Int!
-
-  logIndex: Int!
-
-  name: String!
-
-  transactionHash: String!
-
-  universe: String
-
-  market: String
-
-  eventType: Int!
-
-  orderType: Int!
-
-  orderId: Bytes
-
-  tradeGroupId: Bytes
-
-  addressData: [String!]!
-
-  uint256Data: [String!]!
-
-  para: String
-}
-
-type ProfitLossChanged @entity {
-  id: ID!
-
-  blockHash: String!
-
-  blockNumber: Int!
-
-  logIndex: Int!
-
-  name: String!
-
-  transactionHash: String!
-
-  universe: String
-
-  market: String
-
-  account: String
-
-  outcome: String!
-
-  netPosition: String!
-
-  avgPrice: String!
-
-  realizedProfit: String!
-
-  frozenFunds: String!
-
-  realizedCost: String!
-
-  timestamp: String!
-
-  para: String
-}
-
-type ApprovalForAll @entity {
-  id: ID!
-
-  blockHash: String!
-
-  blockNumber: Int!
-
-  logIndex: Int!
-
-  name: String!
-
-  transactionHash: String!
-
-  owner: String
-
-  operator: String
-
-  approved: Boolean!
-}
-
-type TransferBatch @entity {
-  id: ID!
-
-  blockHash: String!
-
-  blockNumber: Int!
-
-  logIndex: Int!
-
-  name: String!
-
-  transactionHash: String!
-
-  operator: String
-
-  from: String
-
-  to: String
-
-  ids: [String!]!
-
-  values: [String!]!
-}
-
-type TransferSingle @entity {
-  id: ID!
-
-  blockHash: String!
-
-  blockNumber: Int!
-
-  logIndex: Int!
-
-  name: String!
-
-  transactionHash: String!
-
-  operator: String
-
-  from: String
-
-  to: String
-
-  value: String!
-}
-
-type URI @entity {
+type URIEvent @entity {
   id: ID!
 
   blockHash: String!

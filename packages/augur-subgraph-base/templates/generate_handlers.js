@@ -58,6 +58,3 @@ buildFile("Augur");
 buildFile("AugurTrading");
 buildFile("ShareToken");
 
-buildFile("ParaAugur", "templates\/");
-buildFile("ParaAugurTrading", "templates\/");
-buildFile("ParaShareToken", "templates\/");
