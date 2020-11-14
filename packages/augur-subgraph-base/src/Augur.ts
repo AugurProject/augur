@@ -39,44 +39,44 @@ import {
 } from '../generated/Augur/Augur';
 
 import {
-  CompleteSetsPurchased as CompleteSetsPurchasedEntity,
-  CompleteSetsSold as CompleteSetsSoldEntity,
-  DesignatedReportStakeChanged as DesignatedReportStakeChangedEntity,
-  DisputeCrowdsourcerCompleted as DisputeCrowdsourcerCompletedEntity,
-  DisputeCrowdsourcerContribution as DisputeCrowdsourcerContributionEntity,
-  DisputeCrowdsourcerCreated as DisputeCrowdsourcerCreatedEntity,
-  DisputeCrowdsourcerRedeemed as DisputeCrowdsourcerRedeemedEntity,
-  DisputeWindowCreated as DisputeWindowCreatedEntity,
-  FinishDeployment as FinishDeploymentEntity,
-  InitialReportSubmitted as InitialReportSubmittedEntity,
-  InitialReporterRedeemed as InitialReporterRedeemedEntity,
-  InitialReporterTransferred as InitialReporterTransferredEntity,
-  MarketCreated as MarketCreatedEntity,
-  MarketFinalized as MarketFinalizedEntity,
-  MarketMigrated as MarketMigratedEntity,
-  MarketOIChanged as MarketOIChangedEntity,
-  MarketParticipantsDisavowed as MarketParticipantsDisavowedEntity,
-  MarketRepBondTransferred as MarketRepBondTransferredEntity,
-  MarketTransferred as MarketTransferredEntity,
-  NoShowBondChanged as NoShowBondChangedEntity,
-  ParticipationTokensRedeemed as ParticipationTokensRedeemedEntity,
-  RegisterContract as RegisterContractEntity,
-  ReportingFeeChanged as ReportingFeeChangedEntity,
-  ReportingParticipantDisavowed as ReportingParticipantDisavowedEntity,
-  ShareTokenBalanceChanged as ShareTokenBalanceChangedEntity,
-  TimestampSet as TimestampSetEntity,
-  TokenBalanceChanged as TokenBalanceChangedEntity,
-  TokensBurned as TokensBurnedEntity,
-  TokensMinted as TokensMintedEntity,
-  TokensTransferred as TokensTransferredEntity,
-  TradingProceedsClaimed as TradingProceedsClaimedEntity,
-  UniverseCreated as UniverseCreatedEntity,
-  UniverseForked as UniverseForkedEntity,
-  ValidityBondChanged as ValidityBondChangedEntity,
-  WarpSyncDataUpdated as WarpSyncDataUpdatedEntity,
+  CompleteSetsPurchasedEvent as CompleteSetsPurchasedEntity,
+  CompleteSetsSoldEvent as CompleteSetsSoldEntity,
+  DesignatedReportStakeChangedEvent as DesignatedReportStakeChangedEntity,
+  DisputeCrowdsourcerCompletedEvent as DisputeCrowdsourcerCompletedEntity,
+  DisputeCrowdsourcerContributionEvent as DisputeCrowdsourcerContributionEntity,
+  DisputeCrowdsourcerCreatedEvent as DisputeCrowdsourcerCreatedEntity,
+  DisputeCrowdsourcerRedeemedEvent as DisputeCrowdsourcerRedeemedEntity,
+  DisputeWindowCreatedEvent as DisputeWindowCreatedEntity,
+  FinishDeploymentEvent as FinishDeploymentEntity,
+  InitialReportSubmittedEvent as InitialReportSubmittedEntity,
+  InitialReporterRedeemedEvent as InitialReporterRedeemedEntity,
+  InitialReporterTransferredEvent as InitialReporterTransferredEntity,
+  MarketCreatedEvent as MarketCreatedEntity,
+  MarketFinalizedEvent as MarketFinalizedEntity,
+  MarketMigratedEvent as MarketMigratedEntity,
+  MarketOIChangedEvent as MarketOIChangedEntity,
+  MarketParticipantsDisavowedEvent as MarketParticipantsDisavowedEntity,
+  MarketRepBondTransferredEvent as MarketRepBondTransferredEntity,
+  MarketTransferredEvent as MarketTransferredEntity,
+  NoShowBondChangedEvent as NoShowBondChangedEntity,
+  ParticipationTokensRedeemedEvent as ParticipationTokensRedeemedEntity,
+  RegisterContractEvent as RegisterContractEntity,
+  ReportingFeeChangedEvent as ReportingFeeChangedEntity,
+  ReportingParticipantDisavowedEvent as ReportingParticipantDisavowedEntity,
+  ShareTokenBalanceChangedEvent as ShareTokenBalanceChangedEntity,
+  TimestampSetEvent as TimestampSetEntity,
+  TokenBalanceChangedEvent as TokenBalanceChangedEntity,
+  TokensBurnedEvent as TokensBurnedEntity,
+  TokensMintedEvent as TokensMintedEntity,
+  TokensTransferredEvent as TokensTransferredEntity,
+  TradingProceedsClaimedEvent as TradingProceedsClaimedEntity,
+  UniverseCreatedEvent as UniverseCreatedEntity,
+  UniverseForkedEvent as UniverseForkedEntity,
+  ValidityBondChangedEvent as ValidityBondChangedEntity,
+  WarpSyncDataUpdatedEvent as WarpSyncDataUpdatedEntity,
 } from '../generated/schema';
 
-export function handleCompleteSetsPurchased(event: CompleteSetsPurchasedEvent): void {
+export function handleCompleteSetsPurchasedEvent(event: CompleteSetsPurchasedEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new CompleteSetsPurchasedEntity(id);
 
@@ -95,7 +95,7 @@ export function handleCompleteSetsPurchased(event: CompleteSetsPurchasedEvent): 
   entity.save();
 }
 
-export function handleCompleteSetsSold(event: CompleteSetsSoldEvent): void {
+export function handleCompleteSetsSoldEvent(event: CompleteSetsSoldEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new CompleteSetsSoldEntity(id);
 
@@ -115,7 +115,7 @@ export function handleCompleteSetsSold(event: CompleteSetsSoldEvent): void {
   entity.save();
 }
 
-export function handleDesignatedReportStakeChanged(event: DesignatedReportStakeChangedEvent): void {
+export function handleDesignatedReportStakeChangedEvent(event: DesignatedReportStakeChangedEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new DesignatedReportStakeChangedEntity(id);
 
@@ -131,7 +131,7 @@ export function handleDesignatedReportStakeChanged(event: DesignatedReportStakeC
   entity.save();
 }
 
-export function handleDisputeCrowdsourcerCompleted(event: DisputeCrowdsourcerCompletedEvent): void {
+export function handleDisputeCrowdsourcerCompletedEvent(event: DisputeCrowdsourcerCompletedEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new DisputeCrowdsourcerCompletedEntity(id);
 
@@ -156,7 +156,7 @@ export function handleDisputeCrowdsourcerCompleted(event: DisputeCrowdsourcerCom
   entity.save();
 }
 
-export function handleDisputeCrowdsourcerContribution(event: DisputeCrowdsourcerContributionEvent): void {
+export function handleDisputeCrowdsourcerContributionEvent(event: DisputeCrowdsourcerContributionEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new DisputeCrowdsourcerContributionEntity(id);
 
@@ -181,7 +181,7 @@ export function handleDisputeCrowdsourcerContribution(event: DisputeCrowdsourcer
   entity.save();
 }
 
-export function handleDisputeCrowdsourcerCreated(event: DisputeCrowdsourcerCreatedEvent): void {
+export function handleDisputeCrowdsourcerCreatedEvent(event: DisputeCrowdsourcerCreatedEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new DisputeCrowdsourcerCreatedEntity(id);
 
@@ -201,7 +201,7 @@ export function handleDisputeCrowdsourcerCreated(event: DisputeCrowdsourcerCreat
   entity.save();
 }
 
-export function handleDisputeCrowdsourcerRedeemed(event: DisputeCrowdsourcerRedeemedEvent): void {
+export function handleDisputeCrowdsourcerRedeemedEvent(event: DisputeCrowdsourcerRedeemedEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new DisputeCrowdsourcerRedeemedEntity(id);
 
@@ -223,7 +223,7 @@ export function handleDisputeCrowdsourcerRedeemed(event: DisputeCrowdsourcerRede
   entity.save();
 }
 
-export function handleDisputeWindowCreated(event: DisputeWindowCreatedEvent): void {
+export function handleDisputeWindowCreatedEvent(event: DisputeWindowCreatedEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new DisputeWindowCreatedEntity(id);
 
@@ -243,7 +243,7 @@ export function handleDisputeWindowCreated(event: DisputeWindowCreatedEvent): vo
   entity.save();
 }
 
-export function handleFinishDeployment(event: FinishDeploymentEvent): void {
+export function handleFinishDeploymentEvent(event: FinishDeploymentEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new FinishDeploymentEntity(id);
 
@@ -257,7 +257,7 @@ export function handleFinishDeployment(event: FinishDeploymentEvent): void {
   entity.save();
 }
 
-export function handleInitialReportSubmitted(event: InitialReportSubmittedEvent): void {
+export function handleInitialReportSubmittedEvent(event: InitialReportSubmittedEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new InitialReportSubmittedEntity(id);
 
@@ -282,7 +282,7 @@ export function handleInitialReportSubmitted(event: InitialReportSubmittedEvent)
   entity.save();
 }
 
-export function handleInitialReporterRedeemed(event: InitialReporterRedeemedEvent): void {
+export function handleInitialReporterRedeemedEvent(event: InitialReporterRedeemedEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new InitialReporterRedeemedEntity(id);
 
@@ -304,7 +304,7 @@ export function handleInitialReporterRedeemed(event: InitialReporterRedeemedEven
   entity.save();
 }
 
-export function handleInitialReporterTransferred(event: InitialReporterTransferredEvent): void {
+export function handleInitialReporterTransferredEvent(event: InitialReporterTransferredEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new InitialReporterTransferredEntity(id);
 
@@ -322,7 +322,7 @@ export function handleInitialReporterTransferred(event: InitialReporterTransferr
   entity.save();
 }
 
-export function handleMarketCreated(event: MarketCreatedEvent): void {
+export function handleMarketCreatedEvent(event: MarketCreatedEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new MarketCreatedEntity(id);
 
@@ -349,7 +349,7 @@ export function handleMarketCreated(event: MarketCreatedEvent): void {
   entity.save();
 }
 
-export function handleMarketFinalized(event: MarketFinalizedEvent): void {
+export function handleMarketFinalizedEvent(event: MarketFinalizedEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new MarketFinalizedEntity(id);
 
@@ -367,7 +367,7 @@ export function handleMarketFinalized(event: MarketFinalizedEvent): void {
   entity.save();
 }
 
-export function handleMarketMigrated(event: MarketMigratedEvent): void {
+export function handleMarketMigratedEvent(event: MarketMigratedEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new MarketMigratedEntity(id);
 
@@ -384,7 +384,7 @@ export function handleMarketMigrated(event: MarketMigratedEvent): void {
   entity.save();
 }
 
-export function handleMarketOIChanged(event: MarketOIChangedEvent): void {
+export function handleMarketOIChangedEvent(event: MarketOIChangedEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new MarketOIChangedEntity(id);
 
@@ -401,7 +401,7 @@ export function handleMarketOIChanged(event: MarketOIChangedEvent): void {
   entity.save();
 }
 
-export function handleMarketParticipantsDisavowed(event: MarketParticipantsDisavowedEvent): void {
+export function handleMarketParticipantsDisavowedEvent(event: MarketParticipantsDisavowedEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new MarketParticipantsDisavowedEntity(id);
 
@@ -417,7 +417,7 @@ export function handleMarketParticipantsDisavowed(event: MarketParticipantsDisav
   entity.save();
 }
 
-export function handleMarketRepBondTransferred(event: MarketRepBondTransferredEvent): void {
+export function handleMarketRepBondTransferredEvent(event: MarketRepBondTransferredEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new MarketRepBondTransferredEntity(id);
 
@@ -435,7 +435,7 @@ export function handleMarketRepBondTransferred(event: MarketRepBondTransferredEv
   entity.save();
 }
 
-export function handleMarketTransferred(event: MarketTransferredEvent): void {
+export function handleMarketTransferredEvent(event: MarketTransferredEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new MarketTransferredEntity(id);
 
@@ -453,7 +453,7 @@ export function handleMarketTransferred(event: MarketTransferredEvent): void {
   entity.save();
 }
 
-export function handleNoShowBondChanged(event: NoShowBondChangedEvent): void {
+export function handleNoShowBondChangedEvent(event: NoShowBondChangedEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new NoShowBondChangedEntity(id);
 
@@ -469,7 +469,7 @@ export function handleNoShowBondChanged(event: NoShowBondChangedEvent): void {
   entity.save();
 }
 
-export function handleParticipationTokensRedeemed(event: ParticipationTokensRedeemedEvent): void {
+export function handleParticipationTokensRedeemedEvent(event: ParticipationTokensRedeemedEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new ParticipationTokensRedeemedEntity(id);
 
@@ -489,7 +489,7 @@ export function handleParticipationTokensRedeemed(event: ParticipationTokensRede
   entity.save();
 }
 
-export function handleRegisterContract(event: RegisterContractEvent): void {
+export function handleRegisterContractEvent(event: RegisterContractEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new RegisterContractEntity(id);
 
@@ -505,7 +505,7 @@ export function handleRegisterContract(event: RegisterContractEvent): void {
   entity.save();
 }
 
-export function handleReportingFeeChanged(event: ReportingFeeChangedEvent): void {
+export function handleReportingFeeChangedEvent(event: ReportingFeeChangedEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new ReportingFeeChangedEntity(id);
 
@@ -521,7 +521,7 @@ export function handleReportingFeeChanged(event: ReportingFeeChangedEvent): void
   entity.save();
 }
 
-export function handleReportingParticipantDisavowed(event: ReportingParticipantDisavowedEvent): void {
+export function handleReportingParticipantDisavowedEvent(event: ReportingParticipantDisavowedEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new ReportingParticipantDisavowedEntity(id);
 
@@ -538,7 +538,7 @@ export function handleReportingParticipantDisavowed(event: ReportingParticipantD
   entity.save();
 }
 
-export function handleShareTokenBalanceChanged(event: ShareTokenBalanceChangedEvent): void {
+export function handleShareTokenBalanceChangedEvent(event: ShareTokenBalanceChangedEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new ShareTokenBalanceChangedEntity(id);
 
@@ -557,7 +557,7 @@ export function handleShareTokenBalanceChanged(event: ShareTokenBalanceChangedEv
   entity.save();
 }
 
-export function handleTimestampSet(event: TimestampSetEvent): void {
+export function handleTimestampSetEvent(event: TimestampSetEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new TimestampSetEntity(id);
 
@@ -572,7 +572,7 @@ export function handleTimestampSet(event: TimestampSetEvent): void {
   entity.save();
 }
 
-export function handleTokenBalanceChanged(event: TokenBalanceChangedEvent): void {
+export function handleTokenBalanceChangedEvent(event: TokenBalanceChangedEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new TokenBalanceChangedEntity(id);
 
@@ -593,7 +593,7 @@ export function handleTokenBalanceChanged(event: TokenBalanceChangedEvent): void
   entity.save();
 }
 
-export function handleTokensBurned(event: TokensBurnedEvent): void {
+export function handleTokensBurnedEvent(event: TokensBurnedEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new TokensBurnedEntity(id);
 
@@ -614,7 +614,7 @@ export function handleTokensBurned(event: TokensBurnedEvent): void {
   entity.save();
 }
 
-export function handleTokensMinted(event: TokensMintedEvent): void {
+export function handleTokensMintedEvent(event: TokensMintedEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new TokensMintedEntity(id);
 
@@ -635,7 +635,7 @@ export function handleTokensMinted(event: TokensMintedEvent): void {
   entity.save();
 }
 
-export function handleTokensTransferred(event: TokensTransferredEvent): void {
+export function handleTokensTransferredEvent(event: TokensTransferredEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new TokensTransferredEntity(id);
 
@@ -656,7 +656,7 @@ export function handleTokensTransferred(event: TokensTransferredEvent): void {
   entity.save();
 }
 
-export function handleTradingProceedsClaimed(event: TradingProceedsClaimedEvent): void {
+export function handleTradingProceedsClaimedEvent(event: TradingProceedsClaimedEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new TradingProceedsClaimedEntity(id);
 
@@ -678,7 +678,7 @@ export function handleTradingProceedsClaimed(event: TradingProceedsClaimedEvent)
   entity.save();
 }
 
-export function handleUniverseCreated(event: UniverseCreatedEvent): void {
+export function handleUniverseCreatedEvent(event: UniverseCreatedEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new UniverseCreatedEntity(id);
 
@@ -696,7 +696,7 @@ export function handleUniverseCreated(event: UniverseCreatedEvent): void {
   entity.save();
 }
 
-export function handleUniverseForked(event: UniverseForkedEvent): void {
+export function handleUniverseForkedEvent(event: UniverseForkedEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new UniverseForkedEntity(id);
 
@@ -712,7 +712,7 @@ export function handleUniverseForked(event: UniverseForkedEvent): void {
   entity.save();
 }
 
-export function handleValidityBondChanged(event: ValidityBondChangedEvent): void {
+export function handleValidityBondChangedEvent(event: ValidityBondChangedEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new ValidityBondChangedEntity(id);
 
@@ -728,7 +728,7 @@ export function handleValidityBondChanged(event: ValidityBondChangedEvent): void
   entity.save();
 }
 
-export function handleWarpSyncDataUpdated(event: WarpSyncDataUpdatedEvent): void {
+export function handleWarpSyncDataUpdatedEvent(event: WarpSyncDataUpdatedEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new WarpSyncDataUpdatedEntity(id);
 

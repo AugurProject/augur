@@ -57,75 +57,75 @@ dataSources:
           file: ./abis/Augur.json
       eventHandlers:
         - event: CompleteSetsPurchased(indexed address,indexed address,indexed address,uint256,uint256)
-          handler: handleCompleteSetsPurchased
+          handler: handleCompleteSetsPurchasedEvent
         - event: CompleteSetsSold(indexed address,indexed address,indexed address,uint256,uint256,uint256)
-          handler: handleCompleteSetsSold
+          handler: handleCompleteSetsSoldEvent
         - event: DesignatedReportStakeChanged(indexed address,uint256)
-          handler: handleDesignatedReportStakeChanged
+          handler: handleDesignatedReportStakeChangedEvent
         - event: DisputeCrowdsourcerCompleted(indexed address,indexed address,address,uint256[],uint256,uint256,bool,uint256,uint256,uint256,uint256)
-          handler: handleDisputeCrowdsourcerCompleted
+          handler: handleDisputeCrowdsourcerCompletedEvent
         - event: DisputeCrowdsourcerContribution(indexed address,indexed address,indexed address,address,uint256,string,uint256[],uint256,uint256,uint256,uint256)
-          handler: handleDisputeCrowdsourcerContribution
+          handler: handleDisputeCrowdsourcerContributionEvent
         - event: DisputeCrowdsourcerCreated(indexed address,indexed address,address,uint256[],uint256,uint256)
-          handler: handleDisputeCrowdsourcerCreated
+          handler: handleDisputeCrowdsourcerCreatedEvent
         - event: DisputeCrowdsourcerRedeemed(indexed address,indexed address,indexed address,address,uint256,uint256,uint256[],uint256)
-          handler: handleDisputeCrowdsourcerRedeemed
+          handler: handleDisputeCrowdsourcerRedeemedEvent
         - event: DisputeWindowCreated(indexed address,address,uint256,uint256,uint256,bool)
-          handler: handleDisputeWindowCreated
+          handler: handleDisputeWindowCreatedEvent
         - event: FinishDeployment()
-          handler: handleFinishDeployment
+          handler: handleFinishDeploymentEvent
         - event: InitialReportSubmitted(indexed address,indexed address,indexed address,address,uint256,bool,uint256[],string,uint256,uint256,uint256)
-          handler: handleInitialReportSubmitted
+          handler: handleInitialReportSubmittedEvent
         - event: InitialReporterRedeemed(indexed address,indexed address,indexed address,address,uint256,uint256,uint256[],uint256)
-          handler: handleInitialReporterRedeemed
+          handler: handleInitialReporterRedeemedEvent
         - event: InitialReporterTransferred(indexed address,indexed address,address,address)
-          handler: handleInitialReporterTransferred
+          handler: handleInitialReporterTransferredEvent
         - event: MarketCreated(indexed address,uint256,string,address,indexed address,address,uint256,int256[],uint8,uint256,bytes32[],uint256,uint256)
-          handler: handleMarketCreated
+          handler: handleMarketCreatedEvent
         - event: MarketFinalized(indexed address,indexed address,uint256,uint256[])
-          handler: handleMarketFinalized
+          handler: handleMarketFinalizedEvent
         - event: MarketMigrated(indexed address,indexed address,indexed address)
-          handler: handleMarketMigrated
+          handler: handleMarketMigratedEvent
         - event: MarketOIChanged(indexed address,indexed address,uint256)
-          handler: handleMarketOIChanged
+          handler: handleMarketOIChangedEvent
         - event: MarketParticipantsDisavowed(indexed address,indexed address)
-          handler: handleMarketParticipantsDisavowed
+          handler: handleMarketParticipantsDisavowedEvent
         - event: MarketRepBondTransferred(indexed address,address,address,address)
-          handler: handleMarketRepBondTransferred
+          handler: handleMarketRepBondTransferredEvent
         - event: MarketTransferred(indexed address,indexed address,address,address)
-          handler: handleMarketTransferred
+          handler: handleMarketTransferredEvent
         - event: NoShowBondChanged(indexed address,uint256)
-          handler: handleNoShowBondChanged
+          handler: handleNoShowBondChangedEvent
         - event: ParticipationTokensRedeemed(indexed address,indexed address,indexed address,uint256,uint256,uint256)
-          handler: handleParticipationTokensRedeemed
+          handler: handleParticipationTokensRedeemedEvent
         - event: RegisterContract(address,bytes32)
-          handler: handleRegisterContract
+          handler: handleRegisterContractEvent
         - event: ReportingFeeChanged(indexed address,uint256)
-          handler: handleReportingFeeChanged
+          handler: handleReportingFeeChangedEvent
         - event: ReportingParticipantDisavowed(indexed address,indexed address,address)
-          handler: handleReportingParticipantDisavowed
+          handler: handleReportingParticipantDisavowedEvent
         - event: ShareTokenBalanceChanged(indexed address,indexed address,indexed address,uint256,uint256)
-          handler: handleShareTokenBalanceChanged
+          handler: handleShareTokenBalanceChangedEvent
         - event: TimestampSet(uint256)
-          handler: handleTimestampSet
+          handler: handleTimestampSetEvent
         - event: TokenBalanceChanged(indexed address,indexed address,address,uint8,address,uint256,uint256)
-          handler: handleTokenBalanceChanged
+          handler: handleTokenBalanceChangedEvent
         - event: TokensBurned(indexed address,indexed address,indexed address,uint256,uint8,address,uint256)
-          handler: handleTokensBurned
+          handler: handleTokensBurnedEvent
         - event: TokensMinted(indexed address,indexed address,indexed address,uint256,uint8,address,uint256)
-          handler: handleTokensMinted
+          handler: handleTokensMintedEvent
         - event: TokensTransferred(indexed address,address,indexed address,indexed address,uint256,uint8,address)
-          handler: handleTokensTransferred
+          handler: handleTokensTransferredEvent
         - event: TradingProceedsClaimed(indexed address,indexed address,address,uint256,uint256,uint256,uint256,uint256)
-          handler: handleTradingProceedsClaimed
+          handler: handleTradingProceedsClaimedEvent
         - event: UniverseCreated(indexed address,indexed address,uint256[],uint256)
-          handler: handleUniverseCreated
+          handler: handleUniverseCreatedEvent
         - event: UniverseForked(indexed address,address)
-          handler: handleUniverseForked
+          handler: handleUniverseForkedEvent
         - event: ValidityBondChanged(indexed address,uint256)
-          handler: handleValidityBondChanged
+          handler: handleValidityBondChangedEvent
         - event: WarpSyncDataUpdated(indexed address,uint256,uint256)
-          handler: handleWarpSyncDataUpdated
+          handler: handleWarpSyncDataUpdatedEvent
   - kind: ethereum/contract
     name: AugurTrading
     network: {{ ethereum.network }}
@@ -148,13 +148,13 @@ dataSources:
           file: ./abis/AugurTrading.json
       eventHandlers:
         - event: CancelZeroXOrder(indexed address,indexed address,indexed address,uint256,uint256,uint256,uint8,bytes32)
-          handler: handleCancelZeroXOrder
+          handler: handleCancelZeroXOrderEvent
         - event: MarketVolumeChanged(indexed address,indexed address,uint256,uint256[],uint256,uint256)
-          handler: handleMarketVolumeChanged
+          handler: handleMarketVolumeChangedEvent
         - event: OrderEvent(indexed address,indexed address,indexed uint8,uint8,bytes32,bytes32,address[],uint256[])
-          handler: handleOrderEvent
+          handler: handleOrderEventEvent
         - event: ProfitLossChanged(indexed address,indexed address,indexed address,uint256,int256,uint256,int256,int256,int256,uint256)
-          handler: handleProfitLossChanged
+          handler: handleProfitLossChangedEvent
   - kind: ethereum/contract
     name: ShareToken
     network: {{ ethereum.network }}
@@ -177,105 +177,10 @@ dataSources:
           file: ./abis/ShareToken.json
       eventHandlers:
         - event: ApprovalForAll(indexed address,indexed address,bool)
-          handler: handleApprovalForAll
+          handler: handleApprovalForAllEvent
         - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
-          handler: handleTransferBatch
+          handler: handleTransferBatchEvent
         - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
-          handler: handleTransferSingle
+          handler: handleTransferSingleEvent
         - event: URI(string,indexed uint256)
-          handler: handleURI
-
-templates:
-  - kind: ethereum/contract
-    name: ParaAugur
-    network: {{ ethereum.network }}
-    source:
-      abi: ParaAugur
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      file: ./src/ParaAugur.ts
-      entities:
-        - CompleteSetsPurchased
-        - CompleteSetsSold
-        - FinishDeployment
-        - MarketOIChanged
-        - RegisterContract
-        - ReportingFeeChanged
-        - ShareTokenBalanceChanged
-        - TradingProceedsClaimed
-      abis:
-        - name: ParaAugur
-          file: ./abis/ParaAugur.json
-      eventHandlers:
-        - event: CompleteSetsPurchased(indexed address,indexed address,indexed address,uint256,uint256,address)
-          handler: handleCompleteSetsPurchased
-        - event: CompleteSetsSold(indexed address,indexed address,indexed address,uint256,uint256,uint256,address)
-          handler: handleCompleteSetsSold
-        - event: FinishDeployment()
-          handler: handleFinishDeployment
-        - event: MarketOIChanged(indexed address,indexed address,uint256,address)
-          handler: handleMarketOIChanged
-        - event: RegisterContract(address,bytes32)
-          handler: handleRegisterContract
-        - event: ReportingFeeChanged(indexed address,uint256,address)
-          handler: handleReportingFeeChanged
-        - event: ShareTokenBalanceChanged(indexed address,indexed address,indexed address,uint256,uint256,address)
-          handler: handleShareTokenBalanceChanged
-        - event: TradingProceedsClaimed(indexed address,indexed address,address,uint256,uint256,uint256,uint256,uint256,address)
-          handler: handleTradingProceedsClaimed
-  - kind: ethereum/contract
-    name: ParaAugurTrading
-    network: {{ ethereum.network }}
-    source:
-      abi: ParaAugurTrading
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      file: ./src/ParaAugurTrading.ts
-      entities:
-        - CancelZeroXOrder
-        - MarketVolumeChanged
-        - OrderEvent
-        - ProfitLossChanged
-      abis:
-        - name: ParaAugurTrading
-          file: ./abis/ParaAugurTrading.json
-      eventHandlers:
-        - event: CancelZeroXOrder(indexed address,indexed address,indexed address,uint256,uint256,uint256,uint8,bytes32,address)
-          handler: handleCancelZeroXOrder
-        - event: MarketVolumeChanged(indexed address,indexed address,uint256,uint256[],uint256,uint256,address)
-          handler: handleMarketVolumeChanged
-        - event: OrderEvent(indexed address,indexed address,indexed uint8,uint8,bytes32,bytes32,address[],uint256[],address)
-          handler: handleOrderEvent
-        - event: ProfitLossChanged(indexed address,indexed address,indexed address,uint256,int256,uint256,int256,int256,int256,uint256,address)
-          handler: handleProfitLossChanged
-  - kind: ethereum/contract
-    name: ParaShareToken
-    network: {{ ethereum.network }}
-    source:
-      abi: ParaShareToken
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      file: ./src/ParaShareToken.ts
-      entities:
-        - ApprovalForAll
-        - TransferBatch
-        - TransferSingle
-        - URI
-      abis:
-        - name: ParaShareToken
-          file: ./abis/ParaShareToken.json
-      eventHandlers:
-        - event: ApprovalForAll(indexed address,indexed address,bool)
-          handler: handleApprovalForAll
-        - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
-          handler: handleTransferBatch
-        - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
-          handler: handleTransferSingle
-        - event: URI(string,indexed uint256)
-          handler: handleURI
+          handler: handleURIEvent
