@@ -322,15 +322,16 @@
       height: 100%;
 
       > section {
-        display: block;
+        display: flex;
+        flex-flow: column nowrap;
         max-height: calc(100vh - 75px);
 
         > div {
           max-width: unset;
-        }
 
-        > div:first-of-type {
-          margin-bottom: @size-8;
+          &:last-of-type {
+            margin-bottom: 0;
+          }
         }
       }
     }
