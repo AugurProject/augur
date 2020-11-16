@@ -331,7 +331,7 @@ function TxnList({ allExchanges, color, cashTokens, cashData }) {
       <DashGrid center={true} style={{ height: 'fit-content', padding: '0 0 1rem 0' }}>
         {below780 ? (
           <RowBetween area="txn">
-            <DropdownSelect options={TXN_TYPE} active={txFilter} setActive={setTxFilter} color={color} />
+            <DropdownSelect options={TXN_TYPE} active={txFilter} setActive={setTxFilter} />
           </RowBetween>
         ) : (
             <RowFixed area="txn" gap="10px" pl={4}>
