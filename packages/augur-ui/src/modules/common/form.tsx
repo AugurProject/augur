@@ -2366,7 +2366,7 @@ export const CategoryRow = ({
 
   const [showChildrenOption, setShowChildren] = useState(false);
   const hasChildren = children && Object.keys(children).length > 0;
-  const categoryDisplay = viewAll ? `View all ${category}` : category;
+  const categoryDisplay = viewAll ? `View all ${isShortText ? category.toUpperCase() : category}` : isShortText ? category.toUpperCase() : category;
   return (
     <>
       <div
@@ -2378,7 +2378,7 @@ export const CategoryRow = ({
         })}
       >
         <span onClick={() => setShowChildren(!showChildrenOption)}>
-          {icon} {isShortText ? categoryDisplay.toUpperCase() : categoryDisplay}
+          {icon} {categoryDisplay}
           {showChildren && hasChildren && (
             <ChevronFlip pointDown={showChildrenOption} filledInIcon instant />
           )}
