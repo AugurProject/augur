@@ -4,6 +4,7 @@ from math import ceil
 
 from eth_tester.exceptions import TransactionFailed
 from pytest import raises, fixture, mark, skip
+from utils import nullAddress
 
 
 FEE = 3 # 3/1000
@@ -25,6 +26,10 @@ def amm(sessionFixture, factory, market, shareToken):
 @fixture
 def account0(sessionFixture):
     return sessionFixture.accounts[0]
+
+def test_amm_calc_addr(contractsFixture, factory, cash, shareToken, market):
+    address = factory.calculateAMMAddress(market.address, shareToken.address, FEE)
+    assert address != nullAddress
 
 def test_amm_add_with_liquidity(contractsFixture, market, cash, shareToken, factory, account0):
     setsToBuy = 10 * ATTO
