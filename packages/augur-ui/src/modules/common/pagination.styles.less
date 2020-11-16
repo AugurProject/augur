@@ -138,6 +138,8 @@
     }
 
     > section {
+      grid-gap: 0 @size-8;
+
       @media @breakpoint-mobile-tablet {
         display: flex;
         flex: 1 100%;
@@ -145,7 +147,6 @@
         justify-content: space-between;
         width: 100%;
         min-width: 100%;
-        grid-gap: 0 @size-8;
       }
 
       > button {
@@ -157,13 +158,19 @@
         width: @size-17;
 
         &:first-of-type {
-          width: @size-125;
           display: flex;
           flex-flow: column nowrap;
           align-items: center;
           justify-content: center;
-          margin: 0;
-          margin-right: auto;
+          width: 100%;
+          min-width: @size-40;
+          max-width: @size-40;
+
+          @media @breakpoint-mobile-tablet {
+            max-width: @size-145;
+            margin: 0;
+            margin-right: auto;
+          }
         }
 
         &:not(:first-of-type):not(:last-of-type) {
@@ -186,13 +193,19 @@
         }
 
         &:last-of-type {
-          width: @size-125;
           display: flex;
           flex-flow: column nowrap;
           align-items: center;
           justify-content: center;
-          margin: 0;
-          margin-left: auto;
+          width: 100%;
+          min-width: @size-40;
+          max-width: @size-40;
+
+          @media @breakpoint-mobile-tablet {
+            max-width: @size-145;
+            margin: 0;
+            margin-left: auto;
+          }
         }
       }
     }

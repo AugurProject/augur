@@ -185,12 +185,20 @@
   }
 
   .box {
-    > article:first-of-type {
-      margin-top: @size-8;
-    }
+    display: flex;
+    flex-flow: column nowrap;
+    grid-gap: @size-8 0;
+    padding: @size-8;
 
-    > article:last-of-type {
-      margin-bottom: @size-8;
+    > div {
+      margin: 0;
+      background: var(--color-module-background);
+      border: @size-1 solid var(--color-secondary-action-outline);
+      border-radius: @border-radius-default;
+
+      &:hover {
+        background: var(--color-active-background);
+      }
     }
   }
 

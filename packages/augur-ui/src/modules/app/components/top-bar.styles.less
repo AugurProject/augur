@@ -37,10 +37,18 @@
     > button[class*='SecondaryButton'] {
       margin-left: @size-24;
       margin-right: @size-12;
+
+      @media @breakpoint-mobile-tablet {
+        margin-left: @size-14;
+      }
     }
 
     > button[class*='PrimaryButton'] {
       margin-right: @size-24;
+
+      @media @breakpoint-mobile-tablet {
+        margin-right: @size-14;
+      }
     }
   }
 }
@@ -284,6 +292,14 @@
           max-height: @size-30;
           height: @size-30;
         }
+
+        @media @breakpoint-tablet {
+          margin-left: @size-32;
+        }
+
+        @media @breakpoint-mobile {
+          margin-left: @size-12;
+        }
       }
 
       > button[class*='PrimaryButton'][title*='Sign up'] {
@@ -303,6 +319,14 @@
           padding: 0 @size-8;
           max-height: @size-30;
           height: @size-30;
+        }
+
+        @media @breakpoint-tablet {
+          margin-right: @size-32;
+        }
+
+        @media @breakpoint-mobile {
+          margin-right: @size-12;
         }
       }
 

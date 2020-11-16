@@ -1238,6 +1238,35 @@
 				background: var(--color-page-background);
 			}
 
+			&.Collapsed {
+				> header > span:last-of-type {
+					align-items: center;
+					display: flex;
+					justify-content: space-between;
+					width: @size-24;
+					height: @size-18;
+					justify-content: flex-end;
+
+					> a {
+						display: flex;
+						height: 100%;
+						width: 100%;
+						align-items: center;
+						justify-content: flex-end;
+
+							> svg {
+							width: @size-10;
+							height: @size-6;
+							transform: rotate(-.25turn);
+
+							> path {
+								fill: var(--color-primary-text);
+							}
+						}
+					}
+				}
+			}
+
 			@media @breakpoint-mobile {
 				> div > section.MultiOutcomeMarketRow > article,
 				> div > section.MultiOutcomeMarketGrid > article {
@@ -1690,7 +1719,7 @@
 			flex-flow: row nowrap;
 			align-items: center;
 			justify-content: center;
-			padding: 0 @size-16;
+			padding: 0 @size-8;
 			text-decoration: underline;
 		}
 
