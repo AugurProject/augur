@@ -55,42 +55,45 @@ const LabelStyled = styled.span`
   white-space: nowrap;
 `
 
-const DropdownSelect = ({ options, active, setActive, label = '' }) => {
+const DropdownSelect = ({ options, active, setActive, label = '', disabled = false }) => {
   const [showDropdown, toggleDropdown] = useState(false)
 
   return (
     <>
-    <LabelStyled>{label}</LabelStyled>
-    <Wrapper open={showDropdown}>
-      <RowBetween onClick={() => toggleDropdown(!showDropdown)} justify="center">
-        <TYPE.main>{active}</TYPE.main>
-        <StyledIcon>
-          <ArrowStyled />
-        </StyledIcon>
-      </RowBetween>
-      {showDropdown && (
-        <Dropdown>
-          <AutoColumn gap="18px">
-            {Object.keys(options).map((key, index) => {
-              let option = options[key]
-              return (
-                option !== active && (
-                  <Row
-                    onClick={() => {
-                      toggleDropdown(!showDropdown)
-                      setActive(option)
-                    }}
-                    key={index}
-                  >
-                    <TYPE.body fontSize={14}>{option}</TYPE.body>
-                  </Row>
+      <LabelStyled>{label}</LabelStyled>
+      <Wrapper open={showDropdown}>
+        {!disabled && (
+          <RowBetween onClick={() => toggleDropdown(!showDropdown)} justify="center">
+            <TYPE.main>{active}</TYPE.main>
+            <StyledIcon>
+              <ArrowStyled />
+            </StyledIcon>
+          </RowBetween>
+        )}
+        {disabled && <RowBetween><TYPE.main>{active}</TYPE.main></RowBetween>}
+        {!disabled && showDropdown && (
+          <Dropdown>
+            <AutoColumn gap="18px">
+              {Object.keys(options).map((key, index) => {
+                let option = options[key]
+                return (
+                  option !== active && (
+                    <Row
+                      onClick={() => {
+                        toggleDropdown(!showDropdown)
+                        setActive(option)
+                      }}
+                      key={index}
+                    >
+                      <TYPE.body fontSize={14}>{option}</TYPE.body>
+                    </Row>
+                  )
                 )
-              )
-            })}
-          </AutoColumn>
-        </Dropdown>
-      )}
-    </Wrapper>
+              })}
+            </AutoColumn>
+          </Dropdown>
+        )}
+      </Wrapper>
     </>
   )
 }
