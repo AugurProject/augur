@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Filter, Log } from '@augurproject/types';
-import { all, retry } from 'async';
+import { retry } from 'async';
 import * as _ from 'lodash';
 
 const RETRY_TIMES = 3;
