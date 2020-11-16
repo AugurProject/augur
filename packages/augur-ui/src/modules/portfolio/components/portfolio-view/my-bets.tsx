@@ -220,7 +220,7 @@ export const MyBets = () => {
       <HelmetTag {...PORTFOLIO_VIEW_HEAD_TAGS} />
       <div>
         <div>
-          <span>My Bets</span>
+          <span>Active Bets</span>
           <span>To view your unmatched bets, go to Trading.</span>
           <ExternalLinkButton
             condensedStyle
