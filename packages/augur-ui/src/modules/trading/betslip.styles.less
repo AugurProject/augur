@@ -318,6 +318,10 @@
     flex-flow: column nowrap;
     justify-content: center;
 
+    > section > div:last-of-type {
+      margin-bottom: 0;
+    }
+
     @media @breakpoint-mobile-tablet {
       height: 100%;
 
@@ -328,10 +332,6 @@
 
         > div {
           max-width: unset;
-
-          &:last-of-type {
-            margin-bottom: 0;
-          }
         }
       }
     }
