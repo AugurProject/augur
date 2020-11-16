@@ -451,11 +451,8 @@ export const CONTRACT_INTERVAL = {
 // # Market States
 export const ALL_MARKETS = 'all';
 export const MARKET_OPEN = 'open';
-export const MARKET_ACTIVE = 'active';
-export const MARKET_IN_SETTLEMENT = 'in settlement';
 export const MARKET_REPORTING = 'reporting';
 export const MARKET_CLOSED = 'closed';
-export const MARKET_RESOLVED = 'resolved';
 
 // InReporting Labels
 export const IN_REPORTING = 'In-reporting';
@@ -1543,18 +1540,18 @@ export const MY_BETS_MARKET_STATUS = [
     value: 0,
   },
   {
-    header: MARKET_ACTIVE,
-    label: MARKET_ACTIVE,
+    header: MARKET_OPEN,
+    label: MARKET_OPEN,
     value: 1,
   },
   {
-    header: MARKET_IN_SETTLEMENT,
-    label: MARKET_IN_SETTLEMENT,
+    header: MARKET_REPORTING,
+    label: MARKET_REPORTING,
     value: 2,
   },
   {
-    header: MARKET_RESOLVED,
-    label: MARKET_RESOLVED,
+    header: MARKET_CLOSED,
+    label: MARKET_CLOSED,
     value: 3,
   },
 ];
