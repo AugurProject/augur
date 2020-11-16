@@ -34,7 +34,7 @@ module.exports = {
       label: 'API',
       items:['api/contracts/index',
       'api/augurSDK',
-        'api/theGraph',
+        'api/sdk/theGraph',
       ],
     },
   ],

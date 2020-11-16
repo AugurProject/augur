@@ -31,59 +31,6 @@ module.exports = {
     },
     footer: {
       style: 'dark',
-      links: [
-        {
-          title: 'Docs',
-          items: [
-            {
-              label: 'Style Guide',
-              to: 'docs/',
-            },
-            {
-              label: 'Second Doc',
-              to: 'docs/doc2/',
-            },
-          ],
-        },
-        {
-          title: 'Community',
-          items: [
-            {
-              label: 'Discord',
-              href: 'https://invite.augur.net/',
-            },
-            {
-              label: 'Twitter',
-              href: 'https://twitter.com/AugurProject',
-            },
-            {
-              label: 'Reddit',
-              href: 'https://www.reddit.com/r/Augur/',
-            },
-            {
-              label: 'Facebook',
-              href: 'https://www.facebook.com/augurproject/',
-            }
-          ],
-        },
-        {
-          title: 'More',
-          items: [
-            {
-              label: 'Blog',
-              href: 'https://augur.net/blog',
-            },
-            {
-              label: 'GitHub',
-              href: 'https://github.com/AugurProject',
-            },
-            {
-              label: 'Bug Bounty',
-              href: 'https://augur.net/developers',
-            },
-          ],
-        },
-      ],
       copyright: `Copyright © ${new Date().getFullYear()} PM Research LTD. Built with Docusaurus.`,
     },
   },
