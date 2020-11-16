@@ -11,7 +11,7 @@ const Wrapper = styled.div`
   z-index: 20;
   position: relative;
   background-color: ${({ theme }) => theme.panelColor};
-  border: 1px solid ${({ open, color }) => (open ? color : 'rgba(0, 0, 0, 0.15);')} 
+  border: 1px solid ${({ open, color }) => (open ? color : 'rgba(0, 0, 0, 0.15);')}
   width: 100px;
   padding: 4px 10px;
   padding-right: 6px;
@@ -49,11 +49,19 @@ const ArrowStyled = styled(Arrow)`
   margin-left: 6px;
 `
 
-const DropdownSelect = ({ options, active, setActive, color }) => {
+const LabelStyled = styled.span`
+  color: ${({ theme }) => theme.text1};
+  padding-right: 0.5rem;
+  white-space: nowrap;
+`
+
+const DropdownSelect = ({ options, active, setActive, label = '' }) => {
   const [showDropdown, toggleDropdown] = useState(false)
 
   return (
-    <Wrapper open={showDropdown} color={color}>
+    <>
+    <LabelStyled>{label}</LabelStyled>
+    <Wrapper open={showDropdown}>
       <RowBetween onClick={() => toggleDropdown(!showDropdown)} justify="center">
         <TYPE.main>{active}</TYPE.main>
         <StyledIcon>
@@ -62,7 +70,7 @@ const DropdownSelect = ({ options, active, setActive, color }) => {
       </RowBetween>
       {showDropdown && (
         <Dropdown>
-          <AutoColumn gap="20px">
+          <AutoColumn gap="18px">
             {Object.keys(options).map((key, index) => {
               let option = options[key]
               return (
@@ -83,6 +91,7 @@ const DropdownSelect = ({ options, active, setActive, color }) => {
         </Dropdown>
       )}
     </Wrapper>
+    </>
   )
 }
 

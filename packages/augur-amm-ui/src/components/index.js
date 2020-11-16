@@ -107,6 +107,7 @@ export const PageWrapper = styled.div`
   width: 100%;
   align-content: center;
   justify-content: center;
+  position: fixed;
 
   @media screen and (max-width: 600px) {
     & > * {

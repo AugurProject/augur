@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -6,14 +6,12 @@ import utc from 'dayjs/plugin/utc'
 import { Box, Flex, Text } from 'rebass'
 import { Divider } from '..'
 import { useDarkModeManager } from '../../contexts/LocalStorage'
-import { formatTime, formattedNum, calculateLiquidity } from '../../utils'
+import { formatTime, formattedNum } from '../../utils'
 import { useMedia } from 'react-use'
 import { withRouter } from 'react-router-dom'
 import { TYPE } from '../../Theme'
 import { BasicLink } from '../Link'
 import TokenLogo from '../TokenLogo'
-import { useTokenDayPriceData } from '../../contexts/TokenData'
-import { useMarketCashTokens } from '../../contexts/Markets'
 
 dayjs.extend(utc)
 
@@ -146,6 +144,7 @@ function MarketList({ markets, itemMax = 15 }) {
       }
       setMaxPage(Math.floor(markets.length / itemMax) + extraPages)
     }
+    setPage(1)
   }, [markets, itemMax])
 
   useEffect(() => {

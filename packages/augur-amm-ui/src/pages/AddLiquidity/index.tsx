@@ -9,7 +9,7 @@ import { AutoColumn, ColumnCenter } from '../../components/Column'
 import TransactionConfirmationModal, { ConfirmationModalContent } from '../../components/TransactionConfirmationModal'
 import { AddRemoveTabs } from '../../components/NavigationTabs'
 //import { MinimalPositionCard } from '../../components/PositionCard'
-import { RowBetween, RowFlat } from '../../components/Row'
+import Row, { RowBetween, RowFlat } from '../../components/Row'
 
 import { PairState } from '../../model/Reserves'
 import { useActiveWeb3React } from '../../hooks'
@@ -34,7 +34,18 @@ import { useMarketAmm, useShareTokens, useMarket } from '../../contexts/Markets'
 import CashInputPanel from '../../components/CashInputPanel'
 import DistributionPanel from '../../components/DistributionPanel'
 import { useWalletModalToggle } from '../../state/application/hooks'
+import DropdownSelect from '../../components/DropdownSelect'
 
+const FEE_OPTIONS = {
+  '0': '0',
+  '0.5': '0.5',
+  '1.0': '1.0',
+  '1.5': '1.5',
+  '2.0': '2.0',
+  '2.5': '2.5',
+  '3.0': '3.0',
+  '3.5': '3.5'
+}
 function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: string; marketId: string; cash: string }>) {
   const { account, chainId, library } = useActiveWeb3React()
   const augurClient = useAugurClient()
@@ -71,6 +82,7 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
   // modal and loading
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false) // clicked confirm
+  const [feeSelected, setFeeSelected] = useState<string>("0")
 
   // txn values
   const deadline = useTransactionDeadline() // custom from users settings
@@ -124,7 +136,7 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
     }
 
     // 3/1000 aka 0.3%
-    const fee = 3; // TODO this should be set by the user, not hard-coded
+    const fee = Number(feeSelected) * 10;
 
     setAttemptingTxn(true)
     await addAmmLiquidity({
@@ -265,6 +277,7 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
               distroPercentage={distroPercentage}
               id={marketId}
             />
+            <Row><DropdownSelect label={"Trading Fee %"} options={FEE_OPTIONS} active={feeSelected} setActive={setFeeSelected} /></Row>
             {currencies[Field.CURRENCY_A] && currencies[Field.CURRENCY_B] && pairState !== PairState.INVALID && (
               <>
                 <LightCard padding="0px" borderRadius={'20px'}>
