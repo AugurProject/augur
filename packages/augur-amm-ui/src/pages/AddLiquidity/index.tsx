@@ -277,7 +277,7 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
               distroPercentage={distroPercentage}
               id={marketId}
             />
-            <Row><DropdownSelect label={"Trading Fee %"} options={FEE_OPTIONS} active={feeSelected} setActive={setFeeSelected} /></Row>
+            <Row><DropdownSelect disabled={hasLiquidity} label={"Trading Fee %"} options={FEE_OPTIONS} active={feeSelected} setActive={setFeeSelected} /></Row>
             {currencies[Field.CURRENCY_A] && currencies[Field.CURRENCY_B] && pairState !== PairState.INVALID && (
               <>
                 <LightCard padding="0px" borderRadius={'20px'}>
