@@ -158,14 +158,15 @@
         width: @size-17;
 
         &:first-of-type {
-          width: @size-40;
           display: flex;
           flex-flow: column nowrap;
           align-items: center;
           justify-content: center;
+          width: 100%;
+          max-width: @size-40;
 
           @media @breakpoint-mobile-tablet {
-            width: @size-145;
+            max-width: @size-145;
             margin: 0;
             margin-right: auto;
           }
@@ -191,14 +192,15 @@
         }
 
         &:last-of-type {
-          width: @size-40;
           display: flex;
           flex-flow: column nowrap;
           align-items: center;
           justify-content: center;
+          width: 100%;
+          max-width: @size-40;
 
           @media @breakpoint-mobile-tablet {
-            width: @size-145;
+            max-width: @size-145;
             margin: 0;
             margin-left: auto;
           }
