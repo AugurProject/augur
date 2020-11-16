@@ -199,6 +199,7 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
         onAdd={onAdd}
         poolTokenPercentage={poolTokenPercentage}
         distribution={distroPercentage}
+        fee={feeSelected}
       />
     )
   }
