@@ -5,11 +5,6 @@ export const AMMFactoryAbi = [
         "internalType": "address",
         "name": "_proxyToClone",
         "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_fee",
-        "type": "uint256"
       }
     ],
     "payable": false,
@@ -25,9 +20,14 @@ export const AMMFactoryAbi = [
         "type": "address"
       },
       {
-        "internalType": "contract IParaShareToken",
+        "internalType": "contract ParaShareToken",
         "name": "_para",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_fee",
+        "type": "uint256"
       }
     ],
     "name": "addAMM",
@@ -51,9 +51,14 @@ export const AMMFactoryAbi = [
         "type": "address"
       },
       {
-        "internalType": "contract IParaShareToken",
+        "internalType": "contract ParaShareToken",
         "name": "_para",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_fee",
+        "type": "uint256"
       },
       {
         "internalType": "uint256",
@@ -92,9 +97,14 @@ export const AMMFactoryAbi = [
         "type": "address"
       },
       {
-        "internalType": "contract IParaShareToken",
+        "internalType": "contract ParaShareToken",
         "name": "_para",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_fee",
+        "type": "uint256"
       }
     ],
     "name": "calculateAMMAddress",
@@ -152,6 +162,11 @@ export const AMMFactoryAbi = [
         "internalType": "address",
         "name": "",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "name": "exchanges",
@@ -168,21 +183,6 @@ export const AMMFactoryAbi = [
   },
   {
     "constant": true,
-    "inputs": [],
-    "name": "fee",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
     "inputs": [
       {
         "internalType": "contract IMarket",
@@ -190,9 +190,14 @@ export const AMMFactoryAbi = [
         "type": "address"
       },
       {
-        "internalType": "contract IParaShareToken",
+        "internalType": "contract ParaShareToken",
         "name": "_para",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_fee",
+        "type": "uint256"
       }
     ],
     "name": "salt",
@@ -216,9 +221,64 @@ export const AMMFactoryAbi = [
         "type": "address"
       },
       {
-        "internalType": "contract IParaShareToken",
+        "internalType": "contract ParaShareToken",
         "name": "_para",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_fee",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_from",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_to",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_invalidAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_noAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_yesAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "shareTransfer",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "contract IMarket",
+        "name": "_market",
+        "type": "address"
+      },
+      {
+        "internalType": "contract ParaShareToken",
+        "name": "_para",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_fee",
+        "type": "uint256"
       },
       {
         "internalType": "address",
