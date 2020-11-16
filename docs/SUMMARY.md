@@ -11,13 +11,13 @@ title: 'Summary'
     * [Local Dev Guide](overview/localdevGuide.md)
     * [Tools (using flash)](overview/Tools.md)
 
-## Archetecture
+## Architecture
 * [Contracts Overview](contracts/overview.md)
-* [Middleware Overview](archetecture/middlewareOverview.md)
-* [UI Overview](archetecture/uiOverview.md)
+* [Middleware Overview](architecture/middlewareOverview.md)
+* [UI Overview](architecture/uiOverview.md)
 
 ## API
 
-* [Contracts](contracts/index.md)
-* [Augur SDK](sdk/index.md)
-* [The Graph](sdk/theGraph.md)
+* [Contracts](api/contracts/index.md)
+* [Augur SDK](api/sdk/index.md)
+* [The Graph](api/sdk/theGraph.md)
