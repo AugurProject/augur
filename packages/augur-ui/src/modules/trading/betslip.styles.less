@@ -318,19 +318,20 @@
     flex-flow: column nowrap;
     justify-content: center;
 
+    > section > div:last-of-type {
+      margin-bottom: 0;
+    }
+
     @media @breakpoint-mobile-tablet {
       height: 100%;
 
       > section {
-        display: block;
+        display: flex;
+        flex-flow: column nowrap;
         max-height: calc(100vh - 75px);
 
         > div {
           max-width: unset;
-        }
-
-        > div:not(:last-of-type) {
-          margin-bottom: @size-8;
         }
       }
     }

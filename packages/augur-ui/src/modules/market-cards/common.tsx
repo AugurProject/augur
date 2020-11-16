@@ -595,8 +595,10 @@ export const OutcomeGroupFooter = ({
       volumeFormatted.value > 0 ? (
         <p>
           {FingersCrossed}
-          <b>{leadingOutcome.description}</b>
-          {`is the favorite with ${volumeFormatted.full} wagered on this market`}
+          <span>
+            <b>{leadingOutcome.description}</b>
+            {`is the favorite with ${volumeFormatted.full} wagered`}
+          </span>
         </p>
       ) : null;
   } else {

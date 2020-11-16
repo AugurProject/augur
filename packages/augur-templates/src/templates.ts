@@ -324,7 +324,7 @@ export let TEMPLATE_VALIDATIONS = {};
 export let RETIRED_TEMPLATES = [];
 export let TEMPLATE_GROUPS = [];
 
-export function hasTemplateTextInputs(hash: string, isCategorical: boolean) {
+export function hasTemplateTextInputs(hash: string, isCategorical: boolean = false) {
   const validation = TEMPLATE_VALIDATIONS[hash] as TemplateValidation;
   if (isCategorical) {
     if (

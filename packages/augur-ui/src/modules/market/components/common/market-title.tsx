@@ -16,6 +16,7 @@ import { ExclamationCircle } from 'modules/common/icons';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { THEMES } from 'modules/common/constants';
+import { MarketData } from 'modules/types';
 
 interface MarketTitleProps {
   id: string;
@@ -46,7 +47,7 @@ const MarketTitle: React.FC<MarketTitleProps> = ({
   const description = market.description || '';
   const isTemplate = market.isTemplate;
   const template = market.template;
-
+  const isNotSports = theme !== THEMES.SPORTS;
   const marketHeader =
     theme === THEMES.SPORTS && market?.sportsBook?.header ? market?.sportsBook?.header : description;
 
@@ -60,7 +61,7 @@ const MarketTitle: React.FC<MarketTitleProps> = ({
     </MarketLink>
   ) : (
     <MarketLink id={noLink ? null : id} headerType={headerType}>
-      {isTemplate === false && !hideWarning && <div className={classNames(Styles.CustomMarket, { [Styles.TopMargin]: topPadding })}>{ExclamationCircle} CUSTOM MARKET - proceed with caution</div>}
+      {isTemplate === false && isNotSports && !hideWarning && <div className={classNames(Styles.CustomMarket, { [Styles.TopMargin]: topPadding })}>{ExclamationCircle} CUSTOM MARKET - proceed with caution</div>}
       {isWrapped ? wrapMarketName(marketHeader) : marketHeader}
     </MarketLink>
   );
@@ -70,6 +71,7 @@ export default MarketTitle;
 
 interface MarketTemplateTitleProps {
   template: ExtraInfoTemplate;
+  market?: MarketData;
 }
 
 export const convertInputs = (inputs) => {
@@ -107,7 +109,7 @@ const MarketTemplateTitle: React.FC<MarketTemplateTitleProps> = ({
   if (hasInputs) {
     const originalQuestion = template.question.split(' ');
     let prevWordUnique = false;
-    question = originalQuestion.map((word, index) => {
+    (question as unknown as JSX.Element[]) = originalQuestion.map((word, index) => {
       const bracketPos = word.indexOf('[');
       const bracketPos2 = word.indexOf(']');
 
