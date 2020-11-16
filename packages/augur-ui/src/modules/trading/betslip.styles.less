@@ -176,6 +176,13 @@
       }
       @media @breakpoint-mobile-tablet {
         transition: none;
+
+        > div:first-of-type > button:first-of-type {
+          > svg {
+            height: @size-12;
+            width: @size-12;
+          }
+        }
       }
     }
   }

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import classNames from 'classnames';
-import { ThickChevron } from 'modules/common/icons';
+import { ThickChevron, Close } from 'modules/common/icons';
 import {
   EmptyState,
   BetslipHeader,
@@ -96,7 +96,7 @@ export const Betslip = () => {
       >
         <div onClick={() => !betslipMinimized && setBetslipMinimized(true)}>
           <button onClick={() => setBetslipMinimized(!betslipMinimized)}>
-            {isMyBets ? 'My Bets' : `Betslip (${betslipCount})`} {ThickChevron}
+            {isMyBets ? 'My Bets' : `Betslip (${betslipCount})`} {isMyBets ? Close : ThickChevron}
           </button>
         </div>
         <section className={Styles.Container}>
