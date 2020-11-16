@@ -464,7 +464,7 @@ export const AMMExchangeAbi = [
     "name": "cash",
     "outputs": [
       {
-        "internalType": "contract ICash",
+        "internalType": "contract IERC20",
         "name": "",
         "type": "address"
       }
@@ -667,7 +667,7 @@ export const AMMExchangeAbi = [
         "type": "address"
       },
       {
-        "internalType": "contract IParaShareToken",
+        "internalType": "contract ParaShareToken",
         "name": "_shareToken",
         "type": "address"
       },
@@ -967,11 +967,42 @@ export const AMMExchangeAbi = [
   },
   {
     "constant": true,
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_owner",
+        "type": "address"
+      }
+    ],
+    "name": "shareBalances",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "_invalid",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_no",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_yes",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
     "inputs": [],
     "name": "shareToken",
     "outputs": [
       {
-        "internalType": "contract IParaShareToken",
+        "internalType": "contract ParaShareToken",
         "name": "",
         "type": "address"
       }
