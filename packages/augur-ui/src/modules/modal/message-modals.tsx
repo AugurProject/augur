@@ -63,7 +63,7 @@ export const ModalMarketRules = () => {
       closeAction={() => closeModal()}
       buttons={[
         {
-          text: 'Ok!',
+          text: 'Ok',
           action: () => {
             closeModal();
           },
