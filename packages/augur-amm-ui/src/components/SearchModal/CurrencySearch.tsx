@@ -78,7 +78,7 @@ export function CurrencySearch({
           <CommonBases chainId={chainId} onSelect={handleCurrencySelect} selectedCurrency={selectedCurrency} />
         )}
       </PaddedColumn>
-      <RowBetween>
+      <RowBetween style={{padding: '0 1rem 1rem'}}>
           <Text fontWeight={500} fontSize={16}>
             Select a token
             <QuestionHelper text="Find a token by searching for its name or symbol or by pasting its address below." />
