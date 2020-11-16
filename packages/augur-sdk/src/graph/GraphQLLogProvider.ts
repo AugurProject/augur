@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Filter, Log } from '@augurproject/types';
-import { retry } from 'async';
+import { all, retry } from 'async';
 import * as _ from 'lodash';
 
 const RETRY_TIMES = 3;
@@ -48,6 +48,89 @@ const eventFields = {
 
 const GENERIC_LOG_FIELDS = ["name", "blockNumber", "logIndex"];
 
+const entityPluralSuffix = 'Events';
+
+type LogFieldDescriptions = {
+  [logName: string]: string[]
+}
+
+type LogQueryResponse = {
+  [logEntityName:string]: Log[]
+};
+
+type SkipCounts = {[ogEntityName: string]: number};
+
+function buildQuery(fromBlockNumber: number, toBlockNumber: number, logFieldDescriptions: LogFieldDescriptions, skipCounts: SkipCounts) {
+  let eventQueries = "";
+  for (const [logName, eventFields] of Object.entries(logFieldDescriptions)) {
+    const entityName = `${logName}${entityPluralSuffix}`;
+    const fields = GENERIC_LOG_FIELDS.concat(eventFields);
+    eventQueries += `${entityName}(where: { blockNumber_gte: ${fromBlockNumber}, blockNumber_lte: ${toBlockNumber}}, first: 1000, skip: ${skipCounts[entityName] }) {\n${fields.join(",\n")}}\n`;
+  }
+  return `{
+      ${eventQueries}
+    }`;
+}
+
+export function* logQuery(fromBlockNumber: number, toBlockNumber: number, logFieldDescriptions: LogFieldDescriptions): Generator<string, Log[], LogQueryResponse> {
+  let allLogs = [];
+  let skipCounts = Object.keys(logFieldDescriptions).reduce<SkipCounts>((acc, logName) => {
+    return {
+      ...acc,
+      [`${logName}${entityPluralSuffix}`]: 0
+    }
+  }, {});
+
+  yield buildQuery(fromBlockNumber, toBlockNumber, logFieldDescriptions, skipCounts);
+
+  while (true) {
+    const lastLogs = yield buildQuery(fromBlockNumber, toBlockNumber, logFieldDescriptions, skipCounts);
+    skipCounts = Object.entries(skipCounts).reduce((acc, [key, skipCount]) => {
+      acc[key] = skipCount + lastLogs[key].length;
+      return acc;
+    }, {});
+
+    const flattenedLogs = _.flatten(_.values(lastLogs));
+    allLogs = {
+      ...allLogs,
+      ...flattenedLogs
+    }
+
+    if(flattenedLogs.length === 0) break;
+  }
+
+  return allLogs;
+}
+
+
+function makeGraphRequest(subgraphUrl: string, query: string): Promise<LogQueryResponse> {
+  return new Promise((resolve, reject) => {
+    retry({
+        times: RETRY_TIMES,
+        interval (retryCount) {
+          return INTERVAL * Math.pow(2, retryCount);
+        },
+        errorFilter (err) { return true; }
+      },
+      async () => {
+        const result = await axios.post(subgraphUrl, { query });
+        if (result.data.errors !== undefined) {
+          const message = `GraphQL Log Request Got ${result.data.errors.length} Errors: ${JSON.stringify(result.data.errors)}`;
+          console.warn(message);
+          throw new Error(message);
+        }
+        return result.data.data;
+      },
+      (err, results) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(results);
+      }
+    )
+  });
+}
+
 export class GraphQLLogProvider {
   subgraphUrl: string;
 
@@ -58,45 +141,13 @@ export class GraphQLLogProvider {
   }
 
   async getLogs(filter: Filter): Promise<Log[]> {
+    const i = logQuery(Number(filter.fromBlock), Number(filter.toBlock), eventFields);
+    let result = i.next();
+    while(!result.done) {
+      const response = await makeGraphRequest(this.subgraphUrl, result.value as string);
+      result = i.next(response);
+    }
 
-    return new Promise((resolve, reject) => {
-      retry({
-          times: RETRY_TIMES,
-          interval (retryCount) {
-            return INTERVAL * Math.pow(2, retryCount);
-          },
-          errorFilter (err) { return true; }
-        },
-        async () => {
-          const query = buildQuery(filter.fromBlock, filter.toBlock);
-          const result = await axios.post(this.subgraphUrl, { query });
-          if (result.data.errors !== undefined) {
-            const message = `GraphQL Log Request Got ${result.data.errors.length} Errors: ${JSON.stringify(result.data.errors)}`;
-            console.warn(message);
-            throw new Error(message);
-          }
-          return _.flatten(_.values(result.data.data));
-        },
-        (err, results) => {
-          if (err) {
-            reject(err);
-          }
-          resolve(results);
-        }
-      )
-    });
+    return result.value;
   }
-}
-
-function buildQuery(fromBlock: string | number, toBlock: string | number): string {
-    let eventQueries = "";
-    for (const eventName in eventFields) {
-        const fields = GENERIC_LOG_FIELDS.concat(eventFields[eventName]);
-        eventQueries += `${eventName}Events(where: { blockNumber_gte: ${fromBlock}, blockNumber_lte: ${toBlock} }) {${fields.join(",")}}`;
-    }
-    return `
-    {
-      ${eventQueries}
-    }
-    `;
 }
