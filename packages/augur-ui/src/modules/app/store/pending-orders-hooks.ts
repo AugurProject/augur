@@ -224,7 +224,7 @@ export function PendingOrdersReducer(state, action) {
     default:
       console.error(`Error: ${action.type} not caught by Pending reducer.`);
   }
-  console.log("pendingOrders", action);
+  // console.log("pendingOrders", action);
   windowRef.pendingOrders = updatedState;
   windowRef.stores.pendingOrders = updatedState;
   return updatedState;

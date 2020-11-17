@@ -302,7 +302,7 @@ export function BetslipReducer(state, action) {
     default:
       throw new Error(`Error: ${action.type} not caught by Betslip reducer`);
   }
-  console.log('betslip', action);
+  // console.log('betslip', action);
   windowRef.betslip = updatedState;
   windowRef.stores.betslip = updatedState;
   return updatedState;
