@@ -149,7 +149,7 @@ dataSources:
       callHandlers:
         - function: addAMM(address,address,uint256)
           handler: handleAddAMMExchange
-        - function: addAMMWithLiquidity(address,address,uint256,uint256,uint256,bool)
+        - function: addAMMWithLiquidity(address,address,uint256,uint256,uint256,bool,address)
           handler: handleAddAMMExchangeWithLiquidity
   - kind: ethereum/contract
     name: ParaDeployer
