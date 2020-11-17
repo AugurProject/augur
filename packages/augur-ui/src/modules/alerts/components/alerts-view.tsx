@@ -97,38 +97,40 @@ const AlertsView = () => {
             {Close}
           </button>
         </section>
-        {isSports && tab === NOTIFICATIONS ? (
-          notificationCount ? (
-            <div key={`${NOTIFICATIONS}box`} className={Styles.box}>
-              {rows.map((card, i) => card)}
+        <section className={Styles.ListArea}>
+          {isSports && tab === NOTIFICATIONS ? (
+            notificationCount ? (
+              <div key={`${NOTIFICATIONS}box`} className={Styles.box}>
+                {rows.map((card, i) => card)}
+              </div>
+            ) : (
+              <NullStateMessage
+                icon={Alerts(0)}
+                className={Styles.NullStateMessage}
+                message="You don’t have any notifications"
+                subMessage="We’ll let you know when you have an update!"
+              />
+            )
+          ) : alerts && alerts.length ? (
+            <div key={`${ALERTS}box`} className={Styles.box}>
+              {alerts.map((alert, i) => (
+                <Alert
+                  key={alert.uniqueId}
+                  removeAlert={() => removeAlert(alert.uniqueId, alert.name)}
+                  timestampInMilliseconds={alert.timestamp}
+                  {...alert}
+                />
+              ))}
             </div>
           ) : (
             <NullStateMessage
               icon={Alerts(0)}
               className={Styles.NullStateMessage}
-              message="You don’t have any notifications"
+              message="You don’t have any alerts"
               subMessage="We’ll let you know when you have an update!"
             />
-          )
-        ) : alerts && alerts.length ? (
-          <div key={`${ALERTS}box`} className={Styles.box}>
-            {alerts.map((alert, i) => (
-              <Alert
-                key={alert.uniqueId}
-                removeAlert={() => removeAlert(alert.uniqueId, alert.name)}
-                timestampInMilliseconds={alert.timestamp}
-                {...alert}
-              />
-            ))}
-          </div>
-        ) : (
-          <NullStateMessage
-            icon={Alerts(0)}
-            className={Styles.NullStateMessage}
-            message="You don’t have any alerts"
-            subMessage="We’ll let you know when you have an update!"
-          />
-        )}
+          )}
+        </section>
         <div className={Styles.dismissContainer}>
           <span>Alerts</span>
           {alerts && alerts.length ? (
