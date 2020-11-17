@@ -34,7 +34,7 @@ function updateBalances(values) {
     signerUSDC,
     signerLegacyREP,
   } = values;
-  const { ethToDaiRate, repToDaiRate, usdcToDaiRate, usdtToDaiRate } = AppStatus.get();
+  const { ethToDaiRate, repToDaiRate, usdcToDaiRate, usdtToDaiRate, loginAccount: { balances } } = AppStatus.get();
   const dai2Eth = formatAttoDai(attoDAIperETH);
   const rep2Dai =  formatAttoDai(attoDAIperREP);
   const usdcToDai = formatAttoDai(attoDAIperUSDC);
@@ -58,7 +58,7 @@ function updateBalances(values) {
   const signerEthBalance = String(
     createBigNumber(String(signerETH)).dividedBy(ETHER)
   );
-  AppStatus.actions.updateLoginAccount({
+  const Updates = {
     balances: {
       attoRep: String(signerREP),
       rep: String(createBigNumber(signerREP).dividedBy(ETHER)),
@@ -79,7 +79,10 @@ function updateBalances(values) {
         ),
       },
     },
-  });
+  };
+  if (JSON.stringify({ balances }) !== JSON.stringify(Updates)) {
+    AppStatus.actions.updateLoginAccount(Updates);
+  }
 
   addedDaiEvent(daiBalance);
   return {
