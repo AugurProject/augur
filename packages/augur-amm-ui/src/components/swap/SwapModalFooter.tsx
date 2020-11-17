@@ -9,7 +9,7 @@ import { computePriceImpact, warningSeverity } from '../../utils/prices'
 import { ButtonError } from '../ButtonStyled'
 import { AutoColumn } from '../Column'
 import QuestionHelper from '../QuestionHelper'
-import { AutoRow, RowBetween, RowFixed } from '../Row'
+import { AutoRow, RowBetween, RowFlat, RowStart } from '../Row'
 import FormattedPriceImpact from './FormattedPriceImpact'
 import { StyledBalanceMaxMini, SwapCallbackError } from './styleds'
 import { BigNumber as BN } from 'bignumber.js'
@@ -21,7 +21,8 @@ export default function SwapModalFooter({
   swapErrorMessage,
   disabledConfirm,
   minAmount,
-  outputAmount
+  outputAmount,
+  realizedLPFee
 }: {
   trade: TradeInfo
   onConfirm: () => void
@@ -29,6 +30,7 @@ export default function SwapModalFooter({
   disabledConfirm: boolean
   minAmount: string
   outputAmount: TokenAmount
+  realizedLPFee: string
 }) {
   const [showInverted, setShowInverted] = useState<boolean>(false)
   const theme = useContext(ThemeContext)
@@ -78,45 +80,49 @@ export default function SwapModalFooter({
                 </StyledBalanceMaxMini>
               </>
             ) : (
-              ''
-            )}
+                ''
+              )}
           </Text>
         </RowBetween>
 
         <RowBetween>
-          <RowFixed>
+          <RowStart>
             <TYPE.black fontSize={14} fontWeight={400} color={theme.text2}>
               {'Minimum received'}
             </TYPE.black>
             <QuestionHelper text="Your transaction will revert if there is a large, unfavorable price movement before it is confirmed." />
-          </RowFixed>
-          <RowFixed>
+          </RowStart>
+          <RowFlat>
             <TYPE.black fontSize={14}>{slippageAdjustedAmounts ?? '-'}</TYPE.black>
             <TYPE.black fontSize={14} marginLeft={'4px'}>
               {trade?.currencyOut?.symbol}
             </TYPE.black>
-          </RowFixed>
+          </RowFlat>
         </RowBetween>
         <RowBetween>
-          <RowFixed>
+          <RowStart>
             <TYPE.black color={theme.text2} fontSize={14} fontWeight={400}>
               Price Impact
             </TYPE.black>
             <QuestionHelper text="The difference between the market price and your price due to trade size." />
-          </RowFixed>
-          <FormattedPriceImpact priceImpact={priceImpactWithoutFee} />
+          </RowStart>
+          <RowFlat>
+            <FormattedPriceImpact priceImpact={priceImpactWithoutFee} />
+          </RowFlat>
         </RowBetween>
-        {/*<RowBetween>
-          <RowFixed>
+        <RowBetween>
+          <RowStart>
             <TYPE.black fontSize={14} fontWeight={400} color={theme.text2}>
               Liquidity Provider Fee
             </TYPE.black>
-            <QuestionHelper text="A portion of each trade (0.30%) goes to liquidity providers as a protocol incentive." />
-          </RowFixed>
-          <TYPE.black fontSize={14}>
-            {realizedLPFee ? realizedLPFee?.toSignificant(6) + ' ' + trade.inputAmount.currency.symbol : '-'}
-          </TYPE.black>
-        </RowBetween>*/}
+            <QuestionHelper text="A portion of each trade goes to liquidity providers as a protocol incentive." />
+          </RowStart>
+          <RowFlat>
+            <TYPE.black fontSize={14} style={{ whiteSpace: 'nowrap' }}>
+              {realizedLPFee ? realizedLPFee + ' ' + trade.inputAmount.currency.symbol : '-'}
+            </TYPE.black>
+          </RowFlat>
+        </RowBetween>
       </AutoColumn>
 
       <AutoRow>
