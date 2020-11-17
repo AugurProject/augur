@@ -37,8 +37,14 @@ export function handleCancelZeroXOrderEvent(event: CancelZeroXOrderEvent): void 
 }
 
 export function handleMarketVolumeChangedEvent(event: MarketVolumeChangedEvent): void {
-  let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
-  let entity = new MarketVolumeChangedEntity(id);
+  let market = toChecksumAddress(event.params.market);
+
+  let id = market;
+
+  let entity = MarketVolumeChangedEntity.load(id);
+  if (entity == null) {
+    entity = new MarketVolumeChangedEntity(id);
+  }
 
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
