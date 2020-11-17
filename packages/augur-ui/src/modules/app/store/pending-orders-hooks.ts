@@ -29,12 +29,14 @@ const {
 const updatePendingQueueBasedOnOrders = (updatedState, txHash) => {
   const marketOrders = updatedState[PENDING_LIQUIDITY_ORDERS][txHash];
   let pendingQueue = [];
-  Object.keys(marketOrders).map(outcome =>
-    marketOrders[outcome].map(order => {
-      pendingQueue.push(order);
-    })
-  );
-  manageAndUpdatePendingQueue(pendingQueue, pendingQueue.length, txHash, LIQUIDITY_ORDERS);
+  if (marketOrders) {
+    Object.keys(marketOrders).map(outcome =>
+      marketOrders[outcome].map(order => {
+        pendingQueue.push(order);
+      })
+    );
+    manageAndUpdatePendingQueue(pendingQueue, pendingQueue.length, txHash, LIQUIDITY_ORDERS);
+  }
 };
 
 export function PendingOrdersReducer(state, action) {
