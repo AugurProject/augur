@@ -918,4 +918,7 @@ const EventHandlers = {
     handleInitialReportSubmittedLog
   ),
   [SubscriptionEventName.MarketCreated]: wrapLogHandler(handleMarketCreatedLog),
+  "error": () => {
+    console.error("ERROR: ", error);
+  }
 };
