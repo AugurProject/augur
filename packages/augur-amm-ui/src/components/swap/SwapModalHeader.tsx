@@ -10,7 +10,7 @@ import { isAddress, shortenAddress } from '../../utils'
 import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
 import { AutoColumn } from '../Column'
 import TokenLogo from '../TokenLogo'
-import { RowBetween, RowFixed } from '../Row'
+import { RowBetween, RowFixed, RowStart, RowFlat } from '../Row'
 import { TruncatedText, SwapShowAcceptChanges } from './styleds'
 import { TradeInfo } from '../../hooks/Trades'
 
@@ -41,7 +41,7 @@ export default function SwapModalHeader({
   return (
     <AutoColumn gap={'md'} style={{ marginTop: '20px' }}>
       <RowBetween align="flex-end">
-        <RowFixed gap={'0px'}>
+        <RowStart>
           <TokenLogo tokenInfo={trade.currencyIn.symbol} size={'24px'} style={{ marginRight: '12px' }} />
           <TruncatedText
             fontSize={24}
@@ -50,18 +50,18 @@ export default function SwapModalHeader({
           >
             {trade.inputAmount.toSignificant(6)}
           </TruncatedText>
-        </RowFixed>
-        <RowFixed gap={'0px'}>
+        </RowStart>
+        <RowFlat>
           <Text fontSize={24} fontWeight={500} style={{ marginLeft: '10px' }}>
             {trade.currencyIn.symbol}
           </Text>
-        </RowFixed>
+        </RowFlat>
       </RowBetween>
-      <RowFixed>
+      <RowFlat>
         <ArrowDown size="16" color={theme.text2} style={{ marginLeft: '4px', minWidth: '16px' }} />
-      </RowFixed>
+      </RowFlat>
       <RowBetween align="flex-end">
-        <RowFixed gap={'0px'}>
+        <RowStart>
           <TokenLogo tokenInfo={trade?.currencyOut.symbol} size={'24px'} style={{ marginRight: '12px' }} />
           <TruncatedText
             fontSize={24}
@@ -76,12 +76,12 @@ export default function SwapModalHeader({
           >
             {outputAmount?.toSignificant(6)}
           </TruncatedText>
-        </RowFixed>
-        <RowFixed gap={'0px'}>
+        </RowStart>
+        <RowFlat>
           <Text fontSize={24} fontWeight={500} style={{ marginLeft: '10px' }}>
             {trade?.currencyOut?.symbol}
           </Text>
-        </RowFixed>
+        </RowFlat>
       </RowBetween>
       {showAcceptChanges ? (
         <SwapShowAcceptChanges justify="flex-start" gap={'0px'}>
