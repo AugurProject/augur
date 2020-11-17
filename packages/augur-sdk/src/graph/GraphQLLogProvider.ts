@@ -64,8 +64,9 @@ function buildQuery(fromBlockNumber: number, toBlockNumber: number, logFieldDesc
   let eventQueries = "";
   for (const [logName, eventFields] of Object.entries(logFieldDescriptions)) {
     const entityName = `${logName}${entityPluralSuffix}`;
+    if(typeof skipCounts[entityName] === "undefined") continue;
     const fields = GENERIC_LOG_FIELDS.concat(eventFields);
-    eventQueries += `${entityName}(where: { blockNumber_gte: ${fromBlockNumber}, blockNumber_lte: ${toBlockNumber}}, first: 1000, skip: ${skipCounts[entityName] }) {\n${fields.join(",\n")}}\n`;
+    eventQueries += `${entityName}(where: { blockNumber_gte: ${fromBlockNumber}, blockNumber_lte: ${toBlockNumber}}, first: 1000, skip: ${skipCounts[entityName]}) {\n${fields.join(",\n")}}\n`;
   }
   return `{
       ${eventQueries}
@@ -81,14 +82,14 @@ export function* logQuery(fromBlockNumber: number, toBlockNumber: number, logFie
     }
   }, {});
 
-  yield buildQuery(fromBlockNumber, toBlockNumber, logFieldDescriptions, skipCounts);
-
   while (true) {
     const lastLogs = yield buildQuery(fromBlockNumber, toBlockNumber, logFieldDescriptions, skipCounts);
     skipCounts = Object.entries(skipCounts).reduce((acc, [key, skipCount]) => {
+      if(lastLogs[key].length === 0) return acc; // Ignore this entity, no more can be fetched
       acc[key] = skipCount + lastLogs[key].length;
       return acc;
     }, {});
+    console.log("Skip counts", skipCounts);
 
     const flattenedLogs = _.flatten(_.values(lastLogs));
     allLogs = {
