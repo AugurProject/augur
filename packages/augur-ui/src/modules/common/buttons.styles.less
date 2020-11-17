@@ -752,6 +752,9 @@
   &:disabled {
     background: var(--color-secondary-hover-25);
     color: var(--color-primary-text-25);
+    > svg > path {
+      fill: var(--color-primary-text-25);
+    }
   }
 
   &:hover:enabled {
@@ -1752,9 +1755,9 @@
   width: @size-165;
 
   > svg {
-    height: @size-10;
-    width: @size-10;
-    margin-left: @size-9;
+    height: @size-12;
+    width: @size-12;
+    margin-right: @size-9;
 
     > path {
       fill: var(--color-primary-text);

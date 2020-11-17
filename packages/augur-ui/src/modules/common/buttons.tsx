@@ -1148,8 +1148,8 @@ export const FilterButton = ({
       className={Styles.FilterButton}
       disabled={disabled}
     >
-      {title || 'Filters'}
       {Filter}
+      {title || 'Categories & Filters'}
     </button>
   );
 };

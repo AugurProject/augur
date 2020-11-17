@@ -87,13 +87,13 @@ export const SPORTS_GROUP_TYPES = {
 
 export const SPORTS_MARKET_TYPES = [
   {
-    header: SPORTS_GROUP_TYPES.DAILY,
+    header: "Daily",
     label: "Daily",
     id: 0,
     value: 0,
   },
   {
-    header: SPORTS_GROUP_TYPES.FUTURES,
+    header: "Futures",
     label: "Futures",
     id: 1,
     value: 1,
