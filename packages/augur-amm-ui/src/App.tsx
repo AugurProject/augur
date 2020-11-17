@@ -6,7 +6,6 @@ import { Route, Switch, Redirect } from 'react-router-dom'
 import GlobalPage from './pages/GlobalPage'
 import TokenPage from './pages/TokenPage'
 import { isAddress } from './utils'
-import AllMarketsPage from './pages/AllMarketsPage'
 import LocalLoader from './components/LocalLoader'
 import { useLatestBlock } from './contexts/Application'
 import RemoveLiquidity from './pages/RemoveLiquidity'
@@ -51,9 +50,6 @@ const BodyWrapper = styled.div`
   width: 100%;
   align-items: center;
   flex: 1;
-
-  overflow-y: auto;
-  overflow-x: hidden;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     padding: 16px;
@@ -104,11 +100,6 @@ function App() {
                 </Route>
                 <Route path="/positions">
                   <UserPositions />
-                </Route>
-                <Route path="/markets">
-                  <LayoutWrapper savedOpen={savedOpen} setSavedOpen={setSavedOpen}>
-                    <AllMarketsPage />
-                  </LayoutWrapper>
                 </Route>
                 <Route
                   exacts
