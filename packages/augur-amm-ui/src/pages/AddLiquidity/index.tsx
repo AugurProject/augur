@@ -144,10 +144,11 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
       hasLiquidity,
       augurClient,
       marketId,
-      sharetoken: useEth ? 'ETH' : sharetoken,
+      sharetoken,
       fee,
       cashAmount: parsedAmountA.raw.toString(),
-      distroPercentage
+      distroPercentage,
+      useEth,
     })
       .then(response => {
         setAttemptingTxn(false)

@@ -496,7 +496,8 @@ export function addAmmLiquidity({
   sharetoken,
   fee,
   cashAmount,
-  distroPercentage
+  distroPercentage,
+  useEth,
 }) {
   if (!augurClient || !augurClient.ammFactory) return console.error('augurClient is null')
   console.log(
@@ -516,7 +517,7 @@ export function addAmmLiquidity({
   const poolYesPercent = new BN(distroPercentage[DISTRO_NO_ID])
   const poolNoPercent = new BN(distroPercentage[DISTRO_YES_ID])
 
-  // branch logic here if sharetoken is "ETH"
+  // branch logic here if useEth is true
 
   return augurClient.ammFactory.addLiquidity(
     account,
