@@ -1,4 +1,4 @@
-import { updateAlert } from 'modules/alerts/actions/alerts';
+import { updateAlert, loadAlerts } from 'modules/alerts/actions/alerts';
 import { loadPendingLiquidityOrders } from 'modules/orders/actions/liquidity-management';
 import { loadPendingOrdersTransactions } from 'modules/orders/actions/pending-orders-management';
 import { isNewFavoritesStyle } from 'modules/markets/helpers/favorites-processor';
@@ -93,7 +93,8 @@ export const loadAccountDataFromLocalStorage = (address: string) => {
         loadDrafts(drafts);
       }
       if (alerts) {
-        alerts.map(n => updateAlert(n.id, n, true));
+        loadAlerts(alerts);
+        // alerts.map(n => updateAlert(n.id, n, true));
       }
 
       if (Object.keys(pendingLiquidityOrders || {}).length > 0) {

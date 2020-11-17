@@ -92,6 +92,7 @@ const {
   TOGGLE_FAVORITE,
   UPDATE_NOTIFICATIONS,
   ADD_ALERT,
+  LOAD_ALERTS,
   UPDATE_ALERT,
   REMOVE_ALERT,
   CLEAR_ALERTS,
@@ -396,6 +397,10 @@ export function AppStatusReducer(state, action) {
         break;
       }
       updatedState[ALERTS] = [...updatedState[ALERTS], newAlert];
+      break;
+    }
+    case LOAD_ALERTS: {
+      updatedState[ALERTS] = action.alerts;
       break;
     }
     case UPDATE_ALERT: {
@@ -756,6 +761,7 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       updateNotifications: notifications =>
         dispatch({ type: UPDATE_NOTIFICATIONS, notifications }),
       addAlert: alert => dispatch({ type: ADD_ALERT, alert }),
+      loadAlerts: alerts => dispatch({ type: LOAD_ALERTS, alerts }),
       updateAlert: (id, alert) => dispatch({ type: UPDATE_ALERT, alert, id }),
       removeAlert: (id, name) => dispatch({ type: REMOVE_ALERT, id, name }),
       clearAlerts: level => dispatch({ type: CLEAR_ALERTS, level }),

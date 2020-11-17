@@ -45,6 +45,23 @@ export function addAlert(alert: Partial<Alert>) {
   }
 }
 
+export function loadAlerts(alerts) {
+  const { universe: { id: universe }} = AppStatus.get();
+  const networkId = getNetworkId();
+  const processedAlerts = alerts.map(n => updateAlert(n.id, n, true, true));
+  const updatedAlerts = processedAlerts.map(a => {
+    const updatedAlert = setAlertText(a, () => {}, true);
+    return ({
+      seen: false,
+      level: INFO,
+      networkId,
+      universe,
+      ...updatedAlert,
+    });
+  });
+  AppStatus.actions.loadAlerts(updatedAlerts);
+}
+
 export function updateExistingAlert(id, alert) {
   const callback = alertUpdated =>
     AppStatus.actions.updateAlert(id, alertUpdated);
@@ -58,7 +75,8 @@ export function updateExistingAlert(id, alert) {
 export function updateAlert(
   id: string,
   alert: any,
-  dontMakeNewAlerts?: boolean
+  dontMakeNewAlerts?: boolean,
+  returnOnly?: boolean,
 ) {
   if (alert) {
     const { alerts } = AppStatus.get();
@@ -127,7 +145,11 @@ export function updateAlert(
         },
       });
     } else {
-      addAlert(alert);
+      if (returnOnly) {
+        return alert;
+      } else {
+        addAlert(alert);
+      }
     }
   }
 }
