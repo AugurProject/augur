@@ -573,8 +573,16 @@ export function handleTimestampSetEvent(event: TimestampSetEvent): void {
 }
 
 export function handleTokenBalanceChangedEvent(event: TokenBalanceChangedEvent): void {
-  let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
-  let entity = new TokenBalanceChangedEntity(id);
+  let owner = toChecksumAddress(event.params.owner);
+  let token = toChecksumAddress(event.params.token);
+
+  let id = owner + "-" + token;
+
+  TokenBalanceChangedEntity.load(id)
+  let entity = TokenBalanceChangedEntity.load(id);
+  if (entity == null) {
+    entity = new TokenBalanceChangedEntity(id);
+  }
 
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
