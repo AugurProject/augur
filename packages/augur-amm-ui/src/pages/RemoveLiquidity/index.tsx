@@ -25,7 +25,6 @@ import { Dots } from '../../components/swap/styleds'
 import { getRemoveLiquidityBreakdown } from '../../state/burn/hooks'
 import { useAmmFactoryAddress, useAugurClient } from '../../contexts/Application'
 import { withRouter } from 'react-router-dom'
-import LiquidityPage from '../LiquidityPage'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { useLPTokenBalances } from '../../state/wallet/hooks'
 import { useMarketAmm } from '../../contexts/Markets'
@@ -193,92 +192,92 @@ function RemoveLiquidity({
   }
 
   return (
-    <LiquidityPage>
-      <AppBody>
-        <AddRemoveTabs creating={false} adding={false} token={marketId} />
-        <Wrapper>
-          <TransactionConfirmationModal
-            isOpen={showConfirm}
-            onDismiss={handleDismissConfirmation}
-            attemptingTxn={attemptingTxn}
-            hash={txHash ? txHash : ''}
-            content={() => (
-              <ConfirmationModalContent
-                title={'You will receive'}
-                onDismiss={handleDismissConfirmation}
-                topContent={modalHeader}
-                bottomContent={modalBottom}
-              />
-            )}
-            pendingText={pendingText}
-          />
-          <AutoColumn gap="md">
-            <LightCard>
-              <AutoColumn gap="20px">
+
+    <AppBody>
+      <AddRemoveTabs creating={false} adding={false} token={marketId} />
+      <Wrapper>
+        <TransactionConfirmationModal
+          isOpen={showConfirm}
+          onDismiss={handleDismissConfirmation}
+          attemptingTxn={attemptingTxn}
+          hash={txHash ? txHash : ''}
+          content={() => (
+            <ConfirmationModalContent
+              title={'You will receive'}
+              onDismiss={handleDismissConfirmation}
+              topContent={modalHeader}
+              bottomContent={modalBottom}
+            />
+          )}
+          pendingText={pendingText}
+        />
+        <AutoColumn gap="md">
+          <LightCard>
+            <AutoColumn gap="20px">
+              <RowBetween>
+                <Text color={theme.text2} fontWeight={500}>
+                  Amount
+                  </Text>
+              </RowBetween>
+              <Row style={{ alignItems: 'flex-end' }}>
+                <Text color={theme.text2} fontSize={72} fontWeight={500}>
+                  {liquidityPercentage}%
+                  </Text>
+              </Row>
+              <>
+                <Slider value={Number(liquidityPercentage)} onChange={updateLiquidityPercent} />
                 <RowBetween>
-                  <Text color={theme.text2} fontWeight={500}>
-                    Amount
-                  </Text>
+                  <MaxButton onClick={() => updateLiquidityPercent(25)} width="20%">
+                    25%
+                    </MaxButton>
+                  <MaxButton onClick={() => updateLiquidityPercent(50)} width="20%">
+                    50%
+                    </MaxButton>
+                  <MaxButton onClick={() => updateLiquidityPercent(75)} width="20%">
+                    75%
+                    </MaxButton>
+                  <MaxButton onClick={() => updateLiquidityPercent(100)} width="20%">
+                    Max
+                    </MaxButton>
                 </RowBetween>
-                <Row style={{ alignItems: 'flex-end' }}>
-                  <Text color={theme.text2} fontSize={72} fontWeight={500}>
-                    {liquidityPercentage}%
-                  </Text>
-                </Row>
-                <>
-                  <Slider value={Number(liquidityPercentage)} onChange={updateLiquidityPercent} />
-                  <RowBetween>
-                    <MaxButton onClick={() => updateLiquidityPercent(25)} width="20%">
-                      25%
-                    </MaxButton>
-                    <MaxButton onClick={() => updateLiquidityPercent(50)} width="20%">
-                      50%
-                    </MaxButton>
-                    <MaxButton onClick={() => updateLiquidityPercent(75)} width="20%">
-                      75%
-                    </MaxButton>
-                    <MaxButton onClick={() => updateLiquidityPercent(100)} width="20%">
-                      Max
-                    </MaxButton>
-                  </RowBetween>
-                </>
+              </>
+            </AutoColumn>
+          </LightCard>
+          <>
+            <ColumnCenter>
+              <ArrowDown size="16" color={theme.text2} />
+            </ColumnCenter>
+            <LightCard>
+              <AutoColumn gap="10px">
+                <RowBetween>
+                  <Text fontSize={12} fontWeight={500}>
+                    LP Tokens:
+                    </Text>
+                  <Text fontSize={12}>{formatShares(liquidity)}</Text>
+                </RowBetween>
+                <RowBetween>
+                  <Text fontSize={12} fontWeight={500}>
+                    Yes Shares:
+                    </Text>
+                  <Text fontSize={12}>{breakdown?.yesShares}</Text>
+                </RowBetween>
+                <RowBetween>
+                  <Text fontSize={12} fontWeight={500}>
+                    No Shares:
+                    </Text>
+                  <Text fontSize={12}>{breakdown?.noShares}</Text>
+                </RowBetween>
+                <RowBetween>
+                  <TokenLogo showSymbol size={'12px'} tokenInfo={ammExchange?.cash} />
+                  <Text fontSize={12}>{formatTokenAmount(breakdown?.cashShares, currencyA?.decimals)}</Text>
+                </RowBetween>
               </AutoColumn>
             </LightCard>
-            <>
-              <ColumnCenter>
-                <ArrowDown size="16" color={theme.text2} />
-              </ColumnCenter>
-              <LightCard>
-                <AutoColumn gap="10px">
-                  <RowBetween>
-                    <Text fontSize={12} fontWeight={500}>
-                      LP Tokens:
-                    </Text>
-                    <Text fontSize={12}>{formatShares(liquidity)}</Text>
-                  </RowBetween>
-                  <RowBetween>
-                    <Text fontSize={12} fontWeight={500}>
-                      Yes Shares:
-                    </Text>
-                    <Text fontSize={12}>{breakdown?.yesShares}</Text>
-                  </RowBetween>
-                  <RowBetween>
-                    <Text fontSize={12} fontWeight={500}>
-                      No Shares:
-                    </Text>
-                    <Text fontSize={12}>{breakdown?.noShares}</Text>
-                  </RowBetween>
-                  <RowBetween>
-                    <TokenLogo showSymbol size={'12px'} tokenInfo={ammExchange?.cash} />
-                    <Text fontSize={12}>{formatTokenAmount(breakdown?.cashShares, currencyA?.decimals)}</Text>
-                  </RowBetween>
-                </AutoColumn>
-              </LightCard>
-            </>
-            <div style={{ position: 'relative' }}>
-              {!account ? (
-                <ButtonGray onClick={toggleWalletModal}>Connect Wallet</ButtonGray>
-              ) : (
+          </>
+          <div style={{ position: 'relative' }}>
+            {!account ? (
+              <ButtonGray onClick={toggleWalletModal}>Connect Wallet</ButtonGray>
+            ) : (
                 <RowBetween>
                   <ButtonConfirmed
                     onClick={approveCallback}
@@ -293,8 +292,8 @@ function RemoveLiquidity({
                     ) : approval === ApprovalState.APPROVED || signatureData !== null ? (
                       'Approved'
                     ) : (
-                      'Approve'
-                    )}
+                          'Approve'
+                        )}
                   </ButtonConfirmed>
                   <ButtonError
                     onClick={() => {
@@ -309,11 +308,11 @@ function RemoveLiquidity({
                   </ButtonError>
                 </RowBetween>
               )}
-            </div>
-          </AutoColumn>
-        </Wrapper>
-      </AppBody>
-    </LiquidityPage>
+          </div>
+        </AutoColumn>
+      </Wrapper>
+    </AppBody>
+
   )
 }
 

@@ -18,19 +18,17 @@ function UserPositions() {
   }, [])
 
   return (
-    <PageWrapper>
-      <ContentWrapper>
-        <Panel style={{ marginTop: '6px', padding: '1.125rem 0 ' }}>
-          {Object.keys(userMarketShareBalances).length > 0 ? (
-            <PositionMarkets positions={userMarketShareBalances || {}} loading={loading} />
-          ) : (
-            <AutoRow justify={'center'}>
-              <TYPE.light>{loading ? 'Loading ...' : 'No Market Positions'}</TYPE.light>
-            </AutoRow>
-          )}
-        </Panel>
-      </ContentWrapper>
-    </PageWrapper>
+    <ContentWrapper>
+      <Panel style={{ marginTop: '6px', padding: '1.125rem 0 ' }}>
+        {Object.keys(userMarketShareBalances).length > 0 ? (
+          <PositionMarkets positions={userMarketShareBalances || {}} loading={loading} />
+        ) : (
+          <AutoRow justify={'center'}>
+            <TYPE.light>{loading ? 'Loading ...' : 'No Market Positions'}</TYPE.light>
+          </AutoRow>
+        )}
+      </Panel>
+    </ContentWrapper>
   )
 }
 

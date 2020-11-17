@@ -62,7 +62,7 @@ function GlobalPage() {
 
   useEffect(() => {
     setFilteredMarkets(markets)
-  },[markets.length])
+  }, [markets.length])
 
   useEffect(() => {
     document.querySelector('body').scrollTo({
@@ -72,44 +72,42 @@ function GlobalPage() {
   }, [])
 
   return (
-    <PageWrapper>
-      <ContentWrapper>
-        <div>
-          <AutoColumn gap="24px" style={{ paddingBottom: below800 ? '0' : '24px' }}>
-            <Search />
-            <GlobalStats />
-          </AutoColumn>
-          <ListOptions gap="10px" style={{ marginTop: '2rem', marginBottom: '.5rem' }}>
-            <RowBetween>
-              <ClickableText
-                style={{ opacity: cashFilter === null ? '1' : '0.4' }}
-                fontSize={'1.125rem'}
-                onClick={() => updateCashFilter(null)}
-              >
-                All Markets
-              </ClickableText>
-              <RowFlat>
-                {cashes &&
-                  cashes.map(cash => (
-                    <ClickableText disabled={cash === cashFilter} key={cash} onClick={() => updateCashFilter(cash)}>
-                      <TokenLogo
-                        tokenInfo={cash}
-                        size={'20px'}
-                        showSymbol
-                        style={{ paddingRight: '1rem', opacity: cash === cashFilter ? '1' : '0.4' }}
-                      />
-                    </ClickableText>
-                  ))}
-              </RowFlat>
-            </RowBetween>
-          </ListOptions>
+    <ContentWrapper>
+      <div>
+        <AutoColumn gap="24px" style={{ paddingBottom: below800 ? '0' : '24px' }}>
+          <Search />
+          <GlobalStats />
+        </AutoColumn>
+        <ListOptions gap="10px" style={{ marginTop: '2rem', marginBottom: '.5rem' }}>
+          <RowBetween>
+            <ClickableText
+              style={{ opacity: cashFilter === null ? '1' : '0.4' }}
+              fontSize={'1.125rem'}
+              onClick={() => updateCashFilter(null)}
+            >
+              All Markets
+            </ClickableText>
+            <RowFlat>
+              {cashes &&
+                cashes.map(cash => (
+                  <ClickableText disabled={cash === cashFilter} key={cash} onClick={() => updateCashFilter(cash)}>
+                    <TokenLogo
+                      tokenInfo={cash}
+                      size={'20px'}
+                      showSymbol
+                      style={{ paddingRight: '1rem', opacity: cash === cashFilter ? '1' : '0.4' }}
+                    />
+                  </ClickableText>
+                ))}
+            </RowFlat>
+          </RowBetween>
+        </ListOptions>
 
-          <Panel style={{ marginTop: '6px', padding: '1.125rem 0 ' }}>
-            <MarketList markets={filteredMarkets || []} />
-          </Panel>
-        </div>
-      </ContentWrapper>
-    </PageWrapper>
+        <Panel style={{ marginTop: '6px', padding: '1.125rem 0 ' }}>
+          <MarketList markets={filteredMarkets || []} />
+        </Panel>
+      </div>
+    </ContentWrapper>
   )
 }
 
