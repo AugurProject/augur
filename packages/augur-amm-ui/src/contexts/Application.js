@@ -412,3 +412,10 @@ export function useParaDeploys() {
   const [state] = useApplicationContext()
   return state[AUGUR_CONFIG]?.paraDeploys
 }
+
+export function doUseETH(cash) {
+  const config = getConfig()
+  if (!cash) return false;
+  const found = config.Cashes.find(c => c.address.toLowerCase() === cash.toLowerCase())
+  return found?.name === "ETH"
+}

@@ -2,6 +2,7 @@ import { parseBytes32String } from '@ethersproject/strings'
 import { Currency, ETHER, Token, currencyEquals } from '@uniswap/sdk'
 import { useMemo } from 'react'
 import { MarketTokens } from '../constants'
+import { doUseETH } from '../contexts/Application'
 import { MarketCurrency } from '../model/MarketCurrency'
 import { NEVER_RELOAD, useSingleCallResult } from '../state/multicall/hooks'
 import { useSwapQueryParam } from '../state/swap/hooks'
@@ -16,7 +17,7 @@ const MarketShareTokenDecimals = 15 // num * tick size / 18 comes out to be 15 f
 export function useAllMarketTokens(marketId: string, cash: string, amm: string): Currency[] {
   const [userMarketShareBalances] = useMarketShareBalances()
   const { chainId } = useActiveWeb3React()
-  const cashToken = useToken(cash)
+  const cashToken = useCurrency(cash)
 
   return useMemo(() => {
     const marketInfo = userMarketShareBalances.find(b => b.marketId === marketId && b.cash === cash)
@@ -109,7 +110,7 @@ export function useMarketToken(type: string) {
 }
 
 export function useCurrency(currencyId: string | undefined): Currency | null | undefined {
-  const isETH = currencyId?.toUpperCase() === 'ETH'
+  const isETH = doUseETH(currencyId) || currencyId?.toUpperCase() === 'ETH'
   const token = useToken(isETH ? undefined : currencyId)
   return isETH ? ETHER : token
 }

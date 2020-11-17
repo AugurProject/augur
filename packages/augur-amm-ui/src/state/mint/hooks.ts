@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, JSBI, Pair, Percent, Price, TokenAmount } from '@uniswap/sdk'
+import { Currency, CurrencyAmount, ETHER, JSBI, Pair, Percent, Price, TokenAmount } from '@uniswap/sdk'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { PairState, usePair } from '../../model/Reserves'
@@ -56,12 +56,12 @@ export function useDerivedMintInfo(
   // balances
   const balances = useCurrencyBalances(account ?? undefined, [
     currencies[Field.CURRENCY_A],
-    currencies[Field.CURRENCY_B]
+    currencies[Field.CURRENCY_B],
   ])
 
   const currencyBalances: { [field in Field]?: CurrencyAmount } = {
     [Field.CURRENCY_A]: balances[0],
-    [Field.CURRENCY_B]: balances[1]
+    [Field.CURRENCY_B]: balances[1],
   }
 
   // amounts
