@@ -70,16 +70,26 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
   const timezoneName: string = `(${timezoneLocal.split(' ')[2]})`;
 
   const local24hrTimeWithoutSeconds: number[] = [date.getHours(), date.getMinutes()];
-  const localTimeTwelveWithoutSeconds: string[] =  useTwelveHourTime ? getTwelveHourTime(local24hrTimeWithoutSeconds) : convertTwoDigitValues(local24hrTimeWithoutSeconds);
+  const localTimeWithoutSeconds: string[] =  useTwelveHourTime ? getTwelveHourTime(local24hrTimeWithoutSeconds) : convertTwoDigitValues(local24hrTimeWithoutSeconds);
   
   const hourlyTime = useTwelveHourTime ? `${utcTimeTwelve.join(':')} ${utcAMPM} (UTC 0)` : `${convertTwoDigitValues(utcTime).join(
     ':'
   )} (UTC 0)`;
 
+  const TimeLocal = useTwelveHourTime ? `${localTimeTwelve.join(
+    ':'
+  )} ${localAMPM}` : `${convertTwoDigitValues(local24hrTimeWithSeconds).join(
+    ':'
+  )}`;
+  const TimeLocalNoSec = `${localTimeWithoutSeconds.join(
+    ':'
+  )} ${localAMPM}`;
+  const TimeUTC = useTwelveHourTime ? `${utcTimeTwelve.join(':')} ${utcAMPM}` : `${utcTimeWithSeconds.join(':')}`;
+
   return {
     value: date,
-    formattedUtcShortTime: `${utcTimeWithSeconds.join(':')}`,
-    formattedShortTime: `${convertTwoDigitValues(local24hrTimeWithSeconds).join(':')}`,
+    formattedUtcShortTime: TimeUTC,
+    formattedShortTime: TimeLocal,
     formattedLocalShortDateSecondary: `${date.getDate()} ${
       shortMonths[date.getMonth()]
     } ${date.getFullYear()}`,
@@ -88,42 +98,32 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
     } ${date.getDate()} ${date.getFullYear()}`,
     formattedLocalShortWithUtcOffset: `${
       shortMonths[date.getMonth()]
-    } ${date.getDate()}, ${date.getFullYear()} ${localTimeTwelve.join(
-      ':'
-    )} ${localAMPM} (UTC ${localOffsetFormatted})`,
+    } ${date.getDate()}, ${date.getFullYear()} ${TimeLocal} (UTC ${localOffsetFormatted})`,
     formattedLocalShortWithUtcOffsetWithoutSeconds: `${
       shortMonths[date.getMonth()]
-    } ${date.getDate()}, ${date.getFullYear()} ${localTimeTwelveWithoutSeconds.join(
-      ':'
-    )} ${localAMPM} (UTC ${localOffsetFormatted})`,
+    } ${date.getDate()}, ${date.getFullYear()} ${TimeLocalNoSec} (UTC ${localOffsetFormatted})`,
     timestamp: date.getTime() / 1000,
     utcLocalOffset: localOffset,
-    clockTimeLocal: `${localTimeTwelve.join(
-      ':'
-    )} ${localAMPM} (UTC ${localOffsetFormatted})`,
+    clockTimeLocal: `${TimeLocal} (UTC ${localOffsetFormatted})`,
     formattedSimpleData: `${
       months[date.getMonth()]
     } ${date.getDate()}, ${date.getFullYear()}`,
     formattedUtcShortDate: `${
       shortMonths[date.getUTCMonth()]
     } ${date.getUTCDate()}, ${date.getUTCFullYear()}`,
-    clockTimeUtc: `${utcTimeTwelve.join(':')} ${utcAMPM} - UTC`,
+    clockTimeUtc: `${TimeUTC} - UTC`,
     formattedLocalShortDateTimeWithTimezone: `${
       shortMonths[date.getMonth()]
-    } ${date.getDate()}, ${date.getFullYear()} ${localTimeTwelve.join(
-      ':'
-    )} ${localAMPM} ${timezoneName}`,
+    } ${date.getDate()}, ${date.getFullYear()} ${TimeLocal} ${timezoneName}`,
     formattedLocalShortDateTimeNoTimezone: `${
       shortMonths[date.getMonth()]
-    } ${date.getDate()} ${date.getFullYear()}, ${convertTwoDigitValues(local24hrTimeWithSeconds).join(
-      ':'
-    )}`,
+    } ${date.getDate()} ${date.getFullYear()}, ${TimeLocal}`,
     formattedUtc: `${
       months[date.getUTCMonth()]
     } ${date.getUTCDate()}, ${date.getUTCFullYear()} ${hourlyTime}`,
     formattedShortUtc: `${
       shortMonths[date.getUTCMonth()]
-    } ${date.getUTCDate()} ${date.getUTCFullYear()} ${utcTimeTwelve.join(':')} ${utcAMPM} (UTC)`,
+    } ${date.getUTCDate()} ${date.getUTCFullYear()} ${TimeUTC} (UTC)`,
   };
 }
 
