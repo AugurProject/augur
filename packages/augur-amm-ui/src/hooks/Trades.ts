@@ -39,7 +39,6 @@ export function getTradeExactIn(
   userCashBalances?: MarketBalance
 ): TradeInfo | null {
 
-  console.log('inputCurrency', inputCurrency)
   let marketId = null
   let cash = null
   if (inputCurrency instanceof MarketCurrency) {

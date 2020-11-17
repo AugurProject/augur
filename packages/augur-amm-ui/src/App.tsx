@@ -68,9 +68,7 @@ function App() {
     <ApolloProvider client={client}>
       <AppWrapper>
         <URLWarning />
-        <HeaderWrapper>
-          <Header />
-        </HeaderWrapper>
+        <Header />
         <BodyWrapper>
           <Popups />
           <Web3ReactManager>

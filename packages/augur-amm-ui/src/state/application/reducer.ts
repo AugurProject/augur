@@ -26,7 +26,6 @@ export default createReducer(initialState, builder =>
       }
     })
     .addCase(setOpenModal, (state, action) => {
-      console.log('action.payload', action.payload)
       state.openModal = action.payload
     })
     .addCase(addPopup, (state, { payload: { content, key, removeAfterMs = 15000 } }) => {

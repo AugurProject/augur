@@ -248,7 +248,6 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
     onCurrencySelection
   ])
 
-  console.log('currencies[Field.INPUT]', Field.INPUT, currencies[Field.INPUT])
   return (
     <>
       <AppBody>

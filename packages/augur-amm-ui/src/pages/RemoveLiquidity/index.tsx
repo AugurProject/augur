@@ -165,10 +165,8 @@ function RemoveLiquidity({
     setLiquidityPercentage(String(value))
     const fullLiquidity = userTokenBalances[ammExchangeId]
     const fraction = Number(value) / 100
-    console.log('value value', fraction, value, fullLiquidity)
     const newLiquidity = String(Math.floor(fraction * Number(fullLiquidity)))
 
-    console.log('setting liquidity', newLiquidity)
     setLiquidity(newLiquidity)
     getRemoveLiquidityBreakdown(augurClient, ammExchangeId, newLiquidity, result => {
       setBreakdown(result)

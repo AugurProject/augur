@@ -627,7 +627,6 @@ export async function estimateTrade(augurClient, trade: TradeInfo) {
   }
   if (tradeDirection === TradingDirection.SWAP) {
     breakdown = await augurClient.ammFactory.getSwapRate(trade.amm.id, new BN(String(trade.inputAmount.raw)), !outputYesShares)
-    console.log('get swap rate', String(breakdown))
     return String(breakdown)
   }
   return null
@@ -636,8 +635,6 @@ export async function estimateTrade(augurClient, trade: TradeInfo) {
 export async function doTrade(augurClient, trade: TradeInfo, minAmount: string) {
   if (!augurClient || !trade.amm.id) return console.error('doTrade: augurClient is null or amm address')
   const tradeDirection = getTradeType(trade)
-
-  console.log('doTrade: direction', String(tradeDirection))
 
   let outputYesShares = false
 
