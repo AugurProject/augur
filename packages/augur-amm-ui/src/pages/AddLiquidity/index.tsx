@@ -27,7 +27,7 @@ import AppBody from '../AppBody'
 import { Dots, Wrapper } from '../../components/swap/styleds'
 import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 import { PoolPriceBar } from './PoolPriceBar'
-import { useAmmFactoryAddress, useAugurClient } from '../../contexts/Application'
+import { doUseETH, useAmmFactoryAddress, useAugurClient } from '../../contexts/Application'
 import { withRouter } from 'react-router-dom'
 import { useMarketAmm, useShareTokens, useMarket } from '../../contexts/Markets'
 import CashInputPanel from '../../components/CashInputPanel'
@@ -53,7 +53,7 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
   // share token is undefined then AMM hasn't bee created
   const sharetoken = useShareTokens(cash)
   const market = useMarket(marketId)
-
+  const useEth = doUseETH()
   // TODO disabled initial liq for testing only
   const ammData = useMarketAmm(marketId, amm)
   const [hasLiquidity, setHasLiquidity] = useState(ammData?.hasLiquidity)
@@ -144,7 +144,7 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
       hasLiquidity,
       augurClient,
       marketId,
-      sharetoken,
+      sharetoken: useEth ? 'ETH' : sharetoken,
       fee,
       cashAmount: parsedAmountA.raw.toString(),
       distroPercentage

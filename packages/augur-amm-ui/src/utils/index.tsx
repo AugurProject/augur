@@ -516,6 +516,8 @@ export function addAmmLiquidity({
   const poolYesPercent = new BN(distroPercentage[DISTRO_NO_ID])
   const poolNoPercent = new BN(distroPercentage[DISTRO_YES_ID])
 
+  // branch logic here if sharetoken is "ETH"
+
   return augurClient.ammFactory.addLiquidity(
     account,
     ammAddress,
