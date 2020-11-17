@@ -48,7 +48,7 @@ export function addAlert(alert: Partial<Alert>) {
 export function loadAlerts(alerts) {
   const { universe: { id: universe }} = AppStatus.get();
   const networkId = getNetworkId();
-  const processedAlerts = alerts.map(n => updateAlert(n.id, n, true, true));
+  const processedAlerts = alerts.map(n => updateAlert(n.uniqueId, n, true, true));
   const updatedAlerts = processedAlerts.map(a => {
     const updatedAlert = setAlertText(a, () => {}, true);
     return ({
