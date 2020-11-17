@@ -298,6 +298,7 @@ export function AppStatusReducer(state, action) {
       break;
     }
     case SET_CATEGORY_STATS: {
+      console.log("set Category Stats", action.categoryStats);
       updatedState[CATEGORY_STATS] = action.categoryStats;
       break;
     }
@@ -664,6 +665,7 @@ export function AppStatusReducer(state, action) {
       break;
     }
     case UPDATE_MARKETS_LIST: {
+      console.log("update Markets List", action.data);
       updatedState[MARKETS_LIST] = {
         ...updatedState[MARKETS_LIST],
         ...action.data,
