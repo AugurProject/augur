@@ -33,24 +33,31 @@ function updateBalances(values) {
     signerUSDT,
     signerUSDC,
     signerLegacyREP,
-    walletETH,
-    walletDAI,
-    walletREP,
-    walletLegacyREP,
   } = values;
+  const { ethToDaiRate, repToDaiRate, usdcToDaiRate, usdtToDaiRate } = AppStatus.get();
   const dai2Eth = formatAttoDai(attoDAIperETH);
-  AppStatus.actions.updateDaiRates({
-    ethToDaiRate: dai2Eth,
-    repToDaiRate: formatAttoDai(attoDAIperREP),
-    usdcToDaiRate: formatAttoDai(attoDAIperUSDC),
-    usdtToDaiRate: formatAttoDai(attoDAIperUSDT)
-  })
+  const rep2Dai =  formatAttoDai(attoDAIperREP);
+  const usdcToDai = formatAttoDai(attoDAIperUSDC);
+  const usdtToDai = formatAttoDai(attoDAIperUSDT);
+  if (
+    ethToDaiRate?.fullPrecision !== dai2Eth.fullPrecision ||
+    repToDaiRate?.fullPrecision !== rep2Dai.fullPrecision ||
+    usdcToDaiRate?.fullPrecision !== usdcToDai.fullPrecision ||
+    usdtToDaiRate?.fullPrecision !== usdtToDai.fullPrecision
+  ) {
+    AppStatus.actions.updateDaiRates({
+      ethToDaiRate: dai2Eth,
+      repToDaiRate: rep2Dai,
+      usdcToDaiRate: usdcToDai,
+      usdtToDaiRate: usdtToDai
+    });
+  }
+  
 
   const daiBalance = String(createBigNumber(String(signerDAI)).dividedBy(ETHER));
   const signerEthBalance = String(
     createBigNumber(String(signerETH)).dividedBy(ETHER)
   );
-  addedDaiEvent(daiBalance);
   AppStatus.actions.updateLoginAccount({
     balances: {
       attoRep: String(signerREP),
