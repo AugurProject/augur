@@ -28,25 +28,26 @@ export async function buildSyncStrategies(client:Augur, db:Promise<DB>, provider
     const uploadBlockNumber = config.uploadBlockNumber;
     let currentBlockNumber = await provider.getBlockNumber();
 
-    let bulkSyncStrategy;
+    let bulkSyncStrategy = null;
 
     if (config.graph && config.graph.logSubgraphURL) {
       const logProvider = new GraphQLLogProvider(config.graph.logSubgraphURL);
-      bulkSyncStrategy = new BulkSyncStrategy(logProvider.getLogs.bind(logProvider),
-        contractAddresses, logFilterAggregator.onLogsAdded,
-        (logs: any[]) => { return logs; }
-      );
-
       const status = await logProvider.getSyncStatus();
-      if(status.health === "failed") {
-        throw new Error("Augur data not currently syncing");
+      if(status.health === "healthy") {
+        currentBlockNumber = status.latestBlockNumber;
+        bulkSyncStrategy = new BulkSyncStrategy(logProvider.getLogs.bind(logProvider),
+          contractAddresses, logFilterAggregator.onLogsAdded,
+          (logs: any[]) => { return logs; }
+        );
       }
-      currentBlockNumber = status.latestBlockNumber;
-    } else {
+    }
+
+    if (bulkSyncStrategy === null) {
       bulkSyncStrategy = new BulkSyncStrategy(provider.getLogs,
         contractAddresses, logFilterAggregator.onLogsAdded,
         client.contractEvents.parseLogs);
     }
+
     const blockAndLogStreamerSyncStrategy = BlockAndLogStreamerSyncStrategy.create(
       provider,
       contractAddresses,
@@ -232,14 +233,7 @@ export async function createServer(config: SDKConfiguration, client?: Augur): Pr
 export async function startServerFromClient(config: SDKConfiguration, client?: Augur ): Promise<API> {
   const { api, sync } = await createServer(config, client);
 
-  // TODO should this await?
-  sync();
-  /*
-  controller.run().catch((err) => {
-    // TODO: PG needs to handle what happens if the server side of the connector dies
-    console.log('Error starting up Augur syncing services');
-  });
-  */
+  sync().catch((error) => api.augur.events.emit("error", error))
 
   return api;
 }
@@ -247,7 +241,7 @@ export async function startServerFromClient(config: SDKConfiguration, client?: A
 export async function startServer(config: SDKConfiguration): Promise<API> {
   const { api, sync } = await createServer(config, undefined);
 
-  sync();
+  sync().catch((error) => api.augur.events.emit("error", error))
 
   return api;
 }
