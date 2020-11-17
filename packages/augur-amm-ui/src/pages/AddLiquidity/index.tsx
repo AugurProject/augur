@@ -29,7 +29,6 @@ import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 import { PoolPriceBar } from './PoolPriceBar'
 import { useAmmFactoryAddress, useAugurClient } from '../../contexts/Application'
 import { withRouter } from 'react-router-dom'
-import LiquidityPage from '../LiquidityPage'
 import { useMarketAmm, useShareTokens, useMarket } from '../../contexts/Markets'
 import CashInputPanel from '../../components/CashInputPanel'
 import DistributionPanel from '../../components/DistributionPanel'
@@ -88,7 +87,7 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
   const deadline = useTransactionDeadline() // custom from users settings
   //const [allowedSlippage] = useUserSlippageTolerance() // custom from users
   const [txHash, setTxHash] = useState<string>('')
-  const distro = useMemo(() =>{
+  const distro = useMemo(() => {
     const yesValue = ammData?.percentageYes ? Number(Number(ammData.percentageYes).toFixed(2)) : 50
     const noValue = ammData?.percentageNo ? Number(Number(ammData.percentageNo).toFixed(2)) : 50
     return [yesValue, noValue]
@@ -204,9 +203,8 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
     )
   }
 
-  const pendingText = `Supplying ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)} ${
-    currencies[Field.CURRENCY_A]?.symbol
-  } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)} ${currencies[Field.CURRENCY_B]?.symbol}`
+  const pendingText = `Supplying ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)} ${currencies[Field.CURRENCY_A]?.symbol
+    } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)} ${currencies[Field.CURRENCY_B]?.symbol}`
 
   const handleDismissConfirmation = useCallback(() => {
     setShowConfirm(false)
@@ -218,90 +216,89 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
   }, [onFieldAInput, txHash])
 
   return (
-    <LiquidityPage>
-      <AppBody>
-        <AddRemoveTabs creating={!hasLiquidity} adding={true} token={marketId} />
-        <Wrapper>
-          <TransactionConfirmationModal
-            isOpen={showConfirm}
-            onDismiss={handleDismissConfirmation}
-            attemptingTxn={attemptingTxn}
-            hash={txHash}
-            content={() => (
-              <ConfirmationModalContent
-                title={!hasLiquidity ? 'You are creating a pool and supplying liquidity' : 'You are adding liquidity'}
-                onDismiss={handleDismissConfirmation}
-                topContent={modalHeader}
-                bottomContent={modalBottom}
-              />
-            )}
-            pendingText={pendingText}
+    <AppBody>
+      <AddRemoveTabs creating={!hasLiquidity} adding={true} token={marketId} />
+      <Wrapper>
+        <TransactionConfirmationModal
+          isOpen={showConfirm}
+          onDismiss={handleDismissConfirmation}
+          attemptingTxn={attemptingTxn}
+          hash={txHash}
+          content={() => (
+            <ConfirmationModalContent
+              title={!hasLiquidity ? 'You are creating a pool and supplying liquidity' : 'You are adding liquidity'}
+              onDismiss={handleDismissConfirmation}
+              topContent={modalHeader}
+              bottomContent={modalBottom}
+            />
+          )}
+          pendingText={pendingText}
+        />
+        <AutoColumn gap="20px">
+          {noLiquidity ||
+            (false && (
+              <ColumnCenter>
+                <BlueCard>
+                  <AutoColumn gap="10px">
+                    <TYPE.link fontWeight={600} color={'primaryText1'}>
+                      You are the first liquidity provider.
+                      </TYPE.link>
+                    <TYPE.link fontWeight={400} color={'primaryText1'}>
+                      The ratio of tokens you add will set the price of this pool.
+                      </TYPE.link>
+                    <TYPE.link fontWeight={400} color={'primaryText1'}>
+                      Once you are happy with the rate click supply to review.
+                      </TYPE.link>
+                  </AutoColumn>
+                </BlueCard>
+              </ColumnCenter>
+            ))}
+          <CashInputPanel
+            value={formattedAmounts[Field.CURRENCY_A]}
+            onUserInput={onFieldAInput}
+            label={'How much do you want to put in?'}
+            onMax={() => {
+              onFieldAInput(maxAmounts[Field.CURRENCY_A]?.toExact() ?? '')
+            }}
+            showMaxButton={!atMaxAmounts[Field.CURRENCY_A]}
+            currency={currencies[Field.CURRENCY_A]}
+            currencyAddress={cash}
+            id="add-liquidity-input-tokena"
+            showCommonBases
           />
-          <AutoColumn gap="20px">
-            {noLiquidity ||
-              (false && (
-                <ColumnCenter>
-                  <BlueCard>
-                    <AutoColumn gap="10px">
-                      <TYPE.link fontWeight={600} color={'primaryText1'}>
-                        You are the first liquidity provider.
-                      </TYPE.link>
-                      <TYPE.link fontWeight={400} color={'primaryText1'}>
-                        The ratio of tokens you add will set the price of this pool.
-                      </TYPE.link>
-                      <TYPE.link fontWeight={400} color={'primaryText1'}>
-                        Once you are happy with the rate click supply to review.
-                      </TYPE.link>
-                    </AutoColumn>
-                  </BlueCard>
-                </ColumnCenter>
-              ))}
-            <CashInputPanel
-              value={formattedAmounts[Field.CURRENCY_A]}
-              onUserInput={onFieldAInput}
-              label={'How much do you want to put in?'}
-              onMax={() => {
-                onFieldAInput(maxAmounts[Field.CURRENCY_A]?.toExact() ?? '')
-              }}
-              showMaxButton={!atMaxAmounts[Field.CURRENCY_A]}
-              currency={currencies[Field.CURRENCY_A]}
-              currencyAddress={cash}
-              id="add-liquidity-input-tokena"
-              showCommonBases
-            />
-            <ColumnCenter>
-              <TYPE.small>ODDS:</TYPE.small>
-            </ColumnCenter>
-            <DistributionPanel
-              updateDistribution={setCurrentDistribution}
-              disableInputs={hasLiquidity}
-              distroPercentage={distroPercentage}
-              id={marketId}
-            />
-            <Row><DropdownSelect disabled={hasLiquidity} label={"Trading Fee %"} options={FEE_OPTIONS} active={feeSelected} setActive={setFeeSelected} /></Row>
-            {currencies[Field.CURRENCY_A] && currencies[Field.CURRENCY_B] && pairState !== PairState.INVALID && (
-              <>
-                <LightCard padding="0px" borderRadius={'20px'}>
-                  <RowBetween padding="1rem">
-                    <TYPE.subHeader fontWeight={500} fontSize={14}>
-                      {noLiquidity ? 'Initial prices' : 'Prices'} and pool share
+          <ColumnCenter>
+            <TYPE.small>ODDS:</TYPE.small>
+          </ColumnCenter>
+          <DistributionPanel
+            updateDistribution={setCurrentDistribution}
+            disableInputs={hasLiquidity}
+            distroPercentage={distroPercentage}
+            id={marketId}
+          />
+          <Row><DropdownSelect disabled={hasLiquidity} label={"Trading Fee %"} options={FEE_OPTIONS} active={feeSelected} setActive={setFeeSelected} /></Row>
+          {currencies[Field.CURRENCY_A] && currencies[Field.CURRENCY_B] && pairState !== PairState.INVALID && (
+            <>
+              <LightCard padding="0px" borderRadius={'20px'}>
+                <RowBetween padding="1rem">
+                  <TYPE.subHeader fontWeight={500} fontSize={14}>
+                    {noLiquidity ? 'Initial prices' : 'Prices'} and pool share
                     </TYPE.subHeader>
-                  </RowBetween>{' '}
-                  <LightCard padding="1rem" borderRadius={'20px'}>
-                    <PoolPriceBar
-                      currencies={currencies}
-                      poolTokenPercentage={poolTokenPercentage}
-                      noLiquidity={noLiquidity}
-                      price={price}
-                    />
-                  </LightCard>
+                </RowBetween>{' '}
+                <LightCard padding="1rem" borderRadius={'20px'}>
+                  <PoolPriceBar
+                    currencies={currencies}
+                    poolTokenPercentage={poolTokenPercentage}
+                    noLiquidity={noLiquidity}
+                    price={price}
+                  />
                 </LightCard>
-              </>
-            )}
+              </LightCard>
+            </>
+          )}
 
-            {!account ? (
-              <ButtonGray onClick={toggleWalletModal}>Connect Wallet</ButtonGray>
-            ) : (
+          {!account ? (
+            <ButtonGray onClick={toggleWalletModal}>Connect Wallet</ButtonGray>
+          ) : (
               <AutoColumn gap={'md'}>
                 {isValid && (
                   <RowBetween>
@@ -314,8 +311,8 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
                         {approvalA === ApprovalState.PENDING ? (
                           <Dots>Approving {currencies[Field.CURRENCY_A]?.symbol}</Dots>
                         ) : (
-                          'Approve ' + currencies[Field.CURRENCY_A]?.symbol
-                        )}
+                            'Approve ' + currencies[Field.CURRENCY_A]?.symbol
+                          )}
                       </ButtonPrimary>
                     )}
                   </RowBetween>
@@ -333,10 +330,9 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
                 </ButtonError>
               </AutoColumn>
             )}
-          </AutoColumn>
-        </Wrapper>
-      </AppBody>
-    </LiquidityPage>
+        </AutoColumn>
+      </Wrapper>
+    </AppBody>
   )
 }
 

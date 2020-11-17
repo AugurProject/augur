@@ -18,19 +18,17 @@ function UserPoolsPage() {
   }, [])
 
   return (
-    <PageWrapper>
-      <ContentWrapper>
-        <Panel style={{ marginTop: '6px', padding: '1.125rem 0 ' }}>
-          {Object.keys(userTokenBalances).length > 0 ? (
-            <PooledMarketList balances={userTokenBalances} loading={loading} />
-          ) : (
-            <AutoRow justify={'center'}>
-              <TYPE.light>{loading ? 'Loading ...' : 'No Liquidity Pools'}</TYPE.light>
-            </AutoRow>
-          )}
-        </Panel>
-      </ContentWrapper>
-    </PageWrapper>
+    <ContentWrapper>
+      <Panel style={{ marginTop: '6px', padding: '1.125rem 0 ' }}>
+        {Object.keys(userTokenBalances).length > 0 ? (
+          <PooledMarketList balances={userTokenBalances} loading={loading} />
+        ) : (
+          <AutoRow justify={'center'}>
+            <TYPE.light>{loading ? 'Loading ...' : 'No Liquidity Pools'}</TYPE.light>
+          </AutoRow>
+        )}
+      </Panel>
+    </ContentWrapper>
   )
 }
 
