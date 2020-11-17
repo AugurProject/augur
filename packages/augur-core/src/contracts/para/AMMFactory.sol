@@ -24,19 +24,33 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         return address(_amm);
     }
 
-    function addAMMWithLiquidity(IMarket _market, ParaShareToken _para, uint256 _fee, uint256 _cash, uint256 _ratioFactor, bool _keepYes) external returns (address) {
-        IAMMExchange _amm = IAMMExchange(createClone2(address(proxyToClone), salt(_market, _para, _fee)));
+    function addAMMWithLiquidity(
+        IMarket _market,
+        ParaShareToken _para,
+        uint256 _fee,
+        uint256 _cash,
+        uint256 _ratioFactor,
+        bool _keepYes,
+        address _recipient
+    ) external returns (address _ammAddress, uint256 _lpTokens) {
+        _ammAddress = createClone2(address(proxyToClone), salt(_market, _para, _fee));
+        IAMMExchange _amm = IAMMExchange(_ammAddress);
         _amm.initialize(_market, _para, _fee);
-        exchanges[address(_market)][address(_para)][_fee] = address(_amm);
+        exchanges[address(_market)][address(_para)][_fee] = _ammAddress;
 
         // User sends cash to factory, which turns cash into LP tokens and shares which it gives to the user.
         _para.cash().transferFrom(msg.sender, address(this), _cash);
-        _amm.addInitialLiquidity(_cash, _ratioFactor, _keepYes, msg.sender);
-
-        return address(_amm);
+        _lpTokens = _amm.addInitialLiquidity(_cash, _ratioFactor, _keepYes, _recipient);
     }
 
-    function transferCash(IMarket _market, ParaShareToken _para, uint256 _fee, address sender, address recipient, uint256 quantity) public {
+    function transferCash(
+        IMarket _market,
+        ParaShareToken _para,
+        uint256 _fee,
+        address sender,
+        address recipient,
+        uint256 quantity
+    ) public {
         IAMMExchange amm = IAMMExchange(exchanges[address(_market)][address(_para)][_fee]);
         require(msg.sender == address(amm), "AugurCP: non-exchange tried to send cash");
 
@@ -47,7 +61,16 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         }
     }
 
-    function shareTransfer(IMarket _market, ParaShareToken _para, uint256 _fee, address _from, address _to, uint256 _invalidAmount, uint256 _noAmount, uint256 _yesAmount) public {
+    function shareTransfer(
+        IMarket _market,
+        ParaShareToken _para,
+        uint256 _fee,
+        address _from,
+        address _to,
+        uint256 _invalidAmount,
+        uint256 _noAmount,
+        uint256 _yesAmount
+    ) public {
         IAMMExchange amm = IAMMExchange(exchanges[address(_market)][address(_para)][_fee]);
         require(msg.sender == address(amm), "AugurCP: non-exchange tried to send shares");
 
