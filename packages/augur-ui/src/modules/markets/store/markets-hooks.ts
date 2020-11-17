@@ -132,7 +132,7 @@ export function MarketsReducer(state, action) {
     default:
       console.error(`Error: ${action.type} not caught by Markets reducer`);
   }
-
+  // console.log("markets update", action);
   windowRef.markets = updatedState;
   windowRef.stores.markets = updatedState;
   return updatedState;

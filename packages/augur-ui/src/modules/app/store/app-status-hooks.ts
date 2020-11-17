@@ -92,6 +92,7 @@ const {
   TOGGLE_FAVORITE,
   UPDATE_NOTIFICATIONS,
   ADD_ALERT,
+  LOAD_ALERTS,
   UPDATE_ALERT,
   REMOVE_ALERT,
   CLEAR_ALERTS,
@@ -398,6 +399,10 @@ export function AppStatusReducer(state, action) {
       updatedState[ALERTS] = [...updatedState[ALERTS], newAlert];
       break;
     }
+    case LOAD_ALERTS: {
+      updatedState[ALERTS] = action.alerts;
+      break;
+    }
     case UPDATE_ALERT: {
       const { alert: newAlert, id } = action;
       let updatedAlerts = updatedState[ALERTS].map((alert, i) => {
@@ -674,6 +679,7 @@ export function AppStatusReducer(state, action) {
       console.error(`Error: ${action.type} not caught by App Status reducer.`);
   }
   // console.log('appStatus update:', action.type, updatedState, action);
+  // console.log("appStatus update", action);
   windowRef.appStatus = updatedState;
   windowRef.stores.appStatus = updatedState;
   return updatedState;
@@ -755,6 +761,7 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       updateNotifications: notifications =>
         dispatch({ type: UPDATE_NOTIFICATIONS, notifications }),
       addAlert: alert => dispatch({ type: ADD_ALERT, alert }),
+      loadAlerts: alerts => dispatch({ type: LOAD_ALERTS, alerts }),
       updateAlert: (id, alert) => dispatch({ type: UPDATE_ALERT, alert, id }),
       removeAlert: (id, name) => dispatch({ type: REMOVE_ALERT, id, name }),
       clearAlerts: level => dispatch({ type: CLEAR_ALERTS, level }),

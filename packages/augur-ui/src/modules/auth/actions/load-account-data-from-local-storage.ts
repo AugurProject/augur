@@ -1,4 +1,4 @@
-import { updateAlert } from 'modules/alerts/actions/alerts';
+import { updateAlert, loadAlerts } from 'modules/alerts/actions/alerts';
 import { loadPendingLiquidityOrders } from 'modules/orders/actions/liquidity-management';
 import { loadPendingOrdersTransactions } from 'modules/orders/actions/pending-orders-management';
 import { isNewFavoritesStyle } from 'modules/markets/helpers/favorites-processor';
@@ -67,7 +67,7 @@ export const loadAccountDataFromLocalStorage = (address: string) => {
       if (!!affiliate && isAddress(affiliate))
         updateLoginAccount({ affiliate });
 
-      if (notifications) {
+      if (notifications?.length > 0) {
         updateNotifications(notifications);
       }
       const networkId = getNetworkId();
@@ -84,30 +84,32 @@ export const loadAccountDataFromLocalStorage = (address: string) => {
         favorites &&
         isNewFavoritesStyle(favorites) &&
         favorites[networkId] &&
-        favorites[networkId][universe.id]
+        favorites[networkId][universe.id] &&
+        Object.keys(favorites[networkId][universe.id]).length > 0
       ) {
         loadFavorites(favorites[networkId][universe.id]);
       }
-      if (drafts) {
+      if (Object.keys(drafts || {}).length > 0) {
         loadDrafts(drafts);
       }
       if (alerts) {
-        alerts.map(n => updateAlert(n.id, n, true));
+        loadAlerts(alerts);
+        // alerts.map(n => updateAlert(n.id, n, true));
       }
 
-      if (pendingLiquidityOrders) {
+      if (Object.keys(pendingLiquidityOrders || {}).length > 0) {
         loadPendingLiquidityOrders(pendingLiquidityOrders);
       }
       if (analytics) {
         loadAnalytics(analytics, 0);
       }
-      if (pendingOrders && Object.keys(pendingOrders).length > 0) {
+      if (Object.keys(pendingOrders || {}).length > 0) {
         loadPendingOrdersTransactions(pendingOrders);
       }
       if (pendingQueue) {
         loadPendingQueue(pendingQueue);
       }
-      if (gasPriceInfo && gasPriceInfo.userDefinedGasPrice) {
+      if (gasPriceInfo?.userDefinedGasPrice) {
         updateGasPriceInfo({
           userDefinedGasPrice: gasPriceInfo.userDefinedGasPrice,
         });
@@ -119,10 +121,10 @@ export const loadAccountDataFromLocalStorage = (address: string) => {
       ) {
         setTheme(theme);
       }
-      if (oddsType) {
+      if (oddsType && AppStatus.get().oddsType !== oddsType) {
         setOdds(oddsType);
       }
-      if (timeFormat) {
+      if (timeFormat && AppStatus.get().timeFormat !== timeFormat) {
         setTimeFormat(timeFormat);
       }
     }
