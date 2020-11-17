@@ -22,6 +22,7 @@ export default function ConfirmSwapModal({
   txHash,
   minAmount,
   outputAmount,
+  realizedLPFee,
 }: {
   isOpen: boolean
   trade: TradeInfo | undefined
@@ -35,7 +36,8 @@ export default function ConfirmSwapModal({
   swapErrorMessage: string | undefined
   onDismiss: () => void,
   minAmount: string,
-  outputAmount: TokenAmount
+  outputAmount: TokenAmount,
+  realizedLPFee: string,
 }) {
   const showAcceptChanges = false
 
@@ -61,6 +63,7 @@ export default function ConfirmSwapModal({
         swapErrorMessage={swapErrorMessage}
         minAmount={minAmount}
         outputAmount={outputAmount}
+        realizedLPFee={realizedLPFee}
       />
     ) : null
   }, [onConfirm, showAcceptChanges, swapErrorMessage, trade, outputAmount, minAmount])

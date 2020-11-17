@@ -69,6 +69,7 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
 
   const [minAmount, setMinAmount] = useState(null)
   const [outputAmount, setOutputAmount] = useState(null)
+  const [realizedLPFee, setRealizedLPFee] = useState("0")
 
   // swap state
   const { independentField, typedValue, recipient } = useSwapState()
@@ -93,6 +94,8 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
           )
           const estCurrency = new TokenAmount(outToken, JSBI.BigInt(String(result)))
           setOutputAmount(estCurrency)
+          // TODO: get fee from middleware
+          setRealizedLPFee('0.00')
         }
       } catch (e) {
         setOutputAmount(null)
@@ -264,6 +267,7 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
             onDismiss={handleConfirmDismiss}
             minAmount={minAmount}
             outputAmount={outputAmount}
+            realizedLPFee={realizedLPFee}
           />
 
           <AutoColumn gap={'md'}>

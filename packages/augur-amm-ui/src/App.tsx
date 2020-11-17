@@ -56,6 +56,7 @@ const BodyWrapper = styled.div`
     padding-top: 2rem;
   `};
 
+  margin-top: 2rem;
   z-index: 1;
 `
 
