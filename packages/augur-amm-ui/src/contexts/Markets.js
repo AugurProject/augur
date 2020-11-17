@@ -5,7 +5,7 @@ import utc from 'dayjs/plugin/utc'
 import BigNumber, { BigNumber as BN } from 'bignumber.js'
 import { augurV2Client } from '../apollo/client'
 import { GET_MARKETS } from '../apollo/queries'
-import { useConfig, useParaDeploys } from '../contexts/Application'
+import { useConfig, useParaDeploys, getCashInfo } from '../contexts/Application'
 import { getBlockFromTimestamp, calculateLiquidity, formattedNum } from '../utils'
 import { useTokenDayPriceData } from '../contexts/TokenData'
 
@@ -348,6 +348,7 @@ export function usePositionMarkets(positions) {
 
 export function useAmmMarkets(balances) {
   const [state] = useMarketDataContext()
+  const cashTokens = useMarketCashTokens()
   const { markets } = state
   const ammMarkets = []
   if (markets) {
@@ -355,8 +356,10 @@ export function useAmmMarkets(balances) {
       const balance = balances[ammId]
       const market = markets.find(m => m.amms.map(a => a.id).includes(ammId))
       const groupedAmms = market ? market.amms.reduce((group, a) => ({ ...group, [a.id]: a }), {}) : {}
+      const shareToken = groupedAmms[ammId]?.shareToken;
+      const cash = cashTokens[shareToken?.cash?.id]
       if (market && balance !== '0') {
-        ammMarkets.push({ ...market, balance, shareToken: groupedAmms[ammId]?.shareToken })
+        ammMarkets.push({ ...market, balance, shareToken, cash })
       }
     })
   }

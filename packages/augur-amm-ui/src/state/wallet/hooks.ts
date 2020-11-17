@@ -9,7 +9,7 @@ import {
   useMultipleContractSingleData,
   useMultipleContractMultipleData
 } from '../multicall/hooks'
-import { useAllMarketData } from '../../contexts/Markets'
+import { useAllMarketData, useMarketCashTokens } from '../../contexts/Markets'
 import { ParaShareToken } from '@augurproject/sdk-lite'
 import { Interface } from 'ethers/lib/utils'
 import { ZERO_ADDRESS } from '../../constants'
@@ -26,9 +26,9 @@ export function useETHBalances(
     () =>
       uncheckedAddresses
         ? uncheckedAddresses
-            .map(isAddress)
-            .filter((a): a is string => a !== false)
-            .sort()
+          .map(isAddress)
+          .filter((a): a is string => a !== false)
+          .sort()
         : [],
     [uncheckedAddresses]
   )
@@ -71,13 +71,13 @@ export function useTokenBalancesWithLoadingIndicator(
       () =>
         address && validatedTokens.length > 0
           ? validatedTokens.reduce<{ [tokenAddress: string]: TokenAmount | undefined }>((memo, token, i) => {
-              const value = balances?.[i]?.result?.[0]
-              const amount = value ? JSBI.BigInt(value.toString()) : undefined
-              if (amount) {
-                memo[token.address] = new TokenAmount(token, amount)
-              }
-              return memo
-            }, {})
+            const value = balances?.[i]?.result?.[0]
+            const amount = value ? JSBI.BigInt(value.toString()) : undefined
+            if (amount) {
+              memo[token.address] = new TokenAmount(token, amount)
+            }
+            return memo
+          }, {})
           : {},
       [address, validatedTokens, balances]
     ),
@@ -100,13 +100,13 @@ export function useLPTokenBalances(): [{ [tokenAddress: string]: string | undefi
       () =>
         account && ammAddresses.length > 0
           ? ammAddresses.reduce<{ [tokenAddress: string]: string | undefined }>((memo, address, i) => {
-              const value = balances?.[i]?.result?.[0]
-              const amount = value ? value.toString() : undefined
-              if (amount && amount !== "0") {
-                memo[address] = amount
-              }
-              return memo
-            }, {})
+            const value = balances?.[i]?.result?.[0]
+            const amount = value ? value.toString() : undefined
+            if (amount && amount !== "0") {
+              memo[address] = amount
+            }
+            return memo
+          }, {})
           : {},
       [account, ammAddresses, balances]
     ),
@@ -151,50 +151,52 @@ export function useMarketShareBalances(): [MarketBalance[], boolean] {
   const anyLoading: boolean = useMemo(() => balances.some(callState => callState.loading), [balances])
   const keyedMarkets = (markets || []).reduce((p, m) => ({ ...p, [m.id]: m }), {})
   const keyedParaTokens = (paraShareTokens || []).reduce((p, t) => ({ ...p, [t.id]: t }), {})
+  const emptyBalances = paraTokenAdds.reduce((p, pTokenAddr) => [...p, ...inputs.map(m => ({ marketId: m[0], outcome: m[1], pTokenAddr }))], [])
 
   return [
     useMemo(
       () =>
         userAccount && inputs.length > 0
-          ? Object.values(
-              inputs.reduce((memo, params, j) => {
-                const marketId = params[0]
-                const outcome = Number(params[1])
-                const pTokenAmounts = paraTokenAdds
-                  .map((p, i) => ({ marketId, outcome, ptokenAddr: p, amount: String(balances?.[j]?.result?.[i]) }))
-                  .filter(p => p.amount !== '0' && p.amount !== 'undefined')
-                if (pTokenAmounts.length > 0) {
-                  pTokenAmounts.map(pTokenAmount => {
-                    const { ptokenAddr, marketId, amount } = pTokenAmount
-                    const key = `${ptokenAddr}-${marketId}`
-                    if (amount === '0') return memo
-                    const amountName = outcomeNames[outcome]
-                    let item = memo[key]
-                    if (item === undefined) {
-                      const outcomes = ['0', '0', '0']
-                      outcomes[outcome] = String(amount)
-                      return (memo[key] = {
-                        cash: keyedParaTokens[ptokenAddr].cash.id,
-                        marketId,
-                        [amountName]: amount,
-                        market: keyedMarkets[marketId],
-                        outcomes,
-                        paraShareToken: keyedParaTokens[ptokenAddr]
-                      })
-                    }
-                    const existingItem = { ...item, [amountName]: String(amount) }
-                    existingItem.outcomes[outcome] = String(amount)
-                    return (memo[key] = existingItem)
-                  })
-                }
-                return memo
-              }, {})
-            )
+          ? buildMarketBalance(balances.map((balance, i) => {
+            let marketBalance = emptyBalances[i]
+            const rawAmount = balance.result?.[0];
+            const amount = rawAmount ? String(rawAmount) : '0';
+            marketBalance.amount = amount;
+            return marketBalance
+          }).filter(p => p.amount !== '0' && p.amount !== 'undefined'),
+            keyedParaTokens, keyedMarkets, outcomeNames)
           : [],
       [userAccount, inputs, balances, keyedMarkets, paraTokenAdds, keyedParaTokens, outcomeNames]
     ),
     anyLoading
   ]
+}
+
+function buildMarketBalance(pTokenAmounts, keyedParaTokens, keyedMarkets, outcomeNames) {
+  return pTokenAmounts.reduce((memo, pTokenAmount) => {
+    const { pTokenAddr, marketId, amount } = pTokenAmount
+    const key = `${pTokenAddr}-${marketId}`
+    if (amount === '0') return memo
+    const amountName = outcomeNames[pTokenAmount.outcome]
+    let item = memo[key]
+    if (item === undefined) {
+      const outcomes = ['0', '0', '0']
+      outcomes[pTokenAmount.outcome] = String(amount)
+      memo[key] = {
+        cash: keyedParaTokens[pTokenAddr].cash.id,
+        marketId,
+        [amountName]: amount,
+        market: keyedMarkets[marketId],
+        outcomes,
+        paraShareToken: keyedParaTokens[pTokenAddr]
+      }
+    } else {
+      const existingItem = { ...item, [amountName]: String(amount) }
+      existingItem.outcomes[pTokenAmount.outcome] = String(amount)
+      memo[key] = existingItem
+    }
+    return memo
+  }, {})
 }
 
 export function useMarketBalance(marketId: string, cash: string): MarketBalance {

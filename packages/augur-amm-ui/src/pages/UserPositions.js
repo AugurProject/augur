@@ -5,7 +5,7 @@ import { AutoRow } from '../components/Row'
 import PositionMarkets from '../components/PositionMarkets'
 import { useMarketShareBalances } from '../state/wallet/hooks'
 import Panel from '../components/Panel'
-import { PageWrapper, ContentWrapper } from '../components'
+import { ContentWrapper } from '../components'
 
 function UserPositions() {
   const [userMarketShareBalances, loading] = useMarketShareBalances()

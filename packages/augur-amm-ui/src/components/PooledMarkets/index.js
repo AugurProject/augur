@@ -174,7 +174,7 @@ function PooledMarketList({ balances, itemMax = 20 }) {
             {item?.description}
           </BasicLink>
         </DataText>
-        <DataText area="balance">{formatShares(item.balance)}</DataText>
+        <DataText area="balance">{formatShares(item.balance, item?.cash.decimals)}</DataText>
         {!below800 && (
           <DataText area="status">
             <span

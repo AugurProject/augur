@@ -109,10 +109,10 @@ export const toWeeklyDate = date => {
   return dayjs.utc(wkStart).format('MMM DD') + ' - ' + dayjs.utc(wkEnd).format('MMM DD')
 }
 
-export const formatShares = (num = "0") => {
+export const formatShares = (num = "0", decimals = 18) => {
   const tickSize = 1000;
     // pow of 15 matches shares in trading UI something to do with num ticks
-  const displayValue = new BN(num).times(tickSize).div(new BN(10).pow(18))
+  const displayValue = new BN(num).times(tickSize).div(new BN(10).pow(decimals))
   return toSignificant(String(displayValue), 6)
 }
 
