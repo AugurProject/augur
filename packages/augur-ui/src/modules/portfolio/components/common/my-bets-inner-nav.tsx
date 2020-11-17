@@ -9,7 +9,7 @@ import {
   MY_BETS_BET_DATE,
   MARKET_STATE_TYPES,
 } from 'modules/common/constants';
-import { XIcon } from 'modules/common/icons';
+import { MobileNavCloseIcon } from 'modules/common/icons';
 
 import Styles from 'modules/app/components/inner-nav/inner-nav.styles.less';
 import { RadioBarGroup } from 'modules/common/form';
@@ -85,7 +85,7 @@ export const MyBetsInnerNav = () => {
               setMobileMenuState(MOBILE_MENU_STATES.CLOSED);
             }}
           >
-            {XIcon}
+            <MobileNavCloseIcon />
           </button>
         </div>
       )}
