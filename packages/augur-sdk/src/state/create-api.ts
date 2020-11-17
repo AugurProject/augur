@@ -26,7 +26,7 @@ export async function buildSyncStrategies(client:Augur, db:Promise<DB>, provider
   return async () => {
     const contractAddresses = client.contractEvents.getAugurContractAddresses();
     const uploadBlockNumber = config.uploadBlockNumber;
-    const currentBlockNumber = await provider.getBlockNumber();
+    let currentBlockNumber = await provider.getBlockNumber();
 
     let bulkSyncStrategy;
 
@@ -36,6 +36,12 @@ export async function buildSyncStrategies(client:Augur, db:Promise<DB>, provider
         contractAddresses, logFilterAggregator.onLogsAdded,
         (logs: any[]) => { return logs; }
       );
+
+      const status = await logProvider.getSyncStatus();
+      if(status.health === "failed") {
+        throw new Error("Augur data not currently syncing");
+      }
+      currentBlockNumber = status.latestBlockNumber;
     } else {
       bulkSyncStrategy = new BulkSyncStrategy(provider.getLogs,
         contractAddresses, logFilterAggregator.onLogsAdded,

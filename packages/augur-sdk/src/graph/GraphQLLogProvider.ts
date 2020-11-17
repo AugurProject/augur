@@ -3,7 +3,7 @@ import { Filter, Log } from '@augurproject/types';
 import { retry } from 'async';
 import * as _ from 'lodash';
 
-const RETRY_TIMES = 3;
+const RETRY_TIMES = 7;
 const INTERVAL = 1000;
 
 const eventFields = {
@@ -23,7 +23,7 @@ const eventFields = {
   "completeSetsPurchased": ["universe", "market", "account", "numCompleteSets", "timestamp"],
   "completeSetsSold": ["universe", "market", "account", "numCompleteSets", "fees", "timestamp"],
   "tradingProceedsClaimed": ["universe", "sender", "market", "outcome", "numShares", "numPayoutTokens", "fees", "timestamp"],
-  "tokensTransferred": ["universe", "token", "from", "to", "value", "tokenType", "market"],
+  //"tokensTransferred": ["universe", "token", "from", "to", "value", "tokenType", "market"],
   "tokensMinted": ["universe", "token", "target", "amount", "tokenType", "market", "totalSupply"],
   "tokensBurned": ["universe", "token", "target", "amount", "tokenType", "market", "totalSupply"],
   "tokenBalanceChanged": ["universe", "owner", "token", "tokenType", "market", "balance", "outcome"],
@@ -82,29 +82,32 @@ export function* logQuery(fromBlockNumber: number, toBlockNumber: number, logFie
     }
   }, {});
 
-  while (true) {
+  while (Object.keys(skipCounts).length > 0) {
     const lastLogs = yield buildQuery(fromBlockNumber, toBlockNumber, logFieldDescriptions, skipCounts);
     skipCounts = Object.entries(skipCounts).reduce((acc, [key, skipCount]) => {
-      if(lastLogs[key].length === 0) return acc; // Ignore this entity, no more can be fetched
+      if(lastLogs[key].length < 1000) return acc; // Ignore this entity, no more can be fetched
       acc[key] = skipCount + lastLogs[key].length;
       return acc;
     }, {});
     console.log("Skip counts", skipCounts);
+    console.log(lastLogs["marketCreatedEvents"]);
 
     const flattenedLogs = _.flatten(_.values(lastLogs));
-    allLogs = {
+    allLogs = [
       ...allLogs,
       ...flattenedLogs
-    }
-
-    if(flattenedLogs.length === 0) break;
+    ]
   }
 
+  console.log(`Recevied ${allLogs.length} total events`)
   return allLogs;
 }
 
+function makeSubgraphRequest(subgraphUrl: string, query: string): Promise<LogQueryResponse> {
+  return makeGraphRequest(subgraphUrl, query) as Promise<LogQueryResponse>
+}
 
-function makeGraphRequest(subgraphUrl: string, query: string): Promise<LogQueryResponse> {
+function makeGraphRequest(url: string, query: string): Promise<any> {
   return new Promise((resolve, reject) => {
     retry({
         times: RETRY_TIMES,
@@ -114,7 +117,7 @@ function makeGraphRequest(subgraphUrl: string, query: string): Promise<LogQueryR
         errorFilter (err) { return true; }
       },
       async () => {
-        const result = await axios.post(subgraphUrl, { query });
+        const result = await axios.post(url, { query });
         if (result.data.errors !== undefined) {
           const message = `GraphQL Log Request Got ${result.data.errors.length} Errors: ${JSON.stringify(result.data.errors)}`;
           console.warn(message);
@@ -125,8 +128,9 @@ function makeGraphRequest(subgraphUrl: string, query: string): Promise<LogQueryR
       (err, results) => {
         if (err) {
           reject(err);
+        } else {
+          resolve(results);
         }
-        resolve(results);
       }
     )
   });
@@ -145,10 +149,41 @@ export class GraphQLLogProvider {
     const i = logQuery(Number(filter.fromBlock), Number(filter.toBlock), eventFields);
     let result = i.next();
     while(!result.done) {
-      const response = await makeGraphRequest(this.subgraphUrl, result.value as string);
+      const response = await makeSubgraphRequest(this.subgraphUrl, result.value as string);
       result = i.next(response);
     }
 
     return result.value;
+  }
+
+  async getSyncStatus() {
+    const response  = await makeGraphRequest(
+      "https://api.thegraph.com/index-node/graphql", `
+      {
+        status: indexingStatusForCurrentVersion(subgraphName: "${this.subgraphUrl.replace("https://api.thegraph.com/subgraphs/name/", "")}") {
+          synced
+          health
+          fatalError {
+            message
+          }
+          chains {
+            chainHeadBlock {
+              number
+            }
+            latestBlock {
+              number
+            }
+          }
+        }
+      }
+    `);
+    const {synced, health, fatalError, chains} = response.status;
+    return {
+      synced,
+      health,
+      fatalError,
+      chainHeadBlockNumber: parseInt(chains[0].chainHeadBlock.number),
+      latestBlockNumber: parseInt(chains[0].latestBlock.number)
+    }
   }
 }
