@@ -89,8 +89,6 @@ export function* logQuery(fromBlockNumber: number, toBlockNumber: number, logFie
       acc[key] = skipCount + lastLogs[key].length;
       return acc;
     }, {});
-    console.log("Skip counts", skipCounts);
-    console.log(lastLogs["marketCreatedEvents"]);
 
     const flattenedLogs = _.flatten(_.values(lastLogs));
     allLogs = [
@@ -99,7 +97,6 @@ export function* logQuery(fromBlockNumber: number, toBlockNumber: number, logFie
     ]
   }
 
-  console.log(`Recevied ${allLogs.length} total events`)
   return allLogs;
 }
 
