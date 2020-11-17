@@ -244,8 +244,8 @@ export const CountdownProgress = ({
             secondsRemaining >= 10 ? secondsRemaining : `0${secondsRemaining}`
           }`
         : forceLongDate
-        ? time.formattedLocalShortDateTimeNoTimezone
-        : time.formattedLocalShortDateSecondary;
+        ? format.formatDate(time.value).formattedLocalShortDateTimeNoTimezone
+        : format.formatDate(time.value).formattedLocalShortDateSecondary;
   }
   const breakpointOne =
     timeLeft <= firstBreakpoint && timeLeft > secondBreakpoint && countdown;
