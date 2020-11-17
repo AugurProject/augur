@@ -49,7 +49,7 @@
     .text-12-bold;
 
     color: var(--color-primary-text);
-    text-transform: capitalize;
+    text-transform: uppercase;
     display: flex;
     align-items: center;
 
@@ -108,7 +108,7 @@
   > div {
     .text-12-bold;
 
-    text-transform: capitalize;
+    text-transform: uppercase;
     color: var(--color-secondary-text);
 
     > svg {
@@ -143,7 +143,7 @@
   .text-12-bold;
 
   color: var(--color-primary-text);
-  text-transform: capitalize;
+  text-transform: uppercase;
   user-select: none;
   cursor: pointer;
 
@@ -224,12 +224,13 @@
   .CategoryFilters {
     margin: 0;
     padding: @size-32 0 0 @size-30;
+
     > h3 {
       .text-24-bold;
 
       color: var(--color-primary-text);
       margin-bottom: @size-32;
-      text-transform: capitalize;
+      text-transform: uppercase;
     }
 
     > .CategoriesGroup:first-of-type {
@@ -252,6 +253,7 @@
     > span {
       .mono-14-bold;
     }
+
     margin: 0;
     padding-bottom: @size-8;
     border-bottom: @size-1 solid var(--color-secondary-action-outline);
@@ -353,10 +355,12 @@
 
         > div[class*='CategoryRow'] > {
           margin: 0;
+
           > span:first-of-type {
             .text-14-bold;
 
             margin-bottom: 0;
+            text-transform: uppercase;
           }
         }
       }
@@ -364,6 +368,7 @@
 
     .CategoriesGroup {
       border-bottom: 0;
+
       > span {
         display: none;
       }
