@@ -74,14 +74,24 @@ export const AMMFactoryAbi = [
         "internalType": "bool",
         "name": "_keepYes",
         "type": "bool"
+      },
+      {
+        "internalType": "address",
+        "name": "_recipient",
+        "type": "address"
       }
     ],
     "name": "addAMMWithLiquidity",
     "outputs": [
       {
         "internalType": "address",
-        "name": "",
+        "name": "_ammAddress",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_lpTokens",
+        "type": "uint256"
       }
     ],
     "payable": false,

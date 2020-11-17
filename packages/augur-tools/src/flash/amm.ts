@@ -1,10 +1,10 @@
 import { ContractDeployer } from '@augurproject/core';
 import { sanitizeConfig } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
-import { makeDependencies, makeSigner } from '..';
+import {makeDependencies, makeSigner, NULL_ADDRESS} from '..';
 import { FlashArguments, FlashSession } from './flash';
 
-import { AMMFactory } from '@augurproject/sdk-lite';
+import { AMM } from '@augurproject/sdk-lite';
 import { updateConfig } from '@augurproject/artifacts';
 
 const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
@@ -51,7 +51,7 @@ export function addAMMScripts(flash: FlashSession) {
 
       // TODO support more than just weth
       const weth = user.augur.contracts.weth;
-      const factory = new AMMFactory(user.signer, this.config.addresses.AMMFactory);
+      const factory = new AMM(user.signer, this.config.addresses.AMMFactory);
       await weth.approve(factory.contract.address, amount);
 
       console.log(`Approved ${factory.contract.address} for ${amount.toFixed()} of ${weth.address}`);
@@ -84,20 +84,34 @@ export function addAMMScripts(flash: FlashSession) {
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
+      const user = await this.createUser(this.getAccount(), this.config);
       const market = args.market as string;
       const fee = typeof args.fee === 'undefined' ? new BigNumber(3) : new BigNumber(args.fee as string);
       const cash = args.cash ? new BigNumber(args.cash as string) : new BigNumber(0);
       const yesPercent = args.ratio ? new BigNumber(args.ratio as string) : new BigNumber(50);
+      const recipient = args.recipient as string || user.account.address;
 
       if (yesPercent.lt(0) || yesPercent.gt(100)) throw Error(`make-amm-market --ratio must be between 0 and 100 (inclusive), not ${args.ratio as string}`);
       const noPercent = new BigNumber(100).minus(yesPercent);
 
       const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
-      const user = await this.createUser(this.getAccount(), this.config);
-      const factory = new AMMFactory(user.signer, this.config.addresses.AMMFactory);
+      const factory = new AMM(user.signer, this.config.addresses.AMMFactory);
+      const amm = await factory.calculateExchangeAddress(market, paraShareToken, fee);
 
-      const { amm, lpTokens } = await factory.addAMM(market, paraShareToken, fee, cash, yesPercent, noPercent);
-      console.log(`AMM Exchange ${amm.address}; received ${lpTokens.toString()} LP tokens`);
+      await factory.doAddLiquidity(
+        recipient,
+        NULL_ADDRESS,
+        false,
+        market,
+        paraShareToken,
+        fee,
+        cash,
+        yesPercent,
+        noPercent
+      );
+      const lpTokens = await factory.liquidityTokenBalance(amm, user.account.address);
+
+      console.log(`AMM Exchange ${amm}; received ${lpTokens.toString()} LP tokens`);
     }
   });
 
@@ -130,18 +144,21 @@ export function addAMMScripts(flash: FlashSession) {
     async call(this: FlashSession, args: FlashArguments) {
       const user = await this.createUser(this.getAccount(), this.config);
 
-      const market = user.augur.contracts.marketFromAddress(args.market as string);
+      const market = args.market as string;
       const fee = typeof args.fee === 'undefined' ? new BigNumber(3) : new BigNumber(args.fee as string);
       const cash = new BigNumber(args.cash as string);
       const recipient = args.recipient as string || user.account.address;
 
       const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
-      const factory = new AMMFactory(user.signer, this.config.addresses.AMMFactory);
-      const amm = await factory.getAMMExchange(market.address, paraShareToken, fee);
+      const factory = new AMM(user.signer, this.config.addresses.AMMFactory);
+      const amm = await factory.calculateExchangeAddress(market, paraShareToken, fee);
 
-      const lpTokens = await amm.addLiquidity(recipient, cash);
+      const originalLpTokens = await factory.liquidityTokenBalance(amm, user.account.address);
+      await factory.doAddLiquidity(recipient, null, true, market, paraShareToken, fee, cash);
+      const currentLpTokens = await factory.liquidityTokenBalance(amm, user.account.address);
+      const gainedLpTokens = currentLpTokens.minus(originalLpTokens);
 
-      console.log(`LP Tokens acquired: ${lpTokens}`);
+      console.log(`LP Tokens acquired: ${gainedLpTokens}`);
     }
   });
 
@@ -179,7 +196,7 @@ export function addAMMScripts(flash: FlashSession) {
     async call(this: FlashSession, args: FlashArguments) {
       const user = await this.createUser(this.getAccount(), this.config);
 
-      const market = user.augur.contracts.marketFromAddress(args.market as string);
+      const market = args.market as string;
       const fee = typeof args.fee === 'undefined' ? new BigNumber(3) : new BigNumber(args.fee as string);
       const cash = new BigNumber(args.cash as string);
       const yesPercent = args.ratio ? new BigNumber(args.ratio as string) : new BigNumber(50);
@@ -189,12 +206,15 @@ export function addAMMScripts(flash: FlashSession) {
       const noPercent = new BigNumber(100).minus(yesPercent);
 
       const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
-      const factory = new AMMFactory(user.signer, this.config.addresses.AMMFactory);
-      const amm = await factory.getAMMExchange(market.address, paraShareToken, fee);
+      const factory = new AMM(user.signer, this.config.addresses.AMMFactory);
+      const amm = await factory.calculateExchangeAddress(market, paraShareToken, fee);
 
-      const lpTokens = await amm.doAddInitialLiquidity(recipient, cash, yesPercent, noPercent);
+      const originalLpTokens = await factory.liquidityTokenBalance(amm, user.account.address);
+      await factory.doAddLiquidity(recipient, null, true, market, paraShareToken, fee, cash, yesPercent, noPercent);
+      const currentLpTokens = await factory.liquidityTokenBalance(amm, user.account.address);
+      const gainedLpTokens = currentLpTokens.minus(originalLpTokens);
 
-      console.log(`LP Tokens acquired: ${lpTokens}`);
+      console.log(`LP Tokens acquired: ${gainedLpTokens}`);
     }
   });
 
@@ -227,7 +247,7 @@ export function addAMMScripts(flash: FlashSession) {
     async call(this: FlashSession, args: FlashArguments) {
       const user = await this.createUser(this.getAccount(), this.config);
 
-      const market = user.augur.contracts.marketFromAddress(args.market as string);
+      const market = args.market as string;
       const fee = typeof args.fee === 'undefined' ? new BigNumber(3) : new BigNumber(args.fee as string);
       const cash = new BigNumber(args.cash as string);
       const yesPercent = args.ratio ? new BigNumber(args.ratio as string) : new BigNumber(50);
@@ -237,10 +257,8 @@ export function addAMMScripts(flash: FlashSession) {
       const noPercent = new BigNumber(100).minus(yesPercent);
 
       const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
-      const factory = new AMMFactory(user.signer, this.config.addresses.AMMFactory);
-      const amm = await factory.getAMMExchange(market.address, paraShareToken, fee);
-
-      const lpTokens = await amm.rateAddInitialLiquidity(recipient, cash, yesPercent, noPercent);
+      const factory = new AMM(user.signer, this.config.addresses.AMMFactory);
+      const lpTokens = await factory.getAddLiquidity(recipient, null, false, market, paraShareToken, fee, cash, yesPercent, noPercent);
 
       console.log(`LP Tokens you would acquire: ${lpTokens}`);
     }
@@ -261,9 +279,9 @@ export function addAMMScripts(flash: FlashSession) {
         description: 'AMM fee, out of 1000. Default=3',
       },
       {
-        name: 'shares',
-        abbr: 's',
-        description: 'How many atto shares you want.',
+        name: 'cash',
+        abbr: 'c',
+        description: 'How much cash you want to use to buy shares.',
         required: true,
       },
       {
@@ -278,14 +296,14 @@ export function addAMMScripts(flash: FlashSession) {
 
       const market = user.augur.contracts.marketFromAddress(args.market as string);
       const fee = typeof args.fee === 'undefined' ? new BigNumber(3) : new BigNumber(args.fee as string);
-      const shares = new BigNumber(args.shares as string);
+      const cash = new BigNumber(args.cash as string);
       const yes = Boolean(args.yes);
 
       const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
-      const factory = new AMMFactory(user.signer, this.config.addresses.AMMFactory);
-      const amm = await factory.getAMMExchange(market.address, paraShareToken, fee);
+      const factory = new AMM(user.signer, this.config.addresses.AMMFactory);
+      const amm = await factory.calculateExchangeAddress(market.address, paraShareToken, fee);
 
-      const cash = await amm.rateEnterPosition(shares, yes);
+      const shares = await factory.getEnterPosition(amm, cash, yes, true);
 
       console.log(`Cash needed to get "${shares.toFixed()}" shares: ${cash.toFixed()}`);
     }
@@ -306,9 +324,9 @@ export function addAMMScripts(flash: FlashSession) {
         description: 'AMM fee, out of 1000. Default=3',
       },
       {
-        name: 'shares',
-        abbr: 's',
-        description: 'How many atto shares you want.',
+        name: 'cash',
+        abbr: 'c',
+        description: 'How much cash you want to use to buy shares.',
         required: true,
       },
       {
@@ -323,15 +341,15 @@ export function addAMMScripts(flash: FlashSession) {
 
       const market = user.augur.contracts.marketFromAddress(args.market as string);
       const fee = typeof args.fee === 'undefined' ? new BigNumber(3) : new BigNumber(args.fee as string);
-      const shares = new BigNumber(args.shares as string);
+      const cash = new BigNumber(args.cash as string);
       const yes = Boolean(args.yes);
 
       const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
-      const factory = new AMMFactory(user.signer, this.config.addresses.AMMFactory);
-      const amm = await factory.getAMMExchange(market.address, paraShareToken, fee);
+      const factory = new AMM(user.signer, this.config.addresses.AMMFactory);
+      const amm = await factory.calculateExchangeAddress(market.address, paraShareToken, fee);
 
-      const tx = await amm.doEnterPosition(shares, yes, shares);
-      const cash = new BigNumber(tx.data)
+      const shares = await factory.getEnterPosition(amm, cash, yes, true);
+      await factory.doEnterPosition(amm, cash, yes);
 
       console.log(`You paid ${cash.toFixed()} cash for ${shares.toFixed()} ${yes ? 'yes' : 'no'} shares`);
     }
@@ -363,12 +381,12 @@ export function addAMMScripts(flash: FlashSession) {
       const market = user.augur.contracts.marketFromAddress(args.market as string);
       const fee = typeof args.fee === 'undefined' ? new BigNumber(3) : new BigNumber(args.fee as string);
       const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
-      const factory = new AMMFactory(user.signer, this.config.addresses.AMMFactory);
-      const amm = await factory.getAMMExchange(market.address, paraShareToken, fee);
+      const factory = new AMM(user.signer, this.config.addresses.AMMFactory);
+      const amm = await factory.calculateExchangeAddress(market.address, paraShareToken, fee);
 
-      const lpTokens = await amm.totalSupply()
+      const lpTokens = await factory.exchangeLiquidity(amm);
 
-      console.log(`Total LP tokens for ${amm.address}: ${lpTokens.toString()}`);
+      console.log(`Total LP tokens for ${amm}: ${lpTokens.toString()}`);
     }
   });
 
@@ -393,9 +411,9 @@ export function addAMMScripts(flash: FlashSession) {
       const market = user.augur.contracts.marketFromAddress(args.market as string);
       const fee = typeof args.fee === 'undefined' ? new BigNumber(3) : new BigNumber(args.fee as string);
       const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
-      const factory = new AMMFactory(this.provider, this.config.addresses.AMMFactory);
-      const amm = await factory.getAMMExchange(market.address, paraShareToken, fee);
-      console.log(`AMM address: ${amm.contract.address}`);
+      const factory = new AMM(this.provider, this.config.addresses.AMMFactory);
+      const amm = await factory.exchangeAddress(market.address, paraShareToken, fee);
+      console.log(`AMM address: ${amm}`);
     }
   });
 
@@ -420,11 +438,17 @@ export function addAMMScripts(flash: FlashSession) {
       const market = user.augur.contracts.marketFromAddress(args.market as string);
       const fee = typeof args.fee === 'undefined' ? new BigNumber(3) : new BigNumber(args.fee as string);
       const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
-      const factory = new AMMFactory(this.provider, this.config.addresses.AMMFactory);
+      const factory = new AMM(this.provider, this.config.addresses.AMMFactory);
 
-      const exists = await factory.ammExists(market.address, paraShareToken, fee);
-      const ammAddress = await factory.ammAddress(market.address, paraShareToken, fee);
-      console.log(`AMM ${ammAddress} ${exists? 'exists' : 'does not exist'}`);
+      const maybeAddress = await factory.exchangeAddress(market.address, paraShareToken, fee);
+      if (maybeAddress !== NULL_ADDRESS) {
+        console.log(`AMM ${maybeAddress} exists`);
+      } else {
+        const ammAddress = await factory.calculateExchangeAddress(market.address, paraShareToken, fee);
+        console.log(`AMM ${ammAddress} exists`);
+      }
+
+
     }
   });
 

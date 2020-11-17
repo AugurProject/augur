@@ -40,7 +40,8 @@ def test_amm_add_with_liquidity(contractsFixture, market, cash, shareToken, fact
     cash.faucet(cost)
     cash.approve(factory.address, 10 ** 48)
 
-    ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, cost, ratioFactor, keepYes)
+    ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, cost, ratioFactor, keepYes, account0)
+    assert ammAddress != nullAddress
 
 
 def test_amm_add_with_liquidity2(contractsFixture, market, cash, shareToken, factory, account0):
@@ -51,7 +52,9 @@ def test_amm_add_with_liquidity2(contractsFixture, market, cash, shareToken, fac
     cash.faucet(cost)
     cash.approve(factory.address, 10 ** 48)
 
-    ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, cost, ratioFactor, keepYes)
+    ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, cost, ratioFactor, keepYes, account0)
+    assert ammAddress != nullAddress
+
 
 def test_amm_initial_liquidity(contractsFixture, market, cash, shareToken, factory, amm, account0, kitchenSinkSnapshot):
     if not contractsFixture.paraAugur:
