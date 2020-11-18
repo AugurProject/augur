@@ -592,6 +592,7 @@ export async function estimateTrade(augurClient, trade: TradeInfo) {
   if (!augurClient || !trade.amm.id) return console.error('estimateTrade: augurClient is null or amm address')
   const tradeDirection = getTradeType(trade)
 
+
   let outputYesShares = false
   let breakdown = null
 
@@ -623,12 +624,12 @@ export async function estimateTrade(augurClient, trade: TradeInfo) {
 
     breakdown = await augurClient.amm.getExitPosition(
       trade.amm.id,
-      String(invalidShares),
-      String(noShares),
-      String(yesShares),
+      invalidShares,
+      noShares,
+      yesShares,
       true
     )
-    return String(breakdown['_cashPayout'])
+    return String(breakdown['cash'])
   }
   if (tradeDirection === TradingDirection.SWAP) {
     breakdown = await augurClient.amm.getSwap(
@@ -678,11 +679,11 @@ export async function doTrade(augurClient, trade: TradeInfo, minAmount: string) 
       invalidShares = BN.minimum(invalidShares, yesShares)
     }
 
-    return augurClient.amm.doExitPosition(trade.amm.id, invalidShares, noShares, yesShares, new BN(String(minAmount)), true)
+    return augurClient.amm.doExitPosition(trade.amm.id, invalidShares, noShares, yesShares, new BN(String(minAmount)))
   }
 
   if (tradeDirection === TradingDirection.SWAP) {
-    return augurClient.amm.doSwap(trade.amm.id, new BN(String(trade.inputAmount.raw)), !outputYesShares, new BN(minAmount), true)
+    return augurClient.amm.doSwap(trade.amm.id, new BN(String(trade.inputAmount.raw)), !outputYesShares, new BN(minAmount))
   }
   return null
 }
