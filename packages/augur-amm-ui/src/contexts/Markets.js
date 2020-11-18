@@ -348,7 +348,6 @@ export function usePositionMarkets(positions) {
 
 export function useAmmMarkets(balances) {
   const [state] = useMarketDataContext()
-  const cashTokens = useMarketCashTokens()
   const { markets } = state
   const ammMarkets = []
   if (markets) {
@@ -357,9 +356,8 @@ export function useAmmMarkets(balances) {
       const market = markets.find(m => m.amms.map(a => a.id).includes(ammId))
       const groupedAmms = market ? market.amms.reduce((group, a) => ({ ...group, [a.id]: a }), {}) : {}
       const shareToken = groupedAmms[ammId]?.shareToken;
-      const cash = cashTokens[shareToken?.cash?.id]
       if (market && balance !== '0') {
-        ammMarkets.push({ ...market, balance, shareToken, cash })
+        ammMarkets.push({ ...market, balance, shareToken })
       }
     })
   }
