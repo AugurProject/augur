@@ -339,9 +339,10 @@ export function useMarketCashTokens() {
 export function usePositionMarkets(positions) {
   const [state] = useMarketDataContext()
   const { markets } = state
-  const marketPositions = Object.keys(positions).map(marketId => {
+  const marketPositions = positions.map(position => {
+    const marketId = position.marketId;
     const market = markets.find(m => m.id === marketId)
-    return { market, ...positions[marketId] }
+    return { market, ...position }
   })
   return marketPositions
 }

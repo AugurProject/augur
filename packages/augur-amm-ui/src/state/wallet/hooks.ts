@@ -173,7 +173,7 @@ export function useMarketShareBalances(): [MarketBalance[], boolean] {
 }
 
 function buildMarketBalance(pTokenAmounts, keyedParaTokens, keyedMarkets, outcomeNames) {
-  return pTokenAmounts.reduce((memo, pTokenAmount) => {
+  return Object.values(pTokenAmounts.reduce((memo, pTokenAmount) => {
     const { pTokenAddr, marketId, amount } = pTokenAmount
     const key = `${pTokenAddr}-${marketId}`
     if (amount === '0') return memo
@@ -196,13 +196,13 @@ function buildMarketBalance(pTokenAmounts, keyedParaTokens, keyedMarkets, outcom
       memo[key] = existingItem
     }
     return memo
-  }, {})
+  }, {})) as MarketBalance[]
 }
 
 export function useMarketBalance(marketId: string, cash: string): MarketBalance {
   const [balances] = useMarketShareBalances()
 
-  return useMemo(() => (!cash || !marketId ? null : balances.find(b => b.marketId === marketId && b.cash === cash)), [
+  return useMemo(() => (!cash || !marketId ? null : (balances || []).find(b => b.marketId === marketId && b.cash === cash)), [
     marketId,
     cash,
     balances
