@@ -405,7 +405,7 @@ export const useNotifications = () => {
 
   const markAllSeen = () => {
     const notifications = getNotifications();
-    notifications.map(notification => markAsNotNew(notification, notifications, updateNotifications));
+    notifications.filter(not => not.isNew).map(notification => markAsNotNew(notification, notifications, updateNotifications));
   }
 
   useEffect(() => {
