@@ -49,7 +49,7 @@ export const SelectProductDropdown = () => {
     link: makePath(REPORTING),
   }];
 
-  const inputRef = useRef();
+  const inputRef = useRef(null);
 
   const handleClick = event => {
     if (inputRef.current.contains(event.target)) {
