@@ -283,6 +283,7 @@ export interface RadioBarProps extends BaseRadioButtonProp {
   errorMessage?: string;
   multiSelect?: boolean;
   disabled?: boolean;
+  label?: string;
 }
 
 export interface ReportingRadioBarProps extends BaseRadioButtonProp {
@@ -1150,6 +1151,7 @@ export const RadioBar = ({
   errorMessage,
   multiSelect,
   disabled,
+  label
 }: RadioBarProps) => (
   <div
     className={classNames(Styles.RadioBar, {
@@ -1164,7 +1166,7 @@ export const RadioBar = ({
   >
     {multiSelect && <Checkbox isChecked={checked} />}
     {!multiSelect && (checked ? FilledRadio : EmptyRadio)}
-    <span>{header}</span>
+    <span>{label ? label : header}</span>
     {expandable && checked ? (
       <>
         <TextInput
