@@ -279,16 +279,16 @@ contract AMMExchange is IAMMExchange, ERC20 {
     }
 
     function swap(uint256 _inputShares, bool _inputYes, uint256 _minOutputShares) external returns (uint256) {
-        uint _outputShares = rateSwap(_inputShares, _inputYes);
+        uint256 _outputShares = rateSwap(_inputShares, _inputYes);
 
         require(_outputShares >= _minOutputShares, "AugurCP: Swap would yield too few output shares.");
 
         if (_inputYes) { // lose yesses, gain nos
-            shareToken.unsafeTransferFrom(msg.sender, address(this), YES, _inputShares);
+            factory.shareTransfer(augurMarket, shareToken, fee, msg.sender, address(this), uint256(0), uint256(0), _inputShares);
             shareToken.unsafeTransferFrom(address(this), msg.sender, NO, _outputShares);
         } else { // gain yesses, lose nos
             shareToken.unsafeTransferFrom(address(this), msg.sender, YES, _outputShares);
-            shareToken.unsafeTransferFrom(msg.sender, address(this), NO, _inputShares);
+            factory.shareTransfer(augurMarket, shareToken, fee, msg.sender, address(this), uint256(0), _inputShares, uint256(0));
         }
 
         emit SwapPosition(msg.sender, _inputShares, _outputShares, _inputYes);

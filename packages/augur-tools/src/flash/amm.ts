@@ -349,7 +349,7 @@ export function addAMMScripts(flash: FlashSession) {
       const amm = await factory.calculateExchangeAddress(market.address, paraShareToken, fee);
 
       const shares = await factory.getEnterPosition(amm, cash, yes, true);
-      await factory.doEnterPosition(amm, cash, yes);
+      await factory.doEnterPosition(amm, cash, yes, shares);
 
       console.log(`You paid ${cash.toFixed()} cash for ${shares.toFixed()} ${yes ? 'yes' : 'no'} shares`);
     }

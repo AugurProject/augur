@@ -51,7 +51,7 @@ export function useSwapCallback(
         callback: async function onSwap(): Promise<string> {
           return doTrade(augurClient, trade, minAmount)
             .then((response: any) => {
-              console.error('tx response', JSON.stringify(response))
+              console.log('tx response', JSON.stringify(response))
               const inputSymbol = trade?.inputAmount?.currency?.symbol
               const outputSymbol = trade?.currencyOut?.symbol
               const inputAmount = trade?.inputAmount?.toSignificant(6)
