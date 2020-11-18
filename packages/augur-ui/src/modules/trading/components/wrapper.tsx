@@ -15,6 +15,10 @@ import {
   MODAL_INITIALIZE_ACCOUNT,
   MODAL_DISCLAIMER,
   TRADING_TUTORIAL,
+  DAI,
+  USDC,
+  USDT,
+  WETH,
 } from 'modules/common/constants';
 import Styles from 'modules/trading/components/wrapper.styles.less';
 import { OrderButton, PrimaryButton } from 'modules/common/buttons';
@@ -151,7 +155,7 @@ const Wrapper = ({
     accountPositions,
     userOpenOrders,
     loginAccount: {
-      balances: { dai, eth },
+      balances: { weth, usdt, usdc, dai },
       tradingApproved,
     },
     theme,
@@ -159,9 +163,7 @@ const Wrapper = ({
     restoredAccount,
     blockchain: { currentAugurTimestamp: currentTimestamp },
     actions: { setModal },
-    env: {
-      ui: { reportingOnly: disableTrading },
-    },
+    env: { ui },
   } = useAppStatusStore();
   const {
     orderProperties,
@@ -182,6 +184,7 @@ const Wrapper = ({
     ? totalTradingBalance().minus(newMarket.initialLiquidityDai)
     : totalTradingBalance();
   const disclaimerSeen = !!getValueFromlocalStorage(DISCLAIMER_SEEN);
+  const disableTrading = ui?.reportingEnabled;
 
   const hasHistory = !!accountPositions[marketId] || !!userOpenOrders[marketId];
   // if outcome id changes we clear form
@@ -399,7 +402,29 @@ const Wrapper = ({
 
   function getActionButton() {
     const { selectedNav } = orderProperties;
-    const hasFunds = !!dai;
+    const {
+      loginAccount,
+      env: { ui, paraDeploy, paraDeploys },
+    } = useAppStatusStore();
+    const disableTrading = ui?.reportingEnabled;
+    let hasFunds = false;
+
+    if (!paraDeploys || !paraDeploys[paraDeploy]) return null;
+    const paraTokenName = paraDeploys[paraDeploy].name;
+
+    if (paraTokenName === USDT) {
+      hasFunds = !!loginAccount.balances.usdt;
+    }
+    else if (paraTokenName === USDC) {
+      hasFunds = !!loginAccount.balances.usdc;
+    }
+    else if (paraTokenName === DAI) {
+      hasFunds = !!loginAccount.balances.dai;
+    }
+    else if (paraTokenName === WETH) {
+      hasFunds = !!loginAccount.balances.weth;
+    }
+
     const validation = orderValidation(
       {...orderProperties},
       null,
@@ -413,7 +438,9 @@ const Wrapper = ({
         selectedOutcome,
         currentTimestamp,
       },
-      0
+      0,
+      false,
+      paraTokenName
     );
     let actionButton: any = (
       <OrderButton
@@ -444,11 +471,21 @@ const Wrapper = ({
           }
         }}
         disabled={
-          !validation.isOrderValid
+          !validation.isOrderValid || disableTrading
         }
       />
     );
     switch (true) {
+      case disableTrading:
+        actionButton = (
+          <PrimaryButton
+            id="reporting-ui"
+            disabled={true}
+            action={() => {}}
+            text="Trading Disabled in Reporting UI"
+          />
+        );
+        break;
       case !restoredAccount && !isLogged && !tradingTutorial:
         actionButton = (
           <PrimaryButton

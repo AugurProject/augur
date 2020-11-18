@@ -19,6 +19,9 @@ import {
   PUBLICTRADE,
   MODAL_ADD_FUNDS,
   ETH,
+  WETH,
+  DAI,
+  DEFAULT_PARA_TOKEN,
 } from 'modules/common/constants';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -33,6 +36,7 @@ import {
   formatGasCostToEther,
   formatShares,
   formatNumber,
+  formatEther,
 } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
 import { Trade, MarketData, OutcomeFormatted } from 'modules/types';
@@ -118,12 +122,12 @@ export const Confirm = ({
 }: ConfirmProps) => {
   const {
     env: {
-      ui: { reportingOnly: disableTrading },
+      paraDeploy, paraDeploys,
     },
     newMarket,
     pendingQueue,
     loginAccount: {
-      balances: { eth },
+      balances: { eth, weth },
       tradingApproved,
       address,
       affiliate,
@@ -135,12 +139,12 @@ export const Confirm = ({
   const {
     orderProperties: { postOnlyOrder, allowPostOnlyOrder },
   } = useTradingStore();
-  let availableDai = totalTradingBalance();
+  let availableBalance = totalTradingBalance();
   if (initialLiquidity) {
-    availableDai = availableDai.minus(newMarket.initialLiquidityDai);
+    availableBalance = availableBalance.minus(newMarket.initialLiquidityDai);
   }
 
-  const sweepStatus = pendingQueue[TRANSACTIONS]?.[CREATEAUGURWALLET]?.status;
+  const paraTokenName = paraDeploys && paraDeploy && paraDeploys[paraDeploy].name || DEFAULT_PARA_TOKEN;
   const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
   const availableEth = createBigNumber(eth);
   const { id: selectedOutcomeId, description: outcomeName } = selectedOutcome;
@@ -184,6 +188,9 @@ export const Confirm = ({
   const displayfee = `$${gasCostDai.formattedValue}`;
 
   const messages = (() => {
+    // don't show any messages in reporting UI
+    if (process.env.REPORTING_ONLY) return null;
+
     let numTrades = loopLimit ? Math.ceil(numFills / loopLimit) : numFills;
     numTrades = isNaN(numTrades) ? 0 : numTrades;
     let messages: Message | null = null;
@@ -228,26 +235,55 @@ export const Confirm = ({
         };
       }
 
-      if (totalCost && potentialDaiLoss) {
-        // GAS error in ETH
-        if (gasCostInEth.gte(availableEth)) {
-          messages = {
-            header: 'Insufficient ETH',
-            type: ERROR,
-            message: `You do not have enough funds to place this order. ${gasCostInEth.toFixed()} ETH required for gas.`,
-          };
-        }
-
-        if (createBigNumber(potentialDaiLoss.fullPrecision).gt(availableDai)) {
-          messages = {
-            header: 'Insufficient DAI',
-            type: ERROR,
-            message: 'You do not have enough DAI to place this order',
-          };
-        }
+      if (paraTokenName && createBigNumber(potentialDaiLoss.fullPrecision).gt(availableBalance)) {
+        messages = {
+          header: `Insufficient ${paraTokenName}`,
+          type: ERROR,
+          message: `You do not have enough ${paraTokenName} to place this order`,
+        };
       }
 
-      if (!allowPostOnlyOrder) {
+      if (process.env.REPORTING_ONLY && !tradingTutorial) {
+        messages = {
+          header: 'Reporting Only',
+          type: WARNING,
+          message: 'Trading is disabled',
+        };
+      }
+
+      if (
+        !tradingTutorial &&
+        totalCost && totalCost.value > 0 &&
+        createBigNumber(gasCostInEth).gte(createBigNumber(availableEth))
+      ) {
+        const ethDo = formatEther(gasCostInEth);
+        messages = {
+          header: 'Insufficient ETH',
+          type: ERROR,
+          message: `You do not have enough funds to place this order. ${ethDo.formatted} ETH required for gas.`,
+        };
+      }
+
+      if (
+        paraTokenName &&
+        paraTokenName === WETH &&
+        !tradingTutorial &&
+        totalCost && totalCost.value > 0 &&
+        createBigNumber(potentialDaiLoss.fullPrecision).gt(
+          createBigNumber(weth)
+        )
+      ) {
+        const hasEth = createBigNumber(availableEth).gt("0.001")
+        messages = {
+          header: 'Insufficient WETH',
+          type: ERROR,
+          message: `You do not have enough WETH${hasEth ? `, wrap some of ${formatEther(availableEth).formatted} ETH`: ''}`,
+        };
+      }
+
+      if (
+        !allowPostOnlyOrder && !tradingTutorial
+      ) {
         messages = {
           header: 'POST ONLY ORDER',
           type: ERROR,
@@ -255,13 +291,6 @@ export const Confirm = ({
         };
       }
 
-      if (disableTrading) {
-        messages = {
-          header: 'Reporting Only',
-          type: WARNING,
-          message: 'Trading is disabled',
-        };
-      }
     }
 
     return messages;
@@ -407,6 +436,7 @@ export const Confirm = ({
                 title="One time approval needed"
                 buttonName="Approve"
                 userEthBalance={String(availableEth)}
+                ignore={Boolean(process.env.REPORTING_ONLY)}
                 gasPrice={gasPrice}
                 checkApprovals={() => approvalsNeededToTrade(address)}
                 doApprovals={() => approveToTrade(address, affiliate)}

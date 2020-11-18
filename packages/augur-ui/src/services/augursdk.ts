@@ -2,8 +2,8 @@ import type { SDKConfiguration } from '@augurproject/artifacts';
 import type { EthersSigner } from '@augurproject/contract-dependencies-ethers';
 import type { Augur, Connectors } from '@augurproject/sdk';
 
-import { NetworkId } from '@augurproject/utils';
-import type { JsonRpcProvider } from 'ethers/providers';
+import { logger, NetworkId } from '@augurproject/utils';
+import type { JsonRpcProvider } from '@ethersproject/providers';
 import { NULL_ADDRESS } from 'modules/common/constants';
 
 import {
@@ -42,6 +42,16 @@ export class SDK {
     const { Connectors, EthersProvider, createClient } = await import(/* webpackChunkName: 'augur-sdk' */ '@augurproject/sdk');
 
     this.config = config;
+    let paraOfChoice = process.env.PARA_DEPLOY_TOKEN_NAME
+    for(const key of Object.keys(config.paraDeploys)) {
+      if (!paraOfChoice) paraOfChoice = config.paraDeploys[key].name;
+      if(config.paraDeploys[key].name === paraOfChoice) {
+        config.paraDeploy = key;
+        logger.log(`Setting paraDeploy name ${paraOfChoice} with address ${key}.`)
+        break;
+      }
+    }
+
 
     if (config.paraDeploys) {
       let paraOfChoice = process.env.PARA_DEPLOY_TOKEN_NAME

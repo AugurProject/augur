@@ -669,6 +669,17 @@ export const DepositButton = (props: DefaultActionButtonProps) => (
 );
 
 
+export const WrapUnwrapEthAddfunds = (props: DefaultActionButtonProps) => (
+  <button
+    onClick={e => props.action(e)}
+    className={Styles.CurrenyActionButton}
+    disabled={props.disabled}
+    title={'Wrap/Unwrap ETH'}
+  >
+    Wrap/Unwrap
+  </button>
+);
+
 export const AddFundsButton = (props: DefaultActionButtonProps) => {
   const {
     actions: { setModal },
@@ -730,14 +741,14 @@ export const REPFaucetButton = (props: DefaultActionButtonProps) => (
   </button>
 );
 
-export const DAIFaucetButton = (props: DefaultActionButtonProps) => (
+export const ParaTokenFaucetButton = (props: DefaultActionButtonProps) => (
   <button
     onClick={e => props.action(e)}
-    className={Styles.DAIFaucetButton}
+    className={Styles.ParaTokenFaucetButton}
     disabled={props.disabled}
-    title={props.title || 'DAI Faucet'}
+    title={props.title}
   >
-    <span>DAI Faucet</span>
+    <span>{props.title}</span>
     {DaiLogoIcon}
   </button>
 );
@@ -745,7 +756,7 @@ export const DAIFaucetButton = (props: DefaultActionButtonProps) => (
 export const ApprovalButton = (props: DefaultActionButtonProps) => (
   <button
     onClick={e => props.action(e)}
-    className={Styles.DAIFaucetButton}
+    className={Styles.ParaTokenFaucetButton}
     disabled={props.disabled}
     title={props.title || 'Approval'}
   >

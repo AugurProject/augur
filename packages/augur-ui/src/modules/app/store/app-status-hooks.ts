@@ -215,22 +215,6 @@ export function AppStatusReducer(state, action) {
       updatedState[Ox_ENABLED] = action.isOxEnabled;
       break;
     }
-    case SET_ETH_TO_DAI_RATE: {
-      updatedState[ETH_TO_DAI_RATE] = action.ethToDaiRate;
-      break;
-    }
-    case SET_REP_TO_DAI_RATE: {
-      updatedState[REP_TO_DAI_RATE] = action.repToDaiRate;
-      break;
-    }
-    case SET_USDT_TO_DAI_RATE: {
-      updatedState[USDT_TO_DAI_RATE] = action.usdtToDaiRate;
-      break;
-    }
-    case SET_USDC_TO_DAI_RATE: {
-      updatedState[USDC_TO_DAI_RATE] = action.usdcToDaiRate;
-      break;
-    }
     case UPDATE_DAI_RATES: {
       updatedState[ETH_TO_DAI_RATE] =
         action.ethToDaiRate || updatedState[ETH_TO_DAI_RATE];
@@ -713,15 +697,7 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       setIsMobile: isMobile => dispatch({ type: SET_IS_MOBILE, isMobile }),
       setOxEnabled: isOxEnabled =>
         dispatch({ type: SET_Ox_ENABLED, isOxEnabled }),
-      updateDaiRates: rates => dispatch({ type: UPDATE_DAI_RATES, ...rates }),
-      setEthToDaiRate: ethToDaiRate =>
-        dispatch({ type: SET_ETH_TO_DAI_RATE, ethToDaiRate }),
-      setRepToDaiRate: repToDaiRate =>
-        dispatch({ type: SET_REP_TO_DAI_RATE, repToDaiRate }),
-      setUsdtToDaiRate: usdtToDaiRate =>
-        dispatch({ type: SET_USDT_TO_DAI_RATE, usdtToDaiRate }),
-      setUsdcToDaiRate: usdcToDaiRate =>
-        dispatch({ type: SET_USDC_TO_DAI_RATE, usdcToDaiRate }),
+        updateTokenRates: rates => dispatch({ type: UPDATE_DAI_RATES, ...rates }),
       setOxStatus: OxStatus => dispatch({ type: SET_Ox_STATUS, OxStatus }),
       setRestoredAccount: restoredAccount =>
         dispatch({ type: SET_RESTORED_ACCOUNT, restoredAccount }),

@@ -141,7 +141,7 @@ export const Paginator = ({
   const { reportingListState } = useMarketsStore();
   const markets = (
     (reportingListState[reportingType] || {}).marketIds || []
-  ).map(id => selectMarket(id) || []);
+  ).map(id => selectMarket(id) || {});
 
   return (
     <>

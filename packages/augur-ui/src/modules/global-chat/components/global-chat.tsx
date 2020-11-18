@@ -6,9 +6,9 @@ import { Close, ThickChevron } from 'modules/common/icons';
 import classNames from 'classnames';
 import { THEMES } from 'modules/common/constants';
 
-const ThreeBoxChat = lazy(() =>
-  import(/* webpackChunkName: '3box-chat' */ 'modules/global-chat/components/three-box-chat')
-);
+// const ThreeBoxChat = lazy(() =>
+//   import(/* webpackChunkName: '3box-chat' */ 'modules/global-chat/components/three-box-chat')
+// );
 
 export const GlobalChat = () => {
   const [show, setShow] = useState(false);
@@ -53,17 +53,6 @@ export const GlobalChat = () => {
           </div>
           <iframe src="./chat/index.html#/channel/augur" name={theme} key={theme} />
         </div>
-      )}
-      {isLogged && chat === '3box' && (
-        <Suspense fallback={null}>
-          <ThreeBoxChat
-            provider={provider}
-            initialize3box={setInitialized3Box}
-            initialized3box={initialized3box || {}}
-            openOnMount
-            popupChat
-          />
-        </Suspense>
       )}
     </div>
   );

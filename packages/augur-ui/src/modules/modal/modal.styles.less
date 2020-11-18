@@ -4813,3 +4813,69 @@ div.ButtonsRow:last-of-type {
     margin: @size-10 0;
   }
 }
+
+.WrapUnwrapEth {
+  align-items: center;
+  display: flex;
+  border: @size-2 solid var(--color-secondary-action-outline);
+  border-radius: @size-3;
+  justify-content: space-between;
+  margin: @size-16 0 @size-24 0;
+  padding: @size-12 @size-16;
+  width: 100%;
+
+  @media @breakpoint-mobile {
+    flex-direction: column;
+    text-align: center;
+
+  }
+
+  > div:first-of-type {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+
+    > span:first-of-type {
+      .text-14-bold;
+
+      color: var(--color-primary-text);
+    }
+
+    > span:last-of-type {
+      .text-14;
+
+      color: var(--color-secondary-text);
+    }
+
+    @media @breakpoint-mobile {
+      > span {
+        margin: 0 0 @size-6 0;
+      }
+    }
+  }
+}
+
+.WrapUnwrapEthCondensed {
+  align-items: center;
+  background: var(--color-module-background);
+  display: flex;
+  justify-content: space-between;
+  padding: @size-16;
+
+  > div:first-of-type {
+    display: flex;
+    flex-direction: column;
+
+    > span:first-of-type {
+      .text-12-bold;
+
+      color: var(--color-primary-text);
+    }
+
+    > span:last-of-type {
+      .text-12;
+
+      color: var(--color-secondary-text)
+    }
+  }
+}

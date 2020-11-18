@@ -21,6 +21,8 @@ import { Markets } from 'modules/markets/store/markets';
 import { PendingOrders } from 'modules/app/store/pending-orders';
 import { updateAlert } from 'modules/alerts/actions/alerts';
 import { checkAccountApproval } from 'modules/auth/actions/approve-account';
+import { augurSdk } from 'services/augursdk';
+
 // liquidity should be an orderbook, example with yesNo:
 // { 1: [{ type, quantity, price, orderEstimate }, ...], ... }
 
@@ -158,6 +160,7 @@ const createZeroXLiquidityOrders = async (
   const { blockchain: { currentAugurTimestamp: timestamp }} = AppStatus.get();
   try {
     const fingerprint = undefined; // TODO: get this from state
+    const Augur = augurSdk ? augurSdk.get() : undefined;
     let i = 0;
     // set all orders to pending before processing them.
     for (i; i < orders.length; i++) {
@@ -212,7 +215,8 @@ const createZeroXLiquidityOrders = async (
               orderType: o.type === BUY ? 0 : 1,
               amount: convertDisplayAmountToOnChainAmount(
                 createBigNumber(o.shares),
-                createBigNumber(market.tickSize)
+                createBigNumber(market.tickSize),
+                Augur.precision,
               ),
               marketId: market.id,
             },

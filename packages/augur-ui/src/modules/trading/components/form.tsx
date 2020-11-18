@@ -8,10 +8,11 @@ import {
   SMALL_MOBILE,
   MIN_QUANTITY,
   GWEI_CONVERSION,
+  WETH,
 } from 'modules/common/constants';
 import FormStyles from 'modules/common/form-styles.less';
 import Styles from 'modules/trading/components/form.styles.less';
-import { ExclamationCircle } from 'modules/common/icons';
+import { ExclamationCircle, WethIcon } from 'modules/common/icons';
 import { SquareDropdown } from 'modules/common/selection';
 import { TextInput } from 'modules/common/form';
 import getPrecision from 'utils/get-number-precision';
@@ -127,8 +128,9 @@ const ValidationContainer = ({
   updateAndValidate,
   market,
   quantityValue,
+  paraTokenName,
 }) => {
-  const [low, high] = findNearestValues(quantityValue, market);
+  const [low, high] = findNearestValues(quantityValue, market, paraTokenName);
   return (
     <div className={Styles.ErrorContainer}>
       {errors[MULTIPLE_QUANTITY].map((error, key) => (
@@ -243,9 +245,14 @@ const Form = ({
   const {
     gasPriceInfo,
     blockchain: { currentAugurTimestamp: currentTimestamp },
+    env: { paraDeploy, paraDeploys },
   } = useAppStatusStore();
+
+  if (!paraDeploys || !paraDeploys[paraDeploy]) return null;
+  const paraTokenName = paraDeploys[paraDeploy].name;
+
   const isScalar = market.marketType === SCALAR;
-  const orderBook = initialLiquidity ? 
+  const orderBook = initialLiquidity ?
     formatOrderBook(market.orderBook[selectedOutcomeId]) :
     {};
 
@@ -284,7 +291,9 @@ const Form = ({
       selectedOutcome,
       currentTimestamp,
     },
-    confirmationTimeEstimation
+    confirmationTimeEstimation,
+    false,
+    paraTokenName,
   );
 
   useEffect(() => {
@@ -347,7 +356,7 @@ const Form = ({
     validateForm(EST_DAI, value.toString());
   }
 
-  function validateForm(property: string, rawValue) {
+  function validateForm(property: string, rawValue, paraTokenName) {
     const value =
       property !== EXPIRATION
         ? convertExponentialToDecimal(rawValue)
@@ -372,7 +381,9 @@ const Form = ({
         selectedOutcome,
         currentTimestamp,
       },
-      confirmationTimeEstimation
+      confirmationTimeEstimation,
+      false,
+      paraTokenName,
     );
 
     if (validationResults.errorCount > 0) {
@@ -485,7 +496,7 @@ const Form = ({
   const quantityValue = convertExponentialToDecimal(
     orderQuantity
   );
-  
+
   // TODO: figure out default outcome after we figure out ordering of the outcomes
   const defaultOutcome = selectedOutcome !== null ? selectedOutcome.id : 2;
   const advancedOptions = initialLiquidity
@@ -516,7 +527,7 @@ const Form = ({
           <label htmlFor="quantity">Quantity</label>
           {!isScalar && (
             <label>
-              (must be a multiple of {findMultipleOf(market).toString()})
+              (must be a multiple of {findMultipleOf(market, paraTokenName).toString()})
             </label>
           )}
           <div
@@ -596,7 +607,7 @@ const Form = ({
                     behavior: 'smooth',
                   })
                 }
-                onChange={e => 
+                onChange={e =>
                   updateAndValidate(PRICE, e.target.value)
                 }
                 onBlur={e => {
@@ -614,7 +625,7 @@ const Form = ({
                     .length,
                 })}
               >
-                {isScalar ? scalarDenomination : '$'}
+                {isScalar ? scalarDenomination : paraTokenName === WETH ? WethIcon : '$'}
               </span>
             </div>
           </li>
@@ -705,7 +716,7 @@ const Form = ({
                   .length,
               })}
             >
-              $
+            {paraTokenName === 'WETH' ? WethIcon : '$'}
             </span>
           </div>
         </li>
@@ -845,6 +856,7 @@ const Form = ({
             updateAndValidate,
             market,
             quantityValue,
+            paraTokenName,
           }}
         />
       )}

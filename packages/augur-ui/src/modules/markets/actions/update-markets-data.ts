@@ -1,5 +1,13 @@
-import { Getters } from '@augurproject/sdk';
-import { Markets } from '../store/markets';
+import type { Getters } from '@augurproject/sdk';
+import { MarketInfos } from 'modules/types';
+
+export const UPDATE_MARKETS_DATA = 'UPDATE_MARKETS_DATA';
+export const REMOVE_MARKET = 'REMOVE_MARKET';
+
+export interface UpdateMarketsAction {
+  type: typeof UPDATE_MARKETS_DATA;
+  data: { marketInfos: MarketInfos };
+}
 
 export const addUpdateMarketInfos = (
   marketsInfo: Getters.Markets.MarketInfo[]
@@ -10,3 +18,15 @@ export const addUpdateMarketInfos = (
   );
   return marketInfos;
 };
+
+export const updateMarketsData = (
+  marketInfos: MarketInfos
+): UpdateMarketsAction => ({
+  type: UPDATE_MARKETS_DATA,
+  data: { marketInfos },
+});
+
+export const removeMarket = (marketId: string) => ({
+  type: REMOVE_MARKET,
+  data: { marketId },
+});

@@ -1836,7 +1836,7 @@ export const AddFundsHelp = props => (
       Add ETH to your {props.walletType} trading account.{' '}
       {props.walletType === ACCOUNT_TYPES.WEB3WALLET
         ? ''
-        : `${props.walletType} are our secure account and payment partners. ${props.walletType} will enable you to process the transaction fee without requiring Dai.`}{' '}
+        : `${props.walletType} are our secure account and payment partners. ${props.walletType} will enable you to process the transaction fee without requiring DAI.`}{' '}
       {props.walletType === ACCOUNT_TYPES.WEB3WALLET ? null : (
         <span onClick={() => props.showAddFundsModal()}>
           Add ETH to your {props.walletType} trading account

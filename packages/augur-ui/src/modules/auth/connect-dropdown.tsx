@@ -10,10 +10,14 @@ import {
   MODAL_UNIVERSE_SELECTOR,
   GAS_SPEED_LABELS,
   GAS_TIME_LEFT_LABELS,
-  TRADE_ORDER_GAS_MODAL_ESTIMATE
+  TRADE_ORDER_GAS_MODAL_ESTIMATE,
+  ETH,
+  WETH,
+  DEFAULT_PARA_TOKEN
 } from 'modules/common/constants';
 import {
   DaiLogoIcon,
+  WethIcon as WethIcon,
   EthIcon,
   helpIcon,
   LogoutIcon,
@@ -34,6 +38,8 @@ import { getGasCost } from 'modules/modal/gas';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import CommonModalStyles from 'modules/modal/common.styles.less';
 import Styles from 'modules/auth/connect-dropdown.styles.less';
+import { WrapUnwrapEth } from 'modules/modal/common';
+import { createBigNumber } from 'utils/create-big-number';
 
 const useGasInfo = () => {
   const {
@@ -78,11 +84,12 @@ const ConnectDropdown = () => {
     restoredAccount,
     gasPriceInfo,
     ethToDaiRate,
+    env: { paraDeploy, paraDeploys },
     actions: { setModal },
   } = useAppStatusStore();
   const { gasPriceTime, gasPriceSpeed, userDefinedGasPrice } = useGasInfo();
   const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
-  const gasCostDai = getGasCost(TRADE_ORDER_GAS_MODAL_ESTIMATE, gasPrice, ethToDaiRate);
+  const gasCostDai = getGasCost(TRADE_ORDER_GAS_MODAL_ESTIMATE.toNumber(), createBigNumber(gasPrice), ethToDaiRate);
 
   const parentUniverseId = parentUniId !== NULL_ADDRESS ? parentUniId : null;
 
@@ -98,10 +105,6 @@ const ConnectDropdown = () => {
       clearTimeout(timeoutId);
     };
   };
-
-  useEffect(() => {
-    const referralClipboard = new Clipboard('#copy_referral');
-  }, []);
 
   if (!isLogged && !restoredAccount) return null;
 
@@ -128,7 +131,30 @@ const ConnectDropdown = () => {
     </span>
   );
 
+  const paraDetails = paraDeploy && paraDeploys && paraDeploys[paraDeploy] || paraDeploys[DEFAULT_PARA_TOKEN];
+  if (!paraDetails) return null;
+
+  const showWrapEther = paraDetails.name === 'WETH';
+
   const accountFunds = [
+    {
+      value: formatDai(balances.usdt, {
+        zeroStyled: false,
+        decimalsRounded: 2,
+      }).formatted,
+      name: 'USDT',
+      logo: DaiLogoIcon,
+      disabled: paraDetails.name !== 'USDT',
+    },
+    {
+      value: formatEther(balances.weth, {
+        zeroStyled: false,
+        decimalsRounded: 2,
+      }).formatted,
+      name: 'WETH',
+      logo: WethIcon,
+      disabled: paraDetails.name !== 'WETH',
+    },
     {
       value: formatDai(balances.dai, {
         zeroStyled: false,
@@ -136,7 +162,7 @@ const ConnectDropdown = () => {
       }).formatted,
       name: 'DAI',
       logo: DaiLogoIcon,
-      disabled: false,
+      disabled: balances.dai === '0',
     },
     {
       value: formatEther(balances.eth, {
@@ -145,7 +171,7 @@ const ConnectDropdown = () => {
       }).formatted,
       name: 'ETH',
       logo: EthIcon,
-      disabled: balances.eth === "0",
+      disabled: balances.eth === '0',
     },
     {
       name: 'REPv2',
@@ -154,7 +180,7 @@ const ConnectDropdown = () => {
         zeroStyled: false,
         decimalsRounded: 4,
       }).formatted,
-      disabled: balances.rep === "0",
+      disabled: balances.rep === '0',
     },
   ];
 
@@ -206,6 +232,17 @@ const ConnectDropdown = () => {
             icon={AddIcon}
           />
         </div>
+
+        {showWrapEther &&
+          <WrapUnwrapEth
+            walletType={meta.accountType}
+            tokenName={ETH}
+            tokenAmount={formatEther(balances.eth)}
+            isCondensed={true}
+            showConvertModal={() => setModal({ type: MODAL_ADD_FUNDS, toToken: WETH, fromToken: ETH })}
+          />
+        }
+
         {accountFunds
           .filter(fundType => !fundType.disabled)
           .map((fundType, idx) => (

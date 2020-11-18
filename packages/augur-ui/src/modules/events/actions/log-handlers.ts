@@ -34,6 +34,7 @@ import {
   TXStatus,
   UniverseForkedLog,
   LiquidityPoolUpdated,
+  MarketOrderBook,
 } from '@augurproject/sdk-lite';
 import { logger } from '@augurproject/utils';
 import { addUpdateTransaction } from 'modules/events/actions/add-update-transaction';
@@ -82,7 +83,7 @@ import {
 import { MarketInfos } from 'modules/types';
 import { marketCreationCreated, orderFilled } from 'services/analytics/helpers';
 import * as _ from 'lodash';
-import { loadMarketOrderBook } from 'modules/orders/helpers/load-market-orderbook';
+import { loadMarketOrderBook, updateMarketInvalidBids } from 'modules/orders/helpers/load-market-orderbook';
 import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
 import {
   removePendingDataByHash,
@@ -98,6 +99,7 @@ import { Markets } from 'modules/markets/store/markets';
 import { PendingOrders } from 'modules/app/store/pending-orders';
 import { loadGasPriceInfo } from 'modules/app/actions/load-gas-price-info';
 import { loadUniverseDetails } from 'modules/universe/actions/load-universe-details';
+import { getTradePageMarketId } from 'modules/trades/helpers/get-trade-page-market-id';
 
 const handleAlert = (log: any, name: string, toast: boolean) => {
   const {
@@ -144,17 +146,36 @@ const updateMarketOrderBook = (marketId: string) => {
   }
 };
 
-export const handleTxEvents = (txStatus: Events.TXStatus) => {
-  console.log(
-    `${txStatus.eventName} for ${txStatus.transaction.name} Transaction.`
-  );
-  if (txStatus.eventName === 'Success') {
-    // for faucets we have to treat it like an inital login to pull latest info.
-    updateAssets(txStatus?.transaction?.name === 'faucet');
-  } else if (txStatus.eventName === 'FeeTooLow') {
-    AppStatus.actions.setModal({ type: MODAL_GAS_PRICE, feeTooLow: true });
-  }
+export const handleTxAwaitingSigning = (txStatus: TXStatus) => {
+  console.log('AwaitingSigning Transaction', txStatus.transaction.name);
   addUpdateTransaction(txStatus);
+};
+
+export const handleTxPending = (txStatus: TXStatus) => {
+  console.log('TxPending Transaction', txStatus.transaction.name);
+  addUpdateTransaction(txStatus);
+};
+
+export const handleTxSuccess = (txStatus: TXStatus) => {
+  console.log('TxSuccess Transaction', txStatus.transaction.name);
+  updateAssets();
+  addUpdateTransaction(txStatus);
+};
+
+export const handleTxFailure = (txStatus: TXStatus) => {
+  console.log('TxFailure Transaction', txStatus.transaction.name, txStatus);
+  addUpdateTransaction(txStatus);
+};
+
+export const handleTxRelayerDown = (txStatus: TXStatus) => {
+  console.log('TxRelayerDown Transaction', txStatus.transaction.name);
+  addUpdateTransaction(txStatus);
+};
+
+export const handleTxFeeTooLow = (txStatus: TXStatus) => {
+  console.log('TxFeeTooLow Transaction', txStatus.transaction.name);
+  addUpdateTransaction(txStatus);
+  AppStatus.actions.setModal({ type: MODAL_GAS_PRICE, feeTooLow: true });
 };
 
 export const handleZeroStatusUpdated = (status, log = undefined) => {
@@ -188,6 +209,13 @@ export const handleSDKReadyEvent = () => {
   loadAccountData();
   loadUniverseForkingInfo();
   getCategoryStats();
+
+  // custom market doesn't update after hotloading
+  // force update.
+  const marketId = getTradePageMarketId();
+  if (marketId) {
+    Markets.actions.updateMarketsData(null, loadMarketsInfo([marketId]));
+  }
 };
 
 export const handleNewBlockLog = async (log: Events.NewBlock) => {
@@ -388,6 +416,18 @@ export const handleBulkOrdersLog = (data: {
   }
 };
 
+export const handleMarketInvalidBidsLog = ({ data }: MarketOrderBook) => {
+  if (data && data.length > 0) {
+    data.map(book => {
+      const { marketId, orderBook } = book;
+      if (!isCurrentMarket(marketId)) {
+        updateMarketInvalidBids(marketId, orderBook);
+      }
+    });
+  }
+};
+
+
 export const handleLiquidityPoolUpdatedLog = (
   data: LiquidityPoolUpdated
 ) => {
@@ -479,25 +519,23 @@ export const handleOrderFilledLog = (log: ParsedOrderEventLog) => {
     throttleLoadUserOpenOrders();
     if (log.orderFiller) handleAlert(log, PUBLICFILLORDER, true);
 
-    if (log.orderFiller) {
-      if (log.tradeGroupId) {
-        removePendingOrder(log.tradeGroupId, marketId);
-      } else {
-        const makePendingOrderId = constructPendingOrderid(
-          log.price,
-          log.outcome,
-          log.market,
-          log.orderType
-        );
-        const takePendingOrderId = constructPendingOrderid(
-          log.price,
-          log.outcome,
-          log.market,
-          log.orderType === "0x00" ? "0x01" : "0x00"
-        );
-        removePendingOrder(makePendingOrderId, marketId);
-        removePendingOrder(takePendingOrderId, marketId);
-      }
+    if (log.tradeGroupId) {
+      removePendingOrder(log.tradeGroupId, marketId);
+    } else {
+      const makePendingOrderId = constructPendingOrderid(
+        log.price,
+        log.outcome,
+        log.market,
+        log.orderType
+      );
+      const takePendingOrderId = constructPendingOrderid(
+        log.price,
+        log.outcome,
+        log.market,
+        log.orderType === "0x00" ? "0x01" : "0x00"
+      );
+      removePendingOrder(makePendingOrderId, marketId);
+      removePendingOrder(takePendingOrderId, marketId);
     }
   }
 };
@@ -577,8 +615,9 @@ export const handleProfitLossChangedLog = (
   const {
     loginAccount: { address },
   } = AppStatus.get();
-  if (logs.filter(log => isSameAddress(log.account, address)).length > 0)
+  if (logs.filter(log => isSameAddress(log.account, address)).length > 0) {
     loadAllAccountPositions();
+  }
 };
 
 export const handleParticipationTokensRedeemedLog = (
@@ -588,8 +627,9 @@ export const handleParticipationTokensRedeemedLog = (
     loginAccount: { address },
   } = AppStatus.get();
   if (logs.filter(log => isSameAddress(log.account, address)).length > 0) {
-    logs.map(log => handleAlert({ ...log, marketId: 1 }, REDEEMPARTICIPATIONTOKENS, false));
+    logs.map(log => handleAlert({ ...log, marketId: 1 }, REDEEMSTAKE, false));
     loadAccountReportingHistory();
+    removePendingTransaction(REDEEMSTAKE)
   }
 };
 

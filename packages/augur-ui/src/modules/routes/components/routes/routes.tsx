@@ -13,7 +13,9 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import { THEMES } from 'modules/common/constants';
 
 const Routes = p => {
-  const { theme } = useAppStatusStore();
+  const { env: { ui }, theme } = useAppStatusStore();
+  const marketCreationEnabled = ui?.marketCreationEnabled || true; // TODO adjust when v2.json is updated post merge
+  const reportingEnabled = ui?.reportingEnabled;
 
   return (
     <Switch>
@@ -43,18 +45,18 @@ const Routes = p => {
         path={makePath(VIEWS.TRANSACTIONS)}
         component={COMPONENTS.Account}
       />
-      <AuthenticatedRoute
+      {marketCreationEnabled && <AuthenticatedRoute
         path={makePath(VIEWS.CREATE_MARKET)}
         component={COMPONENTS.CreateMarket}
-      />
-      <Route
+      />}
+      {reportingEnabled && <Route
         path={makePath(VIEWS.DISPUTING)}
         component={COMPONENTS.Disputing}
-      />
-      <Route
+      />}
+      {reportingEnabled && <Route
         path={makePath(VIEWS.REPORTING)}
         component={COMPONENTS.Reporting}
-      />
+      />}
       <Redirect to={makePath(VIEWS.MARKETS)} />
     </Switch>
   );

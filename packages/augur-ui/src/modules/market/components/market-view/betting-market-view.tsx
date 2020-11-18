@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
-import { getAddress } from 'ethers/utils/address';
+import { ethers } from "ethers";
 import { selectMarket } from 'modules/markets/selectors/market';
 import Styles from 'modules/market/components/market-view/betting-market-view.styles.less';
 import {
@@ -39,7 +39,7 @@ export const isMarketView = location => {
   const queryId = parseQuery(location.search)[MARKET_ID_PARAM_NAME];
   let marketId = null;
   if (queryId) {
-    marketId = getAddress(queryId);
+    marketId = ethers.utils.getAddress(queryId);
   }
   return {
     isGroupPage,
@@ -64,7 +64,7 @@ const BettingMarketView = () => {
   const marketIds = useRef([]);
   const sportsGroupTradeHistory = useRef([]);
   const queryId = parseQuery(location.search)[MARKET_ID_PARAM_NAME];
-  const marketId = getAddress(queryId);
+  const marketId = ethers.utils.getAddress(queryId);
   const market = selectMarket(marketId);
   const markets = getMarkets();
 
