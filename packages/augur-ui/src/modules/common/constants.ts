@@ -87,13 +87,13 @@ export const SPORTS_GROUP_TYPES = {
 
 export const SPORTS_MARKET_TYPES = [
   {
-    header: SPORTS_GROUP_TYPES.DAILY,
+    header: "Daily",
     label: "Daily",
     id: 0,
     value: 0,
   },
   {
-    header: SPORTS_GROUP_TYPES.FUTURES,
+    header: "Futures",
     label: "Futures",
     id: 1,
     value: 1,
@@ -1017,6 +1017,7 @@ export const TIMEFRAME_OPTIONS = [
 
 export const ACTIVE = 'Active';
 export const RESOLVED = 'Resolved';
+export const IN_SETTLEMENT = 'In settlement';
 
 export const MARKET_STATE_TYPES = [
   {
@@ -1537,21 +1538,25 @@ export const MY_BETS_MARKET_STATUS = [
   {
     header: ALL_MARKETS,
     label: ALL_MARKETS,
+    searchValue: ALL_MARKETS,
     value: 0,
   },
   {
-    header: MARKET_OPEN,
-    label: MARKET_OPEN,
+    header: ACTIVE,
+    label: ACTIVE,
+    searchValue: MARKET_OPEN,
     value: 1,
   },
   {
-    header: MARKET_REPORTING,
-    label: MARKET_REPORTING,
+    header: IN_SETTLEMENT,
+    label: IN_SETTLEMENT,
+    searchValue: MARKET_REPORTING,
     value: 2,
   },
   {
-    header: MARKET_CLOSED,
-    label: MARKET_CLOSED,
+    header: RESOLVED,
+    label: RESOLVED,
+    searchValue: MARKET_CLOSED,
     value: 3,
   },
 ];

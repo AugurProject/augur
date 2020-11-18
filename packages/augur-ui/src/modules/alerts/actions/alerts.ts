@@ -80,7 +80,7 @@ export function updateAlert(
 ) {
   if (alert) {
     const { alerts } = AppStatus.get();
-    const alertName = alert.name.toUpperCase();
+    const alertName = alert?.name?.toUpperCase();
     alert.id = id;
     alert.uniqueId = alert.uniqueId || id;
 

@@ -91,7 +91,7 @@ export const ClaimWinnings = ({ onlyCheckMarketId }) => {
           <ProcessingButton
             queueName={TRANSACTIONS}
             queueId={CLAIMMARKETSPROCEEDS}
-            dontShowNotificationButton={true}
+            dontShowNotificationButton
             text="Claim Winnings"
             action={() =>
               onlyCheckMarketId

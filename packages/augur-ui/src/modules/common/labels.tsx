@@ -41,6 +41,7 @@ import {
   GWEI_CONVERSION,
   BUY,
   MODAL_ADD_LIQUIDITY,
+  ACTIVE,
 } from 'modules/common/constants';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
@@ -1084,7 +1085,9 @@ export const MarketStatusLabel = ({
     case REPORTING_STATE.UNKNOWN:
     case REPORTING_STATE.PRE_REPORTING:
       open = true;
-      text = constants.MARKET_STATUS_MESSAGES.OPEN;
+      text = isSportsbook
+        ? ACTIVE
+        : constants.MARKET_STATUS_MESSAGES.OPEN;
       break;
     case REPORTING_STATE.AWAITING_FINALIZATION:
       resolved = true;

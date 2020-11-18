@@ -1164,7 +1164,7 @@ export const RadioBar = ({
   >
     {multiSelect && <Checkbox isChecked={checked} />}
     {!multiSelect && (checked ? FilledRadio : EmptyRadio)}
-    <span>{header.toLowerCase()}</span>
+    <span>{header}</span>
     {expandable && checked ? (
       <>
         <TextInput

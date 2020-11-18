@@ -114,7 +114,7 @@ export const MyBetsInnerNav = () => {
                 radioButtons={SPORTS_MARKET_TYPES}
                 defaultSelected={selectedMarketCardTypeLocal}
                 onChange={selectedMarketCardTypeLocal =>
-                  setState({ ...state, selectedMarketCardTypeLocal })}
+                  setState({ ...state, selectedMarketCardTypeLocal: selectedMarketCardTypeLocal.toUppercase() })}
                 light
               />
             </>
