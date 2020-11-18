@@ -120,22 +120,39 @@
     }
 }
 
-.ClaimWinnings {
-    .text-12;
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+    div.ClaimWinnings {
+        .text-12;
 
-    color: var(--color-primary-text);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex: 1;
+        color: var(--color-primary-text);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex: 1;
 
-    > button {
-        margin-left: @size-8;
-        max-height: @size-36;
-    }
+        > button {
+            margin-left: @size-8;
+            max-height: @size-36;
+        }
 
-    > b {
-        margin: 0 @size-3;
+        > b {
+            margin: 0 @size-3;
+        }
+
+        > div {
+            padding: @size-10;
+            margin-left: @size-10;
+
+            > svg {
+                height: @size-19;
+                width: @size-19;
+    
+                > path {
+                    fill: var(--color-open);
+                }
+            }
+        }
     }
 }
 

@@ -528,7 +528,19 @@
     &:disabled {
       background: var(--color-primary-action-15);
       border: @size-1 solid var(--color-primary-action-40);
-      opacity: 0.25;
+    }
+
+    &.Failed {
+      .SportsBookFailedButton;
+
+      &:hover,
+      &:not(:disabled):hover {
+        background: transparent;
+      }
+    }
+
+    > span > svg > path {
+      fill: transparent;
     }
   }
 
