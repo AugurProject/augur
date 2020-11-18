@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { useLocation, useHistory } from 'react-router';
 import MarketsHeader from 'modules/markets-list/components/markets-header';
 import {
@@ -62,7 +62,7 @@ const findMarketsInReportingState = (markets, reportingState) => {
 
 const getHeaderTitleFromProps = (
   search: string,
-  location: Location,
+  searchParams: object,
   selectedCategory: string[]
 ) => {
   if (search) {
@@ -71,8 +71,6 @@ const getHeaderTitleFromProps = (
     }
     return `Search: "${search}"`;
   }
-
-  const searchParams = parseQuery(location.search);
 
   if (searchParams[CATEGORY_PARAM_NAME]) {
     return searchParams[CATEGORY_PARAM_NAME];
@@ -96,6 +94,7 @@ const MarketsView = () => {
   const {
     marketsList: {
       isSearching,
+      marketCardFormat: marketCardFormatState,
       meta,
       selectedCategories,
       sportsGroupTypeFilter,
@@ -118,52 +117,61 @@ const MarketsView = () => {
       includeInvalidMarkets,
       marketTypeFilter,
     },
+    isConnected: isConnectedState,
     isLogged,
     restoredAccount,
     theme,
     actions: { updateMarketsList, updateFilterSortOptions },
   } = useAppStatusStore();
-  let {
-    isConnected,
-    marketsList: { marketCardFormat },
-  } = useAppStatusStore();
+
 
   const {
     actions: { updateMarketsData },
   } = useMarketsStore();
   const searchPhrase = buildSearchString(keywords, selectedTagNames);
-  const autoSetupMarketCardFormat = marketCardFormat
-    ? marketCardFormat
+  const autoSetupMarketCardFormat = marketCardFormatState
+    ? marketCardFormatState
     : isMobile
     ? MARKET_CARD_FORMATS.COMPACT
     : MARKET_CARD_FORMATS.CLASSIC;
 
-  isConnected = isConnected && id != null;
+  const isConnected = isConnectedState && id != null;
   const search = searchPhrase;
   const marketsInReportingState = findMarketsInReportingState(
     markets,
     marketFilter
   );
   const filteredOutCount = meta ? meta.filteredOutCount : 0;
-  marketCardFormat = autoSetupMarketCardFormat;
+  const marketCardFormat = autoSetupMarketCardFormat;
 
   const componentWrapper = useRef();
   const [state, setState] = useState({
     filterSortedMarkets: [],
     marketCount: 0,
     showPagination: false,
-    selectedMarketCardType: 0,
   });
 
   const [offset, setOffset] = useState(1);
   const [limit, setLimit] = useState(PAGINATION_COUNT);
 
+  const { filterSortedMarkets, marketCount, showPagination } = state;
+  const isSports = theme === THEMES.SPORTS;
+
+  const headerTitle = useMemo(
+    () =>
+      getHeaderTitleFromProps(
+        search,
+        parseQuery(location.search),
+        selectedCategories
+      ),
+    [search, JSON.stringify(parseQuery(location.search)), selectedCategories]
+  );
 
   useEffect(() => {
     if (offset !== 1) {
       setOffset(1);
     }
-    updateFilteredMarkets();
+    updateFilteredMarkets(isSearching);
   }, [
     isConnected,
     isLogged,
@@ -176,24 +184,10 @@ const MarketsView = () => {
     templateFilter,
     includeInvalidMarkets,
     theme,
+    marketsInReportingState.length,
+    limit,
+    offset,
   ]);
-
-  const {
-    filterSortedMarkets,
-    marketCount,
-    showPagination,
-    selectedMarketCardType,
-  } = state;
-  const isSports = theme === THEMES.SPORTS;
-  useEffect(() => {
-    updateFilteredMarkets();
-  }, [marketsInReportingState.length]);
-
-  const headerTitle = getHeaderTitleFromProps(
-    search,
-    location,
-    selectedCategories
-  );
 
   useEffect(() => {
     marketListViewed(
@@ -220,34 +214,32 @@ const MarketsView = () => {
     offset,
     state.marketCount,
   ]);
+
   useEffect(() => {
-    if (isSports) {
-      updateFilterSortOptions({
-        [MARKET_SORT]: SORT_OPTIONS_SPORTS[0].value,
-      })
-    } else {
-      updateFilterSortOptions({
-        [MARKET_SORT]: SORT_OPTIONS[0].value,
-      })
-    }
-  }, [
-    theme
-  ])
+    updateFilterSortOptions({
+      [MARKET_SORT]: isSports
+        ? SORT_OPTIONS_SPORTS[0].value
+        : SORT_OPTIONS[0].value,
+    });
+  }, [theme]);
+
   const sortByStartTime = sortBy === MARKET_SORT_PARAMS.ESTIMATED_START_TIME;
 
-  function updateFilteredMarkets() {
+  function updateFilteredMarkets(isSearching) {
     window.scrollTo(0, 1);
-
-    updateMarketsList({
-      isSearching: true,
-      isSearchInPlace: Boolean(search),
-    });
+    if (!isSearching) {
+      updateMarketsList({
+        isSearching: true,
+        isSearchInPlace: Boolean(search),
+      });
+    }
     loadMarketsByFilter(
       {
         categories: selectedCategories ? selectedCategories : [],
         search,
         filter: isSports ? MARKET_OPEN : marketFilter,
-        sort: sortByStartTime && isSports ? MARKET_SORT_PARAMS.END_DATE : sortBy,
+        sort:
+          sortByStartTime && isSports ? MARKET_SORT_PARAMS.END_DATE : sortBy,
         maxFee,
         limit,
         offset,
@@ -329,6 +321,7 @@ const MarketsView = () => {
             isSearching: false,
             meta: result.meta,
             sportsGroupTypeFilter: newSportsGroupTypeFilter,
+            allCategoriesMeta: null,
           };
           if (!selectedCategories || selectedCategories.length === 0) {
             data.allCategoriesMeta = result.meta;
@@ -347,10 +340,6 @@ const MarketsView = () => {
   function setPageNumber(offset) {
     setOffset(offset);
   }
-
-  useEffect(() => {
-    updateFilteredMarkets();
-  }, [limit, offset]);
 
   const isTrading = theme === THEMES.TRADING;
   const displayFee = maxFee !== MAX_FEE_100_PERCENT;
@@ -388,7 +377,7 @@ const MarketsView = () => {
             />
 
             <MarketCardFormatSwitcher />
-            <FilterDropDowns refresh={updateFilteredMarkets} />
+            <FilterDropDowns refresh={() => updateFilteredMarkets(isSearching)} />
           </section>
         </>
       )}

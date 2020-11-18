@@ -136,7 +136,6 @@ export const marketListViewed = (
   sortBy,
   maxFee,
   templateFilter,
-  marketTypeFilter,
   includeInvalidMarkets,
   resultCount,
   pageNumber

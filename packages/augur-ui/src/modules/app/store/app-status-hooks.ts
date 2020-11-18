@@ -679,7 +679,7 @@ export function AppStatusReducer(state, action) {
       console.error(`Error: ${action.type} not caught by App Status reducer.`);
   }
   // console.log('appStatus update:', action.type, updatedState, action);
-  // console.log("appStatus update", action);
+  console.log("appStatus update", action);
   windowRef.appStatus = updatedState;
   windowRef.stores.appStatus = updatedState;
   return updatedState;

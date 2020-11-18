@@ -121,6 +121,7 @@ const AppView = ({
 }: AppProps) => {
   const {
     theme,
+    currentBasePath,
     universe: { forkEndTime, forkingInfo },
     blockchain: { currentAugurTimestamp },
     mobileMenuState,
@@ -236,7 +237,7 @@ const AppView = ({
     if (!betslipMinimized) {
       window.scrollTo(0, 0);
     }
-    setCurrentBasePath(currentPath);
+    if (currentBasePath !== currentPath) setCurrentBasePath(currentPath);
     if (mobileMenuState === MOBILE_MENU_STATES.FIRSTMENU_OPEN || !betslipMinimized || ModalShowing) {
       document.body.classList.add('App--noScroll');
     } else {
