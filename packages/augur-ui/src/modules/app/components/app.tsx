@@ -34,6 +34,7 @@ import {
   TRADING_TUTORIAL,
   THEMES,
   MODAL_ERROR,
+  REPORTING_ONLY_BANNER,
 } from 'modules/common/constants';
 import Styles from 'modules/app/components/app.styles.less';
 import MarketsInnerNav from 'modules/app/components/inner-nav/base-inner-nav-pure';
@@ -56,6 +57,7 @@ import { RewriteUrlParams } from '../hocs/rewrite-url-params/index';
 import { windowRef } from 'utils/window-ref';
 import { SideImages } from 'modules/trading/common';
 import Footer from 'modules/app/components/footer';
+import { DismissableNotice, DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
 
 interface AppProps {
   config: SDKConfiguration;
@@ -138,6 +140,8 @@ const AppView = ({
       updateLoginAccount,
     },
   } = useAppStatusStore();
+  const marketCreationEnabled = env?.ui?.marketCreationEnabled;
+  const reportingEnabled = env?.ui?.reportingEnabled;
   const notifications = getNotifications();
   const history = useHistory();
   const currentPath = parsePath(locationProp.pathname)[0];
@@ -170,12 +174,14 @@ const AppView = ({
       route: DISPUTING,
       requireLogin: true,
       alternateStyle: true,
+      disabled: reportingEnabled,
     },
     {
       title: 'Reporting',
       route: REPORTING,
       requireLogin: true,
       alternateStyle: true,
+      disabled: reportingEnabled,
     },
     {
       title: 'Create Market',
@@ -183,7 +189,7 @@ const AppView = ({
       requireLogin: true,
       button: true,
       alternateStyle: true,
-      disabled: !!forkingInfo,
+      disabled: !!forkingInfo || (!process.env.REPORTING_ONLY && marketCreationEnabled),
     },
   ];
 
@@ -312,6 +318,7 @@ const AppView = ({
               <section className={Styles.TopBar} />
             )}
           <StatusErrorMessage />
+          {process.env.REPORTING_ONLY && <DismissableNotice show center title={REPORTING_ONLY_BANNER} buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE} />}
           <section
             className={classNames(Styles.Wrap, {
               [Styles.WrapMarkets]: isMarketsView,

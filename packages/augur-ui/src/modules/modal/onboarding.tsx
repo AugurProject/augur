@@ -136,9 +136,9 @@ export const Onboarding = ({
   useEffect(() => {
     let intervalId = null;
 
-    if (balances && balances?.signerBalances?.eth) {
-      const daiAmount = createBigNumber(balances?.signerBalances?.dai);
-      const ethAmount = createBigNumber(balances?.signerBalances?.eth);
+    if (balances && balances?.eth) {
+      const daiAmount = createBigNumber(balances?.dai);
+      const ethAmount = createBigNumber(balances?.eth);
 
       if (daiAmount.gt(1)) {
         setOnboardingRoute(1);
@@ -153,15 +153,15 @@ export const Onboarding = ({
       setCurrentOnboardingStep(currentStep);
     }
 
-    if (showDeposit && Number(balances?.signerBalances?.eth) > 0) {
+    if (showDeposit && Number(balances?.eth) > 0) {
       setEthRecieved(true);
     }
 
-    if (showBankroll && Number(balances?.signerBalances?.eth) <= 0) {
+    if (showBankroll && Number(balances?.eth) <= 0) {
       modalAction();
     }
 
-    if (showApprovals && Number(balances?.signerBalances?.eth) <= 0) {
+    if (showApprovals && Number(balances?.eth) <= 0) {
       buttons[0].action();
     }
 

@@ -45,7 +45,6 @@ const TopNav = ({ isLogged, menuData }: TopNavProps) => {
     pendingQueue[TRANSACTIONS][MIGRATE_FROM_LEG_REP_TOKEN];
   const showMigrateRepButton =
     walletBalances.legacyRep !== '0' ||
-    walletBalances.signerBalances.legacyRep !== '0' ||
     !!pending;
   const isCurrentItem = item => {
     if (item.route === 'markets' && currentBasePath === 'market') return true;

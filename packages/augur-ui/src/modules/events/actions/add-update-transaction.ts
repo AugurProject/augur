@@ -81,21 +81,6 @@ const ADD_PENDING_QUEUE_METHOD_CALLS = [
   SETREFERRER,
   SETAPPROVALFORALL,
 ];
-export const getRelayerDownErrorMessage = (walletType, hasEth) => {
-  const errorMessage =
-    "We're currently experiencing a technical difficulty processing transaction fees in Dai. If possible please come back later to process this transaction";
-
-  if (hasEth) {
-    return (
-      errorMessage +
-      `\nIf you need to make the transaction now transaction costs will be paid in ETH from your ${walletType} wallet.`
-    );
-  }
-  return (
-    errorMessage +
-    '\nIf you need to make the transaction now please follow these steps:'
-  );
-};
 
 export const addUpdateTransaction = async (txStatus: Events.TXStatus) => {
   const { eventName, transaction, hash } = txStatus;

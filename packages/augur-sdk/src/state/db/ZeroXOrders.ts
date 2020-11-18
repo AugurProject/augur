@@ -7,7 +7,7 @@ import {
   OrderData,
   parseAssetData
 } from '@augurproject/sdk-lite';
-import { ContractAddresses, logger, LoggerLevels, DEFAULT_TRADE_INTERVAL, QUINTILLION } from '@augurproject/utils';
+import { ContractAddresses, logger, LoggerLevels, getDefaultTradeInterval, QUINTILLION } from '@augurproject/utils';
 import * as _ from 'lodash';
 import { Augur } from '../../Augur';
 import { getTradeInterval } from '../../utils';
@@ -247,7 +247,7 @@ export class ZeroXOrders extends AbstractTable {
 
   validateStoredOrder(storedOrder: StoredOrder, markets: _.Dictionary<MarketData>): boolean {
     // Validate the order is a multiple of the recommended trade interval
-    let tradeInterval = DEFAULT_TRADE_INTERVAL;
+    let tradeInterval = getDefaultTradeInterval(process.env.PARA_DEPLOY_TOKEN_NAME || 'DAI');
     const marketData = markets[storedOrder.market];
     if (storedOrder.invalidOrder) return false;
     if (marketData && marketData.marketType === MarketType.Scalar) {

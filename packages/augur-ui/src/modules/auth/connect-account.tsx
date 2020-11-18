@@ -1,20 +1,32 @@
 import React, { useEffect, useRef } from 'react';
 import classNames from 'classnames';
 import Blockies from 'react-blockies';
-
 import ConnectDropdown from 'modules/auth/connect-dropdown';
 import ChevronFlip from 'modules/common/chevron-flip';
-import { formatDai } from 'utils/format-number';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import Styles from 'modules/auth/connect-account.styles.less';
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
 import { MOBILE_MENU_STATES } from 'modules/common/constants';
+import { BigNumber, createBigNumber } from 'utils/create-big-number';
+import { formatDai, formatEther } from 'utils/format-number';
+import { USDT, USDC, DAI } from 'modules/common/constants';
+import { getAccountFunds } from './helpers/login-account';
+
+export const formatParaBalance = (balance: BigNumber, paraToken: string) => {
+  if (paraToken === USDT || paraToken === USDC || paraToken === DAI) {
+    return formatDai(balance).full;
+  } else {
+    return formatEther(balance).full;
+  }
+}
 
 const ConnectAccount = () => {
   const connectAccount = useRef(null);
   const connectDropdown = useRef(null);
   const {
-    loginAccount: { meta: userInfo, balances },
+    loginAccount: { meta: userInfo },
+    loginAccount,
+    env: { paraDeploy, paraDeploys },
     isLogged,
     isMobile,
     restoredAccount,
@@ -34,6 +46,14 @@ const ConnectAccount = () => {
   }
 
   if ((!isLogged && !restoredAccount) || !userInfo) return null;
+  let formattedBalance = formatDai(0).full;
+
+  if (paraDeploy && paraDeploys) {
+    const paraToken = paraDeploys[paraDeploy].name;
+    const balances = getAccountFunds(loginAccount, paraToken);
+    const totalBalance = balances?.totalAvailableTradingBalance;
+    formattedBalance = formatParaBalance(totalBalance, paraToken);
+  }
 
   return (
     <div
@@ -56,7 +76,7 @@ const ConnectAccount = () => {
               <div>
                 {userInfo.email ? userInfo.email : userInfo.accountType}
               </div>
-              <span>{formatDai(balances.dai).full}</span>
+              <span>{formattedBalance}</span>
             </div>
           </div>
           <span>

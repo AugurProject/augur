@@ -4,21 +4,33 @@ import {
   getWager,
   getShares,
 } from './get-odds';
-import { BUY, SELL, ZERO, ONE } from 'modules/common/constants';
+import {
+  INSUFFICIENT_FUNDS_ERROR,
+  BUY,
+  SELL,
+  ZERO,
+  ONE,
+  DEFAULT_PARA_TOKEN,
+} from 'modules/common/constants';
 import { getOutcomeNameWithOutcome } from './get-outcome';
 import { BET_STATUS } from 'modules/trading/store/constants';
 import { Markets } from 'modules/markets/store/markets';
 import { placeTrade } from 'modules/contracts/actions/contractCalls';
 import { Betslip } from 'modules/trading/store/betslip';
-import { AppStatus } from 'modules/app/store/app-status';
+import { AppStatus, useAppStatusStore } from 'modules/app/store/app-status';
 import { createBigNumber } from './create-big-number';
 import { totalTradingBalance } from 'modules/auth/helpers/login-account';
 import { runSimulateTrade } from 'modules/trades/actions/update-trade-cost-shares';
 import { calcOrderShareProfitLoss } from 'modules/trades/helpers/calc-order-profit-loss-percents';
-import { findMultipleOf } from 'modules/trading/helpers/form-helpers';
-import { DEFAULT_TRADE_INTERVAL } from '@augurproject/utils';
+import {
+  findMultipleOf,
+} from 'modules/trading/helpers/form-helpers';
+import {
+  getDefaultTradeInterval
+} from '@augurproject/utils';
 import { convertDisplayAmountToOnChainAmount } from '@augurproject/sdk';
 import { betslipItemsType } from 'modules/trading/store/betslip-hooks';
+import { augurSdk } from 'services/augursdk';
 
 export const convertPositionToBet = (position, marketInfo) => {
   const avgPrice = position.priorPosition
@@ -293,16 +305,23 @@ export const getOrderShareProfitLoss = (bet, orderBooks, cb) => {
 
 export const checkMultipleOfShares = (wager, price, market) => {
   const shares = getShares(wager, price);
-  const tradeInterval = DEFAULT_TRADE_INTERVAL;
+  const {
+    env: { paraDeploy, paraDeploys },
+  } = useAppStatusStore();
+
+  const paraTokenName = paraDeploys[paraDeploy].name || DEFAULT_PARA_TOKEN;
+  const tradeInterval = getDefaultTradeInterval(paraTokenName);
+  const Augur = augurSdk ? augurSdk.get() : undefined;
   if (
     !convertDisplayAmountToOnChainAmount(
       createBigNumber(shares),
-      createBigNumber(market.tickSize)
+      createBigNumber(market.tickSize),
+      Augur.precision,
     )
       .mod(tradeInterval)
       .isEqualTo(0)
   ) {
-    const multipleOf = findMultipleOf(market);
+    const multipleOf = findMultipleOf(market, paraTokenName);
     return `Quantity must be a multiple of ${multipleOf}. cur: ${shares}`;
   }
   return '';

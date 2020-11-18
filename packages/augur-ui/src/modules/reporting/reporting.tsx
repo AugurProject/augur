@@ -12,11 +12,22 @@ import Styles from 'modules/reporting/reporting.styles.less';
 import { REPORTING_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { useAppStatusStore } from 'modules/app/store/app-status';
+import { Markets, useMarketsStore } from 'modules/markets/store/markets';
+import { selectMarket } from 'modules/markets/selectors/market';
+import { selectReportingMarkets } from 'modules/markets/selectors/select-reporting-markets';
+import { loadMarketsInfo, loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 
 
 const Reporting = () => {
   const { isLogged, actions: {setModal}} = useAppStatusStore();
   const showLoggedOut = !isLogged;
+  const { reportingListState } = useMarketsStore();
+  const {
+    loginAccount: { mixedCaseAddress: userAddress },
+    isConnected,
+  } = useAppStatusStore();
+  const markets = selectReportingMarkets(reportingListState);
+
   return (
     <section className={Styles.Reporting}>
       <HelmetTag {...REPORTING_HEAD_TAGS} />
@@ -45,6 +56,7 @@ const Reporting = () => {
                     loggedOutMessage='Connect a wallet to see your markets that are ready for Reporting.'
                     emptyHeader='There are no markets available for you to Report on.'
                     emptySubheader='Check your Upcoming Designated Reporting to see Markets that will soon be available for reporting.'
+                    markets={markets[REPORTING_STATE.DESIGNATED_REPORTING]}
                   />
                   <ReportingList
                     reportingType={REPORTING_STATE.PRE_REPORTING}
@@ -53,6 +65,7 @@ const Reporting = () => {
                     loggedOutMessage='Connect a wallet to see your markets that will soon be ready to Report on.'
                     emptyHeader='There are no markets coming up in the next week for you to Report on.'
                     emptySubheader='Check your Upcoming Designated Reporting to see Markets that will soon be available to Report on.'
+                    markets={markets[REPORTING_STATE.PRE_REPORTING]}
                   />
                 </ModulePane>
                 <ModulePane label='Open reporting'>
@@ -66,6 +79,7 @@ const Reporting = () => {
                     title='Open Reporting'
                     emptyHeader='There are currently no markets in Open Reporting.'
                     emptySubheader='Markets appear here if a Designated Reporter fails to show up.'
+                    markets={markets[REPORTING_STATE.OPEN_REPORTING]}
                   />
                 </ModulePane>
               </ModuleTabs>
@@ -80,6 +94,7 @@ const Reporting = () => {
                     loggedOutMessage='Connect a wallet to see your markets that are ready for Reporting.'
                     emptyHeader='There are no markets available for you to Report on.'
                     emptySubheader='Check your Upcoming Designated Reporting to see Markets that will soon be available to Report on.'
+                    markets={markets[REPORTING_STATE.DESIGNATED_REPORTING]}
                   />
                   <ReportingList
                     reportingType={REPORTING_STATE.PRE_REPORTING}
@@ -88,6 +103,7 @@ const Reporting = () => {
                     loggedOutMessage='Connect a wallet to see your markets that will soon be ready to Report on.'
                     emptyHeader='There are no markets coming up in the next week for you to Report on.'
                     emptySubheader='Check your Upcoming Designated Reporting to see Markets that will soon be available to Report on.'
+                    markets={markets[REPORTING_STATE.PRE_REPORTING]}
                   />
                 </div>
                 <div>
@@ -102,6 +118,7 @@ const Reporting = () => {
                     title='Open Reporting'
                     emptyHeader='There are currently no markets in Open Reporting.'
                     emptySubheader='Markets appear here once if a Designated Reporter fails to show up.'
+                    markets={markets[REPORTING_STATE.OPEN_REPORTING]}
                   />
                 </div>
               </>
@@ -116,6 +133,7 @@ const Reporting = () => {
                     loggedOutMessage='Connect a wallet to see your markets that are ready for Reporting.'
                     emptyHeader='There are no markets available for you to Report on.'
                     emptySubheader='Check your Upcoming Designated Reporting to see Markets that will soon be available to Report on.'
+                    markets={markets[REPORTING_STATE.DESIGNATED_REPORTING]}
                   />
                   <ReportingList
                     reportingType={REPORTING_STATE.PRE_REPORTING}
@@ -124,12 +142,14 @@ const Reporting = () => {
                     loggedOutMessage='Connect a wallet to see your markets that will soon be ready to Report on.'
                     emptyHeader='There are no markets coming up in the next week for you to Report on.'
                     emptySubheader='Check your Upcoming Designated Reporting to see Markets that will soon be available to Report on.'
+                    markets={markets[REPORTING_STATE.PRE_REPORTING]}
                   />
                   <ReportingList
                     reportingType={REPORTING_STATE.OPEN_REPORTING}
                     title='Open Reporting'
                     emptyHeader='There are currently no markets in Open Reporting.'
                     emptySubheader='Markets appear here once if a Designated Reporter fails to show up.'
+                    markets={markets[REPORTING_STATE.OPEN_REPORTING]}
                   />
                 </div>
                 <div>

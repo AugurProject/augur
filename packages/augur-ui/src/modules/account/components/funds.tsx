@@ -15,12 +15,17 @@ import {
 } from "modules/auth/helpers/login-account";
 
 const Funds = () => {
-  const { loginAccount, theme, actions: { setModal } } = useAppStatusStore();
+  const {
+    env: { paraDeploys, paraDeploy },
+    loginAccount,
+    theme,
+    actions: { setModal },
+  } = useAppStatusStore();
   const {
     totalFrozenFunds,
     totalAvailableTradingBalance,
     totalAccountValue,
-  } = getAccountFunds(loginAccount);
+  } = getAccountFunds(loginAccount, paraDeploys[paraDeploy].name);
   return (
     <section className={Styles.Funds}>
       <h4>{TOTAL_ACCOUNT_VALUE_IN_DAI}</h4>

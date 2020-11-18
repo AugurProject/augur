@@ -84,7 +84,7 @@ export const ModalEthDeposit = () => {
       buttons={[
         {
           text: 'Next',
-          disabled: !(Number(balances?.signerBalances?.eth) > 0),
+          disabled: !(Number(balances?.eth) > 0),
           action: () => {
             tokenSelectModal();
           },
@@ -127,17 +127,17 @@ export const ModalBankroll = () => {
   let hasBalanceOver50k = false;
 
   if (modal?.token === USDC) {
-    const totalUSDC = createBigNumber(Number(balances.signerBalances.usdc));
+    const totalUSDC = createBigNumber(Number(balance.usdc));
     if (totalUSDC.gt(MIN_AMOUNT)) {
       hasBalanceOver50k = true;
     }
   } else if (modal?.token === USDT) {
-    const totalUSDT = createBigNumber(Number(balances.signerBalances.usdt));
+    const totalUSDT = createBigNumber(Number(balance.usdt));
     if (totalUSDT.gt(MIN_AMOUNT)) {
       hasBalanceOver50k = true;
     }
   } else {
-    const totalETHinDai = createBigNumber(Number(balances.signerBalances.eth)).times(ethToDaiRate?.value);
+    const totalETHinDai = createBigNumber(Number(balance.eth)).times(ethToDaiRate?.value);
     if (totalETHinDai.gt(MIN_AMOUNT)) {
       hasBalanceOver50k = true;
     }
@@ -200,7 +200,7 @@ export const ModalSwap = () => {
     actions: { setModal },
   } = useAppStatusStore();
 
-  const balances = loginAccount.balances.signerBalances;
+  const balances = loginAccount.balance;
   const ethAmountInDai =
     Number(balances.eth) * ethToDaiRate?.value || createBigNumber(0);
   const token = modal?.token || ETH;

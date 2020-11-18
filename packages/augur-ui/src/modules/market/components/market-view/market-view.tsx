@@ -50,7 +50,7 @@ import {
   OUTCOME_ID_PARAM_NAME,
 } from 'modules/routes/constants/param-names';
 import { windowRef } from 'utils/window-ref';
-import { getAddress } from 'ethers/utils/address';
+import { ethers } from "ethers";
 import { hotLoadMarket } from 'modules/markets/actions/load-markets';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { useMarketsStore } from 'modules/markets/store/markets';
@@ -116,7 +116,7 @@ const MarketView = ({
     isTutorial: tradingTutorial,
     preview
   } = getTutorialPreview(queryId, location);
-  const marketId = (preview) ? queryId : getAddress(queryId);
+  const marketId = (preview) ? queryId : ethers.utils.getAddress(queryId);
   const market = tradingTutorial ?
     TRADING_TUTORIAL_MARKET :
     defaultMarket || convertMarketInfoToMarketData(marketInfos[marketId], currentAugurTimestamp * 1000);

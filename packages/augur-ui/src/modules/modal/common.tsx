@@ -506,6 +506,37 @@ export const Deposit = ({ address }: DepositProps) => {
   );
 };
 
+export const WrapUnwrapEth = ({ walletType, tokenAmount, showConvertModal, tokenName, isCondensed = false, autoClose = false }) => {
+  if (isCondensed) {
+    return (
+      <div className={Styles.WrapUnwrapEthCondensed}>
+        <div>
+          <span>{tokenAmount.formattedValue} {tokenName}</span>
+          <span>in {walletType} wallet</span>
+        </div>
+        <SecondaryButton
+          action={() => showConvertModal()}
+          text={tokenName === ETH ? 'Wrap ETH' : 'Unwrap ETH'}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className={Styles.WrapUnwrapEth}>
+      <div>
+        <span>{tokenAmount.formattedValue} {titleCase(tokenName)} in your {walletType} wallet</span>
+        <span>Wrap or Unwrap ETH</span>
+      </div>
+      <PrimaryButton
+        action={() => showConvertModal(autoClose)}
+        text={tokenName === ETH ? 'Wrap my ETH' : 'Unwrap my ETH'}
+      />
+    </div>
+  );
+}
+
+
 interface TokenSelectProps {
   balances: AccountBalances;
   handleSelection: Function;
@@ -518,22 +549,16 @@ export const TokenSelect = ({
   ethToDaiRate,
 }: TokenSelectProps) => {
   const ethAmountInDai: FormattedNumber = formatDai(
-    createBigNumber(balances?.signerBalances?.eth || 0).times(ethToDaiRate.value)
+    createBigNumber(balances?.eth || 0).times(ethToDaiRate.value)
   );
-
-  console.log('balances...', balances);
-  console.log('balances?.signerBalances?.eth...', balances?.signerBalances?.eth);
-  console.log('ethToDaiRate...', ethToDaiRate);
-  console.log('ethAmountInDai...', ethAmountInDai);
-
 
   if (!ethAmountInDai) {
     return null;
   }
 
-  const ethAmount = createBigNumber(balances?.signerBalances?.eth || 0);
-  const usdcAmount = createBigNumber(balances?.signerBalances?.usdc || 0);
-  const usdtAmount = createBigNumber(balances?.signerBalances?.usdt || 0);
+  const ethAmount = createBigNumber(balances?.eth || 0);
+  const usdcAmount = createBigNumber(balances?.usdc || 0);
+  const usdtAmount = createBigNumber(balances?.usdt || 0);
 
   if (ethAmount.gt(0) && !usdcAmount.gt(0) && !usdtAmount.gt(0)) {
     handleSelection(ETH);

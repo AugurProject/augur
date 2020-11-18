@@ -4,7 +4,7 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import { submitNewMarket } from 'modules/markets/actions/submit-new-market';
 import { MARKET_CREATION_COPY } from 'modules/create-market/constants';
 import {
-  getDai,
+  getParaToken,
   getRep,
   getGasPrice,
 } from 'modules/contracts/actions/contractCalls';
@@ -145,7 +145,7 @@ export const ModalCreationHelp = ({ copyType }) => {
   );
 };
 
-export const ModalDaiFaucet = () => {
+export const ModalTokenFaucet = () => {
   const {
     modal,
     actions: { closeModal },
@@ -153,18 +153,18 @@ export const ModalDaiFaucet = () => {
 
   return (
     <Message
-      title="DAI Faucet"
+      title={modal.token}
       description={[
-        'Get test net DAI, it will be sent to your connected wallet.',
+        `Get test net ${modal.token}, it will be sent to your connected wallet.`,
       ]}
       closeAction={() => {
         closeModal();
       }}
       buttons={[
         {
-          text: 'Get DAI',
+          text: `Get ${modal.token}`,
           action: () => {
-            getDai();
+            getParaToken();
             closeModal();
           },
         },
