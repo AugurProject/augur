@@ -19,7 +19,7 @@ export function handleAddAMMExchange(call: AddAMMCall): void {
 }
 
 export function handleAddAMMExchangeWithLiquidity(call: AddAMMWithLiquidityCall): void {
-  let id = call.outputs.value0.toHexString();
+  let id = call.outputs._ammAddress.toHexString();
   let marketId = call.inputs._market.toHexString();
   let shareTokenId = call.inputs._para.toHexString();
   let paraShareToken = getOrCreateParaShareToken(shareTokenId);

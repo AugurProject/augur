@@ -20,6 +20,7 @@ import { ParaShareToken } from '@augurproject/sdk-lite'
 import { TradeInfo } from '../hooks/Trades'
 import { MarketCurrency } from '../model/MarketCurrency'
 import { EthersProvider } from '@augurproject/ethersjs-provider'
+import {RemoveLiquidityRate} from '@augurproject/sdk-lite/build';
 
 // format libraries
 const Decimal = toFormat(_Decimal)
@@ -457,7 +458,7 @@ export function calculateSlippageAmount(value: CurrencyAmount, slippage: number)
   ]
 }
 
-// account is not optional
+// account is not optionaldoAddLiquidity
 export function getSigner(library: Web3Provider, account: string): JsonRpcSigner {
   return library.getSigner(account).connectUnchecked()
 }
@@ -499,7 +500,7 @@ export function addAmmLiquidity({
   distroPercentage,
   useEth,
 }) {
-  if (!augurClient || !augurClient.ammFactory) return console.error('augurClient is null')
+  if (!augurClient || !augurClient.amm) return console.error('augurClient is null')
   console.log(
     'addAmmLiquidity',
     account,
@@ -520,7 +521,7 @@ export function addAmmLiquidity({
 
   // branch logic here if useEth is true
 
-  return augurClient.ammFactory.addLiquidity(
+  return augurClient.amm.doAddLiquidity(
     account,
     ammAddress,
     hasLiquidity,
@@ -542,17 +543,19 @@ export async function getRemoveLiquidity({
     console.error('getRemoveLiquidity: augurClient is null or amm address')
     return null
   }
-  const results = await augurClient.ammFactory.getRemoveLiquidity(ammAddress, new BN(String(lpTokens)))
+  const alsoSell = false;
+  const results: RemoveLiquidityRate = await augurClient.amm.getRemoveLiquidity(ammAddress, new BN(String(lpTokens)), alsoSell);
   return {
-    noShares: String(results.noShares),
-    yesShares: String(results.yesShares),
-    cashShares: String(results.cashShares)
+    noShares: results.no.toFixed(),
+    yesShares: results.yes.toFixed(),
+    cashShares: results.cash.toFixed()
   }
 }
 
 export function removeAmmLiquidity({ ammAddress, augurClient, lpTokens }) {
   if (!augurClient || !ammAddress) return console.error('removeAmmLiquidity: augurClient is null or amm address')
-  return augurClient.ammFactory.removeLiquidity(ammAddress, new BN(lpTokens))
+  const alsoSell = false;
+  return augurClient.amm.doRemoveLiquidity(ammAddress, new BN(lpTokens), alsoSell)
 }
 
 export function escapeRegExp(string: string): string {
@@ -593,6 +596,7 @@ export async function estimateTrade(augurClient, trade: TradeInfo) {
   if (!augurClient || !trade.amm.id) return console.error('estimateTrade: augurClient is null or amm address')
   const tradeDirection = getTradeType(trade)
 
+
   let outputYesShares = false
   let breakdown = null
 
@@ -602,10 +606,11 @@ export async function estimateTrade(augurClient, trade: TradeInfo) {
   }
 
   if (tradeDirection === TradingDirection.ENTRY) {
-    breakdown = await augurClient.ammFactory.getRateEnterPosition(
+    breakdown = await augurClient.amm.getEnterPosition(
       trade.amm.id,
       new BN(String(trade.inputAmount.raw)),
-      outputYesShares
+      outputYesShares,
+      true
     )
     return String(breakdown)
   }
@@ -621,16 +626,23 @@ export async function estimateTrade(augurClient, trade: TradeInfo) {
       invalidShares = BN.minimum(invalidShares, yesShares)
     }
 
-    breakdown = await augurClient.ammFactory.getRateExitPosition(
+    breakdown = await augurClient.amm.getExitPosition(
       trade.amm.id,
-      String(invalidShares),
-      String(noShares),
-      String(yesShares)
+      invalidShares,
+      noShares,
+      yesShares,
+      true
     )
-    return String(breakdown['_cashPayout'])
+    return String(breakdown['cash'])
   }
   if (tradeDirection === TradingDirection.SWAP) {
-    breakdown = await augurClient.ammFactory.getSwapRate(trade.amm.id, new BN(String(trade.inputAmount.raw)), !outputYesShares)
+    breakdown = await augurClient.amm.getSwap(
+      trade.amm.id,
+      new BN(String(trade.inputAmount.raw)),
+      !outputYesShares,
+      true
+    )
+    console.log('get swap rate', String(breakdown))
     return String(breakdown)
   }
   return null
@@ -648,7 +660,13 @@ export async function doTrade(augurClient, trade: TradeInfo, minAmount: string) 
   }
 
   if (trade.currencyOut instanceof MarketCurrency) {
-    return augurClient.ammFactory.enterPosition(trade.amm.id, new BN(String(trade.inputAmount.raw)), outputYesShares, new BN(minAmount))
+    return augurClient.amm.doEnterPosition(
+      trade.amm.id,
+      new BN(String(trade.inputAmount.raw)),
+      outputYesShares,
+      new BN(minAmount),
+      true
+    )
   }
 
   if (tradeDirection === TradingDirection.EXIT) {
@@ -663,11 +681,11 @@ export async function doTrade(augurClient, trade: TradeInfo, minAmount: string) 
       invalidShares = BN.minimum(invalidShares, yesShares)
     }
 
-    return augurClient.ammFactory.exitPosition(trade.amm.id, invalidShares, noShares, yesShares, new BN(String(minAmount)))
+    return augurClient.amm.doExitPosition(trade.amm.id, invalidShares, noShares, yesShares, new BN(String(minAmount)))
   }
 
   if (tradeDirection === TradingDirection.SWAP) {
-    return augurClient.ammFactory.swap(trade.amm.id, new BN(String(trade.inputAmount.raw)), !outputYesShares, new BN(minAmount))
+    return augurClient.amm.doSwap(trade.amm.id, new BN(String(trade.inputAmount.raw)), !outputYesShares, new BN(minAmount))
   }
   return null
 }

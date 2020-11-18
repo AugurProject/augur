@@ -45,11 +45,16 @@ export function mapAddressArray(arr:Address[]):string[] {
 }
 
 export function bigIntToHexString(bigint: BigInt):string {
-  let hexString = bigint.toHexString();
-  if (bigint.lt(ZERO)) {
-    hexString = "-" + hexString;
+  let hexString = bigint.toHexString().split("").slice(2);
+  if(hexString.length == 1) {
+    hexString.unshift("0");
   }
-  return hexString;
+  hexString.unshift("0x");
+
+  if (bigint.lt(ZERO)) {
+    hexString.unshift("-");
+  }
+  return hexString.join("");
 }
 
 export function mapByteArray(arr:Bytes[]):string[] {
@@ -64,7 +69,7 @@ export function mapByteArray(arr:Bytes[]):string[] {
 export function mapArray(arr: BigInt[]):string[] {
   let result = new Array<string>();
   for (let i = 0; i < arr.length; i++) {
-    result.push(arr[i].toHexString());
+    result.push(bigIntToHexString(arr[i]));
   }
 
   return result;

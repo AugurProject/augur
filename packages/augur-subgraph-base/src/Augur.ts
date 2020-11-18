@@ -385,8 +385,14 @@ export function handleMarketMigratedEvent(event: MarketMigratedEvent): void {
 }
 
 export function handleMarketOIChangedEvent(event: MarketOIChangedEvent): void {
-  let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
-  let entity = new MarketOIChangedEntity(id);
+  let market = toChecksumAddress(event.params.market);
+
+  let id = market;
+
+  let entity = MarketOIChangedEntity.load(id);
+  if (entity == null) {
+    entity = new MarketOIChangedEntity(id);
+  }
 
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
@@ -539,8 +545,16 @@ export function handleReportingParticipantDisavowedEvent(event: ReportingPartici
 }
 
 export function handleShareTokenBalanceChangedEvent(event: ShareTokenBalanceChangedEvent): void {
-  let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
-  let entity = new ShareTokenBalanceChangedEntity(id);
+  let account = toChecksumAddress(event.params.account);
+  let market = toChecksumAddress(event.params.market);
+  let outcome = bigIntToHexString(event.params.outcome);
+
+  let id = account + "-" + market + "-" + outcome;
+
+  let entity = ShareTokenBalanceChangedEntity.load(id);
+  if (entity == null) {
+    entity = new ShareTokenBalanceChangedEntity(id);
+  }
 
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
@@ -573,8 +587,15 @@ export function handleTimestampSetEvent(event: TimestampSetEvent): void {
 }
 
 export function handleTokenBalanceChangedEvent(event: TokenBalanceChangedEvent): void {
-  let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
-  let entity = new TokenBalanceChangedEntity(id);
+  let owner = toChecksumAddress(event.params.owner);
+  let token = toChecksumAddress(event.params.token);
+
+  let id = owner + "-" + token;
+
+  let entity = TokenBalanceChangedEntity.load(id);
+  if (entity == null) {
+    entity = new TokenBalanceChangedEntity(id);
+  }
 
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
