@@ -136,8 +136,8 @@ export class AMM {
     const poolConstant = AMM.calculatePoolConstant(poolYes, poolNo, fee);
 
     return inputYes
-      ? poolNo.minus(poolConstant.div(poolYes.plus(inputShares)))
-      : poolYes.minus(poolConstant.div(poolNo.plus(inputShares)));
+      ? poolNo.minus(poolConstant.idiv(poolYes.plus(inputShares)))
+      : poolYes.minus(poolConstant.idiv(poolNo.plus(inputShares)));
   }
 
   async doEnterPosition(address: string, cash: BigNumber, buyYes: Boolean): Promise<TransactionResponse> {
@@ -153,7 +153,7 @@ export class AMM {
     let fee = new BigNumber(0);
     if (includeFee) fee = await this.getFee(address);
 
-    const setsToBuy = cash.div(NUMTICKS);
+    const setsToBuy = cash.idiv(NUMTICKS);
     let { invalid: poolInvalid, no: poolNo, yes: poolYes } = await this.getBalances(address, address);
     poolInvalid = poolInvalid.minus(setsToBuy);
     poolNo = poolNo.minus(setsToBuy);
@@ -165,25 +165,35 @@ export class AMM {
     const poolConstant = AMM.calculatePoolConstant(poolYes, poolNo, fee);
 
     return buyYes
-      ? setsToBuy.plus(poolYes.minus(poolConstant.div(poolNo.plus(setsToBuy))))
-      : setsToBuy.plus(poolNo.minus(poolConstant.div(poolYes.plus(setsToBuy))));
+      ? setsToBuy.plus(poolYes.minus(poolConstant.idiv(poolNo.plus(setsToBuy))))
+      : setsToBuy.plus(poolNo.minus(poolConstant.idiv(poolYes.plus(setsToBuy))));
   }
 
-  async doExitPosition(address: string,  invalidShares: BigNumber, noShares: BigNumber, yesShares: BigNumber): Promise<TransactionResponse> {
+  async doExitPosition(address: string, invalidShares: BigNumber, noShares: BigNumber, yesShares: BigNumber): Promise<TransactionResponse> {
     if (!address) return null;
     const amm = this.exchangeContract(address);
-    const minCash = await this.getExitPosition(address, invalidShares, noShares, yesShares, true);
-    return amm.exitPosition(invalidShares.toFixed(), noShares.toFixed(), yesShares.toFixed(), minCash.toFixed());
+    const { cash } = await this.getExitPosition(address, invalidShares, noShares, yesShares, true);
+    return amm.exitPosition(invalidShares.toFixed(), noShares.toFixed(), yesShares.toFixed(), cash.toFixed());
   }
 
-  async getExitPosition(address: string, invalidShares: BigNumber, noShares: BigNumber, yesShares: BigNumber, includeFee: Boolean): Promise<BigNumber> {
+  async getExitPosition(address: string, invalidShares: BigNumber, noShares: BigNumber, yesShares: BigNumber, includeFee: Boolean): Promise<ExitPositionRate> {
     if (!address) return null;
 
     if (!includeFee) throw Error('Not implemented: getExitPosition(includeFee=false)');
 
-    const amm = this.exchangeContract(address);
-    const rate = await amm.rateExitPosition(invalidShares.toFixed(), noShares.toFixed(), yesShares.toFixed());
-    return new BigNumber(rate.toString());
+  const amm = this.exchangeContract(address);
+    const {
+      _cashPayout: cash,
+      _invalidFromUser: invalid,
+      _noFromUser: no,
+      _yesFromUser: yes,
+    } = await amm.rateExitPosition(invalidShares.toFixed(), noShares.toFixed(), yesShares.toFixed());
+    return {
+      invalid: new BigNumber(invalid.toString()),
+      no: new BigNumber(no.toString()),
+      yes: new BigNumber(yes.toString()),
+      cash: new BigNumber(cash.toString()),
+    }
   }
 
   async exchangeAddress(market: string, paraShareToken: string, fee: BigNumber): Promise<string> {
@@ -302,9 +312,9 @@ export class AMM {
     const factor = new BigNumber(10 ** 18);
     const keepYes = AMM.keepYes(yesPercent, noPercent);
     return (keepYes
-        ? factor.times(yesPercent).div(noPercent)
-        : factor.times(noPercent).div(yesPercent)
-    ).idiv(1) // must be an integer
+        ? factor.times(yesPercent).idiv(noPercent)
+        : factor.times(noPercent).idiv(yesPercent)
+    )
   }
 
   private static calculatePoolConstant(poolYes: BigNumber, poolNo: BigNumber, fee: BigNumber): BigNumber {
@@ -312,7 +322,7 @@ export class AMM {
     if (beforeFee.eq(0)) {
       return new BigNumber(0);
     } else {
-      return beforeFee.times(new BigNumber(1000).minus(fee)).div(1000);
+      return beforeFee.times(new BigNumber(1000).minus(fee)).idiv(1000);
     }
   }
 
@@ -345,4 +355,11 @@ export interface RemoveLiquidityRate {
   yes: BigNumber
   cash: BigNumber
   sets: BigNumber
+}
+
+export interface ExitPositionRate {
+  cash: BigNumber
+  invalid: BigNumber
+  no: BigNumber
+  yes: BigNumber
 }
