@@ -108,7 +108,6 @@ export function useDerivedSwapInfo(
 
   let inputCurrency = useCurrency(inputCurrencyId)
   let outputCurrency = useCurrency(outputCurrencyId)
-  console.log('inputCurrency swap', inputCurrency, inputCurrencyId)
   const marketInputCurrency = useMarketToken(inputCurrencyId)
   const marketOutputCurrency = useMarketToken(outputCurrencyId)
 

@@ -659,7 +659,7 @@ export async function doTrade(augurClient, trade: TradeInfo, minAmount: string) 
     outputYesShares = out.name === MarketTokens.YES_SHARES
   }
 
-  if (trade.currencyOut instanceof MarketCurrency) {
+  if (trade.currencyOut instanceof MarketCurrency && tradeDirection === TradingDirection.ENTRY) {
     return augurClient.amm.doEnterPosition(
       trade.amm.id,
       new BN(String(trade.inputAmount.raw)),
@@ -685,7 +685,7 @@ export async function doTrade(augurClient, trade: TradeInfo, minAmount: string) 
   }
 
   if (tradeDirection === TradingDirection.SWAP) {
-    return augurClient.amm.doSwap(trade.amm.id, new BN(String(trade.inputAmount.raw)), !outputYesShares, new BN(minAmount))
+    return augurClient.amm.doSwap(trade.amm.id, new BN(String(trade.inputAmount.raw)), outputYesShares, new BN(minAmount))
   }
   return null
 }
