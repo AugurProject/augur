@@ -96,7 +96,7 @@ export function useApproveCallback(
       })
       .then((response: TransactionResponse) => {
         addTransaction(response, {
-          summary: 'Approve ' + amountToApprove.currency.symbol,
+          summary: 'Approve ' + amountToApprove.currency?.symbol || amountToApprove.currency?.name,
           approval: { tokenAddress: token.address, spender: spender }
         })
       })
