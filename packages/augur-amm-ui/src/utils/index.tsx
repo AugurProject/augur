@@ -16,11 +16,10 @@ import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, ETHER } from '
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 import { Contract } from '@ethersproject/contracts'
 import { AddressZero } from '@ethersproject/constants'
-import { ParaShareToken } from '@augurproject/sdk-lite'
+import { ParaShareToken, RemoveLiquidityRate } from '@augurproject/sdk-lite'
 import { TradeInfo } from '../hooks/Trades'
 import { MarketCurrency } from '../model/MarketCurrency'
 import { EthersProvider } from '@augurproject/ethersjs-provider'
-import {RemoveLiquidityRate} from '@augurproject/sdk-lite/build';
 
 // format libraries
 const Decimal = toFormat(_Decimal)
@@ -458,7 +457,7 @@ export function calculateSlippageAmount(value: CurrencyAmount, slippage: number)
   ]
 }
 
-// account is not optionaldoAddLiquidity
+// account is not optional
 export function getSigner(library: Web3Provider, account: string): JsonRpcSigner {
   return library.getSigner(account).connectUnchecked()
 }
@@ -592,7 +591,6 @@ export async function estimateTrade(augurClient, trade: TradeInfo) {
   if (!augurClient || !trade.amm.id) return console.error('estimateTrade: augurClient is null or amm address')
   const tradeDirection = getTradeType(trade)
 
-
   let outputYesShares = false
   let breakdown = null
 
@@ -657,13 +655,12 @@ export async function doTrade(augurClient, trade: TradeInfo, minAmount: string) 
     outputYesShares = out.name === MarketTokens.YES_SHARES
   }
 
-  if (trade.currencyOut instanceof MarketCurrency) {
+  if (tradeDirection === TradingDirection.ENTRY) {
     return augurClient.amm.doEnterPosition(
       trade.amm.id,
       new BN(String(trade.inputAmount.raw)),
       outputYesShares,
-      new BN(minAmount),
-      true
+      new BN(String(minAmount))
     )
   }
 
@@ -683,7 +680,7 @@ export async function doTrade(augurClient, trade: TradeInfo, minAmount: string) 
   }
 
   if (tradeDirection === TradingDirection.SWAP) {
-    return augurClient.amm.doSwap(trade.amm.id, new BN(String(trade.inputAmount.raw)), !outputYesShares, new BN(minAmount))
+    return augurClient.amm.doSwap(trade.amm.id, new BN(String(trade.inputAmount.raw)), !outputYesShares, new BN(String(minAmount)))
   }
   return null
 }

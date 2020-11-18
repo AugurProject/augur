@@ -14,6 +14,9 @@ contract WethWrapperForAMMExchange {
 
     uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
 
+    // For WETH integration, since weth.withdraw() causes ETH to be sent here.
+    function() external payable {}
+
     constructor(IAMMFactory _factory, ParaShareToken _shareToken) public {
         factory = _factory;
         shareToken = _shareToken;
@@ -23,8 +26,24 @@ contract WethWrapperForAMMExchange {
         _shareToken.setApprovalForAll(address(_factory), true);
     }
 
-    // For WETH integration, since weth.withdraw() causes ETH to be sent here.
-    function() external payable {}
+    function addAMMWithLiquidity (
+        IMarket _market,
+        uint256 _fee,
+        uint256 _ratioFactor,
+        bool _keepYes,
+        address _recipient
+    ) public payable returns (address _ammAddress, uint256 _lpTokens) {
+        weth.deposit.value(msg.value)();
+        return factory.addAMMWithLiquidity(
+            _market,
+            shareToken,
+            _fee,
+            msg.value,
+            _ratioFactor,
+            _keepYes,
+            _recipient
+        );
+    }
 
     function getAMM(IMarket _market, uint256 _fee) public view returns (IAMMExchange) {
         IAMMExchange _amm = IAMMExchange(factory.exchanges(address(_market), address(shareToken), _fee));

@@ -47,17 +47,17 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         IMarket _market,
         ParaShareToken _para,
         uint256 _fee,
-        address sender,
-        address recipient,
-        uint256 quantity
+        address _sender,
+        address _recipient,
+        uint256 _quantity
     ) public {
         IAMMExchange amm = IAMMExchange(exchanges[address(_market)][address(_para)][_fee]);
         require(msg.sender == address(amm), "AugurCP: non-exchange tried to send cash");
 
-        if (sender == address(this)) {
-            _para.cash().transfer(recipient, quantity);
+        if (_sender == address(this)) {
+            _para.cash().transfer(_recipient, _quantity);
         } else {
-            _para.cash().transferFrom(sender, recipient, quantity);
+            _para.cash().transferFrom(_sender, _recipient, _quantity);
         }
     }
 

@@ -117,12 +117,13 @@ export class AMM {
     }
   }
 
-  async doSwap(address: string, inputShares: BigNumber, buyYes: Boolean): Promise<TransactionResponse> {
+  async doSwap(address: string, inputShares: BigNumber, buyYes: Boolean, minShares: BigNumber): Promise<TransactionResponse> {
     if (!address) return null;
     const inputYes = !buyYes;
-    const minShares = await this.getSwap(address, inputShares, buyYes, true);
     const amm = this.exchangeContract(address);
-    return amm.swap(inputShares.toFixed(), inputYes, minShares.toFixed());
+    console.log(`amm.swap(${inputShares.toFixed()}, ${inputYes}, ${minShares.toFixed()})`);
+    // return amm.swap(inputShares.toFixed(), inputYes, minShares.toFixed());
+    return amm.swap(inputShares.toFixed(), inputYes, "0");
   }
 
   async getSwap(address: string, inputShares: BigNumber, buyYes: Boolean, includeFee: Boolean): Promise<BigNumber> {
@@ -140,10 +141,9 @@ export class AMM {
       : poolYes.minus(poolConstant.idiv(poolNo.plus(inputShares)));
   }
 
-  async doEnterPosition(address: string, cash: BigNumber, buyYes: Boolean): Promise<TransactionResponse> {
+  async doEnterPosition(address: string, cash: BigNumber, buyYes: Boolean, minShares: BigNumber): Promise<TransactionResponse> {
     if (!address) return null;
     const amm = this.exchangeContract(address);
-    const minShares = await this.getEnterPosition(address, cash, buyYes, true);
     return amm.enterPosition(cash.toFixed(), buyYes, minShares.toFixed());
   }
 
@@ -169,11 +169,10 @@ export class AMM {
       : setsToBuy.plus(poolNo.minus(poolConstant.idiv(poolYes.plus(setsToBuy))));
   }
 
-  async doExitPosition(address: string, invalidShares: BigNumber, noShares: BigNumber, yesShares: BigNumber): Promise<TransactionResponse> {
+  async doExitPosition(address: string, invalidShares: BigNumber, noShares: BigNumber, yesShares: BigNumber, minCash: BigNumber): Promise<TransactionResponse> {
     if (!address) return null;
     const amm = this.exchangeContract(address);
-    const { cash } = await this.getExitPosition(address, invalidShares, noShares, yesShares, true);
-    return amm.exitPosition(invalidShares.toFixed(), noShares.toFixed(), yesShares.toFixed(), cash.toFixed());
+    return amm.exitPosition(invalidShares.toFixed(), noShares.toFixed(), yesShares.toFixed(), minCash.toFixed());
   }
 
   async getExitPosition(address: string, invalidShares: BigNumber, noShares: BigNumber, yesShares: BigNumber, includeFee: Boolean): Promise<ExitPositionRate> {
