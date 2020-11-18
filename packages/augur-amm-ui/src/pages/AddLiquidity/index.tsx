@@ -29,7 +29,7 @@ import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 import { PoolPriceBar } from './PoolPriceBar'
 import { doUseETH, useAmmFactoryAddress, useAugurClient } from '../../contexts/Application'
 import { withRouter } from 'react-router-dom'
-import { useMarketAmm, useShareTokens, useMarket } from '../../contexts/Markets'
+import { useMarketAmm, useShareTokens, useMarket, useMarketDataRefresher } from '../../contexts/Markets'
 import CashInputPanel from '../../components/CashInputPanel'
 import DistributionPanel from '../../components/DistributionPanel'
 import { useWalletModalToggle } from '../../state/application/hooks'
@@ -49,7 +49,7 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
   const { account, chainId, library } = useActiveWeb3React()
   const augurClient = useAugurClient()
   const ammFactory = useAmmFactoryAddress()
-
+  const { updateIsDataClean } = useMarketDataRefresher()
   // share token is undefined then AMM hasn't bee created
   const sharetoken = useShareTokens(cash)
   const market = useMarket(marketId)
@@ -166,6 +166,7 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
           label: [currencies[Field.CURRENCY_A]?.symbol].join('/')
         })
         setHasLiquidity(true)
+        updateIsDataClean(false)
       })
       .catch(error => {
         setHasLiquidity(false)
