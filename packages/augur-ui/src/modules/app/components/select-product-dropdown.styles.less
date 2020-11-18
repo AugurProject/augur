@@ -6,10 +6,12 @@
   height: @size-56;
   display: flex;
   align-items: center;
-  justify-content: center;
 
   > button:first-of-type {
     background-color: var(--color-dark-grey);
+    border-top: @size-1 solid transparent;
+    border-right: @size-1 solid var(--color-module-background);
+    border-left: @size-1 solid transparent;
     padding: @size-16;
     z-index: @above-all-content-top-layer;
 
