@@ -509,7 +509,8 @@ export function addAmmLiquidity({
     sharetoken,
     fee,
     String(cashAmount),
-    String(distroPercentage)
+    String(distroPercentage),
+    `use ETH: ${useEth}`
   )
 
   // converting odds to pool percentage. odds is the opposit of pool percentage

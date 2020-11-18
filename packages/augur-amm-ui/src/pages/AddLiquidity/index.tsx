@@ -53,7 +53,7 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
   // share token is undefined then AMM hasn't bee created
   const sharetoken = useShareTokens(cash)
   const market = useMarket(marketId)
-  const useEth = doUseETH()
+  const useEth = doUseETH(cash)
   // TODO disabled initial liq for testing only
   const ammData = useMarketAmm(marketId, amm)
   const [hasLiquidity, setHasLiquidity] = useState(ammData?.hasLiquidity)
