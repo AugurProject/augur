@@ -466,7 +466,7 @@ const findErrors = (isTemplate, templateFormStarts) => {
   } else if (currentStep === 1) {
     fields = [SETTLEMENT_FEE, AFFILIATE_FEE];
   }
-  let errorUpdates = {};
+  let errorUpdates = EMPTY_STATE.validations;
   fields.map(field => {
     let value = newMarket[field];
     if (field === TEMPLATE_INPUTS) {
