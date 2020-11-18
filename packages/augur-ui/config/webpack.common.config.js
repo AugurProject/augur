@@ -182,7 +182,7 @@ module.exports = {
         to: path.resolve(PATHS.BUILD, 'StableIPFSLoader.html'),
       },
       {
-        from: path.resolve(PATHS.ROOT_MONOREPO, 'zerox.wasm'),
+        from: path.resolve(PATHS.ROOT_MONOREPO, 'node_modules/@0x/mesh-browser/wasm/main.wasm'),
         to: path.resolve(PATHS.BUILD, 'zerox.wasm'),
       },
       {

@@ -16,29 +16,44 @@ import { API } from './getter/API';
 import { LogFilterAggregator } from './logs/LogFilterAggregator';
 import { BlockAndLogStreamerSyncStrategy } from './sync/BlockAndLogStreamerSyncStrategy';
 import { BulkSyncStrategy } from './sync/BulkSyncStrategy';
-import { WarpSyncStrategy } from './sync/WarpSyncStrategy';
+import { GraphQLLogProvider } from '../graph/GraphQLLogProvider';
 
 export async function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: EthersProvider, logFilterAggregator: LogFilterAggregator, config: SDKConfiguration) {
   const warpController = new WarpController((await db), client, provider,
-    config.uploadBlockNumber);
+    config.uploadBlockNumber, config.warpSync.ipfsEndpoint);
 
   client.warpController = warpController;
   return async () => {
     const contractAddresses = client.contractEvents.getAugurContractAddresses();
     const uploadBlockNumber = config.uploadBlockNumber;
-    const currentBlockNumber = await provider.getBlockNumber();
+    let currentBlockNumber = await provider.getBlockNumber();
 
-    const bulkSyncStrategy = new BulkSyncStrategy(provider.getLogs,
-      contractAddresses, logFilterAggregator.onLogsAdded,
-      client.contractEvents.parseLogs);
+    let bulkSyncStrategy = null;
+
+    if (config.graph && config.graph.logSubgraphURL) {
+      const logProvider = new GraphQLLogProvider(config.graph.logSubgraphURL);
+      const status = await logProvider.getSyncStatus();
+      if(status.health === "healthy") {
+        currentBlockNumber = status.latestBlockNumber;
+        bulkSyncStrategy = new BulkSyncStrategy(logProvider.getLogs.bind(logProvider),
+          contractAddresses, logFilterAggregator.onLogsAdded,
+          (logs: any[]) => { return logs; }
+        );
+      }
+    }
+
+    if (bulkSyncStrategy === null) {
+      bulkSyncStrategy = new BulkSyncStrategy(provider.getLogs,
+        contractAddresses, logFilterAggregator.onLogsAdded,
+        client.contractEvents.parseLogs);
+    }
+
     const blockAndLogStreamerSyncStrategy = BlockAndLogStreamerSyncStrategy.create(
       provider,
       contractAddresses,
       logFilterAggregator,
       client.contractEvents.parseLogs,
     );
-
-    const currentBlock = await provider.getBlock('latest');
 
     const marketCreatedCB = async (blockNumber, logs) => {
       client.events.emit(SubscriptionEventName.MarketsUpdated, logs);
@@ -47,14 +62,6 @@ export async function buildSyncStrategies(client:Augur, db:Promise<DB>, provider
     logFilterAggregator.listenForEvent('MarketCreated', marketCreatedCB);
 
     client.warpController = warpController;
-
-    const warpSyncStrategy = new WarpSyncStrategy(warpController,
-      logFilterAggregator.onLogsAdded, await db, provider);
-
-    const { warpSyncHash } = await client.warpSync.getLastWarpSyncData(
-      client.contracts.universe.address);
-
-    await warpSyncStrategy.start(currentBlock, warpSyncHash);
 
     if (config.warpSync && config.warpSync.createCheckpoints) {
       client.events.once(SubscriptionEventName.SDKReady, () => {
@@ -193,8 +200,6 @@ export async function createServer(config: SDKConfiguration, client?: Augur): Pr
     config.zeroX?.mesh?.enabled || config.zeroX?.rpc?.enabled
   );
 
-  await db;
-
   if(config.warpSync?.createCheckpoints && config.warpSync?.autoReport) {
     client.events.on(SubscriptionEventName.WarpSyncHashUpdated,
       async ({ hash }) => {
@@ -228,14 +233,7 @@ export async function createServer(config: SDKConfiguration, client?: Augur): Pr
 export async function startServerFromClient(config: SDKConfiguration, client?: Augur ): Promise<API> {
   const { api, sync } = await createServer(config, client);
 
-  // TODO should this await?
-  sync();
-  /*
-  controller.run().catch((err) => {
-    // TODO: PG needs to handle what happens if the server side of the connector dies
-    console.log('Error starting up Augur syncing services');
-  });
-  */
+  sync().catch((error) => api.augur.events.emit("error", error))
 
   return api;
 }
@@ -243,7 +241,7 @@ export async function startServerFromClient(config: SDKConfiguration, client?: A
 export async function startServer(config: SDKConfiguration): Promise<API> {
   const { api, sync } = await createServer(config, undefined);
 
-  sync();
+  sync().catch((error) => api.augur.events.emit("error", error))
 
   return api;
 }

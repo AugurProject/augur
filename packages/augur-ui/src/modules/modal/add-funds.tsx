@@ -45,6 +45,7 @@ interface AddFundsProps {
   addFundsFortmatic: Function;
   initialAddFundsFlow?: string;
   initialSwapToken?: string;
+  gasPrice: number;
 }
 
 export const AddFunds = ({
@@ -63,6 +64,7 @@ export const AddFunds = ({
   addFundsFortmatic,
   initialAddFundsFlow = null,
   initialSwapToken = null,
+  gasPrice,
   balances,
 }: AddFundsProps) => {
   const address = loginAccount.address;
@@ -199,6 +201,7 @@ export const AddFunds = ({
                 usdcToDaiRate={usdcToDaiRate}
                 config={config}
                 balances={balances}
+                gasPrice={gasPrice}
               />
             </>
           )}

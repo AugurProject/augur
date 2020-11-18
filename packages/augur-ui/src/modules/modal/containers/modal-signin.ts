@@ -22,6 +22,7 @@ import {
   MODAL_HARDWARE_WALLET,
   HELP_CENTER_THIRD_PARTY_COOKIES,
   WALLET_STATUS_VALUES,
+  MODAL_AUGUR_USES_DAI,
 } from 'modules/common/constants';
 import { loginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-web3';
 import { loginWithFortmatic } from 'modules/auth/actions/login-with-fortmatic';
@@ -47,7 +48,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   hardwareWalletModal: (isLogin) => dispatch(updateModal({ type: MODAL_HARDWARE_WALLET, isLogin })),
   signupModal: () => dispatch(updateModal({ type: MODAL_SIGNUP })),
   accountCreatedModal: () =>
-    dispatch(updateModal({ type: MODAL_TEST_BET })),
+    dispatch(updateModal({ type: MODAL_AUGUR_USES_DAI })),
   loadingModal: (message, callback, showMetaMaskHelper = false) =>
     dispatch(
       updateModal({
@@ -102,8 +103,12 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   };
 
   const login = () => {
+    dP.closeModal();
     setTimeout(() => {
-      dP.closeModal();
+      if (LOGIN_OR_SIGNUP === 'Signup') {
+        // Kicks off onboarding
+        dP.accountCreatedModal();
+      }
     });
   };
 

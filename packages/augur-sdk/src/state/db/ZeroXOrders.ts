@@ -119,10 +119,6 @@ export class ZeroXOrders extends AbstractTable {
     this.augur.events.off(SubscriptionEventName.ZeroXRPCOrderEvent, this.handleOrderEvent);
   }
 
-  async clear() {
-    return this.delete();
-}
-
   async handleOrderEvent(orderEvents: OrderEvent[]): Promise<void> {
     if (orderEvents.length < 1) return;
     const bulkOrderEvents = [];
@@ -172,7 +168,7 @@ export class ZeroXOrders extends AbstractTable {
   async sync(): Promise<void> {
     logger.info('Syncing ZeroX Orders');
     const orders: OrderInfo[] = await this.augur.zeroX.getOrders();
-    let bulkOrderEvents = [];
+    const bulkOrderEvents = [];
     let documents = [];
     if (orders?.length > 0) {
       documents = orders.filter(this.validateOrder, this).map(this.processOrder, this);

@@ -1,6 +1,5 @@
 import { Filter, Log, ParsedLog } from '@augurproject/types';
 import * as _ from 'lodash';
-import { ExtendedFilter, LogCallbackType } from '../logs/LogFilterAggregator';
 import { AbstractSyncStrategy } from './AbstractSyncStrategy';
 import { SyncStrategy } from './index';
 import { chunkRange } from '@augurproject/utils';
@@ -11,7 +10,7 @@ export class BulkSyncStrategy extends AbstractSyncStrategy implements SyncStrate
     contractAddresses: string[],
     onLogsAdded: (blockNumber: number, logs: ParsedLog[]) => Promise<void>,
     protected parseLogs:(logs: Log[]) => ParsedLog[],
-    protected chunkSize = 100000,
+    protected chunkSize = 1000000,
   ) {
     super(getLogs, contractAddresses, onLogsAdded);
   }

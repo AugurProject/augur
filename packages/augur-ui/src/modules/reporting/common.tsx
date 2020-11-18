@@ -92,6 +92,7 @@ export interface DismissableNoticeProps {
   queueId?: string;
   error?: boolean;
   disabled?: boolean;
+  center?: boolean;
   customPendingButtonText?: string;
 }
 
@@ -103,6 +104,7 @@ export const DismissableNotice = (props: DismissableNoticeProps) => {
       {show ? (
         <div className={classNames(Styles.DismissableNotice, props.className, {
             [Styles.Error]: props.error,
+            [Styles.Center]: props.center,
          })}>
           <span>{InformationIcon}</span>
           <div>

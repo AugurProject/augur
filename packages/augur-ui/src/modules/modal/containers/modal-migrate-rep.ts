@@ -6,25 +6,21 @@ import { closeModal } from 'modules/modal/actions/close-modal';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import {
-  convertV1ToV2Estimate,
-  approveAndConvertV1ToV2,
+  approveRepV2,
+  convertRepV2,
 } from 'modules/account/actions/convert-v1-rep-to-v2';
 
 const mapStateToProps = (state: AppState) => ({
-  modal: state.modal,
   gasPrice:
     state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
   walletBalances: state.loginAccount.balances,
   tradingAccount: state.loginAccount.address,
-  ethToDaiRate: state.appStatus.ethToDaiRate,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  convertV1ToV2: useSigningWallet =>
-    dispatch(approveAndConvertV1ToV2(useSigningWallet)),
-  convertV1ToV2Estimate: useSigningWallet =>
-    convertV1ToV2Estimate(useSigningWallet),
+  approveV1ToV2: () => dispatch(approveRepV2()),
+  convertV1ToV2: () => dispatch(convertRepV2()),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({

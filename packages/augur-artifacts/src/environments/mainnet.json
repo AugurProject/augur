@@ -120,13 +120,12 @@
     "chat": "orbit"
   },
   "warpSync": {
-    "enabled": true,
+    "enabled": false,
     "autoReport": false,
-    "createCheckpoints": true
+    "createCheckpoints": false
   },
   "syncing": {
     "enabled": true
-
   },
   "sdk": {
     "enabled": false,
@@ -142,7 +141,7 @@
     "wssPort": 9002,
     "startWSS": true
   },
-  "logLevel": 0,
+  "logLevel": 2,
   "showReloadModal": false,
   "averageBlocktime": 15000,
   "ui": {
@@ -153,5 +152,8 @@
     "fallbackProvider": "torus",
     "liteProvider": "torus",
     "primaryProvider": "wallet"
+  },
+  "graph": {
+    "logSubgraphURL": "https://api.thegraph.com/subgraphs/name/augurproject/augur-v2-base"
   }
 }

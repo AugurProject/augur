@@ -1,7 +1,8 @@
-import { LoggerLevels } from './logger';
-import { NetworkId } from './constants';
-import path from 'path';
 import deepmerge from 'deepmerge';
+import path from 'path';
+import { NetworkId } from './constants';
+import { IPFSEndpointInfo, IPFSHashVersion } from './extract-ipfs-url';
+import { LoggerLevels } from './logger';
 
 export type RecursivePartial<T> = {
   [P in keyof T]?:
@@ -56,9 +57,13 @@ export interface SDKConfiguration {
     writeArtifacts?: boolean,
     externalAddresses?: ExternalAddresses,
   },
+  graph?: {
+    logSubgraphURL: string
+  }
   warpSync?: {
     createCheckpoints?: boolean,
     autoReport?: boolean
+    ipfsEndpoint?: IPFSEndpointInfo
   },
   uniswap?: {
     exchangeRateBufferMultiplier: number;
@@ -110,8 +115,9 @@ export interface SDKConfiguration {
     fallbackProvider?: 'jsonrpc' | 'torus',
     liteProvider?: 'jsonrpc' | 'default',
     primaryProvider?: 'jsonrpc' | 'wallet'
-  }
-};
+  },
+  concurrentDBOperationsLimit?: number
+}
 
 export interface ContractAddresses {
   Universe: string;
@@ -155,6 +161,7 @@ export interface ContractAddresses {
   RelayHubV2?: string;
   AugurWalletRegistryV2?: string;
   AccountLoader?: string;
+  ERC20Proxy1155Nexus?: string;
 
   // 0x
   //   The 0x contract names must be what 0x mesh expects.
@@ -223,6 +230,10 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
   warpSync: {
     createCheckpoints: false,
     autoReport: false,
+    ipfsEndpoint: {
+      version: IPFSHashVersion.CIDv0,
+      url: 'https://cloudflare-ipfs.com/'
+    }
   },
   uniswap: {
     // mainnet will be <= 1.005 but for dev we can get away with a wide spread

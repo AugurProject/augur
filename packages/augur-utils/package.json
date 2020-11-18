@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/utils",
-  "version": "2.1.9",
+  "version": "2.1.13-beta.2",
   "description": "Grab bag of formatting and ABI encoding/decoding functions",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
@@ -15,6 +15,8 @@
     "ethereumjs-abi": "0.6.8"
   },
   "devDependencies": {
+    "jest": "24.9.0",
+    "ts-jest": "24.0.2",
     "typescript": "3.8.3"
   },
   "publishConfig": {

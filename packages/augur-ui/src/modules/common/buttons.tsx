@@ -17,6 +17,7 @@ import {
   ThickChevron,
   AlternateDaiLogoIcon,
   AugurLogo,
+  RefreshIcon,
 } from 'modules/common/icons';
 import classNames from 'classnames';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
@@ -29,6 +30,8 @@ import { addCategoryStats } from 'modules/create-market/get-template';
 import ChevronFlip from 'modules/common/chevron-flip';
 import { Link } from 'react-router-dom';
 import { removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
+import ReactTooltip from 'react-tooltip';
+import TooltipStyles from 'modules/common/tooltip.styles.less';
 
 export interface DefaultButtonProps {
   id?: string;
@@ -50,7 +53,9 @@ export interface DefaultButtonProps {
   failed?: boolean;
   submitTextButtton?: boolean;
   customConfirmedButtonText?: string;
+  autoHideConfirm?: boolean;
   customPendingButtonText?: string;
+  phantom?: boolean;
 }
 
 export interface SortButtonProps {
@@ -147,6 +152,37 @@ export const PrimaryButton = (props: DefaultButtonProps) => (
   </>
 );
 
+export const RefreshButton = (props: DefaultButtonProps) => (
+  <>
+    <button
+      onClick={e => props.action(e)}
+      className={classNames(Styles.SecondaryButton,
+        Styles.Small,
+        Styles.Phantom,
+      )}
+      data-tip
+      data-for={'refresh-tooltip'}
+      data-place="top"
+      data-iscapture={true}
+      disabled={props.disabled}
+      title={props.title || props.text}
+    >
+      {RefreshIcon}
+    </button>
+    <ReactTooltip
+      id='refresh-tooltip'
+      className={classNames(TooltipStyles.Tooltip, TooltipStyles.RefreshSort)}
+      effect="solid"
+      place="top"
+      type="dark"
+      event="mouseover mouseenter"
+      eventOff="mouseleave mouseout scroll mousewheel blur"
+    >
+        <p>{'Refresh market sort by'}</p>
+    </ReactTooltip>
+  </>
+);
+
 export const SecondaryButton = (props: DefaultButtonProps) => (
   <button
     onClick={e => props.action(e)}
@@ -154,6 +190,7 @@ export const SecondaryButton = (props: DefaultButtonProps) => (
       [Styles.Small]: props.small,
       [Styles.Confirmed]: props.confirmed,
       [Styles.Failed]: props.failed,
+      [Styles.Phantom]: props.phantom,
     })}
     disabled={props.disabled}
     title={props.title || props.text}
@@ -199,6 +236,16 @@ const ProcessingButtonComponent = (props: DefaultButtonProps) => {
     icon = XIcon;
     isDisabled = false;
   }
+
+  if (props.autoHideConfirm) {
+    if (confirmed) {
+      icon = null;
+      setTimeout(() => {
+        props.cancel();
+      }, 3000);
+    }
+  }
+
   return (
     <>
       {props.secondaryButton && (

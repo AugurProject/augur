@@ -10,6 +10,7 @@ const mapStateToProps = (state: AppState) => ({
   isLogged: state.authStatus.isLogged,
   loginAccount: state.loginAccount,
   modal: state.modal,
+  ethToDaiRate: state.appStatus?.ethToDaiRate,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
@@ -17,7 +18,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any) => ({
-  shouldClose: sP.isLogged && sP.loginAccount.meta && !sP.loginAccount.meta.preloaded,
+  shouldClose: sP.isLogged && sP.loginAccount.meta && !sP.loginAccount.meta.preloaded && sP.ethToDaiRate,
   message: sP.modal.message,
   callback: sP.modal.callback,
   showMetaMaskHelper: sP.modal.showMetaMaskHelper,

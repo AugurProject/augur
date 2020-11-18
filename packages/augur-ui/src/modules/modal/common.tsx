@@ -10,6 +10,13 @@ import {
   EthIcon,
   helpIcon,
   OnboardingCheckIcon,
+  QRCodeIcon,
+  InformationIcon,
+  tokenUSDC,
+  tokenUSDT,
+  tokenEth,
+  MobileNavCloseIcon,
+  ExclamationCircle,
 } from 'modules/common/icons';
 import {
   DefaultButtonProps,
@@ -23,15 +30,17 @@ import {
   LinearPropertyLabelProps,
 } from 'modules/common/labels';
 import Styles from 'modules/modal/modal.styles.less';
-import { PENDING, SUCCESS, DAI, REP, FAILURE, ACCOUNT_TYPES, ETH, HELP_CENTER_ADD_FUNDS, HELP_CENTER_LEARN_ABOUT_ADDRESS, ON_BORDING_STATUS_STEP } from 'modules/common/constants';
-import { LinkContent, LoginAccount, FormattedNumber } from 'modules/types';
+import { PENDING, SUCCESS, DAI, REP, USDC, USDT, FAILURE, ACCOUNT_TYPES, ETH, HELP_CENTER_ADD_FUNDS, HELP_CENTER_LEARN_ABOUT_ADDRESS, ON_BORDING_STATUS_STEP, TRANSACTIONS, SETAPPROVALFORALL, APPROVE } from 'modules/common/constants';
+import { LinkContent, LoginAccount, FormattedNumber, AccountBalances } from 'modules/types';
 import { DismissableNotice, DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
 import { toChecksumAddress } from 'ethereumjs-util';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import ReactTooltip from 'react-tooltip';
-import { BigNumber } from 'utils/create-big-number';
+import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import titleCase from 'utils/title-case';
 import { checkIfMainnet } from 'modules/app/actions/check-if-mainnet';
+import { formatDai, formatDai } from 'utils/format-number';
+import { swap } from 'modules/swap/components/index.styles.less';
 
 export interface TitleProps {
   title: string;
@@ -385,25 +394,311 @@ export const LinkContentSection = ({ linkContent }: LinkContentSectionProps) => 
   </div>
 );
 
-interface StepperProps {
-  currentStep: number,
-  maxSteps: number,
-  changeCurrentStep?: Function;
+interface InfoBubbleProps {
+  icon: React.Fragment;
+  children: React.Fragment;
 }
 
-export const Stepper = ({ currentStep, maxSteps, changeCurrentStep = null }: StepperProps) => (
-  <div className={Styles.Stepper}>
-  {[...Array(maxSteps).keys()]
-    .map(key => key + 1)
-    .map((step, idx) => (
-    <span
-      key={idx}
-      onClick={() => changeCurrentStep && changeCurrentStep(step)}
-      className={currentStep === step ? Styles.Current : null}
-    ></span>
-  ))}
-</div>
+export const InfoBubble = ({ icon, children } : InfoBubbleProps) => (
+  <div className={Styles.InfoBubble}>
+    {icon}
+    {children}
+  </div>
 );
+
+interface DepositProps {
+  address: string;
+}
+
+export const Deposit = ({ address }: DepositProps) => {
+  const [isCopied, setIsCopied] = useState(false);
+  const [showQRCode, setShowQRCode] = useState(false);
+
+  useEffect(() => {
+    new Clipboard('#copy_address');
+  }, []);
+
+  const toggleCopied = () => {
+    setIsCopied(true);
+    setTimeout(() => {
+      setIsCopied(false);
+    }, 1000);
+  };
+
+  return (
+    <div className={Styles.OnboardingDeposit}>
+      Buy ETH from an exchange and send to your wallet address below
+      (recommended):
+      <div>
+        {showQRCode && (
+          <div onClick={() => setShowQRCode(false)}>
+            {MobileNavCloseIcon()}
+            <QRCode value={address} />
+          </div>
+        )}
+      </div>
+      <div>
+        <div onClick={() => setShowQRCode(true)}>{QRCodeIcon}</div>
+        <div>{`${address.substr(0, 9)}...${address.substr(
+          address.length - 9,
+          address.length
+        )}`}</div>
+      </div>
+      {!isCopied && (
+        <button
+          id='copy_address'
+          data-clipboard-text={address}
+          onClick={() => toggleCopied()}
+        >
+          Copy your address
+        </button>
+      )}
+      {isCopied && (
+        <SecondaryButton disabled text='Copied!' action={() => null} />
+      )}
+      <div>
+        Unsure of an crypto exchange? Try{' '}
+        <a target='_blank' href='https://coinbase.com'>
+          Coinbase
+        </a>{' '}
+        or{' '}
+        <a target='_blank' href='https://Binance.com'>
+          Binance
+        </a>
+      </div>
+    </div>
+  );
+};
+
+interface TokenSelectProps {
+  balances: AccountBalances;
+  handleSelection: Function;
+  ethToDaiRate: number;
+}
+
+export const TokenSelect = ({
+  balances,
+  handleSelection,
+  ethToDaiRate,
+}: TokenSelectProps) => {
+  const ethAmountInDai: FormattedNumber = formatDai(
+    createBigNumber(balances?.signerBalances?.eth || 0).times(ethToDaiRate)
+  );
+
+  if (!ethAmountInDai) {
+    return null;
+  }
+
+  const ethAmount = createBigNumber(balances?.signerBalances?.eth || 0);
+  const usdcAmount = createBigNumber(balances?.signerBalances?.usdc || 0);
+  const usdtAmount = createBigNumber(balances?.signerBalances?.usdt || 0);
+
+  if (ethAmount.gt(0) && !usdcAmount.gt(0) && !usdtAmount.gt(0)) {
+    handleSelection(ETH);
+  }
+
+  if (!ethAmount.gt(0) && !usdcAmount.gt(0) && !usdtAmount.gt(0)) {
+    handleSelection(ETH);
+  }
+
+  return (
+    <div className={Styles.OnboardingTokenSelect}>
+      <div onClick={() => handleSelection(ETH)}>
+        <div>{tokenEth} ETH</div>
+        <div>
+          <div>Wallet Balance:</div>
+          <div>${ethAmountInDai.formattedValue}</div>
+        </div>
+      </div>
+
+      {usdcAmount.gt(0) && <div onClick={() => handleSelection(USDC)}>
+        <div>{tokenUSDC} USDC</div>
+        <div>
+          <div>Wallet Balance:</div>
+          <div>${formatDai(usdcAmount).formatted}</div>
+        </div>
+      </div>}
+
+      {usdtAmount.gt(0) && <div onClick={() => handleSelection(USDT)}>
+        <div>{tokenUSDT} USDT</div>
+        <div>
+          <div>Wallet Balance:</div>
+          <div>${formatDai(usdtAmount).formatted}</div>
+        </div>
+      </div>}
+    </div>
+  );
+};
+
+interface BankrollProps {
+  approveModal: Function;
+  swapModal: Function;
+  token: string;
+  triggerOnRamp: Function;
+  accountType: string;
+  hasBalanceOver50k: boolean;
+}
+
+export const Bankroll = ({
+  swapModal,
+  approveModal,
+  token,
+  accountType,
+  triggerOnRamp,
+  hasBalanceOver50k,
+}: BankrollProps) => {
+  const [show1InchExchange, setShow1InchExchange] = useState(false);
+  const [showWalletOnRamp, setShowWalletOnRamp] = useState(false);
+  const [showSwap, setShowSwap] = useState(false);
+
+  if (!hasBalanceOver50k) {
+    swapModal();
+  }
+  const isWalletProvider =
+    [ACCOUNT_TYPES.FORTMATIC, ACCOUNT_TYPES.TORUS].includes(accountType) ||
+    false;
+
+  return (
+    <div className={Styles.OnboardingBankroll}>
+      <span>
+        (This step is designed to guide you through the best way to acquire DAI
+        for use within Augur){' '}
+      </span>
+      <div
+        className={showSwap || showWalletOnRamp ? 'Selected' : 'NotSelected'}
+        onClick={() => {
+          if (isWalletProvider) {
+            setShowWalletOnRamp(true);
+            setShow1InchExchange(false);
+            setShowSwap(false);
+          } else {
+            setShowSwap(true);
+            setShowWalletOnRamp(false);
+            setShow1InchExchange(false);
+          }
+        }}
+      >
+        $0 - 50k
+      </div>
+      {showSwap && (
+        <div className={Styles.OnboardingBankroll1Inch}>
+          <div>Use the in-app converter to convert {token} to DAI</div>
+          <div>This is simpler to use but may have greater slippage</div>
+          <PrimaryButton
+            action={() => swapModal()}
+            text={'In-app converter'}
+          />
+        </div>
+      )}
+      {showWalletOnRamp && (
+        <div className={Styles.OnboardingBankroll1Inch}>
+          <div>Buy DAI through your ETH wallet</div>
+          <div>This is simpler to use but may have a greater slippage.</div>
+          <PrimaryButton
+            action={() => triggerOnRamp(DAI)}
+            text={`Buy DAI through ${accountType}`}
+          />
+          <div onClick={() => approveModal()}>Continue</div>
+        </div>
+      )}
+      {hasBalanceOver50k && (
+        <div
+          className={show1InchExchange ? 'Selected' : 'NotSelected'}
+          onClick={() => {
+            setShowWalletOnRamp(false);
+            setShowSwap(false);
+            setShow1InchExchange(true);
+          }}
+        >
+          $50k+
+        </div>
+      )}
+      {show1InchExchange && (
+        <div className={Styles.OnboardingBankroll1Inch}>
+          <div>Use 1inch.exchange to convert {token} to DAI</div>
+          <div>Convert quantities greater than $50k at a lower slippage.</div>
+          <ExternalLinkButton
+            URL={'https://1inch.exchange'}
+            label='1inch.exchange'
+          />
+          <div onClick={() => approveModal()}>Continue</div>
+        </div>
+      )}
+      <span>
+        <div>{ExclamationCircle}</div>
+        <div>
+          Due to current high gas prices it’s recommended you maintain a $50
+          minimum worth of ETH.
+        </div>
+      </span>
+    </div>
+  );
+};
+
+interface ApprovalData {
+  label: string;
+  isApproved: boolean;
+  action: Function;
+}
+
+interface ApprovalsProps {
+  approvalData: ApprovalData[];
+  currentApprovalStep: number;
+}
+
+export const Approvals = ({ currentApprovalStep, approvalData }: ApprovalsProps) => {
+  const ApproveBox = (label, completed = false, handleApprove, idx) => (
+    <div
+      className={classNames(Styles.ApproveBox, {
+        [Styles.ApproveBoxCompleted]: completed,
+      })}
+      key={idx}
+    >
+      <span>{label}</span>
+      {completed ? (
+        OnboardingCheckIcon
+      ) : (
+        idx === 0 && currentApprovalStep === 0 ?
+          <ProcessingButton
+            text={'Approve'}
+            action={() => handleApprove()}
+            queueName={TRANSACTIONS}
+            queueId={APPROVE}
+            skipConfirm={true}
+          />
+        : idx === 1 && currentApprovalStep === 1 ?
+          <ProcessingButton
+            text={'Approve'}
+            action={() => handleApprove()}
+            queueName={TRANSACTIONS}
+            queueId={SETAPPROVALFORALL}
+            skipConfirm={true}
+          />
+        : idx === 2 && currentApprovalStep === 2 ?
+          <ProcessingButton
+            text={'Approve'}
+            action={() => handleApprove()}
+            queueName={TRANSACTIONS}
+            queueId={APPROVE}
+            skipConfirm={true}
+          />
+        : <PrimaryButton disabled action={() => null} text={'Approve'} />
+      )}
+    </div>
+  );
+
+  return (
+    <div className={Styles.OnboardingApprovals}>
+      {approvalData.map((approval, idx) =>
+        ApproveBox(approval.label, approval.isApproved, approval.action, idx)
+      )}
+      <div>
+        {InformationIcon} There will be an additional approval if creating
+        markets
+      </div>
+    </div>
+  );
+};
 
 interface TransferMyDaiProps {
   walletType: string;

@@ -7,6 +7,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { ADD_FUNDS, track } from 'services/analytics/helpers';
 import { createBigNumber } from 'utils/create-big-number';
+import { DAI } from 'modules/common/constants';
 
 
 
@@ -25,6 +26,7 @@ const mapStateToProps = (state: AppState) => {
   return {
     modal: state.modal,
     loginAccount: state.loginAccount,
+    address: state.loginAccount.address,
     balances: {
       ...state.loginAccount.balances.signerBalances,
     },
@@ -35,10 +37,11 @@ const mapStateToProps = (state: AppState) => {
     repToDaiRate,
     usdtToDaiRate,
     usdcToDaiRate,
+    gasPrice: state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
   };
 };
 
-const addFundsFortmatic = async (amount, crypto, address) => {
+export const addFundsFortmatic = async (amount, crypto, address) => {
   await fm.user.deposit({
     amount: amount.toNumber(),
     crypto,
@@ -46,11 +49,11 @@ const addFundsFortmatic = async (amount, crypto, address) => {
   });
 };
 
-const addFundsTorus = async (amount, address) => {
+export const addFundsTorus = async (amount, address, crypto = DAI) => {
   await torus.showWallet('topup', {
     selectedAddress: address,
     fiatValue: amount.toNumber(),
-    selectedCryptoCurrency: 'DAI',
+    selectedCryptoCurrency: crypto,
   });
 };
 

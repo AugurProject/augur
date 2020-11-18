@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import { Alerts } from 'modules/common/icons';
 import ConnectAccount from 'modules/auth/containers/connect-account';
@@ -6,16 +6,17 @@ import {
   MovementLabel,
   LinearPropertyLabel,
 } from 'modules/common/labels';
-import { CoreStats } from 'modules/types';
+import { CoreStats, FormattedNumber } from 'modules/types';
 import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
 import Logo from 'modules/app/components/logo';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { MARKETS } from 'modules/routes/constants/views';
 import HelpResources from 'modules/app/containers/help-resources';
-import { WALLET_STATUS_VALUES } from 'modules/common/constants';
+import { TOTAL_ONBOARDING_STEPS } from 'modules/modal/onboarding';
 
 import Styles from 'modules/app/components/top-bar.styles.less';
+import { approveZeroXCheck, approveShareTokenCheck, approveFillOrderCheck } from 'modules/contracts/actions/contractCalls';
 
 interface StatsProps {
   isLogged: boolean;
@@ -73,6 +74,9 @@ interface TopBarProps {
   buyDaiModal: Function;
   activateWalletModal: Function;
   walletStatus: string;
+  handleShowOnboarding: Function;
+  currentOnboardingStep: number;
+  ethToDaiRate: FormattedNumber;
 }
 
 const TopBar: React.FC<TopBarProps> = ({
@@ -90,7 +94,47 @@ const TopBar: React.FC<TopBarProps> = ({
   buyDaiModal,
   activateWalletModal,
   walletStatus,
+  handleShowOnboarding,
+  currentOnboardingStep,
+  address,
+  ethToDaiRate,
 }) => {
+
+  const [isZeroXApproved, setIsZeroXApproved] = useState(false);
+  const [isShareTokenApproved, setIsShareTokenApproved] = useState(false);
+  const [isFillOrderAprpoved, setIsFillOrderApproved] = useState(false);
+
+  useEffect(() => {
+    if (
+      isLogged &&
+      address &&
+      currentOnboardingStep < TOTAL_ONBOARDING_STEPS &&
+      (!isZeroXApproved || !isShareTokenApproved || !isFillOrderAprpoved)
+    ) {
+      const checkIsZeroXApproved = async () => {
+        const approved = await approveZeroXCheck(address);
+        setIsZeroXApproved(approved);
+      };
+
+      const checkIsShareTokenApproved = async () => {
+        const approved = await approveShareTokenCheck(address);
+        setIsShareTokenApproved(approved);
+      };
+
+      const checkIsFillOrderApproved = async () => {
+        const approved = await approveFillOrderCheck(address);
+        setIsFillOrderApproved(approved);
+      };
+
+      checkIsZeroXApproved();
+      checkIsShareTokenApproved();
+      checkIsFillOrderApproved();
+    }
+  }, [isLogged, address]);
+
+
+
+  const accountSetup = isZeroXApproved && isShareTokenApproved && isFillOrderAprpoved;
   return (
     <header className={Styles.TopBar}>
       <div className={Styles.Logo}>
@@ -106,12 +150,18 @@ const TopBar: React.FC<TopBarProps> = ({
         tradingAccountCreated={!showAddFundsButton }
       />
       <div>
+        {(isLogged || restoredAccount) && !accountSetup && currentOnboardingStep < TOTAL_ONBOARDING_STEPS && ethToDaiRate && (
+          <PrimaryButton text={'Continue account setup'} action={() => handleShowOnboarding(currentOnboardingStep)} />
+        )}
 
         {(!isLogged || (!isMobile && (isLogged || restoredAccount))) && (
           <HelpResources isMobile={isMobile} helpModal={helpModal} />
         )}
         {!isLogged && !restoredAccount && (
-          <PrimaryButton action={() => loginModal()} text={'Connect'} />
+          <SecondaryButton action={() => loginModal()} text={'Connect'} />
+        )}
+        {!isLogged && !restoredAccount && (
+          <PrimaryButton action={() => signupModal()} text={'Signup'} />
         )}
         {(isLogged || restoredAccount) && (
           <button

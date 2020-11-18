@@ -1,12 +1,13 @@
-import { logger, NetworkId } from '@augurproject/utils';
+import { logger, NetworkId, QUINTILLION, numTicksToTickSize } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
 import { ethers } from 'ethers';
 import LZString from 'lz-string';
 import { HotLoading, HotLoadMarketInfo } from './api/HotLoading';
 import { AccountLoader, AccountData } from './api/AccountLoader';
 import { WarpSync } from './api/WarpSync';
-import { MarketReportingState, NullWarpSyncHash } from './constants';
+import { MarketReportingState, NullWarpSyncHash, MarketType } from './constants';
 import { MarketCreatedLog } from './logs';
+import { marketTypeToName } from './markets';
 
 interface NamedMarketCreatedLog extends MarketCreatedLog {
   name: string;
@@ -28,7 +29,7 @@ export interface Addresses {
   WarpSync: string;
 }
 
-const FILE_FETCH_TIMEOUT = 10000; // 10 seconds
+const FILE_FETCH_TIMEOUT = 30000; // 10 seconds
 
 export class AugurLite {
   readonly hotLoading: HotLoading;
@@ -91,7 +92,7 @@ export class AugurLite {
 
   async getIPFSFile(ipfsPath: string) {
     const fileRetrievalFn = (ipfsPath: string) =>
-      fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsPath}/index `)
+      fetch(`https://dweb.link/ipfs/${ipfsPath}/index `)
         .then((item) => item.arrayBuffer())
         .then((item) => new Uint8Array(item));
 
@@ -106,48 +107,5 @@ export class AugurLite {
       );
       resolve(JSON.parse(decompressedResult));
     });
-  }
-
-  async getMarketCreatedLogs(onlyOpenMarkets = false) {
-    const { warpSyncHash } = await this.warpSync.getLastWarpSyncData(
-      this.addresses.Universe
-    );
-
-    // The Market has not been reported on.
-    if (warpSyncHash === NullWarpSyncHash)
-      return [];
-
-    try {
-      const { logs } = await this.getIPFSFile(warpSyncHash);
-      const { timestamp } = await this.provider.getBlock('latest');
-      return logs
-        .filter((log) => log.name === 'MarketCreated')
-        .filter(
-          onlyOpenMarkets
-            ? (log) => Number(log.endTime) > timestamp
-            : () => true
-        )
-        .map(({ extraInfo, ...rest }) => ({
-          id: rest.market,
-          categories: [],
-          ...rest,
-          ...JSON.parse(extraInfo),
-          extraInfo: JSON.parse(extraInfo),
-          reportingState: MarketReportingState.Unknown,
-          disputeInfo: {
-            disputeRound: new BigNumber('0x0', 16).toFixed(),
-            disputeWindow: {
-              startTime: null,
-              endTime: rest.endTime,
-            },
-            stakes: [],
-          },
-          disputePacingOn: false,
-          stakes: [],
-        }));
-    } catch (e) {
-      logger.error(e);
-      return [];
-    }
   }
 }

@@ -1,3 +1,4 @@
+import * as CIDTool from 'cid-tool';
 import {
   Log,
   MarketReportingState,
@@ -5,7 +6,7 @@ import {
   SubscriptionEventName,
 } from '@augurproject/sdk-lite';
 import { Log as SerializedLog } from '@augurproject/types';
-import { logger } from '@augurproject/utils';
+import { IPFSEndpointInfo, IPFSHashVersion, logger } from '@augurproject/utils';
 import Dexie from 'dexie';
 import { Block } from 'ethers/providers';
 import { BigNumber } from 'ethers/utils';
@@ -23,7 +24,7 @@ import { Markets } from '../state/getter/Markets';
 import { Checkpoints } from './Checkpoints';
 
 export const WARPSYNC_VERSION = '1';
-const FILE_FETCH_TIMEOUT = 10000; // 10 seconds
+const FILE_FETCH_TIMEOUT = 30000; // 10 seconds
 
 type NameOfType<T, R> = {
   [P in keyof T]: T[P] extends R ? P : never;
@@ -112,13 +113,8 @@ export class WarpController {
     private augur: Augur<Provider>,
     private provider: Provider,
     private uploadBlockNumber: number,
+    private ipfsEndpointInfo:IPFSEndpointInfo,
     ipfs?: Promise<IPFS>,
-    // This is to simplify swapping out file retrieval mechanism.
-    private _fileRetrievalFn: (ipfsPath: string) => Promise<Uint8Array> = (
-      ipfsPath: string
-    ) => fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsPath}`)
-      .then(item => item.arrayBuffer())
-      .then(item => new Uint8Array(item))
   ) {
     this.checkpoints = new Checkpoints(provider);
     if (ipfs) {
@@ -211,16 +207,9 @@ export class WarpController {
       if (newBlock.number - newEndBlock.number < 30) return;
 
       await this.db.prune(newEndBlock.timestamp);
-      /*
-       * To create the checkpoint properly we need to discover the boundary blocks around the end time.
-       **/
-      const hash = (await this.createCheckpoint(newEndBlock)).toString();
 
-      this.augur.events.emit(SubscriptionEventName.WarpSyncHashUpdated, {
-        hash,
-      });
-
-      return hash;
+      // This version of the client will no longer generate a
+      // warp sync because it does not know about the para deploy logs.
     }
 
     // nothing left to do.
@@ -248,8 +237,7 @@ export class WarpController {
   }
 
   async destroyAndRecreateDB() {
-    console.log(`WarpController: Clearing and re-initializing DB`);
-    await this.db.clear();
+    await this.db.delete();
     await this.db.initializeDB();
   }
 
@@ -309,11 +297,30 @@ export class WarpController {
     return hash;
   }
 
-  getFile(ipfsPath: string) {
-    const self = this;
-    return new Promise<CheckpointInterface>(async function(resolve, reject) {
-      const timeout = setTimeout(function() {reject(new Error('Request timed out'));}, FILE_FETCH_TIMEOUT);
-      const fileResult = await self._fileRetrievalFn(ipfsPath);
+  getFile(ipfsHash: string, ipfsPath: string) {
+    return new Promise<CheckpointInterface>(async (resolve, reject) => {
+      const timeout = setTimeout(() => {reject(new Error('Request timed out'));}, FILE_FETCH_TIMEOUT);
+      let fileResult;
+      switch (this.ipfsEndpointInfo.version) {
+        case IPFSHashVersion.CIDv0:
+        case IPFSHashVersion.CIDv1:
+          fileResult = await fetch(`${this.ipfsEndpointInfo.url}/${ipfsHash}${ipfsPath}`)
+          .then(item => item.arrayBuffer())
+          .then(item => new Uint8Array(item))
+          break;
+        case IPFSHashVersion.IPFS:
+          try {
+            fileResult = await (await this.ipfs).cat(`${ipfsHash}${ipfsPath}`);
+          } catch(err) {
+            if (err.message === 'this dag node is a directory') {
+              throw Error(`IPFS: tried to read directory as if it were a file: hash=${ipfsHash} path=${ipfsPath}`)
+            }
+          }
+          break;
+        default:
+          throw new Error('No IPFS gateway configured');
+      }
+
       clearTimeout(timeout);
       const decompressedResult = await LZString.decompressFromUint8Array(fileResult);
       resolve(JSON.parse(decompressedResult));
@@ -321,7 +328,7 @@ export class WarpController {
   }
 
   async getCheckpointFile(ipfsRootHash: string): Promise<CheckpointInterface> {
-    return this.getFile(`${ipfsRootHash}/index`);
+    return this.getFile(ipfsRootHash, '/index');
   }
 
   async pinHashByGatewayUrl(urlString: string) {

@@ -108,6 +108,22 @@ export async function getMaxMarketEndTime(): Promise<number> {
   return new BigNumber(maxEndTime).toNumber();
 }
 
+export async function isRepV2Approved(account): Promise<boolean> {
+  const { contracts } = augurSdk.get();
+  try {
+    const currentAllowance = await contracts.legacyReputationToken.allowance_(
+      account,
+      contracts.reputationToken.address
+    );
+    if (currentAllowance.lte(0)) {
+      return false;
+    }
+    return true;
+  } catch (error) {
+    throw error;
+  }
+}
+
 export async function convertV1ToV2Approve() {
   const { contracts } = augurSdk.get();
 
@@ -367,6 +383,38 @@ export async function addLiquidityRepDai(
   );
 }
 
+export async function checkTokenApproval(account, contract): Promise<boolean> {
+  const { contracts } = augurSdk.get();
+  try {
+    const currentAllowance = await contract.allowance_(
+      account,
+      contracts.uniswap.address
+    );
+
+    if (currentAllowance.lte(0)) {
+      return false
+    }
+    return true;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function setTokenApproval(account, contract): Promise<void> {
+  const { contracts } = augurSdk.get();
+  try {
+    const currentAllowance = await contract.allowance_(
+      account,
+      contracts.uniswap.address
+    );
+    if (currentAllowance.lte(0)) {
+      await contract.approve(contracts.uniswap.address, APPROVAL_AMOUNT);
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+
 export async function checkSetApprovalAmount(account, contract): Promise<void> {
   const { contracts } = augurSdk.get();
   try {
@@ -375,7 +423,7 @@ export async function checkSetApprovalAmount(account, contract): Promise<void> {
       account,
       contracts.uniswap.address
     );
-    if (currentAllowance.toNumber() <= 0) {
+    if (currentAllowance.lte(0)) {
       await contract.approve(contracts.uniswap.address, APPROVAL_AMOUNT);
     }
   } catch (error) {
@@ -932,6 +980,57 @@ export async function approvalsNeededToTrade(address): Promise<number> {
   console.log(fillContractApproval, cashContractApproval, fillShareAllContractApproval);
   const approvals = [fillContractApproval, cashContractApproval, fillShareAllContractApproval].filter(a => !a);
   return (approvals.length > 0 ? approvals.length + 1 : 0); // add additional 1 for referral address
+}
+
+export async function approveZeroX(address, ) {
+  const { contracts } = augurSdk.get();
+  try {
+    if (!(await isContractApproval(address, contracts.ZeroXTrade.address, contracts.cash))) {
+      return await contracts.cash.approve(contracts.ZeroXTrade.address, APPROVAL_AMOUNT);
+    }
+  } catch(error) {
+    console.error('approveZeroX', error);
+    return false;
+  }
+}
+
+export async function approveShareToken(address, ) {
+  const { contracts } = augurSdk.get();
+  try {
+    if (!(await contracts.shareToken.isApprovedForAll_(address, contracts.fillOrder.address))) {
+      return await contracts.shareToken.setApprovalForAll(contracts.fillOrder.address, true);
+    }
+  } catch(error) {
+    console.error('approveShareToken', error);
+    return false;
+  }
+}
+
+export async function approveFillOrder(address, ) {
+  const { contracts } = augurSdk.get();
+  try {
+    if (!(await isContractApproval(address, contracts.fillOrder.address, contracts.cash))) {
+      return await contracts.cash.approve(contracts.fillOrder.address, APPROVAL_AMOUNT);
+    }
+  } catch(error) {
+    console.error('approveFillOrder', error);
+    return false;
+  }
+}
+
+export async function approveZeroXCheck(address) {
+  const { contracts } = augurSdk.get();
+  return await isContractApproval(address, contracts.ZeroXTrade.address, contracts.cash);
+}
+
+export async function approveShareTokenCheck(address) {
+  const { contracts } = augurSdk.get();
+  return await contracts.shareToken.isApprovedForAll_(address, contracts.fillOrder.address);
+}
+
+export async function approveFillOrderCheck(address) {
+  const { contracts } = augurSdk.get();
+  return await isContractApproval(address, contracts.fillOrder.address, contracts.cash);
 }
 
 export async function approveToTrade(address, referalAddress = NULL_ADDRESS) {

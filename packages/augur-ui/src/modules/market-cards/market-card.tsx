@@ -266,23 +266,25 @@ export default class MarketCard extends React.Component<
       >
         <>
           <div>
-            {reportingState === REPORTING_STATE.PRE_REPORTING && (
+            {(reportingState === REPORTING_STATE.PRE_REPORTING || reportingState === REPORTING_STATE.UNKNOWN) && (
               <>
                 <LabelValue
                   label={condensed ? 'Volume' : 'Total Volume'}
                   value={`$${volumeFormatted.formatted}`}
+                  loading={reportingState === REPORTING_STATE.UNKNOWN}
                   condensed
                 />
                 {!condensed && (
                   <LabelValue
                     label="Open Interest"
                     value={`$${openInterestFormatted.formatted}`}
+                    loading={reportingState === REPORTING_STATE.UNKNOWN}
                     condensed
                   />
                 )}
               </>
             )}
-            {reportingState !== REPORTING_STATE.PRE_REPORTING && reportingState !== REPORTING_STATE.UNKNOWN && (
+            {(reportingState !== REPORTING_STATE.PRE_REPORTING && reportingState !== REPORTING_STATE.UNKNOWN) && (
               <LabelValue
                 condensed
                 label="Total Dispute Stake"

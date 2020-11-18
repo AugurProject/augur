@@ -1,0 +1,132 @@
+{
+  "networkId": "80001",
+  "ethereum": {
+    "http": "https://rpc-mumbai.matic.today",
+    "rpcRetryCount": 5,
+    "rpcRetryInterval": 0,
+    "rpcConcurrency": 40,
+    "ws": "wss://ws-mumbai.matic.today"
+  },
+  "gas": {
+    "price": 20000000000,
+    "limit": 10000000,
+    "override": false
+  },
+  "deploy": {
+    "isProduction": false,
+    "enableFaucets": true,
+    "normalTime": true,
+    "writeArtifacts": true,
+    "serial": true,
+    "externalAddresses": {}
+  },
+  "uniswap": {
+    "exchangeRateBufferMultiplier": 1.075
+  },
+  "gsn": {
+    "enabled": true,
+    "minDaiForSignerETHBalanceInDAI": 40,
+    "desiredSignerBalanceInETH": 0.04
+  },
+  "zeroX": {
+    "rpc": {
+      "enabled": false,
+      "ws": "wss://v2.augur.net/0x-ws"
+    },
+    "mesh": {
+      "verbosity": 1,
+      "enabled": true,
+      "useBootstrapList": true,
+      "bootstrapList": []
+    }
+  },
+  "uploadBlockNumber": 2872063,
+  "addresses": {
+    "Augur": "0x47D6DF4b1f10476e2E5ef8644911A108315a36dA",
+    "Universe": "0xFe1E4bB28C2F912a4C093f40F4050CB9F3b7C98A",
+    "LegacyReputationToken": "0xC40262DFbB8f4ba730A5155062714062D253F2F4",
+    "Cash": "0xD7c7eD08fd73F78ce381e859176bD7bb57A2e4de",
+    "ProxyFactory": "0x929CF3F7f8bC73c17Ca6238F8408379A91Ee1f6F",
+    "GnosisSafe": "0x321fd7D3097190492CFf384F48d6d9f3B862c67F",
+    "BuyParticipationTokens": "0xF4F208d69E428B55d797e59C46bB46357077C76a",
+    "RedeemStake": "0xD173A74545b8FBE931586651ec8136FEe543a1D9",
+    "GnosisSafeRegistry": "0xca3C2C3246902222C5f770729AE1A63C01f2d57A",
+    "WarpSync": "0xaCF74747680F4F4A1004d91710A9D7b474C27BE3",
+    "ShareToken": "0x237C74c6852EE543D620f188d8A095E693A8522e",
+    "HotLoading": "0xE03E46607FDEA714F6912Ec1cB5AE2215fBe92b9",
+    "EthExchange": "0x35cd852Ea40068A93daf696338fA32886f1240C9",
+    "Affiliates": "0xa01842F4b826ae4B79fCE19945ce98362A6726FB",
+    "AffiliateValidator": "0x02EEE2c27Ec9789ef51183E125E0e15Daa007431",
+    "Exchange": "0x62F306e9172D3E967323C6e8F9e9d6C2819504C1",
+    "Time": "0xd0f2C765Ed57eE5Df756Ccd703627027c38EA2A5",
+    "AugurTrading": "0x943745Ce2e8Cce00EE8f9403CFa1A162247954c0",
+    "CancelOrder": "0xb3B3DF5F3a14244Cb4A7BF155Fc7AA8CaDbadBcb",
+    "CreateOrder": "0xdf8e77b1120E1E1f90a383b945316A351F7f92d9",
+    "FillOrder": "0x5b9dE99195058732A5508af8A416205c130017a2",
+    "Orders": "0xa6C77B298fEA267eb44D9Eb4eE63959589310Cb3",
+    "ProfitLoss": "0x93aB776F6d41cada142EE24cD72e8415D7AeC0f0",
+    "SimulateTrade": "0x46286Ae96081F66A95d322DEC7d4857a72E3326D",
+    "Trade": "0x25D862eD946aceD811a9de08e5b75e68107B5417",
+    "ZeroXTrade": "0xAa7Ba9d5b4c5C55Cd0427Ef38413d96060D52431",
+    "OICash": "0x6d2adE751AE71933dFF5DB27109A7D2802067134",
+    "AugurWalletRegistry": "0x2c3Fca25a0E4EFa3b783467C0B67edAf3c56D10F",
+    "UniswapV2Factory": "0x23b5d1D969B900442c8A69f54770053924e027C7",
+    "WETH9": "0xBb1897426059F65C6496121462841b78c068Eec6",
+    "UniswapV2Router02": "0xd8F09377352045C71cB30e8908393EFA65B054C3",
+    "AuditFunds": "0x46cDd35E899B2aEb90A11e04561107b734fa141E",
+    "AugurWalletRegistryV2": "0xeb92b1bDbbe22C4057B31C31D9986C317636a24B",
+    "RelayHubV2": "0x26A386e4178aEF64f3e5BB96B5eBe59Df51977bC",
+    "ERC20Proxy": "0x153e415599b9c701d240a956b6cc0FF884BbF9Fc",
+    "ERC721Proxy": "0xF88578809AD1381D58E575D23fb42Af0B7A3c1e4",
+    "ERC1155Proxy": "0x67aB54E3a7F17BcFC623a2Bd5bE90E80B421Cd66",
+    "MultiAssetProxy": "0xc78adf98891271B9a0ae78c0021E014F086aceA6",
+    "Coordinator": "0x96e1C8867cd4aD84Cf02D59Eae3B6D65aFF065C5",
+    "CoordinatorRegistry": "0xE7397702a712643de28C3C2eA2D257e25EEd8c1D",
+    "ChaiBridge": "0x03627229a5d1362D034c79Fb007EA6f68d61829e",
+    "DevUtils": "0xF2fA2F4Cf8343A47Bacd551DcdF397a12b9a7C3e",
+    "ZRXToken": "0xceba2034e55cc458D1b4F2A43F5BB1b8d1350078",
+    "USDC": "0x17a981EeC6DaEBb47d7A7231AC295D3773049f4d",
+    "USDT": "0x19412772DF291a678A2511d3d697b9B0Df3Df97d",
+    "AccountLoader": "0xde5c5bba94ff6E0E599C62cC93fb1a22323A5Fe8"
+  },
+  "useWarpSync": true,
+  "server": {
+    "httpPort": 9003,
+    "startHTTP": true,
+    "httpsPort": 9004,
+    "startHTTPS": true,
+    "wsPort": 9001,
+    "startWS": true,
+    "wssPort": 9002,
+    "startWSS": true
+  },
+  "plugins": {
+    "chat": "orbit"
+  },
+  "syncing": {
+    "enabled": true
+  },
+  "sdk": {
+    "enabled": false,
+    "ws": "ws://localhost:9001"
+  },
+  "warpSync": {
+    "enabled": true,
+    "autoReport": false,
+    "createCheckpoints": false
+  },
+  "logLevel": 0,
+  "showReloadModal": true,
+  "averageBlocktime": 2000,
+  "trackBestOffer": false,
+  "trackMarketInvalidBids": true,
+  "ui": {
+    "showReloadModal": true,
+    "trackBestOffer": false,
+    "trackMarketInvalidBids": true,
+    "fallbackProvider": "torus",
+    "liteProvider": "jsonrpc",
+    "primaryProvider": "wallet"
+  },
+  "concurrentDBOperationsLimit": 10
+}

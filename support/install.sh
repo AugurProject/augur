@@ -40,7 +40,9 @@ This utility will help to set up the services which can interact with Augur on
 kovan, mainnet, and localhost.
 
 This utility requires docker-ce and docker-compose, and once fully installed
-the services can be managed using docker-compose directly. If you don't know what that means, you can also just google docker desktop and download that and run it.
+the services can be managed using docker-compose directly. If you don't know
+what that means, you can also just google docker desktop and download that and
+run it.
 
 Configuration will be written to a directory on your filesystem.
 ##############################################################################
@@ -261,13 +263,33 @@ case "$method" in
     reporting_ui_hash32=`get_reporting_UI_hash32`
 
     cat <<PRETTYBLOCK
-Augur Address: $augur_key
-Trading UI Link: https://cloudflare-ipfs.com/ipfs/$trading_ui_hash
-Trading UI Link w/ subdomain: https://$trading_ui_hash32.ipfs.cf-ipfs.com
-Reporting UI Link: https://cloudflare-ipfs.com/ipfs/$reporting_ui_hash
-Reporting UI Link w/ subdomain: https://$reporting_ui_hash32.ipfs.cf-ipfs.com
-Previous Warp Sync Hash: $previous_warp_sync_hash
-Current Warp Sync Hash: $current_warp_sync_hash
+##############################
+IPFS Hashes
+##############################
+- Reporting
+  - CIDv0: $reporting_ui_hash
+  - CIDv1: $reporting_ui_hash32
+- Trading
+  - CIDv0: $trading_ui_hash
+  - CIDv1: $trading_ui_hash32
+
+##############################
+IPFS Links
+##############################
+Links:
+- Reporting
+    - https://$reporting_ui_hash32.ipfs.dweb.link
+    - https://dweb.link/ipfs/$reporting_ui_hash
+- Trading
+    - https://$trading_ui_hash32.ipfs.dweb.link
+    - https://dweb.link/ipfs/$trading_ui_hash
+
+##############################
+Warp Sync
+##############################
+ETH Account for Warp Sync Reporting: $augur_key
+Most-recently resolved warp sync hash: $previous_warp_sync_hash
+Warp sync hash to be reporting/confirmed for pending market: $current_warp_sync_hash
 
 You are currently pinning the Trading and Reporting UIs to IPFS. Thanks!
 This will be true as long as you keep the "augur_augur_1" docker running.

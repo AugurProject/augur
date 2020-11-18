@@ -83,6 +83,7 @@ export class GetterCache extends AbstractTable {
             "getMarketOutcomeBestOffer"
         ],
         [SubscriptionEventName.ProfitLossChanged]: [
+            "getRawUserTradingPositions",
             "getUserTradingPositions",
             "getProfitLoss",
             "getProfitLossSummary",
@@ -153,9 +154,5 @@ export class GetterCache extends AbstractTable {
         _.forEach(this.eventMapForCacheClearing, (getters: string[], eventName: string) => {
             this.augur.off(eventName);
         })
-    }
-
-    async clear() {
-        return this.delete();
     }
 }
