@@ -15,11 +15,11 @@ export function serialize(x) {
     } else {
 
       // input is a base-10 javascript number
-      if (x.constructor === Number) {
+      if (typeof x === "number") {
         serialized = abiEncodeInt256(new BigNumber(x, 10).toFixed());
 
       // input is a utf8 or hex string
-      } else if (x.constructor === String) {
+      } else if (typeof x === "string") {
 
         // negative hex
         if (x.slice(0, 1) === "-") {
