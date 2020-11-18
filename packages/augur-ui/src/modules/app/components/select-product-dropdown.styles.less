@@ -1,0 +1,167 @@
+@import (reference) '~assets/styles/shared';
+
+.Dropdown {
+  position: relative;
+  width: @size-54;
+  height: @size-56;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  > button:first-of-type {
+    background-color: var(--color-dark-grey);
+    padding: @size-16;
+    z-index: @above-all-content-top-layer;
+
+    &:hover {
+      background-color: var(--color-module-background);
+    }
+
+    > svg:first-of-type {
+      height: @size-20;
+      width: @size-20;
+
+      > path {
+        fill: var(--color-primary-text);
+      }
+    }
+  }
+
+  > div:first-of-type {
+    display: none;
+    position: absolute;
+    top: @size-55;
+    right: 0;
+    width: @size-240;
+    background-color: var(--color-table-header);
+    color: var(--color-primary-text);
+    border: @size-1 solid var(--color-secondary-action-outline);
+    border-radius: @border-radius-default 0 @border-radius-default @border-radius-default;
+    z-index: @above-all-content-above;
+    overflow: hidden;
+
+    > div:first-of-type {
+      .text-12-semi-bold;
+
+      padding: @size-24 @size-13;
+      background-color: var(--color-module-background);
+      color: var(--color-primary-text);
+      text-transform: uppercase;
+    }
+
+    > div:not(:first-of-type) {
+      > a,
+      > button,
+      > div > a,
+      > div > button {
+        .text-12-semi-bold;
+
+        color: var(--color-secondary-text);
+        display: flex;
+        padding: @size-16;
+        border-left: @size-1 solid transparent;
+        width: 100%;
+        text-transform: uppercase;
+
+        &:hover {
+          border-left: @size-1 solid var(--color-secondary-text);
+          color: var(--color-primary-text);
+        }
+
+        &.Active {
+          border-left: @size-1 solid var(--color-primary-action);
+          color: var(--color-primary-text);
+        }
+      }
+
+      > a,
+      > button {
+        > span {
+          margin-left: auto;
+
+          > svg {
+            width: @size-10;
+            height: @size-6;
+
+            > path {
+              stroke: var(--color-secondary-text);
+            }
+          }
+        }
+
+        &:hover {
+          > span > svg > path {
+            stroke: var(--color-primary-text);
+          }
+        }
+      }
+
+      > div {
+        display: none;
+
+        > a,
+        > button {
+          .text-10-medium;
+
+          display: flex;
+          align-items: center;
+          padding: @size-12 @size-24;
+
+          > span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: @size-16;
+            width: @size-16;
+            border-radius: 50%;
+            margin-right: @size-8;
+          }
+        }
+
+        > a:first-of-type,
+        > button:first-of-type {
+          > span {
+            background: linear-gradient(180deg, #F9A606 -14.17%, #FBCC5F 110.5%);
+
+            > svg {
+              width: @size-11;
+              height: @size-12;
+            }
+          }
+        }
+
+        > a:nth-of-type(2),
+        > button:nth-of-type(2) {
+          > span {
+            background-color: var(--color-brand-secondary);
+
+            > svg {
+              width: @size-11;
+              height: @size-12;
+            }
+          }
+        }
+
+        &.ShowInnerDropdown {
+          display: block;
+        }
+      }
+    }
+  }
+
+  &.ShowDropdown {
+    > button:first-of-type {
+      background-color: var(--color-module-background);
+      border-right: @size-1 solid var(--color-secondary-action-outline);
+      border-left: @size-1 solid var(--color-secondary-action-outline);
+    }
+
+    > div:first-of-type {
+      display: block;
+    }
+  }
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+}

@@ -47,6 +47,7 @@ import {
   approveZeroXCheck,
 } from 'modules/contracts/actions/contractCalls';
 import { useNotifications } from 'modules/account/components/notifications';
+import { SelectProductDropdown } from 'modules/app/components/select-product-dropdown';
 
 const handleShowOnboarding = (currentOnboardingStep, setModal) => {
   let nextStep = MODAL_AUGUR_USES_DAI;
@@ -125,6 +126,7 @@ const TopBar = () => {
     matched: { count: MyBetsCount },
   } = Betslip.get();
   const isSports = theme === THEMES.SPORTS;
+  const isTrading = theme === THEMES.TRADING;
   const { unseenCount } = getInfoAlertsAndSeenCount();
   const LoggedOrRestored = isLogged || restoredAccount;
   const notLoggedAndRestored = !isLogged && !restoredAccount;
@@ -238,6 +240,7 @@ const TopBar = () => {
             </button>
           </div>
         )}
+        {isTrading && <SelectProductDropdown />}
         {LoggedOrRestored && (
           <div className={Styles.AlertsDiv}>
             <button
