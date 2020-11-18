@@ -11,6 +11,8 @@ import ChevronFlip from 'modules/common/chevron-flip';
 
 export const SelectProductDropdown = () => {
   const {
+    currentBasePath,
+    theme,
     actions: { setTheme },
   } = useAppStatusStore();
   const [toggleDropdown, setToggleDropdown] = useState(false);
@@ -37,16 +39,20 @@ export const SelectProductDropdown = () => {
   }, {
     title: 'Sportsbook',
     action: () => setTheme(THEMES.SPORTS),
+    active: theme === THEMES.SPORTS
   }, {
     title: 'Create Market',
     action: () => {},
-    link: makePath(CREATE_MARKET)
+    link: makePath(CREATE_MARKET),
+    active: currentBasePath === CREATE_MARKET
   }, {
     title: 'Disputing',
     link: makePath(DISPUTING),
+    active: currentBasePath === DISPUTING
   }, {
     title: 'Reporting',
     link: makePath(REPORTING),
+    active: currentBasePath === REPORTING
   }];
 
   const inputRef = useRef(null);
@@ -75,12 +81,16 @@ export const SelectProductDropdown = () => {
       </button>
       <div>
         <div>Products</div>
-        {dropdownOptions.map(({title, action, link, dropdownStatus, dropdown}) => (
+        {dropdownOptions.map(({title, action, link, dropdownStatus, dropdown, active}) => (
           <div key={title}>
             {link ? (
-              <Link to={link}>{title}</Link>
+              <Link to={link} className={classNames(Styles.Dropdown, {
+                [Styles.Active]: active
+              })}>{title}</Link>
             ) : (
-              <button onClick={() => action()}>
+              <button onClick={() => action()} className={classNames(Styles.Dropdown, {
+                [Styles.Active]: active
+              })}>
                 {title}
                 {dropdown && (
                   <ChevronFlip
