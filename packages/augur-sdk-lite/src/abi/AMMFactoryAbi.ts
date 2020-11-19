@@ -292,17 +292,17 @@ export const AMMFactoryAbi = [
       },
       {
         "internalType": "address",
-        "name": "sender",
+        "name": "_sender",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "recipient",
+        "name": "_recipient",
         "type": "address"
       },
       {
         "internalType": "uint256",
-        "name": "quantity",
+        "name": "_quantity",
         "type": "uint256"
       }
     ],

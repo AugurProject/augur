@@ -122,7 +122,6 @@ export class AMM {
     const inputYes = !buyYes;
     const amm = this.exchangeContract(address);
     console.log(`amm.swap(${inputShares.toFixed()}, ${inputYes}, ${minShares.toFixed()})`);
-    // return amm.swap(inputShares.toFixed(), inputYes, minShares.toFixed());
     return amm.swap(inputShares.toFixed(), inputYes, "0");
   }
 
