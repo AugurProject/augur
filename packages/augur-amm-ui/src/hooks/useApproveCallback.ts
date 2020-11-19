@@ -39,9 +39,10 @@ export function useIsTokenApprovedForAll(account?: string, paraShareToken?: stri
   const inputs = useMemo(() => [account, spender], [account, spender])
   const isApproved = useSingleCallResult(contract, 'isApprovedForAll', inputs).result
 
-  return useMemo(() => (isApproved ? Boolean(isApproved[0]) : false), [
+  return useMemo(() => (isApproved ? isApproved[0] : false), [
     paraShareToken,
-    spender
+    spender,
+    isApproved
   ])
 }
 
