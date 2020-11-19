@@ -241,7 +241,7 @@ export function addScripts(flash: FlashSession) {
       const amount = Number(args.amount);
       const atto = new BigNumber(amount).times(_1_ETH);
       const user = await this.createUser(this.getAccount(), this.config);
-      const target = args.target as string || user.account.address;
+      const target = args.target as string;
 
       await user.faucetCash(atto);
 
@@ -252,6 +252,38 @@ export function addScripts(flash: FlashSession) {
       //    which is typically only true of main account or its wallet
       if (target) {
         await user.augur.contracts.cash.transfer(target, atto);
+      }
+    },
+  });
+
+  flash.addScript({
+    name: 'faucet-usdt',
+    description: 'Mints USDT tokens for user.',
+    options: [
+      {
+        name: 'amount',
+        abbr: 'a',
+        description: 'Quantity of Cash.',
+        required: true,
+      },
+      {
+        name: 'target',
+        abbr: 't',
+        description: 'Account to send funds (defaults to current user)',
+        required: false
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      if (this.noProvider()) return;
+      const amount = Number(args.amount);
+      const atto = new BigNumber(amount).times(_1_ETH);
+      const user = await this.createUser(this.getAccount(), this.config);
+      const target = args.target as string;
+
+      await user.augur.contracts.usdt.faucet(atto);
+
+      if (target) {
+        await user.augur.contracts.usdt.transfer(target, atto);
       }
     },
   });
@@ -285,8 +317,8 @@ export function addScripts(flash: FlashSession) {
 
       const target = args.target as string;
       const amount = Number(args.amount);
-      const token = args.token as string;
-      const atto = new BigNumber(amount).times(_1_ETH);
+      const token = (args.token as string).toUpperCase();
+      const atto = new BigNumber(amount).times(10 ** 6);
 
       switch(token) {
         case 'REP':
@@ -294,6 +326,9 @@ export function addScripts(flash: FlashSession) {
           break;
         case 'ETH':
           await user.augur.sendETH(target, atto);
+          break;
+        case 'USDT':
+          await user.augur.contracts.usdt.transfer(target, atto);
           break;
         default:
           await user.augur.contracts.cash.transfer(target, atto);
