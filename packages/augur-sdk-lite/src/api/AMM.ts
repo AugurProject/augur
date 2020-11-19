@@ -6,7 +6,7 @@ import { NULL_ADDRESS, SignerOrProvider } from '../constants';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 
 
-const NUMTICKS = new BigNumber(10000); // Hardcoded because all AMMs are Y/N markets for now.
+const NUMTICKS = new BigNumber(1000); // Hardcoded because all AMMs are Y/N markets for now.
 
 export class AMM {
   readonly signerOrProvider: SignerOrProvider;
