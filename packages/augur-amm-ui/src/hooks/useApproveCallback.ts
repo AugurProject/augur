@@ -6,11 +6,13 @@ import { Field } from '../state/swap/actions'
 import { useTransactionAdder, useHasPendingApproval } from '../state/transactions/hooks'
 import { computeSlippageAdjustedAmounts } from '../utils/prices'
 import { calculateGasMargin, getTradeType, TradingDirection } from '../utils'
-import { useTokenContract } from './useContract'
+import { useTokenContract, useTokenERC1155Contract } from './useContract'
 import { useActiveWeb3React } from './index'
 import { useAmmFactoryAddress } from '../contexts/Application'
 import { useSingleCallResult } from '../state/multicall/hooks'
 import { TradeInfo } from './Trades'
+import { useMarketCashTokens } from '../contexts/Markets'
+import { ParaShareToken } from '@augurproject/sdk-lite/build'
 
 export enum ApprovalState {
   UNKNOWN,
@@ -31,10 +33,22 @@ export function useTokenAllowance(token?: Token, owner?: string, spender?: strin
   ])
 }
 
+export function useIsTokenApprovedForAll(account?: string, paraShareToken?: string, spender?: string): boolean | undefined {
+  const contract = useTokenERC1155Contract(paraShareToken, false)
+
+  const inputs = useMemo(() => [account, spender], [account, spender])
+  const isApproved = useSingleCallResult(contract, 'isApprovedForAll', inputs).result
+
+  return useMemo(() => (isApproved ? Boolean(isApproved[0]) : false), [
+    paraShareToken,
+    spender
+  ])
+}
+
 // returns a variable indicating the state of the approval and a function which approves if necessary or early returns
 export function useApproveCallback(
   amountToApprove?: CurrencyAmount,
-  spender?: string
+  spender?: string,
 ): [ApprovalState, () => Promise<void>] {
   const { account } = useActiveWeb3React()
   const token = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined
@@ -109,17 +123,73 @@ export function useApproveCallback(
   return [approvalState, approve]
 }
 
+export function useApproveERC1155Callback(
+  paraShareToken?: string,
+  spender?: string,
+  cash?: Token
+): [ApprovalState, () => Promise<void>] {
+  const { account } = useActiveWeb3React()
+  const pendingApproval = useHasPendingApproval(paraShareToken, spender)
+  const isApproved = useIsTokenApprovedForAll(account, paraShareToken, spender)
+  console.log('isApproved result', isApproved)
+  // check the current approval status
+  const approvalState: ApprovalState = useMemo(() => {
+    console.log('approval', paraShareToken, pendingApproval, isApproved)
+    return isApproved
+      ? ApprovalState.APPROVED
+      : pendingApproval
+        ? ApprovalState.PENDING
+        : ApprovalState.NOT_APPROVED
+  }, [paraShareToken, pendingApproval, spender, isApproved])
+
+  const tokenContract = useTokenERC1155Contract(paraShareToken)
+  const addTransaction = useTransactionAdder()
+  const approve = useCallback(async (): Promise<void> => {
+    if (approvalState !== ApprovalState.NOT_APPROVED) {
+      console.error('approve was called unnecessarily')
+      return
+    }
+    if (!paraShareToken) {
+      console.error('no token')
+      return
+    }
+
+    if (!tokenContract) {
+      console.error('tokenContract is null')
+      return
+    }
+
+    if (!spender) {
+      console.error('no spender')
+      return
+    }
+
+    const estimatedGas = await tokenContract.estimateGas.setApprovalForAll(spender, true).catch(() => {
+      return tokenContract.estimateGas.setApprovalForAll(spender, true)
+    })
+
+    return tokenContract
+      .setApprovalForAll(spender, true, {
+        gasLimit: calculateGasMargin(estimatedGas)
+      })
+      .then((response: TransactionResponse) => {
+        addTransaction(response, {
+          summary: 'Approve ' + cash.symbol || cash?.name,
+          approval: { tokenAddress: paraShareToken, spender }
+        })
+      })
+      .catch((error: Error) => {
+        console.debug('Failed to approve token', error)
+        throw error
+      })
+  }, [approvalState, paraShareToken, tokenContract, spender, addTransaction])
+
+  return [approvalState, approve]
+}
 // wraps useApproveCallback in the context of a swap
-export function useApproveCallbackFromTrade(trade?: TradeInfo, allowedSlippage = 0) {
-  const amountToApprove = useMemo(
-    () => (trade ? computeSlippageAdjustedAmounts(trade, allowedSlippage)[Field.INPUT] : undefined),
-    [trade, allowedSlippage]
-  )
+export function useApproveCallbackFromTrade(ammExchange) {
   const ammFactory = useAmmFactoryAddress()
-  let addr = ammFactory
-  const direction = getTradeType(trade)
-  if (direction === TradingDirection.EXIT || direction === TradingDirection.SWAP) {
-    addr = trade.amm.id
-  }
-  return useApproveCallback(amountToApprove, addr)
+  const cashes = useMarketCashTokens()
+  const cash = cashes[ammExchange?.shareToken?.cash?.id]
+  return useApproveERC1155Callback(ammExchange?.shareToken?.id, ammFactory, cash)
 }

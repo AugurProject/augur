@@ -9,7 +9,7 @@ import {
   useMultipleContractSingleData,
   useMultipleContractMultipleData
 } from '../multicall/hooks'
-import { useAllMarketData, useMarketCashTokens } from '../../contexts/Markets'
+import { useAllMarketData } from '../../contexts/Markets'
 import { ParaShareToken } from '@augurproject/sdk-lite'
 import { Interface } from 'ethers/lib/utils'
 import { ZERO_ADDRESS } from '../../constants'
