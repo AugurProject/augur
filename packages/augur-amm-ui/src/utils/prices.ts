@@ -23,7 +23,7 @@ export function computePriceImpact(
 
   // normalize price by num ticks and pool percentage convert to price
   const rawSlipRate = rawInputAmount.div(rawOutputAmount).div(1000)
-  const impact = (rawSlipRate.minus(displayActualPrice)).div(displayActualPrice)
+  const impact = !displayActualPrice ? (rawSlipRate.minus(displayActualPrice)).div(displayActualPrice) : new BN("0")
   console.log('slippage:', String(displayActualPrice), '-', String(rawSlipRate), '/', String(displayActualPrice), '=', String(impact))
   const adjMinAmount = String(new BN(String(rawOutputAmount)).div(new BN(10).pow(new BN(currencyOutDecimals))).toFixed(8))
   const prepDecimal = new Percent(JSBI.BigInt(impact.times(new BN(BIPS_CONSTANT)).toFixed(0)), BIPS_BASE)

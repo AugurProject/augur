@@ -107,7 +107,7 @@ function PairList({ allExchanges, disbaleLinks, marketId }) {
                 disabled={!ammExchange && !ammExchange.id}
                 to={`/swap/${marketId}/${ammExchange.cash}/${ammExchange.id}`}
               >
-                <ButtonPrimary disabled={!ammExchange && !ammExchange.id} textAlign="center">
+                <ButtonPrimary disabled={(!ammExchange && !ammExchange.id) || ammExchange.liquidity === "0"} textAlign="center">
                   Trade
                 </ButtonPrimary>
               </StyledInternalLink>
