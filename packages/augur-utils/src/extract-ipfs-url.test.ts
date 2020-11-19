@@ -17,7 +17,7 @@ describe('extractIPFSUrl', () => {
     const result = extractIPFSUrl('https://bafybeiemxf5abjwjbikoz4mc3a3dla6ual3jsgpdr4cjr3oz3evfyavhwq.ipfs.cf-ipfs.com/');
     expect(result).toEqual({
       version: IPFSHashVersion.CIDv1,
-      url: '.ipfs.cf-ipfs.com'
+      url: 'https://cf-ipfs.com/ipfs'
     });
   });
 
@@ -33,7 +33,7 @@ describe('extractIPFSUrl', () => {
     const result = extractIPFSUrl('https://bafybeiemxf5abjwjbikoz4mc3a3dla6ual3jsgpdr4cjr3oz3evfyavhwq.ipfs.dweb.link');
     expect(result).toEqual({
       version: IPFSHashVersion.CIDv1,
-      url: '.ipfs.dweb.link'
+      url: 'https://dweb.link/ipfs'
     });
   });
 
