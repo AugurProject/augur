@@ -22777,17 +22777,17 @@
 				},
 				{
 					"internalType": "address",
-					"name": "sender",
+					"name": "_sender",
 					"type": "address"
 				},
 				{
 					"internalType": "address",
-					"name": "recipient",
+					"name": "_recipient",
 					"type": "address"
 				},
 				{
 					"internalType": "uint256",
-					"name": "quantity",
+					"name": "_quantity",
 					"type": "uint256"
 				}
 			],
@@ -30392,6 +30392,52 @@
 			"payable": true,
 			"stateMutability": "payable",
 			"type": "fallback"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "contract IMarket",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_fee",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_ratioFactor",
+					"type": "uint256"
+				},
+				{
+					"internalType": "bool",
+					"name": "_keepYes",
+					"type": "bool"
+				},
+				{
+					"internalType": "address",
+					"name": "_recipient",
+					"type": "address"
+				}
+			],
+			"name": "addAMMWithLiquidity",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "_ammAddress",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_lpTokens",
+					"type": "uint256"
+				}
+			],
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "function"
 		},
 		{
 			"constant": false,

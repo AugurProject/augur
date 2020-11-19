@@ -43,7 +43,6 @@ def test_amm_add_with_liquidity(contractsFixture, market, cash, shareToken, fact
     ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, cost, ratioFactor, keepYes, account0)
     assert ammAddress != nullAddress
 
-
 def test_amm_add_with_liquidity2(contractsFixture, market, cash, shareToken, factory, account0):
     cost = 10**18
     keepYes = False
@@ -54,7 +53,6 @@ def test_amm_add_with_liquidity2(contractsFixture, market, cash, shareToken, fac
 
     ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, cost, ratioFactor, keepYes, account0)
     assert ammAddress != nullAddress
-
 
 def test_amm_initial_liquidity(contractsFixture, market, cash, shareToken, factory, amm, account0, kitchenSinkSnapshot):
     if not contractsFixture.paraAugur:
@@ -140,7 +138,6 @@ def test_amm_subsequent_liquidity(contractsFixture, market, cash, shareToken, fa
     cash.faucet(finalCost)
     lpTokens = amm.addLiquidity(finalCost, account0)
     assert lpTokens > 0
-
 
 def test_amm_60_40_liquidity(contractsFixture, market, cash, shareToken, factory, amm, account0, kitchenSinkSnapshot):
     if not contractsFixture.paraAugur:
@@ -268,7 +265,7 @@ def test_amm_swap(contractsFixture, market, shareToken, cash, factory, amm, acco
 
     cash.faucet(100000 * ATTO)
     cash.approve(factory.address, 10 ** 48)
-    shareToken.setApprovalForAll(amm.address, True)
+    shareToken.setApprovalForAll(factory.address, True)
     amm.addInitialLiquidity(100000 * ATTO, 10**18, True, account0)
 
     cost = 10000 * ATTO

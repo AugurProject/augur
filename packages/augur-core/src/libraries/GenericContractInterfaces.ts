@@ -8411,19 +8411,19 @@ export class AMMFactory<TBigNumber> extends Contract<TBigNumber> {
 
 	public transferCash = async (market: string, para: string, fee: TBigNumber, sender: string, recipient: string, quantity: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"contract ParaShareToken","name":"_para","type":"address"},{"internalType":"uint256","name":"_fee","type":"uint256"},{"internalType":"address","name":"sender","type":"address"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"quantity","type":"uint256"}],"name":"transferCash","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"contract ParaShareToken","name":"_para","type":"address"},{"internalType":"uint256","name":"_fee","type":"uint256"},{"internalType":"address","name":"_sender","type":"address"},{"internalType":"address","name":"_recipient","type":"address"},{"internalType":"uint256","name":"_quantity","type":"uint256"}],"name":"transferCash","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		return await this.remoteCall(abi, [market, para, fee, sender, recipient, quantity], 'transferCash', options.sender)
 	}
 
 	public transferCash_estimateGas = async (market: string, para: string, fee: TBigNumber, sender: string, recipient: string, quantity: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"contract ParaShareToken","name":"_para","type":"address"},{"internalType":"uint256","name":"_fee","type":"uint256"},{"internalType":"address","name":"sender","type":"address"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"quantity","type":"uint256"}],"name":"transferCash","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"contract ParaShareToken","name":"_para","type":"address"},{"internalType":"uint256","name":"_fee","type":"uint256"},{"internalType":"address","name":"_sender","type":"address"},{"internalType":"address","name":"_recipient","type":"address"},{"internalType":"uint256","name":"_quantity","type":"uint256"}],"name":"transferCash","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		return await this.estimateGas(abi, [market, para, fee, sender, recipient, quantity], 'transferCash', options.sender)
 	}
 
 	public transferCash_ = async (market: string, para: string, fee: TBigNumber, sender: string, recipient: string, quantity: TBigNumber, options?: { sender?: string }): Promise<void> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"contract ParaShareToken","name":"_para","type":"address"},{"internalType":"uint256","name":"_fee","type":"uint256"},{"internalType":"address","name":"sender","type":"address"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"quantity","type":"uint256"}],"name":"transferCash","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"contract ParaShareToken","name":"_para","type":"address"},{"internalType":"uint256","name":"_fee","type":"uint256"},{"internalType":"address","name":"_sender","type":"address"},{"internalType":"address","name":"_recipient","type":"address"},{"internalType":"uint256","name":"_quantity","type":"uint256"}],"name":"transferCash","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		await this.localCall(abi, [market, para, fee, sender, recipient, quantity], options.sender)
 	}
 }
@@ -11358,6 +11358,25 @@ export class ParaZeroXTrade<TBigNumber> extends Contract<TBigNumber> {
 export class WethWrapperForAMMExchange<TBigNumber> extends Contract<TBigNumber> {
 	public constructor(dependencies: Dependencies<TBigNumber>, address: string) {
 		super(dependencies, address)
+	}
+
+	public addAMMWithLiquidity = async (market: string, fee: TBigNumber, ratioFactor: TBigNumber, keepYes: boolean, recipient: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"uint256","name":"_fee","type":"uint256"},{"internalType":"uint256","name":"_ratioFactor","type":"uint256"},{"internalType":"bool","name":"_keepYes","type":"bool"},{"internalType":"address","name":"_recipient","type":"address"}],"name":"addAMMWithLiquidity","outputs":[{"internalType":"address","name":"_ammAddress","type":"address"},{"internalType":"uint256","name":"_lpTokens","type":"uint256"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.remoteCall(abi, [market, fee, ratioFactor, keepYes, recipient], 'addAMMWithLiquidity', options.sender, options.attachedEth)
+	}
+
+	public addAMMWithLiquidity_estimateGas = async (market: string, fee: TBigNumber, ratioFactor: TBigNumber, keepYes: boolean, recipient: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"uint256","name":"_fee","type":"uint256"},{"internalType":"uint256","name":"_ratioFactor","type":"uint256"},{"internalType":"bool","name":"_keepYes","type":"bool"},{"internalType":"address","name":"_recipient","type":"address"}],"name":"addAMMWithLiquidity","outputs":[{"internalType":"address","name":"_ammAddress","type":"address"},{"internalType":"uint256","name":"_lpTokens","type":"uint256"}],"payable":true,"stateMutability":"payable","type":"function"}
+		return await this.estimateGas(abi, [market, fee, ratioFactor, keepYes, recipient], 'addAMMWithLiquidity', options.sender, options.attachedEth)
+	}
+
+	public addAMMWithLiquidity_ = async (market: string, fee: TBigNumber, ratioFactor: TBigNumber, keepYes: boolean, recipient: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<{_ammAddress: string, _lpTokens: TBigNumber}> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"uint256","name":"_fee","type":"uint256"},{"internalType":"uint256","name":"_ratioFactor","type":"uint256"},{"internalType":"bool","name":"_keepYes","type":"bool"},{"internalType":"address","name":"_recipient","type":"address"}],"name":"addAMMWithLiquidity","outputs":[{"internalType":"address","name":"_ammAddress","type":"address"},{"internalType":"uint256","name":"_lpTokens","type":"uint256"}],"payable":true,"stateMutability":"payable","type":"function"}
+		const result = await this.localCall(abi, [market, fee, ratioFactor, keepYes, recipient], options.sender, options.attachedEth)
+		return <{_ammAddress: string, _lpTokens: TBigNumber}>result
 	}
 
 	public addInitialLiquidity = async (market: string, fee: TBigNumber, ratioFactor: TBigNumber, keepYes: boolean, recipient: string, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
