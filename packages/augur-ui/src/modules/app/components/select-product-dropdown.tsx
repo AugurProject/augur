@@ -9,7 +9,11 @@ import { DISPUTING, REPORTING, CREATE_MARKET } from 'modules/routes/constants/vi
 import { Link } from 'react-router-dom';
 import ChevronFlip from 'modules/common/chevron-flip';
 
-export const SelectProductDropdown = () => {
+interface SelectProductDropdownProps {
+  hideOnMobile?: boolean;
+}
+
+export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps) => {
   const {
     currentBasePath,
     theme,
@@ -74,10 +78,24 @@ export const SelectProductDropdown = () => {
 
   return (
     <div ref={inputRef} className={classNames(Styles.Dropdown, {
-      [Styles.ShowDropdown]: toggleDropdown
+      [Styles.ShowDropdown]: toggleDropdown,
+      [Styles.HideOnMobile]: hideOnMobile
     })}>
       <button onClick={() => setToggleDropdown(!toggleDropdown)}>
         {SelectProductIcon}
+        {!hideOnMobile && (
+          <>
+            <span>
+              Products
+            </span>
+            <ChevronFlip
+              pointDown={toggleDropdown}
+              stroke="#fff"
+              filledInIcon
+              quick
+            />
+          </>
+        )}
       </button>
       <div>
         <div>Products</div>

@@ -128,6 +128,14 @@
             > svg {
               width: @size-11;
               height: @size-12;
+
+              path {
+                fill: var(--color-primary-text);
+              }
+
+              rect {
+                fill: #fff;
+              }
             }
           }
         }
@@ -160,6 +168,64 @@
 
     > div:first-of-type {
       display: block;
+    }
+  }
+
+  @media @breakpoint-tablet {
+    height: @size-48;
+
+    > button:first-of-type {
+      padding: @size-12 @size-16;
+    }
+
+    > div:first-of-type {
+      top: @size-47;
+    }
+  }
+
+  @media @breakpoint-mobile {
+    width: 100%;
+    height: auto;
+    flex-direction: column;
+    align-items: flex-start;
+
+    > button:first-of-type {
+      background-color: var(--color-module-background);
+      display: flex;
+      width: 100%;
+      align-items: center;
+
+      > span:first-of-type {
+        .text-12-medium;
+
+        color: var(--color-primary-text);
+        margin-left: @size-16;
+        text-transform: uppercase;
+      }
+
+      > span:last-of-type {
+        margin-left: auto;
+      }
+    }
+
+    > div:first-of-type {
+      position: static;
+      width: 100%;
+      border: 0;
+
+      > div:first-of-type {
+        display: none;
+      }
+
+      > div:not(:first-of-type) > button {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+      }
+    }
+
+    &.HideOnMobile {
+      display: none;
     }
   }
 }

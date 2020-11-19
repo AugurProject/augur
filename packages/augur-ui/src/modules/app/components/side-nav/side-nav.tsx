@@ -33,6 +33,7 @@ import { OddsMenu } from 'modules/app/components/odds-menu';
 import { logout } from 'modules/auth/actions/logout';
 import CategoryFilters from '../inner-nav/category-filters';
 import ButtonStyles from 'modules/common/buttons.styles.less';
+import { SelectProductDropdown } from 'modules/app/components/select-product-dropdown';
 
 interface SideNavProps {
   isLogged: boolean;
@@ -117,6 +118,7 @@ const SideNav = ({
                 text="Add Funds"
               />
             )}
+            {isTrading && <SelectProductDropdown />}
             {accessFilteredMenu.map((item, idx) => (
               <li
                 key={idx}
