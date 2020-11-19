@@ -8,10 +8,10 @@ import { TYPE } from '../../Theme'
 import { StyledIcon } from '..'
 
 const Wrapper = styled.div`
-  z-index: 20;
+  z-index: 2;
   position: relative;
   background-color: ${({ theme }) => theme.panelColor};
-  border: 1px solid ${({ open, color }) => (open ? color : 'rgba(0, 0, 0, 0.15);')}
+  border: 1px solid ${({ open, color }) => (open ? color : 'rgba(0, 0, 0, 0.15);')};
   width: 100px;
   padding: 4px 10px;
   padding-right: 6px;

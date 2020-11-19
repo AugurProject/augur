@@ -41,7 +41,7 @@ function RemoveLiquidity({
   const [userTokenBalances] = useLPTokenBalances()
   const ammExchange = useMarketAmm(marketId, ammExchangeId)
   const currencyA = useCurrency(ammExchange?.cash)
-  const currencyLP = useMemo(() => new Token(chainId, ammExchangeId, 18), [ammExchangeId])
+  const currencyLP = useMemo(() => new Token(chainId, ammExchangeId, 18, currencyA?.symbol, currencyA?.name), [ammExchangeId])
   const ammFactory = useAmmFactoryAddress()
   const [liquidity, setLiquidity] = useState('0')
   const [breakdown, setBreakdown] = useState({ noShares: '0', yesShares: '0', cashShares: '0' })
@@ -86,7 +86,7 @@ function RemoveLiquidity({
         setAttemptingTxn(false)
 
         addTransaction(response, {
-          summary: 'Remove ' + liquidity
+          summary: 'Remove ' + formatShares(liquidity)
         })
 
         setTxHash(response.hash)
@@ -165,10 +165,8 @@ function RemoveLiquidity({
     setLiquidityPercentage(String(value))
     const fullLiquidity = userTokenBalances[ammExchangeId]
     const fraction = Number(value) / 100
-    console.log('value value', fraction, value, fullLiquidity)
     const newLiquidity = String(Math.floor(fraction * Number(fullLiquidity)))
 
-    console.log('setting liquidity', newLiquidity)
     setLiquidity(newLiquidity)
     getRemoveLiquidityBreakdown(augurClient, ammExchangeId, newLiquidity, result => {
       setBreakdown(result)

@@ -27,9 +27,9 @@ import AppBody from '../AppBody'
 import { Dots, Wrapper } from '../../components/swap/styleds'
 import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 import { PoolPriceBar } from './PoolPriceBar'
-import { useAmmFactoryAddress, useAugurClient } from '../../contexts/Application'
+import { doUseETH, useAmmFactoryAddress, useAugurClient } from '../../contexts/Application'
 import { withRouter } from 'react-router-dom'
-import { useMarketAmm, useShareTokens, useMarket } from '../../contexts/Markets'
+import { useMarketAmm, useShareTokens, useMarket, useMarketDataRefresher } from '../../contexts/Markets'
 import CashInputPanel from '../../components/CashInputPanel'
 import DistributionPanel from '../../components/DistributionPanel'
 import { useWalletModalToggle } from '../../state/application/hooks'
@@ -49,11 +49,11 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
   const { account, chainId, library } = useActiveWeb3React()
   const augurClient = useAugurClient()
   const ammFactory = useAmmFactoryAddress()
-
+  const { updateIsDataClean } = useMarketDataRefresher()
   // share token is undefined then AMM hasn't bee created
   const sharetoken = useShareTokens(cash)
   const market = useMarket(marketId)
-
+  const useEth = doUseETH(cash)
   // TODO disabled initial liq for testing only
   const ammData = useMarketAmm(marketId, amm)
   const [hasLiquidity, setHasLiquidity] = useState(ammData?.hasLiquidity)
@@ -147,7 +147,8 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
       sharetoken,
       fee,
       cashAmount: parsedAmountA.raw.toString(),
-      distroPercentage
+      distroPercentage,
+      useEth,
     })
       .then(response => {
         setAttemptingTxn(false)
@@ -165,6 +166,7 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
           label: [currencies[Field.CURRENCY_A]?.symbol].join('/')
         })
         setHasLiquidity(true)
+        updateIsDataClean(false)
       })
       .catch(error => {
         setHasLiquidity(false)

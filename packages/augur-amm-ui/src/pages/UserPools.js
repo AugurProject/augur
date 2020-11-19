@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import PooledMarketList from '../components/PooledMarkets'
 import Panel from '../components/Panel'
 import { TYPE } from '../Theme'
-import { PageWrapper, ContentWrapper } from '../components'
+import { ContentWrapper } from '../components'
 import { useLPTokenBalances } from '../state/wallet/hooks'
 import { AutoRow } from '../components/Row'
 

@@ -5,13 +5,14 @@ import utc from 'dayjs/plugin/utc'
 import BigNumber, { BigNumber as BN } from 'bignumber.js'
 import { augurV2Client } from '../apollo/client'
 import { GET_MARKETS } from '../apollo/queries'
-import { useConfig, useParaDeploys } from '../contexts/Application'
+import { useConfig, useParaDeploys, getCashInfo } from '../contexts/Application'
 import { getBlockFromTimestamp, calculateLiquidity, formattedNum } from '../utils'
 import { useTokenDayPriceData } from '../contexts/TokenData'
 
 const UPDATE = 'UPDATE'
 const UPDATE_MARKETS = ' UPDATE_MARKETS'
 const UPDATE_PARA_SHARE_TOKENS = ' UPDATE_PARA_SHARE_TOKENS'
+const UPDATE_NEED_REFRESH_DATA = 'UPDATE_NEED_REFRESH_DATA'
 
 dayjs.extend(utc)
 
@@ -52,6 +53,16 @@ function reducer(state, { type, payload }) {
         }
       }
     }
+
+    case UPDATE_NEED_REFRESH_DATA: {
+      const { flag } = payload
+      console.log('UPDATE_NEED_REFRESH_DATA', flag)
+      return {
+        ...state,
+        isDataClean: flag
+      }
+    }
+
     default: {
       throw Error(`Unexpected action type in DataContext reducer: '${type}'.`)
     }
@@ -88,6 +99,15 @@ export default function Provider({ children }) {
     })
   }, [])
 
+  const updateIsDataClean = useCallback(flag => {
+    dispatch({
+      type: UPDATE_NEED_REFRESH_DATA,
+      payload: {
+        flag
+      }
+    })
+  }, [])
+
   return (
     <MarketDataaContext.Provider
       value={useMemo(
@@ -96,10 +116,11 @@ export default function Provider({ children }) {
           {
             update,
             updateMarkets,
-            updateParaShareTokens
+            updateParaShareTokens,
+            updateIsDataClean
           }
         ],
-        [state, update, updateMarkets, updateParaShareTokens]
+        [state, update, updateMarkets, updateParaShareTokens, updateIsDataClean]
       )}
     >
       {children}
@@ -119,10 +140,14 @@ async function getPastDayBlockNumber(config) {
   return block
 }
 
+export function useMarketDataRefresher() {
+  const [, { updateIsDataClean }] = useMarketDataContext()
+  return { updateIsDataClean }
+}
+
 async function getMarketsData(updateMarkets, config) {
   let response = null
   try {
-    console.log('call the graph to get market data')
     const block = await getPastDayBlockNumber(config)
     const query = GET_MARKETS(block)
     response = await augurV2Client(config.augurClient).query({ query })
@@ -138,10 +163,14 @@ async function getMarketsData(updateMarkets, config) {
 
 export function Updater() {
   const config = useConfig()
-  const [, { updateMarkets }] = useMarketDataContext()
+  const [state, { updateMarkets, updateIsDataClean }] = useMarketDataContext()
+  const refresh = state?.isDataClean
+
   useEffect(() => {
+    if (refresh) return
     getMarketsData(updateMarkets, config)
-  }, [updateMarkets, config])
+    updateIsDataClean(true)
+  }, [config, refresh])
   return null
 }
 
@@ -339,9 +368,10 @@ export function useMarketCashTokens() {
 export function usePositionMarkets(positions) {
   const [state] = useMarketDataContext()
   const { markets } = state
-  const marketPositions = Object.keys(positions).map(marketId => {
+  const marketPositions = positions.map(position => {
+    const marketId = position.marketId;
     const market = markets.find(m => m.id === marketId)
-    return { market, ...positions[marketId] }
+    return { market, ...position }
   })
   return marketPositions
 }
@@ -355,8 +385,9 @@ export function useAmmMarkets(balances) {
       const balance = balances[ammId]
       const market = markets.find(m => m.amms.map(a => a.id).includes(ammId))
       const groupedAmms = market ? market.amms.reduce((group, a) => ({ ...group, [a.id]: a }), {}) : {}
+      const shareToken = groupedAmms[ammId]?.shareToken;
       if (market && balance !== '0') {
-        ammMarkets.push({ ...market, balance, shareToken: groupedAmms[ammId]?.shareToken })
+        ammMarkets.push({ ...market, balance, shareToken })
       }
     })
   }

@@ -109,10 +109,10 @@ export const toWeeklyDate = date => {
   return dayjs.utc(wkStart).format('MMM DD') + ' - ' + dayjs.utc(wkEnd).format('MMM DD')
 }
 
-export const formatShares = (num = "0") => {
+export const formatShares = (num = "0", decimals = 18) => {
   const tickSize = 1000;
     // pow of 15 matches shares in trading UI something to do with num ticks
-  const displayValue = new BN(num).times(tickSize).div(new BN(10).pow(18))
+  const displayValue = new BN(num).times(tickSize).div(new BN(10).pow(decimals))
   return toSignificant(String(displayValue), 6)
 }
 
@@ -496,7 +496,8 @@ export function addAmmLiquidity({
   sharetoken,
   fee,
   cashAmount,
-  distroPercentage
+  distroPercentage,
+  useEth,
 }) {
   if (!augurClient || !augurClient.amm) return console.error('augurClient is null')
   console.log(
@@ -508,13 +509,16 @@ export function addAmmLiquidity({
     sharetoken,
     fee,
     String(cashAmount),
-    String(distroPercentage)
+    String(distroPercentage),
+    `use ETH: ${useEth}`
   )
 
   // converting odds to pool percentage. odds is the opposit of pool percentage
   // same when converting pool percentage to price
   const poolYesPercent = new BN(distroPercentage[DISTRO_NO_ID])
   const poolNoPercent = new BN(distroPercentage[DISTRO_YES_ID])
+
+  // branch logic here if useEth is true
 
   return augurClient.amm.doAddLiquidity(
     account,
@@ -646,14 +650,13 @@ export async function doTrade(augurClient, trade: TradeInfo, minAmount: string) 
   if (!augurClient || !trade.amm.id) return console.error('doTrade: augurClient is null or amm address')
   const tradeDirection = getTradeType(trade)
 
-  console.log('doTrade: direction', String(tradeDirection))
-
   let outputYesShares = false
 
   if (trade.currencyOut instanceof MarketCurrency) {
     const out = trade.currencyOut as MarketCurrency
     outputYesShares = out.name === MarketTokens.YES_SHARES
   }
+
 
   if (tradeDirection === TradingDirection.ENTRY) {
     return augurClient.amm.doEnterPosition(
@@ -680,7 +683,7 @@ export async function doTrade(augurClient, trade: TradeInfo, minAmount: string) 
   }
 
   if (tradeDirection === TradingDirection.SWAP) {
-    return augurClient.amm.doSwap(trade.amm.id, new BN(String(trade.inputAmount.raw)), !outputYesShares, new BN(String(minAmount)))
+    return augurClient.amm.doSwap(trade.amm.id, new BN(String(trade.inputAmount.raw)), outputYesShares, new BN(minAmount))
   }
   return null
 }

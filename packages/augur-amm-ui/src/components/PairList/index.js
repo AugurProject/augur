@@ -77,7 +77,7 @@ function PairList({ allExchanges, disbaleLinks, marketId }) {
     if (ammExchange) {
       return (
         <DashGrid style={{ height: '48px', alignItems: 'center' }} disbaleLinks={disbaleLinks} focus={true}>
-          <TokenLogo size={below600 ? 16 : 18} tokenInfo={ammExchange.cash} margin={!below740} />
+          <TokenLogo size={below600 ? '16px' : '18px'} tokenInfo={ammExchange.cash} margin={!below740} />
           <TYPE.header area="name" fontWeight="500">
             {Number(ammExchange.priceYes).toFixed(2)}
           </TYPE.header>
