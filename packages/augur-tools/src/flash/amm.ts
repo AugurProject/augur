@@ -381,7 +381,7 @@ export function addAMMScripts(flash: FlashSession) {
       const market = user.augur.contracts.marketFromAddress(args.market as string);
       const fee = typeof args.fee === 'undefined' ? new BigNumber(3) : new BigNumber(args.fee as string);
       const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
-      const factory = new AMM(user.signer, this.config.addresses.AMMFactory;
+      const factory = new AMM(user.signer, this.config.addresses.AMMFactory);
       const amm = await factory.calculateExchangeAddress(market.address, paraShareToken, fee);
 
       const lpTokens = await factory.exchangeLiquidity(amm);
