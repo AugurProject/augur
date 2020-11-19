@@ -240,7 +240,7 @@ const TopBar = () => {
             </button>
           </div>
         )}
-        <SelectProductDropdown hideOnMobile />
+        {isTrading && <SelectProductDropdown hideOnMobile />}
         {LoggedOrRestored && (
           <div className={Styles.AlertsDiv}>
             <button
