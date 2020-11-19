@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { ReactElement, useEffect, useRef, useState } from 'react';
 import Styles from './select-product-dropdown.styles.less';
 import classNames from 'classnames';
 import { DaiIcon, SelectProductIcon, StylizedEthIcon } from 'modules/common/icons';
@@ -13,6 +13,22 @@ interface SelectProductDropdownProps {
   hideOnMobile?: boolean;
 }
 
+interface InnerDropdownOptions {
+  action?: Function,
+  icon: ReactElement,
+  link?: string,
+  title: string,
+}
+
+interface DropdownOptions {
+  action?: Function;
+  active?: boolean;
+  dropdown?: InnerDropdownOptions[];
+  dropdownStatus?: boolean;
+  link?: string;
+  title: string;
+}
+
 export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps) => {
   const {
     currentBasePath,
@@ -22,7 +38,7 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
   const [toggleDropdown, setToggleDropdown] = useState(false);
   const [toggleAugurPro, setToggleAugurPro] = useState(false);
 
-  const dropdownOptions = [{
+  const dropdownOptions: DropdownOptions[] = [{
     title: 'Augur Pro',
     action: () => setToggleAugurPro(!toggleAugurPro),
     dropdownStatus: toggleAugurPro,
@@ -46,17 +62,19 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
     active: theme === THEMES.SPORTS
   }, {
     title: 'Create Market',
-    action: () => {},
     link: makePath(CREATE_MARKET),
-    active: currentBasePath === CREATE_MARKET
+    active: currentBasePath === CREATE_MARKET,
+    action: () => setTheme(THEMES.TRADING)
   }, {
     title: 'Disputing',
     link: makePath(DISPUTING),
-    active: currentBasePath === DISPUTING
+    active: currentBasePath === DISPUTING,
+    action: () => setTheme(THEMES.TRADING)
   }, {
     title: 'Reporting',
     link: makePath(REPORTING),
-    active: currentBasePath === REPORTING
+    active: currentBasePath === REPORTING,
+    action: () => setTheme(THEMES.TRADING)
   }];
 
   const inputRef = useRef(null);
@@ -102,7 +120,7 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
         {dropdownOptions.map(({title, action, link, dropdownStatus, dropdown, active}) => (
           <div key={title}>
             {link ? (
-              <Link to={link} className={classNames(Styles.Dropdown, {
+              <Link to={link} onClick={() => action()} className={classNames(Styles.Dropdown, {
                 [Styles.Active]: active
               })}>{title}</Link>
             ) : (
