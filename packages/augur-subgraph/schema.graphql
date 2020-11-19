@@ -761,6 +761,12 @@ type AMMExchange @entity {
   "Number of LP token outstanding."
   totalSupply: BigInt!
 
+  "Swap fee for this AMM (out of 1000)"
+  fee: BigInt!
+
+  "Swap fee for this AMM (in percent)"
+  feePercent: BigDecimal!
+
   swaps: [SwapPosition!]! @derivedFrom(field: "ammExchange")
 
   enters: [EnterPosition!]! @derivedFrom(field: "ammExchange")

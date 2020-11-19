@@ -32,6 +32,8 @@ export function getOrCreateAMMExchange(
     amm.totalSupply =  BigInt.fromI32(0);
     amm.volumeNo = BigInt.fromI32(0);
     amm.volumeYes = BigInt.fromI32(0);
+    amm.fee = BigInt.fromI32(0);
+    amm.feePercent = BigDecimal.fromString('0');
     AMMExchangeTemplate.create(Address.fromString(id));
   }
 
@@ -42,7 +44,8 @@ export function createAndSaveAMMExchange(
   id: string,
   market: string,
   shareTokenId: string,
-  cashId: string
+  cashId: string,
+  fee: BigInt
 ): AMMExchange {
   // This just create the entity.
   let cash = getOrCreateCash(cashId);
@@ -54,6 +57,8 @@ export function createAndSaveAMMExchange(
   amm.market = market;
   amm.shareToken = shareTokenId;
   amm.cash = cashId;
+  amm.fee = fee;
+  amm.feePercent = fee.divDecimal(BigInt.fromI32(1000).toBigDecimal());
   amm.save()
 
   return updateAMM(id);
