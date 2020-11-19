@@ -237,7 +237,7 @@ const AppView = ({
       window.scrollTo(0, 0);
     }
     setCurrentBasePath(currentPath);
-    if (mobileMenuState === MOBILE_MENU_STATES.FIRSTMENU_OPEN || !betslipMinimized || ModalShowing) {
+    if (mobileMenuState === MOBILE_MENU_STATES.FIRSTMENU_OPEN || mobileMenuState === MOBILE_MENU_STATES.SIDEBAR_OPEN || !betslipMinimized || ModalShowing) {
       document.body.classList.add('App--noScroll');
     } else {
       document.body.classList.remove('App--noScroll');

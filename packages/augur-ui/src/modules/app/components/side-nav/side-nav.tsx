@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
@@ -67,6 +67,14 @@ const SideNav = ({
     item => !(item.requireLogin && !isLogged)
   );
   const isTrading = theme === THEMES.TRADING;
+
+  useEffect(() => {
+    if (showNav) {
+      setMobileMenuState(MOBILE_MENU_STATES.SIDEBAR_OPEN);
+    } else {
+      setMobileMenuState(MOBILE_MENU_STATES.CLOSED);
+    }
+  }, [showNav]);
   return (
     <aside
       className={classNames(Styles.SideNav, {
@@ -78,7 +86,7 @@ const SideNav = ({
           type="button"
           onClick={() => {
             closeAppMenus();
-            setMobileMenuState(mobileMenuState - 1);
+            setMobileMenuState(MOBILE_MENU_STATES.CLOSED);
           }}
         >
           <MobileNavCloseIcon />
