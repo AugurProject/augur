@@ -22,7 +22,7 @@ const HeaderFrame = styled.div`
   justify-content: space-between;
   align-items: center;
   flex-flow: row nowrap;
-  width: 100%;
+  width: 99%;
   top: 0;
   position: relative;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
@@ -55,8 +55,8 @@ const HeaderControls = styled.div`
     padding: 1rem 0;
     position: fixed;
     bottom: 0px;
-    left: 0px;
-    width: 100%;
+    left: 5px;
+    width: 98%;
     z-index: 99;
     height: 32px;
     border-radius: 12px 12px 0 0;

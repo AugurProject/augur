@@ -29,7 +29,6 @@ const store = configureStore({
 })
 
 store.dispatch(updateVersion())
-console.log('store is created and ready')
 export default store
 
 export type AppState = ReturnType<typeof store.getState>

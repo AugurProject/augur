@@ -38,6 +38,7 @@ export function getTradeExactIn(
   currencyOut?: Currency,
   userCashBalances?: MarketBalance
 ): TradeInfo | null {
+
   let marketId = null
   let cash = null
   if (inputCurrency instanceof MarketCurrency) {

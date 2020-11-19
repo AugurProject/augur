@@ -178,7 +178,7 @@ function MarketList({ markets, itemMax = 15 }) {
 
     return (
       <DashGrid style={{ height: '48px', alignContent: 'center' }} >
-        {!below680 && <TokenLogo tokenInfo={marketData?.cash} />}
+        {!below680 && <TokenLogo tokenInfo={marketData?.cash} size={'18px'}/>}
         <DataText style={{ justifyContent: 'flex-start', alignItems: 'center', textAlign: 'left' }}>
           <BasicLink style={{ width: '100%', fontWeight: '400' }} to={'/token/' + marketData?.id} key={marketData?.id}>
             {marketData.description}

@@ -18,9 +18,9 @@
     "Cashes": [
       {
         "address": "0x7290c2b7D5Fc91a112d462fe06aBBB8948668f56",
-        "name": "wrapped ETH",
-        "symbol": "wETH",
-        "asset": "weth.svg"
+        "name": "ETH",
+        "symbol": "ETH",
+        "asset": "eth.svg"
       },
       {
         "address": "0x25e27c08B7B3f2159aC23e4711801e0F7aD270A3",

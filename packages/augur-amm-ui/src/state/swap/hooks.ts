@@ -1,5 +1,5 @@
 import { parseUnits } from '@ethersproject/units'
-import { Currency, CurrencyAmount, JSBI, Token, TokenAmount } from '@uniswap/sdk'
+import { Currency, CurrencyAmount, ETHER, JSBI, Token, TokenAmount } from '@uniswap/sdk'
 import { ParsedQs } from 'qs'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -34,7 +34,7 @@ export function useSwapActionHandlers(): {
         selectCurrency({
           field,
           currencyId:
-            currency instanceof MarketCurrency ? currency.name : currency instanceof Token ? currency.address : ''
+            currency instanceof MarketCurrency ? currency.name : currency instanceof Token ? currency.address : 'ETH'
         })
       )
     },
@@ -108,7 +108,6 @@ export function useDerivedSwapInfo(
 
   let inputCurrency = useCurrency(inputCurrencyId)
   let outputCurrency = useCurrency(outputCurrencyId)
-
   const marketInputCurrency = useMarketToken(inputCurrencyId)
   const marketOutputCurrency = useMarketToken(outputCurrencyId)
 
