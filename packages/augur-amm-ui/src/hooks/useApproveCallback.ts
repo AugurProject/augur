@@ -131,10 +131,8 @@ export function useApproveERC1155Callback(
   const { account } = useActiveWeb3React()
   const pendingApproval = useHasPendingApproval(paraShareToken, spender)
   const isApproved = useIsTokenApprovedForAll(account, paraShareToken, spender)
-  console.log('isApproved result', isApproved)
   // check the current approval status
   const approvalState: ApprovalState = useMemo(() => {
-    console.log('approval', paraShareToken, pendingApproval, isApproved)
     return isApproved
       ? ApprovalState.APPROVED
       : pendingApproval
