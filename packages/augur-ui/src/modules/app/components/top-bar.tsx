@@ -181,7 +181,7 @@ const TopBar = () => {
           <NewLogo />
         </Link>
       </div>
-      <ThemeSwitch />
+      {!isTrading && <ThemeSwitch />}
       {LoggedOrRestored && <Stats />}
       <div>
         {LoggedOrRestored && isSports && showMigrateRepButton && (

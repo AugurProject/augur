@@ -54,7 +54,6 @@ const SideNav = ({
     isHelpMenuOpen,
     isConnectionTrayOpen,
     theme,
-    mobileMenuState,
     actions: { setIsHelpMenuOpen, setModal, setMobileMenuState, closeAppMenus },
   } = useAppStatusStore();
   const pending =
@@ -75,6 +74,7 @@ const SideNav = ({
       setMobileMenuState(MOBILE_MENU_STATES.CLOSED);
     }
   }, [showNav]);
+
   return (
     <aside
       className={classNames(Styles.SideNav, {
@@ -118,7 +118,7 @@ const SideNav = ({
       <div className={Styles.Container}>
         <div>
           {isConnectionTrayOpen && <ConnectDropdown />}
-          <ThemeSwitch />
+          {!isTrading && <ThemeSwitch />}
           <ul className={Styles.MainMenu}>
             {isLogged && isTrading && (
               <SecondaryButton
