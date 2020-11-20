@@ -1157,7 +1157,7 @@ export const InReportingLabel = ({
   if (reportingState === REPORTING_STATE.DESIGNATED_REPORTING) {
     reportingExtraText = constants.WAITING_ON_REPORTER;
   } else if (reportingState === REPORTING_STATE.OPEN_REPORTING) {
-    reportingExtraText = constants.OPEN_REPORTING;
+    reportingExtraText = isSportsbook ? constants.MARKET_STATUS_MESSAGES.IN_SETTLEMENT : constants.OPEN_REPORTING;
   } else if (disputeInfo && disputeInfo.disputePacingOn) {
     reportingExtraText = isSportsbook
       ? constants.MARKET_STATUS_MESSAGES.IN_SETTLEMENT
