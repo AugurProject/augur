@@ -81,7 +81,7 @@ function RemoveLiquidity({
     if (!liquidityAmount) throw new Error('missing liquidity amount')
 
     setAttemptingTxn(true)
-    await removeAmmLiquidity({ ammAddress: ammExchange?.id, augurClient, lpTokens: liquidity })
+    await removeAmmLiquidity({ marketId, paraShareToken: ammExchange?.sharetoken, fee: ammExchange?.fee, augurClient, lpTokens: liquidity })
       .then((response: TransactionResponse) => {
         setAttemptingTxn(false)
 
@@ -168,7 +168,7 @@ function RemoveLiquidity({
     const newLiquidity = String(Math.floor(fraction * Number(fullLiquidity)))
 
     setLiquidity(newLiquidity)
-    getRemoveLiquidityBreakdown(augurClient, ammExchangeId, newLiquidity, result => {
+    getRemoveLiquidityBreakdown(augurClient, marketId, ammExchange?.sharetoken, ammExchange?.fee, newLiquidity, result => {
       setBreakdown(result)
       setError(null)
     })

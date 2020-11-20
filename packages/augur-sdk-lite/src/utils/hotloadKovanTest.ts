@@ -15,6 +15,7 @@ async function doWork(): Promise<void> {
         "Orders": "0x245f942add87Ba2f2b524b8D27eA1c891E514960",
         "AccountLoader": NULL_ADDRESS,
         "AMMFactory": NULL_ADDRESS,
+        "WethWrapperForAMMExchange": NULL_ADDRESS,
     }
     const precision = new BigNumber(10**18);
     const augurLite = new AugurLite(provider, addresses, NetworkId.Kovan, precision);
