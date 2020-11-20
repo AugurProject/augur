@@ -162,7 +162,6 @@ export function useMarketShareBalances(): [MarketBalance[], boolean] {
             let marketBalance = emptyBalances[i]
             const rawAmount = balance.result?.[0];
             const amount = rawAmount ? String(rawAmount) : '0';
-            console.log('amount', amount)
             marketBalance.amount = amount;
             return marketBalance
           }).filter(p => p.amount !== '0' && p.amount !== 'undefined'),

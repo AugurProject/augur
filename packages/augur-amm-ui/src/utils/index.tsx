@@ -600,6 +600,8 @@ export async function estimateTrade(augurClient, trade: TradeInfo) {
   if (!augurClient || !trade.amm.id) return console.error('estimateTrade: augurClient is null or amm address')
   const tradeDirection = getTradeType(trade)
 
+  console.log('trade', trade)
+
   let outputYesShares = false
   let breakdown = null
 
@@ -659,6 +661,8 @@ export async function estimateTrade(augurClient, trade: TradeInfo) {
 export async function doTrade(augurClient, trade: TradeInfo, minAmount: string) {
   if (!augurClient || !trade.amm.id) return console.error('doTrade: augurClient is null or amm address')
   const tradeDirection = getTradeType(trade)
+
+  console.log('trade', trade)
 
   let outputYesShares = false
 

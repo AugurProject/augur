@@ -319,4 +319,25 @@ export interface MarketAmmExchange {
   swaps: SwapEvent[]
   enters: EnterEvent[]
   exits: ExitEvent[]
+  fee: string
+  feePercent: string
+}
+
+// todo: fill in
+export interface Cash {
+  id: string
+}
+// todo: fill in
+export interface ShareToken {
+  id: string
+}
+export interface AmmMarket {
+  amms: MarketAmmExchange[];
+  balance: string;
+  cash: Cash;
+  description: string;
+  endTimestamp: string;
+  id: string;
+  shareToken: ShareToken;
+  status: string
 }

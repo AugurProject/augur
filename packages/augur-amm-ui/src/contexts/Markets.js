@@ -376,18 +376,7 @@ export function usePositionMarkets(positions) {
   })
   return marketPositions
 }
-/*
-export interface AmmMarket {
-  amms: AmmExchange[];
-  balance: string;
-  cash: Cash;
-  description: string;
-  endTimestamp: string;
-  id: string;
-  shareToken: ShareToken;
-  status: string
-}
-*/
+
 export function useAmmMarkets(balances) {
   const [state] = useMarketDataContext()
   const cashes = useMarketCashTokens()
