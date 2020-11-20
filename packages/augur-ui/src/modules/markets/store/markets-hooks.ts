@@ -107,7 +107,8 @@ export function MarketsReducer(state, action) {
       Object.keys(betslip.items).map(marketId => {
         const orders = betslip.items[marketId].orders;
         orders.map((order, orderId) => {
-          const updatedOrder = updatedPools[marketId] && updatedPools[marketId][order.outcomeId];
+          const liquidityPoolId = updatedState.marketInfos[marketId]?.sportsBook?.liquidityPool;
+          const updatedOrder = updatedPools[liquidityPoolId] && updatedPools[liquidityPoolId][order.outcomeId];
           if (order.shares && updatedOrder && !(createBigNumber(updatedOrder.price).eq(createBigNumber(order.price)))) {
             const marketInfo = updatedState.marketInfos[marketId];
             const normalizedPrice = convertToNormalizedPrice({price: updatedOrder.price, min: marketInfo.minPrice, max: marketInfo.maxPrice});

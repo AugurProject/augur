@@ -113,11 +113,11 @@ export const Betslip = () => {
             ) : (
               <>
                 {step !== 0 && !isMyBets && (
-                  <span>Please review your bets:</span>
+                  <span className={Styles.ReviewBets}>Please review your bets:</span>
                 )}
                 <BetslipList marketItems={marketItems} />
                 {oddsChanged && !isMyBets && (
-                  <span>Highlighted odds changed since you selected them.</span>
+                  <span className={Styles.OddsChanged}>Highlighted odds changed since you selected them.</span>
                 )}
                 <BetslipFooter />
               </>
