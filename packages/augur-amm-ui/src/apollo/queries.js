@@ -64,6 +64,8 @@ export const GET_MARKETS = blockNumber => {
       liquidityInvalid
       totalSupply
       cashBalance
+      fee
+      feePercent
       swaps {
         id
         tx_hash

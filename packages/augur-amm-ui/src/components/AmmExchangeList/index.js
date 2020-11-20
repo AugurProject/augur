@@ -58,7 +58,7 @@ const DashGrid = styled.div`
 
 const ListWrapper = styled.div``
 
-function PairList({ allExchanges, disbaleLinks, marketId }) {
+function AmmExchangeList({ allExchanges, disbaleLinks, marketId }) {
   const below600 = useMedia('(max-width: 600px)')
   const below740 = useMedia('(max-width: 740px)')
   //const below800 = useMedia('(max-width: 800px)')
@@ -100,7 +100,7 @@ function PairList({ allExchanges, disbaleLinks, marketId }) {
                   Remove
                 </ButtonLight>
               </StyledInternalLink>
-              <StyledInternalLink to={`/add/${marketId}/${ammExchange.cash.id}/${ammExchange.id}`}>
+              <StyledInternalLink to={`/add/${marketId}/${ammExchange.cash.address}/${ammExchange.id}`}>
                 <ButtonLight textAlign="center">Add</ButtonLight>
               </StyledInternalLink>
               <StyledInternalLink
@@ -160,4 +160,4 @@ function PairList({ allExchanges, disbaleLinks, marketId }) {
   )
 }
 
-export default withRouter(PairList)
+export default withRouter(AmmExchangeList)
