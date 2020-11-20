@@ -12,7 +12,7 @@ import { useMedia } from 'react-use'
 import Panel from '../components/Panel'
 import { useMarketsByAMMLiquidityVolume, useMarketCashAddresses } from '../contexts/Markets'
 import { RowBetween } from '../components/Row'
-import { PageWrapper, ContentWrapper } from '../components'
+import { ContentWrapper } from '../components'
 import TokenLogo from '../components/TokenLogo'
 
 const ClickableText = styled(Text)`
@@ -40,7 +40,7 @@ const ListOptions = styled(AutoRow)`
   }
 `
 
-function GlobalPage() {
+function MarketListPage() {
   // get data for lists and totals
   const markets = useMarketsByAMMLiquidityVolume()
   const cashes = useMarketCashAddresses()
@@ -111,4 +111,4 @@ function GlobalPage() {
   )
 }
 
-export default withRouter(GlobalPage)
+export default withRouter(MarketListPage)

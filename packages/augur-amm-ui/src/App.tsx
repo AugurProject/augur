@@ -3,8 +3,8 @@ import styled from 'styled-components'
 import { ApolloProvider } from 'react-apollo'
 import { client } from './apollo/client'
 import { Route, Switch, Redirect } from 'react-router-dom'
-import GlobalPage from './pages/GlobalPage'
-import TokenPage from './pages/TokenPage'
+import MarketListPage from './pages/MarketListPage'
+import MarketPage from './pages/MarketPage'
 import { isAddress } from './utils'
 import LocalLoader from './components/LocalLoader'
 import { useLatestBlock } from './contexts/Application'
@@ -83,7 +83,7 @@ function App() {
                     if (marketId && isAddress(marketId.toLowerCase())) {
                       return (
                         <LayoutWrapper savedOpen={savedOpen} setSavedOpen={setSavedOpen}>
-                          <TokenPage marketId={marketId} />
+                          <MarketPage marketId={marketId} />
                         </LayoutWrapper>
                       )
                     } else {
@@ -92,7 +92,7 @@ function App() {
                   }}
                 />
                 <Route path="/home">
-                  <GlobalPage />
+                  <MarketListPage />
                 </Route>
                 <Route path="/pools">
                   <UserPools />

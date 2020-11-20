@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 import Panel from '../components/Panel'
 import TokenLogo from '../components/TokenLogo'
-import PairList from '../components/PairList'
+import AmmExchangeList from '../components/AmmExchangeList'
 import Loader from '../components/LocalLoader'
 import { RowBetween, RowFixed, RowStart, AutoRow } from '../components/Row'
 import { AutoColumn } from '../components/Column'
@@ -52,7 +52,7 @@ const WarningGrouping = styled.div`
   pointer-events: ${({ disabled }) => disabled && 'none'};
 `
 
-function TokenPage({ marketId }) {
+function MarketPage({ marketId }) {
   const {
     id,
     name,
@@ -232,7 +232,7 @@ function TokenPage({ marketId }) {
               }}
             >
               {marketId && allExchanges && allExchanges.length > 0 ? (
-                <PairList color={backgroundColor} marketId={marketId} allExchanges={allExchanges} />
+                <AmmExchangeList color={backgroundColor} marketId={marketId} allExchanges={allExchanges} />
               ) : (
                 <AutoRow justify={'center'}>
                   <TYPE.light>No Exchanges</TYPE.light>
@@ -256,4 +256,4 @@ function TokenPage({ marketId }) {
   )
 }
 
-export default withRouter(TokenPage)
+export default withRouter(MarketPage)
