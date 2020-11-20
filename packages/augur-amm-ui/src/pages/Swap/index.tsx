@@ -98,6 +98,7 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
           setRealizedLPFee('0.00')
         }
       } catch (e) {
+        console.error("Estimate trade error:", e)
         setOutputAmount(null)
       }
     }

@@ -3,7 +3,7 @@ import { BigNumber } from 'bignumber.js';
 import { ethers } from 'ethers';
 import LZString from 'lz-string';
 import { ParaShareToken } from './api/ParaShareToken';
-import { AMM } from './api/AMM';
+import {AMM, ExchangeERC20, ExchangeETH} from './api/AMM';
 import { HotLoading, HotLoadMarketInfo } from './api/HotLoading';
 import { AccountLoader, AccountData } from './api/AccountLoader';
 import { WarpSync } from './api/WarpSync';
@@ -30,6 +30,7 @@ export interface Addresses {
   Orders: string;
   WarpSync: string;
   AMMFactory: string;
+  WethWrapperForAMMExchange: string;
 }
 
 const FILE_FETCH_TIMEOUT = 10000; // 10 seconds
@@ -39,6 +40,7 @@ export class AugurLite {
   readonly warpSync: WarpSync;
   readonly accountLoader: AccountLoader;
   readonly amm: AMM;
+  readonly ammETH: AMM;
 
   constructor(
     readonly provider: ethers.providers.Provider,
@@ -49,7 +51,8 @@ export class AugurLite {
     this.hotLoading = new HotLoading(this.provider, precision);
     this.accountLoader = new AccountLoader(this.provider);
     this.warpSync = new WarpSync(this.provider, addresses.WarpSync);
-    this.amm = new AMM(this.provider, addresses.AMMFactory);
+    this.amm = new AMM(this.provider, new ExchangeERC20(this.provider, addresses.AMMFactory));
+    this.ammETH = new AMM(this.provider, new ExchangeETH(this.provider, addresses.AMMFactory, addresses.WethWrapperForAMMExchange));
   }
 
   getParaShareToken(paraShareTokenAddress: string) {
