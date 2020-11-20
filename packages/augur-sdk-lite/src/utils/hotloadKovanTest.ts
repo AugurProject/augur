@@ -3,6 +3,7 @@ import { ethers } from 'ethers';
 import { BigNumber } from 'bignumber.js';
 import { AugurLite } from '../AugurLite';
 import { NULL_ADDRESS } from '../constants';
+import {buildConfig} from '@augurproject/artifacts/build';
 
 async function doWork(): Promise<void> {
     const provider = new ethers.providers.JsonRpcProvider("https://kovan.augur.net/ethereum-http");
@@ -18,7 +19,8 @@ async function doWork(): Promise<void> {
         "WethWrapperForAMMExchange": NULL_ADDRESS,
     }
     const precision = new BigNumber(10**18);
-    const augurLite = new AugurLite(provider, addresses, NetworkId.Kovan, precision);
+    const config = buildConfig("", { addresses });
+    const augurLite = new AugurLite(provider, config, NetworkId.Kovan, precision);
     const hotloadData = await augurLite.hotloadMarket("0x04CE01200a0A47f1198A0134330369ADEf44a92d");
     console.log(`HOT LOAD DATA: ${JSON.stringify(hotloadData)}`);
 }
