@@ -17,7 +17,7 @@ services:
       postgres_pass: let-me-in
       postgres_db: graph-node
       ipfs: 'ipfs:5001'
-      ethereum: 'kovan:https://eth-kovan.alchemyapi.io/v2/1FomA6seLdWDvpIRvL9J5NhwPHLIGbWA'
+      ethereum: 'local:http://eth:8545'
       RUST_LOG: info
   ipfs:
     image: ipfs/go-ipfs:v0.4.23
@@ -36,6 +36,5 @@ services:
       POSTGRES_DB: graph-node
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
-
-  parity:
-    image: parity/parity:latest
+  eth:
+    image: augurproject/dev-pop-geth-v2:8a7b8ef9ef51a56f4a478aa1e149f877

@@ -1,5 +1,5 @@
 {
-  "name": "@augurproject/subgraph-base",
+  "name": "@augurproject/subgraph-bobross",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -13,15 +13,16 @@
     "prepare:abi:ParaDeployer": "node ../augur-tools/build/flash/cli.js abi -c ParaDeployer > abis/ParaDeployer.json",
     "prepare:abi:ParaShareToken": "node ../augur-tools/build/flash/cli.js abi -c ParaAugurTrading > abis/ParaAugurTrading.json",
     "prepare:abi": "mkdir abis; yarn prepare:abi:Augur; yarn prepare:abi:AugurTrading; yarn prepare:abi:AMMFactory; yarn prepare:abi:AMMExchange; yarn prepare:abi:ParaAugur; yarn prepare:abi:ParaAugurTrading; yarn prepare:abi:ParaDeployer; yarn prepare:abi:ParaShareToken; yarn prepare:abi:ShareToken",
+    "prepare:local":   "mustache ../augur-artifacts/src/environments/local.json subgraph.template.yaml > subgraph.yaml",
     "prepare:mainnet": "mustache ../augur-artifacts/src/environments/mainnet.json subgraph.template.yaml > subgraph.yaml",
     "prepare:staging": "mustache ../augur-artifacts/src/environments/v2.json subgraph.template.yaml > subgraph.yaml",
-    "create": "graph create augurproject/augur-v2-base-staging --node https://api.thegraph.com/deploy/",
-    "create-local": "graph create augurproject/augur-v2-base-staging --node http://127.0.0.1:8020",
+    "create": "graph create augurproject/augur-v2-bobross-staging --node https://api.thegraph.com/deploy/",
+    "create-local": "graph create augurproject/augur-v2-bobross-staging --node http://127.0.0.1:8020",
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy:staging": "yarn prepare:staging && graph deploy augurproject/augur-v2-base-staging --access-token $GRAPH_TOKEN --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
+    "deploy:staging": "yarn prepare:staging && graph deploy augurproject/augur-v2-bobross-staging --access-token $GRAPH_TOKEN --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
     "deploy:mainnet": "yarn prepare:mainnet && graph deploy augurproject/augur-v2-base --access-token $GRAPH_TOKEN --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
-    "deploy-local": "graph deploy augurproject/augur-v2-base-staging --ipfs http://localhost:5001 --node http://127.0.0.1:8020"
+    "deploy-local": "graph deploy augurproject/augur-v2-bobross-staging --ipfs http://localhost:5001 --node http://127.0.0.1:8020"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.18.0",

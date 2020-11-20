@@ -6,7 +6,7 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: Augur
-    network: {{ ethereum.network }}
+    network: {{ ethereum.network }}{{^ethereum.network}}local{{/ethereum.network}}
     source:
       address: '{{ addresses.Augur }}'
       abi: Augur
@@ -128,7 +128,7 @@ dataSources:
           handler: handleWarpSyncDataUpdatedEvent
   - kind: ethereum/contract
     name: AugurTrading
-    network: {{ ethereum.network }}
+    network: {{ ethereum.network }}{{^ethereum.network}}local{{/ethereum.network}}
     source:
       address: '{{ addresses.AugurTrading }}'
       abi: AugurTrading
@@ -157,7 +157,7 @@ dataSources:
           handler: handleProfitLossChangedEvent
   - kind: ethereum/contract
     name: ShareToken
-    network: {{ ethereum.network }}
+    network: {{ ethereum.network }}{{^ethereum.network}}local{{/ethereum.network}}
     source:
       address: '{{ addresses.ShareToken }}'
       abi: ShareToken

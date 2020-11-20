@@ -77,6 +77,7 @@
       "@augurproject/ui/*/@uniswap/*",
       "@augurproject/subgraph/@graphprotocol/graph-ts",
       "@augurproject/subgraph-base/@graphprotocol/graph-ts",
+      "@augurproject/subgraph-bobross/@graphprotocol/graph-ts",
       "@augurproject/amm-ui/**",
       "**/webpack",
       "**/eslint*",

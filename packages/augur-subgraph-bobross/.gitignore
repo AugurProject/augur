@@ -64,3 +64,4 @@ abis/*.json
 subgraph.yaml
 /generated
 /build
+/data
