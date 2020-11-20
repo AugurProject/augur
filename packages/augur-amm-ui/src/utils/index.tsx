@@ -117,6 +117,7 @@ export const formatToDisplayValue = (num = "0", decimals = "18") => {
 export const formatShares = (num = "0", decimals = "18") => {
   const numTicks = numTicksToTickSizeWithDisplayPrices(new BN(YES_NO_NUM_TICKS), new BN(0), new BN(1))
   const displayValue = convertOnChainAmountToDisplayAmount(new BN(num), numTicks, new BN(10).pow(new BN(decimals)))
+  console.log('format shares', num, decimals, String(displayValue))
   return toSignificant(String(displayValue), 6)
 }
 
@@ -577,7 +578,25 @@ export function calculateLiquidity(decimals: number, liquidity: string, price: s
   return String(liqNormalized)
 }
 
+export function calculateVolume(decimals: number, volume: string, price: string) {
+  if (!decimals || !volume || !price) return "0"
+  const displayVolume = formatShares(volume, String(decimals))
+  const volNormalized = new BN(displayVolume).times(new BN(price))
+  return String(volNormalized)
+}
 
+export function calculateTotalVolume(cashData, volumes: { diff }) {
+  let vol24InUSD = new BN("0")
+  if (!cashData || !volumes) return vol24InUSD
+  if (cashData && Object.keys(cashData).length > 0) {
+    const { diff } = volumes;
+    vol24InUSD = Object.keys(diff).reduce((p, cash) => {
+      const priceUSD = cashData[cash]?.priceUSD || "0";
+      const cashValue = calculateVolume(cashData[cash]?.decimals, diff[cash], priceUSD)
+      return p.plus(new BN(cashValue))
+    }, new BN(0))
+  }
+}
 export enum TradingDirection {
   ENTRY = 'ENTRY',
   EXIT = 'EXIT',

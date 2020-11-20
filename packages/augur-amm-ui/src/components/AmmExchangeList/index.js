@@ -68,8 +68,6 @@ function AmmExchangeList({ allExchanges, disbaleLinks, marketId }) {
   const ListItem = ({ ammExchange, index }) => {
     const [hasLPTokens, setHasLpTokens] = useState(false)
 
-    console.log('ammExchange', ammExchange)
-
     useEffect(() => {
       if (userTokenBalances) {
         setHasLpTokens(greaterThanZero(userTokenBalances[ammExchange.id]))
