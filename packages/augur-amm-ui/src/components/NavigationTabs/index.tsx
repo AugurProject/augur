@@ -41,20 +41,6 @@ export function SwapPoolTabs({ token }: { token: string }) {
   )
 }
 
-export function FindPoolTabs() {
-  return (
-    <Tabs>
-      <RowBetween style={{ padding: '1rem' }}>
-        <HistoryLink to="/home">
-          <StyledArrowLeft />
-        </HistoryLink>
-        <ActiveText>Import Pool</ActiveText>
-        <QuestionHelper text={"Use this tool to find pairs that don't automatically appear in the interface."} />
-      </RowBetween>
-    </Tabs>
-  )
-}
-
 export function AddRemoveTabs({ adding, creating, token }: { adding: boolean; creating: boolean; token: string }) {
   return (
     <Tabs>

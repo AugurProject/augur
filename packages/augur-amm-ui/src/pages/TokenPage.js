@@ -73,7 +73,6 @@ function TokenPage({ marketId }) {
   }, [])
 
   useEffect(() => {
-    console.log('allExchanges', allExchanges)
     if (allExchanges && allExchanges.length > 0) {
       const total = (allExchanges || []).reduce((p, e) => {
         const cash = cashData[e?.cash?.address]
