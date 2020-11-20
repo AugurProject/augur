@@ -73,19 +73,20 @@ function TokenPage({ marketId }) {
   }, [])
 
   useEffect(() => {
+    console.log('allExchanges', allExchanges)
     if (allExchanges && allExchanges.length > 0) {
       const total = (allExchanges || []).reduce((p, e) => {
-        const cashToken = cashTokens?.[e.cash]
+        const cash = cashData[e?.cash?.address]
         const liq = calculateLiquidity(
-          Number(cashToken?.decimals),
+          Number(cash?.decimals),
           String(e?.liquidity),
-          String(cashData?.[e.cash]?.priceUSD)
+          String(cash?.priceUSD)
         )
         return p.plus(liq)
       }, new BN(0))
       setTotalLiquidity(formattedNum(String(total), true))
     }
-  }, [allExchanges, cashData, cashTokens, setTotalLiquidity])
+  }, [allExchanges, cashData])
   // detect color from token
   const backgroundColor = useColor(id, symbol)
 
