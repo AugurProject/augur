@@ -68,6 +68,8 @@ function AmmExchangeList({ allExchanges, disbaleLinks, marketId }) {
   const ListItem = ({ ammExchange, index }) => {
     const [hasLPTokens, setHasLpTokens] = useState(false)
 
+    console.log('ammExchange', ammExchange)
+
     useEffect(() => {
       if (userTokenBalances) {
         setHasLpTokens(greaterThanZero(userTokenBalances[ammExchange.id]))
@@ -105,7 +107,7 @@ function AmmExchangeList({ allExchanges, disbaleLinks, marketId }) {
               </StyledInternalLink>
               <StyledInternalLink
                 disabled={!ammExchange && !ammExchange.id}
-                to={`/swap/${marketId}/${ammExchange.cash.id}/${ammExchange.id}`}
+                to={`/swap/${marketId}/${ammExchange.cash.address}/${ammExchange.id}`}
               >
                 <ButtonPrimary disabled={(!ammExchange && !ammExchange.id) || ammExchange.liquidity === "0"} textAlign="center">
                   Trade
