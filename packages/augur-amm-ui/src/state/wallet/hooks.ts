@@ -9,7 +9,7 @@ import {
   useMultipleContractSingleData,
   useMultipleContractMultipleData
 } from '../multicall/hooks'
-import { useAllMarketData } from '../../contexts/Markets'
+import { useAllMarketData, useMarketCashTokens } from '../../contexts/Markets'
 import { ParaShareToken } from '@augurproject/sdk-lite'
 import { Interface } from 'ethers/lib/utils'
 import { ZERO_ADDRESS } from '../../constants'
@@ -129,6 +129,7 @@ export interface MarketBalance {
 export function useMarketShareBalances(): [MarketBalance[], boolean] {
   const { markets, paraShareTokens } = useAllMarketData()
   const { account } = useActiveWeb3React()
+  const cashes = useMarketCashTokens()
 
   const userAccount = account ? account : ZERO_ADDRESS
   const paraTokenAdds: string[] = (paraShareTokens || []).map(p => p.id)
@@ -161,18 +162,19 @@ export function useMarketShareBalances(): [MarketBalance[], boolean] {
             let marketBalance = emptyBalances[i]
             const rawAmount = balance.result?.[0];
             const amount = rawAmount ? String(rawAmount) : '0';
+            console.log('amount', amount)
             marketBalance.amount = amount;
             return marketBalance
           }).filter(p => p.amount !== '0' && p.amount !== 'undefined'),
-            keyedParaTokens, keyedMarkets, outcomeNames)
+            keyedParaTokens, keyedMarkets, outcomeNames, cashes)
           : [],
-      [userAccount, inputs, balances, keyedMarkets, paraTokenAdds, keyedParaTokens, outcomeNames]
+      [userAccount, inputs, balances, keyedMarkets, paraTokenAdds, keyedParaTokens, outcomeNames, cashes]
     ),
     anyLoading
   ]
 }
 
-function buildMarketBalance(pTokenAmounts, keyedParaTokens, keyedMarkets, outcomeNames) {
+function buildMarketBalance(pTokenAmounts, keyedParaTokens, keyedMarkets, outcomeNames, cashes) {
   return Object.values(pTokenAmounts.reduce((memo, pTokenAmount) => {
     const { pTokenAddr, marketId, amount } = pTokenAmount
     const key = `${pTokenAddr}-${marketId}`
@@ -182,8 +184,9 @@ function buildMarketBalance(pTokenAmounts, keyedParaTokens, keyedMarkets, outcom
     if (item === undefined) {
       const outcomes = ['0', '0', '0']
       outcomes[pTokenAmount.outcome] = String(amount)
+      const cash = cashes[keyedParaTokens[pTokenAddr].cash.id]
       memo[key] = {
-        cash: keyedParaTokens[pTokenAddr].cash.id,
+        cash,
         marketId,
         [amountName]: amount,
         market: keyedMarkets[marketId],

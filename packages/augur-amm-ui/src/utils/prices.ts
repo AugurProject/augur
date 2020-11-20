@@ -1,4 +1,4 @@
-import { BIPS_BASE, BIPS_CONSTANT, BLOCKED_PRICE_IMPACT_NON_EXPERT } from '../constants'
+import { BIPS_BASE, BIPS_CONSTANT, BLOCKED_PRICE_IMPACT_NON_EXPERT, YES_NO_NUM_TICKS } from '../constants'
 import { CurrencyAmount, JSBI, Percent, TokenAmount } from '@uniswap/sdk'
 import { ALLOWED_PRICE_IMPACT_HIGH, ALLOWED_PRICE_IMPACT_LOW, ALLOWED_PRICE_IMPACT_MEDIUM } from '../constants'
 import { Field } from '../state/swap/actions'
@@ -19,11 +19,13 @@ export function computePriceImpact(
   const currencyOutDecimals = new BN(trade?.currencyOut?.decimals)
   const displayActualPrice = new BN(trade.executionPrice)
   const rawInputAmount = new BN(String(trade?.inputAmount?.raw))
+  const inputAmountDecimals = new BN(String(trade?.inputAmount?.decimals))
   const rawOutputAmount = new BN(String(outputAmount?.raw))
 
   // normalize price by num ticks and pool percentage convert to price
-  const rawSlipRate = rawInputAmount.div(rawOutputAmount).div(1000)
-  const impact = !displayActualPrice ? (rawSlipRate.minus(displayActualPrice)).div(displayActualPrice) : new BN("0")
+  const rawSlipRate = (rawInputAmount).div(rawOutputAmount).div(YES_NO_NUM_TICKS)
+  console.log('slip rate', `${String(rawInputAmount)} / ${String(rawOutputAmount)} = ${String(rawSlipRate)}`)
+  const impact = (rawSlipRate.minus(displayActualPrice)).div(displayActualPrice)
   console.log('slippage:', String(displayActualPrice), '-', String(rawSlipRate), '/', String(displayActualPrice), '=', String(impact))
   const adjMinAmount = String(new BN(String(rawOutputAmount)).div(new BN(10).pow(new BN(currencyOutDecimals))).toFixed(8))
   const prepDecimal = new Percent(JSBI.BigInt(impact.times(new BN(BIPS_CONSTANT)).toFixed(0)), BIPS_BASE)

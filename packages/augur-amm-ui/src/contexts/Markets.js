@@ -5,8 +5,8 @@ import utc from 'dayjs/plugin/utc'
 import BigNumber, { BigNumber as BN } from 'bignumber.js'
 import { augurV2Client } from '../apollo/client'
 import { GET_MARKETS } from '../apollo/queries'
-import { useConfig, useParaDeploys, getCashInfo } from '../contexts/Application'
-import { getBlockFromTimestamp, calculateLiquidity, formattedNum } from '../utils'
+import { useConfig, useParaDeploys } from '../contexts/Application'
+import { getBlockFromTimestamp, calculateLiquidity } from '../utils'
 import { useTokenDayPriceData } from '../contexts/TokenData'
 
 const UPDATE = 'UPDATE'
@@ -313,6 +313,7 @@ export function useMarketAmm(marketId, amm) {
 
 export function useMarketAmmExchanges(marketId) {
   const marketsLV = useMarketsByAMMLiquidityVolume()
+  const cashes = useMarketCashTokens()
   const markets = marketsLV.filter(m => m.id === marketId)
   const ammExchanges =
     markets.length > 0 && markets.filter(m => m.amm).length > 0 ? markets.reduce((p, m) => [...p, m.amm], []) : []
@@ -322,7 +323,7 @@ export function useMarketAmmExchanges(marketId) {
         ...ammExchange,
         hasLiquidity: ammExchange?.liquidity && ammExchange?.liquidity !== '0',
         id: ammExchange?.id,
-        cash: ammExchange?.shareToken?.cash?.id,
+        cash: cashes[ammExchange?.shareToken?.cash?.id],
         sharetoken: ammExchange?.shareToken?.id
       }))
     : []
@@ -375,9 +376,21 @@ export function usePositionMarkets(positions) {
   })
   return marketPositions
 }
-
+/*
+export interface AmmMarket {
+  amms: AmmExchange[];
+  balance: string;
+  cash: Cash;
+  description: string;
+  endTimestamp: string;
+  id: string;
+  shareToken: ShareToken;
+  status: string
+}
+*/
 export function useAmmMarkets(balances) {
   const [state] = useMarketDataContext()
+  const cashes = useMarketCashTokens()
   const { markets } = state
   const ammMarkets = []
   if (markets) {
@@ -386,8 +399,9 @@ export function useAmmMarkets(balances) {
       const market = markets.find(m => m.amms.map(a => a.id).includes(ammId))
       const groupedAmms = market ? market.amms.reduce((group, a) => ({ ...group, [a.id]: a }), {}) : {}
       const shareToken = groupedAmms[ammId]?.shareToken;
+      const cash = cashes[shareToken?.cash?.id]
       if (market && balance !== '0') {
-        ammMarkets.push({ ...market, balance, shareToken })
+        ammMarkets.push({ ...market, balance, shareToken, cash })
       }
     })
   }

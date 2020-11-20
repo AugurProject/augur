@@ -6,7 +6,7 @@ import utc from 'dayjs/plugin/utc'
 import { Box, Flex, Text } from 'rebass'
 import { Divider } from '..'
 import { useDarkModeManager } from '../../contexts/LocalStorage'
-import { formatTime, formatShares } from '../../utils'
+import { formatTime, formatToDisplayValue } from '../../utils'
 import { useMedia } from 'react-use'
 import { withRouter } from 'react-router-dom'
 import { TYPE } from '../../Theme'
@@ -174,7 +174,7 @@ function PooledMarketList({ balances, itemMax = 20 }) {
             {item?.description}
           </BasicLink>
         </DataText>
-        <DataText area="balance">{formatShares(item.balance)}</DataText>
+        <DataText area="balance">{formatToDisplayValue(item.balance, item?.cash?.decimals)}</DataText>
         {!below800 && (
           <DataText area="status">
             <span
