@@ -1,15 +1,16 @@
-import { logger, NetworkId, QUINTILLION } from '@augurproject/utils';
+import { logger, NetworkId, QUINTILLION, SDKConfiguration } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
 import { ethers } from 'ethers';
 import LZString from 'lz-string';
 import { ParaShareToken } from './api/ParaShareToken';
-import {AMM, ExchangeERC20, ExchangeETH} from './api/AMM';
+import { AMM } from './api/AMM';
 import { HotLoading, HotLoadMarketInfo } from './api/HotLoading';
 import { AccountLoader, AccountData } from './api/AccountLoader';
 import { WarpSync } from './api/WarpSync';
 import { MarketReportingState, NullWarpSyncHash, MarketType } from './constants';
 import { MarketCreatedLog } from './logs';
 import { marketTypeToName } from './markets';
+
 
 interface NamedMarketCreatedLog extends MarketCreatedLog {
   name: string;
@@ -40,23 +41,26 @@ export class AugurLite {
   readonly warpSync: WarpSync;
   readonly accountLoader: AccountLoader;
   readonly amm: AMM;
-  readonly ammETH: AMM;
 
   constructor(
     readonly provider: ethers.providers.Provider,
-    readonly addresses: Addresses,
+    readonly config: SDKConfiguration,
     readonly networkId: NetworkId,
     readonly precision: BigNumber,
   ) {
     this.hotLoading = new HotLoading(this.provider, precision);
     this.accountLoader = new AccountLoader(this.provider);
-    this.warpSync = new WarpSync(this.provider, addresses.WarpSync);
-    this.amm = new AMM(this.provider, new ExchangeERC20(this.provider, addresses.AMMFactory));
-    this.ammETH = new AMM(this.provider, new ExchangeETH(this.provider, addresses.AMMFactory, addresses.WethWrapperForAMMExchange));
+    this.warpSync = new WarpSync(this.provider, config.addresses.WarpSync);
+    const wethParaShareTokenAddress = config?.paraDeploys[config.addresses.WETH9]?.addresses.ShareToken;
+    this.amm = new AMM(this.provider, wethParaShareTokenAddress, config.addresses.AMMFactory, config.addresses.WethWrapperForAMMExchange);
   }
 
   getParaShareToken(paraShareTokenAddress: string) {
     return new ParaShareToken(this.provider, paraShareTokenAddress);
+  }
+
+  get addresses() {
+    return this.config.addresses;
   }
 
   async doesDBAlreadyExist() {

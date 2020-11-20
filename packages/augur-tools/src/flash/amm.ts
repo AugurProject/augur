@@ -474,8 +474,6 @@ export function addAMMScripts(flash: FlashSession) {
 function ammMiddleware(signerOrProvider: SignerOrProvider, config: SDKConfiguration) {
   const factory = config.addresses.AMMFactory;
   const wrapper = config.addresses.WethWrapperForAMMExchange;
-  const isWethPara = config.paraDeploy === config.addresses.WETH9;
-  return isWethPara
-    ? new AMM(signerOrProvider, new ExchangeETH(signerOrProvider, factory, wrapper))
-    : new AMM(signerOrProvider, new ExchangeERC20(signerOrProvider, factory));
+  const wethParaShareTokenAddress = config?.paraDeploys[config.addresses.WETH9]?.addresses.ShareToken;
+  return new AMM(signerOrProvider, wethParaShareTokenAddress, factory, wrapper);
 }

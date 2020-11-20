@@ -11,16 +11,27 @@ const NUMTICKS = new BigNumber(1000); // Hardcoded because all AMMs are Y/N mark
 
 // This class is used by the middleware.
 export class AMM {
-  readonly signerOrProvider: SignerOrProvider;
-  readonly intermediary: ExchangeContractIntermediary;
+  readonly ethIntermediary: ExchangeETH;
+  readonly erc20Intermediary: ExchangeERC20;
 
-  constructor(signerOrProvider: SignerOrProvider, intermediary: ExchangeContractIntermediary) {
-    this.signerOrProvider = signerOrProvider;
-    this.intermediary = intermediary;
+  constructor(
+    readonly signerOrProvider: SignerOrProvider,
+    private wethParaShareTokenAddress: string,
+    ammFactoryAddress: string,
+    wethWrapperAddress: string,
+  ) {
+    this.ethIntermediary = new ExchangeETH(signerOrProvider, ammFactoryAddress, wethWrapperAddress);
+    this.erc20Intermediary = new ExchangeERC20(signerOrProvider, ammFactoryAddress);
+  }
+
+  private intermediary(paraShareToken: string): ExchangeContractIntermediary {
+    return paraShareToken.toLowerCase() === this.wethParaShareTokenAddress.toLowerCase()
+      ? this.ethIntermediary
+      : this.erc20Intermediary;
   }
 
   async createExchange(market: string, paraShareToken: string, fee: BigNumber): Promise<TransactionResponse> {
-    return this.intermediary.addAMM(market, paraShareToken, fee);
+    return this.intermediary(paraShareToken).addAMM(market, paraShareToken, fee);
   }
 
   async doAddLiquidity(
@@ -92,23 +103,23 @@ export class AMM {
     const minSetsSold = alsoSell
       ? (await this.getRemoveLiquidity(market, paraShareToken, fee, lpTokens, true)).sets
       : new BigNumber(0);
-    return this.intermediary.removeLiquidity(market, paraShareToken, fee, lpTokens, minSetsSold);
+    return this.intermediary(paraShareToken).removeLiquidity(market, paraShareToken, fee, lpTokens, minSetsSold);
   }
 
   async getRemoveLiquidity(market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber, alsoSell: Boolean): Promise<RemoveLiquidityRate> {
     const minSetsSold = new BigNumber(alsoSell ? 1 : 0);
-    return this.intermediary.rateRemoveLiquidity(market, paraShareToken, fee, lpTokens, minSetsSold);
+    return this.intermediary(paraShareToken).rateRemoveLiquidity(market, paraShareToken, fee, lpTokens, minSetsSold);
   }
 
   async doSwap(market: string, paraShareToken: string, fee: BigNumber, inputShares: BigNumber, buyYes: Boolean, minShares: BigNumber): Promise<TransactionResponse> {
-    return this.intermediary.swap(market, paraShareToken, fee, inputShares, buyYes, minShares);
+    return this.intermediary(paraShareToken).swap(market, paraShareToken, fee, inputShares, buyYes, minShares);
   }
 
   async getSwap(market: string, paraShareToken: string, fee: BigNumber, inputShares: BigNumber, buyYes: Boolean, includeFee: Boolean): Promise<BigNumber> {
     const inputYes = !buyYes;
 
-    const exchange = await this.intermediary.calculateExchangeAddress(market, paraShareToken, fee);
-    const { yes: poolYes, no: poolNo } = await this.intermediary.shareBalances(market, paraShareToken, fee, exchange);
+    const exchange = await this.intermediary(paraShareToken).calculateExchangeAddress(market, paraShareToken, fee);
+    const { yes: poolYes, no: poolNo } = await this.intermediary(paraShareToken).shareBalances(market, paraShareToken, fee, exchange);
     const poolConstant = AMM.calculatePoolConstant(poolYes, poolNo, includeFee ? fee : new BigNumber(0));
 
     return inputYes
@@ -117,13 +128,13 @@ export class AMM {
   }
 
   async doEnterPosition(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, buyYes: Boolean, minShares: BigNumber): Promise<TransactionResponse> {
-    return this.intermediary.enterPosition(market, paraShareToken, fee, cash, buyYes, minShares);
+    return this.intermediary(paraShareToken).enterPosition(market, paraShareToken, fee, cash, buyYes, minShares);
   }
 
   async getEnterPosition(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, buyYes: Boolean, includeFee: Boolean): Promise<BigNumber> {
     const setsToBuy = cash.idiv(NUMTICKS);
-    const exchange = await this.intermediary.calculateExchangeAddress(market, paraShareToken, fee);
-    let { invalid: poolInvalid, yes: poolYes, no: poolNo } = await this.intermediary.shareBalances(market, paraShareToken, fee, exchange);
+    const exchange = await this.intermediary(paraShareToken).calculateExchangeAddress(market, paraShareToken, fee);
+    let { invalid: poolInvalid, yes: poolYes, no: poolNo } = await this.intermediary(paraShareToken).shareBalances(market, paraShareToken, fee, exchange);
     poolInvalid = poolInvalid.minus(setsToBuy);
     poolNo = poolNo.minus(setsToBuy);
     poolYes = poolYes.minus(setsToBuy);
@@ -139,38 +150,38 @@ export class AMM {
   }
 
   async doExitPosition(market: string, paraShareToken: string, fee: BigNumber, invalidShares: BigNumber, noShares: BigNumber, yesShares: BigNumber, minCash: BigNumber): Promise<TransactionResponse> {
-    return this.intermediary.exitPosition(market, paraShareToken, fee, invalidShares, noShares, yesShares, minCash);
+    return this.intermediary(paraShareToken).exitPosition(market, paraShareToken, fee, invalidShares, noShares, yesShares, minCash);
   }
 
   async getExitPosition(market: string, paraShareToken: string, fee: BigNumber, invalidShares: BigNumber, noShares: BigNumber, yesShares: BigNumber, includeFee: Boolean): Promise<ExitPositionRate> {
     if (!includeFee) throw Error('Not implemented: getExitPosition(includeFee=false)');
-    return this.intermediary.rateExitPosition(market, paraShareToken, fee, invalidShares, noShares, yesShares);
+    return this.intermediary(paraShareToken).rateExitPosition(market, paraShareToken, fee, invalidShares, noShares, yesShares);
   }
 
   async exchangeAddress(market: string, paraShareToken: string, fee: BigNumber): Promise<string> {
-    return this.intermediary.exchanges(market, paraShareToken, fee);
+    return this.intermediary(paraShareToken).exchanges(market, paraShareToken, fee);
   }
 
   async calculateExchangeAddress(market: string, paraShareToken: string, fee: BigNumber): Promise<string> {
-    return this.intermediary.calculateExchangeAddress(market, paraShareToken, fee);
+    return this.intermediary(paraShareToken).calculateExchangeAddress(market, paraShareToken, fee);
   }
 
   async exchangeLiquidity(market: string, paraShareToken: string, fee: BigNumber): Promise<BigNumber> {
-    return this.intermediary.totalSupply(market, paraShareToken, fee)
+    return this.intermediary(paraShareToken).totalSupply(market, paraShareToken, fee)
   }
 
   async liquidityTokenBalance(market: string, paraShareToken: string, fee: BigNumber, account: string): Promise<BigNumber> {
-    return this.intermediary.balanceOf(market, paraShareToken, fee, account);
+    return this.intermediary(paraShareToken).balanceOf(market, paraShareToken, fee, account);
   }
 
   // Private methods
 
   private async doAddSubsequentLiquidity(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, recipient: string): Promise<TransactionResponse> {
-    return this.intermediary.addLiquidity(market, paraShareToken, fee, cash, recipient);
+    return this.intermediary(paraShareToken).addLiquidity(market, paraShareToken, fee, cash, recipient);
   }
 
   private async getAddSubsequentLiquidity(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, recipient: string): Promise<BigNumber> {
-    return this.intermediary.rateAddLiquidity(market, paraShareToken, fee, cash, recipient);
+    return this.intermediary(paraShareToken).rateAddLiquidity(market, paraShareToken, fee, cash, recipient);
   }
 
   private async doAddInitialLiquidity(
@@ -182,7 +193,7 @@ export class AMM {
   ): Promise<TransactionResponse> {
     const keepYes = AMM.keepYes(yesPercent, noPercent);
     const ratio = AMM.calculateLiquidityRatio(yesPercent, noPercent);
-    return this.intermediary.addInitialLiquidity(market, paraShareToken, fee, cash, ratio, keepYes, recipient);
+    return this.intermediary(paraShareToken).addInitialLiquidity(market, paraShareToken, fee, cash, ratio, keepYes, recipient);
   }
 
   private async getAddInitialLiquidity(
@@ -194,7 +205,7 @@ export class AMM {
   ): Promise<BigNumber> {
     const keepYes = AMM.keepYes(yesPercent, noPercent);
     const ratio = AMM.calculateLiquidityRatio(yesPercent, noPercent);
-    return this.intermediary.rateAddInitialLiquidity(market, paraShareToken, fee, cash, ratio, keepYes, recipient);
+    return this.intermediary(paraShareToken).rateAddInitialLiquidity(market, paraShareToken, fee, cash, ratio, keepYes, recipient);
   }
 
   private async doCreateExchangeWithLiquidity(
@@ -208,7 +219,7 @@ export class AMM {
   ): Promise<TransactionResponse> {
     const keepYes = AMM.keepYes(yesPercent, noPercent);
     const ratio = AMM.calculateLiquidityRatio(yesPercent, noPercent);
-    return this.intermediary.addAMMWithLiquidity(market, paraShareToken, fee, cash, ratio, keepYes, recipient);
+    return this.intermediary(paraShareToken).addAMMWithLiquidity(market, paraShareToken, fee, cash, ratio, keepYes, recipient);
   }
 
   private async getCreateExchangeWithLiquidity(
@@ -222,7 +233,7 @@ export class AMM {
   ): Promise<BigNumber> {
     const keepYes = AMM.keepYes(yesPercent, noPercent);
     const ratio = AMM.calculateLiquidityRatio(yesPercent, noPercent);
-    return this.intermediary.rateAddAMMWithLiquidity(market, paraShareToken, fee, cash, ratio, keepYes, recipient);
+    return this.intermediary(paraShareToken).rateAddAMMWithLiquidity(market, paraShareToken, fee, cash, ratio, keepYes, recipient);
   }
 
   // Private static methods
@@ -284,6 +295,7 @@ export interface ExitPositionRate {
 }
 
 export interface ExchangeContractIntermediary {
+  forEth: Boolean
 
   addAMM(market: string, paraShareToken: string, fee: BigNumber): Promise<TransactionResponse>
   addAMMWithLiquidity(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, ratio: BigNumber, keepYes: Boolean, recipient: string): Promise<TransactionResponse>
@@ -416,6 +428,10 @@ export class ExchangeERC20 extends ExchangeCommon implements ExchangeContractInt
     super(factoryAddress, signerOrProvider);
   }
 
+  get forEth() {
+    return false
+  }
+
   async addAMMWithLiquidity(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, ratio: BigNumber, keepYes: Boolean, recipient: string): Promise<TransactionResponse> {
     return this.factory.addAMMWithLiquidity(market, paraShareToken, fee.toFixed(), cash.toFixed(), ratio.toFixed(), keepYes, recipient);
   }
@@ -458,6 +474,10 @@ export class ExchangeETH extends ExchangeCommon implements ExchangeContractInter
   constructor(signerOrProvider: SignerOrProvider, factoryAddress: string, wrapperAddress: string) {
     super(factoryAddress, signerOrProvider);
     this.wrapper = new ethers.Contract(wrapperAddress, WethWrapperForAMMExchangeAbi, signerOrProvider);
+  }
+
+  get forEth() {
+    return true
   }
 
   async addAMMWithLiquidity(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, ratio: BigNumber, keepYes: Boolean, recipient: string): Promise<TransactionResponse> {

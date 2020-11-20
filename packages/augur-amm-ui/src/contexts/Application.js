@@ -357,7 +357,7 @@ export function useAugurClient() {
     async function createAugurClient() {
       if (!library || !chainId || !account) return
       console.info('building/getting augur client', augurConfig.addresses)
-      const augurLite = new AugurLite(getProviderOrSigner(library, account), augurConfig.addresses, chainId);
+      const augurLite = new AugurLite(getProviderOrSigner(library, account), augurConfig, chainId);
       updateAugurClient(augurLite)
     }
     if (!augurClient) {
