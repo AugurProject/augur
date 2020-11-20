@@ -32,7 +32,7 @@ import AppBody from '../AppBody'
 import Loader from '../../components/Loader'
 import { RouteComponentProps } from 'react-router-dom'
 import { TradeInfo } from '../../hooks/Trades'
-import { estimateTrade } from '../../utils'
+import { estimateTrade, formatShares } from '../../utils'
 import { useAugurClient } from '../../contexts/Application'
 import { useMarketAmm } from '../../contexts/Markets'
 import { useMarketBalance } from '../../state/wallet/hooks'
@@ -84,7 +84,7 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
       try {
         const result = await estimateTrade(augurClient, trade);
         if (result) {
-          console.log('estimate trade', result, trade)
+          console.log('estimate trade', result, trade.currencyOut.decimals, trade)
           const outToken = new Token(
             chainId,
             trade.marketId,
@@ -297,7 +297,7 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
               </AutoRow>
             </AutoColumn>
             <CurrencyInputPanel
-              value={Boolean(outputAmount) ? outputAmount?.toSignificant(6) : ''}
+              value={Boolean(outputAmount) ? formatShares(String(outputAmount.raw), outputAmount.token.decimals) : ''}
               onUserInput={handleTypeOutput}
               label={'To (estimated)'}
               showMaxButton={false}

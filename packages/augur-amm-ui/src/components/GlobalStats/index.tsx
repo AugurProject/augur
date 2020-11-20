@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { RowFixed, RowBetween } from '../Row'
 import { useMedia } from 'react-use'
 import { useEthPrice } from '../../contexts/GlobalData'
-import { calculateLiquidity, formatShares, formattedNum, localNumber } from '../../utils'
+import { calculateLiquidity, formattedNum, calculateVolume, calculateTotalVolume } from '../../utils'
 import { TYPE } from '../../Theme'
 import { useMarketCashTokens, useTotalLiquidity, useVolumesByCash, useAmmTransactions } from '../../contexts/Markets'
 import { useTokenDayPriceData } from '../../contexts/TokenData'
@@ -48,16 +48,7 @@ export default function GlobalStats() {
     const liq = formattedNum(String(total), true);
     setGlobalLiquidity(String(liq))
 
-    let vol24InUSD = new BN("0")
-    if (cashData && Object.keys(cashData).length > 0) {
-      const { diff } = ammVolumes;
-      vol24InUSD = Object.keys(diff).reduce((p, cash) => {
-        const volumeDiff = formatShares(diff[cash], cashData[cash]?.decimals);
-        const priceUSD = cashData[cash]?.priceUSD || "0";
-        const cashValue = new BN(volumeDiff).times(String(priceUSD))
-        return p.plus(new BN(cashValue))
-      }, new BN(0))
-    }
+    let vol24InUSD = calculateTotalVolume(cashData, ammVolumes)
 
     const formattedInUsd = formattedNum(String(vol24InUSD), true);
     setOneDayVolume(String(formattedInUsd))

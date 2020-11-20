@@ -9,7 +9,7 @@ import Loader from '../components/LocalLoader'
 import { RowBetween, RowFixed, RowStart, AutoRow } from '../components/Row'
 import { AutoColumn } from '../components/Column'
 import TxnList from '../components/TxnList'
-import { formattedNum, formattedPercent, localNumber, calculateLiquidity, formatShares } from '../utils'
+import { formattedNum, formattedPercent, localNumber, calculateLiquidity, calculateTotalVolume } from '../utils'
 import { useTokenData, useTokenDayPriceData } from '../contexts/TokenData'
 import { TYPE, StyledInternalLink } from '../Theme'
 import { useColor } from '../hooks'
@@ -17,7 +17,12 @@ import { useMedia } from 'react-use'
 import { useEffect } from 'react'
 import { ContentWrapper } from '../components'
 import FormattedName from '../components/FormattedName'
-import { useMarketNonExistingAmms, useMarketAmmExchanges, useMarketCashTokens, useMarketVolumeByCash } from '../contexts/Markets'
+import {
+  useMarketNonExistingAmms,
+  useMarketAmmExchanges,
+  useMarketCashTokens,
+  useMarketVolumeByCash
+} from '../contexts/Markets'
 import { ButtonOutlined } from '../components/ButtonStyled'
 import { BigNumber as BN } from 'bignumber.js'
 
@@ -53,14 +58,7 @@ const WarningGrouping = styled.div`
 `
 
 function MarketPage({ marketId }) {
-  const {
-    id,
-    name,
-    symbol,
-    priceUSD,
-    priceChangeUSD,
-    oneDayTxns
-  } = useTokenData(marketId)
+  const { id, name, symbol, priceUSD, priceChangeUSD, oneDayTxns } = useTokenData(marketId)
   const cashes = useMarketNonExistingAmms(marketId)
   const [totalLiquidity, setTotalLiquidity] = useState('0')
   const cashTokens = useMarketCashTokens()
@@ -76,11 +74,7 @@ function MarketPage({ marketId }) {
     if (allExchanges && allExchanges.length > 0) {
       const total = (allExchanges || []).reduce((p, e) => {
         const cash = cashData[e?.cash?.address]
-        const liq = calculateLiquidity(
-          Number(cash?.decimals),
-          String(e?.liquidity),
-          String(cash?.priceUSD)
-        )
+        const liq = calculateLiquidity(Number(cash?.decimals), String(e?.liquidity), String(cash?.priceUSD))
         return p.plus(liq)
       }, new BN(0))
       setTotalLiquidity(formattedNum(String(total), true))
@@ -96,10 +90,9 @@ function MarketPage({ marketId }) {
   const [volume, setVolume] = useState('-')
 
   useEffect(() => {
-    const { totalDiff } = volumes;
-    setVolume(formatShares(totalDiff))
-  }, [volumes])
-
+    let displayVolume = calculateTotalVolume(cashData, volumes)
+    setVolume(displayVolume)
+  }, [cashData, volumes])
 
   const below1080 = useMedia('(max-width: 1080px)')
   const below800 = useMedia('(max-width: 800px)')
@@ -117,142 +110,145 @@ function MarketPage({ marketId }) {
   }, [])
 
   return (
+    <ContentWrapper>
+      <WarningGrouping>
+        <DashboardWrapper style={{ marginTop: below1080 ? '0' : '1rem' }}>
+          <RowBetween style={{ flexWrap: 'wrap', marginBottom: '2rem', alignItems: 'flex-start' }}>
+            <RowFixed style={{ flexWrap: 'wrap' }}>
+              <RowFixed style={{ flexFlow: 'row nowrap', alignItems: 'flex-start', justifyContent: 'flex-start' }}>
+                <TYPE.main fontSize={below1080 ? '1.5rem' : '2rem'} fontWeight={500} style={{ margin: '0 1rem' }}>
+                  <RowFixed gap="6px">
+                    <FormattedName
+                      text={name ? name + ' ' : ''}
+                      maxCharacters={below800 ? 120 : 220}
+                      style={{ marginRight: '6px', fontSize: '32px' }}
+                    />
+                    {formattedSymbol ? `(${formattedSymbol})` : ''}
+                  </RowFixed>
+                </TYPE.main>
+                {!below1080 && (
+                  <>
+                    <TYPE.main fontSize={'1.5rem'} fontWeight={500} style={{ marginRight: '1rem' }}>
+                      {price}
+                    </TYPE.main>
+                    {priceChange}
+                  </>
+                )}
+              </RowFixed>
+              <RowStart>
+                {cashes &&
+                  cashes.map(cash => (
+                    <StyledInternalLink key={cash} to={`/add/${marketId}/${cash}/undefined`}>
+                      <ButtonOutlined textAlign="center" style={{ alignItems: 'flex-end', borderRadius: '3px' }}>
+                        <TokenLogo tokenInfo={cash} size={'18px'} style={{ paddingRight: '0.25rem' }} />
+                        Create Liquidity
+                      </ButtonOutlined>
+                    </StyledInternalLink>
+                  ))}
+              </RowStart>
+            </RowFixed>
+          </RowBetween>
 
-      <ContentWrapper>
-        <WarningGrouping>
-          <DashboardWrapper style={{ marginTop: below1080 ? '0' : '1rem' }}>
-            <RowBetween style={{ flexWrap: 'wrap', marginBottom: '2rem', alignItems: 'flex-start' }}>
-              <RowFixed style={{ flexWrap: 'wrap' }}>
-                <RowFixed style={{ flexFlow: 'row nowrap', alignItems: 'flex-start', justifyContent: 'flex-start' }}>
-                  <TYPE.main fontSize={below1080 ? '1.5rem' : '2rem'} fontWeight={500} style={{ margin: '0 1rem' }}>
-                    <RowFixed gap="6px">
-                      <FormattedName
-                        text={name ? name + ' ' : ''}
-                        maxCharacters={below800 ? 120 : 220}
-                        style={{ marginRight: '6px', fontSize: '32px' }}
-                      />
-                      {formattedSymbol ? `(${formattedSymbol})` : ''}
-                    </RowFixed>
-                  </TYPE.main>
-                  {!below1080 && (
-                    <>
-                      <TYPE.main fontSize={'1.5rem'} fontWeight={500} style={{ marginRight: '1rem' }}>
+          <>
+            <PanelWrapper style={{ marginTop: below1080 ? '0' : '1rem' }}>
+              {below1080 && price && (
+                <Panel>
+                  <AutoColumn gap="20px">
+                    <RowBetween>
+                      <TYPE.main>Price</TYPE.main>
+                      <div />
+                    </RowBetween>
+                    <RowBetween align="flex-end">
+                      {' '}
+                      <TYPE.main fontSize={'1.5rem'} lineHeight={1} fontWeight={500}>
                         {price}
                       </TYPE.main>
-                      {priceChange}
-                    </>
-                  )}
-                </RowFixed>
-                <RowStart>
-                  {cashes &&
-                    cashes.map(cash => (
-                      <StyledInternalLink key={cash} to={`/add/${marketId}/${cash}/undefined`}>
-                        <ButtonOutlined textAlign="center" style={{ alignItems: 'flex-end', borderRadius: '3px' }}>
-                          <TokenLogo tokenInfo={cash} size={'18px'} style={{ paddingRight: '0.25rem' }} />
-                          Create Liquidity
-                        </ButtonOutlined>
-                      </StyledInternalLink>
-                    ))}
-                </RowStart>
-              </RowFixed>
-            </RowBetween>
-
-            <>
-              <PanelWrapper style={{ marginTop: below1080 ? '0' : '1rem' }}>
-                {below1080 && price && (
-                  <Panel>
-                    <AutoColumn gap="20px">
-                      <RowBetween>
-                        <TYPE.main>Price</TYPE.main>
-                        <div />
-                      </RowBetween>
-                      <RowBetween align="flex-end">
-                        {' '}
-                        <TYPE.main fontSize={'1.5rem'} lineHeight={1} fontWeight={500}>
-                          {price}
-                        </TYPE.main>
-                        <TYPE.main>{priceChange}</TYPE.main>
-                      </RowBetween>
-                    </AutoColumn>
-                  </Panel>
-                )}
-                <Panel>
-                  <AutoColumn gap="20px">
-                    <RowBetween>
-                      <TYPE.main>Total Liquidity</TYPE.main>
-                      <div />
-                    </RowBetween>
-                    <RowBetween align="flex-end">
-                      <TYPE.main fontSize={'1.5rem'} lineHeight={1} fontWeight={500}>
-                        {totalLiquidity}
-                      </TYPE.main>
+                      <TYPE.main>{priceChange}</TYPE.main>
                     </RowBetween>
                   </AutoColumn>
                 </Panel>
-                <Panel>
-                  <AutoColumn gap="20px">
-                    <RowBetween>
-                      <TYPE.main>Volume (24hrs)</TYPE.main>
-                      <div />
-                    </RowBetween>
-                    <RowBetween align="flex-end">
-                      <TYPE.main fontSize={'1.5rem'} lineHeight={1} fontWeight={500}>
-                        {formattedNum(volume, true)}
-                      </TYPE.main>
-                    </RowBetween>
-                  </AutoColumn>
-                </Panel>
-
-                <Panel>
-                  <AutoColumn gap="20px">
-                    <RowBetween>
-                      <TYPE.main>Transactions (24hrs)</TYPE.main>
-                      <div />
-                    </RowBetween>
-                    <RowBetween align="flex-end">
-                      <TYPE.main fontSize={'1.5rem'} lineHeight={1} fontWeight={500}>
-                        {oneDayTxns ? localNumber(oneDayTxns) : oneDayTxns === 0 ? 0 : '-'}
-                      </TYPE.main>
-                    </RowBetween>
-                  </AutoColumn>
-                </Panel>
-              </PanelWrapper>
-            </>
-
-            <span>
-              <TYPE.main fontSize={'1.125rem'} style={{ marginTop: '3rem' }}>
-                AMM Exchanges
-              </TYPE.main>
-            </span>
-            <Panel
-              rounded
-              style={{
-                marginTop: '1.5rem',
-                padding: '1.125rem 0 '
-              }}
-            >
-              {marketId && allExchanges && allExchanges.length > 0 ? (
-                <AmmExchangeList color={backgroundColor} marketId={marketId} allExchanges={allExchanges} />
-              ) : (
-                <AutoRow justify={'center'}>
-                  <TYPE.light>No Exchanges</TYPE.light>
-                </AutoRow>
               )}
-            </Panel>
-            <RowBetween mt={40} mb={'1rem'}>
-              <TYPE.main fontSize={'1.125rem'}>Transactions</TYPE.main> <div />
-            </RowBetween>
-            <Panel rounded>
-              {allExchanges && allExchanges.length > 0 ? (
-                <TxnList color={backgroundColor} allExchanges={allExchanges} cashData={cashData} cashTokens={cashTokens} />
-              ) : (
-                <Loader />
-              )}
-            </Panel>
-          </DashboardWrapper>
-        </WarningGrouping>
-      </ContentWrapper>
+              <Panel>
+                <AutoColumn gap="20px">
+                  <RowBetween>
+                    <TYPE.main>Total Liquidity</TYPE.main>
+                    <div />
+                  </RowBetween>
+                  <RowBetween align="flex-end">
+                    <TYPE.main fontSize={'1.5rem'} lineHeight={1} fontWeight={500}>
+                      {totalLiquidity}
+                    </TYPE.main>
+                  </RowBetween>
+                </AutoColumn>
+              </Panel>
+              <Panel>
+                <AutoColumn gap="20px">
+                  <RowBetween>
+                    <TYPE.main>Volume (24hrs)</TYPE.main>
+                    <div />
+                  </RowBetween>
+                  <RowBetween align="flex-end">
+                    <TYPE.main fontSize={'1.5rem'} lineHeight={1} fontWeight={500}>
+                      {formattedNum(volume, true)}
+                    </TYPE.main>
+                  </RowBetween>
+                </AutoColumn>
+              </Panel>
 
+              <Panel>
+                <AutoColumn gap="20px">
+                  <RowBetween>
+                    <TYPE.main>Transactions (24hrs)</TYPE.main>
+                    <div />
+                  </RowBetween>
+                  <RowBetween align="flex-end">
+                    <TYPE.main fontSize={'1.5rem'} lineHeight={1} fontWeight={500}>
+                      {oneDayTxns ? localNumber(oneDayTxns) : oneDayTxns === 0 ? 0 : '-'}
+                    </TYPE.main>
+                  </RowBetween>
+                </AutoColumn>
+              </Panel>
+            </PanelWrapper>
+          </>
+
+          <span>
+            <TYPE.main fontSize={'1.125rem'} style={{ marginTop: '3rem' }}>
+              AMM Exchanges
+            </TYPE.main>
+          </span>
+          <Panel
+            rounded
+            style={{
+              marginTop: '1.5rem',
+              padding: '1.125rem 0 '
+            }}
+          >
+            {marketId && allExchanges && allExchanges.length > 0 ? (
+              <AmmExchangeList color={backgroundColor} marketId={marketId} allExchanges={allExchanges} />
+            ) : (
+              <AutoRow justify={'center'}>
+                <TYPE.light>No Exchanges</TYPE.light>
+              </AutoRow>
+            )}
+          </Panel>
+          <RowBetween mt={40} mb={'1rem'}>
+            <TYPE.main fontSize={'1.125rem'}>Transactions</TYPE.main> <div />
+          </RowBetween>
+          <Panel rounded>
+            {allExchanges && allExchanges.length > 0 ? (
+              <TxnList
+                color={backgroundColor}
+                allExchanges={allExchanges}
+                cashData={cashData}
+                cashTokens={cashTokens}
+              />
+            ) : (
+              <Loader />
+            )}
+          </Panel>
+        </DashboardWrapper>
+      </WarningGrouping>
+    </ContentWrapper>
   )
 }
 
