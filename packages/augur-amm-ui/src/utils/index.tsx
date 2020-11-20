@@ -9,14 +9,14 @@ import { GET_BLOCK } from '../apollo/queries'
 import { Text } from 'rebass'
 import _Decimal from 'decimal.js-light'
 import toFormat from 'toformat'
-import { DISTRO_NO_ID, DISTRO_YES_ID, MarketTokens, timeframeOptions, TokenAddressMap } from '../constants'
+import { DISTRO_NO_ID, DISTRO_YES_ID, MarketTokens, TICK_SIZE, timeframeOptions, TokenAddressMap, YES_NO_NUM_TICKS } from '../constants'
 import Numeral from 'numeral'
 import { BigNumber } from '@ethersproject/bignumber'
 import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, ETHER } from '@uniswap/sdk'
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 import { Contract } from '@ethersproject/contracts'
 import { AddressZero } from '@ethersproject/constants'
-import { ParaShareToken, RemoveLiquidityRate } from '@augurproject/sdk-lite'
+import { ParaShareToken, RemoveLiquidityRate, convertOnChainAmountToDisplayAmount, numTicksToTickSizeWithDisplayPrices } from '@augurproject/sdk-lite'
 import { TradeInfo } from '../hooks/Trades'
 import { MarketCurrency } from '../model/MarketCurrency'
 import { EthersProvider } from '@augurproject/ethersjs-provider'
@@ -109,10 +109,14 @@ export const toWeeklyDate = date => {
   return dayjs.utc(wkStart).format('MMM DD') + ' - ' + dayjs.utc(wkEnd).format('MMM DD')
 }
 
-export const formatShares = (num = "0", decimals = 18) => {
-  const tickSize = 1000;
-    // pow of 15 matches shares in trading UI something to do with num ticks
-  const displayValue = new BN(num).times(tickSize).div(new BN(10).pow(decimals))
+export const formatToDisplayValue = (num = "0", decimals = "18") => {
+  const displayValue = new BN(num).times(YES_NO_NUM_TICKS).div(new BN(10).pow(decimals))
+  return toSignificant(String(displayValue), 6)
+}
+
+export const formatShares = (num = "0", decimals = "18") => {
+  const numTicks = numTicksToTickSizeWithDisplayPrices(new BN(YES_NO_NUM_TICKS), new BN(0), new BN(1))
+  const displayValue = convertOnChainAmountToDisplayAmount(new BN(num), numTicks, new BN(10).pow(new BN(decimals)))
   return toSignificant(String(displayValue), 6)
 }
 
@@ -568,7 +572,8 @@ export function isTokenOnList(defaultTokens: TokenAddressMap, currency?: Currenc
 
 export function calculateLiquidity(decimals: number, liquidity: string, price: string) {
   if (!decimals || !liquidity || !price) return "0"
-  const liqNormalized = new BN(liquidity).times(new BN(price))
+  const displayLiquidity = formatShares(liquidity, String(decimals))
+  const liqNormalized = new BN(displayLiquidity).times(new BN(price))
   return String(liqNormalized)
 }
 
@@ -604,9 +609,11 @@ export async function estimateTrade(augurClient, trade: TradeInfo) {
   }
 
   if (tradeDirection === TradingDirection.ENTRY) {
+    const cash = new BN(String(trade.inputAmount.raw))
+    console.log(tradeDirection, String(cash), 'output yes:', outputYesShares)
     breakdown = await augurClient.amm.getEnterPosition(
       trade.amm.id,
-      new BN(String(trade.inputAmount.raw)),
+      cash,
       outputYesShares,
       true
     )
@@ -624,6 +631,7 @@ export async function estimateTrade(augurClient, trade: TradeInfo) {
       invalidShares = BN.minimum(invalidShares, yesShares)
     }
 
+    console.log(tradeDirection, String(invalidShares), String(noShares), String(yesShares))
     breakdown = await augurClient.amm.getExitPosition(
       trade.amm.id,
       invalidShares,
@@ -634,9 +642,11 @@ export async function estimateTrade(augurClient, trade: TradeInfo) {
     return String(breakdown['cash'])
   }
   if (tradeDirection === TradingDirection.SWAP) {
+    const inputAmmount = new BN(String(trade.inputAmount.raw))
+    console.log(tradeDirection, String(inputAmmount), outputYesShares)
     breakdown = await augurClient.amm.getSwap(
       trade.amm.id,
-      new BN(String(trade.inputAmount.raw)),
+      inputAmmount,
       !outputYesShares,
       true
     )

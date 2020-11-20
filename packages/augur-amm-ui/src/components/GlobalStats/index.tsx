@@ -48,9 +48,19 @@ export default function GlobalStats() {
     const liq = formattedNum(String(total), true);
     setGlobalLiquidity(String(liq))
 
-    const { totalDiff } = ammVolumes;
-    const diffInUSD = totalDiff ? formatShares(totalDiff) : "0"
-    setOneDayVolume(diffInUSD)
+    let vol24InUSD = new BN("0")
+    if (cashData && Object.keys(cashData).length > 0) {
+      const { diff } = ammVolumes;
+      vol24InUSD = Object.keys(diff).reduce((p, cash) => {
+        const volumeDiff = formatShares(diff[cash], cashData[cash]?.decimals);
+        const priceUSD = cashData[cash]?.priceUSD || "0";
+        const cashValue = new BN(volumeDiff).times(String(priceUSD))
+        return p.plus(new BN(cashValue))
+      }, new BN(0))
+    }
+
+    const formattedInUsd = formattedNum(String(vol24InUSD), true);
+    setOneDayVolume(String(formattedInUsd))
 
     const { totalDiff: tx } = ammTransactions;
     setOneDayTx(tx)
@@ -81,7 +91,7 @@ export default function GlobalStats() {
           <TYPE.boxed mb={'0.5rem'} mr={'0.25rem'}>
             <TYPE.boxedRow>Volume (24 hrs): </TYPE.boxedRow>
             <TYPE.boxedRow>
-              <TYPE.largeHeader>${oneDayVolume}</TYPE.largeHeader>
+              <TYPE.largeHeader>{oneDayVolume}</TYPE.largeHeader>
             </TYPE.boxedRow>
           </TYPE.boxed>
           <TYPE.boxed mb={'0.5rem'}>

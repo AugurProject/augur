@@ -1,19 +1,15 @@
 import React, { createContext, useContext, useReducer, useMemo, useCallback, useEffect } from 'react'
 
 import { client } from '../apollo/client'
-import {
-  CASH_TOKEN_DATA,
-} from '../apollo/queries'
+import { CASH_TOKEN_DATA } from '../apollo/queries'
 
 import { useEthPrice } from './GlobalData'
 
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 
-import {
-  isAddress,
-} from '../utils'
-import { useMarket, useAllMarketCashes } from './Markets'
+import { isAddress } from '../utils'
+import { useMarket, useAllMarketCashes, useMarketCashTokens } from './Markets'
 
 const UPDATE = 'UPDATE'
 const UPDATE_TOKEN_TXNS = 'UPDATE_TOKEN_TXNS'
@@ -224,12 +220,12 @@ const getCashTokenData = async (cashes = []) => {
           },
           fetchPolicy: 'cache-first'
         })
-        let tokenData = {usdPrice: usdPrice?.data?.tokenDayDatas[0], id: cash }
+        let tokenData = { usdPrice: usdPrice?.data?.tokenDayDatas[0], id: cash }
         if (!tokenData.usdPrice) {
           // TOOD remove this, used only form kovan testing
           tokenData = {
             id: cash,
-            priceUSD: '400'
+            priceUSD: cash.toLowerCase() === "0x7290c2b7D5Fc91a112d462fe06aBBB8948668f56".toLowerCase() ? '400' : '1'
           }
         }
         return tokenData
@@ -238,7 +234,7 @@ const getCashTokenData = async (cashes = []) => {
   } catch (e) {
     console.error(e)
   }
-  return (bulkResults || []).reduce((p, a) => ({...p, [a.id]: a}), {})
+  return (bulkResults || []).reduce((p, a) => ({ ...p, [a.id]: a }), {})
 }
 
 export function Updater() {
@@ -296,22 +292,32 @@ export function useTokenData(tokenAddress) {
 export function useTokenDayPriceData() {
   const [state, { updateCashTokens }] = useTokenDataContext()
   const cashTokens = state[CASH_DATA]
-  const cashes = useAllMarketCashes()
+  const cashes = useMarketCashTokens()
+  const cashAddresses = Object.keys(cashes)
   useEffect(() => {
     async function getData() {
-      if (cashes && cashes.length > 0) {
+      if (cashAddresses && cashAddresses.length > 0) {
         try {
-          let cashTokens = await getCashTokenData(cashes).catch(e => console.error(e))
+          let cashTokens = await getCashTokenData(cashAddresses).catch(e => console.error(e))
           // TOOD: should get values using mainnet token addresses
           console.log('mainnet addresses should have data, cashTokens result', cashTokens)
+          if (cashTokens) {
+            cashTokens = Object.keys(cashTokens).reduce(
+              (p, c) => ({
+                ...p,
+                [c]: { ...cashTokens[c], ...cashes[c] }
+              }),
+              {}
+            )
+          }
           updateCashTokens(cashTokens)
-        } catch(e) {
+        } catch (e) {
           console.error(e)
         }
       }
     }
     if (!cashTokens || Object.keys(cashTokens).length === 0) getData()
-  }, [updateCashTokens, cashes, cashTokens])
+  }, [updateCashTokens, cashes, cashTokens, cashAddresses])
 
   return cashTokens
 }

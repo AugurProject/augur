@@ -13,7 +13,7 @@ import { ButtonLight, ButtonPrimary } from '../ButtonStyled'
 import { useLPTokenBalances } from '../../state/wallet/hooks'
 import { TYPE, StyledInternalLink } from '../../Theme'
 import { greaterThanZero } from '../../utils'
-import { formattedNum } from '../../utils'
+import { formattedNum, formatShares } from '../../utils'
 
 dayjs.extend(utc)
 
@@ -77,7 +77,7 @@ function PairList({ allExchanges, disbaleLinks, marketId }) {
     if (ammExchange) {
       return (
         <DashGrid style={{ height: '48px', alignItems: 'center' }} disbaleLinks={disbaleLinks} focus={true}>
-          <TokenLogo size={below600 ? '16px' : '18px'} tokenInfo={ammExchange.cash} margin={!below740} />
+          <TokenLogo size={below600 ? '16px' : '18px'} tokenInfo={ammExchange.cash.id} margin={!below740} />
           <TYPE.header area="name" fontWeight="500">
             {Number(ammExchange.priceYes).toFixed(2)}
           </TYPE.header>
@@ -85,7 +85,7 @@ function PairList({ allExchanges, disbaleLinks, marketId }) {
             {Number(ammExchange.priceNo).toFixed(2)}
           </TYPE.header>
           <TYPE.header area="name" fontWeight="500">
-            {`${formattedNum(ammExchange.liquidity, false)} (${formattedNum(ammExchange.liquidityUSD, true)})`}
+            {`${formattedNum(formatShares(ammExchange.liquidity, ammExchange.cash.decimals), false)} (${formattedNum(ammExchange.liquidityUSD, true)})`}
           </TYPE.header>
           {!below1080 && <TYPE.header area="name" fontWeight="500">
             {formattedNum(ammExchange.volumeNo24hrUSD, true)}
@@ -100,12 +100,12 @@ function PairList({ allExchanges, disbaleLinks, marketId }) {
                   Remove
                 </ButtonLight>
               </StyledInternalLink>
-              <StyledInternalLink to={`/add/${marketId}/${ammExchange.cash}/${ammExchange.id}`}>
+              <StyledInternalLink to={`/add/${marketId}/${ammExchange.cash.id}/${ammExchange.id}`}>
                 <ButtonLight textAlign="center">Add</ButtonLight>
               </StyledInternalLink>
               <StyledInternalLink
                 disabled={!ammExchange && !ammExchange.id}
-                to={`/swap/${marketId}/${ammExchange.cash}/${ammExchange.id}`}
+                to={`/swap/${marketId}/${ammExchange.cash.id}/${ammExchange.id}`}
               >
                 <ButtonPrimary disabled={(!ammExchange && !ammExchange.id) || ammExchange.liquidity === "0"} textAlign="center">
                   Trade

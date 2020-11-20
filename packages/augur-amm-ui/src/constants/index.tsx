@@ -3,6 +3,7 @@ import { ChainId, JSBI, Percent, Token, WETH } from '@uniswap/sdk'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 
 import { fortmatic, injected, portis, walletconnect, walletlink } from '../connectors'
+import { BigNumber } from 'bignumber.js'
 
 export const FACTORY_ADDRESS = '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'
 export const AMM_FACTORY_ADDRESS = '0x2966D979e66FcEA3ED9c41281149836bB420d15D'
@@ -30,6 +31,8 @@ export const DISTRO_NO_ID = 1
 export const ONE_BIPS = new Percent(JSBI.BigInt(1), JSBI.BigInt(10000))
 export const BIPS_BASE = JSBI.BigInt(10000)
 export const BIPS_CONSTANT = 10000
+export const YES_NO_NUM_TICKS = 1000
+export const TICK_SIZE = new BigNumber(0.001)
 
 export const NetworkContextName = 'NETWORK'
 
