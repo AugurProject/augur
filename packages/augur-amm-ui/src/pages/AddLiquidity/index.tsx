@@ -21,7 +21,7 @@ import { useDerivedMintInfo, useMintActionHandlers, useMintState } from '../../s
 
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { TYPE } from '../../Theme'
-import { addAmmLiquidity } from '../../utils'
+import { addAmmLiquidity, toPercent } from '../../utils'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import AppBody from '../AppBody'
 import { Dots, Wrapper } from '../../components/swap/styleds'
@@ -81,7 +81,7 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
   // modal and loading
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false) // clicked confirm
-  const [feeSelected, setFeeSelected] = useState<string>("0")
+  const [feeSelected, setFeeSelected] = useState<string>(ammData?.hasLiquidity ? toPercent(ammData?.feePercent) : "0")
 
   // txn values
   const deadline = useTransactionDeadline() // custom from users settings
