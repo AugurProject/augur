@@ -6,7 +6,7 @@ import utc from 'dayjs/plugin/utc'
 import { Box, Flex, Text } from 'rebass'
 import { Divider } from '..'
 import { useDarkModeManager } from '../../contexts/LocalStorage'
-import { formatTime, formattedNum } from '../../utils'
+import { formatTime, formattedNum, toPercent } from '../../utils'
 import { useMedia } from 'react-use'
 import { withRouter } from 'react-router-dom'
 import { TYPE } from '../../Theme'
@@ -40,7 +40,7 @@ const List = styled(Box)`
 const DashGrid = styled.div`
   display: grid;
   grid-gap: 0.5em;
-  grid-template-columns: 0.5fr 50% 1fr 1fr 0.5fr 0.5fr 1fr 1fr;
+  grid-template-columns: 0.5fr 50% 1fr 0.5fr 1fr 0.5fr 0.5fr 1fr 1fr;
   grid-template-areas: 'logo description liquidity noPercent yesPercent status timestamp';
   padding: 0 1.125rem;
 
@@ -57,7 +57,7 @@ const DashGrid = styled.div`
   @media screen and (min-width: 1080px) {
     display: grid;
     grid-gap: 0.5em;
-    grid-template-columns: 0.5fr 5fr 1fr 1fr 0.5fr 0.5fr 1fr 1fr;
+    grid-template-columns: 0.5fr 5fr 1fr 0.5fr 1fr 0.5fr 0.5fr 1fr 1fr;
     grid-template-areas: 'logo description liquidity noPercent yesPercent status timestamp';
   }
 
@@ -116,7 +116,9 @@ const SORT_FIELD = {
   STATUS: 'status',
   ENDTIMESTAMP: 'endTimestamp',
   LIQUIDITY: 'liquidity',
-  VOL_24_HR: 'volume24hr'
+  VOL_24_HR: 'volume24hr',
+  FEE: 'fee'
+
 }
 
 function MarketList({ markets, itemMax = 15 }) {
@@ -185,6 +187,7 @@ function MarketList({ markets, itemMax = 15 }) {
           </BasicLink>
         </DataText>
         {!below816 && <DataText area="liquidity">{marketData.amm ? formattedNum(marketData.amm.liquidityUSD, true) : '-'}</DataText>}
+        {!below816 && <DataText area="fee">{marketData.amm ? `${toPercent(marketData?.amm?.feePercent)}` : '-'}</DataText>}
         {!below816 && <DataText area="volume24hr">{marketData.amm ? formattedNum(marketData.amm.volume24hrUSD, true) : '-'}</DataText>}
         <DataText area="yesPercent">{marketData.amm ? Number(marketData.amm.priceYes).toFixed(2) : '-'}</DataText>
         <DataText area="noPercent">{marketData.amm ? Number(marketData.amm.priceNo).toFixed(2) : '-'}</DataText>
@@ -246,6 +249,19 @@ function MarketList({ markets, itemMax = 15 }) {
               }}
             >
               Liquidity {sortedData.sortedColumn === SORT_FIELD.LIQUIDITY ? (sortedData.sortDirection === 1 ? '↑' : '↓') : ''}
+            </ClickableText>
+          </Flex>
+        )}
+        {!below816 && (
+          <Flex alignItems="center">
+            <ClickableText
+              area="fee"
+              onClick={e => {
+                const direction = (sortedData.sortedColumn !== SORT_FIELD.FEE ? -1 : sortedData.sortDirection * -1)
+                setSortedData({ sortedColumn: SORT_FIELD.FEE, sortDirection: direction })
+              }}
+            >
+              Fee % {sortedData.sortedColumn === SORT_FIELD.FEE ? (sortedData.sortDirection === 1 ? '↑' : '↓') : ''}
             </ClickableText>
           </Flex>
         )}
