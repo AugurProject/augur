@@ -6,9 +6,8 @@ import {
   TradeType
 } from '@uniswap/sdk'
 
-import { AmmExchangeInfo, MarketTokens } from '../constants'
+import { AmmExchangeInfo, MarketBalance, MarketTokens } from '../constants'
 import { MarketCurrency } from '../model/MarketCurrency'
-import { MarketBalance } from '../state/wallet/hooks'
 import { BigNumber as BN } from 'bignumber.js'
 
 export interface TradeInfo {
