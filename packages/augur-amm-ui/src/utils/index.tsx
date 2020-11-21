@@ -109,6 +109,11 @@ export const toWeeklyDate = date => {
   return dayjs.utc(wkStart).format('MMM DD') + ' - ' + dayjs.utc(wkEnd).format('MMM DD')
 }
 
+export const toPercent = (num: number): string => {
+  if (num === null || num === undefined) return "0.0"
+  const value = new BN(num).times(100)
+  return value.toFixed();
+}
 export const isMarketCurrency = (currency: Token | Currency): boolean => {
   return currency?.name === MarketTokens.YES_SHARES || currency?.name === MarketTokens.NO_SHARES
 }
@@ -261,7 +266,7 @@ export const toSignificant = (number, significantDigits) => {
   return updated.toFormat(updated.decimalPlaces(), { groupSeparator: '' })
 }
 
-export const formattedNum = (number, usd = false, acceptNegatives = false) => {
+export const formattedNum = (number, usd = false) => {
   if (isNaN(number) || number === '' || number === undefined) {
     return usd ? '$0' : 0
   }
