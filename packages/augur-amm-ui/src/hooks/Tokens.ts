@@ -19,7 +19,7 @@ export function useAllMarketTokens(marketId: string, cash: string, amm: string):
   const cashToken = useCurrency(cash)
 
   return useMemo(() => {
-    const marketInfo = userMarketShareBalances.find(b => b.marketId === marketId && b.cash === cash)
+    const marketInfo = userMarketShareBalances.find(b => b.marketId === marketId && b.cash.address === cash)
 
     const tokens = []
     if (cashToken) tokens.push(cashToken)

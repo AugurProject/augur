@@ -12,7 +12,7 @@ import {
 import { useAllMarketData, useMarketCashTokens } from '../../contexts/Markets'
 import { ParaShareToken } from '@augurproject/sdk-lite'
 import { Interface } from 'ethers/lib/utils'
-import { ZERO_ADDRESS } from '../../constants'
+import { Cash, MarketBalance, ZERO_ADDRESS } from '../../constants'
 import { MarketCurrency } from '../../model/MarketCurrency'
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
@@ -116,15 +116,7 @@ export function useLPTokenBalances(): [{ [tokenAddress: string]: string | undefi
 
 const outcomeNames = ['invalidAmount', 'noAmount', 'yesAmount']
 
-export interface MarketBalance {
-  paraShareToken: { id: string }
-  marketId: string
-  outcomes: number[]
-  amount: CurrencyAmount
-  noAmount: string
-  yesAmount: string
-  cash: string
-}
+
 
 export function useMarketShareBalances(): [MarketBalance[], boolean] {
   const { markets, paraShareTokens } = useAllMarketData()
@@ -156,17 +148,17 @@ export function useMarketShareBalances(): [MarketBalance[], boolean] {
 
   return [
     useMemo(
-      () =>
-        userAccount && inputs.length > 0
-          ? buildMarketBalance(balances.map((balance, i) => {
-            let marketBalance = emptyBalances[i]
-            const rawAmount = balance.result?.[0];
-            const amount = rawAmount ? String(rawAmount) : '0';
-            marketBalance.amount = amount;
-            return marketBalance
-          }).filter(p => p.amount !== '0' && p.amount !== 'undefined'),
-            keyedParaTokens, keyedMarkets, outcomeNames, cashes)
-          : [],
+      () => {
+        if (!userAccount || inputs.length === 0) return []
+        const processBalances = balances.map((balance, i) => {
+          let marketBalance = emptyBalances[i]
+          const rawAmount = balance.result?.[0];
+          const amount = rawAmount ? String(rawAmount) : '0';
+          marketBalance.amount = amount;
+          return marketBalance
+        }).filter(p => p.amount !== '0' && p.amount !== 'undefined');
+        return buildMarketBalance(processBalances, keyedParaTokens, keyedMarkets, outcomeNames, cashes)
+      },
       [userAccount, inputs, balances, keyedMarkets, paraTokenAdds, keyedParaTokens, outcomeNames, cashes]
     ),
     anyLoading
@@ -204,7 +196,7 @@ function buildMarketBalance(pTokenAmounts, keyedParaTokens, keyedMarkets, outcom
 export function useMarketBalance(marketId: string, cash: string): MarketBalance {
   const [balances] = useMarketShareBalances()
 
-  return useMemo(() => (!cash || !marketId ? null : (balances || []).find(b => b.marketId === marketId && b.cash === cash)), [
+  return useMemo(() => (!cash || !marketId ? null : (balances || []).find(b => b.marketId === marketId && b.cash.address === cash)), [
     marketId,
     cash,
     balances

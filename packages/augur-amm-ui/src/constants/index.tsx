@@ -1,5 +1,5 @@
 import { Tags, TokenInfo } from '@uniswap/token-lists'
-import { ChainId, JSBI, Percent, Token, WETH } from '@uniswap/sdk'
+import { ChainId, CurrencyAmount, JSBI, Percent, Token, WETH } from '@uniswap/sdk'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 
 import { fortmatic, injected, portis, walletconnect, walletlink } from '../connectors'
@@ -331,7 +331,10 @@ export interface MarketAmmExchange {
 
 // todo: fill in
 export interface Cash {
-  id: string
+  address: string
+  decimals: number
+  name: string
+  symbole: string
 }
 // todo: fill in
 export interface ShareToken {
@@ -346,4 +349,14 @@ export interface AmmMarket {
   id: string;
   shareToken: ShareToken;
   status: string
+}
+
+export interface MarketBalance {
+  paraShareToken: { id: string }
+  marketId: string
+  outcomes: number[]
+  amount: CurrencyAmount
+  noAmount: string
+  yesAmount: string
+  cash: Cash
 }

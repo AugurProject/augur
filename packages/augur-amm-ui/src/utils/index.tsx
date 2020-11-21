@@ -117,7 +117,6 @@ export const formatToDisplayValue = (num = "0", decimals = "18") => {
 export const formatShares = (num = "0", decimals = "18") => {
   const numTicks = numTicksToTickSizeWithDisplayPrices(new BN(YES_NO_NUM_TICKS), new BN(0), new BN(1))
   const displayValue = convertOnChainAmountToDisplayAmount(new BN(num), numTicks, new BN(10).pow(new BN(decimals)))
-  console.log('format shares', num, decimals, String(displayValue))
   return toSignificant(String(displayValue), 6)
 }
 

@@ -13,6 +13,7 @@ import { TYPE } from '../../Theme'
 import { BasicLink } from '../Link'
 import { usePositionMarkets } from '../../contexts/Markets'
 import TokenLogo from '../TokenLogo'
+import { MarketTokens } from '../../constants'
 
 dayjs.extend(utc)
 
@@ -226,7 +227,7 @@ function PositionMarketList({ positions, loading, itemMax = 20 }) {
               setSortDirection(sortedColumn !== SORT_FIELD.STATUS ? true : !sortDirection)
             }}
           >
-            "Yes" Shares
+            {MarketTokens.YES_SHARES}
           </Text>
         </Flex>
         <Flex alignItems="center">
@@ -237,7 +238,7 @@ function PositionMarketList({ positions, loading, itemMax = 20 }) {
               setSortDirection(sortedColumn !== SORT_FIELD.STATUS ? true : !sortDirection)
             }}
           >
-            "No" Shares
+            {MarketTokens.NO_SHARES}
           </Text>
         </Flex>
         {!below800 && (
