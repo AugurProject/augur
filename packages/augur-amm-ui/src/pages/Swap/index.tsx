@@ -32,7 +32,7 @@ import AppBody from '../AppBody'
 import Loader from '../../components/Loader'
 import { RouteComponentProps } from 'react-router-dom'
 import { TradeInfo } from '../../hooks/Trades'
-import { estimateTrade, formatShares } from '../../utils'
+import { estimateTrade, formatShares, toPercent } from '../../utils'
 import { useAugurClient } from '../../contexts/Application'
 import { useMarketAmm } from '../../contexts/Markets'
 import { useMarketBalance } from '../../state/wallet/hooks'
@@ -325,6 +325,14 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
                   <ClickableText fontWeight={500} fontSize={14} color={theme.text2} onClick={toggleSettings}>
                     {allowedSlippage / 100}%
                   </ClickableText>
+                </RowBetween>
+                <RowBetween align="center">
+                  <Text fontWeight={500} fontSize={14} color={theme.text2}>
+                    Trading Fee
+                  </Text>
+                  <Text fontWeight={500} fontSize={14} color={theme.text2} >
+                    {toPercent(ammExchange?.feePercent)}%
+                  </Text>
                 </RowBetween>
               </AutoColumn>
             </Card>
