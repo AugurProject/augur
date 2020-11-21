@@ -12,8 +12,7 @@ import TokenLogo from '../TokenLogo'
 import { MouseoverTooltip } from '../Tooltip'
 import { MenuItem } from './styleds'
 import Loader from '../Loader'
-import { MarketCurrency } from '../../model/MarketCurrency'
-import { formatShares, formattedNum, isMarketCurrency } from '../../utils'
+import { formatCurrencyAmount, formattedNum } from '../../utils'
 
 function currencyKey(currency: Currency): string {
   return currency instanceof Token ? currency.address : currency.symbol
@@ -41,11 +40,7 @@ const Tag = styled.div`
 `
 
 function Balance({ balance }: { balance: CurrencyAmount }) {
-  let amount = balance.toSignificant(4)
-  if (isMarketCurrency(balance.currency)) {
-    amount = formatShares(String(balance.raw), String(balance?.currency?.decimals))
-  }
-  return <StyledBalanceText title={balance.toExact()}>{formattedNum(amount)}</StyledBalanceText>
+  return <StyledBalanceText title={balance.toExact()}>{formattedNum(formatCurrencyAmount(balance))}</StyledBalanceText>
 }
 
 const TagContainer = styled.div`
