@@ -116,8 +116,6 @@ export function useLPTokenBalances(): [{ [tokenAddress: string]: string | undefi
 
 const outcomeNames = ['invalidAmount', 'noAmount', 'yesAmount']
 
-
-
 export function useMarketShareBalances(): [MarketBalance[], boolean] {
   const { markets, paraShareTokens } = useAllMarketData()
   const { account } = useActiveWeb3React()
