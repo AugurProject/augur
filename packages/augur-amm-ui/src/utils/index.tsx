@@ -655,7 +655,7 @@ export async function estimateTrade(augurClient, trade: TradeInfo) {
       invalidShares = BN.minimum(invalidShares, yesShares)
     }
 
-    console.log(tradeDirection, String(invalidShares), String(noShares), String(yesShares))
+    console.log(tradeDirection, 'invalid:', String(invalidShares), 'no:', String(noShares), 'yes:', String(yesShares))
     breakdown = await augurClient.amm.getExitPosition(
       trade.marketId,
       trade.amm.sharetoken,

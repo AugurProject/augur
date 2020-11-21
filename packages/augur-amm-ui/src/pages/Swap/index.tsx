@@ -92,7 +92,7 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
             trade.currencyOut.symbol,
             trade.currencyOut.name
           )
-          const estCurrency = new TokenAmount(outToken, JSBI.BigInt(String(result)))
+          const estCurrency = result === '0' ? null : new TokenAmount(outToken, JSBI.BigInt(String(result)))
           setOutputAmount(estCurrency)
           // TODO: get fee from middleware
           setRealizedLPFee('0.00')
