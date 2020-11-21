@@ -3,7 +3,7 @@ import { Contract } from '@ethersproject/contracts'
 import { SwapParameters, TokenAmount } from '@uniswap/sdk'
 import { useMemo } from 'react'
 import { useTransactionAdder } from '../state/transactions/hooks'
-import { doTrade } from '../utils'
+import { doTrade, formatShares, isMarketCurrency } from '../utils'
 import { useActiveWeb3React } from './index'
 import { TradeInfo } from './Trades'
 import { useAugurClient } from '../contexts/Application'
@@ -55,7 +55,10 @@ export function useSwapCallback(
               const inputSymbol = trade?.inputAmount?.currency?.symbol
               const outputSymbol = trade?.currencyOut?.symbol
               const inputAmount = trade?.inputAmount?.toSignificant(6)
-              const oAmount = outputAmount?.toSignificant(6)
+              let oAmount = outputAmount?.toSignificant(6)
+              if (isMarketCurrency(outputAmount?.currency)) {
+                oAmount = formatShares(String(outputAmount.raw), String(outputAmount?.currency?.decimals))
+              }
 
               addTransaction(response, {
                 summary: `Swap ${inputAmount} ${inputSymbol} for ${oAmount} ${outputSymbol}`
