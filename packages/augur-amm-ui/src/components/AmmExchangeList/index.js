@@ -13,7 +13,7 @@ import { ButtonLight, ButtonPrimary } from '../ButtonStyled'
 import { useLPTokenBalances } from '../../state/wallet/hooks'
 import { TYPE, StyledInternalLink } from '../../Theme'
 import { greaterThanZero } from '../../utils'
-import { formattedNum, formatShares } from '../../utils'
+import { formattedNum, formatShares, toPercent } from '../../utils'
 
 dayjs.extend(utc)
 
@@ -24,7 +24,7 @@ const List = styled(Box)`
 const DashGrid = styled.div`
   display: grid;
   grid-gap: 0.25rem;
-  grid-template-columns: 0.5fr 0.5fr 0.5fr 1fr 1.5fr;
+  grid-template-columns: 0.5fr 0.5fr 0.5fr 1fr 0.5fr 1.5fr;
   grid-template-areas: 'name';
   padding: 0 0.75rem;
 
@@ -40,18 +40,18 @@ const DashGrid = styled.div`
 
   @media screen and (max-width: 800px) {
     padding: 0 0.75rem;
-    grid-template-columns: 0.5fr 0.5fr 0.5fr 1fr 1.5fr;
+    grid-template-columns: 0.5fr 0.5fr 0.5fr 0.5fr 1.5fr;
     grid-template-areas: ' name';
   }
 
   @media screen and (min-width: 1080px) {
     padding: 0 0.75rem;
-    grid-template-columns: 0.5fr 0.5fr 0.5fr 1fr 1fr 1fr 1.5fr;
+    grid-template-columns: 0.5fr 0.5fr 0.5fr 1fr 0.5fr 1fr 1fr 1.5fr;
     grid-template-areas: ' name';
   }
 
   @media screen and (min-width: 1200px) {
-    grid-template-columns: 0.5fr 0.5fr 0.5fr 1fr 1fr 1fr 1.5fr;
+    grid-template-columns: 0.5fr 0.5fr 0.5fr 1fr 0.5fr 1fr 1fr 1.5fr;
     grid-template-areas: ' name';
   }
 `
@@ -61,7 +61,7 @@ const ListWrapper = styled.div``
 function AmmExchangeList({ allExchanges, disbaleLinks, marketId }) {
   const below600 = useMedia('(max-width: 600px)')
   const below740 = useMedia('(max-width: 740px)')
-  //const below800 = useMedia('(max-width: 800px)')
+  const below800 = useMedia('(max-width: 800px)')
   const below1080 = useMedia('(max-width: 1080px)')
   const [userTokenBalances] = useLPTokenBalances()
 
@@ -84,8 +84,11 @@ function AmmExchangeList({ allExchanges, disbaleLinks, marketId }) {
           <TYPE.header area="name" fontWeight="500">
             {Number(ammExchange.priceNo).toFixed(2)}
           </TYPE.header>
-          <TYPE.header area="name" fontWeight="500">
+          {!below800 && <TYPE.header area="name" fontWeight="500">
             {`${formattedNum(formatShares(ammExchange.liquidity, ammExchange.cash.decimals), false)} (${formattedNum(ammExchange.liquidityUSD, true)})`}
+          </TYPE.header>}
+          <TYPE.header area="fee" fontWeight="500">
+            {toPercent(ammExchange.feePercent)}
           </TYPE.header>
           {!below1080 && <TYPE.header area="name" fontWeight="500">
             {formattedNum(ammExchange.volumeNo24hrUSD, true)}
@@ -143,7 +146,8 @@ function AmmExchangeList({ allExchanges, disbaleLinks, marketId }) {
             <TYPE.header area="collateral"></TYPE.header>
             <TYPE.header area="YesPercent">Yes</TYPE.header>
             <TYPE.header area="NoPercent">No</TYPE.header>
-            <TYPE.header area="liquidity">Liquidity</TYPE.header>
+            {!below800 && <TYPE.header area="liquidity">Liquidity</TYPE.header>}
+            <TYPE.header area="liquidity">Fee %</TYPE.header>
             {!below1080 && <TYPE.header area="volumeYes">Yes Vol (24h)</TYPE.header>}
             {!below1080 && <TYPE.header area="volumeNo">No Vol (24h)</TYPE.header>}
             <TYPE.header area="uniswap"></TYPE.header>
