@@ -32,7 +32,7 @@ import AppBody from '../AppBody'
 import Loader from '../../components/Loader'
 import { RouteComponentProps } from 'react-router-dom'
 import { TradeInfo } from '../../hooks/Trades'
-import { estimateTrade, formatShares, toPercent } from '../../utils'
+import { estimateTrade, formatShares, formatToDisplayValue, toPercent } from '../../utils'
 import { useAugurClient } from '../../contexts/Application'
 import { useMarketAmm } from '../../contexts/Markets'
 import { useMarketBalance } from '../../state/wallet/hooks'
@@ -82,9 +82,9 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
   useEffect(() => {
     async function estimate(augurClient, trade) {
       try {
-        const result = await estimateTrade(augurClient, trade);
-        if (result) {
-          console.log('estimate trade', result, trade.currencyOut.decimals, trade)
+        const resultWithFee = await estimateTrade(augurClient, trade, true);
+        if (resultWithFee) {
+          console.log('estimate trade with fee', resultWithFee, trade.currencyOut.decimals, trade)
           const outToken = new Token(
             chainId,
             trade.marketId,
@@ -92,11 +92,15 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
             trade.currencyOut.symbol,
             trade.currencyOut.name
           )
-          const estCurrency = result === '0' ? null : new TokenAmount(outToken, JSBI.BigInt(String(result)))
+          const estCurrency = resultWithFee === '0' ? null : new TokenAmount(outToken, JSBI.BigInt(String(resultWithFee)))
           setOutputAmount(estCurrency)
-          // TODO: get fee from middleware
-          setRealizedLPFee('0.00')
         }
+        const resultWithoutFee = await estimateTrade(augurClient, trade, false);
+        console.log('estimate trade without fee', resultWithoutFee, trade)
+        let feeValue = "0";
+        if (resultWithoutFee) feeValue = String(resultWithoutFee)
+        // TODO: get currency the fee will be paid in
+        setRealizedLPFee(formatToDisplayValue(feeValue, trade.currencyOut.decimals))
       } catch (e) {
         console.error("Estimate trade error:", e)
         setOutputAmount(null)
