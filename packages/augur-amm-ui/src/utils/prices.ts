@@ -23,7 +23,7 @@ export function computePriceImpact(
   const rawOutputAmount = new BN(String(outputAmount?.raw))
 
   // normalize price by num ticks and pool percentage convert to price
-  const rawSlipRate = (rawInputAmount).div(rawOutputAmount).div(YES_NO_NUM_TICKS)
+  const rawSlipRate = rawOutputAmount.eq(0) ? new BN(0) :  (rawInputAmount).div(rawOutputAmount).div(YES_NO_NUM_TICKS)
   console.log('slip rate', `${String(rawInputAmount)} / ${String(rawOutputAmount)} = ${String(rawSlipRate)}`)
   const impact = (rawSlipRate.minus(displayActualPrice)).div(displayActualPrice)
   console.log('slippage:', String(displayActualPrice), '-', String(rawSlipRate), '/', String(displayActualPrice), '=', String(impact))
