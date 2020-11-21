@@ -112,7 +112,7 @@ export const toWeeklyDate = date => {
 export const toPercent = (num: number): string => {
   if (num === null || num === undefined) return "0.0"
   const value = new BN(num).times(100)
-  return value.toFixed();
+  return value.toFixed(1);
 }
 export const isMarketCurrency = (currency: Token | Currency): boolean => {
   return currency?.name === MarketTokens.YES_SHARES || currency?.name === MarketTokens.NO_SHARES
