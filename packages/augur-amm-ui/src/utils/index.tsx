@@ -12,7 +12,7 @@ import toFormat from 'toformat'
 import { DISTRO_NO_ID, DISTRO_YES_ID, MarketTokens, TICK_SIZE, timeframeOptions, TokenAddressMap, YES_NO_NUM_TICKS } from '../constants'
 import Numeral from 'numeral'
 import { BigNumber } from '@ethersproject/bignumber'
-import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, ETHER } from '@uniswap/sdk'
+import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, ETHER, TokenAmount } from '@uniswap/sdk'
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 import { Contract } from '@ethersproject/contracts'
 import { AddressZero } from '@ethersproject/constants'
@@ -114,8 +114,17 @@ export const toPercent = (num: number): string => {
   const value = new BN(num).times(100)
   return value.toFixed(1);
 }
+
 export const isMarketCurrency = (currency: Token | Currency): boolean => {
   return currency?.name === MarketTokens.YES_SHARES || currency?.name === MarketTokens.NO_SHARES
+}
+
+export const formatCurrencyAmount = (outputAmount: TokenAmount | CurrencyAmount): string => {
+  let oAmount = outputAmount?.toSignificant(6)
+  if (isMarketCurrency(outputAmount?.currency)) {
+    oAmount = formatShares(String(outputAmount.raw), String(outputAmount?.currency?.decimals))
+  }
+  return oAmount;
 }
 export const formatToDisplayValue = (num = "0", decimals = "18") => {
   const displayValue = new BN(num).times(YES_NO_NUM_TICKS).div(new BN(10).pow(decimals))
