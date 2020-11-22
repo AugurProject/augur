@@ -32,7 +32,7 @@ import AppBody from '../AppBody'
 import Loader from '../../components/Loader'
 import { RouteComponentProps } from 'react-router-dom'
 import { TradeInfo } from '../../hooks/Trades'
-import { estimateTrade, formatShares, formatToDisplayValue, toPercent } from '../../utils'
+import { estimateTrade, formatShares, formatToDisplayValue, isMarketCurrency, toPercent } from '../../utils'
 import { useAugurClient } from '../../contexts/Application'
 import { useMarketAmm } from '../../contexts/Markets'
 import { useMarketBalance } from '../../state/wallet/hooks'
@@ -98,9 +98,15 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
         const resultWithoutFee = await estimateTrade(augurClient, trade, false);
         console.log('estimate trade without fee', resultWithoutFee, trade)
         let feeValue = "0";
-        if (resultWithoutFee) feeValue = String(resultWithoutFee)
-        // TODO: get currency the fee will be paid in
-        setRealizedLPFee(formatToDisplayValue(feeValue, trade.currencyOut.decimals))
+        if (resultWithoutFee) {
+          feeValue = String(new BN(String(resultWithFee)).minus(new BN(resultWithoutFee)))
+        }
+
+        let lpFee = formatToDisplayValue(feeValue, trade.currencyOut.decimals);
+        if (isMarketCurrency(trade.currencyOut)){
+          lpFee = formatShares(feeValue, trade.currencyOut.decimals)
+        }
+        setRealizedLPFee(lpFee)
       } catch (e) {
         console.error("Estimate trade error:", e)
         setOutputAmount(null)
