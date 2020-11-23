@@ -44,6 +44,7 @@ export function MyBetsReducer(state, action) {
     default:
       console.error(`Error: ${action.type} not caught by My Bets reducer.`);
   }
+  // console.log("my Bets update", action);
   return updatedState;
 }
 

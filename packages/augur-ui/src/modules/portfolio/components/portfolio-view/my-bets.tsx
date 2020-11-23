@@ -101,7 +101,7 @@ export function processRows(
     rows = rows
       .filter(data => {
         const { reportingState } = data;
-        const marketStatusLabel = MY_BETS_MARKET_STATUS[marketStatus].label;
+        const marketStatusLabel = MY_BETS_MARKET_STATUS[marketStatus].searchValue;
         if (marketStatusLabel === MARKET_OPEN) {
           return reportingState === REPORTING_STATE.PRE_REPORTING;
         } else if (marketStatusLabel === MARKET_REPORTING) {

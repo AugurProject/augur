@@ -246,27 +246,8 @@
     border-bottom-right-radius: @border-radius-rounded;
     min-height: @size-350;
 
-    > span:first-of-type {
-      .text-16-bold;
-
-      width: 100%;
-      padding: @size-12 @size-12 0 @size-12;
-      color: var(--color-primary-text);
-    }
-
     @media @breakpoint-tiny {
       height: 100%;
-    }
-
-
-    > span:nth-of-type(2) {
-      .text-12-semi-bold;
-
-      padding: @size-4 @size-13;
-      background: var(--color-reporting-30);
-      border-top: @size-1 solid var(--color-secondary-action-outline);
-      color: var(--color-primary-text);
-      white-space: nowrap;
     }
   }
 
@@ -340,4 +321,22 @@
       justify-content: flex-start;
     }
   }
+}
+
+.OddsChanged {
+  .text-12-semi-bold;
+
+  padding: @size-4 @size-13;
+  background: var(--color-reporting-30);
+  border-top: @size-1 solid var(--color-secondary-action-outline);
+  color: var(--color-primary-text);
+  white-space: nowrap;
+}
+
+.ReviewBets {
+  .text-16-bold;
+
+  width: 100%;
+  padding: @size-12 @size-12 0 @size-12;
+  color: var(--color-primary-text);
 }

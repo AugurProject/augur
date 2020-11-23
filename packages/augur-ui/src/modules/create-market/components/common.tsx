@@ -1738,7 +1738,7 @@ const SimpleTextInputOutcomes = ({
           onChange={() => {}}
           number={index}
           removable={false}
-          errorMessage={validations?.outcomes[showOutcomes.length + index]}
+          errorMessage={validations?.outcomes ? validations?.outcomes[showOutcomes.length + index] : ''}
           editable={false}
         />
       ))}

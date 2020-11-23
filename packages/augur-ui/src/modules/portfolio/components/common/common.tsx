@@ -19,9 +19,11 @@ import {
   ZERO,
   MODAL_CLAIM_MARKETS_PROCEEDS,
   SPORTS_GROUP_MARKET_TYPES,
+  CLAIMMARKETSPROCEEDS,
+  TRANSACTIONS,
 } from 'modules/common/constants';
 import Media from 'react-media';
-import { CashoutButton, PrimaryButton } from 'modules/common/buttons';
+import { CashoutButton, PrimaryButton, ProcessingButton } from 'modules/common/buttons';
 import MarketLink from 'modules/market/components/market-link/market-link';
 import { convertToOdds } from 'utils/get-odds';
 import { formatDai } from 'utils/format-number';
@@ -86,7 +88,10 @@ export const ClaimWinnings = ({ onlyCheckMarketId }) => {
             You have <b>{formatDai(totalProceeds).full}</b> in winnings to
             claim.
           </span>
-          <PrimaryButton
+          <ProcessingButton
+            queueName={TRANSACTIONS}
+            queueId={CLAIMMARKETSPROCEEDS}
+            dontShowNotificationButton
             text="Claim Winnings"
             action={() =>
               onlyCheckMarketId

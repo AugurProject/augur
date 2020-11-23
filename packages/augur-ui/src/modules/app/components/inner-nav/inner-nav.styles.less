@@ -16,7 +16,7 @@
     padding-bottom: 0;
 
     > ul {
-      height: 100%;
+      height: calc(100% - @size-168);
       background: var(--color-module-background);
       overflow-x: hidden;
       overflow-y: auto;
@@ -40,7 +40,7 @@
           display: flex;
   
           &:not(:first-of-type) {
-            margin-top: @size-12;
+            margin-top: @size-24;
           }
         }
   
@@ -197,7 +197,6 @@
     left: -100%;
     margin-bottom: 1rem;
     overflow-x: hidden;
-    transition: left 0.2s ease-in-out;
     width: 100%;
     top: 0;
     z-index: 100;
@@ -224,7 +223,7 @@
         color: var(--color-primary-text);
         display: flex;
         flex-flow: row nowrap;
-        height: 50px;
+        height: @size-64;
         padding: @size-16;
         width: 100%;
         z-index: unset;
@@ -237,9 +236,9 @@
 
         // close button
         > button {
-          height: @size-16;
+          height: @size-24;
           margin-right: @size-9;
-          width: @size-16;
+          width: @size-24;
         }
 
         > button > svg > path {

@@ -1,11 +1,37 @@
 @import (reference) "~assets/styles/shared";
 
 .OpenMarkets {
-  > div:last-of-type > div:nth-of-type(2):not([class*="EmptyDisplay"]) {
-    @media @breakpoint-mobile {
-      border-top: @size-1 solid var(--color-dark-grey);
+  > div:last-of-type {
+    > div[class$="Content"] > div[class$="MarketRow"] {
+      border-radius: 0;
+
+      @media @breakpoint-mobile {
+        border-right: @size-1 solid var(--color-dark-grey);
+        border-left: @size-1 solid var(--color-dark-grey);
+      }
+
+      div[class$="RowContent"]:hover > div > div > span:first-of-type > a {
+        text-decoration: underline;
+      }
+    }
+
+    > div[class$="Subheader"] {
+      background: unset;
+      display: flex;
+
+      @media @breakpoint-mobile {
+        border-right: @size-1 solid var(--color-dark-grey);
+        border-left: @size-1 solid var(--color-dark-grey);
+      }
+    }
+
+    > div:nth-of-type(2):not([class*="EmptyDisplay"]) {
+      @media @breakpoint-mobile {
+        border-top: @size-1 solid var(--color-dark-grey);
+      }
     }
   }
+
   div[class*="box-header-styles_ShowOnMobile"] {
     @media @breakpoint-mobile {
       align-items: center;
@@ -46,10 +72,6 @@
       }
     }
   }
-
-  .SubHeader {
-    background: unset;
-  }
 }
 
 .ExpandedContent {
@@ -62,9 +84,7 @@
     display: flex;
     flex: 1;
     margin: 0 @size-16;
-    height: @size-28;
-    max-height: @size-28;
-    min-height: @size-28;
+    padding: @size-7 0 @size-6;
 
     > span {
       .text-11-medium;
@@ -86,12 +106,18 @@
 }
 
 .OpenMarketsRow {
-  min-height: @size-48;
-  max-height: @size-48;
   align-items: center;
 
   > div {
-    padding: 0 0 0 @size-16;
+    padding: @size-16 @size-2 @size-16 @size-16;
+
+    > span > a {
+      .limit-lines(3);
+
+      > div[class$="CustomMarket"] {
+        display: none;
+      }
+    }
   }
 
   > span > div[class*="MovementLabel"] {

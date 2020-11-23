@@ -29,12 +29,14 @@ const {
 const updatePendingQueueBasedOnOrders = (updatedState, txHash) => {
   const marketOrders = updatedState[PENDING_LIQUIDITY_ORDERS][txHash];
   let pendingQueue = [];
-  Object.keys(marketOrders).map(outcome =>
-    marketOrders[outcome].map(order => {
-      pendingQueue.push(order);
-    })
-  );
-  manageAndUpdatePendingQueue(pendingQueue, pendingQueue.length, txHash, LIQUIDITY_ORDERS);
+  if (marketOrders) {
+    Object.keys(marketOrders).map(outcome =>
+      marketOrders[outcome].map(order => {
+        pendingQueue.push(order);
+      })
+    );
+    manageAndUpdatePendingQueue(pendingQueue, pendingQueue.length, txHash, LIQUIDITY_ORDERS);
+  }
 };
 
 export function PendingOrdersReducer(state, action) {
@@ -224,6 +226,7 @@ export function PendingOrdersReducer(state, action) {
     default:
       console.error(`Error: ${action.type} not caught by Pending reducer.`);
   }
+  // console.log("pendingOrders", action);
   windowRef.pendingOrders = updatedState;
   windowRef.stores.pendingOrders = updatedState;
   return updatedState;

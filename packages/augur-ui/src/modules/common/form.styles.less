@@ -357,6 +357,9 @@
         color: var(--color-primary-text);
       }
     }
+    > svg > circle:first-of-type {
+      fill: var(--color-module-background);
+    }
   }
 }
 
@@ -2333,7 +2336,7 @@ div.error > div > div > div > div > input {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  text-transform: capitalize;
+  text-transform: uppercase;
   margin: @size-13 0;
   user-select: none;
   cursor: pointer;
@@ -2414,6 +2417,7 @@ div.error > div > div > div > div > input {
     > span:first-of-type {
       .text-12-bold;
 
+      text-transform: uppercase;
       color: var(--color-primary-text);
 
       @media @breakpoint-mobile {

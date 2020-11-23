@@ -117,16 +117,16 @@ export function getInfo(params: any, status: string, marketInfo: MarketData, isO
     outcomeDescription,
   };
 }
-export default function setAlertText(alert: any, callback: Function) {
+export default function setAlertText(alert: any, callback: Function, returnOnly = false) {
   if (!alert || isEmpty(alert)) {
-    return callback(alert);
+    return returnOnly ? alert : callback(alert);
   }
   if (!callback) {
     throw new Error('Callback function is not set');
   }
 
   if (!alert.params || !alert.name) {
-    return callback(alert);
+    return returnOnly ? alert : callback(alert);
   }
 
   const marketId = alert.params.marketId || alert.params.market;
@@ -267,7 +267,7 @@ export default function setAlertText(alert: any, callback: Function) {
           let updatedOrderType = alert.params.orderType;
           if (
             alert.params.orderCreator.toUpperCase() ===
-            loginAccount.address.toUpperCase()
+            loginAccount?.address.toUpperCase()
           ) {
             // creator
             const orders = userOpenOrders[alert.params.market];
@@ -311,7 +311,7 @@ export default function setAlertText(alert: any, callback: Function) {
           let updatedOrderType = alert.params.orderType;
           if (
             alert.params.orderCreator.toUpperCase() ===
-            loginAccount.address.toUpperCase()
+            loginAccount?.address.toUpperCase()
           ) {
             // creator
             const orders = userOpenOrders[alert.params.market];
@@ -509,5 +509,5 @@ export default function setAlertText(alert: any, callback: Function) {
     alert.title = 'Failed transaction';
   }
 
-  return callback(alert);
+  return returnOnly ? alert : callback(alert);
 }
