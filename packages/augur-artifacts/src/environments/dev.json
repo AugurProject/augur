@@ -20,7 +20,11 @@
     "enableFaucets": true,
     "normalTime": true,
     "externalAddresses": {
-      "Exchange": "0x4eacd0aF335451709e1e7B570B8Ea68EdEC8bc97"
+      "Exchange": "0x4eacd0aF335451709e1e7B570B8Ea68EdEC8bc97",
+      "WETH9": "0xf68B100D9Acd8421F7f04E4548a604Ff3f0254E4",
+      "Cash": "0x5bc0ceB4d813282C4468288C8AB42Af5e7a43B27",
+      "USDC": "0x03722982dBb5b038348feF5a1Bc7f6e0f3d4C34E",
+      "USDT": "0x1997d08B1a9aeD5143b995e929707400625D5f6C"
     },
     "writeArtifacts": true,
     "serial": true

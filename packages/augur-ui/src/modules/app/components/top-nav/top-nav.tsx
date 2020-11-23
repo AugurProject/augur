@@ -33,7 +33,7 @@ const SPREAD_INDEX = 3;
 
 const TopNav = ({ isLogged, menuData }: TopNavProps) => {
   const {
-    env: { ui: { reportingOnly: disableMarketCreation } },
+    env: { ui: { marketCreationEnabled } },
     currentBasePath,
     pendingQueue,
     loginAccount: { balances: walletBalances },
@@ -69,7 +69,7 @@ const TopNav = ({ isLogged, menuData }: TopNavProps) => {
                   }
                 >
                   <SecondaryButton
-                    disabled={item.disabled || disableMarketCreation}
+                    disabled={item.disabled || !marketCreationEnabled}
                     text="Create Market"
                     action={() => null}
                   />

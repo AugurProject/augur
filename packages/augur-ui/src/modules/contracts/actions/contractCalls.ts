@@ -341,9 +341,9 @@ export async function getDai() {
   return originCash.faucet(new BigNumber('1000000000000000000000'));
 }
 
-export async function getParaToken() {
+export async function getParaToken(tokenName) {
   const { contracts } = augurSdk.get();
-  if (process.env.PARA_DEPLOY_TOKEN_NAME === USDT || process.env.PARA_DEPLOY_TOKEN_NAME === USDC) {
+  if (tokenName === USDT || tokenName === USDC) {
     return contracts.cash.faucet(new BigNumber('1000000000'));
   }
   return contracts.cash.faucet(new BigNumber('1000000000000000000000'));

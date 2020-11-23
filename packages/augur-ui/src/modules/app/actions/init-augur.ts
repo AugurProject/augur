@@ -23,7 +23,8 @@ import {
   NETWORK_NAMES,
   SIGNIN_SIGN_WALLET,
   MODAL_REPORTING_ONLY,
-  DISCLAIMER_SEEN
+  DISCLAIMER_SEEN,
+  MODAL_NETWORK_DISCONNECTED
 } from 'modules/common/constants';
 import { listenForStartUpEvents } from 'modules/events/actions/listen-to-updates';
 import { windowRef } from 'utils/window-ref';
@@ -153,8 +154,7 @@ function pollForNetwork() {
   setInterval(() => {
     const { modal } = AppStatus.get();
     const { setModal, closeModal } = AppStatus.actions;
-    const processEnvRef: AugurEnv = process.env;
-    if (!processEnvRef.ENABLE_MAINNET) {
+    if (!process.env.ENABLE_MAINNET) {
       const isMainnet = checkIfMainnet();
       if (isMainnet && isEmpty(modal)) {
         setModal({
@@ -239,6 +239,7 @@ export const connectAugur = async (
     })
   }
 
+  let useWeb3 = false;
   const we3Provider = await detectEthereumProvider();
   if (we3Provider) {
     try {
@@ -246,6 +247,7 @@ export const connectAugur = async (
       if (!correctNetwork) {
         return callback(null);
       }
+      useWeb3 = correctNetwork;
     } catch(e) {
       console.error('Error with web3 provider, moving on');
     }
@@ -294,8 +296,7 @@ export const connectAugur = async (
       return callback(`SDK could not be created, see console for more information`, { config });
     }
 
-  const processEnvRef: AugurEnv = process.env;
-  if (processEnvRef.REPORTING_ONLY && !getValueFromlocalStorage(DISCLAIMER_SEEN)) {
+  if (process.env.REPORTING_ONLY && !getValueFromlocalStorage(DISCLAIMER_SEEN)) {
     const { setModal } = AppStatus.actions;
     setModal({
       type: MODAL_REPORTING_ONLY
@@ -359,8 +360,7 @@ export const initAugur = async (
   }: initAugurParams,
   callback: NodeStyleCallback = logError
 ) => {
-  const processEnvRef: AugurEnv = process.env;
-  const config: SDKConfiguration = processEnvRef.CONFIGURATION;
+  const config: SDKConfiguration = process.env.CONFIGURATION;
 
   if (ethereumNodeHttp) {
     config.ethereum.http = ethereumNodeHttp;

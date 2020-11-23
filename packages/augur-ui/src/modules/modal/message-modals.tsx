@@ -148,8 +148,13 @@ export const ModalCreationHelp = ({ copyType }) => {
 export const ModalTokenFaucet = () => {
   const {
     modal,
+    env: { paraDeploys, paraDeploy },
     actions: { closeModal },
   } = useAppStatusStore();
+
+  if (!paraDeploy) return null;
+
+  const paraTokenName = paraDeploys[paraDeploy].name;
 
   return (
     <Message
@@ -164,7 +169,7 @@ export const ModalTokenFaucet = () => {
         {
           text: `Get ${modal.token}`,
           action: () => {
-            getParaToken();
+            getParaToken(paraTokenName);
             closeModal();
           },
         },

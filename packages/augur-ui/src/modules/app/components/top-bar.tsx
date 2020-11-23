@@ -202,7 +202,7 @@ const TopBar = () => {
             <PrimaryButton
               text='Continue account setup'
               action={() =>
-                handleShowOnboarding(currentOnboardingStep, setModal)
+                handleShowOnboarding(6, setModal) // TODO fix onboarding for para token, jump to approvals for now
               }
             />
           )}

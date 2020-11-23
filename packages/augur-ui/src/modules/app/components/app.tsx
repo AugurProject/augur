@@ -189,7 +189,7 @@ const AppView = ({
       requireLogin: true,
       button: true,
       alternateStyle: true,
-      disabled: !!forkingInfo || (!process.env.REPORTING_ONLY && marketCreationEnabled),
+      disabled: !!forkingInfo || !marketCreationEnabled,
     },
   ];
 

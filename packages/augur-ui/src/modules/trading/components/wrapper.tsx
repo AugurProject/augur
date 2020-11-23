@@ -197,8 +197,6 @@ const Wrapper = ({
     ? totalTradingBalance().minus(newMarket.initialLiquidityDai)
     : totalTradingBalance();
   const disclaimerSeen = !!getValueFromlocalStorage(DISCLAIMER_SEEN);
-  const disableTrading = ui?.reportingEnabled;
-
   const hasHistory = !!accountPositions[marketId] || !!userOpenOrders[marketId];
   // if outcome id changes we clear form
   useEffect(() => {
@@ -324,6 +322,7 @@ const Wrapper = ({
         market.marketType
       );
       const formattedValue = formatDai(totalCost);
+
       const newTrade = {
         ...useValues,
         limitPrice: order.orderPrice,
@@ -419,7 +418,7 @@ const Wrapper = ({
       loginAccount,
       env: { ui, paraDeploy, paraDeploys },
     } = useAppStatusStore();
-    const disableTrading = ui?.reportingEnabled;
+    const disableTrading = Boolean(process.env.REPORTING_ONLY);
     let hasFunds = false;
 
     if (!paraDeploys || !paraDeploys[paraDeploy]) return null;
@@ -493,7 +492,7 @@ const Wrapper = ({
         actionButton = (
           <PrimaryButton
             id="reporting-ui"
-            disabled={true}
+            disabled={disableTrading}
             action={() => {}}
             text="Trading Disabled in Reporting UI"
           />

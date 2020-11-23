@@ -49,12 +49,9 @@ export const loadAllAccountPositions = async () => {
 export const loadAccountOnChainFrozenFundsTotals = async () => {
   const { loginAccount, universe: { id: universe }} = AppStatus.get();
   const Augur = augurSdk.get();
-  const frozen = await Augur.getTotalOnChainFrozenFunds({
-    account: loginAccount.mixedCaseAddress,
-    universe,
-  });
-  AppStatus.actions.updateLoginAccount({ 
-    totalFrozenFunds: frozen.totalFrozenFunds,
+  const breakdown = await Augur.getUserFrozenFundsBreakdown({ universe, account: loginAccount.mixedCaseAddress });
+  AppStatus.actions.updateLoginAccount({
+    totalFrozenFunds: breakdown.total,
   });
 };
 
@@ -122,8 +119,8 @@ export const userPositionProcessing = (
     Object.values(positionData.positionData[marketId].tradingPositions).map(position => {
       if (marketInfo?.sportsBook && (position.priorPosition ? createBigNumber(position.priorPosition.netPosition).gte(0) : createBigNumber(position.netPosition).gte(ZERO))) {
         Betslip.actions.addMatched(false, marketId, marketInfo.description, convertPositionToBet(position, marketInfo));
-        Markets.actions.updateOrderBook(marketId, null, loadMarketOrderBook(marketId));  
-      }      
+        Markets.actions.updateOrderBook(marketId, null, loadMarketOrderBook(marketId));
+      }
       });
   });
 };
