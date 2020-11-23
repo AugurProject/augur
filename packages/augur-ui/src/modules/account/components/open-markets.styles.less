@@ -1,11 +1,27 @@
 @import (reference) "~assets/styles/shared";
 
 .OpenMarkets {
-  > div:last-of-type > div:nth-of-type(2):not([class*="EmptyDisplay"]) {
-    @media @breakpoint-mobile {
-      border-top: @size-1 solid var(--color-dark-grey);
+  > div:last-of-type {
+    > div[class$="Content"] > div[class$="MarketRow"] {
+      border-radius: 0;
+      border-right: @size-1 solid var(--color-dark-grey);
+      border-left: @size-1 solid var(--color-dark-grey);
+    }
+
+    > div[class$="Subheader"] {
+      background: unset;
+      display: flex;
+      border-right: @size-1 solid var(--color-dark-grey);
+      border-left: @size-1 solid var(--color-dark-grey);
+    }
+
+    > div:nth-of-type(2):not([class*="EmptyDisplay"]) {
+      @media @breakpoint-mobile {
+        border-top: @size-1 solid var(--color-dark-grey);
+      }
     }
   }
+
   div[class*="box-header-styles_ShowOnMobile"] {
     @media @breakpoint-mobile {
       align-items: center;
@@ -46,10 +62,6 @@
       }
     }
   }
-
-  .SubHeader {
-    background: unset;
-  }
 }
 
 .ExpandedContent {
@@ -86,12 +98,20 @@
 }
 
 .OpenMarketsRow {
-  min-height: @size-48;
-  max-height: @size-48;
+  min-height: unset;
+  max-height: unset;
   align-items: center;
 
   > div {
-    padding: 0 0 0 @size-16;
+    padding: @size-16 @size-2 @size-16 @size-16;
+
+    > span > a {
+      .limit-lines(3);
+
+      > div[class$="CustomMarket"] {
+        display: none;
+      }
+    }
   }
 
   > span > div[class*="MovementLabel"] {
