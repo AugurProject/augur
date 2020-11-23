@@ -4,8 +4,11 @@
   > div:last-of-type {
     > div[class$="Content"] > div[class$="MarketRow"] {
       border-radius: 0;
-      border-right: @size-1 solid var(--color-dark-grey);
-      border-left: @size-1 solid var(--color-dark-grey);
+
+      @media @breakpoint-mobile {
+        border-right: @size-1 solid var(--color-dark-grey);
+        border-left: @size-1 solid var(--color-dark-grey);
+      }
 
       div[class$="RowContent"]:hover > div > div > span:first-of-type > a {
         text-decoration: underline;
@@ -15,8 +18,11 @@
     > div[class$="Subheader"] {
       background: unset;
       display: flex;
-      border-right: @size-1 solid var(--color-dark-grey);
-      border-left: @size-1 solid var(--color-dark-grey);
+
+      @media @breakpoint-mobile {
+        border-right: @size-1 solid var(--color-dark-grey);
+        border-left: @size-1 solid var(--color-dark-grey);
+      }
     }
 
     > div:nth-of-type(2):not([class*="EmptyDisplay"]) {
@@ -78,9 +84,7 @@
     display: flex;
     flex: 1;
     margin: 0 @size-16;
-    height: @size-28;
-    max-height: @size-28;
-    min-height: @size-28;
+    padding: @size-7 0 @size-6;
 
     > span {
       .text-11-medium;
@@ -102,8 +106,6 @@
 }
 
 .OpenMarketsRow {
-  min-height: unset;
-  max-height: unset;
   align-items: center;
 
   > div {
