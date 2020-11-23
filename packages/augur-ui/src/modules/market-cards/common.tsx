@@ -1187,7 +1187,6 @@ export const prepareSportsGroup = (
           key={`futuresDivider-${sportsGroup.id}`}
         >
           {dividerText}
-          {QuestionIcon}
         </div>
       );
     } else if (isGroupPage && index === 1) {

@@ -140,6 +140,9 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
     formattedLocalShortDateTimeNoTimezone: `${
       shortMonths[date.getMonth()]
     } ${date.getDate()} ${date.getFullYear()}, ${TimeLocal}`,
+    formattedLocalShortDateTimeNoSecNoTimezone: `${
+      shortMonths[date.getMonth()]
+    } ${date.getDate()} ${date.getFullYear()}, ${TimeLocalNoSec}`,
     formattedUtc: `${
       months[date.getUTCMonth()]
     } ${date.getUTCDate()}, ${date.getUTCFullYear()} ${hourlyTime}`,
