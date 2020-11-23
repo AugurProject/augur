@@ -32,7 +32,7 @@ import AppBody from '../AppBody'
 import Loader from '../../components/Loader'
 import { RouteComponentProps } from 'react-router-dom'
 import { TradeInfo } from '../../hooks/Trades'
-import { estimateTrade, formatShares, formatToDisplayValue, isMarketCurrency, toPercent } from '../../utils'
+import { estimateTrade, formatCurrencyAmount, formatShares, formatToDisplayValue, isMarketCurrency, toPercent } from '../../utils'
 import { useAugurClient } from '../../contexts/Application'
 import { useMarketAmm } from '../../contexts/Markets'
 import { useMarketBalance } from '../../state/wallet/hooks'
@@ -252,7 +252,8 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
   )
 
   const handleMaxInput = useCallback(() => {
-    maxAmountInput && onUserInput(Field.INPUT, maxAmountInput.toExact())
+    const max = formatCurrencyAmount(maxAmountInput)
+    maxAmountInput && onUserInput(Field.INPUT, max)
   }, [maxAmountInput, onUserInput])
 
   const handleOutputSelect = useCallback(outputCurrency => onCurrencySelection(Field.OUTPUT, outputCurrency), [
