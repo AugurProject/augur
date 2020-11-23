@@ -76,6 +76,7 @@ export interface DateFormattedObject {
   formattedLocalShortDate: string;
   formattedLocalShortDateSecondary: string;
   formattedLocalShortDateTimeNoTimezone: string;
+  formattedLocalShortDateTimeNoSecNoTimezone: string;
   formattedLocalShortDateTimeWithTimezone: string;
   formattedLocalShortWithUtcOffset: string;
   formattedLocalShortWithUtcOffsetWithoutSeconds: string;
