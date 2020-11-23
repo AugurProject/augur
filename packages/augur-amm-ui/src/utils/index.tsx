@@ -633,7 +633,7 @@ export function getTradeType(trade: TradeInfo): string {
   return null
 }
 
-export async function estimateTrade(augurClient, trade: TradeInfo) {
+export async function estimateTrade(augurClient, trade: TradeInfo, includeFee: boolean = true) {
   if (!augurClient || !trade.amm.id) return console.error('estimateTrade: augurClient is null or amm address')
   const tradeDirection = getTradeType(trade)
 
@@ -656,7 +656,7 @@ export async function estimateTrade(augurClient, trade: TradeInfo) {
       new BN(trade.amm.fee),
       cash,
       outputYesShares,
-      true
+      includeFee
     )
     return String(breakdown)
   }
@@ -680,7 +680,7 @@ export async function estimateTrade(augurClient, trade: TradeInfo) {
       invalidShares,
       noShares,
       yesShares,
-      true
+      includeFee
     )
     return String(breakdown['cash'])
   }
@@ -693,7 +693,7 @@ export async function estimateTrade(augurClient, trade: TradeInfo) {
       new BN(trade.amm.fee),
       inputAmmount,
       !outputYesShares,
-      true
+      includeFee
     )
     console.log('get swap rate', String(breakdown))
     return String(breakdown)

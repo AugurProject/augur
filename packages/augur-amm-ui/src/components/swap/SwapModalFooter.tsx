@@ -119,7 +119,7 @@ export default function SwapModalFooter({
           </RowStart>
           <RowFlat>
             <TYPE.black fontSize={14} style={{ whiteSpace: 'nowrap' }}>
-              {realizedLPFee ? realizedLPFee + ' ' + trade.inputAmount.currency.symbol : '-'}
+              {realizedLPFee ? realizedLPFee + ' ' + trade.currencyOut.symbol : '-'}
             </TYPE.black>
           </RowFlat>
         </RowBetween>
