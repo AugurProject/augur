@@ -6,7 +6,7 @@ import { ThemeContext } from 'styled-components'
 import { Field } from '../../state/swap/actions'
 import { TYPE } from '../../Theme'
 import { ButtonPrimary } from '../ButtonStyled'
-import { isAddress, shortenAddress } from '../../utils'
+import { formatCurrencyAmount, isAddress, shortenAddress } from '../../utils'
 import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
 import { AutoColumn } from '../Column'
 import TokenLogo from '../TokenLogo'
@@ -48,7 +48,7 @@ export default function SwapModalHeader({
             fontWeight={500}
             color={showAcceptChanges && trade.tradeType === TradeType.EXACT_OUTPUT ? theme.primary1 : ''}
           >
-            {trade.inputAmount.toSignificant(6)}
+            {formatCurrencyAmount(trade.inputAmount)}
           </TruncatedText>
         </RowStart>
         <RowFlat>
@@ -74,7 +74,7 @@ export default function SwapModalHeader({
                 : ''
             }
           >
-            {outputAmount?.toSignificant(6)}
+            {formatCurrencyAmount(outputAmount)}
           </TruncatedText>
         </RowStart>
         <RowFlat>
