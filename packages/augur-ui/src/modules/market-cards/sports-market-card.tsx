@@ -41,11 +41,12 @@ const { MONEY_LINE } = SPORTS_GROUP_MARKET_TYPES;
 
 const determineStartState = ({ type, marketTypes }) => {
   if (type === FUTURES) return true;
-  if (type !== DAILY) return false;
-  const hasMoneyLineMarket = marketTypes.find(uniqueType =>
-    uniqueType.includes(MONEY_LINE)
-  );
-  return !hasMoneyLineMarket;
+  // if (type !== DAILY) return false;
+  // const hasMoneyLineMarket = marketTypes.find(uniqueType =>
+  //   uniqueType.includes(MONEY_LINE)
+  // );
+  
+  return marketTypes.length <= 4;
 };
 
 export const SportsMarketCard = ({
@@ -70,8 +71,8 @@ export const SportsMarketCard = ({
   const displayableMarkets = markets.reduce(reduceToUniquePools, []);
   const numExtraWagers =
     type === COMBO
-      ? displayableMarkets.length - 3
-      : displayableMarkets.length - 1;
+      ? displayableMarkets.length - 7
+      : displayableMarkets.length - 4;
   const showMoreButtonVisible = !isFutures && numExtraWagers > 0;
   const headerType =
     location.pathname === makePath(DISPUTING)
@@ -90,7 +91,7 @@ export const SportsMarketCard = ({
     >
       <TopRow
         market={market}
-        showStart={type === COMBO}
+        showStart={type !== FUTURES}
         categoriesWithClick={getCategoriesWithClick(categories, history)}
       />
       <MarketTitle id={market.id} headerType={headerType} />
