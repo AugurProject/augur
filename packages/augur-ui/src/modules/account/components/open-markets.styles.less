@@ -6,6 +6,10 @@
       border-radius: 0;
       border-right: @size-1 solid var(--color-dark-grey);
       border-left: @size-1 solid var(--color-dark-grey);
+
+      div[class$="RowContent"]:hover > div > div > span:first-of-type > a {
+        text-decoration: underline;
+      }
     }
 
     > div[class$="Subheader"] {
