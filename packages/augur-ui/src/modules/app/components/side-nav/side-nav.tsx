@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 
-import { ThemeSwitch } from 'modules/app/components/theme-switch';
 import makePath from 'modules/routes/helpers/make-path';
 import ConnectDropdown from 'modules/auth/connect-dropdown';
 import { Dot, helpIcon, MobileNavCloseIcon, LogoutIcon, AddIcon, ShortChevron, Chevron } from 'modules/common/icons';
@@ -33,6 +32,7 @@ import { OddsMenu } from 'modules/app/components/odds-menu';
 import { logout } from 'modules/auth/actions/logout';
 import CategoryFilters from '../inner-nav/category-filters';
 import ButtonStyles from 'modules/common/buttons.styles.less';
+import { SelectProductDropdown } from 'modules/app/components/select-product-dropdown';
 
 interface SideNavProps {
   isLogged: boolean;
@@ -53,7 +53,6 @@ const SideNav = ({
     isHelpMenuOpen,
     isConnectionTrayOpen,
     theme,
-    mobileMenuState,
     actions: { setIsHelpMenuOpen, setModal, setMobileMenuState, closeAppMenus },
   } = useAppStatusStore();
   const pending =
@@ -66,6 +65,15 @@ const SideNav = ({
     item => !(item.requireLogin && !isLogged)
   );
   const isTrading = theme === THEMES.TRADING;
+
+  useEffect(() => {
+    if (showNav) {
+      setMobileMenuState(MOBILE_MENU_STATES.SIDEBAR_OPEN);
+    } else {
+      setMobileMenuState(MOBILE_MENU_STATES.CLOSED);
+    }
+  }, [showNav]);
+
   return (
     <aside
       className={classNames(Styles.SideNav, {
@@ -77,7 +85,7 @@ const SideNav = ({
           type="button"
           onClick={() => {
             closeAppMenus();
-            setMobileMenuState(mobileMenuState - 1);
+            setMobileMenuState(MOBILE_MENU_STATES.CLOSED);
           }}
         >
           <MobileNavCloseIcon />
@@ -109,7 +117,6 @@ const SideNav = ({
       <div className={Styles.Container}>
         <div>
           {isConnectionTrayOpen && <ConnectDropdown />}
-          <ThemeSwitch />
           <ul className={Styles.MainMenu}>
             {isLogged && isTrading && (
               <SecondaryButton
@@ -117,6 +124,7 @@ const SideNav = ({
                 text="Add Funds"
               />
             )}
+            <SelectProductDropdown />
             {accessFilteredMenu.map((item, idx) => (
               <li
                 key={idx}

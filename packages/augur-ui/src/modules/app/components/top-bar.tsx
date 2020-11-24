@@ -11,7 +11,6 @@ import ButtonStyles from 'modules/common/buttons.styles.less';
 import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
 import { NewLogo } from 'modules/app/components/logo';
-import { ThemeSwitch } from 'modules/app/components/theme-switch';
 import {
   PrimaryButton,
   SecondaryButton,
@@ -47,6 +46,7 @@ import {
   approveZeroXCheck,
 } from 'modules/contracts/actions/contractCalls';
 import { useNotifications } from 'modules/account/components/notifications';
+import { SelectProductDropdown } from 'modules/app/components/select-product-dropdown';
 
 const handleShowOnboarding = (currentOnboardingStep, setModal) => {
   let nextStep = MODAL_AUGUR_USES_DAI;
@@ -179,7 +179,6 @@ const TopBar = () => {
           <NewLogo />
         </Link>
       </div>
-      <ThemeSwitch />
       {LoggedOrRestored && <Stats />}
       <div>
         {LoggedOrRestored && isSports && showMigrateRepButton && (
@@ -238,6 +237,7 @@ const TopBar = () => {
             </button>
           </div>
         )}
+        <SelectProductDropdown hideOnMobile />
         {LoggedOrRestored && (
           <div className={Styles.AlertsDiv}>
             <button
