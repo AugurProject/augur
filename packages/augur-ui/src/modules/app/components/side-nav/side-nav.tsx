@@ -3,7 +3,6 @@ import ReactTooltip from 'react-tooltip';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 
-import { ThemeSwitch } from 'modules/app/components/theme-switch';
 import makePath from 'modules/routes/helpers/make-path';
 import ConnectDropdown from 'modules/auth/connect-dropdown';
 import { Dot, helpIcon, MobileNavCloseIcon, LogoutIcon, AddIcon, ShortChevron, Chevron } from 'modules/common/icons';
@@ -118,7 +117,6 @@ const SideNav = ({
       <div className={Styles.Container}>
         <div>
           {isConnectionTrayOpen && <ConnectDropdown />}
-          {!isTrading && <ThemeSwitch />}
           <ul className={Styles.MainMenu}>
             {isLogged && isTrading && (
               <SecondaryButton
@@ -126,7 +124,7 @@ const SideNav = ({
                 text="Add Funds"
               />
             )}
-            {isTrading && <SelectProductDropdown />}
+            <SelectProductDropdown />
             {accessFilteredMenu.map((item, idx) => (
               <li
                 key={idx}

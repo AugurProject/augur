@@ -5,7 +5,7 @@ import { DaiIcon, SelectProductIcon, StylizedEthIcon } from 'modules/common/icon
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { THEMES } from 'modules/common/constants';
 import makePath from 'modules/routes/helpers/make-path';
-import { DISPUTING, REPORTING, CREATE_MARKET } from 'modules/routes/constants/views';
+import { DISPUTING, REPORTING, CREATE_MARKET, MARKETS } from 'modules/routes/constants/views';
 import { Link } from 'react-router-dom';
 import ChevronFlip from 'modules/common/chevron-flip';
 
@@ -33,10 +33,28 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
   const {
     currentBasePath,
     theme,
+    isLogged,
     actions: { setTheme },
   } = useAppStatusStore();
   const [toggleDropdown, setToggleDropdown] = useState(false);
   const [toggleAugurPro, setToggleAugurPro] = useState(false);
+
+  const isLoggedDropdownOptions: DropdownOptions[] = isLogged ? [{
+    title: 'Create Market',
+    link: makePath(CREATE_MARKET),
+    active: currentBasePath === CREATE_MARKET,
+    action: () => setTheme(THEMES.TRADING)
+  }, {
+    title: 'Disputing',
+    link: makePath(DISPUTING),
+    active: currentBasePath === DISPUTING,
+    action: () => setTheme(THEMES.TRADING)
+  }, {
+    title: 'Reporting',
+    link: makePath(REPORTING),
+    active: currentBasePath === REPORTING,
+    action: () => setTheme(THEMES.TRADING)
+  }] : [];
 
   const dropdownOptions: DropdownOptions[] = [{
     title: 'Augur Pro',
@@ -58,24 +76,10 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
     action: () => {},
   }, {
     title: 'Sportsbook',
+    link: makePath(MARKETS),
     action: () => setTheme(THEMES.SPORTS),
     active: theme === THEMES.SPORTS
-  }, {
-    title: 'Create Market',
-    link: makePath(CREATE_MARKET),
-    active: currentBasePath === CREATE_MARKET,
-    action: () => setTheme(THEMES.TRADING)
-  }, {
-    title: 'Disputing',
-    link: makePath(DISPUTING),
-    active: currentBasePath === DISPUTING,
-    action: () => setTheme(THEMES.TRADING)
-  }, {
-    title: 'Reporting',
-    link: makePath(REPORTING),
-    active: currentBasePath === REPORTING,
-    action: () => setTheme(THEMES.TRADING)
-  }];
+  }, ...isLoggedDropdownOptions];
 
   const inputRef = useRef(null);
 

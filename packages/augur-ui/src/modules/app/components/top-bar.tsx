@@ -11,7 +11,6 @@ import ButtonStyles from 'modules/common/buttons.styles.less';
 import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
 import { NewLogo } from 'modules/app/components/logo';
-import { ThemeSwitch } from 'modules/app/components/theme-switch';
 import {
   PrimaryButton,
   SecondaryButton,
@@ -126,7 +125,6 @@ const TopBar = () => {
     matched: { count: MyBetsCount },
   } = Betslip.get();
   const isSports = theme === THEMES.SPORTS;
-  const isTrading = theme === THEMES.TRADING;
   const { unseenCount } = getInfoAlertsAndSeenCount();
   const LoggedOrRestored = isLogged || restoredAccount;
   const notLoggedAndRestored = !isLogged && !restoredAccount;
@@ -181,7 +179,6 @@ const TopBar = () => {
           <NewLogo />
         </Link>
       </div>
-      {!isTrading && <ThemeSwitch />}
       {LoggedOrRestored && <Stats />}
       <div>
         {LoggedOrRestored && isSports && showMigrateRepButton && (
@@ -240,7 +237,7 @@ const TopBar = () => {
             </button>
           </div>
         )}
-        {isTrading && <SelectProductDropdown hideOnMobile />}
+        <SelectProductDropdown hideOnMobile />
         {LoggedOrRestored && (
           <div className={Styles.AlertsDiv}>
             <button
