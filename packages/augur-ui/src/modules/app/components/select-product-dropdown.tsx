@@ -39,6 +39,9 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
   const [toggleDropdown, setToggleDropdown] = useState(false);
   const [toggleAugurPro, setToggleAugurPro] = useState(false);
 
+  const isTrading = theme === THEMES.TRADING;
+  const isSportsbook = theme === THEMES.SPORTS;
+
   const isLoggedDropdownOptions: DropdownOptions[] = isLogged ? [{
     title: 'Create Market',
     link: makePath(CREATE_MARKET),
@@ -78,8 +81,14 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
     title: 'Sportsbook',
     link: makePath(MARKETS),
     action: () => setTheme(THEMES.SPORTS),
-    active: theme === THEMES.SPORTS
-  }, ...isLoggedDropdownOptions];
+    active: isSportsbook
+  }, {
+    title: 'Trading',
+    link: makePath(MARKETS),
+    action: () => setTheme(THEMES.TRADING),
+    active: isTrading
+  }, ...isLoggedDropdownOptions
+  ];
 
   const inputRef = useRef(null);
 
