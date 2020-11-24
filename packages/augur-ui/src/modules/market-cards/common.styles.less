@@ -1143,7 +1143,11 @@
 		border-radius: @border-radius-default;
 
 		> header {
-			> span:first-of-type[class*="ProgressLabel"] {
+			> span:first-of-type:not(:last-of-type) > a > span:first-of-type[class*="ProgressLabel"],
+			> button.FuturesBar > span:first-of-type[class*="ProgressLabel"] {
+				display: flex;
+				flex-flow: row nowrap;
+
 				> span:first-of-type {
 					.text-12;
 				}
@@ -1155,18 +1159,7 @@
 				}
 			}
 
-			> div[class*="DotSelection"] {
-				height: @size-18;
-				width: @size-18;
-
-				> button > svg {
-					height: @size-18;
-					width: @size-18;
-					transform: none;
-				}
-			}
-
-      > div[class$="HoverIcon"] {
+			> button.FuturesBar > div[class$="HoverIcon"] {
         margin-right: @size-12;
 
         > svg {
@@ -1188,6 +1181,17 @@
           border-color: var(--color-secondary-text);
         }
 			}
+
+			> div[class*="DotSelection"] {
+				height: @size-18;
+				width: @size-18;
+
+				> button > svg {
+					height: @size-18;
+					width: @size-18;
+					transform: none;
+				}
+			}
 		}
 
 		&.Collapsed {
@@ -1200,7 +1204,8 @@
 				}
 			}
 
-			> div {
+			> div,
+			> button.FuturesBar > div {
 				display: none;
 			}
 
@@ -1240,28 +1245,44 @@
 			}
 
 			&.Collapsed {
-				> header > span:last-of-type {
-					align-items: center;
-					display: flex;
-					justify-content: space-between;
-					width: @size-24;
-					height: @size-18;
-					justify-content: flex-end;
-
-					> a {
-						display: flex;
-						height: 100%;
+				> header {
+					> span:first-of-type:not(:last-of-type) {
 						width: 100%;
+						display: flex;
+						flex-flow: row nowrap;
+						flex: 1 100%;
+						
+						> a {
+							display: flex;
+							flex-flow: row nowrap;
+							align-items: center;
+							flex: 1 100%;
+							justify-content: space-between;
+						}
+					}
+					> span:last-of-type {
 						align-items: center;
+						display: flex;
+						justify-content: space-between;
+						width: @size-24;
+						height: @size-18;
 						justify-content: flex-end;
-
-							> svg {
-							width: @size-10;
-							height: @size-6;
-							transform: rotate(-.25turn);
-
-							> path {
-								fill: var(--color-primary-text);
+	
+						> a {
+							display: flex;
+							height: 100%;
+							width: 100%;
+							align-items: center;
+							justify-content: flex-end;
+	
+								> svg {
+								width: @size-10;
+								height: @size-6;
+								transform: rotate(-.25turn);
+	
+								> path {
+									fill: var(--color-primary-text);
+								}
 							}
 						}
 					}
@@ -1480,7 +1501,9 @@
 			max-height: @size-35;
 			min-height: @size-30;
 			padding: 0 @size-12;
-
+			
+			> button.FuturesBar > h6,
+			> span:first-of-type:not(:last-of-type) > a > h6,
 			> h6 {
 				.text-10-semi-bold;
 				.limit-lines(1);
@@ -1498,38 +1521,50 @@
 				}
 			}
 
-			> span[class*="ProgressLabel"] {
+			> button.FuturesBar {
+				display: flex;
 				flex-flow: row nowrap;
-				flex: 0;
 				align-items: center;
-				height: 100%;
-				margin-left: auto;
+				border-top-right-radius: @border-radius-default;
+				border-top-left-radius: @border-radius-default;
+				flex: 1;
+				max-height: @size-35;
+				min-height: @size-30;
 
-				@media @breakpoint-mobile {
-					display: none;
-				}
-
-				> span {
-					margin: 0;
-
-					&:last-of-type {
-						margin-left: @size-4;
-						text-transform: capitalize;
+				> span[class*="ProgressLabel"] {
+					flex-flow: row nowrap;
+					flex: 0;
+					align-items: center;
+					height: 100%;
+					margin-left: auto;
+	
+					@media @breakpoint-mobile {
+						display: none;
+					}
+	
+					> span {
+						margin: 0;
+	
+						&:last-of-type {
+							margin-left: @size-4;
+							text-transform: capitalize;
+						}
 					}
 				}
 			}
-
-			> div[class*="DotSelection"],
-			> button[class*="FavoriteButton"] {
-				margin-left: @size-12;
-			}
-
+			> button.FuturesBar > button:not([class*="FavoriteButton"]),
 			> button:not([class*="FavoriteButton"]) {
 				align-items: center;
 				display: flex;
 				width: 100%;
 				height: 100%;
 				justify-content: space-between;
+
+				&.FuturesBar {
+					height: auto;
+					width: auto;
+					justify-content: unset;
+				}
 
 				&.toggleCollapsed {
 					width: @size-24;
@@ -1557,6 +1592,11 @@
 						fill: var(--color-primary-text);
 					}
 				}
+			}
+
+			> div[class*="DotSelection"],
+			> button.FuturesBar > button[class*="FavoriteButton"] {
+				margin-left: @size-12;
 			}
 		}
 
@@ -1599,7 +1639,7 @@
 			display: none;
 		}
 	}
-
+	.SportsMarketContainer > header > button.FuturesBar > button[class*="FavoriteButton"],
 	.SportsMarketContainer > header > button[class*="FavoriteButton"] {
 		display: none;
 	}

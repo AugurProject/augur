@@ -577,7 +577,9 @@ export const OutcomeGroupFooter = ({
   sportsGroup,
   showLeader = false,
 }) => {
-  const { actions: { setModal }} = useAppStatusStore();
+  const {
+    actions: { setModal },
+  } = useAppStatusStore();
   const location = useLocation();
   const { isGroupPage } = isMarketView(location);
   const isDaily = sportsGroup.type === SPORTS_GROUP_TYPES.DAILY;
@@ -606,16 +608,16 @@ export const OutcomeGroupFooter = ({
       <Fragment key="content">
         <MarketLink id={id}>View Market Details</MarketLink>
         <button
-            className={Styles.RulesButton}
-            onClick={() =>
-              setModal({
-                type: MODAL_MARKET_RULES,
-                sportMarkets: sportsGroup.markets,
-                description: header,
-                endTime: endTimeFormatted.formattedUtc,
-              })
-            }
-          >
+          className={Styles.RulesButton}
+          onClick={() =>
+            setModal({
+              type: MODAL_MARKET_RULES,
+              sportMarkets: sportsGroup.markets,
+              description: header,
+              endTime: endTimeFormatted.formattedUtc,
+            })
+          }
+        >
           {Rules} Rules
         </button>
         <CountdownProgress
@@ -827,9 +829,15 @@ export const ComboMarketContainer = ({
   isGroupPage = false,
 }: ComboMarketContainerProps) => {
   const { SPREAD, MONEY_LINE, OVER_UNDER } = SPORTS_GROUP_MARKET_TYPES;
-  const [spreadCollapsed, setSpreadCollapsed] = useState(data[SPREAD].length === 0);
-  const [moneyLineCollapsed, setMoneyLineCollapsed] = useState(data[MONEY_LINE].length === 0);
-  const [overUnderCollapsed, setOverUnderCollapsed] = useState(data[OVER_UNDER].length === 0);
+  const [spreadCollapsed, setSpreadCollapsed] = useState(
+    data[SPREAD].length === 0
+  );
+  const [moneyLineCollapsed, setMoneyLineCollapsed] = useState(
+    data[MONEY_LINE].length === 0
+  );
+  const [overUnderCollapsed, setOverUnderCollapsed] = useState(
+    data[OVER_UNDER].length === 0
+  );
   const {
     sportsBook: { placeholderOutcomes },
   } = sportsGroup.markets.find(
@@ -858,21 +866,23 @@ export const ComboMarketContainer = ({
         <li>{placeholderOutcomes[1]}</li>
         <li>{placeholderOutcomes[2]}</li>
       </ul>
-      <ul className={classNames({
-        [Styles.ListCollapse]: spreadCollapsed,
-      })}>
+      <ul
+        className={classNames({
+          [Styles.ListCollapse]: spreadCollapsed,
+        })}
+      >
         <li>
-        <button
+          <button
             className={Styles.toggleCollapsed}
             onClick={e => {
               e.preventDefault();
               setSpreadCollapsed(!spreadCollapsed);
             }}
           >
-          Spread
-          <span>{`${data[SPREAD][0]?.market?.sportsBook?.marketLine}.5`}</span>
-          {ThickChevron}
-        </button>
+            Spread
+            <span>{`${data[SPREAD][0]?.market?.sportsBook?.marketLine}.5`}</span>
+            {ThickChevron}
+          </button>
         </li>
         <li>
           <SportsOutcome {...data[SPREAD][0]} />
@@ -884,20 +894,22 @@ export const ComboMarketContainer = ({
           <SportsOutcome {...data[SPREAD][2]} />
         </li>
       </ul>
-      <ul className={classNames({
-        [Styles.ListCollapse]: moneyLineCollapsed,
-      })}>
+      <ul
+        className={classNames({
+          [Styles.ListCollapse]: moneyLineCollapsed,
+        })}
+      >
         <li>
-        <button
+          <button
             className={Styles.toggleCollapsed}
             onClick={e => {
               e.preventDefault();
               setMoneyLineCollapsed(!moneyLineCollapsed);
             }}
           >
-          Moneyline
-          {ThickChevron}
-        </button>
+            Moneyline
+            {ThickChevron}
+          </button>
         </li>
         <li>
           <SportsOutcome {...data[MONEY_LINE][0]} />
@@ -909,21 +921,23 @@ export const ComboMarketContainer = ({
           <SportsOutcome {...data[MONEY_LINE][2]} />
         </li>
       </ul>
-      <ul className={classNames({
-        [Styles.ListCollapse]: overUnderCollapsed,
-      })}>
+      <ul
+        className={classNames({
+          [Styles.ListCollapse]: overUnderCollapsed,
+        })}
+      >
         <li>
-        <button
+          <button
             className={Styles.toggleCollapsed}
             onClick={e => {
               e.preventDefault();
               setOverUnderCollapsed(!overUnderCollapsed);
             }}
           >
-          Over/Under
-          <span>{`${data[OVER_UNDER][0]?.market?.sportsBook?.marketLine}.5`}</span>
-          {ThickChevron}
-        </button>
+            Over/Under
+            <span>{`${data[OVER_UNDER][0]?.market?.sportsBook?.marketLine}.5`}</span>
+            {ThickChevron}
+          </button>
         </li>
         <li>
           <SportsOutcome {...data[OVER_UNDER][0]} />
@@ -1006,31 +1020,31 @@ export const SportsMarketContainer = ({
     const { tradingPositionsPerMarket = null } =
       accountPositions[marketId] || {};
     const newBase = window.location.href.replace('markets', 'market?id=');
-    headingContent = (
-      <Fragment key={`${marketId}-heading`}>
+    const LeftContent = (
+      <Fragment key={`${marketId}-heading-leftContent`}>
         <h6 title={market.description}>{market.description}</h6>
         {tradingPositionsPerMarket &&
-        tradingPositionsPerMarket.current !== '0' && (
-          <div
-            className={Styles.HoverIcon}
-            data-tip
-            data-for={`${market.id}-youHaveABet`}
-            data-iscapture={false}
-          >
-            {PositionIcon}
-            <ReactTooltip
-              id={`${market.id}-youHaveABet`}
-              className={TooltipStyles.Tooltip}
-              effect="solid"
-              place="top"
-              type="light"
-              data-event="mouseover"
-              data-event-off="blur scroll"
+          tradingPositionsPerMarket.current !== '0' && (
+            <div
+              className={Styles.HoverIcon}
+              data-tip
+              data-for={`${market.id}-youHaveABet`}
+              data-iscapture={false}
             >
-              You have a bet
-            </ReactTooltip>
-          </div>
-        )}
+              {PositionIcon}
+              <ReactTooltip
+                id={`${market.id}-youHaveABet`}
+                className={TooltipStyles.Tooltip}
+                effect="solid"
+                place="top"
+                type="light"
+                data-event="mouseover"
+                data-event-off="blur scroll"
+              >
+                You have a bet
+              </ReactTooltip>
+            </div>
+          )}
         <CountdownProgress
           label="Event Expiration"
           time={market.endTimeFormatted}
@@ -1038,6 +1052,21 @@ export const SportsMarketContainer = ({
           forceLongDate
           onlyFinalCountdown
         />
+      </Fragment>
+    );
+    headingContent = (
+      <Fragment key={`${marketId}-heading`}>
+        {forceCollapse ? (
+          <MarketLink id={marketId}>{LeftContent}</MarketLink>
+        ) : (
+          <button
+            className={Styles.FuturesBar}
+            onClick={e => {
+              e.preventDefault();
+              setIsCollapsed(!isCollapsed);
+            }}
+          >{LeftContent}</button>
+        )}
         <DotSelection
           customClass={classNames({ [Styles.ShowCopied]: isCopied })}
         >
@@ -1555,10 +1584,7 @@ export const TopRow = ({ market, categoriesWithClick, showStart }) => {
     const clipboardMarketId = new Clipboard('#copy_marketId');
     const clipboardAuthor = new Clipboard('#copy_author');
   }, [market.id, market.author]);
-  const {
-    theme,
-    isLogged,
-  } = useAppStatusStore();
+  const { theme, isLogged } = useAppStatusStore();
   const {
     marketType,
     id,
@@ -1599,13 +1625,15 @@ export const TopRow = ({ market, categoriesWithClick, showStart }) => {
       <CategoryTagTrail categories={categoriesWithClick} />
       {theme !== THEMES.TRADING ? (
         <>
-          {showStart && <CountdownProgress
-            label="Estimated Start Time"
-            time={formatTime(Number(market.sportsBook.estTimestamp))}
-            reportingState={reportingState}
-            forceLongDate
-            onlyFinalCountdown
-          />}
+          {showStart && (
+            <CountdownProgress
+              label="Estimated Start Time"
+              time={formatTime(Number(market.sportsBook.estTimestamp))}
+              reportingState={reportingState}
+              forceLongDate
+              onlyFinalCountdown
+            />
+          )}
         </>
       ) : (
         <MarketProgress
