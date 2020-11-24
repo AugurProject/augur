@@ -5,7 +5,11 @@ import PriceHistory from 'modules/market-charts/components/price-history/price-h
 import Styles from 'modules/market-charts/sports-group-charts.styles.less';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { SquareDropdown } from 'modules/common/selection';
-import { SPORTS_GROUP_TYPES } from 'modules/common/constants';
+import {
+  SPORTS_GROUP_TYPES,
+  SPORTS_GROUP_MARKET_TYPES,
+  SPORTS_GROUP_MARKET_TYPES_READABLE,
+} from 'modules/common/constants';
 
 const RANGE_OPTIONS = [
   {
@@ -40,13 +44,16 @@ export const SportsGroupCharts = ({ sportsGroup, marketId }) => {
     const outcomes = market.outcomesFormatted;
     const invalid = outcomes.shift();
     outcomes.push(invalid);
-    const options = sportsGroup.markets.map(m => {
-      return {
-        value: m.id,
-        label: m.sportsBook.title,
-        name: m.sportsBook.title,
-      };
-    });
+    const options = sportsGroup.markets.map(
+      ({ id, sportsBook: { title, groupType } }) => {
+        const readableName = SPORTS_GROUP_MARKET_TYPES_READABLE[groupType];
+        return {
+          value: id,
+          label: title ? title : readableName,
+          name: title ? title : readableName,
+        };
+      }
+    );
     return {
       market,
       outcomes,
