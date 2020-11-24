@@ -1157,6 +1157,10 @@
 
 					text-transform: capitalize;
 				}
+
+				@media @breakpoint-mobile {
+					display: none;
+				}
 			}
 
 			> button.FuturesBar > div[class$="HoverIcon"] {
@@ -1260,6 +1264,7 @@
 							justify-content: space-between;
 						}
 					}
+
 					> span:last-of-type {
 						align-items: center;
 						display: flex;
@@ -1581,6 +1586,7 @@
 					color: var(--color-secondary-text);
 					text-transform: uppercase;
 					margin-right: auto;
+					text-align: left;
 				}
 
 				> svg {
