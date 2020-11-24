@@ -41,20 +41,17 @@ const CategoryFilters = () => {
     theme,
     isMobile,
     marketsList: {
+      meta,
       isSearching,
       selectedCategories,
       selectedCategory,
+      allCategoriesMeta,
     },
   } = useAppStatusStore();
-  let {
-    marketsList: {
-      meta: categoryMetaData,
-      allCategoriesMeta
-    },
-  } = useAppStatusStore();
+
   const isSportsTheme = theme === THEMES.SPORTS;
   const sportsMobileView = isSportsTheme && isMobile;
-  if (sportsMobileView) categoryMetaData = allCategoriesMeta;
+  const categoryMetaData = sportsMobileView ? allCategoriesMeta : meta;
   const popularCategories = selectPopularCategories(isSportsTheme);
   const allOtherCategories = selectAllOtherCategories();
   const [showAllCategories, setShowAllCategories] = useState(false);

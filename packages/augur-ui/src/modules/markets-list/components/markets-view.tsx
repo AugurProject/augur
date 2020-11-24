@@ -283,7 +283,7 @@ const MarketsView = () => {
             newSportsGroupTypeFilter =
               sportsGroupTypeFilter === SPORTS_MARKET_TYPES[0].header
                 ? SPORTS_MARKET_TYPES[1].header
-                : sportsGroupTypeFilter;
+                : SPORTS_MARKET_TYPES[0].header;
           }
           if (isSports) {
             sportsGroups.sort((a, b) => {
