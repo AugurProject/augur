@@ -8,6 +8,7 @@ import { BlockAndLogStreamerSyncStrategy } from '@augurproject/sdk/build/state/s
 import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
 import { SDKConfiguration } from '@augurproject/utils';
 import { SupportedProvider } from 'ethereum-types';
+import { ethers } from 'ethers';
 import { Account } from '../constants';
 import { makeSigner } from './blockchain';
 import { ContractAPI } from './contract-api';
@@ -45,7 +46,7 @@ export class TestContractAPI extends ContractAPI {
 
     connector.initialize(client, db);
 
-    return new TestContractAPI(client, provider, account, db, config);
+    return new TestContractAPI(client, provider, account, db, config, signer);
   }
 
   constructor(
@@ -53,9 +54,10 @@ export class TestContractAPI extends ContractAPI {
     readonly provider: EthersProvider,
     public account: Account,
     public db: DB,
-    public config: SDKConfiguration
+    public config: SDKConfiguration,
+    signer?: ethers.Signer,
   ) {
-    super(augur, provider, account);
+    super(augur, provider, account, signer);
 
     this.api = new API(augur, Promise.resolve(db));
 

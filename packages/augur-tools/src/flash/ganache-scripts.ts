@@ -8,12 +8,14 @@ import {
   createDb,
   createSeed,
   deployContracts,
+  deployParaContracts,
+  deployPara,
   hashContracts,
   loadSeed,
   makeGanacheProvider,
   Seed,
   startGanacheServer,
-  writeSeeds,
+  writeSeeds, loadSeedContractsHash,
 } from '..';
 import { FlashArguments, FlashSession } from './flash';
 import { LogReplayer } from './replay-logs';
@@ -40,27 +42,22 @@ export function addGanacheScripts(flash: FlashSession) {
   });
 
   flash.addScript({
-    name: 'create-basic-seed',
+    name: 'create-test-seeds',
     description:
-      'Creates a seed file of the ganache state after deploying Augur. Does not overwrite it if it exists.',
+      'Creates a seed file of the ganache state after deploying Augur; also one with paras. Does not overwrite seed if it exists.',
     ignoreNetwork: true,
     options: [
       {
-        name: 'name',
-        description: 'Name of seed. Defaults to "default".',
-      },
-      {
         name: 'filepath',
-        description: 'Filepath of seed. Defaults to "/tmp/seed.json"',
+        description: `Filepath of seed. Defaults to "${defaultSeedPath}"`,
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      const name = (args.name as string) || 'default';
       const filepath = (args.filepath as string) || defaultSeedPath;
 
       if (await fs.exists(filepath)) {
-        const seed: Seed = await loadSeed(filepath);
-        if (seed.contractsHash === hashContracts()) {
+        const contractsHash = await loadSeedContractsHash(filepath);
+        if (contractsHash === hashContracts()) {
           console.log('Seed file exists and is up to date.');
           return; // no need to update seed
         }
@@ -73,7 +70,7 @@ export function addGanacheScripts(flash: FlashSession) {
 
       provider.overrideGasPrice = ethers.BigNumber.from(100);
 
-      const config = this.deriveConfig({
+      let config = this.deriveConfig({
         deploy: { normalTime: false, writeArtifacts: true },
       });
       const { addresses } = await deployContracts(
@@ -85,10 +82,40 @@ export function addGanacheScripts(flash: FlashSession) {
       );
       config.addresses = addresses;
 
-      const defaultSeed = await createSeed(provider, db, addresses, {});
+      const baseSeed = await createSeed(provider, db, addresses);
+
+      console.log('Prepare seed for paras');
+
+      config = await deployParaContracts(
+        this.network,
+        provider,
+        this.getAccount(),
+        compilerOutput,
+        config
+      );
+
+      config.paraDeploys = {};
+
+      for (const cash of [
+        config.addresses.WETH9,
+        config.addresses.USDT,
+      ]) {
+        console.log(`Deploying para for ${cash}`);
+        config.paraDeploys[cash] = await deployPara(
+          this.network,
+          provider,
+          this.getAccount(),
+          compilerOutput,
+          config,
+          cash,
+        );
+      }
+
+      const parasSeed = await createSeed(provider, db, addresses, config.paraDeploys);
 
       const seeds = {
-        [name]: defaultSeed,
+        'default': baseSeed,
+        'paras': parasSeed,
       };
 
       await writeSeeds(seeds, filepath);

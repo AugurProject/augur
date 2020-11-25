@@ -16,7 +16,8 @@ export async function makeProviderWithDB(
       await makeGanacheProvider(db, accounts),
       db,
       accounts,
-      seed.addresses
+      seed.addresses,
+      seed.paras,
     ),
   ];
 }
@@ -30,7 +31,8 @@ export async function makeProvider(
     await makeGanacheProvider(db, accounts),
     db,
     accounts,
-    seed.addresses
+    seed.addresses,
+    seed.paras
   );
 }
 
