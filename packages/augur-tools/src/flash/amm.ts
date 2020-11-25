@@ -373,7 +373,7 @@ export function addAMMScripts(flash: FlashSession) {
       const amm = ammMiddleware(this.provider, this.config);
 
       const address = await amm.calculateExchangeAddress(market, paraShareToken, fee);
-      const lpTokens = await amm.exchangeLiquidity(market, paraShareToken, fee);
+      const lpTokens = await amm.supplyOfLiquidityTokens(market, paraShareToken, fee);
 
       console.log(`Total LP tokens for ${address}: ${lpTokens.toString()}`);
     }

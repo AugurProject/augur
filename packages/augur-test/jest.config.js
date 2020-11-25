@@ -5,6 +5,7 @@ module.exports = {
     "<rootDir>/src/tests/flash", // has a single very long test
     "<rootDir>/src/tests/state",
     "<rootDir>/src/tests/templates",
+    "<rootDir>/src/tests/amm",
     //"<rootDir>/src/tests/3rd-party", // disabled because there is an explicit test in CI and requires an external process
     // "<rootDir>/src/tests/ui", // disabled because this has its own jest config
     "<rootDir>/src/tests/warp",

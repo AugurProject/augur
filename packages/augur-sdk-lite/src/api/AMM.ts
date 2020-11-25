@@ -197,7 +197,7 @@ export class AMM {
     return this.intermediary(paraShareToken).calculateExchangeAddress(market, paraShareToken, fee);
   }
 
-  async exchangeLiquidity(market: string, paraShareToken: string, fee: BigNumber): Promise<BigNumber> {
+  async supplyOfLiquidityTokens(market: string, paraShareToken: string, fee: BigNumber): Promise<BigNumber> {
     return this.intermediary(paraShareToken).totalSupply(market, paraShareToken, fee)
   }
 
@@ -266,8 +266,6 @@ export class AMM {
     const ratio = AMM.calculateLiquidityRatio(longPercent, shortPercent);
     return this.intermediary(paraShareToken).rateAddAMMWithLiquidity(market, paraShareToken, fee, cash, ratio, keepLong, recipient);
   }
-
-  // Private static methods
 
   private static calculateLiquidityRatio(longPercent: BigNumber, shortPercent: BigNumber) {
     const factor = new BigNumber(10 ** 18);
