@@ -59,6 +59,22 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
     action: () => setTheme(THEMES.TRADING)
   }] : [];
 
+  const isTradingOrSportsbook: DropdownOptions = isTrading ? {
+    title: 'Sportsbook',
+      link: makePath(MARKETS),
+      action: () => {
+        setTheme(THEMES.SPORTS);
+      },
+      active: isSportsbook
+  } : isSportsbook ? {
+    title: 'Trading',
+      link: makePath(MARKETS),
+      action: () => {
+        setTheme(THEMES.TRADING);
+      },
+      active: isTrading
+  } : null;
+
   const dropdownOptions: DropdownOptions[] = [{
     title: 'Augur Pro',
     action: () => setToggleAugurPro(!toggleAugurPro),
@@ -77,17 +93,8 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
   }, {
     title: 'AMM',
     action: () => {},
-  }, {
-    title: 'Sportsbook',
-    link: makePath(MARKETS),
-    action: () => setTheme(THEMES.SPORTS),
-    active: isSportsbook
-  }, {
-    title: 'Trading',
-    link: makePath(MARKETS),
-    action: () => setTheme(THEMES.TRADING),
-    active: isTrading
-  }, ...isLoggedDropdownOptions
+  }, isTradingOrSportsbook,
+    ...isLoggedDropdownOptions
   ];
 
   const inputRef = useRef(null);
@@ -133,11 +140,17 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
         {dropdownOptions.map(({title, action, link, dropdownStatus, dropdown, active}) => (
           <div key={title}>
             {link ? (
-              <Link to={link} onClick={() => action()} className={classNames(Styles.Dropdown, {
+              <Link to={link} onClick={() => {
+                action();
+                !dropdown && setToggleDropdown(false);
+              }} className={classNames(Styles.Dropdown, {
                 [Styles.Active]: active
               })}>{title}</Link>
             ) : (
-              <button onClick={() => action()} className={classNames(Styles.Dropdown, {
+              <button onClick={() => {
+                action();
+                !dropdown && setToggleDropdown(false);
+              }} className={classNames(Styles.Dropdown, {
                 [Styles.Active]: active
               })}>
                 {title}
@@ -162,7 +175,10 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
                       {title}
                     </Link>
                   ) : (
-                    <button onClick={() => action()} key={title}>
+                    <button onClick={() => {
+                      action();
+                      setToggleDropdown(false);
+                    }} key={title}>
                       <span>{icon}</span>
                       {title}
                     </button>

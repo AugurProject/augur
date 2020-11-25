@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import classNames from 'classnames';
 import Blockies from 'react-blockies';
 
@@ -8,6 +8,7 @@ import { formatDai } from 'utils/format-number';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import Styles from 'modules/auth/connect-account.styles.less';
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
+import { MOBILE_MENU_STATES } from 'modules/common/constants';
 
 const ConnectAccount = () => {
   const connectAccount = useRef(null);
@@ -15,9 +16,10 @@ const ConnectAccount = () => {
   const {
     loginAccount: { meta: userInfo, balances },
     isLogged,
+    isMobile,
     restoredAccount,
     isConnectionTrayOpen,
-    actions: { setIsConnectionTrayOpen },
+    actions: { setIsConnectionTrayOpen, setMobileMenuState },
   } = useAppStatusStore();
   if ((!isLogged && !restoredAccount) || !userInfo) return null;
 
@@ -25,6 +27,14 @@ const ConnectAccount = () => {
     setIsConnectionTrayOpen(!isConnectionTrayOpen);
     if (cb && typeof cb === 'function') cb();
   }
+
+  useEffect(() => {
+    if (isMobile) {
+      isConnectionTrayOpen ?
+        setMobileMenuState(MOBILE_MENU_STATES.ACCOUNT_DROPDOWN_OPEN) :
+        setMobileMenuState(MOBILE_MENU_STATES.CLOSED);
+    }
+  }, [isConnectionTrayOpen]);
 
   return (
     <div
