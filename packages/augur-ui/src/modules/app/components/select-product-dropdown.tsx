@@ -46,28 +46,43 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
     title: 'Create Market',
     link: makePath(CREATE_MARKET),
     active: currentBasePath === CREATE_MARKET,
-    action: () => setTheme(THEMES.TRADING)
+    action: () => {
+      setTheme(THEMES.TRADING);
+      setToggleDropdown(false);
+    }
   }, {
     title: 'Disputing',
     link: makePath(DISPUTING),
     active: currentBasePath === DISPUTING,
-    action: () => setTheme(THEMES.TRADING)
+    action: () => {
+      setTheme(THEMES.TRADING);
+      setToggleDropdown(false);
+    }
   }, {
     title: 'Reporting',
     link: makePath(REPORTING),
     active: currentBasePath === REPORTING,
-    action: () => setTheme(THEMES.TRADING)
+    action: () => {
+      setTheme(THEMES.TRADING);
+      setToggleDropdown(false);
+    }
   }] : [];
 
   const isTradingOrSportsbook: DropdownOptions = isTrading ? {
     title: 'Sportsbook',
       link: makePath(MARKETS),
-      action: () => setTheme(THEMES.SPORTS),
+      action: () => {
+        setTheme(THEMES.SPORTS);
+        setToggleDropdown(false);
+      },
       active: isSportsbook
   } : isSportsbook ? {
     title: 'Trading',
       link: makePath(MARKETS),
-      action: () => setTheme(THEMES.TRADING),
+      action: () => {
+        setTheme(THEMES.TRADING);
+        setToggleDropdown(false);
+      },
       active: isTrading
   } : null;
 
@@ -77,18 +92,24 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
     dropdownStatus: toggleAugurPro,
     dropdown: [{
       title: 'DAI',
-      action: () => {},
+      action: () => {
+        setToggleDropdown(false);
+      },
       link: null,
       icon: DaiIcon,
     }, {
       title: 'ETH',
-      action: () => {},
+      action: () => {
+        setToggleDropdown(false);
+      },
       link: null,
       icon: StylizedEthIcon,
     }]
   }, {
     title: 'AMM',
-    action: () => {},
+    action: () => {
+      setToggleDropdown(false);
+    },
   }, isTradingOrSportsbook,
     ...isLoggedDropdownOptions
   ];
@@ -136,17 +157,11 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
         {dropdownOptions.map(({title, action, link, dropdownStatus, dropdown, active}) => (
           <div key={title}>
             {link ? (
-              <Link to={link} onClick={() => {
-                action();
-                setToggleDropdown(false);
-              }} className={classNames(Styles.Dropdown, {
+              <Link to={link} onClick={() => action()} className={classNames(Styles.Dropdown, {
                 [Styles.Active]: active
               })}>{title}</Link>
             ) : (
-              <button onClick={() => {
-                action();
-                setToggleDropdown(false);
-              }} className={classNames(Styles.Dropdown, {
+              <button onClick={() => action()} className={classNames(Styles.Dropdown, {
                 [Styles.Active]: active
               })}>
                 {title}
@@ -171,10 +186,7 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
                       {title}
                     </Link>
                   ) : (
-                    <button onClick={() => {
-                      action();
-                      setToggleDropdown(false);
-                    }} key={title}>
+                    <button onClick={() => action()} key={title}>
                       <span>{icon}</span>
                       {title}
                     </button>
