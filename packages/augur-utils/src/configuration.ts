@@ -29,12 +29,14 @@ export function deepCopy<T>(x: T): T {
 }
 
 export interface ParaDeploys {
-  [cashAddress: string]: {
-    uploadBlockNumber?: number,
-    name: string,
-    decimals: number,
-    addresses: ParaAddresses
-  };
+  [cashAddress: string]: ParaDeploy;
+}
+
+export interface ParaDeploy {
+  uploadBlockNumber?: number,
+  name: string,
+  decimals: number,
+  addresses: ParaAddresses
 }
 
 export interface SideChainDeploy {

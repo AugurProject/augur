@@ -197,12 +197,16 @@ export class AMM {
     return this.intermediary(paraShareToken).calculateExchangeAddress(market, paraShareToken, fee);
   }
 
-  async exchangeLiquidity(market: string, paraShareToken: string, fee: BigNumber): Promise<BigNumber> {
+  async supplyOfLiquidityTokens(market: string, paraShareToken: string, fee: BigNumber): Promise<BigNumber> {
     return this.intermediary(paraShareToken).totalSupply(market, paraShareToken, fee)
   }
 
   async liquidityTokenBalance(market: string, paraShareToken: string, fee: BigNumber, account: string): Promise<BigNumber> {
     return this.intermediary(paraShareToken).balanceOf(market, paraShareToken, fee, account);
+  }
+
+  async approveSpendingOfLiquidityTokens(market: string, paraShareToken: string, fee: BigNumber, spender: string, amount: BigNumber) {
+    return this.intermediary(paraShareToken).approveLPTokens(market, paraShareToken, fee, spender, amount);
   }
 
   // Private methods
@@ -266,8 +270,6 @@ export class AMM {
     const ratio = AMM.calculateLiquidityRatio(longPercent, shortPercent);
     return this.intermediary(paraShareToken).rateAddAMMWithLiquidity(market, paraShareToken, fee, cash, ratio, keepLong, recipient);
   }
-
-  // Private static methods
 
   private static calculateLiquidityRatio(longPercent: BigNumber, shortPercent: BigNumber) {
     const factor = new BigNumber(10 ** 18);
@@ -367,7 +369,7 @@ export interface ExchangeContractIntermediary {
   removeLiquidity(market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber, minSetsSold: BigNumber): Promise<TransactionResponse>
   rateRemoveLiquidity(market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber, minSetsSold: BigNumber): Promise<RemoveLiquidityRate>
 
-  swap(market: string, paraShareToken: string, fee: BigNumber, inputShares: BigNumber, inputLong: Boolean, minShares: BigNumber): Promise<TransactionResponse>
+  swap(market: string, paraShareToken: string, fee: BigNumber, inputShares: BigNumber, buyLong: Boolean, minShares: BigNumber): Promise<TransactionResponse>
   enterPosition(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, buyLong: Boolean, minShares: BigNumber): Promise<TransactionResponse>
   exitPosition(market: string, paraShareToken: string, fee: BigNumber, shortShares: BigNumber, longShares: BigNumber, minCash: BigNumber): Promise<TransactionResponse>
   rateExitPosition(market: string, paraShareToken: string, fee: BigNumber, shortShares: BigNumber, longShares: BigNumber): Promise<BigNumber>
@@ -377,6 +379,7 @@ export interface ExchangeContractIntermediary {
   totalSupply(market: string, paraShareToken: string, fee: BigNumber): Promise<BigNumber>
   balanceOf(market: string, paraShareToken: string, fee: BigNumber, account: string): Promise<BigNumber>
   shareBalances(market: string, paraShareToken: string, fee: BigNumber, account: string): Promise<ShareBalances>
+  approveLPTokens(market: string, paraShareToken: string, fee: BigNumber, spender: string, amount: BigNumber): Promise<void>
 }
 
 class ExchangeCommon {
@@ -422,9 +425,10 @@ class ExchangeCommon {
     }
   }
 
-  async swap(market: string, paraShareToken: string, fee: BigNumber, inputShares: BigNumber, inputLong: Boolean, minShares: BigNumber): Promise<TransactionResponse> {
+  async swap(market: string, paraShareToken: string, fee: BigNumber, inputShares: BigNumber, buyLong: Boolean, minShares: BigNumber): Promise<TransactionResponse> {
     const exchangeAddress = await this.calculateExchangeAddress(market, paraShareToken, fee);
     const amm = this.exchangeContract(exchangeAddress);
+    const inputLong = !buyLong;
     return amm.swap(inputShares.toFixed(), inputLong, minShares.toFixed());
   }
 
@@ -466,6 +470,12 @@ class ExchangeCommon {
       no: new BigNumber(_no.toString()),
       yes: new BigNumber(_yes.toString()),
     }
+  }
+
+  async approveLPTokens(market: string, paraShareToken: string, fee: BigNumber, spender: string, amount: BigNumber): Promise<void> {
+    const exchangeAddress = await this.calculateExchangeAddress(market, paraShareToken, fee);
+    const amm = this.exchangeContract(exchangeAddress);
+    return amm.approve(spender, amount.toString());
   }
 
   protected exchangeContract(address: string): ethers.Contract {
@@ -558,3 +568,11 @@ export class ExchangeETH extends ExchangeCommon implements ExchangeContractInter
   }
 
 }
+
+
+//     function addAMMWithLiquidity (
+//         IMarket _market,
+//         uint256 _fee,
+//         uint256 _ratioFactor,
+//         bool _keepLong,
+//         address _recipient

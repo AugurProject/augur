@@ -42,7 +42,7 @@ export class ContractAPI {
     const signer = await makeSigner(account, provider);
     const augur = await createClient(config, connector, signer, provider, true);
 
-    return new ContractAPI(augur, provider, account);
+    return new ContractAPI(augur, provider, account, signer);
   }
 
   static async wrapUsers(
@@ -90,6 +90,20 @@ export class ContractAPI {
 
     const zeroXTrade = this.augur.config.addresses.ZeroXTrade;
     await this.augur.contracts.cash.approve(zeroXTrade, wei);
+  }
+
+  async approveUSDT(spender: string, allowance = MAX_APPROVAL) {
+    await this.augur.contracts.usdt.approve(spender, allowance);
+  }
+
+  async balanceOfUSDT(who?: string) {
+    who = who || this.account.address;
+    return this.augur.contracts.usdt.balanceOf_(who);
+  }
+
+  async balanceOfWETH(who?: string) {
+    who = who || this.account.address;
+    return this.augur.contracts.weth.balanceOf_(who);
   }
 
   async getOriginCashAllowance(): Promise<BigNumber> {
@@ -952,6 +966,11 @@ export class ContractAPI {
       const totalToFaucet = leftToFaucet.plus(extra);
       await this.faucetCash(totalToFaucet, targetAddress);
     }
+  }
+
+  async faucetUSDT(amount: BigNumber, recipient?: string): Promise<void> {
+    await this.augur.contracts.usdt.faucet(amount);
+    if (recipient) await this.augur.contracts.usdt.transfer(recipient, amount);
   }
 
   async faucetRep(attoRep: BigNumber, useLegacy = false): Promise<void> {
