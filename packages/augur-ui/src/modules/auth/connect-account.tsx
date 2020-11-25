@@ -30,13 +30,9 @@ const ConnectAccount = () => {
 
   useEffect(() => {
     if (isMobile) {
-      if (isConnectionTrayOpen) {
-        // document.body.classList.add('App--noScroll');
-        setMobileMenuState(MOBILE_MENU_STATES.ACCOUNT_DROPDOWN_OPEN);
-      } else {
-        // document.body.classList.remove('App--noScroll');
+      isConnectionTrayOpen ?
+        setMobileMenuState(MOBILE_MENU_STATES.ACCOUNT_DROPDOWN_OPEN) :
         setMobileMenuState(MOBILE_MENU_STATES.CLOSED);
-      }
     }
   }, [isConnectionTrayOpen]);
 
