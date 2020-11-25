@@ -128,6 +128,7 @@ const AppView = ({
     modal,
     env,
     isMobile,
+    isConnectionTrayOpen,
     betslipMinimized,
     actions: {
       setIsMobile,
@@ -238,12 +239,18 @@ const AppView = ({
       window.scrollTo(0, 0);
     }
     if (currentBasePath !== currentPath) setCurrentBasePath(currentPath);
-    if (mobileMenuState === MOBILE_MENU_STATES.FIRSTMENU_OPEN || mobileMenuState === MOBILE_MENU_STATES.SIDEBAR_OPEN || !betslipMinimized || ModalShowing) {
+    if (
+      mobileMenuState === MOBILE_MENU_STATES.FIRSTMENU_OPEN ||
+      mobileMenuState === MOBILE_MENU_STATES.SIDEBAR_OPEN ||
+      mobileMenuState === MOBILE_MENU_STATES.ACCOUNT_DROPDOWN_OPEN ||
+      !betslipMinimized ||
+      ModalShowing
+    ) {
       document.body.classList.add('App--noScroll');
     } else {
       document.body.classList.remove('App--noScroll');
     }
-  }, [mobileMenuState, isMobile, currentPath, betslipMinimized, ModalShowing]);
+  }, [mobileMenuState, isMobile, currentPath, betslipMinimized, ModalShowing, isConnectionTrayOpen]);
 
   function mainSectionClickHandler(e: any, testSideNav = true) {
     if (

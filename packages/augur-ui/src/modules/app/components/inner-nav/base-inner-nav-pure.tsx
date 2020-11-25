@@ -50,9 +50,9 @@ const BaseInnerNavPure = () => {
   const sortProps = {
     setFilterSortState: updates => setFilterSortState({ ...filterSortState, ...updates }),
   };
-  const showMainMenu = mobileMenuState >= MOBILE_MENU_STATES.FIRSTMENU_OPEN;
+  const showMainMenu = mobileMenuState >= MOBILE_MENU_STATES.FIRSTMENU_OPEN && mobileMenuState <= MOBILE_MENU_STATES.SUBMENU_OPEN;
 
-  const getFilters = (originalFilters = false) => {   
+  const getFilters = (originalFilters = false) => {
     const filters = [
       {
         filterType: TEMPLATE_FILTER,

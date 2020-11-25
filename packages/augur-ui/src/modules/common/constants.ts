@@ -279,6 +279,7 @@ export const MOBILE_MENU_STATES = {
   SIDEBAR_OPEN: 1,
   FIRSTMENU_OPEN: 2,
   SUBMENU_OPEN: 3,
+  ACCOUNT_DROPDOWN_OPEN: 4,
 };
 
 export const SUB_MENU = 'subMenu';
