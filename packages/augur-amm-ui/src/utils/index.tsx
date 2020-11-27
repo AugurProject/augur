@@ -9,7 +9,7 @@ import { GET_BLOCK } from '../apollo/queries'
 import { Text } from 'rebass'
 import _Decimal from 'decimal.js-light'
 import toFormat from 'toformat'
-import { DISTRO_NO_ID, DISTRO_YES_ID, MarketTokens, TICK_SIZE, timeframeOptions, TokenAddressMap, YES_NO_NUM_TICKS } from '../constants'
+import { DISTRO_NO_ID, DISTRO_YES_ID, MarketTokens, timeframeOptions, TokenAddressMap, YES_NO_NUM_TICKS } from '../constants'
 import Numeral from 'numeral'
 import { BigNumber } from '@ethersproject/bignumber'
 import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, ETHER, TokenAmount } from '@uniswap/sdk'
@@ -559,7 +559,8 @@ export async function getRemoveLiquidity({
   paraShareToken,
   fee,
   augurClient,
-  lpTokens
+  lpTokens,
+  useEth
 }): Promise<{ noShares: string; yesShares: string; cashShares: string } | null> {
   if (!augurClient || !marketId || !paraShareToken || !fee) {
     console.error('getRemoveLiquidity: augurClient is null or no amm address')
@@ -574,7 +575,7 @@ export async function getRemoveLiquidity({
   }
 }
 
-export function removeAmmLiquidity({ marketId, paraShareToken, fee, augurClient, lpTokens }) {
+export function removeAmmLiquidity({ marketId, paraShareToken, fee, augurClient, lpTokens, useEth }) {
   if (!augurClient || !marketId || !paraShareToken || !fee) return console.error('removeAmmLiquidity: augurClient is null or no amm address')
   const alsoSell = false;
   return augurClient.amm.doRemoveLiquidity(marketId, paraShareToken, new BN(fee), new BN(lpTokens), alsoSell)
@@ -633,7 +634,7 @@ export function getTradeType(trade: TradeInfo): string {
   return null
 }
 
-export async function estimateTrade(augurClient, trade: TradeInfo, includeFee: boolean = true) {
+export async function estimateTrade(augurClient, trade: TradeInfo, includeFee: boolean = true, useEth: boolean = false) {
   if (!augurClient || !trade.amm.id) return console.error('estimateTrade: augurClient is null or amm address')
   const tradeDirection = getTradeType(trade)
 
@@ -701,7 +702,7 @@ export async function estimateTrade(augurClient, trade: TradeInfo, includeFee: b
   return null
 }
 
-export async function doTrade(augurClient, trade: TradeInfo, minAmount: string) {
+export async function doTrade(augurClient, trade: TradeInfo, minAmount: string, useEth: boolean = false) {
   if (!augurClient || !trade.amm.id) return console.error('doTrade: augurClient is null or amm address')
   const tradeDirection = getTradeType(trade)
 

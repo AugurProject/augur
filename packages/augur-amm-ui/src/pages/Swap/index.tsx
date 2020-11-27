@@ -33,7 +33,7 @@ import Loader from '../../components/Loader'
 import { RouteComponentProps } from 'react-router-dom'
 import { TradeInfo } from '../../hooks/Trades'
 import { estimateTrade, formatCurrencyAmount, formatShares, formatToDisplayValue, isMarketCurrency, toPercent } from '../../utils'
-import { useAugurClient } from '../../contexts/Application'
+import { doUseETH, useAugurClient } from '../../contexts/Application'
 import { useMarketAmm } from '../../contexts/Markets'
 import { useMarketBalance } from '../../state/wallet/hooks'
 
@@ -60,7 +60,7 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
   const { account } = useActiveWeb3React()
   const ammExchange = useMarketAmm(marketId, amm)
   const userCashBalances = useMarketBalance(marketId, ammExchange?.shareToken?.cash?.id)
-
+  const useEth = doUseETH(ammExchange?.shareToken?.cash?.id)
   // for expert mode
   const toggleSettings = useToggleSettingsMenu()
 
@@ -82,7 +82,7 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
   useEffect(() => {
     async function estimate(augurClient, trade) {
       try {
-        const resultWithFee = await estimateTrade(augurClient, trade, true);
+        const resultWithFee = await estimateTrade(augurClient, trade, true, useEth);
         if (resultWithFee) {
           console.log('estimate trade with fee', resultWithFee, trade.currencyOut.decimals, trade)
           const outToken = new Token(
@@ -95,7 +95,7 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
           const estCurrency = resultWithFee === '0' ? null : new TokenAmount(outToken, JSBI.BigInt(String(resultWithFee)))
           setOutputAmount(estCurrency)
         }
-        const resultWithoutFee = await estimateTrade(augurClient, trade, false);
+        const resultWithoutFee = await estimateTrade(augurClient, trade, false, useEth);
         console.log('estimate trade without fee', resultWithoutFee, trade)
         let feeValue = "0";
         if (resultWithoutFee) {
@@ -115,7 +115,7 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
     if (trade && trade.currencyIn) {
       estimate(augurClient, trade)
     }
-  }, [trade])
+  }, [trade, useEth])
 
   useEffect(() => {
     if (outputAmount) {
@@ -186,7 +186,7 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
   const atMaxAmountInput = Boolean(maxAmountInput && parsedAmounts[Field.INPUT]?.equalTo(maxAmountInput))
 
   // the callback to execute the swap
-  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(trade, outputAmount, minAmount)
+  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(trade, outputAmount, minAmount, useEth)
 
   const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
 

@@ -35,7 +35,8 @@ interface FailedCall {
 export function useSwapCallback(
   trade: TradeInfo | undefined, // trade to execute, required
   outputAmount: TokenAmount,
-  minAmount: string
+  minAmount: string,
+  useEth: boolean = false
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
   const { account, chainId, library } = useActiveWeb3React()
   const augurClient = useAugurClient()
@@ -49,7 +50,7 @@ export function useSwapCallback(
       return {
         state: SwapCallbackState.VALID,
         callback: async function onSwap(): Promise<string> {
-          return doTrade(augurClient, trade, minAmount)
+          return doTrade(augurClient, trade, minAmount, useEth)
             .then((response: any) => {
               console.log('tx response', JSON.stringify(response))
               const inputSymbol = trade?.inputAmount?.currency?.symbol

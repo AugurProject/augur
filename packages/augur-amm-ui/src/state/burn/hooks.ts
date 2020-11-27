@@ -52,13 +52,14 @@ export function useDerivedBurnInfo(
   return { parsedAmounts, error }
 }
 
-export function getRemoveLiquidityBreakdown(augurClient, marketId: string, paraShareToken: string, fee: string, userLiquidity: string, setMethod: Function) {
+export function getRemoveLiquidityBreakdown(augurClient, marketId: string, paraShareToken: string, fee: string, userLiquidity: string, setMethod: Function, useEth: boolean) {
   return getRemoveLiquidity({
     marketId,
     paraShareToken,
     fee,
     augurClient,
-    lpTokens: userLiquidity
+    lpTokens: userLiquidity,
+    useEth
   }).then(results => {
     const breakdown = {
       noShares: formatShares(results.noShares),

@@ -23,7 +23,7 @@ import { MaxButton, Wrapper } from '../../components/swap/styleds'
 import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
 import { Dots } from '../../components/swap/styleds'
 import { getRemoveLiquidityBreakdown } from '../../state/burn/hooks'
-import { useAmmFactoryAddress, useAugurClient } from '../../contexts/Application'
+import { doUseETH, useAmmFactoryAddress, useAugurClient } from '../../contexts/Application'
 import { withRouter } from 'react-router-dom'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { useLPTokenBalances } from '../../state/wallet/hooks'
@@ -53,7 +53,7 @@ function RemoveLiquidity({
   )
 
   const theme = useContext(ThemeContext)
-
+  const useEth = doUseETH(ammExchange?.cash)
   // modal and loading
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [attemptingTxn, setAttemptingTxn] = useState(false) // clicked confirm
@@ -81,7 +81,7 @@ function RemoveLiquidity({
     if (!liquidityAmount) throw new Error('missing liquidity amount')
 
     setAttemptingTxn(true)
-    await removeAmmLiquidity({ marketId, paraShareToken: ammExchange?.sharetoken, fee: ammExchange?.fee, augurClient, lpTokens: liquidity })
+    await removeAmmLiquidity({ marketId, paraShareToken: ammExchange?.sharetoken, fee: ammExchange?.fee, augurClient, lpTokens: liquidity, useEth })
       .then((response: TransactionResponse) => {
         setAttemptingTxn(false)
 
@@ -171,7 +171,7 @@ function RemoveLiquidity({
     getRemoveLiquidityBreakdown(augurClient, marketId, ammExchange?.sharetoken, ammExchange?.fee, newLiquidity, result => {
       setBreakdown(result)
       setError(null)
-    })
+    }, useEth)
     if (newLiquidity === '0') setError('Enter an amount')
   }
 
