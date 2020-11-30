@@ -21,20 +21,19 @@ const ConnectAccount = () => {
     isConnectionTrayOpen,
     actions: { setIsConnectionTrayOpen, setMobileMenuState },
   } = useAppStatusStore();
-  if ((!isLogged && !restoredAccount) || !userInfo) return null;
+
+  useEffect(() => {
+    if (isMobile) {
+      setMobileMenuState(isConnectionTrayOpen ? MOBILE_MENU_STATES.ACCOUNT_DROPDOWN_OPEN : MOBILE_MENU_STATES.CLOSED);
+    }
+  }, [isConnectionTrayOpen]);
 
   function toggleDropdown(cb?: Function) {
     setIsConnectionTrayOpen(!isConnectionTrayOpen);
     if (cb && typeof cb === 'function') cb();
   }
 
-  useEffect(() => {
-    if (isMobile) {
-      isConnectionTrayOpen ?
-        setMobileMenuState(MOBILE_MENU_STATES.ACCOUNT_DROPDOWN_OPEN) :
-        setMobileMenuState(MOBILE_MENU_STATES.CLOSED);
-    }
-  }, [isConnectionTrayOpen]);
+  if ((!isLogged && !restoredAccount) || !userInfo) return null;
 
   return (
     <div
