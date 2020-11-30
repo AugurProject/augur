@@ -326,13 +326,14 @@ export class Users {
       ignoreAwaitingAndFinalizedMarkets: true,
     });
 
-    const funds = await Users.getTotalOnChainFrozenFunds(augur, db, {
-      account: params.account,
+    const breakdown = await Users.getUserFrozenFundsBreakdown(augur, db, {
       universe: params.universe,
+      account: params.account
     });
+
     if (profitLoss && Object.keys(profitLoss).length > 0) {
       userPositionTotals = {
-        totalFrozenFunds: funds.totalFrozenFunds,
+        totalFrozenFunds: breakdown.total,
         totalRealizedPL: profitLoss[DAYS_IN_MONTH].realized,
         tradingPositionsTotal: {
           unrealizedRevenue24hChangePercent:
@@ -411,13 +412,14 @@ export class Users {
       ignoreAwaitingAndFinalizedMarkets: true,
     });
 
-    const funds = await Users.getTotalOnChainFrozenFunds(augur, db, {
-      account: params.account,
+    const breakdown = await Users.getUserFrozenFundsBreakdown(augur, db, {
       universe: params.universe,
+      account: params.account
     });
+
     if (profitLoss && Object.keys(profitLoss).length > 0) {
       userPositionTotals = {
-        totalFrozenFunds: funds.totalFrozenFunds,
+        totalFrozenFunds: breakdown.total,
         totalRealizedPL: profitLoss[DAYS_IN_MONTH].realized,
         tradingPositionsTotal: {
           unrealizedRevenue24hChangePercent:
