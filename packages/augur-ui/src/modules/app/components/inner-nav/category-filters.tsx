@@ -28,7 +28,7 @@ export const pathToChildCategory = (
   hidden = true
 ) => {
   const {
-    marketsList: { isSearching }
+    marketsList: { isSearching },
   } = AppStatus.get();
   if (isSearching && hidden) return [];
   return selectedCategories.concat(selectedCategory);
@@ -210,7 +210,10 @@ const CategoryFilters = () => {
             icon={item.icon}
             count={item.count}
             handleClick={() =>
-              pathToChildCategory(item.category, isSportsTheme ? [] : selectedCategories)
+              pathToChildCategory(
+                item.category,
+                isSportsTheme ? [] : selectedCategories
+              )
             }
           />
           {isSportsTheme && subRows.length > 0 && (
@@ -270,7 +273,9 @@ const CategoryFilters = () => {
         <CategoryRow
           category={selectedCategory}
           count={getSelectedCategoryCount()}
-          handleClick={() => [selectedCategory]}
+          handleClick={() =>
+            isSportsTheme ? [selectedCategories] : [selectedCategory]
+          }
         />
       </div>
       {selectedCategory &&
@@ -301,7 +306,10 @@ const CategoryFilters = () => {
       </div>
     </div>
   );
-  const sportsTitle = selectedCategory && !sportsMobileView ? selectedCategory : 'Popular Markets';
+  const sportsTitle =
+    selectedCategory && !sportsMobileView
+      ? selectedCategory
+      : 'Popular Markets';
   return (
     <div className={Styles.CategoryFilters}>
       {isSportsTheme &&
@@ -317,13 +325,19 @@ const CategoryFilters = () => {
         ) : (
           <h3>{sportsTitle}</h3>
         ))}
-      {(!hasSelectedCategories || sportsMobileView) && renderPopularCategories()}
-      {(!hasSelectedCategories && categoryMetaData || sportsMobileView) && renderAllCategories()}
+      {(!hasSelectedCategories || sportsMobileView) &&
+        renderPopularCategories()}
+      {((!hasSelectedCategories && categoryMetaData) || sportsMobileView) &&
+        renderAllCategories()}
 
-      {hasSelectedCategories && categoryMetaData && !sportsMobileView && showAllCategoriesButton}
       {hasSelectedCategories &&
         categoryMetaData &&
-        hasSelectedCategoriesCount > 0 && !sportsMobileView && 
+        !sportsMobileView &&
+        showAllCategoriesButton}
+      {hasSelectedCategories &&
+        categoryMetaData &&
+        hasSelectedCategoriesCount > 0 &&
+        !sportsMobileView &&
         renderSelectedCategories()}
     </div>
   );
