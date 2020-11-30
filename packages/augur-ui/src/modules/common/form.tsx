@@ -2326,7 +2326,7 @@ export const CategoryRow = ({
   count = 0,
   icon,
   children,
-  showChildren,
+  showChildren = false,
   allCategories,
   viewAll,
 }: CategoryRowProps) => {
@@ -2365,9 +2365,10 @@ export const CategoryRow = ({
       search: makeQuery(query),
     });
   };
-
-  const [showChildrenOption, setShowChildren] = useState(false);
-  const hasChildren = children && Object.keys(children).length > 0;
+  const childrenArray = Object.keys(children || {});
+  const hasChildren = childrenArray.length > 0;
+  const isSelectedInChildren = childrenArray.includes(selectedCategory);
+  const [showChildrenOption, setShowChildren] = useState(showChildren && hasChildren && isSelectedInChildren);
   const categoryDisplay = viewAll ? `View all ${isShortText ? category.toUpperCase() : category}` : isShortText ? category.toUpperCase() : category;
   return (
     <>

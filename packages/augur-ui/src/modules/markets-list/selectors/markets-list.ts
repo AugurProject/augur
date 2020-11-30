@@ -7,9 +7,9 @@ import { getMarkets } from 'modules/markets/selectors/markets-all';
 import { AppStatus } from 'modules/app/store/app-status';
 
 export const selectPopularCategories = (useAllCategories) => {
-  const { marketsList } = AppStatus.get();
-  const meta = useAllCategories ? marketsList.allCategoriesMeta : marketsList.meta;
-  if (!marketsList.isSearching && meta) {
+  const { marketsList: { isSearching, isSearchInPlace, allCategoriesMeta, meta: stateMeta} } = AppStatus.get();
+  const meta = useAllCategories ? (allCategoriesMeta || stateMeta) : stateMeta;
+  if (!isSearching && meta) {
     const categories = Object.keys(meta.categories).map(category =>
       category.toLowerCase()
     );
@@ -31,7 +31,7 @@ export const selectPopularCategories = (useAllCategories) => {
       .map(mapObject);
 
     return POPULAR_CATEGORIES.filter(category =>
-      marketsList.isSearchInPlace ? categories.includes(category) : true
+      isSearchInPlace ? categories.includes(category) : true
     )
       .map((category, idx) => {
         const isCategoryWithResults = popularCategories.find(

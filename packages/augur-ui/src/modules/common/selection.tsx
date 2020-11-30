@@ -48,6 +48,7 @@ interface SelectionOption {
   label: string;
   id: number;
   subLabel?: string;
+  isDisabled?: boolean;
 }
 
 interface PillSelectionProps {
@@ -432,7 +433,7 @@ export const PillSelection = ({
       })}
       key={option.label}
     >
-      <button onClick={() => buttonSelect(option)}>
+      <button onClick={() => buttonSelect(option)} disabled={option.isDisabled}>
         {option.label} {option.subLabel && <span>{option.subLabel}</span>}
       </button>
     </li>

@@ -235,6 +235,10 @@
   .Dropdown {
     order: 2;
 
+    @media @breakpoint-mobile-tablet {
+      order: 0;
+    }
+
     > button:first-of-type {
       background-color: var(--color-primary-text);
       border-top: @size-3 solid transparent;
