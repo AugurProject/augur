@@ -24,13 +24,5 @@ export const retiredTemplates: RetiredTemplate[] = [
   {
     hash: '0xfa9e34f291a4519cf0433c76e93561da1f2854d71a2550aebe9851055616f241',
     autoFail: false,
-  }, 
-  {
-    hash: '0x876d4312d94ecffe58990877a673d2aa4055e13050c9a3bb4d2bfce8f6e05f28',
-    autoFail: false
-  },
-  {
-    hash: '0x0ab3d232c6f59838b07064d00574cb57a1c47d1b8cf3d4e4a0657d57b0b0aced',
-    autoFail: false,
   }
 ]

@@ -2889,6 +2889,33 @@ export function addScripts(flash: FlashSession) {
         compilerOutput
       );
 
+      const augurAddress = this.config.addresses.Augur;
+      const augurTradingAddress = this.config.addresses.AugurTrading;
+      await contractDeployer.uploadAccountLoaderContract(augurAddress, augurTradingAddress);
+    }
+  });
+
+  flash.addScript({
+    name: 'deploy-account-loader',
+    options: [],
+    async call(this: FlashSession, args: FlashArguments) {
+      const serial = !Boolean(args.parallel);
+      if (this.noProvider()) return;
+
+      this.pushConfig({ deploy: { serial }});
+      console.log('Deploying: ', sanitizeConfig(this.config).deploy);
+
+      const signer = await makeSigner(this.accounts[0], this.provider);
+      const dependencies = makeDependencies(this.accounts[0], this.provider, signer);
+
+      const contractDeployer = new ContractDeployer(
+        this.config,
+        dependencies,
+        this.provider.provider,
+        signer,
+        compilerOutput
+      );
+
       const augur = this.config.addresses.Augur;
       const augurTrading = this.config.addresses.AugurTrading;
       const loader = await contractDeployer.uploadAccountLoaderContract(augur, augurTrading);
