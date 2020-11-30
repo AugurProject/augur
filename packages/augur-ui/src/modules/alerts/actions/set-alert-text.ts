@@ -10,6 +10,7 @@ import {
   formatRep,
   formatShares,
   formatDai,
+  formatEther,
 } from 'utils/format-number';
 import {
   convertOnChainAmountToDisplayAmount,
@@ -54,7 +55,9 @@ import {
   DOINITIALREPORTWARPSYNC,
   SCALAR,
   REDEEMPARTICIPATIONTOKENS,
-  THEMES
+  THEMES,
+  DEFAULT_PARA_TOKEN,
+  WETH
 } from 'modules/common/constants';
 import { MarketData } from 'modules/types';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
@@ -68,7 +71,7 @@ function toCapitalizeCase(label) {
   return label.charAt(0).toUpperCase() + label.slice(1);
 }
 export function getInfo(params: any, status: string, marketInfo: MarketData, isOrder: boolean = true) {
-  const { theme } = AppStatus.get();
+  const { paraTokenName, theme } = AppStatus.get();
   const isTrading = theme === THEMES.TRADING;
   const outcome = new BigNumber(params.outcome || params._outcome).toString();
   const outcomeDescription = getOutcomeNameWithOutcome(marketInfo, outcome);
@@ -109,9 +112,9 @@ export function getInfo(params: any, status: string, marketInfo: MarketData, isO
     Augur.precision,
   ).toString();
 
-  const priceFormatted = isTrading ? formatDai(price) : convertToOdds(createBigNumber(price).times(10));
+  const priceFormatted = isTrading ? paraTokenName !== WETH ? formatDai(price) : formatEther(price) : convertToOdds(createBigNumber(price).times(10));
 
-  const cost = formatDai(createBigNumber(convertToNormalizedPrice({ price, min: marketInfo.minPrice, max: marketInfo.maxPrice, type: orderType })).times(amount));
+  const cost = paraTokenName !== WETH ? formatDai(createBigNumber(convertToNormalizedPrice({ price, min: marketInfo.minPrice, max: marketInfo.maxPrice, type: orderType })).times(amount)) : formatEther(createBigNumber(convertToNormalizedPrice({ price, min: marketInfo.minPrice, max: marketInfo.maxPrice, type: orderType })).times(amount));
 
   return {
     cost,
@@ -124,7 +127,7 @@ export function getInfo(params: any, status: string, marketInfo: MarketData, isO
 }
 export default function setAlertText(alert: any, callback: Function, returnOnly = false) {
   const Augur = augurSdk ? augurSdk.get() : undefined;
-
+  const { paraTokenName } = AppStatus.get();
   if (!alert || isEmpty(alert)) {
     return returnOnly ? alert : callback(alert);
   }
@@ -261,7 +264,7 @@ export default function setAlertText(alert: any, callback: Function, returnOnly 
         alert.details = `${toCapitalizeCase(alert.params.orderType)} ${
           formatShares(alert.params.amount).formatted
         } of ${alert.params.outcome} @ ${
-          formatDai(alert.params.price).formatted
+          paraTokenName !== WETH ? formatDai(alert.params.price).formatted : formatEther(alert.params.price).formatted
         }`;
       } else {
         loadMarketsInfoIfNotLoaded([marketId], () => {

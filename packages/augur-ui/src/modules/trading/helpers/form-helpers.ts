@@ -6,6 +6,8 @@ import {
   ONE,
   UPPER_FIXED_PRECISION_BOUND,
   MIN_ORDER_LIFESPAN,
+  DEFAULT_PARA_TOKEN,
+  WETH,
 } from 'modules/common/constants';
 import { FORM_INPUT_TYPES } from 'modules/trading/store/constants';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
@@ -184,8 +186,8 @@ export const testPropertyCombo = (
   return { isOrderValid: errorCount === 0, errors, errorCount };
 };
 
-export const findMultipleOf = (market, paraTokenName) => {
-  let tradeInterval = getDefaultTradeInterval(paraTokenName || 'DAI');
+export const findMultipleOf = (market, paraTokenName, paraTokenDecimals) => {
+  let tradeInterval = getDefaultTradeInterval(paraTokenName || DEFAULT_PARA_TOKEN);
   const numTicks = market.numTicks
     ? createBigNumber(market.numTicks)
     : tickSizeToNumTickWithDisplayPrices(
@@ -201,13 +203,12 @@ export const findMultipleOf = (market, paraTokenName) => {
       numTicks
     );
   }
-
-  return tradeInterval.dividedBy(market.tickSize).dividedBy(10 ** 18);
+  return tradeInterval.dividedBy(market.tickSize).dividedBy(10 ** paraTokenDecimals);
 };
 
-export const findNearestValues = (value, market, paraTokenName) => {
+export const findNearestValues = (value, market, paraTokenName, paraTokenDecimals) => {
   const valueBn = createBigNumber(value);
-  const multipleOf = findMultipleOf(market, paraTokenName);
+  const multipleOf = findMultipleOf(market, paraTokenName, paraTokenDecimals);
 
   let firstValue = valueBn.minus(valueBn.mod(multipleOf));
   let secondValue = valueBn.plus(multipleOf).minus(valueBn.mod(multipleOf));
@@ -231,6 +232,7 @@ export const testQuantityAndExpiry = (
   expiration?,
   confirmationTimeEstimation?,
   paraTokenName?,
+  paraTokenDecimals?,
 ): TestResults => {
   const { market, currentTimestamp } = props;
   const isScalar: boolean = market.marketType === SCALAR;
@@ -273,7 +275,7 @@ export const testQuantityAndExpiry = (
         createBigNumber(market.maxPrice)
       );
 
-  let tradeInterval = getDefaultTradeInterval(paraTokenName || 'DAI');
+  let tradeInterval = getDefaultTradeInterval(paraTokenName || DEFAULT_PARA_TOKEN);
   if (market.marketType == SCALAR) {
     tradeInterval = getTradeInterval(
       createBigNumber(market.minPrice).times(QUINTILLION),
@@ -290,7 +292,7 @@ export const testQuantityAndExpiry = (
   ) {
     errorCount += 1;
     passedTest = false;
-    const multipleOf = findMultipleOf(market, paraTokenName);
+    const multipleOf = findMultipleOf(market, paraTokenName, paraTokenDecimals);
     let firstValue = value.minus(value.mod(multipleOf));
     let secondValue = value.plus(multipleOf).minus(value.mod(multipleOf));
     if (firstValue.lt(ONE)) {
@@ -329,6 +331,7 @@ export const orderValidation = (
   confirmationTimeEstimation?,
   fromExternal = false,
   paraTokenName?,
+  paraTokenDecimals?,
 ): TestResults => {
   let errors = {
     [MULTIPLE_QUANTITY]: [],
@@ -373,6 +376,7 @@ export const orderValidation = (
       expiration,
       confirmationTimeEstimation,
       paraTokenName,
+      paraTokenDecimals,
     );
 
     quantityValid = isThisOrderValid;

@@ -14,6 +14,7 @@ import {
 import { DISPUTING, MARKETS } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
 import {
+  DEFAULT_PARA_TOKEN,
   HEADER_TYPE,
   REPORTING_STATE,
   SCALAR,

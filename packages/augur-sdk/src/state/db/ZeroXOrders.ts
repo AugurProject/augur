@@ -247,7 +247,7 @@ export class ZeroXOrders extends AbstractTable {
 
   validateStoredOrder(storedOrder: StoredOrder, markets: _.Dictionary<MarketData>): boolean {
     // Validate the order is a multiple of the recommended trade interval
-    let tradeInterval = getDefaultTradeInterval(process.env.PARA_DEPLOY_TOKEN_NAME || 'DAI');
+    let tradeInterval = getDefaultTradeInterval(process.env.PARA_DEPLOY_TOKEN_NAME || 'USDC');
     const marketData = markets[storedOrder.market];
     if (storedOrder.invalidOrder) return false;
     if (marketData && marketData.marketType === MarketType.Scalar) {

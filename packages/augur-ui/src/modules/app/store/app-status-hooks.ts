@@ -44,13 +44,14 @@ import {
   NEW_MARKET,
   MARKETS_LIST,
   INITIALIZED_3BOX,
+  PARA_TOKEN_NAME,
 } from 'modules/app/store/constants';
 import { EMPTY_STATE } from 'modules/create-market/constants';
-import { ZERO, NEW_ORDER_GAS_ESTIMATE, THEMES } from 'modules/common/constants';
+import { ZERO, NEW_ORDER_GAS_ESTIMATE, THEMES, WETH, DEFAULT_PARA_TOKEN } from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
 import { LiquidityOrder } from 'modules/types';
 import { windowRef } from 'utils/window-ref';
-import { formatDai, formatShares } from 'utils/format-number';
+import { formatDai, formatEther, formatShares } from 'utils/format-number';
 import { track, MODAL_CLOSED } from 'services/analytics/helpers';
 const {
   SET_THEME,
@@ -76,6 +77,7 @@ const {
   SET_IS_RECONNECTION_PAUSED,
   SET_CAN_HOTLOAD,
   SET_ENV,
+  SET_PARA_TOKEN_NAME,
   UPDATE_GAS_PRICE_INFO,
   SET_MOBILE_MENU_STATE,
   SET_CURRENT_BASE_PATH,
@@ -254,6 +256,10 @@ export function AppStatusReducer(state, action) {
     }
     case SET_ENV: {
       updatedState[ENV] = action.env;
+      break;
+    }
+    case SET_PARA_TOKEN_NAME: {
+      updatedState[PARA_TOKEN_NAME] = action.paraTokenName;;
       break;
     }
     case SET_INITIALIZED_3BOX: {
@@ -547,6 +553,7 @@ export function AppStatusReducer(state, action) {
 
       let orderAdded = false;
 
+      const paraToken = updatedState[ENV].paraDeploys && updatedState[ENV].paraDeploys[updatedState[ENV].paraDeploy].name || DEFAULT_PARA_TOKEN;
       const updatedOrders: LiquidityOrder[] = existingOrders.map(
         (order: LiquidityOrder) => {
           const orderInfo = Object.assign({}, order);
@@ -581,10 +588,10 @@ export function AppStatusReducer(state, action) {
           mySize: quantity,
           cumulativeShares: quantity,
           orderEstimate: createBigNumber(orderEstimate),
-          avgPrice: formatDai(price),
+          avgPrice: paraToken !== WETH ? formatDai(price) : formatEther(price),
           unmatchedShares: formatShares(quantity),
           sharesEscrowed: formatShares(quantity),
-          tokensEscrowed: formatDai(createBigNumber(orderEstimate)),
+          tokensEscrowed: paraToken !== WETH ? formatDai(createBigNumber(orderEstimate)) : formatEther(createBigNumber(orderEstimate)),
           id: updatedOrders.length,
         } as any);
       }
@@ -713,6 +720,7 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       setCanHotload: canHotload =>
         dispatch({ type: SET_CAN_HOTLOAD, canHotload }),
       setEnv: env => dispatch({ type: SET_ENV, env }),
+      setParaTokenName: paraTokenName => dispatch({ type: SET_PARA_TOKEN_NAME, paraTokenName }),
       updateGasPriceInfo: gasPriceInfo =>
         dispatch({ type: UPDATE_GAS_PRICE_INFO, gasPriceInfo }),
       setMobileMenuState: mobileMenuState =>

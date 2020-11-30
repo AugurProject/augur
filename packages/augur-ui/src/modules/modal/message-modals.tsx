@@ -148,14 +148,11 @@ export const ModalCreationHelp = ({ copyType }) => {
 export const ModalTokenFaucet = () => {
   const {
     modal,
-    env: { paraDeploys, paraDeploy },
+    paraTokenName,
     actions: { closeModal },
   } = useAppStatusStore();
 
-  if (!paraDeploy) return null;
-
-  const paraTokenName = paraDeploys[paraDeploy].name;
-
+  if (!paraTokenName) return null;
   return (
     <Message
       title={modal.token}

@@ -14,12 +14,14 @@ import {
   ETH,
   REP,
   DAI,
+  DEFAULT_PARA_TOKEN,
+  WETH,
 } from 'modules/common/constants';
 import { Pagination } from 'modules/common/pagination';
 import { ValueLabel, TextLabel } from 'modules/common/labels';
 import { DatePicker, FormDropdown } from 'modules/common/form';
 import { Title } from 'modules/modal/common';
-import { formatShares, formatDai } from 'utils/format-number';
+import { formatShares, formatDai, formatEther } from 'utils/format-number';
 import Styles from 'modules/modal/modal.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
 import {
@@ -151,9 +153,9 @@ export const Transactions = () => {
     universe: { id: universe },
     modal,
     blockchain: { currentAugurTimestamp: now },
+    paraTokenName,
     actions: { closeModal }
   } = useAppStatusStore();
-
   const title = "Transactions History";
   const closeAction = () => closeModal();
   const currentTimestamp = now;
@@ -354,7 +356,7 @@ export const Transactions = () => {
         }
       />,
       <ValueLabel
-        value={formatDai(Number(tx.price))}
+        value={paraTokenName !== WETH ? formatDai(Number(tx.price)) : formatEther(Number(tx.price))}
         showDenomination={false}
         showEmptyDash={false}
       />,
@@ -365,12 +367,12 @@ export const Transactions = () => {
       />,
       <span>{tx.coin}</span>,
       <ValueLabel
-        value={formatDai(Number(tx.fee))}
+        value={paraTokenName !== WETH ? formatDai(Number(tx.fee)) : formatEther(Number(tx.fee))}
         showDenomination={false}
         showEmptyDash={false}
       />,
       <ValueLabel
-        value={formatDai(createBigNumber(tx.total))}
+        value={paraTokenName !== WETH ? formatDai(createBigNumber(tx.total)) : formatEther(createBigNumber(tx.total))}
         showDenomination={false}
         showEmptyDash={false}
       />,

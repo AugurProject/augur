@@ -122,9 +122,7 @@ export const Confirm = ({
   initialLiquidity,
 }: ConfirmProps) => {
   const {
-    env: {
-      paraDeploy, paraDeploys,
-    },
+    paraTokenName,
     newMarket,
     loginAccount: {
       balances: { eth, weth },
@@ -144,7 +142,6 @@ export const Confirm = ({
     availableBalance = availableBalance.minus(newMarket.initialLiquidityDai);
   }
 
-  const paraTokenName = paraDeploys && paraDeploy && paraDeploys[paraDeploy].name || DEFAULT_PARA_TOKEN;
   const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
   const availableEth = createBigNumber(eth);
   const { id: selectedOutcomeId, description: outcomeName } = selectedOutcome;

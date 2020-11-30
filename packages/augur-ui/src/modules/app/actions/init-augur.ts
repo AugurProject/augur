@@ -24,7 +24,8 @@ import {
   SIGNIN_SIGN_WALLET,
   MODAL_REPORTING_ONLY,
   DISCLAIMER_SEEN,
-  MODAL_NETWORK_DISCONNECTED
+  MODAL_NETWORK_DISCONNECTED,
+  DEFAULT_PARA_TOKEN
 } from 'modules/common/constants';
 import { listenForStartUpEvents } from 'modules/events/actions/listen-to-updates';
 import { windowRef } from 'utils/window-ref';
@@ -270,7 +271,7 @@ export const connectAugur = async (
 
   await augurSdkLite.makeLiteClient(
     provider,
-    config.addresses,
+    config,
     config.networkId
   );
   AppStatus.actions.setCanHotload(true); // Hotload now!
@@ -374,6 +375,8 @@ export const initAugur = async (
   // cache fingerprint
   getFingerprint();
   AppStatus.actions.setEnv(config);
+  const paraTokenName = process.env.PARA_DEPLOY_TOKEN_NAME || DEFAULT_PARA_TOKEN;
+  AppStatus.actions.setParaTokenName(paraTokenName);
   tryToPersistStorage();
   connectAugur(config, true, callback);
 

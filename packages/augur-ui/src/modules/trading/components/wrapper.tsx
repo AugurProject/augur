@@ -18,6 +18,7 @@ import {
   USDC,
   USDT,
   WETH,
+  DEFAULT_PARA_TOKEN,
 } from 'modules/common/constants';
 import Styles from 'modules/trading/components/wrapper.styles.less';
 import { OrderButton, PrimaryButton } from 'modules/common/buttons';
@@ -66,6 +67,7 @@ const getMarketPath = (id, theme) => ({
 interface defaultTradeProps {
   market: MarketData;
   selectedOutcome: OutcomeFormatted;
+  paraTokenName: string;
 }
 
 const getDefaultTrade = ({
@@ -78,6 +80,7 @@ const getDefaultTrade = ({
     cumulativeScale,
   },
   selectedOutcome,
+  paraTokenName,
 }: defaultTradeProps) => {
   if (!marketType || (!selectedOutcome && !isFinite(selectedOutcome.id)))
     return null;
@@ -90,7 +93,8 @@ const getDefaultTrade = ({
       minPrice,
       cumulativeScale,
     },
-    {}
+    {},
+    paraTokenName,
   );
 };
 
@@ -176,7 +180,7 @@ const Wrapper = ({
     restoredAccount,
     blockchain: { currentAugurTimestamp: currentTimestamp },
     actions: { setModal },
-    env: { ui },
+    paraTokenName,
   } = useAppStatusStore();
   const {
     orderProperties,
@@ -187,7 +191,7 @@ const Wrapper = ({
   const isPreview = getIsPreview(location);
   const initialLiquidity = isPreview && !isTutorial;
   const [trade, setTrade] = useState(
-    getDefaultTrade({ market: market, selectedOutcome })
+    getDefaultTrade({ market, selectedOutcome, paraTokenName })
   );
   const [isSimulatingTrade, setIsSimulatingTrade] = useState(false);
   const marketId = market.id;
@@ -230,7 +234,7 @@ const Wrapper = ({
   }
 
   function clearOrderConfirmation() {
-    setTrade(getDefaultTrade({ market: market, selectedOutcome }));
+    setTrade(getDefaultTrade({ market, selectedOutcome, paraTokenName }));
   }
 
   function handlePlaceMarketTrade(market: MarketData, selectedOutcome: OutcomeFormatted) {
@@ -417,13 +421,13 @@ const Wrapper = ({
     const {
       loginAccount,
       env: { ui, paraDeploy, paraDeploys },
+      paraTokenName,
     } = useAppStatusStore();
     const disableTrading = Boolean(process.env.REPORTING_ONLY);
     let hasFunds = false;
 
     if (!paraDeploys || !paraDeploys[paraDeploy]) return null;
-    const paraTokenName = paraDeploys[paraDeploy].name;
-
+    const paraTokenDecimals = paraDeploys[paraDeploy].decimals;
     if (paraTokenName === USDT) {
       hasFunds = !!loginAccount.balances.usdt;
     }
@@ -452,7 +456,8 @@ const Wrapper = ({
       },
       0,
       false,
-      paraTokenName
+      paraTokenName,
+      paraTokenDecimals,
     );
     let actionButton: any = (
       <OrderButton

@@ -21,12 +21,14 @@ import {
   SPORTS_GROUP_MARKET_TYPES,
   CLAIMMARKETSPROCEEDS,
   TRANSACTIONS,
+  DEFAULT_PARA_TOKEN,
+  WETH,
 } from 'modules/common/constants';
 import Media from 'react-media';
 import { CashoutButton, PrimaryButton, ProcessingButton } from 'modules/common/buttons';
 import MarketLink from 'modules/market/components/market-link/market-link';
 import { convertToOdds } from 'utils/get-odds';
-import { formatDai } from 'utils/format-number';
+import { formatDai, formatEther } from 'utils/format-number';
 import { useBetslipStore } from 'modules/trading/store/betslip';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { createBigNumber } from 'utils/create-big-number';
@@ -48,13 +50,13 @@ export const ClaimWinnings = ({ onlyCheckMarketId }) => {
   const { matched } = useBetslipStore();
   const {
     accountPositions: positions,
+    paraTokenName,
     loginAccount: { address: account },
     actions: { setModal },
   } = useAppStatusStore();
 
   let totalProceeds = ZERO;
   let claimableMarkets = [];
-
   Object.keys(matched.items)
     .filter(marketId =>
       onlyCheckMarketId ? marketId === onlyCheckMarketId : true
@@ -85,7 +87,7 @@ export const ClaimWinnings = ({ onlyCheckMarketId }) => {
       content={
         <div className={Styles.ClaimWinnings}>
           <span>
-            You have <b>{formatDai(totalProceeds).full}</b> in winnings to
+            You have <b>{paraTokenName !== WETH ? formatDai(totalProceeds).full : formatEther(totalProceeds).full}</b> in winnings to
             claim.
           </span>
           <ProcessingButton

@@ -17,6 +17,7 @@ import {
   PAGINATION_COUNT,
   DEFAULT_MARKET_OFFSET,
   SPORTS_GROUP_TYPES,
+  DEFAULT_PARA_TOKEN,
 } from 'modules/common/constants';
 import { MARKETS } from 'modules/routes/constants/views';
 import {
@@ -80,6 +81,7 @@ export const DRAFTS = 'drafts';
 export const INITIALIZED_3BOX = 'initialized3box';
 export const NEW_MARKET = 'newMarket';
 export const MARKETS_LIST = 'marketsList';
+export const PARA_TOKEN_NAME = 'paraTokenName';
 
 export const DEFAULT_PENDING_ORDERS = {
   [PENDING_ORDERS]: {},
@@ -290,6 +292,7 @@ export const DEFAULT_APP_STATUS = {
   [NEW_MARKET]: { ...EMPTY_STATE },
   [MARKETS_LIST]: DEFAULT_MARKETS_LIST_STATE,
   betslipMinimized: true,
+  [PARA_TOKEN_NAME]: DEFAULT_PARA_TOKEN,
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -327,6 +330,7 @@ export const APP_STATUS_ACTIONS = {
   UPDATE_UNIVERSE: 'UPDATE_UNIVERSE',
   SWITCH_UNIVERSE: 'SWITCH_UNIVERSE',
   UPDATE_LOGIN_ACCOUNT: 'UPDATE_LOGIN_ACCOUNT',
+  SET_PARA_TOKEN_NAME: 'SET_PARA_TOKEN_NAME',
   CLEAR_LOGIN_ACCOUNT: 'CLEAR_LOGIN_ACCOUNT',
   LOAD_FAVORITES: 'LOAD_FAVORITES',
   TOGGLE_FAVORITE: 'TOGGLE_FAVORITE',
@@ -427,4 +431,5 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   removeAllOrdersFromNewMarket: () => {},
   clearNewMarket: () => {},
   updateMarketsList: data => {},
+  setParaTokenName: paraToken => {},
 };

@@ -129,8 +129,9 @@ const ValidationContainer = ({
   market,
   quantityValue,
   paraTokenName,
+  paraTokenDecimals,
 }) => {
-  const [low, high] = findNearestValues(quantityValue, market, paraTokenName);
+  const [low, high] = findNearestValues(quantityValue, market, paraTokenName, paraTokenDecimals);
   return (
     <div className={Styles.ErrorContainer}>
       {errors[MULTIPLE_QUANTITY].map((error, key) => (
@@ -246,11 +247,11 @@ const Form = ({
     gasPriceInfo,
     blockchain: { currentAugurTimestamp: currentTimestamp },
     env: { paraDeploy, paraDeploys },
+    paraTokenName,
   } = useAppStatusStore();
 
   if (!paraDeploys || !paraDeploys[paraDeploy]) return null;
-  const paraTokenName = paraDeploys[paraDeploy].name;
-
+  const paraTokenDecimals = paraDeploys[paraDeploy].decimals;
   const isScalar = market.marketType === SCALAR;
   const orderBook = initialLiquidity ?
     formatOrderBook(market.orderBook[selectedOutcomeId]) :
@@ -294,6 +295,7 @@ const Form = ({
     confirmationTimeEstimation,
     false,
     paraTokenName,
+    paraTokenDecimals,
   );
 
   useEffect(() => {
@@ -345,7 +347,7 @@ const Form = ({
 
   function updateAndValidate(property: string, rawValue) {
     updateOrderProperties({ [property]: rawValue });
-    return validateForm(property, rawValue);
+    return validateForm(property, rawValue, paraTokenName);
   }
 
   function updateTotalValue(percent: Number) {
@@ -353,7 +355,7 @@ const Form = ({
       .times(createBigNumber(percent))
       .integerValue(BigNumber.ROUND_DOWN);
     updateOrderProperties({ [EST_DAI]: value.toString() });
-    validateForm(EST_DAI, value.toString());
+    validateForm(EST_DAI, value.toString(), paraTokenName);
   }
 
   function validateForm(property: string, rawValue, paraTokenName) {
@@ -384,6 +386,7 @@ const Form = ({
       confirmationTimeEstimation,
       false,
       paraTokenName,
+      paraTokenDecimals,
     );
 
     if (validationResults.errorCount > 0) {
@@ -527,7 +530,7 @@ const Form = ({
           <label htmlFor="quantity">Quantity</label>
           {!isScalar && (
             <label>
-              (must be a multiple of {findMultipleOf(market, paraTokenName).toString()})
+              (must be a multiple of {findMultipleOf(market, paraTokenName, paraTokenDecimals).toString()})
             </label>
           )}
           <div
@@ -862,6 +865,7 @@ const Form = ({
             market,
             quantityValue,
             paraTokenName,
+            paraTokenDecimals,
           }}
         />
       )}

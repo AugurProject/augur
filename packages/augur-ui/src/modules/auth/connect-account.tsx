@@ -7,13 +7,13 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import Styles from 'modules/auth/connect-account.styles.less';
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
 import { MOBILE_MENU_STATES } from 'modules/common/constants';
-import { BigNumber, createBigNumber } from 'utils/create-big-number';
+import { BigNumber } from 'utils/create-big-number';
 import { formatDai, formatEther } from 'utils/format-number';
-import { USDT, USDC, DAI } from 'modules/common/constants';
+import { WETH } from 'modules/common/constants';
 import { getAccountFunds } from './helpers/login-account';
 
 export const formatParaBalance = (balance: BigNumber, paraToken: string) => {
-  if (paraToken === USDT || paraToken === USDC || paraToken === DAI) {
+  if (paraToken !== WETH) {
     return formatDai(balance).full;
   } else {
     return formatEther(balance).full;
@@ -26,7 +26,7 @@ const ConnectAccount = () => {
   const {
     loginAccount: { meta: userInfo },
     loginAccount,
-    env: { paraDeploy, paraDeploys },
+    paraTokenName,
     isLogged,
     isMobile,
     restoredAccount,
@@ -48,11 +48,10 @@ const ConnectAccount = () => {
   if ((!isLogged && !restoredAccount) || !userInfo) return null;
   let formattedBalance = formatDai(0).full;
 
-  if (paraDeploy && paraDeploys) {
-    const paraToken = paraDeploys[paraDeploy].name;
-    const balances = getAccountFunds(loginAccount, paraToken);
+  if (paraTokenName) {
+    const balances = getAccountFunds(loginAccount, paraTokenName);
     const totalBalance = balances?.totalAvailableTradingBalance;
-    formattedBalance = formatParaBalance(totalBalance, paraToken);
+    formattedBalance = formatParaBalance(totalBalance, paraTokenName);
   }
 
   return (

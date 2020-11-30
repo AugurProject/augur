@@ -37,11 +37,9 @@ export const Transactions = () => {
   const {
     theme,
     loginAccount: { meta, balances },
-    env: { paraDeploy, paraDeploys },
+    paraTokenName,
     actions: { setModal },
   } = useAppStatusStore();
-
-  const paraTokenName = paraDeploy && paraDeploys && paraDeploys[paraDeploy].name || DEFAULT_PARA_TOKEN;
   const showWrapEther = paraTokenName === 'WETH';
   const isTrading = theme === THEMES.TRADING;
   const networkId = getNetworkId();

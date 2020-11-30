@@ -134,6 +134,7 @@ export const runBetslipTrade = (marketId, order, cashOut, cb) => {
   const {
     loginAccount: { address },
     accountPositions,
+    paraTokenName,
   } = AppStatus.get();
   const market = marketInfos[marketId];
 
@@ -153,6 +154,7 @@ export const runBetslipTrade = (marketId, order, cashOut, cb) => {
       order.outcomeId,
       accountPositions,
       address,
+      paraTokenName,
       (err, simulateTradeData) => {
         cb && cb(simulateTradeData);
       }
@@ -307,9 +309,10 @@ export const checkMultipleOfShares = (wager, price, market) => {
   const shares = getShares(wager, price);
   const {
     env: { paraDeploy, paraDeploys },
+    paraTokenName,
   } = useAppStatusStore();
 
-  const paraTokenName = paraDeploys[paraDeploy].name || DEFAULT_PARA_TOKEN;
+  const paraTokenDecimals = paraDeploys[paraDeploy].decimals;
   const tradeInterval = getDefaultTradeInterval(paraTokenName);
   const Augur = augurSdk ? augurSdk.get() : undefined;
   if (
@@ -321,7 +324,7 @@ export const checkMultipleOfShares = (wager, price, market) => {
       .mod(tradeInterval)
       .isEqualTo(0)
   ) {
-    const multipleOf = findMultipleOf(market, paraTokenName);
+    const multipleOf = findMultipleOf(market, paraTokenName, paraTokenDecimals);
     return `Quantity must be a multiple of ${multipleOf}. cur: ${shares}`;
   }
   return '';
