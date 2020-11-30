@@ -185,6 +185,7 @@ const CategoryFilters = () => {
           ({ category }) => category === SPORTS || category === POLITICS
         )
       : popularCategories;
+
     let renderPopular = categoriesToRender.map((item, idx) => {
       if (isSearching) {
         // No meta data yet
@@ -201,8 +202,7 @@ const CategoryFilters = () => {
       let subRows = [];
       if (isSportsTheme && item.children) {
         subRows = getSubRows(item);
-      }
-
+      }    
       return (
         <div key={idx}>
           <CategoryRow
