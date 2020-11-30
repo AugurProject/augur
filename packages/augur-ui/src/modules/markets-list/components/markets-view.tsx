@@ -24,6 +24,7 @@ import {
   MARKET_SORT_PARAMS,
   SORT_OPTIONS,
   SORT_OPTIONS_SPORTS,
+  SPORTS_GROUP_TYPES,
 } from 'modules/common/constants';
 import { PillSelection } from 'modules/common/selection';
 import { MarketList } from '@augurproject/sdk-lite';
@@ -99,6 +100,8 @@ const MarketsView = () => {
       selectedCategories,
       sportsGroupTypeFilter,
       selectedCategory,
+      numDailies,
+      numFutures,
     },
     loginAccount: {
       settings: {
@@ -123,8 +126,6 @@ const MarketsView = () => {
     theme,
     actions: { updateMarketsList, updateFilterSortOptions },
   } = useAppStatusStore();
-
-
   const {
     actions: { updateMarketsData },
   } = useMarketsStore();
@@ -264,15 +265,15 @@ const MarketsView = () => {
             sportGroup => sportGroup.id
           );
           const sportsGroupCount = sportsGroups.length;
-          const numDaily = sportsGroups.filter(
-            m => m.type === SPORTS_MARKET_TYPES[0].header
+          const numDailies = sportsGroups.filter(
+            m => (m.type === SPORTS_MARKET_TYPES[0].header || m.type === SPORTS_GROUP_TYPES.COMBO)
           ).length;
           const numFutures = sportsGroups.filter(
             m => m.type === SPORTS_MARKET_TYPES[1].header
           ).length;
           const selectedNum =
             SPORTS_MARKET_TYPES[0].header === sportsGroupTypeFilter
-              ? numDaily
+              ? numDailies
               : numFutures;
           let newSportsGroupTypeFilter = sportsGroupTypeFilter;
           if (
@@ -322,6 +323,8 @@ const MarketsView = () => {
             meta: result.meta,
             sportsGroupTypeFilter: newSportsGroupTypeFilter,
             allCategoriesMeta: null,
+            numFutures,
+            numDailies,
           };
           if (!selectedCategories || selectedCategories.length === 0) {
             data.allCategoriesMeta = result.meta;
@@ -354,6 +357,9 @@ const MarketsView = () => {
     } filter is set to “All”. This puts you at risk of trading on invalid markets.`;
   }
   const sportsTitle = selectedCategory ? selectedCategory : 'Popular Markets';
+  const sportsOptions = SPORTS_MARKET_TYPES;
+  sportsOptions[0].isDisabled = !numDailies;
+  sportsOptions[1].isDisabled = !numFutures;
   return (
     <section className={Styles.MarketsView} ref={componentWrapper}>
       <HelmetTag {...MARKETS_VIEW_HEAD_TAGS} />

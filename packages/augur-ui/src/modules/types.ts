@@ -548,6 +548,8 @@ export interface MarketsList {
   marketCardFormat: string;
   isSearchInPlace: boolean;
   sportsGroupTypeFilter: string;
+  numFutures: number;
+  numDailies: number;
 }
 
 export interface DefaultOrderProperties {
