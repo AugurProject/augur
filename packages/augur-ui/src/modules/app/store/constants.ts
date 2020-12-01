@@ -45,6 +45,8 @@ export const IS_ODDS_MENU_OPEN = 'isOddsMenuOpen';
 export const IS_HELP_MENU_OPEN = 'isHelpMenuOpen';
 export const IS_CONNECTION_TRAY_OPEN = 'isConnectionTrayOpen';
 export const IS_ALERTS_MENU_OPEN = 'isAlertsMenuOpen';
+export const IS_PRODUCT_SWITCHER_OPEN = 'isProductSwitcherOpen';
+export const MENU_CHANGE = 'menuChange';
 export const Ox_ENABLED = 'zeroXEnabled';
 export const ETH_TO_DAI_RATE = 'ethToDaiRate';
 export const REP_TO_DAI_RATE = 'repToDaiRate';
@@ -80,7 +82,6 @@ export const DRAFTS = 'drafts';
 export const INITIALIZED_3BOX = 'initialized3box';
 export const NEW_MARKET = 'newMarket';
 export const MARKETS_LIST = 'marketsList';
-export const IS_PRODUCT_SWITCHER_OPEN = 'isProductSwitcherOpen';
 
 export const DEFAULT_PENDING_ORDERS = {
   [PENDING_ORDERS]: {},
@@ -258,6 +259,7 @@ export const DEFAULT_APP_STATUS = {
   [IS_CONNECTION_TRAY_OPEN]: false,
   [IS_ODDS_MENU_OPEN]: false,
   [IS_ALERTS_MENU_OPEN]: false,
+  [IS_PRODUCT_SWITCHER_OPEN]: false,
   [Ox_ENABLED]: false,
   [ETH_TO_DAI_RATE]: null,
   [REP_TO_DAI_RATE]: null,
@@ -292,7 +294,6 @@ export const DEFAULT_APP_STATUS = {
   [NEW_MARKET]: { ...EMPTY_STATE },
   [MARKETS_LIST]: DEFAULT_MARKETS_LIST_STATE,
   betslipMinimized: true,
-  [IS_PRODUCT_SWITCHER_OPEN]: false,
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -305,6 +306,7 @@ export const APP_STATUS_ACTIONS = {
   SET_IS_HELP_MENU_OPEN: 'SET_IS_HELP_MENU_OPEN',
   SET_IS_CONNECTION_TRAY_OPEN: 'SET_IS_CONNECTION_TRAY_OPEN',
   SET_IS_ALERTS_MENU_OPEN: 'SET_IS_ALERTS_MENU_OPEN',
+  SET_IS_PRODUCT_SWITCHER_OPEN: 'SET_IS_PRODUCT_SWITCHER_OPEN',
   CLOSE_APP_MENUS: 'CLOSE_APP_MENUS',
   SET_Ox_ENABLED: 'SET_Ox_ENABLED',
   UPDATE_DAI_RATES: 'UPDATE_DAI_RATES',
@@ -357,7 +359,6 @@ export const APP_STATUS_ACTIONS = {
   CLEAR_NEW_MARKET: 'CLEAR_NEW_MARKET',
   UPDATE_MARKETS_LIST: 'UPDATE_MARKETS_LIST',
   SET_BETSLIP_MINIMIZED: 'SET_BETSLIP_MINIMIZED',
-  SET_IS_PRODUCT_SWITCHER_OPEN: 'SET_IS_PRODUCT_SWITCHER_OPEN',
 };
 
 export const STUBBED_APP_STATUS_ACTIONS = {
@@ -369,6 +370,7 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   setIsHelpMenuOpen: isOpen => {},
   setIsConnectionTrayOpen: isOpen => {},
   setIsAlertsMenuOpen: isOpen => {},
+  setIsProductSwitcherOpen: isOpen => {},
   closeAppMenus: () => {},
   setIsMobile: isMobile => {},
   setOxEnabled: isOxEnabled => {},
@@ -435,5 +437,4 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   removeAllOrdersFromNewMarket: () => {},
   clearNewMarket: () => {},
   updateMarketsList: data => {},
-  setIsProductSwitcherOpen: isProductSwitcherOpen => {}
 };

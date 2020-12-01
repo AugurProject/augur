@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useRef, useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import Styles from './select-product-dropdown.styles.less';
 import classNames from 'classnames';
 import { DaiIcon, SelectProductIcon, StylizedEthIcon } from 'modules/common/icons';
@@ -37,7 +37,7 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
     isProductSwitcherOpen,
     actions: {
       setTheme,
-      setIsProductSwitcherOpen
+      setIsProductSwitcherOpen,
     },
   } = useAppStatusStore();
   const [toggleAugurPro, setToggleAugurPro] = useState(false);
@@ -105,7 +105,11 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
       [Styles.ShowDropdown]: isProductSwitcherOpen,
       [Styles.HideOnMobile]: hideOnMobile
     })}>
-      <button onClick={() => setIsProductSwitcherOpen(!isProductSwitcherOpen)}>
+      <button onClick={() => {
+        console.log('testing');
+        console.log(isProductSwitcherOpen);
+        setIsProductSwitcherOpen(!isProductSwitcherOpen);
+      }}>
         {SelectProductIcon}
         {!hideOnMobile && (
           <>
