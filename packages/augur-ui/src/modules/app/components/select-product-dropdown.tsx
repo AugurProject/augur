@@ -105,11 +105,7 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
       [Styles.ShowDropdown]: isProductSwitcherOpen,
       [Styles.HideOnMobile]: hideOnMobile
     })}>
-      <button onClick={() => {
-        console.log('testing');
-        console.log(isProductSwitcherOpen);
-        setIsProductSwitcherOpen(!isProductSwitcherOpen);
-      }}>
+      <button onClick={() => setIsProductSwitcherOpen(!isProductSwitcherOpen)}>
         {SelectProductIcon}
         {!hideOnMobile && (
           <>
