@@ -80,6 +80,7 @@ export const DRAFTS = 'drafts';
 export const INITIALIZED_3BOX = 'initialized3box';
 export const NEW_MARKET = 'newMarket';
 export const MARKETS_LIST = 'marketsList';
+export const IS_PRODUCT_SWITCHER_OPEN = 'isProductSwitcherOpen';
 
 export const DEFAULT_PENDING_ORDERS = {
   [PENDING_ORDERS]: {},
@@ -291,6 +292,7 @@ export const DEFAULT_APP_STATUS = {
   [NEW_MARKET]: { ...EMPTY_STATE },
   [MARKETS_LIST]: DEFAULT_MARKETS_LIST_STATE,
   betslipMinimized: true,
+  [IS_PRODUCT_SWITCHER_OPEN]: false,
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -354,7 +356,8 @@ export const APP_STATUS_ACTIONS = {
   UPDATE_NEW_MARKET: 'UPDATE_NEW_MARKET',
   CLEAR_NEW_MARKET: 'CLEAR_NEW_MARKET',
   UPDATE_MARKETS_LIST: 'UPDATE_MARKETS_LIST',
-  SET_BETSLIP_MINIMIZED: 'SET_BETSLIP_MINIMIZED'
+  SET_BETSLIP_MINIMIZED: 'SET_BETSLIP_MINIMIZED',
+  SET_IS_PRODUCT_SWITCHER_OPEN: 'SET_IS_PRODUCT_SWITCHER_OPEN',
 };
 
 export const STUBBED_APP_STATUS_ACTIONS = {
@@ -432,4 +435,5 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   removeAllOrdersFromNewMarket: () => {},
   clearNewMarket: () => {},
   updateMarketsList: data => {},
+  setIsProductSwitcherOpen: isProductSwitcherOpen => {}
 };

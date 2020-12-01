@@ -44,6 +44,7 @@ import {
   NEW_MARKET,
   MARKETS_LIST,
   INITIALIZED_3BOX,
+  IS_PRODUCT_SWITCHER_OPEN,
 } from 'modules/app/store/constants';
 import { EMPTY_STATE } from 'modules/create-market/constants';
 import { ZERO, NEW_ORDER_GAS_ESTIMATE, THEMES } from 'modules/common/constants';
@@ -114,6 +115,7 @@ const {
   CLEAR_NEW_MARKET,
   UPDATE_MARKETS_LIST,
   SET_BETSLIP_MINIMIZED,
+  SET_IS_PRODUCT_SWITCHER_OPEN
 } = APP_STATUS_ACTIONS;
 
 export const setHTMLTheme = theme =>
@@ -675,6 +677,10 @@ export function AppStatusReducer(state, action) {
       };
       break;
     }
+    case SET_IS_PRODUCT_SWITCHER_OPEN: {
+      updatedState[IS_PRODUCT_SWITCHER_OPEN] = action.isProductSwitcherOpen;
+      break;
+    }
     default:
       console.error(`Error: ${action.type} not caught by App Status reducer.`);
   }
@@ -827,6 +833,7 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
         dispatch({ type: REMOVE_ALL_ORDER_FROM_NEW_MARKET }),
       clearNewMarket: () => dispatch({ type: CLEAR_NEW_MARKET }),
       updateMarketsList: data => dispatch({ type: UPDATE_MARKETS_LIST, data }),
+      setIsProductSwitcherOpen: isProductSwitcherOpen => dispatch({ type: SET_IS_PRODUCT_SWITCHER_OPEN, isProductSwitcherOpen }),
     },
   };
 };

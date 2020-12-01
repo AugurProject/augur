@@ -34,9 +34,12 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
     currentBasePath,
     theme,
     isLogged,
-    actions: { setTheme },
+    isProductSwitcherOpen,
+    actions: {
+      setTheme,
+      setIsProductSwitcherOpen
+    },
   } = useAppStatusStore();
-  const [toggleDropdown, setToggleDropdown] = useState(false);
   const [toggleAugurPro, setToggleAugurPro] = useState(false);
 
   const isTrading = theme === THEMES.TRADING;
@@ -103,7 +106,7 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
     if (inputRef.current.contains(event.target)) {
       return;
     }
-    setToggleDropdown(false);
+    setIsProductSwitcherOpen(false);
   };
 
   useEffect(() => {
@@ -116,10 +119,10 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
 
   return (
     <div ref={inputRef} className={classNames(Styles.Dropdown, {
-      [Styles.ShowDropdown]: toggleDropdown,
+      [Styles.ShowDropdown]: isProductSwitcherOpen,
       [Styles.HideOnMobile]: hideOnMobile
     })}>
-      <button onClick={() => setToggleDropdown(!toggleDropdown)}>
+      <button onClick={() => setIsProductSwitcherOpen(!isProductSwitcherOpen)}>
         {SelectProductIcon}
         {!hideOnMobile && (
           <>
@@ -127,7 +130,7 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
               Products
             </span>
             <ChevronFlip
-              pointDown={toggleDropdown}
+              pointDown={isProductSwitcherOpen}
               stroke="#fff"
               filledInIcon
               quick
@@ -142,14 +145,14 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
             {link ? (
               <Link to={link} onClick={() => {
                 action();
-                !dropdown && setToggleDropdown(false);
+                !dropdown && setIsProductSwitcherOpen(false);
               }} className={classNames(Styles.Dropdown, {
                 [Styles.Active]: active
               })}>{title}</Link>
             ) : (
               <button onClick={() => {
                 action();
-                !dropdown && setToggleDropdown(false);
+                !dropdown && setIsProductSwitcherOpen(false);
               }} className={classNames(Styles.Dropdown, {
                 [Styles.Active]: active
               })}>
@@ -177,7 +180,7 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
                   ) : (
                     <button onClick={() => {
                       action();
-                      setToggleDropdown(false);
+                      setIsProductSwitcherOpen(false);
                     }} key={title}>
                       <span>{icon}</span>
                       {title}
