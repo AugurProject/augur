@@ -41,7 +41,6 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
     },
   } = useAppStatusStore();
   const [toggleAugurPro, setToggleAugurPro] = useState(false);
-  const inputRef = useRef(null);
 
   const isTrading = theme === THEMES.TRADING;
   const isSportsbook = theme === THEMES.SPORTS;
@@ -102,7 +101,7 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
   ];
 
   return (
-    <div ref={inputRef} onClick={event => event.stopPropagation()} className={classNames(Styles.Dropdown, {
+    <div className={classNames(Styles.Dropdown, {
       [Styles.ShowDropdown]: isProductSwitcherOpen,
       [Styles.HideOnMobile]: hideOnMobile
     })}>
