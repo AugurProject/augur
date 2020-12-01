@@ -181,6 +181,7 @@ export function AppStatusReducer(state, action) {
       updatedState[IS_HELP_MENU_OPEN] = false;
       updatedState[IS_CONNECTION_TRAY_OPEN] = false;
       updatedState[IS_ALERTS_MENU_OPEN] = false;
+      updatedState[IS_PRODUCT_SWITCHER_OPEN] = false;
       break;
     }
     case SET_IS_HELP_MENU_OPEN: {
@@ -188,6 +189,7 @@ export function AppStatusReducer(state, action) {
       updatedState[IS_HELP_MENU_OPEN] = action.isOpen;
       updatedState[IS_CONNECTION_TRAY_OPEN] = false;
       updatedState[IS_ALERTS_MENU_OPEN] = false;
+      updatedState[IS_PRODUCT_SWITCHER_OPEN] = false;
       break;
     }
     case SET_IS_CONNECTION_TRAY_OPEN: {
@@ -195,6 +197,7 @@ export function AppStatusReducer(state, action) {
       updatedState[IS_HELP_MENU_OPEN] = false;
       updatedState[IS_CONNECTION_TRAY_OPEN] = action.isOpen;
       updatedState[IS_ALERTS_MENU_OPEN] = false;
+      updatedState[IS_PRODUCT_SWITCHER_OPEN] = false;
       break;
     }
     case SET_IS_ALERTS_MENU_OPEN: {
@@ -202,6 +205,15 @@ export function AppStatusReducer(state, action) {
       updatedState[IS_HELP_MENU_OPEN] = false;
       updatedState[IS_CONNECTION_TRAY_OPEN] = false;
       updatedState[IS_ALERTS_MENU_OPEN] = action.isOpen;
+      updatedState[IS_PRODUCT_SWITCHER_OPEN] = false;
+      break;
+    }
+    case SET_IS_PRODUCT_SWITCHER_OPEN: {
+      updatedState[IS_ODDS_MENU_OPEN] = false;
+      updatedState[IS_HELP_MENU_OPEN] = false;
+      updatedState[IS_CONNECTION_TRAY_OPEN] = false;
+      updatedState[IS_ALERTS_MENU_OPEN] = false;
+      updatedState[IS_PRODUCT_SWITCHER_OPEN] = action.isOpen;
       break;
     }
     case CLOSE_APP_MENUS: {
@@ -209,6 +221,7 @@ export function AppStatusReducer(state, action) {
       updatedState[IS_HELP_MENU_OPEN] = false;
       updatedState[IS_CONNECTION_TRAY_OPEN] = false;
       updatedState[IS_ALERTS_MENU_OPEN] = false;
+      updatedState[IS_PRODUCT_SWITCHER_OPEN] = false;
       break;
     }
     case SET_IS_MOBILE: {
@@ -677,10 +690,6 @@ export function AppStatusReducer(state, action) {
       };
       break;
     }
-    case SET_IS_PRODUCT_SWITCHER_OPEN: {
-      updatedState[IS_PRODUCT_SWITCHER_OPEN] = action.isProductSwitcherOpen;
-      break;
-    }
     default:
       console.error(`Error: ${action.type} not caught by App Status reducer.`);
   }
@@ -833,7 +842,7 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
         dispatch({ type: REMOVE_ALL_ORDER_FROM_NEW_MARKET }),
       clearNewMarket: () => dispatch({ type: CLEAR_NEW_MARKET }),
       updateMarketsList: data => dispatch({ type: UPDATE_MARKETS_LIST, data }),
-      setIsProductSwitcherOpen: isProductSwitcherOpen => dispatch({ type: SET_IS_PRODUCT_SWITCHER_OPEN, isProductSwitcherOpen }),
+      setIsProductSwitcherOpen: isOpen => dispatch({ type: SET_IS_PRODUCT_SWITCHER_OPEN, isOpen }),
     },
   };
 };
