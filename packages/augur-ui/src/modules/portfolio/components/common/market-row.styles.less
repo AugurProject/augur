@@ -129,6 +129,14 @@
     > div {
       padding: @size-8 0 @size-8 @size-12;
     }
+
+    > span {
+      padding: @size-8 @size-16 @size-8 0;
+      
+      > div > span:first-of-type {
+        margin-right: @size-12;
+      }
+    }
   }
 }
 
