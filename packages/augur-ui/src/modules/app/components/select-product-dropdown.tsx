@@ -34,6 +34,7 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
     currentBasePath,
     theme,
     isLogged,
+    isMobile,
     isProductSwitcherOpen,
     actions: {
       setTheme,
@@ -47,19 +48,23 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
   const isSportsbook = theme === THEMES.SPORTS;
 
   const handleClick = event => {
-    if (inputRef.current.contains(event.target)) {
+    if (isMobile || inputRef.current.contains(event.target)) {
       return;
     }
     setIsProductSwitcherOpen(false);
   };
 
   useEffect(() => {
-    document.addEventListener("mousedown", handleClick, false);
+    if (!isMobile && hideOnMobile) {
+      document.addEventListener("mousedown", handleClick, false);
+    } else {
+      document.removeEventListener("mousedown", handleClick, false);
+    }
 
     return () => {
       document.removeEventListener("mousedown", handleClick, false);
     }
-  }, []);
+  }, [isMobile]);
 
   const isLoggedDropdownOptions: DropdownOptions[] = isLogged ? [{
     title: 'Create Market',
