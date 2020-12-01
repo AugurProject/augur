@@ -198,6 +198,7 @@ const TopBar = () => {
           ethToDaiRate && (
             <PrimaryButton
               text='Continue account setup'
+              title='Continue account setup'
               action={() =>
                 handleShowOnboarding(currentOnboardingStep, setModal)
               }
