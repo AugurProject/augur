@@ -229,7 +229,7 @@ export interface TemplateInput {
 export interface RetiredTemplate {
   hash: string;
   autoFail: boolean;
-  validation?: Object;
+  validation: Object;
 }
 
 export interface TemplateGroupInfo {

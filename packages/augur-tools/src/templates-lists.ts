@@ -3177,7 +3177,7 @@ export const LIST_VALUES = {
   ],
   SOCCER_LEAGUE_SPAIN: [
     'Barcelona',
-    'Real MAdrid',
+    'Real Madrid',
     'Sevilla',
     'Real Sociedad',
     'Getafe',
