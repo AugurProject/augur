@@ -41,9 +41,25 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
     },
   } = useAppStatusStore();
   const [toggleAugurPro, setToggleAugurPro] = useState(false);
+  const inputRef = useRef(null);
 
   const isTrading = theme === THEMES.TRADING;
   const isSportsbook = theme === THEMES.SPORTS;
+
+  const handleClick = event => {
+    if (inputRef.current.contains(event.target)) {
+      return;
+    }
+    setIsProductSwitcherOpen(false);
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClick, false);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClick, false);
+    }
+  }, []);
 
   const isLoggedDropdownOptions: DropdownOptions[] = isLogged ? [{
     title: 'Create Market',
@@ -100,25 +116,8 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
     ...isLoggedDropdownOptions
   ];
 
-  const inputRef = useRef(null);
-
-  const handleClick = event => {
-    if (inputRef.current.contains(event.target)) {
-      return;
-    }
-    setIsProductSwitcherOpen(false);
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClick, false);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClick, false);
-    }
-  }, []);
-
   return (
-    <div ref={inputRef} className={classNames(Styles.Dropdown, {
+    <div ref={inputRef} onClick={event => event.stopPropagation()} className={classNames(Styles.Dropdown, {
       [Styles.ShowDropdown]: isProductSwitcherOpen,
       [Styles.HideOnMobile]: hideOnMobile
     })}>
