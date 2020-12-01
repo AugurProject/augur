@@ -141,7 +141,8 @@ const FilterBox = ({
     // if number of markets changes or if the market info isn't loaded yet (no id) then we need to update until it is.
     if (
       filteredData.length !== nextFilteredData.length ||
-      !!filteredData.find((market) => market.id === undefined)
+      !!filteredData.find((market) => market.id === undefined) ||
+      JSON.stringify(nextFilteredData) !== JSON.stringify(filteredData)
     )
       updateFilteredData = true;
     const nextTabs = [...tabs];
