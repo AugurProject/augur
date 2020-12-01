@@ -74,11 +74,11 @@ export const Stats = () => {
     restoredAccount,
     isMobile,
     loginAccount,
-    env: { paraDeploy, paraDeploys },
+    paraTokenName,
   } = useAppStatusStore();
 
-  if (!paraDeploys || !paraDeploys[paraDeploy]) return null;
-  const stats = getCoreStats(isLogged, loginAccount, paraDeploys[paraDeploy].name);
+  if (!paraTokenName) return null;
+  const stats = getCoreStats(isLogged, loginAccount, paraTokenName);
   if (!stats) return null;
   const { availableFunds, frozenFunds, totalFunds, realizedPL } = stats;
 

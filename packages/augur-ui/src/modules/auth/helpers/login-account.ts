@@ -98,24 +98,23 @@ export const getAccountFunds = (loginAccount, paraToken) => {
 
 export const totalTradingBalance = (): BigNumber =>
 {
-  const { env: { paraDeploy, paraDeploys }, loginAccount } = AppStatus.get();
-  const paraDetails = paraDeploy && paraDeploys && paraDeploys[paraDeploy] || paraDeploys[DEFAULT_PARA_TOKEN];
-  if (!paraDetails) return null;
+  const { paraTokenName, loginAccount } = AppStatus.get();
+  if (!paraTokenName) return null;
 
 
-  if (paraDetails.name === DAI) {
+  if (paraTokenName === DAI) {
     return createBigNumber(loginAccount.balances.dai).minus(
       loginAccount.totalOpenOrdersFrozenFunds
     );
-  } else if (paraDetails.name === USDT) {
+  } else if (paraTokenName === USDT) {
       return createBigNumber(loginAccount.balances.usdt).minus(
         loginAccount.totalOpenOrdersFrozenFunds
       );
-  } else if (paraDetails.name === USDC) {
+  } else if (paraTokenName === USDC) {
       return createBigNumber(loginAccount.balances.usdc).minus(
         loginAccount.totalOpenOrdersFrozenFunds
       );
-  } else if (paraDetails.name === WETH) {
+  } else if (paraTokenName === WETH) {
       return createBigNumber(loginAccount.balances.weth).minus(
         loginAccount.totalOpenOrdersFrozenFunds
       );

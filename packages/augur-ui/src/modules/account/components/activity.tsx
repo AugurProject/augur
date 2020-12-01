@@ -10,11 +10,11 @@ import { createBigNumber } from 'utils/create-big-number';
 import { convertAttoValueToDisplayValue } from '@augurproject/utils';
 
 const Activity = () => {
-  const { env: { paraDeploy, paraDeploys }, universe: { timeframeData: { openInterest: totalOpenInterest } }} = useAppStatusStore();
+  const { paraTokenName, universe: { timeframeData: { openInterest: totalOpenInterest } }} = useAppStatusStore();
   const value = convertAttoValueToDisplayValue(createBigNumber(totalOpenInterest || 0));
   let openInterest;
 
-  if (paraDeploy && praDeploys[paraDeploy].name !== WETH) {
+  if (paraTokenName && paraTokenName !== WETH) {
     openInterest = formatDai(value, { decimals: 2, removeComma: true });
   } else {
     openInterest = formatEther(value, { removeComma: true });

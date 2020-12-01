@@ -87,7 +87,7 @@ const ConnectDropdown = ({toggleDropdown}: ConnectDropdownProps) => {
     restoredAccount,
     gasPriceInfo,
     ethToDaiRate,
-    env: { paraDeploy, paraDeploys },
+    paraTokenName,
     actions: { setModal },
   } = useAppStatusStore();
   const { gasPriceTime, gasPriceSpeed } = useGasInfo();
@@ -134,10 +134,9 @@ const ConnectDropdown = ({toggleDropdown}: ConnectDropdownProps) => {
     </span>
   );
 
-  const paraDetails = paraDeploy && paraDeploys && paraDeploys[paraDeploy] || paraDeploys[DEFAULT_PARA_TOKEN];
-  if (!paraDetails) return null;
+  if (!paraTokenName) return null;
 
-  const showWrapEther = paraDetails.name === 'WETH';
+  const showWrapEther = paraTokenName === 'WETH';
 
   const accountFunds = [
     {
@@ -147,7 +146,7 @@ const ConnectDropdown = ({toggleDropdown}: ConnectDropdownProps) => {
       }).formatted,
       name: 'USDT',
       logo: DaiLogoIcon,
-      disabled: paraDetails.name !== 'USDT',
+      disabled: paraTokenName !== 'USDT',
     },
     {
       value: formatEther(balances.weth, {
@@ -156,7 +155,7 @@ const ConnectDropdown = ({toggleDropdown}: ConnectDropdownProps) => {
       }).formatted,
       name: 'WETH',
       logo: WethIcon,
-      disabled: paraDetails.name !== 'WETH',
+      disabled: paraTokenName !== 'WETH',
     },
     {
       value: formatDai(balances.dai, {

@@ -23,12 +23,12 @@ const TOTAL_TITLES = {
 };
 
 export const ModalFrozenFunds = () => {
-  const { env: { paraDeploy, paraDeploys }, theme, universe: { id: universe }, loginAccount: { address: account }, actions: { closeModal }} = useAppStatusStore();
+  const { paraTokenName, theme, universe: { id: universe }, loginAccount: { address: account }, actions: { closeModal }} = useAppStatusStore();
   const [breakdowns, setBreakdowns] = useState([]);
   const [total, setTotal] = useState(formatDai('0'));
   const isSportsTheme = theme === THEMES.SPORTS;
   const formatToken = (value) => {
-    if (paraDeploy && paraDeploys[paraDeploy].name !== WETH) {
+    if (paraTokenName !== WETH) {
       return formatDai(value);
     }
     return formatEther(value);
