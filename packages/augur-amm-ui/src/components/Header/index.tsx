@@ -15,6 +15,7 @@ import Settings from '../Settings'
 import Row, { RowFixed } from '../Row'
 import Web3Status from '../Web3Status'
 import { useETHBalances } from '../../state/wallet/hooks'
+import useMedia from 'react-use/lib/useMedia'
 
 const HeaderFrame = styled.div`
   display: flex;
@@ -177,10 +178,11 @@ function Header({ history }: { history: any }) {
 
   const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   const [isDark] = useDarkModeManager()
+  const below1196 = useMedia('(max-width: 1196px)')
 
   return (
     <HeaderFrame>
-      <HeaderRow style={{ flexFlow: 'row nowrap' }}>
+      <HeaderRow style={below1196 ? {} : { flexFlow: 'row nowrap' }}>
         <Title />
         <HeaderLinks>
           <StyledNavLink id={`swap-nav-link`} to={'/home'} isActive={() => history.location.pathname.includes('/home')}>

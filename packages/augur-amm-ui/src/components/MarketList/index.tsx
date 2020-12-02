@@ -18,7 +18,7 @@ const PageButtons = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 2em;
-  margin-bottom: 2em;
+  margin-bottom: 4em;
 `
 
 const Arrow = styled.div<{ faded: boolean }>`
@@ -43,8 +43,6 @@ const MarketCardTop = styled.div`
   }
 
   > div:last-of-type {
-    max-width: 250px;
-    min-width: 250px;
     overflow: hidden;
     text-overflow: ellipsis;
   }
@@ -163,7 +161,10 @@ function MarketList({ markets, itemMax = 15 }) {
 
         <MarketCardTop>
             <div>{cardImageSource}</div>
-            <div>{marketData?.description}</div>
+            <div style={{
+              maxWidth: below1196 ? '150px' : '255px',
+              maxHeight: below1196 ? '150px' : '255px',
+            }}>{marketData?.description}</div>
         </MarketCardTop>
 
 
