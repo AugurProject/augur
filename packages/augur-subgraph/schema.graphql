@@ -767,6 +767,10 @@ type AMMExchange @entity {
   "Swap fee for this AMM (in percent)"
   feePercent: BigDecimal!
 
+  addLiquidity: [AddLiquidity!]! @derivedFrom(field: "ammExchange")
+
+  removeLiquidity: [RemoveLiquidity!]! @derivedFrom(field: "ammExchange")
+
   swaps: [SwapPosition!]! @derivedFrom(field: "ammExchange")
 
   enters: [EnterPosition!]! @derivedFrom(field: "ammExchange")
