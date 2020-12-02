@@ -1879,7 +1879,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Which NHL team will win the [0] [1]?`,
             example: `Which NHL team will win the 2019-20 Stanley Cup?`,
-            header: `[0] [1] winner`,
+            header: `[0] NHL [1]`,
+            title: `Winner`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
@@ -1916,13 +1917,13 @@ export const TEMPLATES = {
                   text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                 },
                 {
-                  text: `If the season is officially cancelled and the event named in market is not played, this market should resolve as 'Invalid'`,
+                  text: `If the season is officially cancelled and the event named in the market is not played, this market should resolve as 'Invalid'`,
                 },
                 {
-                  text: `If the league suspends play and starts up again at a later date, and the winner of the event named in market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
+                  text: `If the league suspends play and starts up again at a later date, and the winner of the event named in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
                 },
                 {
-                  text: `If the league suspends play and starts up again at a later date, and the winner of the event named in market is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`,
+                  text: `If the league suspends play and starts up again at a later date, and the winner of the event named in the market is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`,
                 },
               ],
             },
@@ -1931,7 +1932,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Which NHL team will [0] sign with?`,
             example: `Which NHL team will Mike Hoffman sign with?`,
-            header: `[0] will sign with`,
+            header: `[0] Free Agency`,
+            title: `Which NHL team will [0] sign with`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
@@ -1975,7 +1977,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Which NHL player will win the [0] [1]?`,
             example: `Which NHL player will win the 2019-20 Calder Trophy?`,
-            header: `[0] [1] winner`,
+            header: `[0] NHL [1] award`,
+            title: `Winner`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
