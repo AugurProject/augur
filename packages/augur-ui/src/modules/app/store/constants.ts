@@ -358,6 +358,14 @@ export const APP_STATUS_ACTIONS = {
   SET_BETSLIP_MINIMIZED: 'SET_BETSLIP_MINIMIZED',
 };
 
+export const APP_MENUS_CLOSED = {
+  [IS_ODDS_MENU_OPEN]: false,
+  [IS_HELP_MENU_OPEN]: false,
+  [IS_CONNECTION_TRAY_OPEN]: false,
+  [IS_ALERTS_MENU_OPEN]: false,
+  [IS_PRODUCT_SWITCHER_OPEN]: false,
+};
+
 export const STUBBED_APP_STATUS_ACTIONS = {
   setBetslipMinimized: (betslipMinimized) => {},
   setTheme: theme => {},

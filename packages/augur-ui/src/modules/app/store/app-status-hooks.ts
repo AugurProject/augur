@@ -46,6 +46,7 @@ import {
   INITIALIZED_3BOX,
   IS_PRODUCT_SWITCHER_OPEN,
   MENU_CHANGE,
+  APP_MENUS_CLOSED,
 } from 'modules/app/store/constants';
 import { EMPTY_STATE } from 'modules/create-market/constants';
 import { ZERO, NEW_ORDER_GAS_ESTIMATE, THEMES } from 'modules/common/constants';
@@ -158,14 +159,6 @@ const calculateLiquidity = orderBook => {
 
 export function AppStatusReducer(state, action) {
   let updatedState = { ...state };
-
-  const APP_MENUS_CLOSED = {
-    [IS_ODDS_MENU_OPEN]: false,
-    [IS_HELP_MENU_OPEN]: false,
-    [IS_CONNECTION_TRAY_OPEN]: false,
-    [IS_ALERTS_MENU_OPEN]: false,
-    [IS_PRODUCT_SWITCHER_OPEN]: false,
-  };
 
   switch (action.type) {
     case SET_THEME: {
