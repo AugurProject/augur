@@ -73,5 +73,10 @@ export const retiredTemplates: RetiredTemplate[] = [
     hash: '0x9d8fa1c3efbbcd2183958204909c89da17bdc27854c1c7aa29f404dc476b2226',
     autoFail: false,
     validation: {"templateValidation":"(^(Men's|Women's){1} (.*) (.*) Winner\\?$)","templateValidationResRules":"0x837c76aeb2e5a5c354918fc23eb99471b5484a37631e612eed326b1243673d7b","requiredOutcomes":["Other (Field)"],"outcomeDependencies":null,"substituteDependencies":[],"marketQuestionDependencies":{"inputSourceId":0,"inputDestIds":[1],"values":{"Men's":["FIFA World Cup","UEFA Champions League","UEFA Europa League","Copa America","AFC Asian Cup","AFC Champions League","CONCACAF Gold Cup","CONCACAF Champions League"],"Women's":["FIFA World Cup"]}},"dateDependencies":[],"closingDateDependencies":[],"placeholderValues":{},"categoricalOutcomes":{},"afterTuesdayDateNoFriday":[],"eventExpEndNextMonthValues":[],"numberRangeValues":{},"yrs":[2],"reqCats":["Sports","Football (Soccer)","Customized"]}
+  },
+  {
+    hash: '0x74ce3059a371c65c65ff7a77cb93db6953d6a00c5cc30f58c3fab1505cd547b6',
+    autoFail: false,
+    validation: {"templateValidation":"(^Boxing: (.*) vs. (.*); Method of victory\\?$)","templateValidationResRules":"0xfe65869ca8995d7aabf5323dc321ac88550381be32c5a7091aa1d1da836a5509","requiredOutcomes":["Draw/No Contest"],"outcomeDependencies":null,"substituteDependencies":["[0] by KO","[0] by TKO","[0] by Points","[1] by KO","[1] by TKO","[1] by Points"],"marketQuestionDependencies":null,"dateDependencies":[],"closingDateDependencies":[],"placeholderValues":{"0":"Fighter A","1":"Fighter B"},"categoricalOutcomes":{"3":"[0] by KO","4":"[0] by TKO","5":"[0] by Points","6":"[1] by KO","7":"[1] by TKO","8":"[1] by Points"},"afterTuesdayDateNoFriday":[],"hoursAfterEstimatedStartTime":9,"eventExpEndNextMonthValues":[],"numberRangeValues":{},"yrs":[],"reqCats":["Sports","Boxing"]}
   }
 ]
