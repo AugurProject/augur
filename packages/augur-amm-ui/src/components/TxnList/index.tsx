@@ -138,6 +138,8 @@ const SORT_FIELD = {
 const TXN_TYPE = {
   ALL: 'All',
   SWAP: 'Swaps',
+  ENTER: 'Enter',
+  EXIT: 'Exit',
   ADD: 'Adds',
   REMOVE: 'Removes'
 }
@@ -162,7 +164,7 @@ function processTransactions(allExchanges, cashData, cashTokens) {
       const enters = (e.enters || []).map(mint => ({
         hash: mint.tx_hash,
         timestamp: mint.timestamp || 0,
-        type: TXN_TYPE.SWAP,
+        type: TXN_TYPE.ENTER,
         token0Amount: String(displayValue(mint.cash, decimals)),
         token1Amount: (mint.noShares ? formatShares(mint.noShares, decimals) : formatShares(mint.yesShares, decimals)),
         token0Symbol: symbol,
@@ -174,7 +176,7 @@ function processTransactions(allExchanges, cashData, cashTokens) {
       const exits = (e.exits || []).map(burn => ({
         hash: burn.tx_hash,
         timestamp: burn.timestamp || 0,
-        type: TXN_TYPE.SWAP,
+        type: TXN_TYPE.EXIT,
         token0Amount: burn.noShares ? formatShares(burn.noShares, decimals) : formatShares(burn.yesShares, decimals),
         token1Amount: String(displayValue(burn.cash, decimals)),
         token0Symbol: burn.noShares ? 'No Shares' : 'Yes Shares',
@@ -240,6 +242,10 @@ function getTransactionType(event, symbol0, symbol1) {
       return 'Add Liquidity'
     case TXN_TYPE.REMOVE:
       return 'Remove Liquidity'
+    case TXN_TYPE.ENTER:
+      return `Swap ${symbol1} for Shares`
+    case TXN_TYPE.EXIT:
+      return `Swap Shares for ${symbol0}`
     case TXN_TYPE.SWAP:
       return 'Swap ' + formattedS0 + ' for ' + formattedS1
     default:
