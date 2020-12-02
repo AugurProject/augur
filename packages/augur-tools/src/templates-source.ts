@@ -3132,7 +3132,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Men's [0] [1] Champion?`,
                 example: `Men's English Premier League Champion?`,
-                header: `(Men's) [0] [1] Champion`,
+                header: `[0] [1] Champion`,
+                title: `Winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -3433,7 +3434,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] [1] [2] Winner?`,
                 example: `Men's UEFA Europa League 2020/2021 Winner?`,
-                header: `([0]) [1] [2] Winner`,
+                header: `[2] [0] [1] Winner`,
+                title: `Winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
