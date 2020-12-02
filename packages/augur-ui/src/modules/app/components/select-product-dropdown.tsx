@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useRef, useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import Styles from './select-product-dropdown.styles.less';
 import classNames from 'classnames';
 import { DaiIcon, SelectProductIcon, StylizedEthIcon } from 'modules/common/icons';
@@ -34,9 +34,12 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
     currentBasePath,
     theme,
     isLogged,
-    actions: { setTheme },
+    isProductSwitcherOpen,
+    actions: {
+      setTheme,
+      setIsProductSwitcherOpen,
+    },
   } = useAppStatusStore();
-  const [toggleDropdown, setToggleDropdown] = useState(false);
   const [toggleAugurPro, setToggleAugurPro] = useState(false);
 
   const isTrading = theme === THEMES.TRADING;
@@ -97,29 +100,12 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
     ...isLoggedDropdownOptions
   ];
 
-  const inputRef = useRef(null);
-
-  const handleClick = event => {
-    if (inputRef.current.contains(event.target)) {
-      return;
-    }
-    setToggleDropdown(false);
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClick, false);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClick, false);
-    }
-  }, []);
-
   return (
-    <div ref={inputRef} className={classNames(Styles.Dropdown, {
-      [Styles.ShowDropdown]: toggleDropdown,
+    <div onClick={event => event.stopPropagation()} className={classNames(Styles.Dropdown, {
+      [Styles.ShowDropdown]: isProductSwitcherOpen,
       [Styles.HideOnMobile]: hideOnMobile
     })}>
-      <button onClick={() => setToggleDropdown(!toggleDropdown)}>
+      <button onClick={() => setIsProductSwitcherOpen(!isProductSwitcherOpen)}>
         {SelectProductIcon}
         {!hideOnMobile && (
           <>
@@ -127,7 +113,7 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
               Products
             </span>
             <ChevronFlip
-              pointDown={toggleDropdown}
+              pointDown={isProductSwitcherOpen}
               stroke="#fff"
               filledInIcon
               quick
@@ -142,14 +128,14 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
             {link ? (
               <Link to={link} onClick={() => {
                 action();
-                !dropdown && setToggleDropdown(false);
+                !dropdown && setIsProductSwitcherOpen(false);
               }} className={classNames(Styles.Dropdown, {
                 [Styles.Active]: active
               })}>{title}</Link>
             ) : (
               <button onClick={() => {
                 action();
-                !dropdown && setToggleDropdown(false);
+                !dropdown && setIsProductSwitcherOpen(false);
               }} className={classNames(Styles.Dropdown, {
                 [Styles.Active]: active
               })}>
@@ -177,7 +163,7 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
                   ) : (
                     <button onClick={() => {
                       action();
-                      setToggleDropdown(false);
+                      setIsProductSwitcherOpen(false);
                     }} key={title}>
                       <span>{icon}</span>
                       {title}

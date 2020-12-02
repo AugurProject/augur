@@ -130,11 +130,11 @@
               height: @size-12;
 
               path {
-                fill: var(--color-primary-text);
+                fill: var(--color-brand-secondary);
               }
 
               rect {
-                fill: #fff;
+                fill: var(--color-brand-secondary);
               }
             }
           }
@@ -162,6 +162,7 @@
   &.ShowDropdown {
     > button:first-of-type {
       background-color: var(--color-module-background);
+      border-top: none;
       border-right: @size-1 solid var(--color-secondary-action-outline);
       border-left: @size-1 solid var(--color-secondary-action-outline);
     }
@@ -194,6 +195,12 @@
       display: flex;
       width: 100%;
       align-items: center;
+      z-index: @default-z-index;
+      border-top: none;
+
+      &:hover {
+        border-top: none;
+      }
 
       > span:first-of-type {
         .text-12-medium;
@@ -233,12 +240,6 @@
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .Dropdown {
-    order: 2;
-
-    @media @breakpoint-mobile-tablet {
-      order: 0;
-    }
-
     > button:first-of-type {
       background-color: var(--color-primary-text);
       border-top: @size-3 solid transparent;
@@ -269,12 +270,11 @@
       }
     }
 
-
-
     &.ShowDropdown {
       > button:first-of-type {
         background-color: var(--color-active-background);
         border-top: @size-3 solid var(--color-primary-action);
+        border-right: @size-1 solid var(--color-secondary-action-outline);
 
         > svg:first-of-type path {
           fill: var(--color-primary-text);
@@ -311,6 +311,7 @@
       &.ShowDropdown {
         > button:first-of-type {
           background-color: var(--color-secondary-text-25);
+          border-top: none;
 
           > svg:first-of-type path {
             fill: var(--color-module-background);

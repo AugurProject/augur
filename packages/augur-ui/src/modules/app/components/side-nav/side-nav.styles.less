@@ -152,7 +152,7 @@
         align-items: center;
         width: 90%;
         justify-content: center;
-        
+
       }
     }
 
@@ -175,7 +175,7 @@
 
           span {
             .text-12-semi-bold;
-  
+
             border-bottom: @size-2 solid var(--color-primary-action);
             padding-bottom: @size-5;
             color: var(--color-primary-text);
@@ -186,28 +186,28 @@
             margin-bottom: @size-12;
           }
         }
-  
+
         a {
           display: flex;
           padding: @size-21 @size-16;
           align-items: center;
-  
+
           > span {
             .text-12-semi-bold;
-  
+
             align-items: center;
             color: var(--color-inactive-text);
             display: flex;
             text-transform: uppercase;
           }
-  
+
           > svg {
             height: @size-4;
             width: @size-4;
             fill: none;
             margin-left: @size-4;
             margin-bottom: @size-4;
-    
+
             > circle {
               fill: var(--color-focused);
             }
@@ -252,7 +252,7 @@
 
         > svg {
           margin-right: @size-4;
-  
+
           > path {
             fill: var(--color-primary-text);
           }
@@ -269,7 +269,7 @@
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .SideNavMigrateRep {
-    > label, 
+    > label,
     > div {
       display: none;
     }
@@ -277,9 +277,13 @@
     > button {
       margin: @size-24 @size-12 0;
       color: var(--color-module-background);
+
+      @media @breakpoint-mobile-tablet {
+        margin: @size-16 @size-12;
+      }
     }
   }
-  
+
   .SideNav {
     > div:first-of-type {
       > button:first-of-type {
@@ -306,7 +310,7 @@
     > div:first-of-type > div:last-of-type {
       display: none;
     }
-    
+
     > div {
       background: var(--color-primary-text);
     }
@@ -384,6 +388,10 @@
         > li:nth-of-type(6) {
           display: none;
         }
+
+        > div[class*='Dropdown'] {
+          order: 1;
+        }
       }
 
       > footer {
@@ -419,7 +427,7 @@
           margin-left: @size-16;
           margin-right: auto;
           flex-flow: row-reverse nowrap;
-  
+
           > svg {
             margin-left: 0;
             margin-right: @size-8;
@@ -430,7 +438,7 @@
             }
           }
         }
-  
+
         > .GlobalChat {
           margin-left: auto;
 

@@ -44,6 +44,9 @@ import {
   NEW_MARKET,
   MARKETS_LIST,
   INITIALIZED_3BOX,
+  IS_PRODUCT_SWITCHER_OPEN,
+  MENU_CHANGE,
+  APP_MENUS_CLOSED,
 } from 'modules/app/store/constants';
 import { EMPTY_STATE } from 'modules/create-market/constants';
 import { ZERO, NEW_ORDER_GAS_ESTIMATE, THEMES } from 'modules/common/constants';
@@ -57,10 +60,6 @@ const {
   SET_ODDS,
   SET_TIME_FORMAT,
   SET_INITIALIZED_3BOX,
-  SET_IS_ODDS_MENU_OPEN,
-  SET_IS_HELP_MENU_OPEN,
-  SET_IS_CONNECTION_TRAY_OPEN,
-  SET_IS_ALERTS_MENU_OPEN,
   CLOSE_APP_MENUS,
   SET_IS_MOBILE,
   SET_Ox_ENABLED,
@@ -159,7 +158,8 @@ const calculateLiquidity = orderBook => {
 };
 
 export function AppStatusReducer(state, action) {
-  const updatedState = { ...state };
+  let updatedState = { ...state };
+
   switch (action.type) {
     case SET_THEME: {
       updatedState[THEME] = action.theme;
@@ -174,39 +174,13 @@ export function AppStatusReducer(state, action) {
       updatedState[TIME_FORMAT] = action.timeFormat;
       break;
     }
-    case SET_IS_ODDS_MENU_OPEN: {
-      updatedState[IS_ODDS_MENU_OPEN] = action.isOpen;
-      updatedState[IS_HELP_MENU_OPEN] = false;
-      updatedState[IS_CONNECTION_TRAY_OPEN] = false;
-      updatedState[IS_ALERTS_MENU_OPEN] = false;
-      break;
-    }
-    case SET_IS_HELP_MENU_OPEN: {
-      updatedState[IS_ODDS_MENU_OPEN] = false;
-      updatedState[IS_HELP_MENU_OPEN] = action.isOpen;
-      updatedState[IS_CONNECTION_TRAY_OPEN] = false;
-      updatedState[IS_ALERTS_MENU_OPEN] = false;
-      break;
-    }
-    case SET_IS_CONNECTION_TRAY_OPEN: {
-      updatedState[IS_ODDS_MENU_OPEN] = false;
-      updatedState[IS_HELP_MENU_OPEN] = false;
-      updatedState[IS_CONNECTION_TRAY_OPEN] = action.isOpen;
-      updatedState[IS_ALERTS_MENU_OPEN] = false;
-      break;
-    }
-    case SET_IS_ALERTS_MENU_OPEN: {
-      updatedState[IS_ODDS_MENU_OPEN] = false;
-      updatedState[IS_HELP_MENU_OPEN] = false;
-      updatedState[IS_CONNECTION_TRAY_OPEN] = false;
-      updatedState[IS_ALERTS_MENU_OPEN] = action.isOpen;
+    case MENU_CHANGE: {
+      const { name, value } = action;
+      updatedState = { ...updatedState, ...APP_MENUS_CLOSED, [name]: value};
       break;
     }
     case CLOSE_APP_MENUS: {
-      updatedState[IS_ODDS_MENU_OPEN] = false;
-      updatedState[IS_HELP_MENU_OPEN] = false;
-      updatedState[IS_CONNECTION_TRAY_OPEN] = false;
-      updatedState[IS_ALERTS_MENU_OPEN] = false;
+      updatedState = {...updatedState, ...APP_MENUS_CLOSED };
       break;
     }
     case SET_IS_MOBILE: {
@@ -705,14 +679,11 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       setOdds: odds => dispatch({ type: SET_ODDS, odds }),
       setTimeFormat: timeFormat =>
         dispatch({ type: SET_TIME_FORMAT, timeFormat }),
-      setIsOddsMenuOpen: isOpen =>
-        dispatch({ type: SET_IS_ODDS_MENU_OPEN, isOpen }),
-      setIsHelpMenuOpen: isOpen =>
-        dispatch({ type: SET_IS_HELP_MENU_OPEN, isOpen }),
-      setIsConnectionTrayOpen: isOpen =>
-        dispatch({ type: SET_IS_CONNECTION_TRAY_OPEN, isOpen }),
-      setIsAlertsMenuOpen: isOpen =>
-        dispatch({ type: SET_IS_ALERTS_MENU_OPEN, isOpen }),
+      setIsOddsMenuOpen: isOpen => dispatch({ type: MENU_CHANGE, name: IS_ODDS_MENU_OPEN, value: isOpen }),
+      setIsHelpMenuOpen: isOpen => dispatch({ type: MENU_CHANGE, name: IS_HELP_MENU_OPEN, value: isOpen }),
+      setIsConnectionTrayOpen: isOpen => dispatch({ type: MENU_CHANGE, name: IS_CONNECTION_TRAY_OPEN, value: isOpen }),
+      setIsAlertsMenuOpen: isOpen => dispatch({ type: MENU_CHANGE, name: IS_ALERTS_MENU_OPEN, value: isOpen }),
+      setIsProductSwitcherOpen: isOpen => dispatch({ type: MENU_CHANGE, name: IS_PRODUCT_SWITCHER_OPEN, value: isOpen }),
       closeAppMenus: () => dispatch({ type: CLOSE_APP_MENUS }),
       setIsMobile: isMobile => dispatch({ type: SET_IS_MOBILE, isMobile }),
       setOxEnabled: isOxEnabled =>
