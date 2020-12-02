@@ -569,12 +569,12 @@ export const TEMPLATES = {
               {
                 id: 4,
                 type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `Over [2].5`,
+                placeholder: `Over [3].5`,
               },
               {
                 id: 5,
                 type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                placeholder: `Under [2].5`,
+                placeholder: `Under [3].5`,
               },
               {
                 id: 6,
