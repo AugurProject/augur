@@ -155,30 +155,32 @@ function processTransactions(allExchanges, cashData, cashTokens) {
   let txns = []
   if (allExchanges.length > 0) {
     return allExchanges.map(e => {
-      const price = e.cash ? cashData[e.cash]?.priceUSD : 1
+      const price = e?.cash?.address ? cashData[e?.cash?.address]?.priceUSD : 1
+      const symbol = e?.cash?.address ? cashData[e?.cash?.address]?.symbol : 'cash'
       const decimals = cashTokens ? cashTokens[e.cash]?.decimals : 18
+      console.log('enters', e.enters)
       const enters = (e.enters || []).map(mint => ({
         hash: mint.tx_hash,
         timestamp: mint.timestamp || 0,
-        type: TXN_TYPE.ADD,
-        token0Amount: formatShares(mint.noShares),
-        token1Amount: formatShares(mint.yesShares),
-        cashAmount: String(displayValue(mint.cash, decimals)),
-        token0Symbol: 'No Shares',
-        token1Symbol: 'Yes Shares',
+        type: TXN_TYPE.SWAP,
+        token0Amount: String(displayValue(mint.cash, decimals)),
+        token1Amount: (mint.noShares ? formatShares(mint.noShares, decimals) : formatShares(mint.yesShares, decimals)),
+        token0Symbol: symbol,
+        token1Symbol: mint.noShares ? 'No Shares' : 'Yes Shares',
         amountUSD: String(calcCash(mint.cash, decimals, price)),
+        account: mint.sender?.id,
       }))
 
       const exits = (e.exits || []).map(burn => ({
         hash: burn.tx_hash,
         timestamp: burn.timestamp || 0,
-        type: TXN_TYPE.REMOVE,
-        token0Amount: formatShares(burn.noShares),
-        token1Amount: formatShares(burn.yesShares),
-        cashAmount: String(displayValue(burn.cash, decimals)),
-        token0Symbol: 'No Shares',
-        token1Symbol: 'Yes Shares',
+        type: TXN_TYPE.SWAP,
+        token0Amount: burn.noShares ? formatShares(burn.noShares, decimals) : formatShares(burn.yesShares, decimals),
+        token1Amount: String(displayValue(burn.cash, decimals)),
+        token0Symbol: burn.noShares ? 'No Shares' : 'Yes Shares',
+        token1Symbol: symbol,
         amountUSD: String(calcCash(burn.cash, decimals, price)),
+        account: burn.sender?.id,
       }))
 
       const swaps = (e.swaps || []).map(swap => {
@@ -190,7 +192,7 @@ function processTransactions(allExchanges, cashData, cashTokens) {
         const type = TXN_TYPE.SWAP
 
         const amountUSD = String(calcCash(swap.cash, decimals, price))
-        const cashAmount = String(displayValue(swap.cash, decimals))
+        const cashAmount = swap.cash ? String(displayValue(swap.cash, decimals)) : '';
 
         let newTxn = {
           hash,
@@ -202,6 +204,7 @@ function processTransactions(allExchanges, cashData, cashTokens) {
           token1Symbol: 'Yes Shares',
           token0Amount: Math.abs(netToken0),
           token1Amount: Math.abs(netToken1),
+          account: swap.sender?.id,
         }
 
         if (netToken1 < 0) {
@@ -215,10 +218,14 @@ function processTransactions(allExchanges, cashData, cashTokens) {
             token1Symbol: 'Yes Shares',
             token0Amount: Math.abs(netToken1),
             token1Amount: Math.abs(netToken0),
+            account: swap.sender?.id,
           }
         }
         return newTxn;
       })
+
+      // TODO: process add liquidity and remove liquidity
+
       return [...enters, ...exits, ...swaps];
     }).flat()
   }
@@ -316,11 +323,15 @@ function TxnList({ allExchanges, color, cashTokens, cashData }) {
         <DataText area="value">{formattedNum(item.amountUSD, true)}</DataText>
         {!below780 && (
           <>
-            <DataText area="amountOther">{formattedNum(item.token1Amount) + ' '} </DataText>
-            <DataText area="amountToken">{formattedNum(item.token0Amount) + ' '} </DataText>
+            <DataText area="amountOther">{formattedNum(item.token1Amount) + ' ' + item.token1Symbol} </DataText>
+            <DataText area="amountToken">{formattedNum(item.token0Amount) + ' ' + item.token0Symbol} </DataText>
           </>
         )}
-        {!below1080 && <DataText area="cashAmount">{item.cashAmount ? item.cashAmount : '0'}</DataText>}
+        {!below1080 && <DataText area="account">
+        <Link color={color} external href={'https://etherscan.io/address/' + item.account}>
+              {item.account && item.account.slice(0, 6) + '...' + item.account.slice(38, 42)}
+            </Link>
+          </DataText>}
         <DataText area="time">{formatTime(item.timestamp)}</DataText>
       </DashGrid>
     )
@@ -370,7 +381,7 @@ function TxnList({ allExchanges, color, cashTokens, cashData }) {
             </RowFixed>
           )}
 
-        <Flex alignItems="center" justifyContent="flex-start">
+        <Flex alignItems="center">
           <ClickableText
             color="textDim"
             area="value"
@@ -392,7 +403,7 @@ function TxnList({ allExchanges, color, cashTokens, cashData }) {
                 setSortDirection(sortedColumn !== SORT_FIELD.AMOUNT0 ? true : !sortDirection)
               }}
             >
-              {'No Shares'}
+              {'Token Amount'}
               {sortedColumn === SORT_FIELD.AMOUNT0 ? (sortDirection ? '↑' : '↓') : ''}
             </ClickableText>
           </Flex>
@@ -408,14 +419,14 @@ function TxnList({ allExchanges, color, cashTokens, cashData }) {
                   setSortDirection(sortedColumn !== SORT_FIELD.AMOUNT1 ? true : !sortDirection)
                 }}
               >
-                {'Yes Shares'}
+                {'Token Amount'}
                 {sortedColumn === SORT_FIELD.AMOUNT1 ? (sortDirection ? '↑' : '↓') : ''}
               </ClickableText>
             </Flex>
           )}
           {!below1080 && (
             <Flex alignItems="center">
-              <TYPE.body area="collateral">Collateral</TYPE.body>
+              <TYPE.body area="Account">Account</TYPE.body>
             </Flex>
           )}
           <Flex alignItems="center">

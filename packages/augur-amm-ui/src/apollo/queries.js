@@ -68,6 +68,9 @@ export const GET_MARKETS = blockNumber => {
       feePercent
       swaps {
         id
+        sender {
+          id
+        }
         tx_hash
         timestamp
         yesShares
@@ -75,6 +78,9 @@ export const GET_MARKETS = blockNumber => {
       }
       enters {
         id
+        sender {
+          id
+        }
         tx_hash
         timestamp
         yesShares
@@ -83,6 +89,9 @@ export const GET_MARKETS = blockNumber => {
       }
       exits {
         id
+        sender {
+          id
+        }
         tx_hash
         timestamp
         yesShares
