@@ -16,7 +16,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
     using SafeMathUint256 for uint256;
 	using SafeMathInt256 for int256;
 
-    event EnterPosition(address sender, uint256 cash, uint256 outputShares, bool buyYes);
+    event EnterPosition(address sender, uint256 cash, uint256 outputShares, bool buyYes, uint256 priorShares);
     event ExitPosition(address sender, uint256 invalidShares, uint256 noShares, uint256 yesShares, uint256 cashPayout);
     event AddLiquidity(address sender, uint256 cash, uint256 noShares, uint256 yesShares, uint256 lpTokens);
     event RemoveLiquidity(address sender, uint256 cash, uint256 noShares, uint256 yesShares);
@@ -36,9 +36,9 @@ contract AMMExchange is IAMMExchange, ERC20 {
         YES = _shareToken.getTokenId(_market, 2);
         fee = _fee;
 
-        cash.safeApprove(address(_shareToken), 2**256-1);
+        // approve cash so sets can be bought
         cash.safeApprove(address(_shareToken.augur()), 2**256-1);
-
+        // approve factory so users can just approve the factory, not each exchange
         shareToken.setApprovalForAll(msg.sender, true);
     }
 
@@ -176,13 +176,17 @@ contract AMMExchange is IAMMExchange, ERC20 {
 
         uint256 _setsToBuy = _cashCost.div(numTicks);
 
+        (uint256 _priorNo, uint _priorYes) = yesNoShareBalances(msg.sender);
+        uint256  _priorPosition;
         if (_buyYes) {
+            _priorPosition = _priorYes;
             shareTransfer(address(this), msg.sender, _setsToBuy, 0, _sharesToBuy);
         } else {
+            _priorPosition = _priorNo;
             shareTransfer(address(this), msg.sender, _setsToBuy, _sharesToBuy, 0);
         }
 
-        emit EnterPosition(msg.sender, _cashCost, _sharesToBuy, _buyYes);
+        emit EnterPosition(msg.sender, _cashCost, _sharesToBuy, _buyYes, _priorPosition);
 
         return _sharesToBuy;
     }
@@ -190,19 +194,18 @@ contract AMMExchange is IAMMExchange, ERC20 {
     // Tells you how many shares you get for given cash.
     function rateEnterPosition(uint256 _cashToSpend, bool _buyYes) public view returns (uint256) {
         uint256 _setsToBuy = _cashToSpend.div(numTicks);
-        (uint256 _poolInvalid, uint256 _poolNo, uint256 _poolYes) = shareBalances(address(this));
+        (uint256 _poolInvalid, uint256 _reserveNo, uint256 _reserveYes) = shareBalances(address(this));
 
-        _poolInvalid = _poolInvalid.subS(_setsToBuy, "AugurCP: The pool doesn't have enough INVALID tokens to fulfill the request.");
-        _poolNo = _poolNo.subS(_setsToBuy, "AugurCP: The pool doesn't have enough NO tokens to fulfill the request.");
-        _poolYes = _poolYes.subS(_setsToBuy, "AugurCP: The pool doesn't have enough YES tokens to fulfill the request.");
+        // user buys complete sets
+        require(_poolInvalid >= _setsToBuy, "AugurCP: The pool doesn't have enough INVALID tokens to fulfill the request.");
+        _reserveNo = _reserveNo.subS(_setsToBuy, "AugurCP: The pool doesn't have enough NO tokens to fulfill the request.");
+        _reserveYes = _reserveYes.subS(_setsToBuy, "AugurCP: The pool doesn't have enough YES tokens to fulfill the request.");
 
-        // simulate user swapping YES to NO or NO to YES
-        uint256 _poolConstant = poolConstant(_poolYes, _poolNo);
+        // user swaps away the side they don't want
         if (_buyYes) {
-            // yesToUser + poolYes - poolConstant / (poolNo + _setsToBuy)
-            return _setsToBuy.add(_poolYes.sub(_poolConstant.div(_poolNo.add(_setsToBuy))));
+            return applyFee(_setsToBuy.add(calculateSwap(_reserveYes, _reserveNo, _setsToBuy)), fee);
         } else {
-            return _setsToBuy.add(_poolNo.sub(_poolConstant.div(_poolYes.add(_setsToBuy))));
+            return applyFee(_setsToBuy.add(calculateSwap(_reserveNo, _reserveYes, _setsToBuy)), fee);
         }
     }
 
@@ -275,7 +278,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
             _setsToSell = _invalidFromUser;
         }
 
-        _cashPayout = _setsToSell.mul(numTicks).mul(1000 - fee).div(1000);
+        _cashPayout = applyFee(_setsToSell.mul(numTicks), fee);
     }
 
     function swap(uint256 _inputShares, bool _inputYes, uint256 _minOutputShares) external returns (uint256) {
@@ -298,24 +301,12 @@ contract AMMExchange is IAMMExchange, ERC20 {
 
     // How many of the other shares you would get for your shares.
     function rateSwap(uint256 _inputShares, bool _inputYes) public view returns (uint256) {
-        (uint256 _poolNo, uint256 _poolYes) = yesNoShareBalances(address(this));
-        uint256 _poolConstant = poolConstant(_poolYes, _poolNo);
-        if (_inputYes) {
-            return _poolNo.sub(_poolConstant.div(_poolYes.add(_inputShares)));
-        } else {
-            return _poolYes.sub(_poolConstant.div(_poolNo.add(_inputShares)));
-        }
-    }
+        (uint256 _reserveNo, uint256 _reserveYes) = yesNoShareBalances(address(this));
 
-    // When swapping (which includes entering and exiting positions), a fee is taken.
-    // The fee is a portion of the shares being swapped.
-    // Remove liquidity to collect fees.
-    function poolConstant(uint256 _poolYes, uint256 _poolNo) public view returns (uint256) {
-        uint256 beforeFee = _poolYes.mul(_poolNo);
-        if (beforeFee == 0) {
-            return 0;
+        if (_inputYes) {
+            return applyFee(calculateSwap(_reserveNo, _reserveYes, _inputShares), fee);
         } else {
-            return beforeFee.mul(1000 - fee).div(1000);
+            return applyFee(calculateSwap(_reserveYes, _reserveNo, _inputShares), fee);
         }
     }
 
@@ -387,6 +378,18 @@ contract AMMExchange is IAMMExchange, ERC20 {
             return uint256(_resultPlus);
         }
     }
+
+
+    // Calculates _deltaA, the number of shares gained from the swap.
+    function calculateSwap(uint256 _reserveA, uint256 _reserveB, uint256 _deltaB) internal pure returns (uint256) {
+        uint256 _k = _reserveA.mul(_reserveB);
+        return _reserveA.sub(_k.div(_reserveB.add(_deltaB)));
+    }
+
+    function applyFee(uint256 _amount, uint256 _fee) internal pure returns (uint256) {
+        return _amount.mul(1000 - _fee).div(1000);
+    }
+
 
     function onTokenTransfer(address _from, address _to, uint256 _value) internal {}
 }

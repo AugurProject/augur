@@ -3,7 +3,7 @@
 from pytest import fixture, skip
 
 
-FEE = 3 # 3/1000
+FEE = 10 # 10/1000 aka 1%
 ATTO = 10 ** 18
 INVALID = 0
 NO = 1
@@ -101,38 +101,43 @@ def test_amm_weth_60_40_liquidity(sessionFixture, market, weth, para_weth_share_
     assert lpTokens > 0
 
 
-def test_amm_weth_yes_position(sessionFixture, market, factory, para_weth_share_token, weth_amm, account0, amm):
+def test_amm_weth_yes_position(sessionFixture, market, para_weth_share_token, weth_amm, account0, amm, weth):
     if not sessionFixture.paraAugur:
         return skip("Test is only for para augur")
 
+    numticks = market.getNumTicks()
     sets = 100 * ATTO
-    liquidityCost = sets * 1000
+    liquidityCost = sets * numticks
     ratio_50_50 = 10 ** 18
 
     weth_amm.addInitialLiquidity(market.address, FEE, ratio_50_50, True, account0, value=liquidityCost)
 
-    assert sessionFixture.ethBalance(account0)
+    yesPositionSets = 10 * ATTO
+    yesPositionCost = yesPositionSets * numticks
 
     # Enter position
-    yesPositionSets = 10 * ATTO
-    yesPositionCost = yesPositionSets * 1000
-    yesSharesReceived = amm.rateEnterPosition(yesPositionCost, True)
-    assert yesPositionCost > 10 * ATTO
-    weth_amm.enterPosition(market.address, FEE, True, yesSharesReceived, value=yesPositionCost)
+    sharesReceived = amm.rateEnterPosition(yesPositionCost, True)
+    assert sharesReceived > yesPositionSets
+    assert sharesReceived < 2 * yesPositionSets
+    weth_amm.enterPosition(market.address, FEE, True, sharesReceived, value=yesPositionCost)
 
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, INVALID, account0) == yesPositionSets
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, account0) == 0
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, account0) == yesSharesReceived
+    assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, account0) == sharesReceived
+
+    assert weth.balanceOf(amm.address) == yesPositionCost
+    assert para_weth_share_token.balanceOfMarketOutcome(market.address, INVALID, amm.address) == sets - yesPositionSets
+    assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, amm.address) == sets
+    assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, amm.address) == sets - sharesReceived
 
     # Exiting requires you to send shares to the weth-amm wrapper for it to pass along.
     para_weth_share_token.setApprovalForAll(weth_amm.address, True)
 
     (payoutAll, inv, no, yes) = amm.rateExitAll()
-    assert inv == yesPositionSets
-    assert no == -10135101402160364982
-    assert yes == 19107898597839635018
-    applyFeeForEntryAndExit = (yesPositionCost * (1000 - FEE) // 1000)
-    assert payoutAll == applyFeeForEntryAndExit
+    assert inv == 9894506271814924370  # due to fees, some invalids aren't needed
+    assert no == 0
+    assert yes == 18810000000000000000
+    assert payoutAll == 9795561209096775126300
 
     weth_amm.exitAll(market.address, FEE, payoutAll)
 
@@ -140,6 +145,6 @@ def test_amm_weth_yes_position(sessionFixture, market, factory, para_weth_share_
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, weth_amm.address) == 0
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, weth_amm.address) == 0
 
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, INVALID, account0) == 0
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, account0) == -no
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, account0) == yesSharesReceived - yes
+    assert para_weth_share_token.balanceOfMarketOutcome(market.address, INVALID, account0) == 105493728185075630
+    assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, account0) == 0
+    assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, account0) == 0

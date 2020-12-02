@@ -193,7 +193,7 @@ templates:
         - name: ParaShareToken
           file: ./abis/ParaShareToken.json
       eventHandlers:
-        - event: EnterPosition(address,uint256,uint256,bool)
+        - event: EnterPosition(address,uint256,uint256,bool,uint256)
           handler: handleEnterPosition
         - event: ExitPosition(address,uint256,uint256,uint256,uint256)
           handler: handleExitPosition
