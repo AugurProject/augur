@@ -254,7 +254,7 @@ export const LIST_VALUES = {
     'Oscar Robertson',
   ],
   MENS_WOMENS: ["Men's", "Women's"],
-  TENNIS_MENS_WOMENS: ["Men's", "Women's", 'Mixed'],
+  TENNIS_MENS_WOMENS: ["Men's", "Women's", "Mixed"],
   BASKETBALL_ACTION: [
     'Points Scored',
     'Rebounds',

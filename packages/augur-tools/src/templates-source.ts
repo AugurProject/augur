@@ -2714,7 +2714,7 @@ export const TEMPLATES = {
                     placeholder: `Men's/Women's/Mixed`,
                     groupKey: GENDER,
                     inputDestIds: [2],
-                    values: LIST_VALUES.MENS_WOMENS,
+                    values: LIST_VALUES.TENNIS_MENS_WOMENS,
                     inputDestValues: TENNIS_DOUBLES_EVENTS,
                   },
                   {
