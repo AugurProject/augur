@@ -157,7 +157,16 @@ const calculateLiquidity = orderBook => {
 };
 
 export function AppStatusReducer(state, action) {
-  const updatedState = { ...state };
+  let updatedState = { ...state };
+
+  const APP_MENUS_CLOSED = {
+    [IS_ODDS_MENU_OPEN]: false,
+    [IS_HELP_MENU_OPEN]: false,
+    [IS_CONNECTION_TRAY_OPEN]: false,
+    [IS_ALERTS_MENU_OPEN]: false,
+    [IS_PRODUCT_SWITCHER_OPEN]: false,
+  };
+
   switch (action.type) {
     case SET_THEME: {
       updatedState[THEME] = action.theme;
@@ -173,20 +182,12 @@ export function AppStatusReducer(state, action) {
       break;
     }
     case MENU_CHANGE: {
-      updatedState[IS_ODDS_MENU_OPEN] = false;
-      updatedState[IS_HELP_MENU_OPEN] = false;
-      updatedState[IS_CONNECTION_TRAY_OPEN] = false;
-      updatedState[IS_ALERTS_MENU_OPEN] = false;
-      updatedState[IS_PRODUCT_SWITCHER_OPEN] = false;
-      updatedState[action.name] = action.value;
+      const { name, value } = action;
+      updatedState = { ...updatedState, ...APP_MENUS_CLOSED, [name]: value};
       break;
     }
     case CLOSE_APP_MENUS: {
-      updatedState[IS_ODDS_MENU_OPEN] = false;
-      updatedState[IS_HELP_MENU_OPEN] = false;
-      updatedState[IS_CONNECTION_TRAY_OPEN] = false;
-      updatedState[IS_ALERTS_MENU_OPEN] = false;
-      updatedState[IS_PRODUCT_SWITCHER_OPEN] = false;
+      updatedState = {...updatedState, ...APP_MENUS_CLOSED };
       break;
     }
     case SET_IS_MOBILE: {
