@@ -15,6 +15,7 @@ import {
   RemoveLiquidity,
   SwapPosition,
 } from '../../generated/schema';
+import { getOrCreateUser } from '../utils/helpers';
 import { updateAMM } from '../utils/helpers/amm';
 
 
@@ -40,6 +41,7 @@ function updateAggregateValues(address: Address, cash: BigInt, noShares: BigInt,
 export function handleAddLiquidity(event: AddLiquidityEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let addLiquidity = new AddLiquidity(id);
+  getOrCreateUser(event.params.sender.toHexString());
   addLiquidity.tx_hash = event.transaction.hash.toHexString();
   addLiquidity.timestamp = event.block.timestamp;
   addLiquidity.ammExchange = event.address.toHexString();
@@ -60,6 +62,7 @@ export function handleAddLiquidity(event: AddLiquidityEvent): void {
 export function handleRemoveLiquidity(event: RemoveLiquidityEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let removeLiquidity = new RemoveLiquidity(id);
+  getOrCreateUser(event.params.sender.toHexString());
   removeLiquidity.tx_hash = event.transaction.hash.toHexString();
   removeLiquidity.timestamp = event.block.timestamp;
   removeLiquidity.ammExchange = event.address.toHexString();
@@ -80,6 +83,7 @@ export function handleRemoveLiquidity(event: RemoveLiquidityEvent): void {
 export function handleEnterPosition(event: EnterPositionEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let enterPosition = new EnterPosition(id);
+  getOrCreateUser(event.params.sender.toHexString());
   enterPosition.tx_hash = event.transaction.hash.toHexString();
   enterPosition.timestamp = event.block.timestamp;
   enterPosition.ammExchange = event.address.toHexString();
@@ -102,6 +106,7 @@ export function handleEnterPosition(event: EnterPositionEvent): void {
 export function handleExitPosition(event: ExitPositionEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let exitPosition = new ExitPosition(id);
+  getOrCreateUser(event.params.sender.toHexString());
   exitPosition.tx_hash = event.transaction.hash.toHexString();
   exitPosition.timestamp = event.block.timestamp;
   exitPosition.ammExchange = event.address.toHexString();
@@ -123,9 +128,12 @@ export function handleExitPosition(event: ExitPositionEvent): void {
 export function handleSwapPosition(event: SwapPositionEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let swapPosition = new SwapPosition(id);
+  getOrCreateUser(event.params.sender.toHexString());
+
   swapPosition.tx_hash = event.transaction.hash.toHexString();
   swapPosition.timestamp = event.block.timestamp;
   swapPosition.ammExchange = event.address.toHexString();
+  swapPosition.sender = event.params.sender.toHexString();
 
   if (event.params.inputYes) {
     updateAggregateValues(
