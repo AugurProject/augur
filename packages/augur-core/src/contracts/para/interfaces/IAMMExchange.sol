@@ -48,11 +48,6 @@ contract IAMMExchange is IERC20 {
     // How many of the other shares you would get for your shares.
     function rateSwap(uint256 _inputShares, bool _inputYes) public view returns (uint256);
 
-    // When swapping (which includes entering and exiting positions), a fee is taken.
-    // The fee is a portion of the shares being swapped.
-    // Remove liquidity to collect fees.
-    function poolConstant(uint256 _poolYes, uint256 _poolNo) public view returns (uint256);
-
     function shareBalances(address _owner) public view returns (uint256 _invalid, uint256 _no, uint256 _yes);
     function yesNoShareBalances(address _owner) public view returns (uint256 _no, uint256 _yes);
 }

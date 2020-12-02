@@ -87,6 +87,12 @@ export const AMMExchangeAbi = [
         "internalType": "bool",
         "name": "buyYes",
         "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "priorShares",
+        "type": "uint256"
       }
     ],
     "name": "EnterPosition",
@@ -687,32 +693,6 @@ export const AMMExchangeAbi = [
     "constant": true,
     "inputs": [],
     "name": "numTicks",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_poolYes",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_poolNo",
-        "type": "uint256"
-      }
-    ],
-    "name": "poolConstant",
     "outputs": [
       {
         "internalType": "uint256",
