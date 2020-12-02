@@ -208,9 +208,9 @@ export const ButtonEmpty = styled(Base)`
 `
 
 export const ButtonWhite = styled(Base)`
-  border: 1px solid #edeef2;
+  border: ${({ theme }) => `1px solid ${theme.text4}`};
   background-color: ${({ theme }) => theme.bg1};
-  color: black;
+  color: ${({ theme }) => theme.text4};;
 
   &:focus {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -309,6 +309,6 @@ export function ButtonRadio({ active, ...rest }: { active?: boolean } & ButtonPr
   if (!active) {
     return <ButtonWhite {...rest} />
   } else {
-    return <ButtonPrimary {...rest} />
+    return <ButtonSecondary {...rest} />
   }
 }

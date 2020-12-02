@@ -24,6 +24,7 @@ import {
   useMarketVolumeByCash
 } from '../contexts/Markets'
 import { ButtonOutlined } from '../components/ButtonStyled'
+import PairChart from '../components/PairChart'
 import { BigNumber as BN } from 'bignumber.js'
 
 const DashboardWrapper = styled.div`
@@ -151,23 +152,6 @@ function MarketPage({ marketId }) {
 
           <>
             <PanelWrapper style={{ marginTop: below1080 ? '0' : '1rem' }}>
-              {below1080 && price && (
-                <Panel>
-                  <AutoColumn gap="20px">
-                    <RowBetween>
-                      <TYPE.main>Price</TYPE.main>
-                      <div />
-                    </RowBetween>
-                    <RowBetween align="flex-end">
-                      {' '}
-                      <TYPE.main fontSize={'1.5rem'} lineHeight={1} fontWeight={500}>
-                        {price}
-                      </TYPE.main>
-                      <TYPE.main>{priceChange}</TYPE.main>
-                    </RowBetween>
-                  </AutoColumn>
-                </Panel>
-              )}
               <Panel>
                 <AutoColumn gap="20px">
                   <RowBetween>
@@ -207,6 +191,13 @@ function MarketPage({ marketId }) {
                     </TYPE.main>
                   </RowBetween>
                 </AutoColumn>
+              </Panel>
+              <Panel style={{ gridColumn: below1080 ? '1' : '2/4', gridRow: below1080 ? '' : '1/4' }}>
+                <PairChart
+                  marketId={marketId}
+                  amms={allExchanges}
+                  color={backgroundColor}
+                />
               </Panel>
             </PanelWrapper>
           </>

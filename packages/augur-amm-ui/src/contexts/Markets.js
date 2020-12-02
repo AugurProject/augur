@@ -493,3 +493,50 @@ function useCalcVolumes(markets, marketsPast) {
     return { volume, past, diff, totalDiff: String(totalDiff) }
   }, [markets, marketsPast])
 }
+
+export const useMarketAmmTradeData = (marketId, cashAddress) => {
+  const amms = useMarketAmmExchanges(marketId);
+  console.log('amms', amms)
+  console.log(marketId, cashAddress)
+  const amm = amms.find(a => a.cash.address === cashAddress);
+  if (!amm) return []
+
+  return [
+    {
+      no: .76,
+      yes: .24,
+      date: 1606925914
+    },
+    {
+      no: .78,
+      yes: .22,
+      date: 1606839514
+    },
+    {
+      no: .79,
+      yes: .21,
+      date: 1606753114
+    },
+    {
+      no: .80,
+      yes: .20,
+      date: 1606666714
+    },
+    {
+      no: .79,
+      yes: .21,
+      date: 1606580314
+    },
+    {
+      no: .60,
+      yes: .40,
+      date: 1606493914
+    },
+    {
+      no: .55,
+      yes: .45,
+      date: 1606407514
+    }
+  ]
+
+}
