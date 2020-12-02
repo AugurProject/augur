@@ -248,6 +248,8 @@ const DEFAULT_MARKETS_LIST_STATE: MarketsList = {
   marketCardFormat: MARKET_CARD_FORMATS.CLASSIC,
   isSearchInPlace: false,
   sportsGroupTypeFilter: SPORTS_GROUP_TYPES.DAILY,
+  numFutures: null,
+  numDailies: null,
 };
 
 export const DEFAULT_APP_STATUS = {

@@ -2202,53 +2202,6 @@ export const TEMPLATES = {
                 },
               },
               {
-                marketType: YES_NO,
-                question: `[0] Singles Tennis: Will [1] win the [2] [3]?`,
-                example: `Men's Singles Tennis: Will Roger Federer win the 2020 Wimbledon?`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
-                    placeholder: `Men's/Women's`,
-                    inputDestIds: [3],
-                    values: LIST_VALUES.MENS_WOMENS,
-                    inputDestValues: TENNIS_SINGLES_EVENTS,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.TEXT,
-                    placeholder: TEXT_PLACEHOLDERS.SINGLE_PLAYER,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Year`,
-                    validationType: ValidationType.YEAR_YEAR_RANGE,
-                    values: LIST_VALUES.YEARS,
-                  },
-                  {
-                    id: 3,
-                    type: TemplateInputType.DROPDOWN,
-                    defaultLabel: `Select Men's/Women's First`,
-                    placeholder: `Event`,
-                    values: [],
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as 'No'`,
-                    },
-                    {
-                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
-                    },
-                    {
-                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No'`,
-                    },
-                  ],
-                },
-              },
-              {
                 marketType: CATEGORICAL,
                 question: `[0] Singles Tennis: Which player will win the [1] [2]?`,
                 example: `Men's Singles Tennis: Which player will win the 2020 Australian Open?`,
@@ -3429,88 +3382,6 @@ export const TEMPLATES = {
                     type: TemplateInputType.TEXT,
                     placeholder: `Team B`,
                     groupKey: TEAM_B,
-                  },
-                  {
-                    id: 4,
-                    type: TemplateInputType.TEXT,
-                    validationType: ValidationType.WHOLE_NUMBER,
-                    placeholder: `Whole #`,
-                  },
-                  {
-                    id: 5,
-                    type: TemplateInputType.ESTDATETIME,
-                    hoursAfterEst: 6,
-                    groupKey: START_TIME,
-                    placeholder: `Date time`,
-                  },
-                  {
-                    id: 6,
-                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `Over [4].5`,
-                  },
-                  {
-                    id: 7,
-                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
-                    placeholder: `Under [4].5`,
-                  },
-                  {
-                    id: 8,
-                    type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Contest`,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out`,
-                    },
-                    {
-                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'No Contest'`,
-                    },
-                    {
-                      text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`,
-                    },
-                    {
-                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'No Contest'`,
-                    },
-                  ],
-                },
-              },
-              {
-                marketType: CATEGORICAL,
-                question: `[0] [1] (O/U): [2] vs. [3]: Total goals scored; Over/Under [4].5?`,
-                example: `Men's World Cup (O/U): Real Madrid vs. Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                header: `([0]) [2] vs. [3]`,
-                title: `Over/Under [4].5`,
-                groupName: groupTypes.OVER_UNDER,
-                groupLineId: 4,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
-                    placeholder: `Men's/Women's`,
-                    groupKey: GENDER,
-                    inputDestIds: [1],
-                    values: LIST_VALUES.MENS_WOMENS,
-                    inputDestValues: SOCCER_GENDER_EVENTS,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    defaultLabel: `Select Men's/Women's First`,
-                    placeholder: `Event`,
-                    groupKey: EVENT,
-                    values: [],
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Team A`,
-                  },
-                  {
-                    id: 3,
-                    type: TemplateInputType.TEXT,
-                    placeholder: `Team B`,
                   },
                   {
                     id: 4,
@@ -5885,45 +5756,6 @@ export const TEMPLATES = {
             },
           },
           {
-            marketType: CATEGORICAL,
-            question: `MLB: Which player will win the [0] [1]?`,
-            example: `MLB: Which player will win the 2019 American League Cy Young award?`,
-            header: `[0] [1] winner`,
-            groupName: groupTypes.FUTURES,
-            inputs: [
-              {
-                id: 0,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Year`,
-                groupKey: YEAR,
-                validationType: ValidationType.YEAR_YEAR_RANGE,
-                values: LIST_VALUES.YEARS,
-              },
-              {
-                id: 1,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Award`,
-                groupKey: EVENT,
-                values: LIST_VALUES.BASEBALL_AWARDS,
-              },
-              {
-                id: 2,
-                type: TemplateInputType.ADDED_OUTCOME,
-                placeholder: `Other (Field)`,
-              },
-            ],
-            resolutionRules: {
-              [REQUIRED]: [
-                {
-                  text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
-                },
-                {
-                  text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'Invalid'`,
-                },
-              ],
-            },
-          },
-          {
             marketType: SCALAR,
             question: `MLB: Total number of wins the [0] will finish the [1] regular season with?`,
             example: `MLB: Total number of wins the LA Dodgers will finish the 2019 regular season with?`,
@@ -7121,59 +6953,6 @@ export const TEMPLATES = {
                     },
                     {
                       text: `If the game is not played market should resolve as 'No Contest'`,
-                    },
-                  ],
-                },
-              },
-              {
-                marketType: CATEGORICAL,
-                question: `Which NFL team will win the [0] [1]?`,
-                example: `Which NFL team will win the 2020 AFC Championship game?`,
-                header: `[0] [1] winner`,
-                groupName: groupTypes.FUTURES,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Year`,
-                    groupKey: YEAR,
-                    validationType: ValidationType.YEAR_YEAR_RANGE,
-                    values: LIST_VALUES.YEARS,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Event`,
-                    groupKey: EVENT,
-                    values: LIST_VALUES.FOOTBALL_EVENT,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Other (Field)`,
-                  },
-                  {
-                    id: 3,
-                    type:
-                      TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP,
-                    inputSourceId: 1,
-                    placeholder: `Select Team`,
-                    values: FOOTBALL_EVENT_DEP_TEAMS,
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
-                    },
-                    {
-                      text: `If the season is officially cancelled and the event in the market is not played, this market should resolve as 'Invalid'`,
-                    },
-                    {
-                      text: `If the league suspends play and starts up again at a later date, and the winner of the event in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
-                    },
-                    {
-                      text: `If the league suspends play and starts up again at a later date, and the winner of the event in the market is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`,
                     },
                   ],
                 },
@@ -9676,44 +9455,6 @@ export const TEMPLATES = {
               },
               {
                 id: 1,
-                type: TemplateInputType.DATEYEAR,
-                daysAfterDateStart: 1,
-                placeholder: `Day of Year`,
-              },
-            ],
-            resolutionRules: {
-              [REQUIRED]: [
-                {
-                  text: `Use ticker symbol search for token pair (ie REPUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
-                },
-                {
-                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
-                },
-                {
-                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
-                },
-              ],
-            },
-          },
-          {
-            marketType: YES_NO,
-            question: `Will the price of REP/USD, exceed [0] anytime between the open of [1] and close of [2], according to TradingView.com "REPUSD (crypto - Coinbase)"?`,
-            example: `Will the price of REP/USD exceed 25 anytime between the open of September 1, 2020 and close of December 31, 2020, according to TradingView.com "REPUSD (crypto - Coinbase)"?`,
-            inputs: [
-              {
-                id: 0,
-                type: TemplateInputType.TEXT,
-                placeholder: `Value #`,
-                validationType: ValidationType.NUMBER,
-              },
-              {
-                id: 1,
-                type: TemplateInputType.DATEYEAR,
-                placeholder: `Day of Year`,
-              },
-              {
-                id: 2,
-                dateAfterId: 1,
                 type: TemplateInputType.DATEYEAR,
                 daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
