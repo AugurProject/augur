@@ -101,7 +101,7 @@ export const SelectProductDropdown = ({hideOnMobile}: SelectProductDropdownProps
   ];
 
   return (
-    <div className={classNames(Styles.Dropdown, {
+    <div onClick={event => event.stopPropagation()} className={classNames(Styles.Dropdown, {
       [Styles.ShowDropdown]: isProductSwitcherOpen,
       [Styles.HideOnMobile]: hideOnMobile
     })}>
