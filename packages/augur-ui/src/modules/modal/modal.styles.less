@@ -3216,17 +3216,18 @@ div.ButtonsRow:last-of-type {
 .Transactions {
   .Container;
 
-  max-width: 95vw;
+  max-width: @desktop-max;
   min-height: 500px;
   overflow: hidden;
   padding: 0 @size-20 @size-20;
+  grid-gap: @size-16;
 
   > header {
     border-bottom: @size-1 solid var(--color-secondary-action-outline);
-    margin: 0 -@size-24 @size-24;
+    margin: 0 -@size-24;
 
     @media @breakpoint-mobile {
-      margin: 0 -@size-16 @size-16;
+      margin: 0 -@size-16;
     }
   }
 
@@ -3237,8 +3238,8 @@ div.ButtonsRow:last-of-type {
 
   > section:first-of-type {
     display: grid;
-    grid-gap: @size-4;
-    grid-template-columns: repeat(4, 135px) 130px 1fr;
+    grid-gap: @size-4 @size-8;
+    grid-template-columns: repeat(4, 135px) 135px 1fr;
     grid-template-rows: @size-14 @size-32;
 
     @media @breakpoint-mobile {
@@ -3415,10 +3416,9 @@ div.ButtonsRow:last-of-type {
       }
     }
 
-    > div:last-of-type {
-      > button:last-of-type {
-        margin-left: @size-3;
-      }
+    > div.SearchButtons {
+      display: flex;
+      grid-gap: @size-4;
     }
 
     > button:last-of-type {
@@ -3428,122 +3428,110 @@ div.ButtonsRow:last-of-type {
 
   > section:nth-of-type(2) {
     width: fit-content;
-    margin-top: @size-12;
-
-    @media @breakpoint-mobile {
-      margin-bottom: @size-12;
-    }
   }
 
   > div:first-of-type {
     max-height: 650px;
     overflow: overlay;
-  }
 
-  > div:first-of-type > div:first-of-type {
-    .TransactionsTable;
-    .text-12;
-
-    background: var(--color-table-header);
-    border-bottom: 0;
-    color: var(--color-secondary-text);
-    margin: @size-24 0 0;
-    min-height: @size-32;
-    text-transform: uppercase;
-    min-width: fit-content;
-
-    @media @breakpoint-mobile {
-      margin: 0;
-    }
-
-    > span {
-      padding: 0 @size-12;
-    }
-
-    > span:first-of-type {
-      padding-left: @size-24;
-    }
-
-    > span:nth-of-type(5),
-    > span:nth-of-type(6),
-    > span:nth-of-type(8),
-    > span:nth-of-type(9) {
-      text-align: right;
-
-      > button {
-        width: 100%;
+    > div:first-of-type {
+      .TransactionsTable;
+      .text-12;
+  
+      background: var(--color-table-header);
+      border-bottom: 0;
+      color: var(--color-secondary-text);
+      min-height: @size-32;
+      text-transform: uppercase;
+      min-width: fit-content;
+  
+      > span {
+        padding: 0 @size-12;
+      }
+  
+      > span:first-of-type {
+        padding-left: @size-24;
+      }
+  
+      > span:nth-of-type(5),
+      > span:nth-of-type(6),
+      > span:nth-of-type(8),
+      > span:nth-of-type(9) {
+        text-align: right;
+  
+        > button {
+          width: 100%;
+        }
+      }
+  
+      > span:last-of-type {
+        padding-right: @size-24;
       }
     }
 
-    > span:last-of-type {
-      padding-right: @size-24;
-    }
-  }
-
-  > div:first-of-type > section:last-of-type {
-    .TransactionsTable;
-
-    border-top: 0;
-    color: var(--color-primary-text);
-    max-height: 650px;
-    overflow: overlay;
-    margin-bottom: @size-32;
-    min-width: fit-content;
-
-    @media @breakpoint-mobile {
-      max-height: 600px;
-      margin-bottom: @size-16;
-    }
-
-    > span {
-      .mono-11;
-
-      border-top: @size-1 solid var(--color-dark-grey);
-      height: @size-32;
-      line-height: @size-13;
-      overflow: hidden;
-      padding: @size-10 @size-12;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    > span:nth-of-type(9n + 1) {
-      .mono-12;
-
-      line-height: @size-15;
-      padding: @size-8 @size-12 @size-8 @size-24;
-    }
-
-    > span:nth-of-type(9n + 2),
-    > span:nth-of-type(9n + 3) {
-      .text-11;
-    }
-
-    > span:nth-of-type(9n + 4) {
-      .mono-11-bold;
-
-      text-transform: capitalize;
-    }
-
-    > span:nth-of-type(9n + 5),
-    > span:nth-of-type(9n + 6),
-    > span:nth-of-type(9n + 8),
-    > span:nth-of-type(9n + 9) {
-      text-align: right;
-    }
-
-    > div:nth-of-type(1n) {
-      background: none;
-      border: 0;
-      border-radius: 0;
-      border-top: @size-1 solid var(--color-dark-grey);
-      display: flex;
-      height: @size-32;
-      justify-content: flex-end;
-      padding: @size-12 @size-24 @size-10 0;
-
-      &:hover {
-        color: var(--color-primary-text);
+    > section:last-of-type {
+      .TransactionsTable;
+  
+      border-top: 0;
+      color: var(--color-primary-text);
+      max-height: 650px;
+      overflow: overlay;
+      min-width: fit-content;
+  
+      @media @breakpoint-mobile {
+        max-height: 600px;
+      }
+  
+      > span {
+        .mono-11;
+  
+        border-top: @size-1 solid var(--color-dark-grey);
+        height: @size-32;
+        line-height: @size-13;
+        overflow: hidden;
+        padding: @size-10 @size-12;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+  
+      > span:nth-of-type(9n + 1) {
+        .mono-12;
+  
+        line-height: @size-15;
+        padding: @size-8 @size-12 @size-8 @size-24;
+      }
+  
+      > span:nth-of-type(9n + 2),
+      > span:nth-of-type(9n + 3) {
+        .text-11;
+      }
+  
+      > span:nth-of-type(9n + 4) {
+        .mono-11-bold;
+  
+        text-transform: capitalize;
+      }
+  
+      > span:nth-of-type(9n + 5),
+      > span:nth-of-type(9n + 6),
+      > span:nth-of-type(9n + 8),
+      > span:nth-of-type(9n + 9) {
+        text-align: right;
+      }
+  
+      > div:nth-of-type(1n) {
+        background: none;
+        border: 0;
+        border-radius: 0;
+        border-top: @size-1 solid var(--color-dark-grey);
+        display: flex;
+        height: @size-32;
+        justify-content: flex-end;
+        padding: @size-12 @size-24 @size-10 0;
+  
+        &:hover {
+          color: var(--color-primary-text);
+        }
       }
     }
   }

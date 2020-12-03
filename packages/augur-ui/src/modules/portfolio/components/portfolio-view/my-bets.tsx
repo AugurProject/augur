@@ -313,11 +313,6 @@ export const MyBets = () => {
           ))}
         {rows.length > 0 && !showEvents && <Outcomes rows={rows} />}
       </div>
-      <footer>
-        <ViewTransactionsButton
-          action={() => setModal({ type: MODAL_TRANSACTIONS })}
-        />
-      </footer>
     </div>
   );
 };

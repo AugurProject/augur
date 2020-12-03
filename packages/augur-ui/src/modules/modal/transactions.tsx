@@ -149,7 +149,6 @@ export const Transactions = () => {
   const {
     loginAccount: { address: account },
     universe: { id: universe },
-    modal,
     blockchain: { currentAugurTimestamp: now },
     actions: { closeModal }
   } = useAppStatusStore();
@@ -435,6 +434,7 @@ export const Transactions = () => {
   const transactionsRows = pageTransactions.map(
     (transaction: TransactionInfo) => addTransactionRow(transaction)
   );
+
   return (
     <div className={Styles.Transactions}>
       <Title title={title} closeAction={closeAction} />
@@ -476,7 +476,7 @@ export const Transactions = () => {
             setCoin(coin);
           }}
         />
-        <div>
+        <div className={Styles.SearchButtons}>
           <SecondaryButton action={resetSearch} text="Reset" />
           <PrimaryButton action={triggerSearch} text="Search" />
         </div>
