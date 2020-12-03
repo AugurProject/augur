@@ -1701,15 +1701,21 @@
   align-items: center;
   line-height: @size-15;
   max-height: @size-32;
-  min-width: 9rem;
+  min-width: @size-144;
   padding: 0 @size-24;
   white-space: nowrap;
+  display: flex;
+  flex-flow: row nowrap;
+  grid-gap: @size-8;
+  align-items: center;
+  justify-content: center;
 
   > svg {
     fill: none;
     height: @size-14;
     width: @size-10;
-    margin: 0 @size-1 0 @size-8;
+    margin: 0;
+    margin-top: @size-4;
 
     > path {
       stroke: var(--color-primary-text);
@@ -1718,6 +1724,13 @@
     > rect {
       fill: var(--color-primary-text);
     }
+  }
+}
+
+:root[theme="SPORTS"],
+:root[theme="BETTING"] {
+  .ExportButton {
+    flex-flow: row-reverse nowrap;
   }
 }
 
