@@ -18,7 +18,7 @@ export default function GlobalStats() {
   const below816 = useMedia('(max-width: 816px)')
 
   const [globalLiquidity, setGlobalLiquidity] = useState("-")
-  const [oneDayVolume, setOneDayVolume] = useState("-")
+  const [totalVolume, setTotalVolume] = useState("-")
   const [oneDayTx, setOneDayTx] = useState("-")
   const cashTokens = useMarketCashTokens()
   const cashData = useTokenDayPriceData()
@@ -39,10 +39,10 @@ export default function GlobalStats() {
     const liq = formattedNum(String(total), true);
     setGlobalLiquidity(String(liq))
 
-    let vol24InUSD = calculateTotalVolume(cashData, ammVolumes)
+    let volTotalUSD = calculateTotalVolume(cashData, ammVolumes)
 
-    const formattedInUsd = formattedNum(String(vol24InUSD), true);
-    setOneDayVolume(String(formattedInUsd))
+    const formattedInUsd = formattedNum(String(volTotalUSD), true);
+    setTotalVolume(String(formattedInUsd))
 
     const { totalDiff: tx } = ammTransactions;
     setOneDayTx(tx)
@@ -71,9 +71,9 @@ export default function GlobalStats() {
             </TYPE.boxedRow>
           </TYPE.boxed>
           <TYPE.boxed mb={below816 ? '1rem' :'0.5rem'} mr={below816 ? '0' : '1.5rem'}>
-            <TYPE.boxedRow>Volume (24 hrs): </TYPE.boxedRow>
+            <TYPE.boxedRow>Volume: </TYPE.boxedRow>
             <TYPE.boxedRow>
-              <TYPE.largeHeader>{oneDayVolume}</TYPE.largeHeader>
+              <TYPE.largeHeader>{totalVolume}</TYPE.largeHeader>
             </TYPE.boxedRow>
           </TYPE.boxed>
           <TYPE.boxed mb={below816 ? '1rem' :'0.5rem'}>
