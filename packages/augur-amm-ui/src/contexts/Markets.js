@@ -506,7 +506,6 @@ function useCalcVolumes(markets, marketsPast) {
 
 export const useMarketAmmTradeData = (marketId, cashAddress) => {
   const amms = useMarketAmmExchanges(marketId);
-  console.log(marketId, cashAddress)
   const amm = amms.find(a => a.cash.address === cashAddress);
   if (!amm) return []
 

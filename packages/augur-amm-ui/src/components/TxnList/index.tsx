@@ -160,7 +160,6 @@ function processTransactions(allExchanges, cashData, cashTokens) {
       const price = e?.cash?.address ? cashData[e?.cash?.address]?.priceUSD : 1
       const symbol = e?.cash?.address ? cashData[e?.cash?.address]?.symbol : 'cash'
       const decimals = cashTokens ? cashTokens[e.cash.address]?.decimals : 18
-      console.log('remove', e.removeLiquidity)
       const enters = (e.enters || []).map(mint => ({
         hash: mint.tx_hash,
         timestamp: mint.timestamp || 0,
