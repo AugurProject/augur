@@ -67,6 +67,7 @@ function MarketPage({ marketId }) {
   const allExchanges = useMarketAmmExchanges(marketId)
   const volumes = useMarketVolumeByCash(marketId)
 
+  console.log('Market page render')
   useEffect(() => {
     document.querySelector('body').scrollTo(0, 0)
   }, [])
@@ -80,7 +81,8 @@ function MarketPage({ marketId }) {
       }, new BN(0))
       setTotalLiquidity(formattedNum(String(total), true))
     }
-  }, [allExchanges, cashData])
+  }, [allExchanges?.length, cashData])
+
   // detect color from token
   const backgroundColor = useColor(id, symbol)
 

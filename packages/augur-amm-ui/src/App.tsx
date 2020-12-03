@@ -75,7 +75,7 @@ function App() {
                 <Route
                   exacts
                   strict
-                  path="/token/:marketId"
+                  path="/market/:marketId"
                   render={({ match }) => {
                     const { marketId } = match.params
                     if (marketId && isAddress(marketId.toLowerCase())) {

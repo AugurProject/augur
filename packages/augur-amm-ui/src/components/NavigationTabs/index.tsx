@@ -27,7 +27,7 @@ export function SwapPoolTabs({ token }: { token: string }) {
   return (
     <Tabs>
       <RowBetween style={{ padding: '1rem' }}>
-        <HistoryLink to={`/token/${token}`}>
+        <HistoryLink to={`/market/${token}`}>
           <StyledArrowLeft />
         </HistoryLink>
         <ActiveText>Swap</ActiveText>
@@ -45,7 +45,7 @@ export function AddRemoveTabs({ adding, creating, token }: { adding: boolean; cr
   return (
     <Tabs>
       <RowBetween style={{ padding: '1rem' }}>
-        <HistoryLink to={`/token/${token}`}>
+        <HistoryLink to={`/market/${token}`}>
           <StyledArrowLeft />
         </HistoryLink>
         <ActiveText>{creating ? 'Add Initial Liquidity' : adding ? 'Add Liquidity' : 'Remove Liquidity'}</ActiveText>

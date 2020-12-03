@@ -228,7 +228,7 @@ export const Big = number => new BN(number)
 export const urls = {
   showTransaction: tx => `https://etherscan.io/tx/${tx}/`,
   showAddress: address => `https://www.etherscan.io/address/${address}/`,
-  showToken: address => `https://www.etherscan.io/token/${address}/`,
+  showToken: address => `https://www.etherscan.io/market/${address}/`,
   showBlock: block => `https://etherscan.io/block/${block}/`
 }
 
@@ -428,7 +428,7 @@ const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
 export function getEtherscanLink(
   chainId: ChainId,
   data: string,
-  type: 'transaction' | 'token' | 'address' | 'block'
+  type: 'transaction' | 'market' | 'address' | 'block'
 ): string {
   const prefix = `https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[1]}etherscan.io`
 
@@ -436,7 +436,7 @@ export function getEtherscanLink(
     case 'transaction': {
       return `${prefix}/tx/${data}`
     }
-    case 'token': {
+    case 'market': {
       return `${prefix}/token/${data}`
     }
     case 'block': {
@@ -590,23 +590,23 @@ export function isTokenOnList(defaultTokens: TokenAddressMap, currency?: Currenc
   return Boolean(currency instanceof Token && defaultTokens[currency.chainId]?.[currency.address])
 }
 
-export function calculateLiquidity(decimals: number, liquidity: string, price: string) {
+export function calculateLiquidity(decimals: number, liquidity: string, price: string): string {
   if (!decimals || !liquidity || !price) return "0"
   const displayLiquidity = formatShares(liquidity, String(decimals))
   const liqNormalized = new BN(displayLiquidity).times(new BN(price))
   return String(liqNormalized)
 }
 
-export function calculateVolume(decimals: number, volume: string, price: string) {
+export function calculateVolume(decimals: number, volume: string, price: string): string {
   if (!decimals || !volume || !price) return "0"
   const displayVolume = formatShares(volume, String(decimals))
   const volNormalized = new BN(displayVolume).times(new BN(price))
   return String(volNormalized)
 }
 
-export function calculateTotalVolume(cashData, volumes: { volume }) {
-  let vol24InUSD = new BN("0")
-  if (!cashData || !volumes) return vol24InUSD
+export function calculateTotalVolume(cashData, volumes: { volume }): string {
+  let vol24InUSD = new BN(0);
+  if (!cashData || !volumes) return String(vol24InUSD)
   if (cashData && Object.keys(cashData).length > 0) {
     const { volume } = volumes;
     vol24InUSD = Object.keys(volume).reduce((p, cash) => {
@@ -615,7 +615,7 @@ export function calculateTotalVolume(cashData, volumes: { volume }) {
       return p.plus(new BN(cashValue))
     }, new BN(0))
   }
-  return vol24InUSD;
+  return String(vol24InUSD);
 }
 
 export enum TradingDirection {

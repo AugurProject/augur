@@ -65,12 +65,18 @@ function AmmExchangeList({ allExchanges, disbaleLinks, marketId }) {
   const below1080 = useMedia('(max-width: 1080px)')
   const [userTokenBalances] = useLPTokenBalances()
 
-  const ListItem = ({ ammExchange, index }) => {
+  const ListItem = ({ ammExchange }) => {
     const [hasLPTokens, setHasLpTokens] = useState(false)
+    const [liquidityUSD, setLiquidityUSD] = useState()
 
     useEffect(() => {
-      if (userTokenBalances) {
+      if (userTokenBalances && ammExchange?.id) {
         setHasLpTokens(greaterThanZero(userTokenBalances[ammExchange.id]))
+
+        const liquidity = formattedNum(formatShares(ammExchange.liquidity, ammExchange.cash.decimals), false);
+        const usd = formattedNum(ammExchange.liquidityUSD, true);
+        console.log('liquidity', liquidity)
+        setLiquidityUSD(ammExchange?.cash?.showInUSD ? `${liquidity} (${usd})}` : `$${liquidity}`);
       }
     }, [ammExchange])
 
@@ -85,7 +91,7 @@ function AmmExchangeList({ allExchanges, disbaleLinks, marketId }) {
             {Number(ammExchange.priceNo).toFixed(2)}
           </TYPE.header>
           {!below800 && <TYPE.header area="name" fontWeight="500">
-            {`${formattedNum(formatShares(ammExchange.liquidity, ammExchange.cash.decimals), false)} (${formattedNum(ammExchange.liquidityUSD, true)})`}
+            {liquidityUSD}
           </TYPE.header>}
           <TYPE.header area="fee" fontWeight="500">
             {toPercent(ammExchange.feePercent)}

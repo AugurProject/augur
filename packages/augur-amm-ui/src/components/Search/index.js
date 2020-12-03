@@ -360,7 +360,7 @@ export const Search = ({ small = false }) => {
           {filteredMarketsList.slice(0, marketsShown).map(market => {
             return (
               <div key={market.id}>
-                <BasicLink to={'/token/' + market.id} onClick={onDismiss}>
+                <BasicLink to={'/market/' + market.id} onClick={onDismiss}>
                   <MenuItem>
                     <RowFixed>
                       <TokenLogo tokenInfo={market.id} style={{ marginRight: '10px' }} />

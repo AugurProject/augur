@@ -170,7 +170,7 @@ function PooledMarketList({ balances, itemMax = 20 }) {
       <DashGrid style={{ height: '48px' }} focus={true}>
         {!below680 && <TokenLogo tokenInfo={item?.shareToken?.cash?.id} />}
         <DataText style={{ justifyContent: 'flex-start', alignItems: 'center' }}>
-          <BasicLink style={{ width: '100%', fontWeight: '400' }} to={'/token/' + item.id} key={item.id}>
+          <BasicLink style={{ width: '100%', fontWeight: '400' }} to={'/market/' + item.id} key={item.id}>
             {item?.description}
           </BasicLink>
         </DataText>

@@ -166,7 +166,7 @@ function PositionMarketList({ positions, loading, itemMax = 20 }) {
       <DashGrid style={{ height: '48px' }} focus={true}>
         {!below680 && <TokenLogo tokenInfo={item?.cash?.address} />}
         <DataText style={{ justifyContent: 'flex-start', alignItems: 'center' }}>
-          <BasicLink style={{ width: '100%', fontWeight: '400' }} to={'/token/' + item.marketId} key={item.id}>
+          <BasicLink style={{ width: '100%', fontWeight: '400' }} to={'/market/' + item.marketId} key={item.id}>
             {item?.market?.description}
           </BasicLink>
         </DataText>

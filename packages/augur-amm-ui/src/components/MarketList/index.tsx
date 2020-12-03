@@ -157,7 +157,7 @@ function MarketList({ markets, itemMax = 15 }) {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-        }} to={'/token/' + marketData?.id} key={marketData?.id}>
+        }} to={'/market/' + marketData?.id} key={marketData?.id}>
 
         <MarketCardTop>
             <div>{cardImageSource}</div>
