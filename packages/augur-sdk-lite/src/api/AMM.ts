@@ -354,7 +354,7 @@ class ExchangeCommon {
   async rateRemoveLiquidity(market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber, minSetsSold: BigNumber): Promise<RemoveLiquidityRate> {
     const exchangeAddress = await this.calculateExchangeAddress(market, paraShareToken, fee);
     const amm = this.exchangeContract(exchangeAddress);
-    const { _invalidShare, _noShare, _yesShare, _cashShare, _setsSold } = await amm.rateRemoveLiquidity(lpTokens.toFixed(), minSetsSold.toFixed());
+    const { _invalidShare, _noShare, _yesShare, _cashShare, _setsSold } = await amm.callStatic.removeLiquidity(lpTokens.toFixed(), minSetsSold.toFixed());
     return {
       invalid: new BigNumber(_invalidShare.toString()),
       no: new BigNumber(_noShare.toString()),
