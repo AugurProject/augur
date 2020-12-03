@@ -18,7 +18,7 @@ import {
 
 const ChartWrapper = styled.div`
   height: 100%;
-  max-height: 440px;
+  max-height: 540px;
 
   @media screen and (max-width: 600px) {
     min-height: 200px;
@@ -40,9 +40,6 @@ const CHART_VIEW = {
 }
 
 const PairChart = ({ marketId, amms, color }) => {
-
-  console.log('amms', amms)
-
   const [chartFilter, setChartFilter] = useState(CHART_VIEW.LIQUIDITY)
   const [selectedCash, setSelectedCash] = useState(amms && amms.length > 0 ? amms[0].cash : undefined)
   const [timeWindow, setTimeWindow] = useState(timeframeOptions.ALL_TIME)
@@ -90,7 +87,6 @@ const PairChart = ({ marketId, amms, color }) => {
     )
   }
 
-
   const aspect = below1080 ? 60 / 20 : below1600 ? 60 / 28 : 60 / 22
 
   return (
@@ -110,7 +106,7 @@ const PairChart = ({ marketId, amms, color }) => {
                   active={selectedCash?.address === a.cash.address}
                   onClick={() => {
                     setTimeWindow(timeframeOptions.ALL_TIME)
-                    setSelectedCash(a.cash.address)
+                    setSelectedCash(a?.cash?.address)
                   }}
                 >
                   <TokenLogo tokenInfo={a.cash.address} />

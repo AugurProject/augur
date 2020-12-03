@@ -166,9 +166,9 @@ function processTransactions(allExchanges, cashData, cashTokens) {
         timestamp: mint.timestamp || 0,
         type: TXN_TYPE.ENTER,
         token0Amount: String(displayValue(mint.cash, decimals)),
-        token1Amount: (mint.noShares ? formatShares(mint.noShares, decimals) : formatShares(mint.yesShares, decimals)),
+        token1Amount: (mint.noShares !== "0" ? formatShares(mint.noShares, decimals) : formatShares(mint.yesShares, decimals)),
         token0Symbol: symbol,
-        token1Symbol: mint.noShares ? 'No Shares' : 'Yes Shares',
+        token1Symbol: mint.noShares !== "0" ? 'No Shares' : 'Yes Shares',
         amountUSD: String(calcCash(mint.cash, decimals, price)),
         account: mint.sender?.id,
       }))

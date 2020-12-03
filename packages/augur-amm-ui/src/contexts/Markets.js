@@ -499,6 +499,7 @@ export const useMarketAmmTradeData = (marketId, cashAddress) => {
   console.log('amms', amms)
   console.log(marketId, cashAddress)
   const amm = amms.find(a => a.cash.address === cashAddress);
+  console.log('amm', amm)
   if (!amm) return []
 
   return [
