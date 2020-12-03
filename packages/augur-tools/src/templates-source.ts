@@ -2208,7 +2208,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] Singles Tennis: Which player will win the [1] [2]?`,
                 example: `Men's Singles Tennis: Which player will win the 2020 Australian Open?`,
-                header: `[0] Singles [1] [2] winner`,
+                header: `[0] Singles Tennis [1] [2]`,
+                title: `Winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -2565,7 +2566,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] Doubles Tennis: Which player/player will win the [1] [2]?`,
                 example: `Men's Doubles Tennis: Which player/player will win the 2020 Australian Open?`,
-                header: `[0] Doubles [1] [2] winner`,
+                header: `[0] Doubles Tennis [1] [2]`,
+                title: `Winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
