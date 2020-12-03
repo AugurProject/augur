@@ -77,17 +77,17 @@ const theme = (darkMode, color = 'white') => ({
   divider: darkMode ? 'rgba(43, 43, 43, 0.435)' : 'rgba(43, 43, 43, 0.035)',
 
   //primary colors
-  primary1: darkMode ? '#2172E5' : '#ff007a',
+  primary1: darkMode ? '#2172E5' : '#2172E5',
   primary2: darkMode ? '#3680E7' : '#FF8CC3',
   primary3: darkMode ? '#4D8FEA' : '#FF99C9',
   primary4: darkMode ? '#376bad70' : '#F6DDE8',
   primary5: darkMode ? '#153d6f70' : '#FDEAF1',
 
   // color text
-  primaryText1: darkMode ? '#6da8ff' : '#ff007a',
+  primaryText1: darkMode ? '#6da8ff' : '#2172E5',
 
   // secondary colors
-  secondary1: darkMode ? '#D7DDE0' : '#ff007a',
+  secondary1: darkMode ? '#D7DDE0' : '#2172E5',
   secondary2: darkMode ? '#17000b26' : '#F6DDE8',
   secondary3: darkMode ? '#17000b26' : '#FDEAF1',
 
@@ -101,8 +101,8 @@ const theme = (darkMode, color = 'white') => ({
   link: '#2172E5',
   blue: '2f80ed',
   primary: '#09CFE1',
-
-  background: darkMode ? 'black' : `radial-gradient(50% 50% at 50% 50%, #ff007a30 0%, #fff 0%)`
+  background: darkMode ? 'black' : 'radial-gradient(50% 50% at 50% 50%, #2172E530 0%, #fff 0%)',
+  border: !darkMode ? 'none' : '1px solid #FFFFFF',
 })
 
 const TextWrapper = styled(Text)<{ disabled }>`
@@ -111,7 +111,7 @@ const TextWrapper = styled(Text)<{ disabled }>`
 
 const LargeBoxTextWrapper = styled(Text)`
   color: ${({ color, theme }) => theme[color]};
-  border: 1px solid #575a68;
+  border: ${({ theme }) => theme['border']};
   box-sizing: border-box;
   border-radius: 12px;
   padding: 0.25rem 0;
@@ -120,12 +120,16 @@ const LargeBoxTextWrapper = styled(Text)`
   flex-shrink: 0;
   flex-flow: column;
   margin: 0.5rem 0;
+  box-shadow: 0px 8px 12px rgba(0,0,0,0.3);
 `
+
 const BoxedRow = styled(Text)`
   display: flex;
   flex-flow: row;
   padding: 0.5rem 1.25rem;
+  margin-right: 2rem;
 `
+
 export const TYPE = {
   boxedRow(props: TextProps) {
     return <BoxedRow {...props} />

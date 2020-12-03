@@ -2,16 +2,14 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
-
-import { Box, Flex, Text } from 'rebass'
-import { Divider } from '..'
 import { useDarkModeManager } from '../../contexts/LocalStorage'
-import { formatTime, formattedNum, toPercent } from '../../utils'
+import { formattedNum } from '../../utils'
 import { useMedia } from 'react-use'
 import { withRouter } from 'react-router-dom'
 import { TYPE } from '../../Theme'
 import { BasicLink } from '../Link'
-import TokenLogo from '../TokenLogo'
+import { RowFixed } from '../Row'
+import { getCashInfo } from '../../contexts/Application'
 
 dayjs.extend(utc)
 
@@ -20,7 +18,7 @@ const PageButtons = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 2em;
-  margin-bottom: 2em;
+  margin-bottom: 4em;
 `
 
 const Arrow = styled.div<{ faded: boolean }>`
@@ -33,92 +31,61 @@ const Arrow = styled.div<{ faded: boolean }>`
   }
 `
 
-const List = styled(Box)`
-  -webkit-overflow-scrolling: touch;
+const MarketCardTop = styled.div`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 1rem;
+
+  > div:first-of-type {
+    width: 40px;
+    height: 40px;
+  }
+
+  > div:last-of-type {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 `
 
-const DashGrid = styled.div`
-  display: grid;
-  grid-gap: 0.5em;
-  grid-template-columns: 0.5fr 50% 1fr 0.5fr 1fr 0.5fr 0.5fr 1fr 1fr;
-  grid-template-areas: 'logo description liquidity noPercent yesPercent status timestamp';
-  padding: 0 1.125rem;
+const MarketCardBottom = styled.div`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 1rem;
 
-  > * {
-    justify-content: flex-end;
+  > div:first-of-type {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 
-    &:first-child {
-      justify-content: flex-start;
-      text-align: left;
-      width: 100px;
+    > div:last-of-type {
+      padding: 0.25rem;
+      font-weight: bold;
     }
   }
 
-  @media screen and (min-width: 1080px) {
-    display: grid;
-    grid-gap: 0.5em;
-    grid-template-columns: 0.5fr 5fr 1fr 0.5fr 1fr 0.5fr 0.5fr 1fr 1fr;
-    grid-template-areas: 'logo description liquidity noPercent yesPercent status timestamp';
+  > div:nth-of-type(2) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
 
-  @media screen and (max-width: 816px) {
-    display: grid;
-    grid-gap: 0.5em;
-    grid-template-columns: 0.25fr 50% 1fr 1fr;
-    grid-template-areas: 'currency description noPercent yesPercent';
-  }
-
-  @media screen and (max-width: 680px) {
-    display: grid;
-    grid-gap: 0.5em;
-    grid-template-columns: 80% 1fr 1fr;
-    grid-template-areas: 'description noPercent yesPercent';
+  > div:last-of-type {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
 `
 
-const ListWrapper = styled.div``
-
-const ClickableText = styled(Text)`
-  text-align: end;
-  &:hover {
-    cursor: pointer;
-    opacity: 0.6;
-  }
-  user-select: none;
-  color: ${({ theme }) => theme.text1};
-
-  @media screen and (max-width: 640px) {
-    font-size: 0.85rem;
-  }
-`
-
-const DataText = styled(Flex)`
-  align-items: center;
-  text-align: center;
-  color: ${({ theme }) => theme.text1};
-
-  & > * {
-    font-size: 14px;
-  }
-
-  @media screen and (max-width: 600px) {
-    font-size: 12px;
-  }
-`
-
-const SORT_FIELD = {
-  LIQ: 'totalLiquidityUSD',
-  VOL: 'oneDayVolumeUSD',
-  NAME: 'description',
-  PRICE: 'priceUSD',
-  CHANGE: 'priceChangeUSD',
-  DESCRIPTION: 'description',
-  STATUS: 'status',
-  ENDTIMESTAMP: 'endTimestamp',
-  LIQUIDITY: 'liquidity',
-  VOL_24_HR: 'volume24hr',
-  FEE: 'fee'
-
+function groupByThree([a,b,c,...rest]){
+  if (rest.length === 0) return [[a,b,c].filter(x => x!==undefined)]
+  // tslint:disable-next-line: ban-ts-ignore
+  // @ts-ignore
+  return [[a,b,c]].concat(groupByThree(rest))
 }
 
 function MarketList({ markets, itemMax = 15 }) {
@@ -128,10 +95,8 @@ function MarketList({ markets, itemMax = 15 }) {
   const [darkMode] = useDarkModeManager()
 
   // sorting
-  const [sortedData, setSortedData] = useState({ sortedColumn: SORT_FIELD.STATUS, sortDirection: -1 })
   const [filteredList, setFilteredList] = useState(markets)
-  const below680 = useMedia('(max-width: 680px)')
-  const below816 = useMedia('(max-width: 816px)')
+  const below1196 = useMedia('(max-width: 1196px)')
 
   useEffect(() => {
     setMaxPage(1) // edit this to do modular
@@ -151,179 +116,105 @@ function MarketList({ markets, itemMax = 15 }) {
 
   useEffect(() => {
     const filteredMarkets = markets
-      .sort((a, b) => {
-        if (sortedData.sortedColumn === SORT_FIELD.NAME || sortedData.sortedColumn === SORT_FIELD.STATUS) {
-          return a[sortedData.sortedColumn] > b[sortedData.sortedColumn] ? sortedData.sortDirection : sortedData.sortDirection * -1
-        }
-        if (sortedData.sortedColumn === SORT_FIELD.LIQUIDITY) {
-          if (!a?.amm?.liquidity) return sortedData.sortDirection;
-          if (!b?.amm?.liquidity) return sortedData.sortDirection * -1;
-          return a?.amm?.liquidity > b?.amm?.liquidity ? sortedData.sortDirection : sortedData.sortDirection * -1
-        }
-        if (sortedData.sortedColumn === SORT_FIELD.VOL_24_HR) {
-          if (!a?.amm?.volume24hrUSD) return sortedData.sortDirection;
-          if (!b?.amm?.volume24hrUSD) return sortedData.sortDirection * -1;
-          return a?.amm?.volume24hrUSD > b?.amm?.volume24hrUSD ? sortedData.sortDirection : sortedData.sortDirection * -1
-        }
-        if (sortedData.sortedColumn === SORT_FIELD.ENDTIMESTAMP) {
-          return a.endTimestamp > b.endTimestamp ? sortedData.sortDirection : sortedData.sortDirection * -1
-        }
-        return parseFloat(a[sortedData.sortedColumn]) > parseFloat(b[sortedData.sortedColumn])
-          ? sortedData.sortDirection
-          : sortedData.sortDirection * -1
-      })
       .slice(itemMax * (page - 1), page * itemMax)
     setFilteredList(filteredMarkets)
-  }, [markets, itemMax, page, sortedData])
+  }, [markets, itemMax, page])
 
-  const ListItem = ({ marketData, index }) => {
 
-    return (
-      <DashGrid style={{ height: '48px', alignContent: 'center' }} >
-        {!below680 && <TokenLogo tokenInfo={marketData?.cash} size={'18px'}/>}
-        <DataText style={{ justifyContent: 'flex-start', alignItems: 'center', textAlign: 'left' }}>
-          <BasicLink style={{ width: '100%', fontWeight: '400' }} to={'/token/' + marketData?.id} key={marketData?.id}>
-            {marketData.description}
-          </BasicLink>
-        </DataText>
-        {!below816 && <DataText area="liquidity">{marketData.amm ? formattedNum(marketData.amm.liquidityUSD, true) : '-'}</DataText>}
-        {!below816 && <DataText area="fee">{marketData.amm ? `${toPercent(marketData?.amm?.feePercent)}` : '-'}</DataText>}
-        {!below816 && <DataText area="volume24hr">{marketData.amm ? formattedNum(marketData.amm.volume24hrUSD, true) : '-'}</DataText>}
-        <DataText area="yesPercent">{marketData.amm ? Number(marketData.amm.priceYes).toFixed(2) : '-'}</DataText>
-        <DataText area="noPercent">{marketData.amm ? Number(marketData.amm.priceNo).toFixed(2) : '-'}</DataText>
-        {!below816 && (
-          <DataText area="status">
-            <span
-              style={
-                !darkMode
-                  ? {}
-                  : marketData.status === 'TRADING'
-                    ? { color: '#7DFFA8' }
-                    : marketData.status === 'DISPUTING'
-                      ? { color: '#F1E700' }
-                      : marketData.status === 'REPORTING'
-                        ? { color: '#F1E700' }
-                        : marketData.status === 'FINALIZED'
-                          ? { color: '#F12B00' }
-                          : {}
-              }
-            >
-              {marketData.status}
-            </span>
-          </DataText>
-        )}
-        {!below816 && <DataText area="timestamp">{formatTime(marketData.endTimestamp)}</DataText>}
-      </DashGrid>
-    )
+  const marketsGroupByThree = groupByThree(filteredList)
+
+  if (!marketsGroupByThree) {
+    return null;
   }
 
+  const marketCard = (marketData, index) => {
+    const cashtoken = getCashInfo(marketData.cash)
+
+    const augurLogo = (
+      <svg width='40' height='40' viewBox='0 0 55 56' fill='none'><ellipse cx='27.4717' cy='28' rx='27.4717' ry='28' fill='#0E0E21'></ellipse><path d='M41.3111 33.9471L38.2766 28.78C38.1621 28.589 37.9174 28.5306 37.7301 28.6473L35.7574 29.9365C35.5804 30.0532 35.5232 30.2919 35.6325 30.4776L37.3657 33.4272C37.4178 33.5174 37.3917 33.6394 37.3033 33.6977L27.1953 40.3025C27.1328 40.3449 27.0495 40.3449 26.9871 40.3025L16.8738 33.6977C16.7854 33.6394 16.7593 33.5227 16.8114 33.4272L18.5446 30.4776C18.6539 30.2919 18.5967 30.0532 18.4197 29.9365L16.447 28.6473C16.2597 28.5253 16.015 28.5837 15.9005 28.78L12.866 33.9471C12.6474 34.3184 12.7619 34.7959 13.1159 35.024L26.6643 43.8728C26.9194 44.0426 27.2525 44.0426 27.5076 43.8728L41.056 35.024C41.4152 34.7959 41.5245 34.3184 41.3111 33.9471Z' fill='white'></path><path d='M18.0291 25.9045L20.0018 27.1936C20.1892 27.3156 20.4338 27.2573 20.5483 27.061L26.9192 16.2016C26.9972 16.0743 27.1794 16.0743 27.2523 16.2016L33.6283 27.061C33.7429 27.252 33.9875 27.3103 34.1749 27.1936L36.1475 25.9045C36.3245 25.7878 36.3818 25.5491 36.2725 25.3634L28.6576 12.3873C28.5119 12.1485 28.2621 12 27.9862 12H26.1905C25.9146 12 25.6596 12.1485 25.519 12.3873L17.9042 25.3634C17.7949 25.5491 17.8522 25.7878 18.0291 25.9045Z' fill='#2AE7A8'></path></svg>
+    );
+
+    const cardImageSource = cashtoken
+    ? <img style={{ borderRadius: '50%' }} width='100%' height='100%' alt='Token Logo' src={require(`../../assets/${cashtoken.asset}`)} />
+    : augurLogo;
+
+    return (
+      <TYPE.boxed m='1.5rem' key={index} style={below1196 ? {
+        background: darkMode ? 'none' : 'rgba(255,255,255,0.4)',
+        boxShadow: '0 3px 11px rgba(0,0,0,.04)',
+      } : {
+        height:' 185px',
+        width: '385px',
+        maxHeight:' 185px',
+        maxWidth: '385px',
+        background: darkMode ? 'none' : 'rgba(255,255,255,0.4)',
+        boxShadow: '0 3px 11px rgba(0,0,0,.04)',
+      }}>
+        <BasicLink style={{
+          width: '100%',
+          fontWeight: '400',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+        }} to={'/token/' + marketData?.id} key={marketData?.id}>
+
+        <MarketCardTop>
+            <div>{cardImageSource}</div>
+            <div style={{
+              maxWidth: below1196 ? '150px' : '255px',
+              maxHeight: below1196 ? '150px' : '255px',
+            }}>{marketData?.description}</div>
+        </MarketCardTop>
+
+
+        <MarketCardBottom>
+            <div>
+              <div>Liquidity</div>
+              <div>${formattedNum((Number(marketData?.amm?.liquidity)).toFixed(2))}</div>
+            </div>
+
+            <div>
+              <div>Yes</div>
+              <div style={{
+                color: darkMode ? 'rgb(125, 255, 168)' : '#2172E5',
+                padding: '0.25rem',
+                fontWeight: 'bold'
+              }}>{formattedNum(marketData?.amm?.priceYes.toFixed(2))}</div>
+            </div>
+
+            <div>
+              <div>No</div>
+              <div style={{
+                color: darkMode ? 'rgb(125, 255, 168)' : '#2172E5',
+                padding: '0.25rem',
+                fontWeight: 'bold' }}>{formattedNum(marketData?.amm?.priceNo.toFixed(2))}</div>
+            </div>
+          </MarketCardBottom>
+        </BasicLink>
+      </TYPE.boxed>
+    );
+  };
+
   return (
-    <ListWrapper>
-      <DashGrid style={{ height: 'fit-content', padding: '0 1.125rem 1rem 1.125rem' }}>
-        {!below680 && (
-          <Flex alignItems="center">
-            <Text area="Currency">Currency</Text>
-          </Flex>
-        )}
-        <Flex alignItems="center" justifyContent="flex-start">
-          <ClickableText
-            color="text"
-            area="name"
-            fontWeight="500"
-            onClick={e => {
-              const direction = (sortedData.sortedColumn !== SORT_FIELD.DESCRIPTION ? -1 : sortedData.sortDirection * -1)
-              setSortedData({ sortedColumn: SORT_FIELD.DESCRIPTION, sortDirection: direction })
-            }}
-          >
-            {below816 ? 'Symbol' : 'Description'}{' '}
-            {sortedData.sortedColumn === SORT_FIELD.DESCRIPTION ? (sortedData.sortDirection === 1 ? '↑' : '↓') : ''}
-          </ClickableText>
-        </Flex>
-        {!below816 && (
-          <Flex alignItems="center">
-            <ClickableText
-              area="liquidity"
-              onClick={e => {
-                const direction = (sortedData.sortedColumn !== SORT_FIELD.LIQUIDITY ? -1 : sortedData.sortDirection * -1)
-                setSortedData({ sortedColumn: SORT_FIELD.LIQUIDITY, sortDirection: direction })
-              }}
-            >
-              Liquidity {sortedData.sortedColumn === SORT_FIELD.LIQUIDITY ? (sortedData.sortDirection === 1 ? '↑' : '↓') : ''}
-            </ClickableText>
-          </Flex>
-        )}
-        {!below816 && (
-          <Flex alignItems="center">
-            <ClickableText
-              area="fee"
-              onClick={e => {
-                const direction = (sortedData.sortedColumn !== SORT_FIELD.FEE ? -1 : sortedData.sortDirection * -1)
-                setSortedData({ sortedColumn: SORT_FIELD.FEE, sortDirection: direction })
-              }}
-            >
-              Fee % {sortedData.sortedColumn === SORT_FIELD.FEE ? (sortedData.sortDirection === 1 ? '↑' : '↓') : ''}
-            </ClickableText>
-          </Flex>
-        )}
-        {!below816 && (
-          <Flex alignItems="center">
-            <ClickableText
-              area="volume 24hr"
-              onClick={e => {
-                const direction = (sortedData.sortedColumn !== SORT_FIELD.VOL_24_HR ? -1 : sortedData.sortDirection * -1)
-                setSortedData({ sortedColumn: SORT_FIELD.VOL_24_HR, sortDirection: direction })
-              }}
-            >
-              24hr Volume {sortedData.sortedColumn === SORT_FIELD.VOL_24_HR ? (sortedData.sortDirection === 1 ? '↑' : '↓') : ''}
-            </ClickableText>
-          </Flex>
-        )}
-        <Flex alignItems="center">
-          <Text area="No Price">Yes</Text>
-        </Flex>
-        <Flex alignItems="center">
-          <Text area="Yes Price">No</Text>
-        </Flex>
-        {!below816 && (
-          <Flex alignItems="center">
-            <ClickableText
-              area="status"
-              onClick={e => {
-                const direction = (sortedData.sortedColumn !== SORT_FIELD.STATUS ? -1 : sortedData.sortDirection * -1)
-                setSortedData({ sortedColumn: SORT_FIELD.STATUS, sortDirection: direction })
-              }}
-            >
-              Status {sortedData.sortedColumn === SORT_FIELD.STATUS ? (sortedData.sortDirection === 1 ? '↑' : '↓') : ''}
-            </ClickableText>
-          </Flex>
-        )}
-        {!below816 && (
-          <Flex alignItems="center">
-            <ClickableText
-              area="timestamp"
-              onClick={e => {
-                const direction = (sortedData.sortedColumn !== SORT_FIELD.ENDTIMESTAMP ? 1 : sortedData.sortDirection * -1)
-                setSortedData({ sortedColumn: SORT_FIELD.ENDTIMESTAMP, sortDirection: direction })
-              }}
-            >
-              Market Ends
-              {sortedData.sortedColumn === SORT_FIELD.ENDTIMESTAMP ? (sortedData.sortDirection === 1 ? '↑' : '↓') : ''}
-            </ClickableText>
-          </Flex>
-        )}
-      </DashGrid>
-      <Divider />
-      <List p={0}>
-        {filteredList &&
-          filteredList.map((item, index) => {
-            return (
-              <div key={index}>
-                <ListItem key={index} index={(page - 1) * itemMax + index + 1} marketData={item} />
-                <Divider />
-              </div>
-            )
-          })}
-      </List>
+    <div>
+      {marketsGroupByThree.map((filteredList, index) => (
+        <RowFixed
+          key={index}
+          style={
+            below1196 ? {
+              flexFlow: 'column',
+              alignItems: 'stretch',
+              justifyContent: 'flex-start'
+            } : {
+              flexFlow: 'row',
+              justifyContent: 'center'
+          }}
+        >
+          {filteredList.map((market, index) => marketCard(market, index))}
+        </RowFixed>
+      ))}
+
       <PageButtons>
         <div onClick={() => setPage(page === 1 ? page : page - 1)}>
           <Arrow faded={page === 1 ? true : false}>←</Arrow>
@@ -333,7 +224,8 @@ function MarketList({ markets, itemMax = 15 }) {
           <Arrow faded={page === maxPage ? true : false}>→</Arrow>
         </div>
       </PageButtons>
-    </ListWrapper>
+
+    </div>
   )
 }
 

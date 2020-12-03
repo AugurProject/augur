@@ -80,30 +80,31 @@ function MarketListPage() {
         </AutoColumn>
         <ListOptions gap="10px" style={{ marginTop: '2rem', marginBottom: '.5rem' }}>
           <RowBetween>
-            <ClickableText
-              style={{ opacity: cashFilter === null ? '1' : '0.4' }}
-              fontSize={'1.125rem'}
-              onClick={() => updateCashFilter(null)}
-            >
-              All Markets
-            </ClickableText>
             <RowFlat>
               {cashes &&
                 cashes.map(cash => (
                   <ClickableText disabled={cash === cashFilter} key={cash} onClick={() => updateCashFilter(cash)}>
                     <TokenLogo
                       tokenInfo={cash}
-                      size={'20px'}
+                      size={'16px'}
                       showSymbol
                       style={{ paddingRight: '1rem', opacity: cash === cashFilter ? '1' : '0.4' }}
                     />
                   </ClickableText>
                 ))}
+                <ClickableText style={{ opacity: cashFilter === null ? '1' : '0.4' }} onClick={() => updateCashFilter(null)}>
+                  <TokenLogo
+                    tokenInfo={null}
+                    size={'16px'}
+                    uppercase={false}
+                    style={{ paddingRight: '1rem', opacity: null === cashFilter ? '1' : '0.4' }}
+                    />
+                </ClickableText>
             </RowFlat>
           </RowBetween>
         </ListOptions>
 
-        <Panel style={{ marginTop: '6px', padding: '1.125rem 0 ' }}>
+        <Panel style={{ background: 'none', border: 'none', boxShadow: 'none', margin: '0', padding: '0' }}>
           <MarketList markets={filteredMarkets || []} />
         </Panel>
       </div>

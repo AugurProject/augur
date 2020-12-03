@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { RowFixed, RowBetween } from '../Row'
 import { useMedia } from 'react-use'
 import { useEthPrice } from '../../contexts/GlobalData'
-import { calculateLiquidity, formattedNum, calculateVolume, calculateTotalVolume } from '../../utils'
+import { calculateLiquidity, formattedNum, calculateTotalVolume } from '../../utils'
 import { TYPE } from '../../Theme'
 import { useMarketCashTokens, useTotalLiquidity, useVolumesByCash, useAmmTransactions } from '../../contexts/Markets'
 import { useTokenDayPriceData } from '../../contexts/TokenData'
@@ -14,16 +14,7 @@ const Header = styled.div`
   position: sticky;
   top: 0;
 `
-/*
-const Medium = styled.span`
-  font-weight: 500;
-`
-*/
 export default function GlobalStats() {
-  //  const below1295 = useMedia('(max-width: 1295px)')
-  //  const below1180 = useMedia('(max-width: 1180px)')
-  //  const below1024 = useMedia('(max-width: 1024px)')
-  //  const below400 = useMedia('(max-width: 400px)')
   const below816 = useMedia('(max-width: 816px)')
 
   const [globalLiquidity, setGlobalLiquidity] = useState("-")
@@ -65,7 +56,7 @@ export default function GlobalStats() {
             below816 ? { flexFlow: 'column', alignItems: 'stretch', justifyContent: 'flex-start' } : { flexFlow: 'row' }
           }
         >
-          <TYPE.boxed mb={'0.5rem'} mr={'0.25rem'}>
+          <TYPE.boxed mb={below816 ? '1rem' : '0.5rem'} mr={below816 ? '0' : '1.5rem'}>
             <TYPE.boxedRow>
               <span>ETH price: </span>
             </TYPE.boxedRow>
@@ -73,19 +64,19 @@ export default function GlobalStats() {
               <TYPE.largeHeader>{formattedEthPrice}</TYPE.largeHeader>
             </TYPE.boxedRow>
           </TYPE.boxed>
-          <TYPE.boxed mb={'0.5rem'} mr={'0.25rem'}>
+          <TYPE.boxed mb={below816 ? '1rem' :'0.5rem'} mr={below816 ? '0' : '1.5rem'}>
             <TYPE.boxedRow>Total Liquidity</TYPE.boxedRow>
             <TYPE.boxedRow>
               <TYPE.largeHeader>{globalLiquidity}</TYPE.largeHeader>
             </TYPE.boxedRow>
           </TYPE.boxed>
-          <TYPE.boxed mb={'0.5rem'} mr={'0.25rem'}>
+          <TYPE.boxed mb={below816 ? '1rem' :'0.5rem'} mr={below816 ? '0' : '1.5rem'}>
             <TYPE.boxedRow>Volume (24 hrs): </TYPE.boxedRow>
             <TYPE.boxedRow>
               <TYPE.largeHeader>{oneDayVolume}</TYPE.largeHeader>
             </TYPE.boxedRow>
           </TYPE.boxed>
-          <TYPE.boxed mb={'0.5rem'}>
+          <TYPE.boxed mb={below816 ? '1rem' :'0.5rem'}>
             <TYPE.boxedRow>Transactions (24 hrs):</TYPE.boxedRow>
             <TYPE.boxedRow>
               <TYPE.largeHeader>{oneDayTx}</TYPE.largeHeader>

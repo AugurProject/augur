@@ -11,7 +11,6 @@ import { useLatestBlock } from './contexts/Application'
 import RemoveLiquidity from './pages/RemoveLiquidity'
 import Swap from './pages/Swap'
 import AddLiquidity from './pages/AddLiquidity'
-import URLWarning from './components/Header/URLWarning'
 import Header from './components/Header'
 import Web3ReactManager from './components/Web3ReactManager'
 import Popups from './components/Popups'
@@ -67,7 +66,6 @@ function App() {
   return (
     <ApolloProvider client={client}>
       <AppWrapper>
-        <URLWarning />
         <Header />
         <BodyWrapper>
           <Popups />
