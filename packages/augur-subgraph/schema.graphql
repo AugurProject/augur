@@ -147,7 +147,7 @@ type Market @entity {
   openInterest: BigInt
 
   "The the total trading volume for this market"
-  volume: BigInt!
+  volume: BigDecimal!
 
   "The total trading volume per outcome of this market"
   outcomeVolumes: [BigInt!]
@@ -747,10 +747,10 @@ type AMMExchange @entity {
   liquidityYes: BigDecimal!
 
   "The all time yes volume in the exchange."
-  volumeYes: BigInt!
+  volumeYes: BigDecimal!
 
   "The all time no volume in the exchange."
-  volumeNo: BigInt!
+  volumeNo: BigDecimal!
 
   "Percentage of shares that are no."
   percentageNo: BigDecimal!

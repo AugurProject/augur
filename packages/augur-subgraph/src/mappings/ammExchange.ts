@@ -25,13 +25,15 @@ function updateAggregateValues(address: Address, cash: BigInt, noShares: BigInt,
   );
 
   let market = Market.load(ammExchange.market);
-  market.volume = market.volume.plus(noShares.abs());
-  market.volume = market.volume.plus(yesShares.abs());
+  let numTicks = market.numTicks.toBigDecimal();
+
+  market.volume = market.volume.plus(noShares.abs().toBigDecimal().div(numTicks));
+  market.volume = market.volume.plus(yesShares.abs().toBigDecimal().div(numTicks));
 
   market.save();
 
-  ammExchange.volumeNo = ammExchange.volumeNo.plus(noShares.abs());
-  ammExchange.volumeYes = ammExchange.volumeYes.plus(yesShares.abs());
+  ammExchange.volumeNo = ammExchange.volumeNo.plus(noShares.abs().toBigDecimal().div(numTicks));
+  ammExchange.volumeYes = ammExchange.volumeYes.plus(yesShares.abs().toBigDecimal().div(numTicks));
 
   ammExchange.save();
 
