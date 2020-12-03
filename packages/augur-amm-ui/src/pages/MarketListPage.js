@@ -97,6 +97,7 @@ function MarketListPage() {
                     tokenInfo={null}
                     size={'16px'}
                     uppercase={false}
+                    customErrorLabel={'All Markets'}
                     style={{ paddingRight: '1rem', opacity: null === cashFilter ? '1' : '0.4' }}
                     />
                 </ClickableText>
