@@ -98,6 +98,28 @@ export const GET_MARKETS = blockNumber => {
         noShares
         cash
       }
+      addLiquidity {
+        id
+        sender {
+          id
+        }
+        tx_hash
+        timestamp
+        yesShares
+        noShares
+        cash
+      }
+      removeLiquidity {
+        id
+        sender {
+          id
+        }
+        tx_hash
+        timestamp
+        yesShares
+        noShares
+        cash
+      }
     }
   }
   paraShareTokens {

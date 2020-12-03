@@ -159,8 +159,8 @@ function processTransactions(allExchanges, cashData, cashTokens) {
     return allExchanges.map(e => {
       const price = e?.cash?.address ? cashData[e?.cash?.address]?.priceUSD : 1
       const symbol = e?.cash?.address ? cashData[e?.cash?.address]?.symbol : 'cash'
-      const decimals = cashTokens ? cashTokens[e.cash]?.decimals : 18
-      console.log('enters', e.enters)
+      const decimals = cashTokens ? cashTokens[e.cash.address]?.decimals : 18
+      console.log('remove', e.removeLiquidity)
       const enters = (e.enters || []).map(mint => ({
         hash: mint.tx_hash,
         timestamp: mint.timestamp || 0,
@@ -183,6 +183,31 @@ function processTransactions(allExchanges, cashData, cashTokens) {
         token1Symbol: symbol,
         amountUSD: String(calcCash(burn.cash, decimals, price)),
         account: burn.sender?.id,
+      }))
+
+      const adds = (e.addLiquidity || []).map(additions => ({
+        hash: additions.tx_hash,
+        timestamp: additions.timestamp || 0,
+        type: TXN_TYPE.ADD,
+        token0Amount: formatShares(additions.noShares, decimals),
+        token1Amount: formatShares(additions.yesShares, decimals),
+        token0Symbol: 'No Shares',
+        token1Symbol: 'Yes Shares',
+        amountUSD: String(calcCash(additions.cash, decimals, price)),
+        account: additions.sender?.id,
+      }))
+
+
+      const removes = (e.removeLiquidity || []).map(removals => ({
+        hash: removals.tx_hash,
+        timestamp: removals.timestamp || 0,
+        type: TXN_TYPE.REMOVE,
+        token0Amount: formatShares(removals.noShares, decimals),
+        token1Amount: formatShares(removals.yesShares, decimals),
+        token0Symbol: 'No Shares',
+        token1Symbol: 'Yes Shares',
+        amountUSD: String(calcCash(removals.cash, decimals, price)),
+        account: removals.sender?.id,
       }))
 
       const swaps = (e.swaps || []).map(swap => {
@@ -226,9 +251,7 @@ function processTransactions(allExchanges, cashData, cashTokens) {
         return newTxn;
       })
 
-      // TODO: process add liquidity and remove liquidity
-
-      return [...enters, ...exits, ...swaps];
+      return [...enters, ...exits, ...swaps, ...adds, ...removes];
     }).flat()
   }
   return []
@@ -329,8 +352,8 @@ function TxnList({ allExchanges, color, cashTokens, cashData }) {
         <DataText area="value">{formattedNum(item.amountUSD, true)}</DataText>
         {!below780 && (
           <>
-            <DataText area="amountOther">{formattedNum(item.token1Amount) + ' ' + item.token1Symbol} </DataText>
             <DataText area="amountToken">{formattedNum(item.token0Amount) + ' ' + item.token0Symbol} </DataText>
+            <DataText area="amountOther">{formattedNum(item.token1Amount) + ' ' + item.token1Symbol} </DataText>
           </>
         )}
         {!below1080 && <DataText area="account">
