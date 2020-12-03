@@ -67,7 +67,6 @@ function MarketPage({ marketId }) {
   const allExchanges = useMarketAmmExchanges(marketId)
   const volumes = useMarketVolumeByCash(marketId)
 
-  console.log('Market page render')
   useEffect(() => {
     document.querySelector('body').scrollTo(0, 0)
   }, [])

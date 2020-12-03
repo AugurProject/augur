@@ -592,7 +592,8 @@ export function isTokenOnList(defaultTokens: TokenAddressMap, currency?: Currenc
 
 export function calculateLiquidity(decimals: number, liquidity: string, price: string): string {
   if (!decimals || !liquidity || !price) return "0"
-  const displayLiquidity = formatShares(liquidity, String(decimals))
+  // liquidity comes in display value
+  const displayLiquidity = liquidity;
   const liqNormalized = new BN(displayLiquidity).times(new BN(price))
   return String(liqNormalized)
 }
@@ -708,8 +709,6 @@ export async function doTrade(augurClient, trade: TradeInfo, minAmount: string, 
   if (!augurClient || !trade.amm.id) return console.error('doTrade: augurClient is null or amm address')
   const tradeDirection = getTradeType(trade)
 
-  console.log('trade', trade)
-
   let outputYesShares = false
 
   if (trade.currencyOut instanceof MarketCurrency) {
@@ -718,6 +717,13 @@ export async function doTrade(augurClient, trade: TradeInfo, minAmount: string, 
   }
 
   if (tradeDirection === TradingDirection.ENTRY) {
+    console.log('doEnterPosition:', trade.marketId,
+      trade.amm.sharetoken,
+      trade.amm.fee,
+      String(trade.inputAmount.raw),
+      outputYesShares,
+      String(minAmount))
+
     return augurClient.amm.doEnterPosition(
       trade.marketId,
       trade.amm.sharetoken,
@@ -740,6 +746,14 @@ export async function doTrade(augurClient, trade: TradeInfo, minAmount: string, 
       invalidShares = BN.minimum(invalidShares, yesShares)
     }
 
+    console.log('doExitPosition:', trade.marketId,
+      trade.amm.sharetoken,
+      trade.amm.fee,
+      invalidShares,
+      noShares,
+      yesShares,
+      String(minAmount))
+
     return augurClient.amm.doExitPosition(
       trade.marketId,
       trade.amm.sharetoken,
@@ -752,6 +766,12 @@ export async function doTrade(augurClient, trade: TradeInfo, minAmount: string, 
   }
 
   if (tradeDirection === TradingDirection.SWAP) {
+    console.log('doSwap:', trade.marketId,
+      trade.amm.sharetoken,
+      new BN(trade.amm.fee),
+      new BN(String(trade.inputAmount.raw)),
+      outputYesShares,
+      new BN(minAmount))
     return augurClient.amm.doSwap(
       trade.marketId,
       trade.amm.sharetoken,

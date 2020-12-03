@@ -6,7 +6,7 @@ import BigNumber, { BigNumber as BN } from 'bignumber.js'
 import { augurV2Client } from '../apollo/client'
 import { GET_MARKETS } from '../apollo/queries'
 import { useConfig, useParaDeploys } from '../contexts/Application'
-import { getBlockFromTimestamp, calculateLiquidity } from '../utils'
+import { getBlockFromTimestamp, calculateLiquidity, calculateVolume } from '../utils'
 import { useTokenDayPriceData } from '../contexts/TokenData'
 
 const UPDATE = 'UPDATE'
@@ -233,12 +233,12 @@ export function useMarketsByAMMLiquidityVolume() {
               String(amm?.liquidity),
               String(cashPrice)
             )
-            newMarket.amm.volumeNoUSD = calculateLiquidity(
+            newMarket.amm.volumeNoUSD = calculateVolume(
               Number(cashToken?.decimals),
               String(amm.volumeNo),
               String(cashPrice)
             )
-            newMarket.amm.volumeYesUSD = calculateLiquidity(
+            newMarket.amm.volumeYesUSD = calculateVolume(
               Number(cashToken?.decimals),
               String(amm.volumeYes),
               String(cashPrice)
@@ -255,17 +255,17 @@ export function useMarketsByAMMLiquidityVolume() {
                   .minus(new BigNumber(pastCashAmm.volumeYes))
                   .times(amm.priceYes)
                   .times(new BigNumber(cashPrice))
-                const volume24hrUsd = calculateLiquidity(
+                const volume24hrUsd = calculateVolume(
                   Number(cashToken?.decimals),
                   String(volYestwentyfour.plus(volNotwentyfour)),
                   String(cashPrice)
                 )
-                newMarket.amm.volumeNo24hrUSD = calculateLiquidity(
+                newMarket.amm.volumeNo24hrUSD = calculateVolume(
                   Number(cashToken?.decimals),
                   String(volNotwentyfour),
                   String(cashPrice)
                 )
-                newMarket.amm.volumeYes24hrUSD = calculateLiquidity(
+                newMarket.amm.volumeYes24hrUSD = calculateVolume(
                   Number(cashToken?.decimals),
                   String(volYestwentyfour),
                   String(cashPrice)

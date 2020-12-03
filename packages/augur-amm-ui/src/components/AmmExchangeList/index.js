@@ -13,7 +13,7 @@ import { ButtonLight, ButtonPrimary } from '../ButtonStyled'
 import { useLPTokenBalances } from '../../state/wallet/hooks'
 import { TYPE, StyledInternalLink } from '../../Theme'
 import { greaterThanZero } from '../../utils'
-import { formattedNum, formatShares, toPercent } from '../../utils'
+import { formattedNum, toPercent } from '../../utils'
 
 dayjs.extend(utc)
 
@@ -72,10 +72,9 @@ function AmmExchangeList({ allExchanges, disbaleLinks, marketId }) {
     useEffect(() => {
       if (userTokenBalances && ammExchange?.id) {
         setHasLpTokens(greaterThanZero(userTokenBalances[ammExchange.id]))
-
-        const liquidity = formattedNum(formatShares(ammExchange.liquidity, ammExchange.cash.decimals), false);
+        // liquidity comes in display value
+        const liquidity = formattedNum(ammExchange.liquidity, false);
         const usd = formattedNum(ammExchange.liquidityUSD, true);
-        console.log('liquidity', liquidity)
         setLiquidityUSD(ammExchange?.cash?.showInUSD ? `${liquidity} (${usd})}` : `$${liquidity}`);
       }
     }, [ammExchange])
