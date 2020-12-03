@@ -714,6 +714,10 @@ type MarketTemplateInput @entity {
 
 type Cash @entity {
   id: ID!
+
+  ammExchanges: [AMMExchange!]! @derivedFrom(field: "cash")
+
+  paraShareTokens: [ParaShareToken!]! @derivedFrom(field: "cash")
 }
 
 type AMMExchange @entity {
