@@ -28,7 +28,7 @@ const StyledLogo = styled.div<{ size }>`
   }
 `
 
-export default function TokenLogo({ tokenInfo, showSymbol = false, uppercase = true, size = '24px', ...rest }) {
+export default function TokenLogo({ tokenInfo, showSymbol = false, customErrorLabel = null, uppercase = true, size = '24px', ...rest }) {
   let cashtoken = getCashInfo(typeof tokenInfo === 'string' ? tokenInfo : tokenInfo ? tokenInfo.address : null)
   if (!cashtoken) {
     cashtoken = getCashInfoBySymbol(typeof tokenInfo === 'string' ? tokenInfo : tokenInfo ? tokenInfo.symbol : null)
@@ -56,7 +56,7 @@ export default function TokenLogo({ tokenInfo, showSymbol = false, uppercase = t
       <StyledLogo size={size} {...rest}>
         <Image src={market} size={size} style={{ borderRadius: '24px' }} alt="Augur Market" />
         <TYPE.light style={{ fontSize: size, paddingLeft: '0.25rem', fontWeight: '500', textTransform: uppercase ? 'uppercase' : 'capitalize' }}>
-          {showSymbol ? <span style={{ paddingLeft: '0.15rem' }}>{tokenInfo?.symbol}</span> : 'All Markets'}
+          {showSymbol ? <span style={{ paddingLeft: '0.15rem' }}>{tokenInfo?.symbol}</span> : customErrorLabel ? customErrorLabel : ''}
         </TYPE.light>
       </StyledLogo>
     )

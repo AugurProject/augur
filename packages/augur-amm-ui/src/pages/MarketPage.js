@@ -141,7 +141,7 @@ function MarketPage({ marketId }) {
               <RowStart>
                 {cashes &&
                   cashes.map(cash => (
-                    <StyledInternalLink key={cash} to={`/add/${marketId}/${cash}/undefined`}>
+                    <StyledInternalLink style={{ margin: '1rem 1rem 0 0' }} key={cash} to={`/add/${marketId}/${cash}/undefined`}>
                       <ButtonOutlined textAlign="center" style={{ alignItems: 'flex-end', borderRadius: '3px' }}>
                         <TokenLogo tokenInfo={cash} size={'18px'} style={{ paddingRight: '0.25rem' }} />
                         Create Liquidity

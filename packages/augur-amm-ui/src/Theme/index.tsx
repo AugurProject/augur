@@ -70,6 +70,8 @@ const theme = (darkMode, color = 'white') => ({
   bg5: darkMode ? '#565A69' : '#888D9B',
   bg6: darkMode ? '#222124' : '#CFCFCFCF',
 
+  bs: darkMode ? '#565A69' : '#f3f5ff',
+
   //specialty colors
   modalBG: darkMode ? 'rgba(0,0,0,0.85)' : 'rgba(0,0,0,0.6)',
   advancedBG: darkMode ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.4)',
