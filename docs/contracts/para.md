@@ -44,7 +44,7 @@ title: Para
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="AMMExchange.removeLiquidity(uint256,uint256)"></a><code class="function-signature">removeLiquidity(uint256 _poolTokensToSell, uint256 _minSetsSold) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256,uint256,uint256</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="AMMExchange.removeLiquidity(uint256,uint256)"></a><code class="function-signature">removeLiquidity(uint256 _poolTokensToSell, uint256 _minSetsSold) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256,uint256,uint256,uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -837,7 +837,7 @@ See {_burn} and {_approve}.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IAMMExchange.removeLiquidity(uint256,uint256)"></a><code class="function-signature">removeLiquidity(uint256 _poolTokensToSell, uint256 _minSetsSold) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256,uint256,uint256</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IAMMExchange.removeLiquidity(uint256,uint256)"></a><code class="function-signature">removeLiquidity(uint256 _poolTokensToSell, uint256 _minSetsSold) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256,uint256,uint256,uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -6183,7 +6183,7 @@ Decode ERC-1155 asset data from the format described in the AssetProxy contract 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="WethWrapperForAMMExchange.removeLiquidity(contract IMarket,uint256,uint256,uint256)"></a><code class="function-signature">removeLiquidity(contract IMarket _market, uint256 _fee, uint256 _poolTokensToSell, uint256 _minSetsSold) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256,uint256,uint256</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="WethWrapperForAMMExchange.removeLiquidity(contract IMarket,uint256,uint256,uint256)"></a><code class="function-signature">removeLiquidity(contract IMarket _market, uint256 _fee, uint256 _poolTokensToSell, uint256 _minSetsSold) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256,uint256,uint256,uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 

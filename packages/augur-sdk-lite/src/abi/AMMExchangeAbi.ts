@@ -939,6 +939,11 @@ export const AMMExchangeAbi = [
         "internalType": "uint256",
         "name": "_cashShare",
         "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_setsSold",
+        "type": "uint256"
       }
     ],
     "payable": false,

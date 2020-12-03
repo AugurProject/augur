@@ -63,11 +63,11 @@ contract WethWrapperForAMMExchange {
         return _amm.addLiquidity(msg.value, _recipient);
     }
 
-    function removeLiquidity(IMarket _market, uint256 _fee, uint256 _poolTokensToSell, uint256 _minSetsSold) external returns (uint256 _invalidShare, uint256 _noShare, uint256 _yesShare, uint256 _cashShare) {
+    function removeLiquidity(IMarket _market, uint256 _fee, uint256 _poolTokensToSell, uint256 _minSetsSold) external returns (uint256 _invalidShare, uint256 _noShare, uint256 _yesShare, uint256 _cashShare, uint256 _setsSold) {
         IAMMExchange _amm = getAMM(_market, _fee);
         _amm.transferFrom(msg.sender, address(this), _poolTokensToSell);
 
-        (_invalidShare, _noShare, _yesShare, _cashShare) = _amm.removeLiquidity(_poolTokensToSell, _minSetsSold);
+        (_invalidShare, _noShare, _yesShare, _cashShare, _setsSold) = _amm.removeLiquidity(_poolTokensToSell, _minSetsSold);
         shareTransfer(_market, address(this), msg.sender, _invalidShare, _noShare, _yesShare);
 
         if (_cashShare > 0) {

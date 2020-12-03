@@ -115,8 +115,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
 
     // Removes shares from the liquidity pool.
     // If _minSetsSold > 0 then also sell complete sets through burning and through swapping in the pool.
-    function removeLiquidity(uint256 _poolTokensToSell, uint256 _minSetsSold) external returns (uint256 _invalidShare, uint256 _noShare, uint256 _yesShare, uint256 _cashShare){
-        uint256 _setsSold;
+    function removeLiquidity(uint256 _poolTokensToSell, uint256 _minSetsSold) external returns (uint256 _invalidShare, uint256 _noShare, uint256 _yesShare, uint256 _cashShare, uint256 _setsSold){
         (_invalidShare, _noShare, _yesShare, _cashShare, _setsSold) = rateRemoveLiquidity(_poolTokensToSell, _minSetsSold);
 
         require(_setsSold == 0 || _setsSold >= _minSetsSold, "AugurCP: Would not receive the minimum number of sets");
@@ -124,7 +123,8 @@ contract AMMExchange is IAMMExchange, ERC20 {
         _burn(msg.sender, _poolTokensToSell);
 
         shareTransfer(address(this), msg.sender, _invalidShare, _noShare, _yesShare);
-        shareToken.publicSellCompleteSets(augurMarket, _setsSold);
+        (uint256 _creatorFee, uint256 _reportingFee) = shareToken.publicSellCompleteSets(augurMarket, _setsSold);
+        _cashShare -= _creatorFee + _reportingFee;
         cash.transfer(msg.sender, _cashShare);
 
         emit RemoveLiquidity(msg.sender, _cashShare, _setsSold, _setsSold);
@@ -132,6 +132,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
     }
 
     // Tells you how many shares you receive, how much cash you receive, and how many complete sets you burn for cash.
+    // Cash share does NOT include market fees from burning complete sets.
     function rateRemoveLiquidity(uint256 _poolTokensToSell, uint256 _minSetsSold) public view returns (uint256 _invalidShare, uint256 _noShare, uint256 _yesShare, uint256 _cashShare, uint256 _setsSold) {
         uint256 _poolSupply = totalSupply;
         (uint256 _poolInvalid, uint256 _poolNo, uint256 _poolYes) = shareBalances(address(this));
@@ -151,6 +152,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
             _yesShare -= _setsSold;
             _cashShare += _setsSold.mul(numTicks);
             // Then, how many you can make from the pool
+            // NOTE: This incurs the fee. This is intentional because the LP has a right to a portion of the pool, not a free swap after leaving the pool.
             (uint256 _cashFromExit, uint256 _invalidFromUser, int256 _noFromUser, int256 _yesFromUser) = rateExitPosition(_invalidShare, _noShare, _yesShare);
             _cashShare += _cashFromExit; // extra cash from selling sets to the pool
             _invalidShare -= _invalidFromUser; // minus the invalids spent selling sets to the pool
