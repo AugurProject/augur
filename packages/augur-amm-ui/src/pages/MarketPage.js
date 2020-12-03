@@ -168,7 +168,7 @@ function MarketPage({ marketId }) {
               <Panel>
                 <AutoColumn gap="20px">
                   <RowBetween>
-                    <TYPE.main>Volume (24hrs)</TYPE.main>
+                    <TYPE.main>Volume</TYPE.main>
                     <div />
                   </RowBetween>
                   <RowBetween align="flex-end">

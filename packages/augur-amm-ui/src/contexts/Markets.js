@@ -233,6 +233,16 @@ export function useMarketsByAMMLiquidityVolume() {
               String(amm?.liquidity),
               String(cashPrice)
             )
+            newMarket.amm.volumeNoUSD = calculateLiquidity(
+              Number(cashToken?.decimals),
+              String(amm.volumeNo),
+              String(cashPrice)
+            )
+            newMarket.amm.volumeYesUSD = calculateLiquidity(
+              Number(cashToken?.decimals),
+              String(amm.volumeYes),
+              String(cashPrice)
+            )
             if (hasPastMarket) {
               // add 24 hour volume, find correct cash
               const pastCashAmm = [...hasPastMarket.amms].find(a => a.shareToken.cash.id === s.cash)
@@ -496,10 +506,8 @@ function useCalcVolumes(markets, marketsPast) {
 
 export const useMarketAmmTradeData = (marketId, cashAddress) => {
   const amms = useMarketAmmExchanges(marketId);
-  console.log('amms', amms)
   console.log(marketId, cashAddress)
   const amm = amms.find(a => a.cash.address === cashAddress);
-  console.log('amm', amm)
   if (!amm) return []
 
   return [

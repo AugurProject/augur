@@ -604,18 +604,20 @@ export function calculateVolume(decimals: number, volume: string, price: string)
   return String(volNormalized)
 }
 
-export function calculateTotalVolume(cashData, volumes: { diff }) {
+export function calculateTotalVolume(cashData, volumes: { volume }) {
   let vol24InUSD = new BN("0")
   if (!cashData || !volumes) return vol24InUSD
   if (cashData && Object.keys(cashData).length > 0) {
-    const { diff } = volumes;
-    vol24InUSD = Object.keys(diff).reduce((p, cash) => {
+    const { volume } = volumes;
+    vol24InUSD = Object.keys(volume).reduce((p, cash) => {
       const priceUSD = cashData[cash]?.priceUSD || "0";
-      const cashValue = calculateVolume(cashData[cash]?.decimals, diff[cash], priceUSD)
+      const cashValue = calculateVolume(cashData[cash]?.decimals, String(volume[cash]), priceUSD)
       return p.plus(new BN(cashValue))
     }, new BN(0))
   }
+  return vol24InUSD;
 }
+
 export enum TradingDirection {
   ENTRY = 'ENTRY',
   EXIT = 'EXIT',

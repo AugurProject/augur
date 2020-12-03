@@ -91,10 +91,10 @@ function AmmExchangeList({ allExchanges, disbaleLinks, marketId }) {
             {toPercent(ammExchange.feePercent)}
           </TYPE.header>
           {!below1080 && <TYPE.header area="name" fontWeight="500">
-            {formattedNum(ammExchange.volumeNo24hrUSD, true)}
+            {formattedNum(ammExchange.volumeNoUSD, true)}
           </TYPE.header>}
           {!below1080 && <TYPE.header area="name" fontWeight="500">
-            {formattedNum(ammExchange.volumeYes24hrUSD, true)}
+            {formattedNum(ammExchange.volumeYesUSD, true)}
           </TYPE.header>}
           <TYPE.header area="name" fontWeight="500">
             <RowFixed style={{ flexFlow: 'row nowrap', justifyContent: 'space-between', marginTop: '0.5rem' }}>
@@ -148,8 +148,8 @@ function AmmExchangeList({ allExchanges, disbaleLinks, marketId }) {
             <TYPE.header area="NoPercent">No</TYPE.header>
             {!below800 && <TYPE.header area="liquidity">Liquidity</TYPE.header>}
             <TYPE.header area="liquidity">Fee %</TYPE.header>
-            {!below1080 && <TYPE.header area="volumeYes">Yes Vol (24h)</TYPE.header>}
-            {!below1080 && <TYPE.header area="volumeNo">No Vol (24h)</TYPE.header>}
+            {!below1080 && <TYPE.header area="volumeYes">Yes Volume</TYPE.header>}
+            {!below1080 && <TYPE.header area="volumeNo">No Volume</TYPE.header>}
             <TYPE.header area="uniswap"></TYPE.header>
           </DashGrid>
           <Divider />
