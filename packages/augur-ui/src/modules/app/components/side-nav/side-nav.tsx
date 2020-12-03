@@ -94,7 +94,7 @@ const SideNav = ({
         </button>
         {isTrading && (
           <>
-            {!isLogged && (
+            {notLoggedAndRestored && (
               <div className={Styles.LoginAndSignUp}>
                 <SecondaryButton
                   action={() => setModal({ type: MODAL_LOGIN })}
@@ -237,20 +237,20 @@ const SideNav = ({
             isHelpMenuOpen={isHelpMenuOpen}
             updateHelpMenuState={() => setModal({ type: MODAL_HELP })}
           />
-          {isLogged && whichChatPlugin &&
-          <div className={Styles.GlobalChat}>
+          {isLogged && whichChatPlugin && (
+            <div className={Styles.GlobalChat}>
               <SecondaryButton
-                  action={() => setModal({ type: MODAL_GLOBAL_CHAT })}
-                  text="Global Chat"
-                  icon={Chevron}
+                action={() => setModal({ type: MODAL_GLOBAL_CHAT })}
+                text="Global Chat"
+                icon={Chevron}
               />
-          </div>
-          }
-          {isLogged &&
-          <button onClick={() => logout()}>
+            </div>
+          )}
+          {isLogged && (
+            <button onClick={() => logout()}>
               Logout {LogoutIcon}
-          </button>
-          }
+            </button>
+          )}
         </footer>
       )}
     </aside>

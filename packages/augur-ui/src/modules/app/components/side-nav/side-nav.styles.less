@@ -12,9 +12,9 @@
     grid-row: 3;
     align-items: center;
     background: var(--color-module-background);
-    bottom: 0px;
+    bottom: 0;
     display: flex;
-    height: @top-bar-height-mobile;
+    height: @size-64;
     justify-content: flex-start;
     padding: 0 @size-16;
     position: fixed;
@@ -161,6 +161,18 @@
           justify-content: flex-end;
           width: 100%;
           padding-bottom: 0;
+        }
+      }
+    }
+
+    > footer {
+      > div[class$='HelpIcon'] {
+        width: @size-58;
+        height: @size-56;
+
+        > span > svg {
+          width: @size-24;
+          height: @size-24;
         }
       }
     }
