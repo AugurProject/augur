@@ -1,11 +1,11 @@
 import React from 'react';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 
-import makePath from './helpers/make-path.ts';
-import Markets from '../markets/markets';
+import makePath from 'modules/routes/helpers/make-path.ts';
+import Markets from 'modules/markets/markets';
 import {
   MARKETS
-} from '../constants.ts';
+} from 'modules/constants.ts';
 
 const Routes = p => {
   return (

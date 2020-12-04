@@ -1,0 +1,51 @@
+{
+  "extends": "../../tsconfig-base.json",
+  "compilerOptions": {
+    "outDir": "build",
+    "rootDir": "src",
+    "target": "ES2017",
+    "module": "es2020",
+    "jsx": "react",
+    "noImplicitAny": false,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "src",
+    "moduleResolution": "node",
+    "paths": {
+      "assets/*": [
+        "./assets/*"
+      ],
+      "modules/*": [
+        "./modules/*"
+      ],
+      "services/*": [
+        "./services/*"
+      ],
+      "utils/*": [
+        "./utils/*"
+      ]
+    },
+    "esModuleInterop": true,
+    "resolveJsonModule": false
+  },
+  "include": [
+    "./src/**/*"
+  ],
+  "exclude": [
+    "./src/**/*.test.ts"
+  ],
+  "references": [
+    {
+      "path": "../augur-artifacts"
+    },
+    {
+      "path": "../augur-sdk"
+    },
+    {
+      "path": "../augur-sdk-lite"
+    },
+    {
+      "path": "../augur-utils"
+    }
+
+  ]
+}
