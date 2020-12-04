@@ -17,23 +17,26 @@ import {
 } from '../../generated/schema';
 import { getOrCreateUser } from '../utils/helpers';
 import { updateAMM } from '../utils/helpers/amm';
+import { ERC20 } from '../../generated/templates/Cash/ERC20';
 
-
-function updateAggregateValues(address: Address, cash: BigInt, noShares: BigInt, yesShares: BigInt): void {
+function updateVolumeValues(address: Address, cash: BigInt, noShares: BigInt, yesShares: BigInt): void {
   let ammExchange = AMMExchange.load(
     address.toHexString()
   );
 
+  let cash = ERC20.bind(Address.fromString(ammExchange.cash));
+  let decimals = BigInt.fromI32(10 ).pow(cash.decimals() as u8).toBigDecimal();
+
   let market = Market.load(ammExchange.market);
   let numTicks = market.numTicks.toBigDecimal();
 
-  market.volume = market.volume.plus(noShares.abs().toBigDecimal().div(numTicks));
-  market.volume = market.volume.plus(yesShares.abs().toBigDecimal().div(numTicks));
+  market.volume = market.volume.plus(noShares.abs().toBigDecimal().div(numTicks).div(decimals));
+  market.volume = market.volume.plus(yesShares.abs().toBigDecimal().div(numTicks).div(decimals));
 
   market.save();
 
-  ammExchange.volumeNo = ammExchange.volumeNo.plus(noShares.abs().toBigDecimal().div(numTicks));
-  ammExchange.volumeYes = ammExchange.volumeYes.plus(yesShares.abs().toBigDecimal().div(numTicks));
+  ammExchange.volumeNo = ammExchange.volumeNo.plus(noShares.abs().toBigDecimal().div(numTicks).div(decimals));
+  ammExchange.volumeYes = ammExchange.volumeYes.plus(yesShares.abs().toBigDecimal().div(numTicks).div(decimals));
 
   ammExchange.save();
 
@@ -52,13 +55,6 @@ export function handleAddLiquidity(event: AddLiquidityEvent): void {
   addLiquidity.yesShares = event.params.yesShares;
   addLiquidity.sender = event.params.sender.toHexString();
   addLiquidity.save();
-
-  updateAggregateValues(
-    event.address,
-    event.params.cash,
-    event.params.noShares,
-    event.params.yesShares
-  );
 }
 
 export function handleRemoveLiquidity(event: RemoveLiquidityEvent): void {
@@ -73,13 +69,6 @@ export function handleRemoveLiquidity(event: RemoveLiquidityEvent): void {
   removeLiquidity.yesShares = event.params.yesShares;
   removeLiquidity.sender = event.params.sender.toHexString();
   removeLiquidity.save();
-
-  updateAggregateValues(
-    event.address,
-    event.params.cash.times(BigInt.fromI32(-1)),
-    event.params.noShares.times(BigInt.fromI32(-1)),
-    event.params.yesShares.times(BigInt.fromI32(-1))
-  );
 }
 
 export function handleEnterPosition(event: EnterPositionEvent): void {
@@ -101,11 +90,11 @@ export function handleEnterPosition(event: EnterPositionEvent): void {
   enterPosition.price = event.params.cash.toBigDecimal().div(event.params.outputShares.toBigDecimal().times(numTicks))
 
   if(event.params.buyYes) {
-    updateAggregateValues(event.address, event.params.cash, BigInt.fromI32(0), event.params.outputShares);
+    updateVolumeValues(event.address, event.params.cash, BigInt.fromI32(0), event.params.outputShares);
     enterPosition.noShares = BigInt.fromI32(0);
     enterPosition.yesShares = event.params.outputShares;
   } else {
-    updateAggregateValues(event.address, event.params.cash, event.params.outputShares, BigInt.fromI32(0));
+    updateVolumeValues(event.address, event.params.cash, event.params.outputShares, BigInt.fromI32(0));
     enterPosition.noShares = event.params.outputShares;
     enterPosition.yesShares = BigInt.fromI32(0);
   }
@@ -137,7 +126,7 @@ export function handleExitPosition(event: ExitPositionEvent): void {
   exitPosition.price = event.params.cashPayout.toBigDecimal().div(event.params.yesShares.plus(event.params.noShares).toBigDecimal().times(numTicks))
   exitPosition.save();
 
-  updateAggregateValues(
+  updateVolumeValues(
     event.address,
     event.params.cashPayout.times(BigInt.fromI32(-1)),
     event.params.noShares,
@@ -156,14 +145,14 @@ export function handleSwapPosition(event: SwapPositionEvent): void {
   swapPosition.sender = event.params.sender.toHexString();
 
   if (event.params.inputYes) {
-    updateAggregateValues(
+    updateVolumeValues(
       event.address,
       BigInt.fromI32(0),
       event.params.outputShares,
       event.params.inputShares.times(BigInt.fromI32(-1))
     );
   } else {
-    updateAggregateValues(
+    updateVolumeValues(
       event.address,
       BigInt.fromI32(0),
       event.params.inputShares.times(BigInt.fromI32(-1)),
