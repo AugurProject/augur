@@ -165,6 +165,7 @@ dataSources:
       file: ./src/index.ts
       entities:
         - ShareToken
+        - ERC20
       abis:
         - name: ERC20
           file: ./abis/ERC20.json
