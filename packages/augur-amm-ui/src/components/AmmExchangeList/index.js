@@ -103,22 +103,18 @@ function AmmExchangeList({ allExchanges, disbaleLinks, marketId }) {
             {formattedNum(ammExchange.volumeNoUSD, true)}
           </TYPE.header>}
           <TYPE.header area="name" fontWeight="500">
-            <RowFixed style={{ flexFlow: 'row nowrap', justifyContent: 'space-between', marginTop: '0.5rem' }}>
+            <RowFixed style={{ flexFlow: 'row nowrap', justifyContent: 'space-around', marginTop: '0.5rem' }}>
               <StyledInternalLink disabled={!hasLPTokens} to={`/remove/${marketId}/${ammExchange.id}`}>
-                <ButtonLight disabled={!hasLPTokens} textAlign="center">
-                  Remove
-                </ButtonLight>
+                Remove
               </StyledInternalLink>
               <StyledInternalLink to={`/add/${marketId}/${ammExchange.cash.address}/${ammExchange.id}`}>
-                <ButtonLight textAlign="center">Add</ButtonLight>
+                Add
               </StyledInternalLink>
               <StyledInternalLink
                 disabled={!ammExchange && !ammExchange.id}
                 to={`/swap/${marketId}/${ammExchange.cash.address}/${ammExchange.id}`}
               >
-                <ButtonPrimary disabled={(!ammExchange && !ammExchange.id) || ammExchange.liquidity === "0"} textAlign="center">
-                  Trade
-                </ButtonPrimary>
+                Trade
               </StyledInternalLink>
             </RowFixed>
           </TYPE.header>

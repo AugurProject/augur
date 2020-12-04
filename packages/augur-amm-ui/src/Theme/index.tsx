@@ -71,6 +71,7 @@ const theme = (darkMode, color = 'white') => ({
   bg6: darkMode ? '#222124' : '#CFCFCFCF',
 
   bs: darkMode ? '#565A69' : '#f3f5ff',
+  menu: darkMode ? 'black' : '#eaeaea',
 
   //specialty colors
   modalBG: darkMode ? 'rgba(0,0,0,0.85)' : 'rgba(0,0,0,0.6)',

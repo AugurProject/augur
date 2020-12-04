@@ -240,6 +240,7 @@ export default function SlippageTabs({ rawSlippage, setRawSlippage, deadline, se
               placeholder={(deadline / 60).toString()}
               value={deadlineInput}
               onChange={e => parseCustomDeadline(e.target.value)}
+              style={{ height: 'auto' }}
             />
           </OptionCustom>
           <TYPE.body style={{ paddingLeft: '8px' }} fontSize={14}>

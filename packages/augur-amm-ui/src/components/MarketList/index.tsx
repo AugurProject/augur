@@ -194,7 +194,7 @@ function MarketList({ markets, itemMax = 15 }) {
 
   return (
     <div>
-      {marketsGroupByThree.map((filteredList, index) => (
+      {marketsGroupByThree[0].length > 0 ? marketsGroupByThree.map((filteredList, index) => (
         <RowFixed
           key={index}
           style={
@@ -209,8 +209,13 @@ function MarketList({ markets, itemMax = 15 }) {
         >
           {filteredList.map((market, index) => marketCard(market, index))}
         </RowFixed>
-      ))}
+      )) :
+      <div style={{ fontSize: '16px', margin: '156px 0', textAlign: 'center' }}>
+        No Markets
+      </div>
+    }
 
+    {marketsGroupByThree[0].length > 0  &&
       <PageButtons>
         <div onClick={() => setPage(page === 1 ? page : page - 1)}>
           <Arrow faded={page === 1 ? true : false}>←</Arrow>
@@ -220,7 +225,7 @@ function MarketList({ markets, itemMax = 15 }) {
           <Arrow faded={page === maxPage ? true : false}>→</Arrow>
         </div>
       </PageButtons>
-
+    }
     </div>
   )
 }

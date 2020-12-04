@@ -112,12 +112,13 @@ const Menu = styled.div`
   flex-direction: column;
   z-index: 9999;
   width: 100%;
-  top: 50px;
+  top: 40px;
+  position: absolute;
   max-height: 540px;
   overflow: scroll;
   left: 0;
   padding-bottom: 20px;
-  background: black;
+  background: ${({ theme }) => theme.menu};
   border-bottom-right-radius: 12px;
   border-bottom-left-radius: 12px;
   box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
