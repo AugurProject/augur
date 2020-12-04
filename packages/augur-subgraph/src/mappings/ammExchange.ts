@@ -90,6 +90,7 @@ export function handleEnterPosition(event: EnterPositionEvent): void {
   enterPosition.timestamp = event.block.timestamp;
   enterPosition.ammExchange = event.address.toHexString();
   enterPosition.cash = event.params.cash;
+  enterPosition.price = event.params.cash.toBigDecimal().div(event.params.outputShares.toBigDecimal())
 
   if(event.params.buyYes) {
     updateAggregateValues(event.address, event.params.cash, BigInt.fromI32(0), event.params.outputShares);
@@ -117,6 +118,7 @@ export function handleExitPosition(event: ExitPositionEvent): void {
   exitPosition.noShares = event.params.noShares;
   exitPosition.yesShares = event.params.yesShares;
   exitPosition.sender = event.params.sender.toHexString();
+  exitPosition.price = event.params.cashPayout.toBigDecimal().div(event.params.yesShares.plus(event.params.noShares).toBigDecimal())
   exitPosition.save();
 
   updateAggregateValues(

@@ -826,6 +826,8 @@ type EnterPosition @entity {
   "Amount of cash user passed to enter the position."
   cash: BigInt!
 
+  price: BigDecimal!
+
   "Number of yes shares the user recieved. User will recieve only yes or no."
   yesShares: BigInt!
 
@@ -857,6 +859,8 @@ type ExitPosition @entity {
 
   "Amount of cash user recieved exiting position."
   cash: BigInt!
+
+  price: BigDecimal!
 }
 
 type AddLiquidity @entity {
