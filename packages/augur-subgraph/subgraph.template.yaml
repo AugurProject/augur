@@ -166,6 +166,8 @@ dataSources:
       entities:
         - ShareToken
       abis:
+        - name: ERC20
+          file: ./abis/ERC20.json
         - name: ParaDeployer
           file: ./abis/ParaDeployer.json
       eventHandlers:
