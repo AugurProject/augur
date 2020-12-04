@@ -715,6 +715,8 @@ type MarketTemplateInput @entity {
 type Cash @entity {
   id: ID!
 
+  symbol: String!
+
   ammExchanges: [AMMExchange!]! @derivedFrom(field: "cash")
 
   paraShareTokens: [ParaShareToken!]! @derivedFrom(field: "cash")
