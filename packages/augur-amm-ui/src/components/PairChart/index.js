@@ -77,7 +77,7 @@ const PairChart = ({ marketId, amms, color }) => {
   const below600 = useMedia('(max-width: 600px)')
 
   let utcStartTime = getTimeframe(timeWindow)
-  chartData = chartData?.filter(entry => entry.date >= utcStartTime)
+  chartData = chartData?.filter(entry => entry.timestamp >= utcStartTime)
 
   if (chartData && chartData.length === 0 || (amms.length === 0)) {
     return (
@@ -100,8 +100,9 @@ const PairChart = ({ marketId, amms, color }) => {
         <OptionsRow>
           <AutoRow gap="6px" style={{ flexWrap: 'nowrap' }}>
             {amms &&
-              amms.map(a => (
+              amms.map((a, i) => (
                 <ButtonRadio
+                  key={i}
                   style={{ width: '50px' }}
                   active={selectedCash?.address === a.cash.address}
                   onClick={() => {
@@ -154,7 +155,7 @@ const PairChart = ({ marketId, amms, color }) => {
             tickMargin={14}
             minTickGap={80}
             tickFormatter={tick => toNiceDate(tick)}
-            dataKey="date"
+            dataKey="timestamp"
             tick={{ fill: textColor }}
             type={'number'}
             domain={['dataMin', 'dataMax']}

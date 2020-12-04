@@ -182,9 +182,7 @@ export function useAllMarketData() {
 function shapeMarketsByAmm(markets) {
   const marketsByAmm = (markets || []).reduce((p, m) => {
     if (!m.amms || m.amms.length === 0) return [...p, { ...m, amm: null }]
-    const splitOut = m.amms.map(amm =>
-      ({ ...m, amm: shapeAMMData(amm), cash: amm.shareToken.cash.id })
-    )
+    const splitOut = m.amms.map(amm => ({ ...m, amm: shapeAMMData(amm), cash: amm.shareToken.cash.id }))
     return p.concat(splitOut)
   }, [])
   return marketsByAmm
@@ -380,7 +378,7 @@ export function usePositionMarkets(positions) {
   const [state] = useMarketDataContext()
   const { markets } = state
   const marketPositions = positions.map(position => {
-    const marketId = position.marketId;
+    const marketId = position.marketId
     const market = markets.find(m => m.id === marketId)
     return { market, ...position }
   })
@@ -397,7 +395,7 @@ export function useAmmMarkets(balances) {
       const balance = balances[ammId]
       const market = markets.find(m => m.amms.map(a => a.id).includes(ammId))
       const groupedAmms = market ? market.amms.reduce((group, a) => ({ ...group, [a.id]: a }), {}) : {}
-      const shareToken = groupedAmms[ammId]?.shareToken;
+      const shareToken = groupedAmms[ammId]?.shareToken
       const cash = cashes[shareToken?.cash?.id]
       if (market && balance !== '0') {
         ammMarkets.push({ ...market, balance, shareToken, cash })
@@ -504,47 +502,30 @@ function useCalcVolumes(markets, marketsPast) {
   }, [markets, marketsPast])
 }
 
-export const useMarketAmmTradeData = (marketId, cashAddress) => {
-  const amms = useMarketAmmExchanges(marketId);
-  const amm = amms.find(a => a.cash.address === cashAddress);
-  if (!amm) return []
-
-  return [
-    {
-      no: .76,
-      yes: .24,
-      date: 1606925914
-    },
-    {
-      no: .78,
-      yes: .22,
-      date: 1606839514
-    },
-    {
-      no: .79,
-      yes: .21,
-      date: 1606753114
-    },
-    {
-      no: .80,
-      yes: .20,
-      date: 1606666714
-    },
-    {
-      no: .79,
-      yes: .21,
-      date: 1606580314
-    },
-    {
-      no: .60,
-      yes: .40,
-      date: 1606493914
-    },
-    {
-      no: .55,
-      yes: .45,
-      date: 1606407514
+const calculateTradePrice = txs => {
+  return txs.map(tx => {
+    let no = ''
+    let yes = ''
+    if (tx.noShares === '0') {
+      yes = new BN(tx.price)
+      no = new BN(1).minus(yes)
+    } else {
+      no = new BN(tx.price)
+      yes = new BN(1).minus(no)
     }
-  ]
-
+    return {
+      yes: Number(yes.toFixed(2)),
+      no: Number(no.toFixed(2)),
+      timestamp: Number(tx.timestamp)
+    }
+  })
+}
+export const useMarketAmmTradeData = (marketId, cashAddress) => {
+  const amms = useMarketAmmExchanges(marketId)
+  const amm = amms.find(a => a.cash.address === cashAddress)
+  if (!amm) return []
+  console.log(amm.enters)
+  const enters = calculateTradePrice(amm.enters)
+  const exits = calculateTradePrice(amm.exits)
+  return [...enters, ...exits].sort((a, b) => a.timestamp > b.timestamp ? 1 : -1)
 }

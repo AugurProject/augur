@@ -14,6 +14,7 @@ import { useLPTokenBalances } from '../../state/wallet/hooks'
 import { TYPE, StyledInternalLink } from '../../Theme'
 import { greaterThanZero } from '../../utils'
 import { formattedNum, toPercent } from '../../utils'
+import { BigNumber as BN } from 'bignumber.js'
 
 dayjs.extend(utc)
 
@@ -73,7 +74,7 @@ function AmmExchangeList({ allExchanges, disbaleLinks, marketId }) {
       if (userTokenBalances && ammExchange?.id) {
         setHasLpTokens(greaterThanZero(userTokenBalances[ammExchange.id]))
         // liquidity comes in display value
-        const liquidity = formattedNum(ammExchange.liquidity, false);
+        const liquidity = formattedNum(new BN(ammExchange.liquidity).toFixed(2), false);
         const usd = formattedNum(ammExchange.liquidityUSD, true);
         setLiquidityUSD(ammExchange?.cash?.showInUSD ? `${liquidity} (${usd})}` : `$${liquidity}`);
       }
@@ -96,10 +97,10 @@ function AmmExchangeList({ allExchanges, disbaleLinks, marketId }) {
             {toPercent(ammExchange.feePercent)}
           </TYPE.header>
           {!below1080 && <TYPE.header area="name" fontWeight="500">
-            {formattedNum(ammExchange.volumeNoUSD, true)}
+            {formattedNum(ammExchange.volumeYesUSD, true)}
           </TYPE.header>}
           {!below1080 && <TYPE.header area="name" fontWeight="500">
-            {formattedNum(ammExchange.volumeYesUSD, true)}
+            {formattedNum(ammExchange.volumeNoUSD, true)}
           </TYPE.header>}
           <TYPE.header area="name" fontWeight="500">
             <RowFixed style={{ flexFlow: 'row nowrap', justifyContent: 'space-between', marginTop: '0.5rem' }}>

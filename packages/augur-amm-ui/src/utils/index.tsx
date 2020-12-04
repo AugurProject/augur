@@ -594,14 +594,14 @@ export function calculateLiquidity(decimals: number, liquidity: string, price: s
   if (!decimals || !liquidity || !price) return "0"
   // liquidity comes in display value
   const displayLiquidity = liquidity;
-  const liqNormalized = new BN(displayLiquidity).times(new BN(price))
+  const liqNormalized = new BN(displayLiquidity).times(new BN(price)).toFixed(2)
   return String(liqNormalized)
 }
 
 export function calculateVolume(decimals: number, volume: string, price: string): string {
   if (!decimals || !volume || !price) return "0"
-  const displayVolume = formatShares(volume, String(decimals))
-  const volNormalized = new BN(displayVolume).times(new BN(price))
+  const displayVolume = volume;
+  const volNormalized = new BN(displayVolume).times(new BN(price)).toFixed(2)
   return String(volNormalized)
 }
 

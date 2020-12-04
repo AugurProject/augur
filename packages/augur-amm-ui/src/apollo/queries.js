@@ -85,6 +85,7 @@ export const GET_MARKETS = blockNumber => {
         timestamp
         yesShares
         noShares
+        price
         cash
       }
       exits {
@@ -93,6 +94,7 @@ export const GET_MARKETS = blockNumber => {
           id
         }
         tx_hash
+        price
         timestamp
         yesShares
         noShares
@@ -165,6 +167,7 @@ export const GET_MARKETS = blockNumber => {
         timestamp
         yesShares
         noShares
+        price
         cash
       }
       exits {
@@ -173,6 +176,7 @@ export const GET_MARKETS = blockNumber => {
         timestamp
         yesShares
         noShares
+        price
         cash
       }
     }
