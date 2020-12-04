@@ -21,3 +21,8 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# styles types
+src/utils/**/*.less.d.ts
+src/modules/**/*.styles.less.d.ts
+src/modules/**/*.less.d.ts
