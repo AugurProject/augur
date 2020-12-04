@@ -715,6 +715,8 @@ type MarketTemplateInput @entity {
 type Cash @entity {
   id: ID!
 
+  decimals: BigInt!
+
   symbol: String!
 
   ammExchanges: [AMMExchange!]! @derivedFrom(field: "cash")
