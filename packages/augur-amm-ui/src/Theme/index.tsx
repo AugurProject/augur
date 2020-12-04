@@ -104,7 +104,7 @@ const theme = (darkMode, color = 'white') => ({
   blue: '2f80ed',
   primary: '#09CFE1',
   background: darkMode ? 'black' : 'radial-gradient(50% 50% at 50% 50%, #2172E530 0%, #fff 0%)',
-  border: !darkMode ? 'none' : '1px solid #FFFFFF',
+  border: !darkMode ? 'none' : '1px solid #565A69',
 })
 
 const TextWrapper = styled(Text)<{ disabled }>`
