@@ -151,10 +151,10 @@ function PositionMarketList({ positions, loading, itemMax = 20 }) {
   const filteredList = useMemo(() => {
     return markets
       .sort((a, b) => {
-        if (sortedColumn === SORT_FIELD.SYMBOL || sortedColumn === SORT_FIELD.NAME) {
-          return a[sortedColumn] > b[sortedColumn] ? (sortDirection ? -1 : 1) * 1 : (sortDirection ? -1 : 1) * -1
+        if (sortedColumn === SORT_FIELD.STATUS || sortedColumn === SORT_FIELD.NAME) {
+          return a?.market[sortedColumn] > b?.market[sortedColumn] ? (sortDirection ? -1 : 1) * 1 : (sortDirection ? -1 : 1) * -1
         }
-        return parseFloat(a[sortedColumn]) > parseFloat(b[sortedColumn])
+        return parseFloat(a?.market[sortedColumn]) > parseFloat(b?.market[sortedColumn])
           ? (sortDirection ? -1 : 1) * 1
           : (sortDirection ? -1 : 1) * -1
       })
@@ -212,11 +212,11 @@ function PositionMarketList({ positions, loading, itemMax = 20 }) {
             area="name"
             fontWeight="500"
             onClick={e => {
-              setSortedColumn(SORT_FIELD.DESCRIPTION)
-              setSortDirection(sortedColumn !== SORT_FIELD.DESCRIPTION ? true : !sortDirection)
+              setSortedColumn(SORT_FIELD.NAME)
+              setSortDirection(sortedColumn !== SORT_FIELD.NAME ? true : !sortDirection)
             }}
           >
-            Description {sortedColumn === SORT_FIELD.DESCRIPTION ? (!sortDirection ? '↑' : '↓') : ''}
+            Description {sortedColumn === SORT_FIELD.NAME ? (!sortDirection ? '↑' : '↓') : ''}
           </ClickableText>
         </Flex>
         <Flex alignItems="center">
