@@ -988,7 +988,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `NASCAR [0] CUP Series Championship Winner?`,
             example: `NASCAR 2020 CUP Series Championship Winner?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
-            header: `NASCAR [0] CUP Series Championship winner`,
+            header: `[0] NASCAR CUP Series Championship`,
+            title: `Winner`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
@@ -1187,7 +1188,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `PGA: Which team will win the [0] Presidents Cup?`,
                 example: `PGA: Which team will win the 2020 Presidents Cup?`,
-                header: `[0] Presidents Cup winner`,
+                header: `PGA [0] Presidents Cup`,
+                title: `Who will win`,
                 groupName: groupTypes.FUTURES,
                 noAdditionalUserOutcomes: true,
                 inputs: [
@@ -1202,17 +1204,17 @@ export const TEMPLATES = {
                   {
                     id: 1,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `No Contest`,
+                    placeholder: `United States Team`,
                   },
                   {
                     id: 2,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `United States Team`,
+                    placeholder: `International Team`,
                   },
                   {
                     id: 3,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `International Team`,
+                    placeholder: `No Contest`,
                   },
                 ],
                 resolutionRules: {
