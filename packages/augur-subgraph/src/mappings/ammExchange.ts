@@ -25,13 +25,15 @@ function updateAggregateValues(address: Address, cash: BigInt, noShares: BigInt,
   );
 
   let market = Market.load(ammExchange.market);
-  market.volume = market.volume.plus(noShares.abs());
-  market.volume = market.volume.plus(yesShares.abs());
+  let numTicks = market.numTicks.toBigDecimal();
+
+  market.volume = market.volume.plus(noShares.abs().toBigDecimal().div(numTicks));
+  market.volume = market.volume.plus(yesShares.abs().toBigDecimal().div(numTicks));
 
   market.save();
 
-  ammExchange.volumeNo = ammExchange.volumeNo.plus(noShares.abs());
-  ammExchange.volumeYes = ammExchange.volumeYes.plus(yesShares.abs());
+  ammExchange.volumeNo = ammExchange.volumeNo.plus(noShares.abs().toBigDecimal().div(numTicks));
+  ammExchange.volumeYes = ammExchange.volumeYes.plus(yesShares.abs().toBigDecimal().div(numTicks));
 
   ammExchange.save();
 
@@ -83,11 +85,20 @@ export function handleRemoveLiquidity(event: RemoveLiquidityEvent): void {
 export function handleEnterPosition(event: EnterPositionEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let enterPosition = new EnterPosition(id);
+
+  let ammExchange = AMMExchange.load(
+    event.address.toHexString()
+  );
+
+  let market = Market.load(ammExchange.market);
+  let numTicks = market.numTicks.toBigDecimal();
+
   getOrCreateUser(event.params.sender.toHexString());
   enterPosition.tx_hash = event.transaction.hash.toHexString();
   enterPosition.timestamp = event.block.timestamp;
   enterPosition.ammExchange = event.address.toHexString();
   enterPosition.cash = event.params.cash;
+  enterPosition.price = event.params.cash.toBigDecimal().div(event.params.outputShares.toBigDecimal().times(numTicks))
 
   if(event.params.buyYes) {
     updateAggregateValues(event.address, event.params.cash, BigInt.fromI32(0), event.params.outputShares);
@@ -106,6 +117,14 @@ export function handleEnterPosition(event: EnterPositionEvent): void {
 export function handleExitPosition(event: ExitPositionEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let exitPosition = new ExitPosition(id);
+
+  let ammExchange = AMMExchange.load(
+    event.address.toHexString()
+  );
+
+  let market = Market.load(ammExchange.market);
+  let numTicks = market.numTicks.toBigDecimal();
+
   getOrCreateUser(event.params.sender.toHexString());
   exitPosition.tx_hash = event.transaction.hash.toHexString();
   exitPosition.timestamp = event.block.timestamp;
@@ -115,6 +134,7 @@ export function handleExitPosition(event: ExitPositionEvent): void {
   exitPosition.noShares = event.params.noShares;
   exitPosition.yesShares = event.params.yesShares;
   exitPosition.sender = event.params.sender.toHexString();
+  exitPosition.price = event.params.cashPayout.toBigDecimal().div(event.params.yesShares.plus(event.params.noShares).toBigDecimal().times(numTicks))
   exitPosition.save();
 
   updateAggregateValues(

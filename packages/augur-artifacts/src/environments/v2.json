@@ -121,7 +121,7 @@
     "AMMFactory": "0x7ebF6a8c6907f4C89d2C806B603aCC3B5d0486e0",
     "ERC20Proxy1155Nexus": "0xC0e95BEef0f4E943E9eD0D0C71BE43c07A864755",
     "ParaDeployer": "0xD1da42872348472cC359e5ec69C6FB42523Ae38a",
-    "WethWrapperForAMMExchange": "0xdfAd30fD483B8A75cE5Ac5DFBF36f9D6e5468f3a"
+    "WethWrapperForAMMExchange": "0x446678D94ecd669f8e2f4fEEeb6bEBb23E9673Db"
   },
   "server": {
     "httpPort": 9003,

@@ -147,7 +147,7 @@ type Market @entity {
   openInterest: BigInt
 
   "The the total trading volume for this market"
-  volume: BigInt!
+  volume: BigDecimal!
 
   "The total trading volume per outcome of this market"
   outcomeVolumes: [BigInt!]
@@ -714,6 +714,12 @@ type MarketTemplateInput @entity {
 
 type Cash @entity {
   id: ID!
+
+  symbol: String!
+
+  ammExchanges: [AMMExchange!]! @derivedFrom(field: "cash")
+
+  paraShareTokens: [ParaShareToken!]! @derivedFrom(field: "cash")
 }
 
 type AMMExchange @entity {
@@ -747,10 +753,10 @@ type AMMExchange @entity {
   liquidityYes: BigDecimal!
 
   "The all time yes volume in the exchange."
-  volumeYes: BigInt!
+  volumeYes: BigDecimal!
 
   "The all time no volume in the exchange."
-  volumeNo: BigInt!
+  volumeNo: BigDecimal!
 
   "Percentage of shares that are no."
   percentageNo: BigDecimal!
@@ -820,6 +826,8 @@ type EnterPosition @entity {
   "Amount of cash user passed to enter the position."
   cash: BigInt!
 
+  price: BigDecimal!
+
   "Number of yes shares the user recieved. User will recieve only yes or no."
   yesShares: BigInt!
 
@@ -851,6 +859,8 @@ type ExitPosition @entity {
 
   "Amount of cash user recieved exiting position."
   cash: BigInt!
+
+  price: BigDecimal!
 }
 
 type AddLiquidity @entity {

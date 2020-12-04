@@ -383,6 +383,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
 
 
     // Calculates _deltaA, the number of shares gained from the swap.
+    // NOTE: Normally the fee is applied to the input shares. We don't do that here, the fee is later applied to the output shares.
     function calculateSwap(uint256 _reserveA, uint256 _reserveB, uint256 _deltaB) internal pure returns (uint256) {
         uint256 _k = _reserveA.mul(_reserveB);
         return _reserveA.sub(_k.div(_reserveB.add(_deltaB)));

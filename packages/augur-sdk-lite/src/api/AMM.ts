@@ -128,6 +128,7 @@ export class AMM {
   }
 
   async doEnterPosition(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, buyYes: Boolean, minShares: BigNumber): Promise<TransactionResponse> {
+    console.log("Enter Position:", market, paraShareToken, fee.toFixed(), cash.toFixed(), buyYes, minShares.toFixed());
     return this.intermediary(paraShareToken).enterPosition(market, paraShareToken, fee, cash, buyYes, minShares);
   }
 

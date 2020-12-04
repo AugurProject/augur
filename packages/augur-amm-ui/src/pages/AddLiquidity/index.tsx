@@ -134,7 +134,6 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
       return
     }
 
-    // 3/1000 aka 0.3%
     const fee = Number(feeSelected) * 10;
 
     setAttemptingTxn(true)
