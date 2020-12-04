@@ -15,6 +15,11 @@
   width: calc(100% - @size-60);
   z-index: @mask-modal;
 
+  &.showNav {
+    transform: none;
+    transition: transform .3s linear;
+  }
+
   > header {
     grid-row: 1;
     border-bottom: @size-2 solid var(--color-secondary-hover);
@@ -73,16 +78,6 @@
         height: @size-16;
       }
     }
-
-    > .LoginAndSignUp {
-      margin: 0 @size-16 0 auto;
-      display: flex;
-      flex-direction: row;
-
-      > button:first-of-type {
-        margin-right: @size-8;
-      }
-    }
   }
 
   > footer {
@@ -111,47 +106,52 @@
         }
       }
     }
+  }
+}
 
-    > .LogoutButton {
-      .text-12-bold;
+.LoginAndSignUp {
+  margin: 0 @size-16 0 auto;
+  display: flex;
+  flex-direction: row;
 
-      color: var(--color-primary-text);
-      display: flex;
-      margin-left: auto;
-      padding: @size-8 @size-12;
+  > button:first-of-type {
+    margin-right: @size-8;
+  }
+}
 
-      > svg {
-        height: @size-16;
-        width: @size-16;
-        margin-left: @size-8;
+.LogoutButton {
+  .text-12-bold;
 
-        > g {
-          fill: var(--color-primary-text);
-        }
-      }
-    }
+  color: var(--color-primary-text);
+  display: flex;
+  margin-left: auto;
+  padding: @size-8 @size-12;
 
-    > .GlobalChat > button {
-      display: flex;
-      flex-flow: row-reverse nowrap;
-      align-items: center;
+  > svg {
+    height: @size-16;
+    width: @size-16;
+    margin-left: @size-8;
 
-      > svg {
-        transform: rotate(180deg);
-        margin-right: @size-8;
-        width: @size-10;
-        height: @size-6;
-
-        > path {
-          fill: var(--color-primary-text);
-        }
-      }
+    > g {
+      fill: var(--color-primary-text);
     }
   }
+}
 
-  &.showNav {
-    transform: none;
-    transition: transform .3s linear;
+.GlobalChat > button {
+  display: flex;
+  flex-flow: row-reverse nowrap;
+  align-items: center;
+
+  > svg {
+    transform: rotate(180deg);
+    margin-right: @size-8;
+    width: @size-10;
+    height: @size-6;
+
+    > path {
+      fill: var(--color-primary-text);
+    }
   }
 }
 
@@ -276,17 +276,17 @@
         }
       }
     }
-
-    > div.LogoAndAddFunds {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 @size-16;
-      min-height: @size-80;
-      background-color: var(--color-active-background);
-    }
   }
+}
+
+.LogoAndAddFunds {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 @size-16;
+  min-height: @size-80;
+  background-color: var(--color-active-background);
 }
 
 :root[theme="BETTING"],
