@@ -35,7 +35,7 @@ const MarketCardTop = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  padding: 2rem;
+  padding: 2rem 2rem 0 2rem;
 
   > div:first-of-type {
     width: 40px;
@@ -125,7 +125,7 @@ function MarketList({ markets, itemMax = 15 }) {
   const marketsGroupByThree = groupByThree(filteredList)
 
   if (!marketsGroupByThree) {
-    return null;
+    return (null);
   }
 
   const marketCard = (marketData, index) => {
@@ -139,13 +139,15 @@ function MarketList({ markets, itemMax = 15 }) {
       <TYPE.boxed m='1.5rem' key={index} style={below1196 ? {
         background: darkMode ? 'none' : 'rgba(255,255,255,0.4)',
         boxShadow: '0 3px 11px rgba(0,0,0,.04)',
+        position: 'relative',
       } : {
-        height:' 185px',
+        height: '225px',
         width: '385px',
-        maxHeight:' 185px',
+        maxHeight: '225px',
         maxWidth: '385px',
         background: darkMode ? 'none' : 'rgba(255,255,255,0.4)',
         boxShadow: '0 3px 11px rgba(0,0,0,.04)',
+        position: 'relative',
       }}>
         <BasicLink style={{
           width: '100%',
@@ -157,12 +159,20 @@ function MarketList({ markets, itemMax = 15 }) {
         }} to={'/market/' + marketData?.id} key={marketData?.id}>
 
         <MarketCardTop>
-            <div>{cardImageSource}</div>
-            <div style={{
-              maxWidth: below1196 ? '100%' : '255px',
-              maxHeight: below1196 ? '100%' : '255px',
-            }}>{marketData?.description}</div>
+          <div>{cardImageSource}</div>
+          <div style={{
+            fontSize: '9px',
+            width: '100%',
+            textAlign: 'right'
+          }}>
+            {`${marketData.categories[0]} ${marketData.categories[1] ? '- ' + marketData.categories[1] : '' }${marketData.categories[2] ? ' - ' + marketData.categories[2] : '' }`.toUpperCase()}
+          </div>
         </MarketCardTop>
+
+        <div style={{
+            margin: '1rem 2rem 0 2rem',
+            textAlign: 'left',
+          }}>{marketData?.description}</div>
 
         <MarketCardBottom>
             <div>
@@ -191,7 +201,6 @@ function MarketList({ markets, itemMax = 15 }) {
       </TYPE.boxed>
     );
   };
-
   return (
     <div>
       {marketsGroupByThree[0].length > 0 ? marketsGroupByThree.map((filteredList, index) => (
