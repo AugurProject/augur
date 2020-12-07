@@ -1140,7 +1140,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `PGA: Which golfer will win the [0] [1]?`,
                 example: `PGA: Which golfer will win the 2020 PGA Championship?`,
-                header: `[0] [1] winner`,
+                header: `PGA [0] [1]`,
+                title: `Who will win`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -1347,7 +1348,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Euro Tour: Which golfer will win the [0] [1]?`,
                 example: `Euro Tour: Which golfer will win the 2020 Omega Dubai Dessert Classic?`,
-                header: `[0] [1] winner`,
+                header: `Euro Tour [0] [1]`,
+                title: `Who will win`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -1395,7 +1397,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Euro Tour: Which golf team will win the [0] Ryders Cup?`,
                 example: `Euro Tour: Which golf team will win the 2020 Ryders Cup?`,
-                header: `[0] Ryders Cup winner`,
+                header: `Euro Tour [0] Ryders Cup`,
+                title: `Who will win`,
                 groupName: groupTypes.FUTURES,
                 noAdditionalUserOutcomes: true,
                 inputs: [
@@ -1529,7 +1532,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `LPGA: Which golfer will win the [0] [1]?`,
                 example: `LPGA: Which golfer will win the 2020 U.S. Women's Open?`,
-                header: `[0] [1] winner`,
+                header: `LPGA [0] [1]`,
+                title: `Who will win`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
