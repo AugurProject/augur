@@ -14,6 +14,9 @@ import { BasicLink } from '../Link'
 import { usePositionMarkets } from '../../contexts/Markets'
 import TokenLogo from '../TokenLogo'
 import { MarketTokens } from '../../constants'
+import { ButtonSecondary } from '../ButtonStyled'
+import { useActiveWeb3React } from '../../hooks'
+import { useClaimTradingProceeds } from '../../hooks/useClaimTradingProceeds'
 
 dayjs.extend(utc)
 
@@ -132,6 +135,8 @@ function PositionMarketList({ positions, loading, itemMax = 20 }) {
   const markets = usePositionMarkets(positions)
   const below680 = useMedia('(max-width: 680px)')
   const below800 = useMedia('(max-width: 816px)')
+  const { account } = useActiveWeb3React()
+  const { claimWinnings } = useClaimTradingProceeds()
 
   useEffect(() => {
     setMaxPage(1) // edit this to do modular
@@ -152,7 +157,9 @@ function PositionMarketList({ positions, loading, itemMax = 20 }) {
     return markets
       .sort((a, b) => {
         if (sortedColumn === SORT_FIELD.STATUS || sortedColumn === SORT_FIELD.NAME) {
-          return a?.market[sortedColumn] > b?.market[sortedColumn] ? (sortDirection ? -1 : 1) * 1 : (sortDirection ? -1 : 1) * -1
+          return a?.market[sortedColumn] > b?.market[sortedColumn]
+            ? (sortDirection ? -1 : 1) * 1
+            : (sortDirection ? -1 : 1) * -1
         }
         return parseFloat(a?.market[sortedColumn]) > parseFloat(b?.market[sortedColumn])
           ? (sortDirection ? -1 : 1) * 1
@@ -160,6 +167,46 @@ function PositionMarketList({ positions, loading, itemMax = 20 }) {
       })
       .slice(itemMax * (page - 1), page * itemMax)
   }, [markets, itemMax, page, sortDirection, sortedColumn])
+
+  const getWinningOutcomeLabel = item => {
+    if (item?.market?.status === 'FINALIZED') {
+      const hasWinningShares = String(item.outcomes[Number(item?.market?.winningOutcome)])
+      if (hasWinningShares !== '0') {
+        return (
+          <DataText area="status">
+            <ButtonSecondary
+              style={{ height: '50%', width: '70%', justifyContent: 'center' }}
+              onClick={() => claimWinnings(item.paraShareToken.id, item.market)}
+            >
+              Claim Winnings
+            </ButtonSecondary>
+          </DataText>
+        )
+      }
+    }
+
+    return (
+      <DataText area="status">
+        <span
+          style={
+            !darkMode
+              ? {}
+              : item?.market?.status === 'TRADING'
+              ? { color: '#7DFFA8' }
+              : item?.market?.status === 'DISPUTING'
+              ? { color: '#F1E700' }
+              : item?.market?.status === 'REPORTING'
+              ? { color: '#F1E700' }
+              : item?.market?.status === 'FINALIZED'
+              ? { color: '#F12B00' }
+              : {}
+          }
+        >
+          {item?.market?.status}
+        </span>
+      </DataText>
+    )
+  }
 
   const ListItem = ({ item }) => {
     return (
@@ -172,27 +219,7 @@ function PositionMarketList({ positions, loading, itemMax = 20 }) {
         </DataText>
         <DataText area="yesShares">{formatShares(item.yesAmount || '0', item?.cash?.decimals)}</DataText>
         <DataText area="noShares">{formatShares(item.noAmount || '0', item?.cash?.decimals)}</DataText>
-        {!below800 && (
-          <DataText area="status">
-            <span
-              style={
-                !darkMode
-                  ? {}
-                  : item?.market?.status === 'TRADING'
-                  ? { color: '#7DFFA8' }
-                  : item?.market?.status === 'DISPUTING'
-                  ? { color: '#F1E700' }
-                  : item?.market?.status === 'REPORTING'
-                  ? { color: '#F1E700' }
-                  : item?.market?.status === 'FINALIZED'
-                  ? { color: '#F12B00' }
-                  : {}
-              }
-            >
-              {item?.market?.status}
-            </span>
-          </DataText>
-        )}
+        {!below800 && getWinningOutcomeLabel(item)}
         {!below800 && <DataText area="timestamp">{formatTime(item?.market?.endTimestamp)}</DataText>}
       </DashGrid>
     )

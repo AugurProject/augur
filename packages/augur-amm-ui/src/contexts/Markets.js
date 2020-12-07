@@ -380,8 +380,12 @@ export function usePositionMarkets(positions) {
   const marketPositions = positions.map(position => {
     const marketId = position.marketId
     const market = markets.find(m => m.id === marketId)
-    return { market, ...position }
+    const info = { market, ...position }
+    // TODO: should come in from the graph, here for testing only
+    info.market.winningOutcome = "1"
+    return info
   })
+
   return marketPositions
 }
 
@@ -524,8 +528,7 @@ export const useMarketAmmTradeData = (marketId, cashAddress) => {
   const amms = useMarketAmmExchanges(marketId)
   const amm = amms.find(a => a.cash.address === cashAddress)
   if (!amm) return []
-  console.log(amm.enters)
   const enters = calculateTradePrice(amm.enters)
   const exits = calculateTradePrice(amm.exits)
-  return [...enters, ...exits].sort((a, b) => a.timestamp > b.timestamp ? 1 : -1)
+  return [...enters, ...exits].sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))
 }
