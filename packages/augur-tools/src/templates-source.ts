@@ -2105,7 +2105,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Which horse will win the [0] [1]?`,
             example: `Which horse will win the 2020 Kentucky Derby?`,
-            header: `[0] [1] winner`,
+            header: `[0] [1]`,
+            title: `Who will win`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {

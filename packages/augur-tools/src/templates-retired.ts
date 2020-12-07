@@ -123,5 +123,10 @@ export const retiredTemplates: RetiredTemplate[] = [
     hash: '0x3b572d85df89f73c65c4eca53000e6fb7ef068f895c943af3fe09800739f6bb5',
     autoFail: false,
     validation: {"templateValidation":"(^Which college football team will win (2021|2022|2023|2024|2025){1} National Championship\\?$)","templateValidationResRules":"0x76cc7c00d319abafa7e50a44385d24948dfecd44fe1e3fe059285070f9175028","requiredOutcomes":["Other (Field)"],"outcomeDependencies":null,"substituteDependencies":[],"marketQuestionDependencies":null,"dateDependencies":[],"closingDateDependencies":[],"placeholderValues":{},"categoricalOutcomes":{},"afterTuesdayDateNoFriday":[],"eventExpEndNextMonthValues":[],"numberRangeValues":{},"yrs":[0],"reqCats":["Sports","American Football","NCAA"]}
+  },
+  {
+    hash: '0x6bf52714c4338191a46da2b28e05d533d8f058457d9a6026f22984e057aa33a0',
+    autoFail: false,
+    validation: {"templateValidation":"(^Which horse will win the (2020|2021|2022|2023|2024|2025){1} (Kentucky Derby|Preakness|Belmont|Triple Crown|Breeder's Cup Classic|Breeder's Cup Sprint|Breeder's Cup Mile|Breeder's Cup Distaff|Breeder's Cup Juvenile|Breeder's Cup Turf|Travers Stakes|Arlington Million|Santa Anita Handicap|Arkansas Derby|Pacific Classic Stakes|Haskell Invitational Stakes|Pegasus World Cup|Dubai World Cup){1}\\?$)","templateValidationResRules":"0x9c5f05172d7e21eda62bd1e57917b57d316759188fe2b4288219ff778fa39188","requiredOutcomes":["Other (Field)","No Contest"],"outcomeDependencies":null,"substituteDependencies":[],"marketQuestionDependencies":null,"dateDependencies":[],"closingDateDependencies":[],"placeholderValues":{},"categoricalOutcomes":{},"afterTuesdayDateNoFriday":[],"eventExpEndNextMonthValues":[],"numberRangeValues":{},"yrs":[0],"reqCats":["Sports","Horse Racing"]}
   }
 ]
