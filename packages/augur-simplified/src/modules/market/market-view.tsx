@@ -1,12 +1,12 @@
 import React from 'react';
 
-const Markets = () => {
+const MarketView = () => {
     return (
       <div>
-          Markets
+          Market View
       </div>
     );
   };
   
-  export default Markets;
+  export default MarketView;
   
