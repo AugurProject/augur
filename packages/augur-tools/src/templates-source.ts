@@ -5633,7 +5633,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Which MLB team will win the [0] [1]?`,
             example: `Which MLB team will win the 2020 World Series?`,
-            header: `[0] [1] winner`,
+            header: `[0] MLB [1]`,
+            title: `Winner`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
@@ -5686,7 +5687,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Which MLB team will [0] sign with?`,
             example: `Which MLB team will Gerrit Cole sign with?`,
-            header: `[0] will sign with`,
+            header: `[0] Free Agency`,
+            title: `Which MLB team will [0] sign with`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
@@ -5730,7 +5732,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `MLB: Who will win the [0] [1]?`,
             example: `MLB: Who will win the 2019 American League Cy Young award?`,
-            header: `[0] [1] winner`,
+            header: `[0] MLB [1] award`,
+            title: `Winner`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
