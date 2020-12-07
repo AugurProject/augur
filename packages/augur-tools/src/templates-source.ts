@@ -2105,7 +2105,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Which horse will win the [0] [1]?`,
             example: `Which horse will win the 2020 Kentucky Derby?`,
-            header: `[0] [1] winner`,
+            header: `[0] [1]`,
+            title: `Who will win`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
@@ -5632,7 +5633,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Which MLB team will win the [0] [1]?`,
             example: `Which MLB team will win the 2020 World Series?`,
-            header: `[0] [1] winner`,
+            header: `[0] MLB [1]`,
+            title: `Winner`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
@@ -5685,7 +5687,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Which MLB team will [0] sign with?`,
             example: `Which MLB team will Gerrit Cole sign with?`,
-            header: `[0] will sign with`,
+            header: `[0] Free Agency`,
+            title: `Which MLB team will [0] sign with`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
@@ -5729,7 +5732,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `MLB: Who will win the [0] [1]?`,
             example: `MLB: Who will win the 2019 American League Cy Young award?`,
-            header: `[0] [1] winner`,
+            header: `[0] MLB [1] award`,
+            title: `Winner`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
@@ -6019,7 +6023,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Olympics: Which country will win the most [0] medals at the [1] Summer Olympics?`,
                 example: `Olympics: Which country will win the most Gold medals at the 2020 Summer Olympics`,
-                header: `[1] Summer Olympics most [0] medals`,
+                header: `[1] Summer Olympics`,
+                title: `[0] medals`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -6064,7 +6069,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Olympics [0]: Which country will win the Gold medal in [1] at the [2] Summer Olympics?`,
                 example: `Olympics Tennis: Which country will win the Gold medal in Singles (Men/Women) at the 2020 Summer Olympics`,
-                header: `[2] Summer Olympics [0] [1] gold medal`,
+                header: `[2] Summer Olympics [0]`,
+                title: `[1] Gold medal winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -6364,8 +6370,9 @@ export const TEMPLATES = {
               {
                 marketType: CATEGORICAL,
                 question: `Olympics: Which country will win the most [0] medals at the [1] Winter Olympics?`,
-                example: `Olympics: Which country will win the most Gold medals at the 2020 Winter Olympics`,
-                header: `[1] Winter Olympics most [0] medals`,
+                example: `Olympics: Which country will win the most Gold medals at the 2022 Winter Olympics`,
+                header: `[1] Winter Olympics`,
+                title: `Most [0] medals`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -6409,8 +6416,9 @@ export const TEMPLATES = {
               {
                 marketType: CATEGORICAL,
                 question: `Olympics [0]: Which country will win the Gold medal in [1] at the [2] Winter Olympics?`,
-                example: `Olympics Curling: Which country will win the Gold medal in mens at the 2020 Winter Olympics`,
-                header: `[2] Winter Olympics [0] [1] gold medal`,
+                example: `Olympics Curling: Which country will win the Gold medal in mens at the 2022 Winter Olympics`,
+                header: `[2] Winter Olympics [0]`,
+                title: `[1] Gold medal winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -7768,7 +7776,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Which college football team will win [0] National Championship?`,
                 example: `Which college football team will win 2020 National Championship?`,
-                header: `[0] National Championship winner`,
+                header: `[0] NCAAF FBS National Championship`,
+                title: `Winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -7781,18 +7790,11 @@ export const TEMPLATES = {
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Event`,
-                    groupKey: EVENT,
-                    values: LIST_VALUES.NCAA_FOOTBALL_EVENT,
-                  },
-                  {
-                    id: 2,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Other (Field)`,
                   },
                   {
-                    id: 3,
+                    id: 2,
                     type: TemplateInputType.USER_DROPDOWN_OUTCOME,
                     placeholder: `Select Team`,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,
