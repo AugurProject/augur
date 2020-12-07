@@ -45,7 +45,9 @@
     },
     {
       "path": "../augur-utils"
+    },
+    {
+      "path": "../augur-ui"
     }
-
   ]
 }

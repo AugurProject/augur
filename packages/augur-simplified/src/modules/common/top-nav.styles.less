@@ -1,0 +1,26 @@
+@import (reference) '~assets/styles/shared';
+
+.TopNav {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  width: 100%;
+  grid-gap: @size-16;
+
+  > ol {
+    list-style: none;
+    display: flex;
+    flex-flow: row nowrap;
+    grid-gap: @size-12;
+    margin: 0;
+    padding: 0;
+
+    > li {
+      flex: 0 auto;
+    }
+  }
+
+  > button {
+    margin-left: auto;
+  }
+}
