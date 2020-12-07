@@ -8092,7 +8092,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Which party will win the [0] U.S. Presidential election?`,
             example: `Which party will win the 2020 U.S. Presidential election?`,
-            header: `[0] U.S. Presidential election party winner`,
+            header: `[0] U.S. Presidential Election`,
+            title: `Party winner`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
@@ -8134,7 +8135,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Who will win the [0] U.S. Presidential election?`,
             example: `Who will win the 2020 U.S. Presidential election?`,
-            header: `[0] U.S. Presidential election winner`,
+            header: `[0] U.S. Presidential Election`,
+            title: `Who Will win`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
@@ -8166,7 +8168,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Who will be the [0] nominee for [1] [2]?`,
             example: `Who will be the Republican nominee for 2020 U.S. Vice-President?`,
-            header: `[1] [2] [0] nominee`,
+            header: `[1] [2]`,
+            title: `[0] nominee`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
@@ -8213,7 +8216,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Which party will win [0] in the [1] U.S. Presidential election?`,
             example: `Which party will win Michigan in the 2020 U.S. Presidential election?`,
-            header: `[1] U.S. Presidential election [0] party winner`,
+            header: `[1] U.S. Presidential Election [0] winner`,
+            title: `Who will win`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
@@ -8263,7 +8267,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Which party will control the [0] after the [1] election?`,
             example: `Which party will control the U.S House of Representatives after the 2020 election?`,
-            header: `[0] control after [1] election`,
+            header: `[0] [1] election`,
+            title: `Who will win contrl`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
@@ -8313,7 +8318,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Who will win the [0] [1] [2] primary for U.S. Presidential election?`,
             example: `Who will win the 2020 South Carolina Democratic primary for U.S Presidential election?`,
-            header: `[0] [1] [2] primary for U.S. Presidential election winner`,
+            header: `[0] U.S. Presidential election [1] [2] party primary`,
+            title: `Who will win`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
@@ -8368,7 +8374,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Who will win the [0] [1] [2] caucus for U.S. Presidential election?`,
             example: `Who will win the 2020 South Carolina Democratic caucus for U.S Presidential election?`,
-            header: `U.S. Presidential election [0] [1] [2] caucus winner?`,
+            header: `[0] U.S. Presidential election [1] [2] party caucus`,
+            title: `Who will win`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
@@ -8533,7 +8540,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Who will be [0] of [1] by [2]?`,
             example: `Who be Supreme Leader of North Korea on December 31, 2019 11:59 pm EST`,
-            header: `[0] of [1] by [2] winner`,
+            header: `[0] of [1]`,
+            title: `Whoo will be [0] of [1] by [2]`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
