@@ -6982,7 +6982,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Which NFL team will win the [0] [1]?`,
                 example: `Which NFL team will win the 2020 AFC Championship?`,
-                header: `[0] [1] winner`,
+                header: `[0] NFL [1]`,
+                title: `Winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -7035,7 +7036,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Which NFL team will [0] sign with?`,
                 example: `Which NFL team will Jadeveon Clowney sign with?`,
-                header: `[0] will sign with`,
+                header: `[0] Free Agency`,
+                title: `Which NFL team will [0] sign with`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -7080,7 +7082,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Which NFL player will win the [0] season [1] award?`,
                 example: `Which NFL player will win the 2020 season Most Valuable Player award?`,
-                header: `[0] season [1] award winner`,
+                header: `[0] NFL [1] award`,
+                title: `Winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -7170,6 +7173,7 @@ export const TEMPLATES = {
                 question: `[0] NFL Draft: Who will be the [1] overall pick?`,
                 example: `2020 NFL Draft: Who will be the 1st overall pick?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
                 header: `[0] NFL Draft [1] overall pick`,
+                title: `Who will be selected`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -7218,6 +7222,7 @@ export const TEMPLATES = {
                 question: `[0] NFL Draft: Who will be the first [1] selected?`,
                 example: `2020 NFL Draft: Who will be the first Quarterback selected?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
                 header: `[0] NFL Draft first [1] selected`,
+                title: `Who will be selected`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -7266,7 +7271,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] NFL Draft: The First draft pick by the [1]?`,
                 example: `2020 NFL Draft: The First draft pick by the NY Giants?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
-                header: `[0] NFL Draft [1] first draft pick`,
+                header: `[0] NFL Draft [1] first overall pick`,
+                title: `Who will be selected`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -7315,8 +7321,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] NFL Draft(O/U): [1].5 Total [2] drafted in Round 1?`,
                 example: `2020 NFL Draft(O/U): 5.5 Total Quarterbacks drafted in Round 1?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
-                header: `[0] NFL Draft [2] drafted in Round 1`,
-                title: `Over/Under [1].5`,
+                header: `[0] NFL Draft(O/U): [2] drafted in Round 1`,
+                title: `Over/Under [1] [2]`,
                 groupName: groupTypes.OVER_UNDER,
                 groupLineId: 1,
                 inputs: [
@@ -7375,8 +7381,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] NFL Draft(O/U): When will [1] be selected? Over/Under, Pick [2].5?`,
                 example: `2020 NFL Draft(O/U): When will Tua Tagovailoa be selected? Over/Under, Pick 2.5?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
-                header: `[0] NFL Draft [1] pick selection`,
-                title: `Over/Under [2].5`,
+                header: `[0] NFL Draft(O/U): [1] pick number`,
+                title: `Over/Under [2]`,
                 groupName: groupTypes.OVER_UNDER,
                 groupLineId: 2,
                 inputs: [
@@ -7825,7 +7831,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Which college football player will win the [0] Heisman Trophy?`,
                 example: `Which college football player will win the 2020 Heisman Trophy?`,
-                header: `[0] Heisman Trophy winner`,
+                header: `[0] Heisman Trophy`,
+                title: `Winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
