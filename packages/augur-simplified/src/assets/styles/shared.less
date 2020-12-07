@@ -1,6 +1,5 @@
 // NOTE -- There is import order dependence, so please don't reorder before checking inheritence
 // This is so that there is not circular dependencies amoung these stylesheets
-@import '_normalize';
 @import '_colors';
 @import '_typography';
 @import '_misc_redesign';
@@ -12,6 +11,13 @@ html {
   font-size: @size-16;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+ul,
+ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 body {

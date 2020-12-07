@@ -1,10 +1,14 @@
 // theme divided values
 // TRADING is default theme, hence root by itself.
+// branding
+@color-brand: #2AE7A8;
+@color-brand-secondary: #FFFFFF;
+
 :root {
   // branding
-  --color-brand: #2AE7A8;
+  --color-brand: @color-brand;
   --color-brand-20: fade(#2AE7A8, 20%);
-  --color-brand-secondary: #FFFFFF;
+  --color-brand-secondary: @color-brand-secondary;
   --color-brand-secondary-flip: #0E0E21;
   // social
   --color-twitter: #55ACEE;
