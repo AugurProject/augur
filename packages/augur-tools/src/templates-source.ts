@@ -1140,7 +1140,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `PGA: Which golfer will win the [0] [1]?`,
                 example: `PGA: Which golfer will win the 2020 PGA Championship?`,
-                header: `[0] [1] winner`,
+                header: `PGA [0] [1]`,
+                title: `Who will win`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -1347,7 +1348,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Euro Tour: Which golfer will win the [0] [1]?`,
                 example: `Euro Tour: Which golfer will win the 2020 Omega Dubai Dessert Classic?`,
-                header: `[0] [1] winner`,
+                header: `Euro Tour [0] [1]`,
+                title: `Who will win`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -1395,7 +1397,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Euro Tour: Which golf team will win the [0] Ryders Cup?`,
                 example: `Euro Tour: Which golf team will win the 2020 Ryders Cup?`,
-                header: `[0] Ryders Cup winner`,
+                header: `Euro Tour [0] Ryders Cup`,
+                title: `Who will win`,
                 groupName: groupTypes.FUTURES,
                 noAdditionalUserOutcomes: true,
                 inputs: [
@@ -1529,7 +1532,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `LPGA: Which golfer will win the [0] [1]?`,
                 example: `LPGA: Which golfer will win the 2020 U.S. Women's Open?`,
-                header: `[0] [1] winner`,
+                header: `LPGA [0] [1]`,
+                title: `Who will win`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -3875,7 +3879,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Which NBA team will win the [0] [1]?`,
                 example: `Which NBA team will win the 2019-20 Western Conference Finals?`,
-                header: `NBA: [0] [1] winner`,
+                header: `[0] NBA [1]`,
+                title: `Winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -3928,7 +3933,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Which NBA team will [0] sign with?`,
                 example: `Which NBA team will Anthony Davis sign with?`,
-                header: `[0] will sign with`,
+                header: `[0] Free Agency`,
+                title: `Which NBA team will [0] sign with`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -3973,7 +3979,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Which NBA player will win the [0] [1] award?`,
                 example: `Which NBA player will win the 2019-20 Most Valuable Player award?`,
-                header: `NBA: [0] [1] winner`,
+                header: `[0] NBA [1] award`,
+                title: `Winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -4015,7 +4022,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NBA: Which Player will have the most [0] at the end of the the [1] regular season?`,
                 example: `NBA: Which Player will have the most Points scored at the end of the the 2019-20 regular season?`,
-                header: `NBA: [1] regular season most [0]`,
+                header: `[1] NBA most regular season [0]`,
+                title: `Winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -4125,7 +4133,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] NBA Draft: Who will be the [1] overall pick?`,
                 example: `2020 NBA Draft: Who will be the 1st overall pick?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
-                header: `[0] NBA Draft: [1] overall pick`,
+                header: `[0] NBA Draft [1] overall pick`,
+                title: `Who will be selected`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -4174,7 +4183,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] NBA Draft: The First draft pick by the [1]?`,
                 example: `2020 NBA Draft: The First draft pick by the LA Lakers?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
-                header: `[0] NBA Draft: [1] first pick`,
+                header: `[0] NBA Draft: [1] first overall pick`,
+                title: `Who will be selected`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -4223,8 +4233,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] NBA Draft(O/U): When will [1] be selected? Over/Under, Pick [2].5?`,
                 example: `2020 NBA Draft(O/U): When will Tua Tagovailoa be selected? Over/Under, Pick 2.5?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
-                header: `[0] NBA Draft: When will [1] be selected`,
-                title: `Over/Under [2].5`,
+                header: `[0] NBA Draft(O/U): [1] pick number`,
+                title: `Over/Under [2]`,
                 groupName: groupTypes.OVER_UNDER,
                 groupLineId: 2,
                 inputs: [
@@ -4696,7 +4706,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Which WNBA player will win the [0] [1] award?`,
                 example: `Which WNBA player will win the 2019-20 Most Valuable Player award?`,
-                header: `[0] [1] award winner`,
+                header: `[0] WNBA [1] award`,
+                title: `Winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -4738,7 +4749,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `WNBA: Which Player will have the most [0] at the end of the the [1] regular season?`,
                 example: `WNBA: Which Player will have the most Points scored at the end of the the 2019-20 regular season?`,
-                header: `[1] regular season [0] winner`,
+                header: `[1] WNBA most regular season [0]`,
+                title: `Winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -5271,7 +5283,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NCAA [0] BB: Which college basketball team will win the [1] [2] tournament?`,
                 example: `NCAA Men's BB: Which college basketball team will win the 2020 ACC tournament?`,
-                header: `[1] [2] tournament winner`,
+                header: `[1] [0] NCAA BB [2] tournament`,
+                title: `Winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -5334,7 +5347,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `NCAA [0] BB: Which college basketball team will win the [1] D1 National Championship?`,
                 example: `NCAA Men's BB: Which college basketball team will win the 2020 D1 National Championship?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-                header: `[0] [1] D1 National Championship winner`,
+                header: `[1] [0] NCAA BB D1 National Championship`,
+                title: `Winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -6978,7 +6992,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Which NFL team will win the [0] [1]?`,
                 example: `Which NFL team will win the 2020 AFC Championship?`,
-                header: `[0] [1] winner`,
+                header: `[0] NFL [1]`,
+                title: `Winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -7031,7 +7046,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Which NFL team will [0] sign with?`,
                 example: `Which NFL team will Jadeveon Clowney sign with?`,
-                header: `[0] will sign with`,
+                header: `[0] Free Agency`,
+                title: `Which NFL team will [0] sign with`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -7076,7 +7092,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Which NFL player will win the [0] season [1] award?`,
                 example: `Which NFL player will win the 2020 season Most Valuable Player award?`,
-                header: `[0] season [1] award winner`,
+                header: `[0] NFL [1] award`,
+                title: `Winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -7166,6 +7183,7 @@ export const TEMPLATES = {
                 question: `[0] NFL Draft: Who will be the [1] overall pick?`,
                 example: `2020 NFL Draft: Who will be the 1st overall pick?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
                 header: `[0] NFL Draft [1] overall pick`,
+                title: `Who will be selected`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -7214,6 +7232,7 @@ export const TEMPLATES = {
                 question: `[0] NFL Draft: Who will be the first [1] selected?`,
                 example: `2020 NFL Draft: Who will be the first Quarterback selected?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
                 header: `[0] NFL Draft first [1] selected`,
+                title: `Who will be selected`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -7262,7 +7281,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] NFL Draft: The First draft pick by the [1]?`,
                 example: `2020 NFL Draft: The First draft pick by the NY Giants?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
-                header: `[0] NFL Draft [1] first draft pick`,
+                header: `[0] NFL Draft [1] first overall pick`,
+                title: `Who will be selected`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -7311,8 +7331,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] NFL Draft(O/U): [1].5 Total [2] drafted in Round 1?`,
                 example: `2020 NFL Draft(O/U): 5.5 Total Quarterbacks drafted in Round 1?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
-                header: `[0] NFL Draft [2] drafted in Round 1`,
-                title: `Over/Under [1].5`,
+                header: `[0] NFL Draft(O/U): [2] drafted in Round 1`,
+                title: `Over/Under [1] [2]`,
                 groupName: groupTypes.OVER_UNDER,
                 groupLineId: 1,
                 inputs: [
@@ -7371,8 +7391,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] NFL Draft(O/U): When will [1] be selected? Over/Under, Pick [2].5?`,
                 example: `2020 NFL Draft(O/U): When will Tua Tagovailoa be selected? Over/Under, Pick 2.5?\nEstimated schedule start time: Sept 19, 2020 1:00 pm EST`,
-                header: `[0] NFL Draft [1] pick selection`,
-                title: `Over/Under [2].5`,
+                header: `[0] NFL Draft(O/U): [1] pick number`,
+                title: `Over/Under [2]`,
                 groupName: groupTypes.OVER_UNDER,
                 groupLineId: 2,
                 inputs: [
@@ -7821,7 +7841,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Which college football player will win the [0] Heisman Trophy?`,
                 example: `Which college football player will win the 2020 Heisman Trophy?`,
-                header: `[0] Heisman Trophy winner`,
+                header: `[0] Heisman Trophy`,
+                title: `Winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -8092,7 +8113,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Which party will win the [0] U.S. Presidential election?`,
             example: `Which party will win the 2020 U.S. Presidential election?`,
-            header: `[0] U.S. Presidential election party winner`,
+            header: `[0] U.S. Presidential Election`,
+            title: `Party winner`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
@@ -8134,7 +8156,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Who will win the [0] U.S. Presidential election?`,
             example: `Who will win the 2020 U.S. Presidential election?`,
-            header: `[0] U.S. Presidential election winner`,
+            header: `[0] U.S. Presidential Election`,
+            title: `Who Will win`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
@@ -8166,7 +8189,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Who will be the [0] nominee for [1] [2]?`,
             example: `Who will be the Republican nominee for 2020 U.S. Vice-President?`,
-            header: `[1] [2] [0] nominee`,
+            header: `[1] [2]`,
+            title: `[0] nominee`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
@@ -8213,7 +8237,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Which party will win [0] in the [1] U.S. Presidential election?`,
             example: `Which party will win Michigan in the 2020 U.S. Presidential election?`,
-            header: `[1] U.S. Presidential election [0] party winner`,
+            header: `[1] U.S. Presidential Election [0] winner`,
+            title: `Who will win`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
@@ -8263,7 +8288,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Which party will control the [0] after the [1] election?`,
             example: `Which party will control the U.S House of Representatives after the 2020 election?`,
-            header: `[0] control after [1] election`,
+            header: `[0] [1] election`,
+            title: `Who will win contrl`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
@@ -8313,7 +8339,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Who will win the [0] [1] [2] primary for U.S. Presidential election?`,
             example: `Who will win the 2020 South Carolina Democratic primary for U.S Presidential election?`,
-            header: `[0] [1] [2] primary for U.S. Presidential election winner`,
+            header: `[0] U.S. Presidential election [1] [2] party primary`,
+            title: `Who will win`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
@@ -8368,7 +8395,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Who will win the [0] [1] [2] caucus for U.S. Presidential election?`,
             example: `Who will win the 2020 South Carolina Democratic caucus for U.S Presidential election?`,
-            header: `U.S. Presidential election [0] [1] [2] caucus winner?`,
+            header: `[0] U.S. Presidential election [1] [2] party caucus`,
+            title: `Who will win`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
@@ -8533,7 +8561,8 @@ export const TEMPLATES = {
             marketType: CATEGORICAL,
             question: `Who will be [0] of [1] by [2]?`,
             example: `Who be Supreme Leader of North Korea on December 31, 2019 11:59 pm EST`,
-            header: `[0] of [1] by [2] winner`,
+            header: `[0] of [1]`,
+            title: `Whoo will be [0] of [1] by [2]`,
             groupName: groupTypes.FUTURES,
             inputs: [
               {
