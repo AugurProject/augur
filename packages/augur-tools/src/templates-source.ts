@@ -6023,7 +6023,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Olympics: Which country will win the most [0] medals at the [1] Summer Olympics?`,
                 example: `Olympics: Which country will win the most Gold medals at the 2020 Summer Olympics`,
-                header: `[1] Summer Olympics most [0] medals`,
+                header: `[1] Summer Olympics`,
+                title: `[0] medals`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -6068,7 +6069,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Olympics [0]: Which country will win the Gold medal in [1] at the [2] Summer Olympics?`,
                 example: `Olympics Tennis: Which country will win the Gold medal in Singles (Men/Women) at the 2020 Summer Olympics`,
-                header: `[2] Summer Olympics [0] [1] gold medal`,
+                header: `[2] Summer Olympics [0]`,
+                title: `[1] Gold medal winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -6368,8 +6370,9 @@ export const TEMPLATES = {
               {
                 marketType: CATEGORICAL,
                 question: `Olympics: Which country will win the most [0] medals at the [1] Winter Olympics?`,
-                example: `Olympics: Which country will win the most Gold medals at the 2020 Winter Olympics`,
-                header: `[1] Winter Olympics most [0] medals`,
+                example: `Olympics: Which country will win the most Gold medals at the 2022 Winter Olympics`,
+                header: `[1] Winter Olympics`,
+                title: `Most [0] medals`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -6413,8 +6416,9 @@ export const TEMPLATES = {
               {
                 marketType: CATEGORICAL,
                 question: `Olympics [0]: Which country will win the Gold medal in [1] at the [2] Winter Olympics?`,
-                example: `Olympics Curling: Which country will win the Gold medal in mens at the 2020 Winter Olympics`,
-                header: `[2] Winter Olympics [0] [1] gold medal`,
+                example: `Olympics Curling: Which country will win the Gold medal in mens at the 2022 Winter Olympics`,
+                header: `[2] Winter Olympics [0]`,
+                title: `[1] Gold medal winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
