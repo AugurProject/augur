@@ -7768,7 +7768,8 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Which college football team will win [0] National Championship?`,
                 example: `Which college football team will win 2020 National Championship?`,
-                header: `[0] National Championship winner`,
+                header: `[0] NCAAF FBS National Championship`,
+                title: `Winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -7781,18 +7782,11 @@ export const TEMPLATES = {
                   },
                   {
                     id: 1,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Event`,
-                    groupKey: EVENT,
-                    values: LIST_VALUES.NCAA_FOOTBALL_EVENT,
-                  },
-                  {
-                    id: 2,
                     type: TemplateInputType.ADDED_OUTCOME,
                     placeholder: `Other (Field)`,
                   },
                   {
-                    id: 3,
+                    id: 2,
                     type: TemplateInputType.USER_DROPDOWN_OUTCOME,
                     placeholder: `Select Team`,
                     values: LIST_VALUES.NCAA_FOOTBALL_TEAMS,

@@ -118,5 +118,10 @@ export const retiredTemplates: RetiredTemplate[] = [
     hash: '0x579dc5fb396a2649a7f9f5d8810573e36ac989815ccb50bebc9ac02b8ceee81a',
     autoFail: false,
     validation: {"templateValidation":"(^NASCAR (2020|2021|2022|2023|2024|2025){1} CUP Series Championship Winner\\?$)","templateValidationResRules":"0x8608994fd7870cb00ad9bdeb5622f17c14b2fc45b1075cc655de6a0c26436166","requiredOutcomes":["Other (Field)"],"outcomeDependencies":null,"substituteDependencies":[],"marketQuestionDependencies":null,"dateDependencies":[],"closingDateDependencies":[],"placeholderValues":{},"categoricalOutcomes":{},"afterTuesdayDateNoFriday":[],"eventExpEndNextMonthValues":[],"numberRangeValues":{},"yrs":[0],"reqCats":["Sports","Car Racing"]}
+  },
+  {
+    hash: '0x3b572d85df89f73c65c4eca53000e6fb7ef068f895c943af3fe09800739f6bb5',
+    autoFail: false,
+    validation: {"templateValidation":"(^Which college football team will win (2021|2022|2023|2024|2025){1} National Championship\\?$)","templateValidationResRules":"0x76cc7c00d319abafa7e50a44385d24948dfecd44fe1e3fe059285070f9175028","requiredOutcomes":["Other (Field)"],"outcomeDependencies":null,"substituteDependencies":[],"marketQuestionDependencies":null,"dateDependencies":[],"closingDateDependencies":[],"placeholderValues":{},"categoricalOutcomes":{},"afterTuesdayDateNoFriday":[],"eventExpEndNextMonthValues":[],"numberRangeValues":{},"yrs":[0],"reqCats":["Sports","American Football","NCAA"]}
   }
 ]
