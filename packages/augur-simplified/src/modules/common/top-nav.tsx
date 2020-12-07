@@ -12,7 +12,7 @@ export const TopNav = () => {
         <li><Link to={makePath(MARKETS)}>Markets</Link></li>
         <li><Link to={makePath(PORTFOLIO)}>Portfolio</Link></li>
       </ol>
-      <button>
+      <button title="This doesn't do anything yet!" onClick={() => alert('TODO: Make this work.')}>
         Account
       </button>
     </nav>
