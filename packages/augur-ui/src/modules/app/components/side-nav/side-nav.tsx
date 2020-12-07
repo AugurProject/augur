@@ -120,12 +120,6 @@ const SideNav = ({
                 />
               </div>
             )}
-            {isLogged && !isTrading && (
-              <HelpIcon
-                isHelpMenuOpen={isHelpMenuOpen}
-                updateHelpMenuState={() => setModal({ type: MODAL_HELP })}
-              />
-            )}
             <Stats />
           </>
         )}

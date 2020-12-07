@@ -3,7 +3,7 @@
 // Close icon is not part of SideNav
 .SideNav {
   display: grid;
-  grid-template-rows: auto auto @size-48;
+  grid-template-rows: auto 1fr @size-48;
   flex-flow: column nowrap;
   height: 100vh;
   transform: translateX(-100%);
@@ -20,6 +20,12 @@
     transition: transform .3s linear;
   }
 
+  > header,
+  > .Container,
+  > footer {
+    background-color: var(--color-active-background);
+  }
+
   > header {
     grid-row: 1;
     border-bottom: @size-2 solid var(--color-secondary-hover);
@@ -30,7 +36,6 @@
     max-height: @side-bar-top-menu-height-mobile;
     min-height: @side-bar-top-menu-height-mobile;
     align-items: center;
-    background-color: var(--color-active-background);
 
     &.BiggerHeader {
       height: @size-80;
@@ -83,7 +88,6 @@
   > footer {
     grid-row: 3;
     align-items: center;
-    background: var(--color-active-background);
     bottom: 0;
     display: flex;
     height: @size-64;
@@ -200,7 +204,6 @@
 .Container {
   grid-row: 2;
   display: flex;
-  background: var(--color-module-background);
   width: 100%;
   height: 100%;
   overflow: auto;
@@ -292,23 +295,45 @@
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .SideNavMigrateRep {
-    > label,
-    > div {
-      display: none;
-    }
+    order: 10;
 
     > button {
-      margin: @size-24 @size-12 0;
+      margin: 0;
       color: var(--color-module-background);
-
-      @media @breakpoint-mobile-tablet {
-        margin: @size-16 @size-12;
-      }
     }
   }
 
   .SideNav {
-    > div:first-of-type {
+    width: 100%;
+
+    > header,
+    > .Container,
+    > footer {
+      background-color: var(--color-primary-text);
+    }
+
+    > header {
+      align-items: center;
+      border-bottom: none;
+      justify-content: space-between;
+      padding: 0;
+      padding-right: @size-14;
+      height: @side-bar-top-menu-height-mobile;
+
+      > section {
+        margin-left: @size-8;
+      }
+
+      > button {
+        color: var(--color-secondary-action);
+
+        > svg {
+          > path {
+            fill: var(--color-secondary-action);
+          }
+        }
+      }
+
       > button:first-of-type {
         min-width: @size-48;
         width: @size-48;
@@ -323,6 +348,7 @@
           }
         }
       }
+
       > button:last-of-type {
         .text-10-semi-bold;
 
@@ -331,52 +357,88 @@
 
         > svg {
           margin-right: @size-6;
+          height: @size-16;
+          width: @size-16;
         }
       }
     }
-    > div:first-of-type > div:last-of-type {
-      display: none;
-    }
 
-    > div {
+    > footer {
       background: var(--color-primary-text);
-    }
+      border-top: @size-1 solid var(--color-secondary-text-50);
+      padding: 0;
+      height: @size-64;
 
-    @media @breakpoint-mobile-tablet {
-      > div:first-of-type {
-        align-items: center;
-        border-bottom: none;
-        justify-content: space-between;
-        padding: 0;
-        padding-right: @size-14;
-        height: @side-bar-top-menu-height-mobile;
+      > div:nth-of-type(1),
+      > div:nth-of-type(2) {
+        display: flex;
+        height: 100%;
+        width: @size-64;
 
+        > span {
+          width: @size-64;
+          justify-content: center;
+        }
+      }
+
+      > div:nth-of-type(2) {
         > button {
-          color: var(--color-secondary-action);
-
-          > svg {
-            > path {
-              fill: var(--color-secondary-action);
-            }
-          }
+          border-left: 0;
+          border-right: @size-1 solid var(--color-secondary-text-50);
         }
+      }
+      > button {
+        color: var(--color-module-background);
+        border: 0;
+        background: none;
+        border-radius: @border-radius-default;
+        padding: @size-8 @size-16;
+        margin-left: @size-16;
+        margin-right: auto;
+        flex-flow: row-reverse nowrap;
 
-        > section {
-          margin-left: @size-8;
-        }
+        > svg {
+          margin-left: 0;
+          margin-right: @size-8;
+          fill: var(--color-module-background);
 
-        > button:last-of-type {
-          > svg {
-            height: @size-16;
-            width: @size-16;
+          > g > path {
+            fill: var(--color-module-background);
           }
         }
       }
-    }
-    @media @breakpoint-mobile-tablet {
-      overflow: hidden;
     }
   }
+
+  .GlobalChat {
+    margin-left: auto;
+
+    > button {
+      .text-10-semi-bold;
+
+      padding: @size-8;
+      height: @size-30;
+      margin: @size-12;
+      color: var(--color-module-background);
+      background: var(--color-primary-text);
+      border: @size-1 solid var(--color-dark-grey);
+      text-transform: uppercase;
+
+      > svg {
+        fill: var(--color-module-background);
+        transform: none;
+        height: @size-16;
+        width: @size-16;
+        margin-right: @size-4;
+
+        path {
+          stroke: var(--color-module-background);
+          fill: none;
+        }
+      }
+    }
+  }
+
   .Container {
     background: var(--color-primary-text);
 
@@ -398,16 +460,16 @@
         }
 
         > li:first-of-type {
-          order: 1;
+          order: 2;
         }
 
         > li:nth-of-type(2) {
-          order: 3;
+          order: 4;
           display: none;
         }
 
         > li:nth-of-type(3) {
-          order: 2;
+          order: 3;
         }
 
         > li:nth-of-type(4),
@@ -418,79 +480,6 @@
 
         > div[class*='Dropdown'] {
           order: 1;
-        }
-      }
-
-      > footer {
-        background: var(--color-primary-text);
-        border-top: @size-1 solid var(--color-secondary-text-50);
-        padding: 0;
-        height: @size-64;
-
-        > div:nth-of-type(1),
-        > div:nth-of-type(2) {
-          display: flex;
-          height: 100%;
-          width: @size-64;
-
-          > span {
-            width: @size-64;
-            justify-content: center;
-          }
-        }
-
-        > div:nth-of-type(2) {
-          > button {
-            border-left: 0;
-            border-right: @size-1 solid var(--color-secondary-text-50);
-          }
-        }
-        > button {
-          color: var(--color-module-background);
-          border: 0;
-          background: none;
-          border-radius: @border-radius-default;
-          padding: @size-8 @size-16;
-          margin-left: @size-16;
-          margin-right: auto;
-          flex-flow: row-reverse nowrap;
-
-          > svg {
-            margin-left: 0;
-            margin-right: @size-8;
-            fill: var(--color-module-background);
-
-            > g > path {
-              fill: var(--color-module-background);
-            }
-          }
-        }
-
-        > .GlobalChat {
-          margin-left: auto;
-
-          > button {
-            .text-12-semi-bold;
-
-            padding: @size-8;
-            height: unset;
-            margin: @size-12;
-            color: var(--color-module-background);
-            background: var(--color-primary-text);
-            border: @size-1 solid var(--color-dark-grey);
-            text-transform: uppercase;
-
-            > svg {
-              fill: var(--color-module-background);
-              transform: rotate(180deg);
-              height: @size-16;
-              width: @size-16;
-
-              path {
-                stroke: var(--color-module-background);
-              }
-            }
-          }
         }
       }
     }
