@@ -7,6 +7,7 @@ import { ValueLabel, IconLabel, CategoryLabel } from 'modules/common/labels';
 import { formatDai } from 'utils/format-number';
 import { EthIcon, PillIcon, UsdIcon } from 'modules/common/icons';
 import classNames from 'classnames';
+import { PrimaryButton } from 'modules/common/buttons';
 
 const fakeMarketData = [
   {
@@ -192,7 +193,7 @@ const MarketCard = ({ market }) => {
           {market.noLiquidity ? (
             <div>
               <span>Market requires Initial liquidity</span>
-              <button>Earn fees as a liquidity provider</button>
+              <PrimaryButton text='Earn fees as a liquidity provider' />
             </div>
           ) : (
             <>
