@@ -10,6 +10,12 @@ import { AmmExchangeInfo, MarketBalance, MarketTokens } from '../constants'
 import { MarketCurrency } from '../model/MarketCurrency'
 import { BigNumber as BN } from 'bignumber.js'
 
+export enum ApprovalType {
+  ENTER_POSITION,
+  EXIT_POSITION,
+  SWAP_POSITION
+}
+
 export interface TradeInfo {
   marketId: string
   cash: string
@@ -25,6 +31,7 @@ export interface TradeInfo {
   priceImpact?: Percent
   executionPrice?: string
   minAmount?: string
+  approvalType?: ApprovalType
 }
 
 /**
@@ -37,18 +44,23 @@ export function getTradeExactIn(
   currencyOut?: Currency,
   userCashBalances?: MarketBalance
 ): TradeInfo | null {
-
+  let approvalType = ApprovalType.ENTER_POSITION;
   let marketId = null
   let cash = null
   if (inputCurrency instanceof MarketCurrency) {
     const mc = inputCurrency as MarketCurrency
     marketId = mc.marketId
     cash = mc.cash
+    approvalType = ApprovalType.EXIT_POSITION
   }
   if (currencyOut instanceof MarketCurrency) {
     const mc = currencyOut as MarketCurrency
     marketId = mc.marketId
     cash = mc.cash
+  }
+
+  if (inputCurrency instanceof MarketCurrency && currencyOut instanceof MarketCurrency) {
+    approvalType = ApprovalType.SWAP_POSITION
   }
 
   if (currencyAmountIn && currencyOut && inputCurrency) {
@@ -76,7 +88,8 @@ export function getTradeExactIn(
       inputAmount: currencyAmountIn,
       balance: userCashBalances,
       priceImpact: new Percent(JSBI.BigInt(0)),
-      executionPrice: String(executionPrice)
+      executionPrice: String(executionPrice),
+      approvalType
     }
   }
   return null

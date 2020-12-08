@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency, useMarketToken } from '../../hooks/Tokens'
-import { TradeInfo, getTradeExactIn } from '../../hooks/Trades'
+import { TradeInfo, getTradeExactIn, ApprovalType } from '../../hooks/Trades'
 import useParsedQueryString from '../../hooks/useParsedQueryString'
 import { isAddress } from '../../utils'
 import { AppDispatch, AppState } from '../index'
@@ -17,6 +17,7 @@ import { computeSlippageAdjustedAmounts } from '../../utils/prices'
 import { useLocation } from 'react-router-dom'
 import { MarketCurrency } from '../../model/MarketCurrency'
 import { MarketBalance } from '../../constants'
+import { ApprovalState, useApproveCallback, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
 
 export function useSwapState(): AppState['swap'] {
   return useSelector<AppState, AppState['swap']>(state => state.swap)
@@ -99,6 +100,8 @@ export function useDerivedSwapInfo(
   parsedAmount: CurrencyAmount | undefined
   v2Trade: TradeInfo | undefined
   inputError?: string
+  approveCallback?: () => Promise<void>
+  approval?: ApprovalState
 } {
 
   const {
@@ -142,6 +145,18 @@ export function useDerivedSwapInfo(
     [Field.OUTPUT]: outputCurrency ?? undefined
   }
 
+  /*
+  * Swap: share
+  * Enter position: cash
+  * Exit position: share
+  * Add liquidity: cash
+  */
+  const [approvalShare, approveShareCallback] = useApproveCallbackFromTrade(ammExchange)
+  console.log('ammExchange.cash', ammExchange)
+  // just in case need to approve cash
+  const [approvalCash, approveCashCallback] = useApproveCallback(parsedAmount, ammExchange?.cash)
+
+
   let inputError: string | undefined
   if (!account) {
     inputError = 'Connect Wallet'
@@ -173,12 +188,21 @@ export function useDerivedSwapInfo(
     inputError = 'Insufficient ' + inputAmount.currency.symbol + ' balance'
   }
 
+  /*
+  * Swap: share
+  * Enter position: cash
+  * Exit position: share
+  * Add liquidity: cash
+  */
+
   return {
     currencies,
     currencyBalances,
     parsedAmount,
     v2Trade: v2Trade ?? undefined,
-    inputError
+    inputError,
+    approval: v2Trade && v2Trade.approvalType === ApprovalType.ENTER_POSITION ? approvalCash : approvalShare,
+    approveCallback: v2Trade && v2Trade.approvalType === ApprovalType.ENTER_POSITION ? approveCashCallback : approveShareCallback,
   }
 }
 

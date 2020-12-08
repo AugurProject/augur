@@ -19,7 +19,7 @@ import ProgressSteps from '../../components/ProgressSteps'
 import { withRouter } from 'react-router-dom'
 import { BigNumber as BN } from 'bignumber.js'
 import { useActiveWeb3React } from '../../hooks'
-import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
+import { ApprovalState, useApproveCallback, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
 import { useSwapCallback } from '../../hooks/useSwapCallback'
 import { useToggleSettingsMenu, useWalletModalToggle } from '../../state/application/hooks'
 import { Field } from '../../state/swap/actions'
@@ -73,7 +73,7 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
 
   // swap state
   const { independentField, typedValue, recipient } = useSwapState()
-  const { v2Trade: trade, currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedSwapInfo(
+  const { v2Trade: trade, currencyBalances, parsedAmount, currencies, inputError: swapInputError, approval, approveCallback } = useDerivedSwapInfo(
     account,
     ammExchange,
     userCashBalances
@@ -168,9 +168,6 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
     [independentField]: typedValue,
     [dependentField]: parsedAmounts[dependentField]?.toSignificant(6) ?? ''
   }
-
-  // check whether the user has approved the router on the input token
-  const [approval, approveCallback] = useApproveCallbackFromTrade(ammExchange)
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
