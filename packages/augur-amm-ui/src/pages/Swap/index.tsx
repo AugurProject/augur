@@ -19,7 +19,7 @@ import ProgressSteps from '../../components/ProgressSteps'
 import { withRouter } from 'react-router-dom'
 import { BigNumber as BN } from 'bignumber.js'
 import { useActiveWeb3React } from '../../hooks'
-import { ApprovalState, useApproveCallback, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
+import { ApprovalState } from '../../hooks/useApproveCallback'
 import { useSwapCallback } from '../../hooks/useSwapCallback'
 import { useToggleSettingsMenu, useWalletModalToggle } from '../../state/application/hooks'
 import { Field } from '../../state/swap/actions'
@@ -166,7 +166,7 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
 
   const formattedAmounts = {
     [independentField]: typedValue,
-    [dependentField]: parsedAmounts[dependentField]?.toSignificant(6) ?? ''
+    [dependentField]: formatCurrencyAmount(parsedAmounts[dependentField]) ?? ''
   }
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
@@ -306,7 +306,7 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
               </AutoRow>
             </AutoColumn>
             <CurrencyInputPanel
-              value={Boolean(outputAmount) ? formatShares(String(outputAmount.raw), outputAmount.token.decimals) : ''}
+              value={Boolean(outputAmount) ? formatCurrencyAmount(outputAmount) : ''}
               onUserInput={handleTypeOutput}
               label={'To (estimated)'}
               showMaxButton={false}

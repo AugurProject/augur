@@ -55,7 +55,7 @@ export function useSwapCallback(
               console.log('tx response', JSON.stringify(response))
               const inputSymbol = trade?.inputAmount?.currency?.symbol
               const outputSymbol = trade?.currencyOut?.symbol
-              const inputAmount = trade?.inputAmount?.toSignificant(6)
+              const inputAmount = formatCurrencyAmount(trade?.inputAmount);
               const oAmount = formatCurrencyAmount(outputAmount)
 
               addTransaction(response, {

@@ -7,7 +7,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useCurrency, useMarketToken } from '../../hooks/Tokens'
 import { TradeInfo, getTradeExactIn, ApprovalType } from '../../hooks/Trades'
 import useParsedQueryString from '../../hooks/useParsedQueryString'
-import { isAddress } from '../../utils'
+import { formatToOnChainShares, isAddress, isMarketCurrency } from '../../utils'
 import { AppDispatch, AppState } from '../index'
 import { useCurrencyBalances } from '../wallet/hooks'
 import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions'
@@ -77,6 +77,10 @@ export function tryParseAmount(value?: string, currency?: Currency): CurrencyAmo
   try {
     const typedValueParsed = parseUnits(value, currency.decimals).toString()
     if (typedValueParsed !== '0') {
+      if (isMarketCurrency(currency)){
+        const onChainValue = formatToOnChainShares(value, String(currency?.decimals))
+        return new TokenAmount(currency as Token, JSBI.BigInt(String(onChainValue)))
+      }
       return currency instanceof Token
         ? new TokenAmount(currency, JSBI.BigInt(typedValueParsed))
         : CurrencyAmount.ether(JSBI.BigInt(typedValueParsed))
@@ -127,6 +131,9 @@ export function useDerivedSwapInfo(
 
   const parsedAmount = tryParseAmount(typedValue, inputCurrency ?? undefined)
 
+  console.log('inputCurrency', inputCurrency)
+  console.log('parsedAmount', typedValue, String(parsedAmount?.raw))
+
   const v2Trade = useMemo(() => getTradeExactIn(
     ammExchange,
     inputCurrency,
@@ -152,7 +159,6 @@ export function useDerivedSwapInfo(
   * Add liquidity: cash
   */
   const [approvalShare, approveShareCallback] = useApproveCallbackFromTrade(ammExchange)
-  console.log('ammExchange.cash', ammExchange)
   // just in case need to approve cash
   const [approvalCash, approveCashCallback] = useApproveCallback(parsedAmount, ammExchange?.cash)
 
@@ -188,6 +194,8 @@ export function useDerivedSwapInfo(
     inputError = 'Insufficient ' + inputAmount.currency.symbol + ' balance'
   }
 
+
+  console.log('v2Trade.approvalType', v2Trade && v2Trade.approvalType)
   /*
   * Swap: share
   * Enter position: cash

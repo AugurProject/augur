@@ -20,6 +20,7 @@ import { ParaShareToken, RemoveLiquidityRate, convertOnChainAmountToDisplayAmoun
 import { TradeInfo } from '../hooks/Trades'
 import { MarketCurrency } from '../model/MarketCurrency'
 import { EthersProvider } from '@augurproject/ethersjs-provider'
+import { convertDisplayAmountToOnChainAmount } from '@augurproject/utils/build'
 
 // format libraries
 const Decimal = toFormat(_Decimal)
@@ -120,12 +121,14 @@ export const isMarketCurrency = (currency: Token | Currency): boolean => {
 }
 
 export const formatCurrencyAmount = (outputAmount: TokenAmount | CurrencyAmount): string => {
+  if (!outputAmount) return "0"
   let oAmount = outputAmount?.toSignificant(6)
   if (isMarketCurrency(outputAmount?.currency)) {
     oAmount = formatShares(String(outputAmount.raw), String(outputAmount?.currency?.decimals))
   }
   return oAmount;
 }
+
 export const formatToDisplayValue = (num = "0", decimals = "18") => {
   const displayValue = new BN(num).times(YES_NO_NUM_TICKS).div(new BN(10).pow(decimals))
   return toSignificant(String(displayValue), 6)
@@ -134,7 +137,19 @@ export const formatToDisplayValue = (num = "0", decimals = "18") => {
 export const formatShares = (num = "0", decimals = "18") => {
   const numTicks = numTicksToTickSizeWithDisplayPrices(new BN(YES_NO_NUM_TICKS), new BN(0), new BN(1))
   const displayValue = convertOnChainAmountToDisplayAmount(new BN(num), numTicks, new BN(10).pow(new BN(decimals)))
+  if (isNaN(Number(displayValue))) {
+    console.log('num issue', num, decimals)
+    return "0"
+  }
+
   return toSignificant(String(displayValue), 6)
+}
+
+export const formatToOnChainShares = (num = "0", decimals = "18") => {
+  const numTicks = numTicksToTickSizeWithDisplayPrices(new BN(YES_NO_NUM_TICKS), new BN(0), new BN(1))
+  const onChain = convertDisplayAmountToOnChainAmount(new BN(num), numTicks, new BN(10).pow(new BN(decimals)))
+  console.log('to onChain shares value decimals:', num, decimals, String(onChain))
+  return toSignificant(String(onChain), 6)
 }
 
 export const formatTokenAmount = (num = "0", sig = 18) => {
@@ -641,8 +656,6 @@ export async function estimateTrade(augurClient, trade: TradeInfo, includeFee: b
   if (!augurClient || !trade.amm.id) return console.error('estimateTrade: augurClient is null or amm address')
   const tradeDirection = getTradeType(trade)
 
-  console.log('trade', trade)
-
   let outputYesShares = false
   let breakdown = null
 
@@ -749,9 +762,9 @@ export async function doTrade(augurClient, trade: TradeInfo, minAmount: string, 
     console.log('doExitPosition:', trade.marketId,
       trade.amm.sharetoken,
       trade.amm.fee,
-      invalidShares,
-      noShares,
-      yesShares,
+      String(invalidShares),
+      String(noShares),
+      String(yesShares),
       String(minAmount))
 
     return augurClient.amm.doExitPosition(

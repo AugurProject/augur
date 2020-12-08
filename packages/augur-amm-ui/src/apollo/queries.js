@@ -129,6 +129,8 @@ export const GET_MARKETS = blockNumber => {
     id
     cash {
       id
+      decimals
+      symbol
     }
   }
   past: markets(block: { number: ${blockNumber} }, where: { marketType: YES_NO, description_not: null }) {
