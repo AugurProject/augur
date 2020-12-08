@@ -14,6 +14,7 @@
     border-left: @size-1 solid transparent;
     padding: @size-16;
     z-index: @above-all-content-top-layer;
+    height: 100%;
 
     &:hover {
       background-color: var(--color-module-background);
@@ -211,6 +212,7 @@
       align-items: center;
       z-index: @default-z-index;
       border-top: none;
+      height: unset;
 
       &:hover {
         border-top: none;
@@ -278,6 +280,10 @@
       }
     }
 
+    > div:first-of-type {
+      box-shadow: @size-2 @size-2 @size-5 var(--color-secondary-text-50);
+    }
+
     > div:first-of-type > div:not(:first-of-type) > div {
       > a:first-of-type,
       > button:first-of-type {
@@ -338,6 +344,7 @@
 
       > div:first-of-type {
         background-color: var(--color-primary-text);
+        box-shadow: none;
 
         > div:not(:first-of-type) {
           > a,

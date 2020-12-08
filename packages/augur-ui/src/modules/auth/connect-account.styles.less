@@ -39,7 +39,6 @@
       border-bottom: 0;
 
       @media @breakpoint-mobile-tablet {
-        border: none;
         z-index: @above-all-content-above;
         border: @size-1 solid var(--color-secondary-action-outline);
         border-bottom: 0;
@@ -80,12 +79,13 @@
       }
 
       > span {
-        margin-top: -@size-3;
+        height: 100%;
         max-width: @size-12;
 
         > span {
-          display: inline-block;
-          margin-top: -@size-8;
+          height: 100%;
+          display: flex;
+          align-items: center;
 
           > svg path {
             stroke: var(--color-dark-text);
@@ -203,14 +203,8 @@
         border-top: @size-3 solid var(--color-primary-action);
       }
 
-      > div:first-of-type {
-        > span {
-          align-self: flex-start;
-
-          > span > svg > path {
-            stroke: var(--color-module-background);
-          }
-        }
+      > div:first-of-type > span > span > svg > path {
+        stroke: var(--color-module-background);
       }
     }
   }
