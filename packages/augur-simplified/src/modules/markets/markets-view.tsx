@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 
 const MarketsView = () => {
   return (
-    <div className={Styles.MarketView}>
+    <div className={Styles.MarketsView}>
       <div>Markets View Stats Section Box thing</div>
       <ul>
         <li>filter dropdown</li>
