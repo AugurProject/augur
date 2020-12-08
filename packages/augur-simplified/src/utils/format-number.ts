@@ -568,7 +568,6 @@ export function formatNumber(
     o.minimized = addCommas(encodeNumberAsBase10String(o.formattedValue), removeComma);
     o.rounded = encodeNumberAsBase10String(o.roundedValue);
     o.formattedValue = encodeNumberAsJSNumber(o.formattedValue, false);
-    o.roundedValue = o.roundedValue;
   }
 
   if (positiveSign && !bigUnitPostfix) {

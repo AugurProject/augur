@@ -105,6 +105,7 @@ module.exports = function (webpackEnv) {
           ? { publicPath: '../../' }
           : {},
       },
+      '@teamsupercell/typings-for-css-modules-loader',
       {
         loader: require.resolve('css-loader'),
         options: cssOptions,
@@ -365,6 +366,17 @@ module.exports = function (webpackEnv) {
           // match the requirements. When no loader matches it will fall
           // back to the "file" loader at the end of the loader list.
           oneOf: [
+            {
+              test: /\.less$/,
+              use: getStyleLoaders({
+                importLoaders: 3,
+                modules: {
+                  exportGlobals: true,
+                  localIdentName: '[hash:base64:5]_[name]_[local]',
+                  exportLocalsConvention: 'camelCase',
+                }
+              }, 'less-loader'),
+            },
             // TODO: Merge this config once `image/avif` is in the mime-db
             // https://github.com/jshttp/mime-db
             {
@@ -457,26 +469,6 @@ module.exports = function (webpackEnv) {
                 sourceMaps: shouldUseSourceMap,
                 inputSourceMap: shouldUseSourceMap,
               },
-            },
-            {
-              test: /\.less$/,
-              use: [
-                'style-loader',
-                '@teamsupercell/typings-for-css-modules-loader',
-                {
-                  loader: 'css-loader',
-                  options: {
-                    importLoaders: 2,
-                    modules: {
-                      exportGlobals: true,
-                      localIdentName: '[name]_[local]_[hash:base64:5]',
-                      exportLocalsConvention: 'camelCase',
-                    },
-                  },
-                },
-                'postcss-loader',
-                'less-loader',
-              ],
             },
             // "postcss" loader applies autoprefixer to our CSS.
             // "css" loader resolves paths in CSS and adds assets as dependencies.
