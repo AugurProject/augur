@@ -3,6 +3,7 @@ import * as Styles from 'modules/markets/markets-view.styles.less';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKET } from 'modules/constants';
 import { Link } from 'react-router-dom';
+import { ValueLabel } from 'modules/common/labels';
 
 const fakeMarketData = [
   {
@@ -113,6 +114,30 @@ const fakeMarketData = [
   },
 ];
 
+const fakeMarketViewStats = {
+  totalAccountValue: 15571.58,
+  positions: {
+    hourChange: 56.29,
+    value: 5045
+  },
+  availableFunds: 10526.58,
+  daiAmount: 526.58,
+  cashAmount: 5000
+}
+
+const MarketViewStats = () => {
+  return (
+    <div>
+      <ValueLabel large label={'total account value'} value={fakeMarketViewStats.totalAccountValue} />
+      <ValueLabel large label={'positions'} value={fakeMarketViewStats.positions.value} />
+      <ValueLabel large label={'available funds'} value={fakeMarketViewStats.availableFunds} />
+      <ValueLabel icon value={fakeMarketViewStats.daiAmount} />
+      <ValueLabel icon value={fakeMarketViewStats.cashAmount} />
+    </div>
+  )
+}
+
+
 const MarketCard = ({market}) => {
   return (
     <article>
@@ -136,10 +161,7 @@ const MarketCard = ({market}) => {
             </div> 
           :
           <>
-            <div>
-              <span>total volume</span>
-              <span>market.volume</span>
-            </div>
+            <ValueLabel label={'total volume'} value={market.volume} />
             <div>
               {market.outcomes.map(outcome => 
                 <div>
@@ -159,7 +181,7 @@ const MarketCard = ({market}) => {
 const MarketsView = () => {
   return (
     <div className={Styles.MarketView}>
-      <div>Markets View Stats Section Box thing</div>
+      <MarketViewStats />
       <ul>
         <li>filter dropdown</li>
         <li>filter dropdown</li>
