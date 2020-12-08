@@ -4,6 +4,7 @@ import makePath from 'modules/routes/helpers/make-path';
 import { MARKET } from 'modules/constants';
 import { Link } from 'react-router-dom';
 import { ValueLabel } from 'modules/common/labels';
+import { formatDai } from 'utils/format-number';
 
 const fakeMarketData = [
   {
@@ -127,12 +128,12 @@ const fakeMarketViewStats = {
 
 const MarketViewStats = () => {
   return (
-    <div>
-      <ValueLabel large label={'total account value'} value={fakeMarketViewStats.totalAccountValue} />
-      <ValueLabel large label={'positions'} value={fakeMarketViewStats.positions.value} />
-      <ValueLabel large label={'available funds'} value={fakeMarketViewStats.availableFunds} />
-      <ValueLabel icon value={fakeMarketViewStats.daiAmount} />
-      <ValueLabel icon value={fakeMarketViewStats.cashAmount} />
+    <div className={Styles.MarketViewStats}>
+      <ValueLabel large label={'total account value'} value={formatDai(fakeMarketViewStats.totalAccountValue).full} />
+      <ValueLabel large label={'positions'} value={formatDai(fakeMarketViewStats.positions.value).full} />
+      <ValueLabel large label={'available funds'} value={formatDai(fakeMarketViewStats.availableFunds).full} />
+      <ValueLabel icon value={formatDai(fakeMarketViewStats.daiAmount).full} />
+      <ValueLabel icon value={formatDai(fakeMarketViewStats.cashAmount).full} />
     </div>
   )
 }
@@ -142,7 +143,7 @@ const MarketCard = ({market}) => {
   return (
     <article>
       <Link to={makePath(MARKET)}>
-        <div>
+        <div className={Styles.MarketCard}>
           <div>
             icon
           </div>
@@ -161,12 +162,12 @@ const MarketCard = ({market}) => {
             </div> 
           :
           <>
-            <ValueLabel label={'total volume'} value={market.volume} />
+            <ValueLabel label={'total volume'} value={formatDai(market.volume).full} />
             <div>
               {market.outcomes.map(outcome => 
                 <div>
                   <span>{outcome.description}</span>
-                  <span>{outcome.price}</span>
+                  <span>{formatDai(outcome.price).full}</span>
                 </div>
               )}
             </div>

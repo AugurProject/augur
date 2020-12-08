@@ -1,0 +1,35 @@
+@import (reference) '~assets/styles/shared';
+
+.ValueLabel {
+  display: flex;
+  flex-direction: column;
+
+  > span:first-of-type {
+    .text-14;
+
+    margin-bottom: @size-4;
+    //color: var(--color-secondary-text);
+  }
+
+  > span:last-of-type {
+      .text-16-semi-bold;
+
+     // color: var(--color-primary-text);
+  }
+
+  &.large {
+    > span:first-of-type {
+      .text-16-bold;
+
+      margin-bottom: @size-10;
+    }
+
+    > span:last-of-type {
+        .text-36-bold;
+    }
+  }
+
+  &.icon {
+    display: flex;
+  }
+}
