@@ -155,7 +155,8 @@ export class AMM {
   }
 
   async getExitPosition(market: string, paraShareToken: string, fee: BigNumber, invalidShares: BigNumber, noShares: BigNumber, yesShares: BigNumber, includeFee: Boolean): Promise<ExitPositionRate> {
-    if (!includeFee) throw Error('Not implemented: getExitPosition(includeFee=false)');
+    // TODO calculate without fee too
+    // if (!includeFee) throw Error('Not implemented: getExitPosition(includeFee=false)');
     return this.intermediary(paraShareToken).rateExitPosition(market, paraShareToken, fee, invalidShares, noShares, yesShares);
   }
 
