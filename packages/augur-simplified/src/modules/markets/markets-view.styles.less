@@ -5,12 +5,6 @@
   flex-flow: column nowrap;
   grid-gap: @size-24;
 
-  > div {
-    border: @size-1 solid black;
-    border-radius: @border-radius-default;
-    height: @size-120;
-  }
-
   > ul {
     margin: 0;
     padding: 0;
@@ -25,20 +19,48 @@
     display: grid;
     grid-gap: @size-16;
     grid-template-columns: repeat(3, 1fr);
+  }
+}
 
-    > article {
-      .text-14-bold;
+.MarketCard {
+  .text-14-bold;
 
-      border: @size-1 solid black;
-      border-radius: @border-radius-default;
-      display: flex;
-      flex-flow: row nowrap;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      height: 400px;
-      min-height: 400px;
-      max-height: 400px;
+  display: flex;
+  border-radius: @size-16;
+  border: @size-1 solid var(--simple-border);
+  border-radius: @border-radius-default;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 400px;
+  min-height: 400px;
+  max-height: 400px;
+}
+
+.MarketViewStats {
+  display: flex;
+  padding: 0 @size-36;
+  border-radius: @size-16;
+  border: @size-1 solid var(--simple-border);
+  height: @size-150;
+
+  > div {
+    display: flex;
+    justify-content: center;
+    border-right: @size-1 solid var(--simple-border);
+    padding: @size-36;
+
+    &:first-of-type {
+      padding-left: 0;
+    }
+
+    &:nth-of-type(3),
+    &:nth-of-type(4),
+    &:nth-of-type(5) {
+      margin: @size-36 0;
+      padding: 0 @size-36;
     }
   }
 }
