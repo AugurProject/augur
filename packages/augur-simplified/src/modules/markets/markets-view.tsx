@@ -3,9 +3,9 @@ import Styles from 'modules/markets/markets-view.styles.less';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKET } from 'modules/constants';
 import { Link } from 'react-router-dom';
-import { ValueLabel, IconLabel } from 'modules/common/labels';
+import { ValueLabel, IconLabel, CategoryLabel } from 'modules/common/labels';
 import { formatDai } from 'utils/format-number';
-import { EthIcon, UsdIcon } from 'modules/common/icons';
+import { EthIcon, PillIcon, UsdIcon } from 'modules/common/icons';
 import classNames from 'classnames';
 
 const fakeMarketData = [
@@ -185,15 +185,14 @@ const MarketCard = ({ market }) => {
     >
       <Link to={makePath(MARKET)}>
         <div>
-          <div>icon</div>
-          <div>{market.category}</div>
+          <div>{PillIcon}</div>
+          <CategoryLabel category={market.category} />
           <div>{market.inUsd ? UsdIcon : EthIcon}</div>
           <span>{market.description}</span>
           {market.noLiquidity ? (
             <div>
               <span>Market requires Initial liquidity</span>
-              <span>Earn fees as a liquidity provider</span>
-              <button>Add liquidity</button>
+              <button>Earn fees as a liquidity provider</button>
             </div>
           ) : (
             <>

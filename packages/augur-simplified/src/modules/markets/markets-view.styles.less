@@ -41,11 +41,20 @@
     text-align: center;
     background: var(--simple-light-bg);
     display: grid;
-    grid-template-columns: @size-42 @size-72 1fr;
+    grid-template-columns: auto auto 1fr;
     padding: @size-24;
 
     > div {
       display: flex;
+    }
+
+    > div:first-of-type {
+      margin-right: @size-6;
+      border: @size-1 solid var(--covid-color);
+      border-radius: @size-8;
+      justify-content: center;
+      align-items: center;
+      padding: @size-4 @size-10;
     }
 
     > div:nth-of-type(3) {
@@ -70,7 +79,21 @@
   }
 
   &.NoLiquidity {
-    display: flex;
+    > a > div  {
+      > div:nth-of-type(4) {
+        grid-column: 1 / span 3;
+        margin-right: 0;
+        display: flex;
+        flex-direction: column;
+        
+        > span {
+          .text-14-semi-bold;
+
+          color: var(--simple-secondary-text);
+          margin-bottom: @size-16;
+        }
+      }
+    }
   }
 }
 
