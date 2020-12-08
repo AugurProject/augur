@@ -9,7 +9,7 @@ import { Divider } from '../../components'
 import { withRouter } from 'react-router-dom'
 import TokenLogo from '../TokenLogo'
 import { RowFixed, AutoRow } from '../Row'
-import { ButtonLight, ButtonPrimary } from '../ButtonStyled'
+import { SHOW_IN_USD } from '../../constants'
 import { useLPTokenBalances } from '../../state/wallet/hooks'
 import { TYPE, StyledInternalLink } from '../../Theme'
 import { greaterThanZero } from '../../utils'
@@ -76,7 +76,8 @@ function AmmExchangeList({ allExchanges, disbaleLinks, marketId }) {
         // liquidity comes in display value
         const liquidity = formattedNum(new BN(ammExchange.liquidity).toFixed(2), false);
         const usd = formattedNum(ammExchange.liquidityUSD, true);
-        setLiquidityUSD(ammExchange?.cash?.showInUSD ? `${liquidity} (${usd})}` : `$${liquidity}`);
+        const showInUsd = SHOW_IN_USD.includes(ammExchange?.cash?.name)
+        setLiquidityUSD(showInUsd ? `${liquidity} (${usd})` : `$${liquidity}`);
       }
     }, [ammExchange])
 
