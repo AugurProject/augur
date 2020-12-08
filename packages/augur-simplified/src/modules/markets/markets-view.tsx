@@ -3,8 +3,9 @@ import Styles from 'modules/markets/markets-view.styles.less';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKET } from 'modules/constants';
 import { Link } from 'react-router-dom';
-import { ValueLabel } from 'modules/common/labels';
+import { ValueLabel, IconLabel } from 'modules/common/labels';
 import { formatDai } from 'utils/format-number';
+import { EthIcon, UsdIcon } from 'modules/common/icons';
 
 const fakeMarketData = [
   {
@@ -119,60 +120,75 @@ const fakeMarketViewStats = {
   totalAccountValue: 15571.58,
   positions: {
     hourChange: 56.29,
-    value: 5045
+    value: 5045,
   },
   availableFunds: 10526.58,
   daiAmount: 526.58,
-  cashAmount: 5000
-}
+  cashAmount: 5000,
+};
 
 const MarketViewStats = () => {
   return (
     <div className={Styles.MarketViewStats}>
-      <ValueLabel large label={'total account value'} value={formatDai(fakeMarketViewStats.totalAccountValue).full} />
-      <ValueLabel large label={'positions'} value={formatDai(fakeMarketViewStats.positions.value).full} />
-      <ValueLabel large label={'available funds'} value={formatDai(fakeMarketViewStats.availableFunds).full} />
-      <ValueLabel icon value={formatDai(fakeMarketViewStats.daiAmount).full} />
-      <ValueLabel icon value={formatDai(fakeMarketViewStats.cashAmount).full} />
+      <ValueLabel
+        large
+        label={'total account value'}
+        value={formatDai(fakeMarketViewStats.totalAccountValue).full}
+      />
+      <ValueLabel
+        large
+        label={'positions'}
+        sublabel={`${formatDai(fakeMarketViewStats.positions.hourChange).full} (24hr)`}
+        value={formatDai(fakeMarketViewStats.positions.value).full}
+      />
+      <ValueLabel
+        large
+        label={'available funds'}
+        value={formatDai(fakeMarketViewStats.availableFunds).full}
+      />
+      <IconLabel
+        icon={EthIcon}
+        value={formatDai(fakeMarketViewStats.daiAmount).full}
+      />
+      <IconLabel
+        icon={UsdIcon}
+        value={formatDai(fakeMarketViewStats.cashAmount).full}
+      />
     </div>
-  )
-}
+  );
+};
 
-
-const MarketCard = ({market}) => {
+const MarketCard = ({ market }) => {
   return (
     <article>
       <Link to={makePath(MARKET)}>
         <div className={Styles.MarketCard}>
-          <div>
-            icon
-          </div>
-          <div>
-            {market.category}
-          </div>
-          <div>
-            icon
-          </div>
+          <div>icon</div>
+          <div>{market.category}</div>
+          <div>icon</div>
           {market.description}
-          {market.noLiquidity ?
+          {market.noLiquidity ? (
             <div>
               <span>Market requires Initial liquidity</span>
               <span>Earn fees as a liquidity provider</span>
               <button>Add liquidity</button>
-            </div> 
-          :
-          <>
-            <ValueLabel label={'total volume'} value={formatDai(market.volume).full} />
-            <div>
-              {market.outcomes.map(outcome => 
-                <div>
-                  <span>{outcome.description}</span>
-                  <span>{formatDai(outcome.price).full}</span>
-                </div>
-              )}
             </div>
-          </>
-          }
+          ) : (
+            <>
+              <ValueLabel
+                label={'total volume'}
+                value={formatDai(market.volume).full}
+              />
+              <div>
+                {market.outcomes.map((outcome) => (
+                  <div>
+                    <span>{outcome.description}</span>
+                    <span>{formatDai(outcome.price).full}</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </Link>
     </article>
@@ -190,7 +206,9 @@ const MarketsView = () => {
         <li>filter dropdown</li>
       </ul>
       <section>
-        {fakeMarketData.map(market => <MarketCard market={market} />)}
+        {fakeMarketData.map((market) => (
+          <MarketCard market={market} />
+        ))}
       </section>
     </div>
   );

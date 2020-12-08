@@ -4,7 +4,6 @@ import classNames from 'classnames';
 
 interface ValueLabelProps {
   large?: boolean;
-  icon?: Object;
   label?: string;
   sublabel?: string;
   value: string|number;
@@ -12,7 +11,6 @@ interface ValueLabelProps {
 
 export const ValueLabel = ({
   large,
-  icon,
   label,
   sublabel,
   value,
@@ -21,12 +19,33 @@ export const ValueLabel = ({
     <div
       className={classNames(Styles.ValueLabel, {
         [Styles.large]: large,
-        [Styles.icon]: icon,
       })}
     >
       <span>
-        {label ? label : icon}
-        <span>{sublabel}</span>
+        {label}
+        {sublabel && <span>{sublabel}</span>}
+      </span>
+      <span>{value}</span>
+    </div>
+  );
+};
+
+
+interface IconLabelProps {
+  icon: Object;
+  value: string|number;
+}
+
+export const IconLabel = ({
+  icon,
+  value,
+}: IconLabelProps) => {
+  return (
+    <div
+      className={classNames(Styles.IconLabel)}
+    >
+      <span>
+        {icon}
       </span>
       <span>{value}</span>
     </div>
