@@ -1,4 +1,4 @@
-export default function(num: number | string, removeComma: boolean = false): string {
+export default function addCommasToNumber(num: number | string, removeComma: boolean = false): string {
     let sides: Array<string> = [];
   
     sides = num.toString().split(".");

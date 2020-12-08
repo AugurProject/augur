@@ -1,9 +1,4 @@
-import {
-    MarketReportingState,
-    MarketTypeName,
-    MaxLiquiditySpread,
-    TemplateFilters,
-  } from '@augurproject/sdk-lite';
+import { MarketTypeName } from '@augurproject/sdk-lite';
 import { createBigNumber } from 'utils/create-big-number';
 
 // MAIN VIEWS
