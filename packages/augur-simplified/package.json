@@ -74,6 +74,7 @@
     "workbox-webpack-plugin": "5.1.4"
   },
   "devDependencies": {
+    "cssnano": "4.1.10",
     "less": "3.10.3",
     "less-loader": "5.0.0",
     "autoprefixer": "9.6.1",
