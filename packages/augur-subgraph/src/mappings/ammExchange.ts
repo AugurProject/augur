@@ -30,11 +30,6 @@ function updateVolumeValues(address: Address, cash: BigInt, noShares: BigInt, ye
   let market = Market.load(ammExchange.market);
   let numTicks = market.numTicks.toBigDecimal();
 
-  market.volume = market.volume.plus(noShares.abs().toBigDecimal().div(numTicks).div(decimals));
-  market.volume = market.volume.plus(yesShares.abs().toBigDecimal().div(numTicks).div(decimals));
-
-  market.save();
-
   ammExchange.volumeNo = ammExchange.volumeNo.plus(noShares.abs().toBigDecimal().div(numTicks).div(decimals));
   ammExchange.volumeYes = ammExchange.volumeYes.plus(yesShares.abs().toBigDecimal().div(numTicks).div(decimals));
 

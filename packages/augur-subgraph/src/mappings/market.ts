@@ -77,7 +77,6 @@ export function handleMarketCreated(event: MarketCreated): void {
     market.id
   );
   market.extraInfoRaw = event.params.extraInfo;
-  market.volume = BigDecimal.fromString('0');
 
   // Parsing the JSON data, safe check of every parsed value before saving.
   let extraInfoParsed = json.try_fromBytes(
@@ -215,7 +214,6 @@ export function handleMarketOIChanged(event: MarketOIChanged): void {
 
 export function handleMarketVolumeChanged(event: MarketVolumeChanged): void {
   let market = getOrCreateMarket(event.params.market.toHexString());
-  market.volume = event.params.volume.toBigDecimal();
   market.outcomeVolumes = event.params.outcomeVolumes
   market.totalTrades = event.params.totalTrades;
   market.save();

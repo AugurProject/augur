@@ -146,9 +146,6 @@ type Market @entity {
   "The total amount of value which has been traded for this market"
   openInterest: BigInt
 
-  "The the total trading volume for this market"
-  volume: BigDecimal!
-
   "The total trading volume per outcome of this market"
   outcomeVolumes: [BigInt!]
 
