@@ -23,20 +23,89 @@
 }
 
 .MarketCard {
-  .text-14-bold;
+  > a {
+    text-decoration: none;
+    color: unset;
+  }
 
+  > a > div {
+    .text-14-bold;
+
+    border-radius: @size-16;
+    border: @size-1 solid var(--simple-border);
+    border-radius: @border-radius-default;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: var(--simple-light-bg);
+    display: grid;
+    grid-template-columns: @size-42 @size-72 1fr;
+    padding: @size-24;
+
+    > div {
+      display: flex;
+    }
+
+    > div:nth-of-type(3) {
+      justify-content: flex-end;
+    }
+
+    > span {
+      .text-16-semi-bold;
+
+      color: var(--simple-primary-text);
+      grid-column: 1 / span 3;
+      margin-top: @size-16;
+      margin-bottom: @size-38;
+      text-align: left;
+    }
+
+    > div:nth-of-type(4) {
+      grid-column: 1 / span 2;
+      margin-right: @size-32;
+      margin-top: auto;
+    }
+  }
+
+  &.NoLiquidity {
+    display: flex;
+  }
+}
+
+.OutcomesTable {
   display: flex;
-  border-radius: @size-16;
   border: @size-1 solid var(--simple-border);
-  border-radius: @border-radius-default;
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  height: 400px;
-  min-height: 400px;
-  max-height: 400px;
+  border-radius: @size-8;
+  flex-direction: column;
+
+  > div {
+    padding: @size-10 @size-16;
+    display: flex;
+
+    > span {
+      display: flex;
+      align-items: center;
+      
+      &:first-of-type {
+        .text-14;
+
+        flex: 1;
+        color: var(--simple-primary-text);
+        text-transform: capitalize;
+      }
+
+      &:last-of-type {
+        .text-16-bold;
+
+        color: var(--simple-primary-text);
+      }
+    }
+    &:not(:first-of-type) {
+      border-top: @size-1 solid var(--simple-border);
+    }
+  }
 }
 
 .MarketViewStats {
@@ -45,6 +114,7 @@
   border-radius: @size-16;
   border: @size-1 solid var(--simple-border);
   height: @size-150;
+  background: var(--simple-light-bg);
 
   > div {
     display: flex;

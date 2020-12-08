@@ -6,10 +6,41 @@ import { Link } from 'react-router-dom';
 import { ValueLabel, IconLabel } from 'modules/common/labels';
 import { formatDai } from 'utils/format-number';
 import { EthIcon, UsdIcon } from 'modules/common/icons';
+import classNames from 'classnames';
 
 const fakeMarketData = [
   {
     category: 'Covid-19',
+    description: "Will Pfizer's COVID-19 vaccine be the first to receive FDA approval or Emergency Use Authorization (EUA)?",
+    volume: 350019,
+    outcomes: [
+      {
+        description: 'yes',
+        price: 0.75,
+      },
+      {
+        description: 'no',
+        price: 0.25,
+      },
+    ],
+  },
+  {
+    category: 'Us Politics',
+    description: 'How many electoral college votes will be cast for Joe Biden?',
+    volume: 350019,
+    outcomes: [
+      {
+        description: '306',
+        price: 0.75,
+      },
+      {
+        description: '303 - 305',
+        price: 0.25,
+      },
+    ],
+  },
+  {
+    category: 'Covid-19',
     description: "Will Pfizer's thing happen?",
     volume: 350019,
     outcomes: [
@@ -25,6 +56,7 @@ const fakeMarketData = [
   },
   {
     category: 'Us Politics',
+    inUsd: true,
     description: 'How many electoral college votes?',
     volume: 350019,
     outcomes: [
@@ -55,36 +87,7 @@ const fakeMarketData = [
   },
   {
     category: 'Us Politics',
-    description: 'How many electoral college votes?',
-    volume: 350019,
-    outcomes: [
-      {
-        description: '306',
-        price: 0.75,
-      },
-      {
-        description: '303 - 305',
-        price: 0.25,
-      },
-    ],
-  },
-  {
-    category: 'Covid-19',
-    description: "Will Pfizer's thing happen?",
-    volume: 350019,
-    outcomes: [
-      {
-        description: 'yes',
-        price: 0.75,
-      },
-      {
-        description: 'no',
-        price: 0.25,
-      },
-    ],
-  },
-  {
-    category: 'Us Politics',
+    inUsd: true,
     description: 'How many electoral college votes?',
     volume: 350019,
     outcomes: [
@@ -138,7 +141,9 @@ const MarketViewStats = () => {
       <ValueLabel
         large
         label={'positions'}
-        sublabel={`${formatDai(fakeMarketViewStats.positions.hourChange).full} (24hr)`}
+        sublabel={`${
+          formatDai(fakeMarketViewStats.positions.hourChange).full
+        } (24hr)`}
         value={formatDai(fakeMarketViewStats.positions.value).full}
       />
       <ValueLabel
@@ -158,15 +163,32 @@ const MarketViewStats = () => {
   );
 };
 
+const OutcomesTable = ({ outcomes }) => {
+  return (
+    <div className={Styles.OutcomesTable}>
+      {outcomes.map((outcome) => (
+        <div>
+          <span>{outcome.description}</span>
+          <span>{formatDai(outcome.price).full}</span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 const MarketCard = ({ market }) => {
   return (
-    <article>
+    <article
+      className={classNames(Styles.MarketCard, {
+        [Styles.NoLiquidity]: market.noLiquidity,
+      })}
+    >
       <Link to={makePath(MARKET)}>
-        <div className={Styles.MarketCard}>
+        <div>
           <div>icon</div>
           <div>{market.category}</div>
-          <div>icon</div>
-          {market.description}
+          <div>{market.inUsd ? UsdIcon : EthIcon}</div>
+          <span>{market.description}</span>
           {market.noLiquidity ? (
             <div>
               <span>Market requires Initial liquidity</span>
@@ -179,14 +201,7 @@ const MarketCard = ({ market }) => {
                 label={'total volume'}
                 value={formatDai(market.volume).full}
               />
-              <div>
-                {market.outcomes.map((outcome) => (
-                  <div>
-                    <span>{outcome.description}</span>
-                    <span>{formatDai(outcome.price).full}</span>
-                  </div>
-                ))}
-              </div>
+              <OutcomesTable outcomes={market.outcomes} />
             </>
           )}
         </div>
