@@ -51,3 +51,20 @@ export const IconLabel = ({
     </div>
   );
 };
+
+
+interface CategoryProps {
+  category: string;
+}
+
+export const CategoryLabel = ({
+  category,
+}: CategoryProps) => {
+  return (
+    <div
+      className={classNames(Styles.CategoryLabel)}
+    >
+      {category}
+    </div>
+  );
+};
