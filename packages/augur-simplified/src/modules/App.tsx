@@ -2,6 +2,7 @@ import React from 'react';
 import Styles from 'modules/App.styles.less';
 import Routes from 'modules/routes/routes';
 import TopNav from 'modules/common/top-nav';
+import 'assets/styles/shared.less';
 
 function App() {
   return (
