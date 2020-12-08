@@ -1,5 +1,5 @@
 import React from 'react';
-import * as Styles from 'modules/markets/markets-view.styles.less';
+import Styles from 'modules/markets/markets-view.styles.less';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKET } from 'modules/constants';
 import { Link } from 'react-router-dom';
@@ -180,7 +180,7 @@ const MarketCard = ({market}) => {
 
 const MarketsView = () => {
   return (
-    <div className={Styles.MarketView}>
+    <div className={Styles.MarketsView}>
       <MarketViewStats />
       <ul>
         <li>filter dropdown</li>

@@ -68,17 +68,22 @@
         &:hover {
           border-left: @size-1 solid var(--color-secondary-text);
           color: var(--color-primary-text);
+          padding: @size-16;
         }
 
-        &.Active {
-          border-left: @size-1 solid var(--color-primary-action);
+        &.Active,
+        &.Active:hover {
+          border-left: @size-4 solid var(--color-primary-action);
           color: var(--color-primary-text);
+          padding: @size-16 @size-16 @size-16 @size-13;
         }
       }
 
       > a,
       > button {
         > span {
+          align-items: center;
+          display: flex;
           margin-left: auto;
 
           > svg {
@@ -117,6 +122,15 @@
             width: @size-16;
             border-radius: 50%;
             margin-right: @size-8;
+          }
+
+          &:hover {
+            padding: @size-12 @size-24;
+          }
+
+          &.Active,
+          &.Active:hover {
+            padding: @size-12 @size-24 @size-12 @size-21;
           }
         }
 
@@ -211,6 +225,8 @@
       }
 
       > span:last-of-type {
+        display: flex;
+        align-items: center;
         margin-left: auto;
       }
     }
@@ -219,6 +235,7 @@
       position: static;
       width: 100%;
       border: 0;
+      z-index: @default-z-index;
 
       > div:first-of-type {
         display: none;
@@ -333,7 +350,9 @@
               border-left: @size-1 solid var(--color-primary-action);
             }
 
-            &.Active {
+            &.Active,
+            &.Active:hover {
+              border-left: @size-4 solid var(--color-primary-action);
               color: var(--color-module-background);
             }
           }

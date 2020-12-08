@@ -461,14 +461,10 @@ module.exports = function (webpackEnv) {
               test: /\.less$/,
               use: [
                 'style-loader',
+                "@teamsupercell/typings-for-css-modules-loader",
                 {
-                  loader: 'typings-for-css-modules-loader',
-                  options: {
-                    camelCase: true,
-                    modules: true,
-                    namedExport: true,
-                    localIdentName: '[name]_[local]',
-                  },
+                  loader: "css-loader",
+                  options: { modules: true }
                 },
                 'postcss-loader',
                 'less-loader',
