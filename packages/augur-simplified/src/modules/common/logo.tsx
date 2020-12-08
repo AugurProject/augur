@@ -3,7 +3,7 @@ import {
   AugurTextLogo,
 } from 'modules/common/icons';
 
-import * as Styles from 'modules/common/logo.styles.less';
+import Styles from 'modules/common/logo.styles.less';
 
 export const Logo = () => (
   <section className={Styles.v2Logo}>

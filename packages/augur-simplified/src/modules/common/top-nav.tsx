@@ -1,5 +1,5 @@
 import React from 'react';
-import * as Styles from 'modules/common/top-nav.styles.less';
+import Styles from 'modules/common/top-nav.styles.less';
 import { Link } from 'react-router-dom';
 import { MARKETS, PORTFOLIO } from 'modules/constants';
 import makePath from 'modules/routes/helpers/make-path';

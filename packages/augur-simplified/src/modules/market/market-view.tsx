@@ -1,5 +1,5 @@
 import React from 'react';
-import * as Styles from 'modules/market/market-view.styles.less';
+import Styles from 'modules/market/market-view.styles.less';
 
 const MarketView = () => {
     return (

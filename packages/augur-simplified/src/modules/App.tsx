@@ -1,6 +1,5 @@
 import React from 'react';
-// @ts-ignore
-import * as Styles from 'modules/App.styles.less';
+import Styles from 'modules/App.styles.less';
 import Routes from 'modules/routes/routes';
 import TopNav from 'modules/common/top-nav';
 
