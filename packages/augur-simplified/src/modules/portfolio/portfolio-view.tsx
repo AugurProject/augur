@@ -1,5 +1,5 @@
 import React from 'react';
-import * as Styles from 'modules/portfolio/portfolio-view.styles.less';
+import Styles from 'modules/portfolio/portfolio-view.styles.less';
 
 export const PortfolioView = () => (
   <div className={Styles.PortfolioView}>
