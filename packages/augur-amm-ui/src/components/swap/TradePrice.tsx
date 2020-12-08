@@ -6,7 +6,8 @@ import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components'
 import { StyledBalanceMaxMini } from './styleds'
 import { TradeInfo } from '../../hooks/Trades'
-import { formattedNum } from '../../utils'
+import { formatCurrencyAmountDisplay, formattedNum } from '../../utils'
+import BigNumber from 'bignumber.js'
 
 interface TradePriceProps {
   trade?: TradeInfo
@@ -21,12 +22,14 @@ export default function TradePrice({ trade, estTokenAmount }: TradePriceProps) {
 
   useMemo(() => {
     if (!estTokenAmount) return setPriceRate(null)
-    const receivedAmountDisplay = trade.inputAmount.divide(estTokenAmount)
-    const InPerOut = receivedAmountDisplay
-    const OutPerIn = estTokenAmount.divide(trade.inputAmount)
+    const receivedAmountDisplay = String(new BigNumber(String(trade.inputAmount.raw)).div(new BigNumber(String(estTokenAmount.raw))))
+    const sendAmountDisplay = String(new BigNumber(String(estTokenAmount.raw)).div(new BigNumber(String(trade.inputAmount.raw))))
+    const OutPerIn = formatCurrencyAmountDisplay(receivedAmountDisplay, trade.inputAmount)
+    const InPerOut = formatCurrencyAmountDisplay(sendAmountDisplay, estTokenAmount)
+
     const label = showInverted
-      ? `${formattedNum(InPerOut.toSignificant(6))} ${trade.currencyOut.symbol} per ${trade.currencyIn.symbol}`
-      : `${formattedNum(OutPerIn.toSignificant(6))} ${trade.currencyIn.symbol} per ${trade.currencyOut.symbol}`
+      ? `${formattedNum(InPerOut)} ${trade.currencyOut.symbol} per ${trade.currencyIn.symbol}`
+      : `${formattedNum(OutPerIn)} ${trade.currencyIn.symbol} per ${trade.currencyOut.symbol}`
     setPriceRate({ label })
   }, [trade, estTokenAmount, showInverted])
 

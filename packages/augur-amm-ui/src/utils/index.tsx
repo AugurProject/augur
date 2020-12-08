@@ -120,6 +120,15 @@ export const isMarketCurrency = (currency: Token | Currency): boolean => {
   return currency?.name === MarketTokens.YES_SHARES || currency?.name === MarketTokens.NO_SHARES
 }
 
+export const formatCurrencyAmountDisplay = (num = "0", outputAmount: TokenAmount | CurrencyAmount): string => {
+  if (!outputAmount) return "0"
+  let oAmount = formatShares(num, String(outputAmount?.currency?.decimals))
+  if (isMarketCurrency(outputAmount?.currency)) {
+    oAmount = formatShares(String(outputAmount.raw), String(outputAmount?.currency?.decimals))
+  }
+  return oAmount;
+}
+
 export const formatCurrencyAmount = (outputAmount: TokenAmount | CurrencyAmount): string => {
   if (!outputAmount) return "0"
   let oAmount = outputAmount?.toSignificant(6)

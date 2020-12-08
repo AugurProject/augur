@@ -131,9 +131,6 @@ export function useDerivedSwapInfo(
 
   const parsedAmount = tryParseAmount(typedValue, inputCurrency ?? undefined)
 
-  console.log('inputCurrency', inputCurrency)
-  console.log('parsedAmount', typedValue, String(parsedAmount?.raw))
-
   const v2Trade = useMemo(() => getTradeExactIn(
     ammExchange,
     inputCurrency,
@@ -194,8 +191,6 @@ export function useDerivedSwapInfo(
     inputError = 'Insufficient ' + inputAmount.currency.symbol + ' balance'
   }
 
-
-  console.log('v2Trade.approvalType', v2Trade && v2Trade.approvalType)
   /*
   * Swap: share
   * Enter position: cash
