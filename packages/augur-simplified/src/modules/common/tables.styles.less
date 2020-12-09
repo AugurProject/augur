@@ -2,20 +2,82 @@
 
 .PositionTable {
     display: flex;
+    background: var(--simple-light-bg);
+    border: @size-1 solid var(--simple-border);
+    border-radius: @size-8;
+    flex-direction: column;
+
+    > div {
+        padding: @size-20 @size-32;
+        display: flex;
+        border-bottom: @size-1 solid var(--simple-border);
+
+        > span {
+            .text-16-semi-bold;
+
+            color: var(--simple-primary-text);
+            flex: 1;
+        }
+
+        > svg {
+            width: @size-20;
+            height: @size-20;
+        }
+    }
+}
+
+.RowHeaderSharedStyles {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    padding: @size-20 @size-32;
+
+    &:not(:last-of-type) {
+        border-bottom: @size-1 solid var(--simple-border);
+    }
+
+    > li {
+        display: flex; 
+
+        &:not(:first-of-type) {
+            justify-content: flex-end;
+        }
+    }
+}
+
+.HeaderSharedStyles {
+    > li {
+        .text-12-semi-bold;
+
+        color: var(--simple-primary-text);
+        text-transform: capitalize;
+    }
+}
+
+
+.RowSharedStyles {
+    > li {
+        .text-12;
+
+        color: var(--simple-primary-text);
+    }
 }
 
 .PositionRow {
-    display: flex;
+    .RowHeaderSharedStyles;
+    .RowSharedStyles;
 }
 
 .PositionHeader {
-    display: flex;
+    .RowHeaderSharedStyles;
+    .HeaderSharedStyles;
 }
 
 .LiquidityRow {
-    display: flex;
+    .RowHeaderSharedStyles;
+    .RowSharedStyles;
 }
 
 .LiquidityHeader {
-    display: flex;
+    .RowHeaderSharedStyles;
+    .HeaderSharedStyles;
 }

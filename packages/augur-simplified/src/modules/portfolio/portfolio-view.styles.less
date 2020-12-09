@@ -31,5 +31,13 @@
         }
       }
     }
+
+    > div:nth-of-type(3) {
+      > div {
+        &:not(:last-of-type) {
+          margin-bottom: @size-12;
+        }
+      }
+    }
   }
 }
