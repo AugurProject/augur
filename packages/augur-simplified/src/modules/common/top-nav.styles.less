@@ -1,26 +1,90 @@
 @import (reference) '~assets/styles/shared';
+@import (reference) '~modules/common/buttons.styles.less';
 
 .TopNav {
   align-items: center;
+  background: var(--light-background-color);
+  border-bottom: @size-1 solid var(--simple-border);
   display: flex;
   flex-flow: row nowrap;
+  justify-content: center;
+  height: @size-80;
+  min-height: @size-80;
+  max-height: @size-80;
   width: 100%;
-  grid-gap: @size-16;
+  position: fixed;
 
-  > ol {
-    list-style: none;
+  > section {
+    align-items: center;
+    box-sizing: border-box;
+    height: @size-80;
+    min-height: @size-80;
+    max-height: @size-80;
     display: flex;
     flex-flow: row nowrap;
-    grid-gap: @size-12;
-    margin: 0;
-    padding: 0;
+    flex: 1;
+    grid-gap: @size-16;
+    width: 100%;
 
-    > li {
-      flex: 0 auto;
+    &:first-of-type {
+      max-width: @size-912;
+      padding-left: @size-88;
+      grid-gap: @size-80;
+
+      > ol {
+        align-items: center;
+        list-style: none;
+        display: flex;
+        flex-flow: row nowrap;
+        grid-gap: @size-40;
+        margin: 0;
+        padding: 0;
+        min-height: @size-32;
+        height: @size-32;
+
+        > li {
+          flex: 0 auto;
+
+          > a {
+            .text-20-bold;
+
+            text-decoration: none;
+            color: var(--simple-secondary-text);
+          }
+
+          &:hover {
+            > a {
+              color: var(--simple-primary-text);
+            }
+          }
+        }
+      }
+    }
+
+    &:last-of-type {
+      max-width: @size-528;
+      padding-right: @size-88;
+      grid-gap: @size-8;
+
+      > button {
+        .RoundedButton;
+        .text-16-bold;
+
+        background: transparent;
+        min-height: @size-48;
+        max-height: @size-48;
+        height: @size-48;
+        padding: 0 @size-14;
+        color: var(--simple-primary-text);
+
+        &:first-of-type {
+          margin-left: auto;
+        }
+      }
     }
   }
 
-  > button {
-    margin-left: auto;
+  &.TwoTone > section:last-of-type {
+    background: var(--simple-light-bg);
   }
 }
