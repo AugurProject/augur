@@ -1,6 +1,6 @@
 @import (reference) '~assets/styles/shared';
 
-.PrimaryButton {
+.Button {
   .text-16-bold;
 
   color: var(--simple-primary-text);
@@ -11,6 +11,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.PrimaryButton {
+  .Button;
 }
 
 .RoundedButton {
@@ -28,4 +32,12 @@
   &:hover {
     border: @size-1 solid var(--simple-primary-text);
   }
+}
+
+
+.SecondaryButton {
+  .Button;
+
+  background: var(--simple-buy-15);
+  border: @size-1 solid var(--simple-buy);
 }

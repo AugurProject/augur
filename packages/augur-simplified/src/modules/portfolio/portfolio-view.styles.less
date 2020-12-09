@@ -2,8 +2,12 @@
 
 .PortfolioView {
   .TwoTonePage;
-}
 
-.PortfolioViewStats {
-  
+  > section:first-of-type {
+    flex-direction: column;
+
+    > button {
+      margin-top: @size-24;
+    }
+  }
 }
