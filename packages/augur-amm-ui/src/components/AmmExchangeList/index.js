@@ -105,11 +105,11 @@ function AmmExchangeList({ allExchanges, disbaleLinks, marketId }) {
           </TYPE.header>}
           <TYPE.header area="name" fontWeight="500">
             <RowFixed style={{ flexFlow: 'row nowrap', justifyContent: 'space-around', marginTop: '0.5rem' }}>
+            <StyledInternalLink to={`/add/${marketId}/${ammExchange.cash.address}/${ammExchange.id}`}>
+                Add
+              </StyledInternalLink>
               <StyledInternalLink disabled={!hasLPTokens} to={`/remove/${marketId}/${ammExchange.id}`}>
                 Remove
-              </StyledInternalLink>
-              <StyledInternalLink to={`/add/${marketId}/${ammExchange.cash.address}/${ammExchange.id}`}>
-                Add
               </StyledInternalLink>
               <StyledInternalLink
                 disabled={!ammExchange && !ammExchange.id}
