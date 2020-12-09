@@ -7,6 +7,7 @@ import { AutoColumn } from '../Column'
 import { RowBetween, RowFixed } from '../Row'
 
 import { darken } from 'polished'
+import { useMedia } from 'react-use'
 
 enum SlippageError {
   InvalidInput = 'InvalidInput',
@@ -96,6 +97,7 @@ export default function SlippageTabs({ rawSlippage, setRawSlippage, deadline, se
   const theme = useContext(ThemeContext)
 
   const inputRef = useRef<HTMLInputElement>()
+  const below1196 = useMedia('(max-width: 1196px)')
 
   const [slippageInput, setSlippageInput] = useState('')
   const [deadlineInput, setDeadlineInput] = useState('')
@@ -155,6 +157,7 @@ export default function SlippageTabs({ rawSlippage, setRawSlippage, deadline, se
         </RowFixed>
         <RowBetween>
           <Option
+            style={{ fontSize: below1196 ? '11px' : '14px' }}
             onClick={() => {
               setSlippageInput('')
               setRawSlippage(10)
@@ -164,6 +167,7 @@ export default function SlippageTabs({ rawSlippage, setRawSlippage, deadline, se
             0.1%
           </Option>
           <Option
+            style={{ fontSize: below1196 ? '11px' : '14px' }}
             onClick={() => {
               setSlippageInput('')
               setRawSlippage(50)
@@ -173,6 +177,7 @@ export default function SlippageTabs({ rawSlippage, setRawSlippage, deadline, se
             0.5%
           </Option>
           <Option
+            style={{ fontSize: below1196 ? '11px' : '14px' }}
             onClick={() => {
               setSlippageInput('')
               setRawSlippage(100)
@@ -201,8 +206,9 @@ export default function SlippageTabs({ rawSlippage, setRawSlippage, deadline, se
                 }}
                 onChange={e => parseCustomSlippage(e.target.value)}
                 color={!slippageInputIsValid ? 'red' : ''}
+                style={{ fontSize: below1196 ? '11px' : '14px' }}
               />
-              <Text style={{padingLeft: '0.25rem'}}>%</Text>
+              <Text style={{  fontSize: below1196 ? '11px' : '14px' , padingLeft: '0.25rem' }}>%</Text>
             </RowBetween>
           </OptionCustom>
         </RowBetween>
@@ -240,7 +246,7 @@ export default function SlippageTabs({ rawSlippage, setRawSlippage, deadline, se
               placeholder={(deadline / 60).toString()}
               value={deadlineInput}
               onChange={e => parseCustomDeadline(e.target.value)}
-              style={{ height: 'auto' }}
+              style={{ fontSize: below1196 ? '11px' : '14px', height: 'auto' }}
             />
           </OptionCustom>
           <TYPE.body style={{ paddingLeft: '8px' }} fontSize={14}>

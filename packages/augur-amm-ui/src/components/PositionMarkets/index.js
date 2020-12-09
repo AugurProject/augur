@@ -73,7 +73,7 @@ const DashGrid = styled.div`
   @media screen and (max-width: 680px) {
     display: grid;
     grid-gap: 0.5em;
-    grid-template-columns: 70% 1fr 1fr;
+    grid-template-columns: 50% 1fr 1fr;
     grid-template-areas: 'description noShare yesShare';
   }
 `
@@ -210,7 +210,7 @@ function PositionMarketList({ positions, loading, itemMax = 20 }) {
 
   const ListItem = ({ item }) => {
     return (
-      <DashGrid style={{ height: '48px' }} focus={true}>
+      <DashGrid style={{ height: below800 ? '120px' : '48px' }} focus={true}>
         {!below680 && <TokenLogo tokenInfo={item?.cash?.address} />}
         <DataText style={{ justifyContent: 'flex-start', alignItems: 'center' }}>
           <BasicLink style={{ width: '100%', fontWeight: '400' }} to={'/market/' + item.marketId} key={item.id}>
