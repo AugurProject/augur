@@ -63,3 +63,45 @@
   justify-content: center;
   display: flex;
 }
+
+
+.AppStats {
+  display: flex;
+  padding: 0 @size-36;
+  border-radius: @size-16;
+  border: @size-1 solid var(--simple-border);
+  height: @size-150;
+  background: var(--simple-light-bg);
+
+  > div {
+    display: flex;
+    justify-content: center;
+    border-right: @size-1 solid var(--simple-border);
+    padding: @size-36;
+
+    &:first-of-type {
+      padding-left: 0;
+    }
+
+    &:nth-of-type(3),
+    &:nth-of-type(4),
+    &:nth-of-type(5) {
+      margin: @size-36 0;
+      padding: 0 @size-36;
+    }
+    
+    &:last-of-type {
+      border-right: 0;
+      padding-right: 0;
+    }
+  }
+
+  &.CashAmounts {
+    > div {
+      padding-right: @size-36;
+      &:last-of-type {
+        border-right: @size-1 solid var(--simple-border);
+      }
+    }
+  }
+}
