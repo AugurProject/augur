@@ -15,6 +15,7 @@
 
   > section {
     align-items: center;
+    box-sizing: border-box;
     height: @size-80;
     min-height: @size-80;
     max-height: @size-80;
@@ -53,5 +54,9 @@
         margin-left: auto;
       }
     }
+  }
+  
+  &.TwoTone > section:last-of-type {
+    background: var(--simple-light-bg);
   }
 }
