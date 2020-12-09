@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { useDarkModeManager } from '../../contexts/LocalStorage'
-import { formattedNum } from '../../utils'
+import { formattedNum, getDisplayLiquidity } from '../../utils'
 import { useMedia } from 'react-use'
 import { withRouter } from 'react-router-dom'
 import { TYPE } from '../../Theme'
@@ -177,7 +177,7 @@ function MarketList({ markets, itemMax = 15 }) {
         <MarketCardBottom>
             <div>
               <div>Liquidity</div>
-              <div>${formattedNum((Number(marketData?.amm?.liquidity)).toFixed(2))}</div>
+              <div>{getDisplayLiquidity(marketData?.amm)}</div>
             </div>
 
             <div>

@@ -11,7 +11,7 @@ export const AMM_FACTORY_ADDRESS = '0x2966D979e66FcEA3ED9c41281149836bB420d15D'
 export const BUNDLE_ID = '1'
 export const DEFAULT_NETWORK = '42' // 1 is mainnet
 
-export const SHOW_IN_USD = ['WETH']
+export const SHOW_AMT_AND_USD = ['WETH']
 
 export enum NetworkId {
   Mainnet = '1',

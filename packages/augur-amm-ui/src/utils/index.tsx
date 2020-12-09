@@ -9,10 +9,10 @@ import { GET_BLOCK } from '../apollo/queries'
 import { Text } from 'rebass'
 import _Decimal from 'decimal.js-light'
 import toFormat from 'toformat'
-import { DISTRO_NO_ID, DISTRO_YES_ID, MarketTokens, timeframeOptions, TokenAddressMap, YES_NO_NUM_TICKS } from '../constants'
+import { DISTRO_NO_ID, DISTRO_YES_ID, MarketTokens, SHOW_AMT_AND_USD as SHOW_AMT_AND_USD, timeframeOptions, TokenAddressMap, YES_NO_NUM_TICKS } from '../constants'
 import Numeral from 'numeral'
 import { BigNumber } from '@ethersproject/bignumber'
-import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, ETHER, TokenAmount } from '@uniswap/sdk'
+import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, ETHER, TokenAmount, WETH } from '@uniswap/sdk'
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 import { Contract } from '@ethersproject/contracts'
 import { AddressZero } from '@ethersproject/constants'
@@ -108,6 +108,19 @@ export const toWeeklyDate = date => {
   var wkStart = new Date(new Date(date).setDate(date.getDate() - lessDays))
   var wkEnd = new Date(new Date(wkStart).setDate(wkStart.getDate() + 6))
   return dayjs.utc(wkStart).format('MMM DD') + ' - ' + dayjs.utc(wkEnd).format('MMM DD')
+}
+
+export const getDisplayLiquidity = (ammExchange) => {
+    if (!ammExchange) return '$0.00'
+    // liquidity comes in display value
+    const liquidity = formattedNum(new BN(ammExchange.liquidity).toFixed(2), false);
+    const usd = formattedNum(ammExchange.liquidityUSD, true);
+    const showInUsd = SHOW_AMT_AND_USD.includes(ammExchange?.cash?.name)
+    return showInUsd ? `${liquidity} ${getDisplaySymbol(ammExchange?.cash?.name)} (${usd})` : `$${liquidity}`;
+}
+
+export const getDisplaySymbol = (name: string): string => {
+  return name === 'WETH' ? 'ETH' : name;
 }
 
 export const toPercent = (num: number): string => {

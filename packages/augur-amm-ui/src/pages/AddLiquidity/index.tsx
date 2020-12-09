@@ -21,7 +21,7 @@ import { useDerivedMintInfo, useMintActionHandlers, useMintState } from '../../s
 
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { TYPE } from '../../Theme'
-import { addAmmLiquidity, toPercent } from '../../utils'
+import { addAmmLiquidity, getDisplaySymbol, toPercent } from '../../utils'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import AppBody from '../AppBody'
 import { Dots, Wrapper } from '../../components/swap/styleds'
@@ -204,8 +204,7 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
     )
   }
 
-  const pendingText = `Supplying ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)} ${currencies[Field.CURRENCY_A]?.symbol
-    } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)} ${currencies[Field.CURRENCY_B]?.symbol}`
+  const pendingText = `Supplying ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)} ${getDisplaySymbol(currencies[Field.CURRENCY_A]?.symbol)}`
 
   const handleDismissConfirmation = useCallback(() => {
     setShowConfirm(false)

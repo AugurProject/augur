@@ -9,12 +9,9 @@ import { Divider } from '../../components'
 import { withRouter } from 'react-router-dom'
 import TokenLogo from '../TokenLogo'
 import { RowFixed, AutoRow } from '../Row'
-import { SHOW_IN_USD } from '../../constants'
 import { useLPTokenBalances } from '../../state/wallet/hooks'
 import { TYPE, StyledInternalLink } from '../../Theme'
-import { greaterThanZero } from '../../utils'
-import { formattedNum, toPercent } from '../../utils'
-import { BigNumber as BN } from 'bignumber.js'
+import { greaterThanZero, getDisplayLiquidity, toPercent, formattedNum } from '../../utils'
 
 dayjs.extend(utc)
 
@@ -73,11 +70,7 @@ function AmmExchangeList({ allExchanges, disbaleLinks, marketId }) {
     useEffect(() => {
       if (userTokenBalances && ammExchange?.id) {
         setHasLpTokens(greaterThanZero(userTokenBalances[ammExchange.id]))
-        // liquidity comes in display value
-        const liquidity = formattedNum(new BN(ammExchange.liquidity).toFixed(2), false);
-        const usd = formattedNum(ammExchange.liquidityUSD, true);
-        const showInUsd = SHOW_IN_USD.includes(ammExchange?.cash?.name)
-        setLiquidityUSD(showInUsd ? `${liquidity} (${usd})` : `$${liquidity}`);
+        setLiquidityUSD(getDisplayLiquidity(ammExchange));
       }
     }, [ammExchange])
 

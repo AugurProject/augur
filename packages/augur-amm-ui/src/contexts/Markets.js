@@ -224,7 +224,7 @@ export function useMarketsByAMMLiquidityVolume() {
             cashData && cashData[s.cash] && cashData[s.cash]?.priceUSD ? cashData[s.cash]?.priceUSD : '0'
           const hasPastMarket = keyedPastMarkets[s.id]
           if (amm) {
-            const cashToken = cashTokens[s.cash]
+            const cashToken = {...cashTokens[s.cash], priceUSD: cashPrice}
             // liquidity in USD
             newMarket.amm.liquidityUSD = calculateLiquidity(
               Number(cashToken?.decimals),
@@ -268,6 +268,7 @@ export function useMarketsByAMMLiquidityVolume() {
                   String(volYestwentyfour),
                   String(cashPrice)
                 )
+                newMarket.amm.cash = cashToken;
                 newMarket.amm.volume24hrUSD = volume24hrUsd
               }
             }
