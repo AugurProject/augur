@@ -5,7 +5,7 @@ import Activity from './activity';
 import { SecondaryButton } from 'modules/common/buttons';
 import { LIQUIDITY, POSITIONS, USDC } from 'modules/constants';
 import classNames from 'classnames';
-import { PositionTable } from 'modules/common/tables';
+import { LiquidityTable, PositionTable } from 'modules/common/tables';
 
 const fakePositionsData = [
   {
@@ -102,6 +102,7 @@ export const PortfolioView = () => {
         </div>
         <div>
           {tableView === POSITIONS && fakePositionsData.map(market => <PositionTable market={market} />)}
+          {tableView === LIQUIDITY && fakeLiquidityData.map(market => <LiquidityTable market={market} />)}
         </div>
       </section>
       <section>

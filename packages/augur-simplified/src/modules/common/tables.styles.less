@@ -1,83 +1,103 @@
 @import (reference) '~assets/styles/shared';
 
+.MarketTableHeader {
+  padding: @size-20 @size-32;
+  display: flex;
+  border-bottom: @size-1 solid var(--simple-border);
+  justify-content: center;
+  align-items: center;
+
+  > span {
+    .text-16-semi-bold;
+
+    color: var(--simple-primary-text);
+    flex: 1;
+  }
+
+  > svg {
+    width: @size-20;
+    height: @size-20;
+  }
+}
+
+.SharedTable {
+  display: flex;
+  background: var(--simple-light-bg);
+  border: @size-1 solid var(--simple-border);
+  border-radius: @size-8;
+  flex-direction: column;
+}
+
 .PositionTable {
-    display: flex;
-    background: var(--simple-light-bg);
-    border: @size-1 solid var(--simple-border);
-    border-radius: @size-8;
-    flex-direction: column;
-
-    > div {
-        padding: @size-20 @size-32;
-        display: flex;
-        border-bottom: @size-1 solid var(--simple-border);
-
-        > span {
-            .text-16-semi-bold;
-
-            color: var(--simple-primary-text);
-            flex: 1;
-        }
-
-        > svg {
-            width: @size-20;
-            height: @size-20;
-        }
-    }
+  .SharedTable;
 }
 
 .RowHeaderSharedStyles {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    padding: @size-20 @size-32;
+  padding: @size-20 @size-32;
+  display: grid;
 
-    &:not(:last-of-type) {
-        border-bottom: @size-1 solid var(--simple-border);
+  &:not(:last-of-type) {
+    border-bottom: @size-1 solid var(--simple-border);
+  }
+
+  > li {
+    display: flex;
+
+    &:not(:first-of-type) {
+      justify-content: flex-end;
     }
+  }
+}
 
-    > li {
-        display: flex; 
-
-        &:not(:first-of-type) {
-            justify-content: flex-end;
-        }
-    }
+.PositionRowHeader {
+  grid-template-columns: repeat(6, 1fr);
 }
 
 .HeaderSharedStyles {
-    > li {
-        .text-12-semi-bold;
+  > li {
+    .text-12-semi-bold;
 
-        color: var(--simple-primary-text);
-        text-transform: capitalize;
-    }
+    color: var(--simple-primary-text);
+    text-transform: capitalize;
+  }
 }
 
-
 .RowSharedStyles {
-    > li {
-        .text-12;
+  > li {
+    .text-12;
 
-        color: var(--simple-primary-text);
-    }
+    color: var(--simple-primary-text);
+  }
 }
 
 .PositionRow {
-    .RowHeaderSharedStyles;
-    .RowSharedStyles;
+  .RowHeaderSharedStyles;
+  .RowSharedStyles;
+  .PositionRowHeader;
 }
 
 .PositionHeader {
-    .RowHeaderSharedStyles;
-    .HeaderSharedStyles;
+  .RowHeaderSharedStyles;
+  .HeaderSharedStyles;
+  .PositionRowHeader;
+}
+
+.LiquidityRowHeader {
+  grid-template-columns: repeat(4, 1fr);
 }
 
 .LiquidityRow {
-    .RowHeaderSharedStyles;
-    .RowSharedStyles;
+  .RowHeaderSharedStyles;
+  .RowSharedStyles;
+  .LiquidityRowHeader;
 }
 
 .LiquidityHeader {
-    .RowHeaderSharedStyles;
-    .HeaderSharedStyles;
+  .RowHeaderSharedStyles;
+  .HeaderSharedStyles;
+  .LiquidityRowHeader;
+}
+
+.LiquidityTable {
+  .SharedTable;
 }
