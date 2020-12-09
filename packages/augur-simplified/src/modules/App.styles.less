@@ -1,9 +1,13 @@
 @import (reference) '~assets/styles/shared.less';
 
 .App {
-  max-width: @desktop-max;
-  margin: @size-16 auto;
+  
   display: flex;
   flex-flow: column nowrap;
   grid-gap: @size-16;
+
+  > div {
+    max-width: @desktop-max;
+    margin: @size-96 auto 0;
+  }
 }

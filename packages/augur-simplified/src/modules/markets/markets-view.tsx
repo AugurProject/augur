@@ -11,6 +11,7 @@ import { PrimaryButton } from 'modules/common/buttons';
 
 const fakeMarketData = [
   {
+    id: "0",
     category: 'Covid-19',
     description: "Will Pfizer's COVID-19 vaccine be the first to receive FDA approval or Emergency Use Authorization (EUA)?",
     volume: 350019,
@@ -26,6 +27,7 @@ const fakeMarketData = [
     ],
   },
   {
+    id: "1",
     category: 'Us Politics',
     description: 'How many electoral college votes will be cast for Joe Biden?',
     volume: 350019,
@@ -41,6 +43,7 @@ const fakeMarketData = [
     ],
   },
   {
+    id: "2",
     category: 'Covid-19',
     description: "Will Pfizer's thing happen?",
     volume: 350019,
@@ -56,6 +59,7 @@ const fakeMarketData = [
     ],
   },
   {
+    id: "3",
     category: 'Us Politics',
     inUsd: true,
     description: 'How many electoral college votes?',
@@ -72,6 +76,7 @@ const fakeMarketData = [
     ],
   },
   {
+    id: "4",
     category: 'Covid-19',
     description: "Will Pfizer's thing happen?",
     volume: 350019,
@@ -87,6 +92,7 @@ const fakeMarketData = [
     ],
   },
   {
+    id: "5",
     category: 'Us Politics',
     inUsd: true,
     description: 'How many electoral college votes?',
@@ -103,6 +109,7 @@ const fakeMarketData = [
     ],
   },
   {
+    id: "6",
     category: 'Us Politics',
     description: 'How many electoral college votes?',
     volume: 0,
@@ -168,7 +175,7 @@ const OutcomesTable = ({ outcomes }) => {
   return (
     <div className={Styles.OutcomesTable}>
       {outcomes.map((outcome) => (
-        <div>
+        <div key={`${outcome.description}-${outcome.price}-${outcome.id}`}>
           <span>{outcome.description}</span>
           <span>{formatDai(outcome.price).full}</span>
         </div>
@@ -198,7 +205,7 @@ const MarketCard = ({ market }) => {
           ) : (
             <>
               <ValueLabel
-                label={'total volume'}
+                label="total volume"
                 value={formatDai(market.volume).full}
               />
               <OutcomesTable outcomes={market.outcomes} />
@@ -222,7 +229,7 @@ const MarketsView = () => {
       </ul>
       <section>
         {fakeMarketData.map((market) => (
-          <MarketCard market={market} />
+          <MarketCard key={market.id} market={market} />
         ))}
       </section>
     </div>

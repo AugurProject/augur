@@ -2,25 +2,56 @@
 
 .TopNav {
   align-items: center;
+  background: var(--light-background-color);
+  border-bottom: @size-1 solid var(--simple-border);
   display: flex;
   flex-flow: row nowrap;
+  justify-content: center;
+  height: @size-80;
+  min-height: @size-80;
+  max-height: @size-80;
   width: 100%;
-  grid-gap: @size-16;
+  position: fixed;
 
-  > ol {
-    list-style: none;
+  > section {
+    align-items: center;
+    height: @size-80;
+    min-height: @size-80;
+    max-height: @size-80;
     display: flex;
     flex-flow: row nowrap;
-    grid-gap: @size-12;
-    margin: 0;
-    padding: 0;
+    flex: 1;
+    grid-gap: @size-16;
+    width: 100%;
 
-    > li {
-      flex: 0 auto;
+
+    &:first-of-type {
+      max-width: @size-912;
+      padding-left: @size-88;
+
+      > ol {
+        list-style: none;
+        display: flex;
+        flex-flow: row nowrap;
+        grid-gap: @size-12;
+        margin: 0;
+        padding: 0;
+        min-height: @size-24;
+        height: @size-24;
+    
+        > li {
+          flex: 0 auto;
+        }
+      }
     }
-  }
 
-  > button {
-    margin-left: auto;
+    &:last-of-type {
+      max-width: @size-528;
+      padding-right: @size-88;
+
+      > button {
+        margin-left: auto;
+      }
+    }
   }
 }
