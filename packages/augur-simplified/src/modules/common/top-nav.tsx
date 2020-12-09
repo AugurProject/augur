@@ -7,6 +7,7 @@ import makePath from 'modules/routes/helpers/make-path';
 import Logo from 'modules/common/logo';
 import parsePath from 'modules/routes/helpers/parse-path';
 import classNames from 'classnames';
+import { GearIcon } from 'modules/common/icons';
 
 export const TopNav = () => {
   const location = useLocation();
@@ -31,7 +32,13 @@ export const TopNav = () => {
           title="This doesn't do anything yet!"
           onClick={() => alert('TODO: Make this work.')}
         >
-          Account
+          Connect Account
+        </button>
+        <button
+          title="This doesn't do anything yet!"
+          onClick={() => alert('TODO: Make this work.')}
+        >
+          {GearIcon}
         </button>
       </section>
     </nav>
