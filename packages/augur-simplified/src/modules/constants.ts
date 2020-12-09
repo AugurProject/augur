@@ -24,3 +24,7 @@ export const REP = 'REP';
 export const DAI = 'DAI';
 export const USDT = 'USDT';
 export const USDC = 'USDC';
+
+// Portfolio table views
+export const POSITIONS = 'positions';
+export const LIQUIDITY = 'liquidity';
