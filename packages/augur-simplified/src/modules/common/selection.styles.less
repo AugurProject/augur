@@ -7,7 +7,7 @@
   display: flex;
   position: relative;
   width: 100%;
-
+ 
   > span {
     display: none;
   }
@@ -108,6 +108,22 @@
   }
 }
 
+.label {
+  display: flex;
+
+  > span {
+    .text-16-bold;
+
+    color: var(--simple-primary-text);
+    text-transform: capitalize;
+
+  }
+
+  &.Selected {
+    display: flex;
+  }
+}
+
 .SelectedLabel {
   color: var(--color-primary-text);
 
@@ -193,8 +209,7 @@
 
   max-width: fit-content;
   max-width: -moz-fit-content;
-
-  height: @size-24;
+  border: 0;
 
   @media @breakpoint-mobile {
     height: @size-32;
@@ -207,20 +222,21 @@
       .text-10-bold;
     }
 
-    background: var(--color-secondary-action);
-    padding: 0 @size-8;
-    text-transform: uppercase;
+    background: var(--simple-alternate-background);
+    border: @size-1 solid var(--simple-border);
+    border-radius: @size-8;
+    padding: @size-12 @size-18 @size-12 @size-16;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     // vertical line before arrow icon
     > span {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-
       flex: 1;
       display: flex;
-      border-right: @size-1 solid var(--color-secondary-action-outline);
-      padding: @size-5 @size-8 @size-5 0;
 
       @media @breakpoint-mobile {
         border-right: @size-1 solid var(--color-secondary-action-outline);
@@ -230,11 +246,14 @@
 
     // arrow
     > svg {
-      margin: 0 0 0 @size-8;
+      margin-left: @size-46;
+      display: flex;
+      width: @size-15;
+      height: @size-9;
     }
 
     &:hover {
-      background: var(--color-secondary-action);
+      background: var(--simple-alternate-background);
     }
   }
 

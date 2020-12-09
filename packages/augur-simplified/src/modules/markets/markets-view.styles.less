@@ -13,7 +13,7 @@
     display: flex;
     flex-flow: row nowrap;
     width: 100%;
-    grid-gap: @size-16;
+    grid-gap: @size-20;
   }
 
   > section {
@@ -64,12 +64,14 @@
 
     > span {
       .text-16-semi-bold;
+      .limit-lines(3);
 
       color: var(--simple-primary-text);
       grid-column: 1 / span 3;
       margin-top: @size-16;
       margin-bottom: @size-38;
       text-align: left;
+      height: @size-60;
     }
 
     > div:nth-of-type(4) {
