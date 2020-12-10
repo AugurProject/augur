@@ -1,14 +1,29 @@
 import React from 'react';
 import Styles from 'modules/markets/markets-view.styles.less';
 import makePath from 'modules/routes/helpers/make-path';
-import { COVID, CRYPTO, FEDERAL_FUNDS, FINANCE, MARKET, MEDICAL, POLITICS, REPUSD } from 'modules/constants';
+import {
+  COVID,
+  CRYPTO,
+  FEDERAL_FUNDS,
+  FINANCE,
+  MARKET,
+  MEDICAL,
+  POLITICS,
+  REPUSD,
+} from 'modules/constants';
 import { Link } from 'react-router-dom';
-import { ValueLabel, AppViewStats, CategoryLabel, CategoryIcon } from 'modules/common/labels';
+import {
+  ValueLabel,
+  AppViewStats,
+  CategoryLabel,
+  CategoryIcon,
+} from 'modules/common/labels';
 import { formatDai } from 'utils/format-number';
 import { EthIcon, UsdIcon } from 'modules/common/icons';
 import classNames from 'classnames';
 import { PrimaryButton } from 'modules/common/buttons';
 import { SquareDropdown } from 'modules/common/selection';
+import { Pagination } from 'modules/common/pagination';
 
 const fakeMarketData = [
   {
@@ -189,23 +204,35 @@ const MarketsView = () => {
       <ul>
         <SquareDropdown
           onChange={() => null}
-          options={[{ label: 'Open', value: 0 }, { label: 'Closed', value: 1 }]}
-          defaultValue='All Markets'
+          options={[
+            { label: 'Open', value: 0 },
+            { label: 'Closed', value: 1 },
+          ]}
+          defaultValue="All Markets"
         />
-         <SquareDropdown
+        <SquareDropdown
           onChange={() => null}
-          options={[{ label: 'Open', value: 0 }, { label: 'Closed', value: 1 }]}
-          defaultValue='Volume'
+          options={[
+            { label: 'Open', value: 0 },
+            { label: 'Closed', value: 1 },
+          ]}
+          defaultValue="Volume"
         />
-         <SquareDropdown
+        <SquareDropdown
           onChange={() => null}
-          options={[{ label: 'Open', value: 0 }, { label: 'Closed', value: 1 }]}
-          defaultValue='Open'
+          options={[
+            { label: 'Open', value: 0 },
+            { label: 'Closed', value: 1 },
+          ]}
+          defaultValue="Open"
         />
-         <SquareDropdown
+        <SquareDropdown
           onChange={() => null}
-          options={[{ label: 'Open', value: 0 }, { label: 'Closed', value: 1 }]}
-          defaultValue='All Currencies'
+          options={[
+            { label: 'Open', value: 0 },
+            { label: 'Closed', value: 1 },
+          ]}
+          defaultValue="All Currencies"
         />
       </ul>
       <section>
@@ -213,6 +240,13 @@ const MarketsView = () => {
           <MarketCard key={market.id} market={market} />
         ))}
       </section>
+      <Pagination
+        page={1}
+        itemCount={10}
+        itemsPerPage={9}
+        action={() => null}
+        updateLimit={() => null}
+      />
     </div>
   );
 };

@@ -2,7 +2,7 @@ import React from 'react';
 import Styles from 'modules/common/labels.styles.less';
 import classNames from 'classnames';
 import { formatDai } from 'utils/format-number';
-import { EthIcon, PillIcon, UsdIcon } from './icons';
+import { EthIcon, UsdIcon } from './icons';
 import { POPULAR_CATEGORIES_ICONS } from 'modules/constants';
 
 interface ValueLabelProps {
