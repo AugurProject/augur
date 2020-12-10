@@ -46,8 +46,8 @@ export function handleAddLiquidity(event: AddLiquidityEvent): void {
   addLiquidity.timestamp = event.block.timestamp;
   addLiquidity.ammExchange = event.address.toHexString();
   addLiquidity.cash = event.params.cash;
-  addLiquidity.noShares = event.params.noShares;
-  addLiquidity.yesShares = event.params.yesShares;
+  addLiquidity.noShares = event.params.shortShares;
+  addLiquidity.yesShares = event.params.longShares;
   addLiquidity.sender = event.params.sender.toHexString();
   addLiquidity.save();
 }
@@ -60,8 +60,8 @@ export function handleRemoveLiquidity(event: RemoveLiquidityEvent): void {
   removeLiquidity.timestamp = event.block.timestamp;
   removeLiquidity.ammExchange = event.address.toHexString();
   removeLiquidity.cash = event.params.cash;
-  removeLiquidity.noShares = event.params.noShares;
-  removeLiquidity.yesShares = event.params.yesShares;
+  removeLiquidity.noShares = event.params.shortShares;
+  removeLiquidity.yesShares = event.params.longShares;
   removeLiquidity.sender = event.params.sender.toHexString();
   removeLiquidity.save();
 }
@@ -84,7 +84,7 @@ export function handleEnterPosition(event: EnterPositionEvent): void {
   enterPosition.cash = event.params.cash;
   enterPosition.price = event.params.cash.toBigDecimal().div(event.params.outputShares.toBigDecimal().times(numTicks))
 
-  if(event.params.buyYes) {
+  if(event.params.buyLong) {
     updateVolumeValues(event.address, event.params.cash, BigInt.fromI32(0), event.params.outputShares);
     enterPosition.noShares = BigInt.fromI32(0);
     enterPosition.yesShares = event.params.outputShares;
@@ -114,18 +114,18 @@ export function handleExitPosition(event: ExitPositionEvent): void {
   exitPosition.timestamp = event.block.timestamp;
   exitPosition.ammExchange = event.address.toHexString();
   exitPosition.cash = event.params.cashPayout.times(BigInt.fromI32(-1));
-  exitPosition.invalidShares = event.params.invalidShares;
-  exitPosition.noShares = event.params.noShares;
-  exitPosition.yesShares = event.params.yesShares;
+  exitPosition.invalidShares = event.params.shortShares;
+  exitPosition.noShares = event.params.shortShares;
+  exitPosition.yesShares = event.params.longShares;
   exitPosition.sender = event.params.sender.toHexString();
-  exitPosition.price = event.params.cashPayout.toBigDecimal().div(event.params.yesShares.plus(event.params.noShares).toBigDecimal().times(numTicks))
+  exitPosition.price = event.params.cashPayout.toBigDecimal().div(event.params.longShares.plus(event.params.shortShares).toBigDecimal().times(numTicks))
   exitPosition.save();
 
   updateVolumeValues(
     event.address,
     event.params.cashPayout.times(BigInt.fromI32(-1)),
-    event.params.noShares,
-    event.params.yesShares
+    event.params.shortShares,
+    event.params.longShares
   );
 }
 
@@ -139,7 +139,7 @@ export function handleSwapPosition(event: SwapPositionEvent): void {
   swapPosition.ammExchange = event.address.toHexString();
   swapPosition.sender = event.params.sender.toHexString();
 
-  if (event.params.inputYes) {
+  if (event.params.inputLong) {
     updateVolumeValues(
       event.address,
       BigInt.fromI32(0),
