@@ -126,3 +126,45 @@
 .PositionFooter {
     .FooterSharedStyles;
 }
+
+.PositionsLiquidityViewSwitcher {
+  > div:nth-of-type(1) {
+    margin-top: @size-64;
+    margin-bottom: @size-24;
+    display: flex;
+
+    > span {
+      .text-20-bold;
+
+      color: var(--simple-secondary-text);
+      text-transform: capitalize;
+      cursor: pointer;
+
+      &.Selected {
+        color: var(--simple-primary-text);
+      }
+
+      &:first-of-type {
+        margin-right: @size-32;
+      }
+    }
+  }
+
+  > div:nth-of-type(2) {
+    > div {
+      &:not(:last-of-type) {
+        margin-bottom: @size-12;
+      }
+    }
+
+    > div:last-of-type {
+      justify-content: center;
+    }
+  }
+}
+
+.PaginationFooter {
+  .FooterSharedStyles;
+
+  justify-content: center;
+}

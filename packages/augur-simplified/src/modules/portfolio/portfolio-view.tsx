@@ -5,7 +5,7 @@ import Activity from './activity';
 import { SecondaryButton } from 'modules/common/buttons';
 import { LIQUIDITY, POSITIONS, USDC } from 'modules/constants';
 import classNames from 'classnames';
-import { LiquidityTable, PositionTable } from 'modules/common/tables';
+import { LiquidityTable, PositionsLiquidityViewSwitcher, PositionTable } from 'modules/common/tables';
 
 const fakePositionsData = [
   {
@@ -84,41 +84,12 @@ const fakeLiquidityData = [
 ];
 
 export const PortfolioView = () => {
-  const [tableView, setTableView] = useState(POSITIONS);
-
   return (
     <div className={Styles.PortfolioView}>
       <section>
         <AppViewStats />
         <SecondaryButton text="$24.00 in Winnings to claim" />
-        <div>
-          <span
-            onClick={() => setTableView(POSITIONS)}
-            className={classNames({
-              [Styles.Selected]: tableView === POSITIONS,
-            })}
-          >
-            {POSITIONS}
-          </span>
-          <span
-            onClick={() => setTableView(LIQUIDITY)}
-            className={classNames({
-              [Styles.Selected]: tableView === LIQUIDITY,
-            })}
-          >
-            {LIQUIDITY}
-          </span>
-        </div>
-        <div>
-          {tableView === POSITIONS &&
-            fakePositionsData.map((market) => (
-              <PositionTable key={market.id} market={market} />
-            ))}
-          {tableView === LIQUIDITY &&
-            fakeLiquidityData.map((market) => (
-              <LiquidityTable key={market.id} market={market} />
-            ))}
-        </div>
+        <PositionsLiquidityViewSwitcher />
       </section>
       <section>
         <Activity />

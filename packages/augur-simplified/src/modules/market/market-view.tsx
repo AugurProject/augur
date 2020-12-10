@@ -3,7 +3,7 @@ import Styles from 'modules/market/market-view.styles.less';
 import { formatDai } from 'utils/format-number';
 import classNames from 'classnames';
 import { createBigNumber } from 'utils/create-big-number';
-import { PillIcon, USDCIcon } from 'modules/common/icons';
+import { PositionsLiquidityViewSwitcher } from 'modules/common/tables';
 
 const MARKET_DATA = {
   id: '0xdeadbeef',
@@ -29,6 +29,7 @@ const MARKET_DATA = {
 
 const MarketView = ({ market = MARKET_DATA }) => {
   const [showMoreDetails, setShowMoreDetails] = useState(false);
+
   return (
     <div className={Styles.MarketView}>
       <section>
@@ -57,7 +58,7 @@ const MarketView = ({ market = MARKET_DATA }) => {
           </li>
         </ul>
         <section>Charts go here...</section>
-        <section>Liquidity/positions tables here</section>
+        <PositionsLiquidityViewSwitcher marketId={market.id} />
         <div
           className={classNames(Styles.Details, {
             [Styles.isClosed]: !showMoreDetails,
