@@ -402,14 +402,14 @@ function TxnList({ allExchanges, color, cashTokens, cashData }) {
               >
                 Adds
             </SortText>
-              {/* <SortText
+              <SortText
                 onClick={() => {
                   setTxFilter(TXN_TYPE.REMOVE)
                 }}
                 active={txFilter === TXN_TYPE.REMOVE}
               >
                 Removes
-            </SortText> */}
+              </SortText>
             </RowFixed>
           )}
 
