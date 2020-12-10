@@ -3,10 +3,10 @@ import Styles from 'modules/market/market-view.styles.less';
 import { formatDai } from 'utils/format-number';
 import classNames from 'classnames';
 import { createBigNumber } from 'utils/create-big-number';
-import { PositionsLiquidityViewSwitcher } from 'modules/common/tables';
 import { UsdIcon } from 'modules/common/icons';
 import { CategoryIcon, CategoryLabel } from 'modules/common/labels';
 import { COVID, MEDICAL } from 'modules/constants';
+import { PositionsLiquidityViewSwitcher, TransactionsTable } from 'modules/common/tables';
 
 const MARKET_DATA = {
   id: '0xdeadbeef',
@@ -76,6 +76,12 @@ const MarketView = ({ market = MARKET_DATA }) => {
               {showMoreDetails ? 'Read Less' : 'Read More'}
             </button>
           )}
+        </div>
+        <div className={Styles.TransactionsTable}>
+          <span>
+            Transactions
+          </span>
+          <TransactionsTable />
         </div>
       </section>
       <section>SideBar Thing</section>

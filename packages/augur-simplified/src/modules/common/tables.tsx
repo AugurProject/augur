@@ -8,6 +8,7 @@ import {
   LIQUIDITY,
   fakeLiquidityData,
   fakePositionsData,
+  fakeTransactionsData,
 } from 'modules/constants';
 import { Pagination } from 'modules/common/pagination';
 
@@ -247,6 +248,57 @@ export const PositionsLiquidityViewSwitcher = ({
             )}
           </>
         )}
+      </div>
+    </div>
+  );
+};
+
+const TransactionsHeader = () => {
+  return (
+    <ul className={Styles.TransactionsHeader}>
+      <li>
+        <span>all</span>
+        <span>swaps</span>
+        <span>adds</span>
+        <span>removes</span>
+      </li>
+      <li>total value</li>
+      <li>token amount</li>
+      <li>share amount</li>
+      <li>account</li>
+      <li>time</li>
+    </ul>
+  );
+};
+
+const TransactionRow = ({ transaction }) => {
+  return (
+    <ul className={Styles.TransactionRow}>
+      <li>{transaction.title}</li>
+      <li>{transaction.totalValue}</li>
+      <li>{transaction.tokenAmount}</li>
+      <li>{transaction.shareAmount}</li>
+      <li>{transaction.account}</li>
+      <li>{transaction.time}</li>
+    </ul>
+  );
+};
+
+export const TransactionsTable = () => {
+  return (
+    <div className={Styles.TransactionsTable}>
+      <TransactionsHeader />
+      {fakeTransactionsData[0].transactions.map((transaction) => (
+        <TransactionRow key={transaction.id} transaction={transaction} />
+      ))}
+      <div className={Styles.PaginationFooter}>
+        <Pagination
+          page={1}
+          itemCount={10}
+          itemsPerPage={9}
+          action={() => null}
+          updateLimit={() => null}
+        />
       </div>
     </div>
   );
