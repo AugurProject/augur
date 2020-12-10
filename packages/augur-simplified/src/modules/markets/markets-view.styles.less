@@ -42,7 +42,7 @@
     text-align: center;
     background: var(--simple-light-bg);
     display: grid;
-    grid-template-columns: auto auto 1fr;
+    grid-template-columns: @size-50 auto 1fr;
     padding: @size-24;
 
     > div {
@@ -51,11 +51,6 @@
 
     > div:first-of-type {
       margin-right: @size-6;
-      border: @size-1 solid var(--covid-color);
-      border-radius: @size-8;
-      justify-content: center;
-      align-items: center;
-      padding: @size-4 @size-10;
     }
 
     > div:nth-of-type(3) {

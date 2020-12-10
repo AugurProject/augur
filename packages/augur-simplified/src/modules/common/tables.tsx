@@ -1,6 +1,7 @@
 import React from 'react';
 import Styles from 'modules/common/tables.styles.less';
 import { UsdIcon } from './icons';
+import { PrimaryButton, SecondaryButton } from './buttons';
 
 interface Position {
   id: string;
@@ -34,6 +35,7 @@ interface MarketPosition {
   description: string;
   asset: string;
   positions: Position[];
+  claimableWinnings?: string;
 }
 
 interface LiquidityTableProps {
@@ -75,6 +77,18 @@ const PositionRow = ({ position }) => {
   );
 };
 
+interface PositionFooterProps {
+  claimableWinnings?: string;
+}
+export const PositionFooter = ({ claimableWinnings }: PositionFooterProps) => {
+  return (
+    <div className={Styles.PositionFooter}>
+      {claimableWinnings && <SecondaryButton text={`${claimableWinnings} in Winnings to claim`} />}
+      <PrimaryButton text="trade" />
+    </div>
+  );
+};
+
 export const PositionTable = ({ market }: PositionsTableProps) => {
   return (
     <div className={Styles.PositionTable}>
@@ -83,6 +97,7 @@ export const PositionTable = ({ market }: PositionsTableProps) => {
       {market.positions.map((position) => (
         <PositionRow key={position.id} position={position} />
       ))}
+      <PositionFooter claimableWinnings={market.claimableWinnings} />
     </div>
   );
 };
@@ -109,6 +124,15 @@ const LiquidityRow = ({ liquidity }) => {
   );
 };
 
+export const LiquidityFooter = () => {
+  return (
+    <div className={Styles.LiquidityFooter}>
+      <PrimaryButton text="remove liquidity" />
+      <SecondaryButton text="add liquidity" />
+    </div>
+  );
+};
+
 export const LiquidityTable = ({ market }: LiquidityTableProps) => {
   return (
     <div className={Styles.LiquidityTable}>
@@ -117,6 +141,7 @@ export const LiquidityTable = ({ market }: LiquidityTableProps) => {
       {market.liquidity.map((liquidity) => (
         <LiquidityRow key={liquidity.id} liquidity={liquidity} />
       ))}
+      <LiquidityFooter />
     </div>
   );
 };
