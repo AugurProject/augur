@@ -62,6 +62,7 @@
   white-space: nowrap;
   justify-content: center;
   display: flex;
+  text-transform: capitalize;
 }
 
 
@@ -103,5 +104,35 @@
         border-right: @size-1 solid var(--simple-border);
       }
     }
+  }
+}
+
+.CategoryIcon {
+  display: flex;
+  border-radius: @size-8;
+  justify-content: center;
+  align-items: center;
+  width: @size-42;
+  height: @size-30;
+
+  > svg {
+    width: @size-20;
+    height: @size-20;
+  }
+
+  &.medical {
+    border: @size-1 solid var(--medical-color);
+  }
+
+  &.crypto {
+    border: @size-1 solid var(--crypto-color);
+  }
+
+  &.finance {
+    border: @size-1 solid var(--finance-color);
+  }
+
+  &.politics {
+    border: @size-1 solid var(--politics-color);
   }
 }

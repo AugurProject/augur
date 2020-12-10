@@ -1,11 +1,11 @@
 import React from 'react';
 import Styles from 'modules/markets/markets-view.styles.less';
 import makePath from 'modules/routes/helpers/make-path';
-import { MARKET } from 'modules/constants';
+import { COVID, CRYPTO, FEDERAL_FUNDS, FINANCE, MARKET, MEDICAL, POLITICS, REPUSD } from 'modules/constants';
 import { Link } from 'react-router-dom';
-import { ValueLabel, AppViewStats, CategoryLabel } from 'modules/common/labels';
+import { ValueLabel, AppViewStats, CategoryLabel, CategoryIcon } from 'modules/common/labels';
 import { formatDai } from 'utils/format-number';
-import { EthIcon, PillIcon, UsdIcon } from 'modules/common/icons';
+import { EthIcon, UsdIcon } from 'modules/common/icons';
 import classNames from 'classnames';
 import { PrimaryButton } from 'modules/common/buttons';
 import { SquareDropdown } from 'modules/common/selection';
@@ -13,7 +13,8 @@ import { SquareDropdown } from 'modules/common/selection';
 const fakeMarketData = [
   {
     id: '0',
-    category: 'Covid-19',
+    subcategory: COVID,
+    category: MEDICAL,
     description:
       "Will Pfizer's COVID-19 vaccine be the first to receive FDA approval or Emergency Use Authorization (EUA)?",
     volume: 350019,
@@ -30,7 +31,8 @@ const fakeMarketData = [
   },
   {
     id: '1',
-    category: 'Us Politics',
+    subcategory: 'Us Politics',
+    category: POLITICS,
     description: 'How many electoral college votes will be cast for Joe Biden?',
     volume: 350019,
     outcomes: [
@@ -46,7 +48,8 @@ const fakeMarketData = [
   },
   {
     id: '2',
-    category: 'Covid-19',
+    subcategory: 'Covid-19',
+    category: MEDICAL,
     description: "Will Pfizer's thing happen?",
     volume: 350019,
     outcomes: [
@@ -62,7 +65,8 @@ const fakeMarketData = [
   },
   {
     id: '3',
-    category: 'Us Politics',
+    subcategory: REPUSD,
+    category: CRYPTO,
     inUsd: true,
     description: 'How many electoral college votes?',
     volume: 350019,
@@ -79,7 +83,8 @@ const fakeMarketData = [
   },
   {
     id: '4',
-    category: 'Covid-19',
+    subcategory: FEDERAL_FUNDS,
+    category: FINANCE,
     description: "Will Pfizer's thing happen?",
     volume: 350019,
     outcomes: [
@@ -95,7 +100,8 @@ const fakeMarketData = [
   },
   {
     id: '5',
-    category: 'Us Politics',
+    subcategory: 'Us Politics',
+    category: FINANCE,
     inUsd: true,
     description: 'How many electoral college votes?',
     volume: 350019,
@@ -112,7 +118,8 @@ const fakeMarketData = [
   },
   {
     id: '6',
-    category: 'Us Politics',
+    subcategory: 'Us Politics',
+    category: FINANCE,
     description: 'How many electoral college votes?',
     volume: 0,
     noLiquidity: true,
@@ -151,8 +158,8 @@ const MarketCard = ({ market }) => {
     >
       <Link to={makePath(MARKET)}>
         <div>
-          <div>{PillIcon}</div>
-          <CategoryLabel category={market.category} />
+          <CategoryIcon category={market.category} />
+          <CategoryLabel category={market.subcategory} />
           <div>{market.inUsd ? UsdIcon : EthIcon}</div>
           <span>{market.description}</span>
           {market.noLiquidity ? (

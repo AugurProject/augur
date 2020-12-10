@@ -107,3 +107,22 @@
 .LiquidityTable {
   .SharedTable;
 }
+
+.FooterSharedStyles {
+    display: flex;
+    justify-content: flex-end;
+    padding: @size-20;
+    border-top: @size-1 solid var(--simple-border);
+
+    > button:nth-of-type(2) {
+        margin-left: @size-11;
+    }
+}
+
+.LiquidityFooter {
+    .FooterSharedStyles;
+}
+
+.PositionFooter {
+    .FooterSharedStyles;
+}
