@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect, useRef } from 'react';
+import React, { Component } from 'react';
 import classNames from 'classnames';
 import Styles from 'modules/common/selection.styles.less';
 import { SimpleChevron } from './icons';
@@ -170,7 +170,7 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
       preLabel,
       preLabelClean,
     } = this.props;
-    const { selected, showList, isDisabled, sortedList } = this.state;
+    const { selected, showList, sortedList } = this.state;
     return (
       <div
         style={sortByStyles}

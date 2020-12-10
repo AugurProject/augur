@@ -3,6 +3,7 @@ import Styles from 'modules/common/tables.styles.less';
 import { UsdIcon } from './icons';
 
 interface Position {
+  id: string;
   outcome: string;
   quantityOwned: number;
   avgPricePaid: string;
@@ -16,12 +17,14 @@ interface PositionsTableProps {
 }
 
 interface Liquidity {
+  id: string;
   liquiditySharesOwned: number;
   feesEarned: string;
   currentValue: string;
 }
 
 interface MarketLiquidity {
+  id: string;
   description: string;
   asset: string;
   liquidity: Liquidity[];
@@ -78,7 +81,7 @@ export const PositionTable = ({ market }: PositionsTableProps) => {
       <MarketTableHeader market={market} />
       <PositionHeader />
       {market.positions.map((position) => (
-        <PositionRow position={position} />
+        <PositionRow key={position.id} position={position} />
       ))}
     </div>
   );
@@ -112,7 +115,7 @@ export const LiquidityTable = ({ market }: LiquidityTableProps) => {
       <MarketTableHeader market={market} />
       <LiquidityHeader />
       {market.liquidity.map((liquidity) => (
-        <LiquidityRow liquidity={liquidity} />
+        <LiquidityRow key={liquidity.id} liquidity={liquidity} />
       ))}
     </div>
   );
