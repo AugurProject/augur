@@ -3,9 +3,8 @@ import Styles from 'modules/portfolio/portfolio-view.styles.less';
 import { AppViewStats } from 'modules/common/labels';
 import Activity from './activity';
 import { SecondaryButton } from 'modules/common/buttons';
-import { LIQUIDITY, POSITIONS, USDC } from 'modules/constants';
-import classNames from 'classnames';
-import { LiquidityTable, PositionsLiquidityViewSwitcher, PositionTable } from 'modules/common/tables';
+import { USDC } from 'modules/constants';
+import { PositionsLiquidityViewSwitcher } from 'modules/common/tables';
 
 const fakePositionsData = [
   {
