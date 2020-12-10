@@ -194,7 +194,7 @@ function shapeAMMData(amm) {
     // TODO: this data will come from graph call
     priceYes: Number(amm.percentageNo) / 100,
     priceNo: Number(amm.percentageYes) / 100,
-    cash: amm.shareToken.cash.id,
+    cash: amm.shareToken.cash,
     sharetoken: amm?.shareToken?.id,
     hasLiquidity: amm?.liquidity && amm?.liquidity !== '0'
   }
@@ -311,11 +311,13 @@ export function useShareTokens(cash) {
 
 export function useMarketAmm(marketId, amm) {
   const market = useMarket(marketId)
+  const cashTokens = useMarketCashTokens()
   let ammExchange = null
   let doesExist = market && market.amms && market.amms.length > 0
   if (doesExist) {
     const exchange = market.amms.find(a => a.id.toLowerCase() === amm?.toLowerCase())
-    ammExchange = exchange ? shapeAMMData(exchange) : null
+    const cash = cashTokens[exchange?.shareToken?.cash?.id]
+    ammExchange = exchange ? {...shapeAMMData(exchange), cash } : null
   }
   return ammExchange
 }

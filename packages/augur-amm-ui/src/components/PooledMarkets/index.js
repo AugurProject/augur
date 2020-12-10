@@ -231,7 +231,7 @@ function PooledMarketList({ balances, itemMax = 20 }) {
               setSortDirection(sortedColumn !== SORT_FIELD.STATUS ? true : !sortDirection)
             }}
           >
-            Balance
+            LP Tokens
           </Text>
         </Flex>
         {!below800 && (

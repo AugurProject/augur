@@ -29,7 +29,7 @@ import { useWalletModalToggle } from '../../state/application/hooks'
 import { useLPTokenBalances } from '../../state/wallet/hooks'
 import { useMarketAmm } from '../../contexts/Markets'
 import { tryParseAmount } from '../../state/swap/hooks'
-import { formatTokenAmount, formatShares, removeAmmLiquidity } from '../../utils'
+import { formatTokenAmount, formatShares, removeAmmLiquidity, formatToDisplayValue, formattedNum } from '../../utils'
 import { Token } from '@uniswap/sdk'
 
 function RemoveLiquidity({
@@ -40,8 +40,8 @@ function RemoveLiquidity({
   const { account, chainId, library } = useActiveWeb3React()
   const [userTokenBalances] = useLPTokenBalances()
   const ammExchange = useMarketAmm(marketId, ammExchangeId)
-  const currencyA = useCurrency(ammExchange?.cash)
-  const currencyLP = useMemo(() => new Token(chainId, ammExchangeId, 18, currencyA?.symbol, currencyA?.name), [ammExchangeId])
+  const currencyA = useCurrency(ammExchange?.cash?.id)
+  const currencyLP = useMemo(() => new Token(chainId, ammExchangeId, Number(ammExchange?.cash?.decimals || 18), currencyA?.symbol, currencyA?.name), [ammExchangeId, ammExchange?.cash?.decimals])
   const ammFactory = useAmmFactoryAddress()
   const [liquidity, setLiquidity] = useState('0')
   const [breakdown, setBreakdown] = useState({ noShares: '0', yesShares: '0', cashShares: '0' })
@@ -53,7 +53,7 @@ function RemoveLiquidity({
   )
 
   const theme = useContext(ThemeContext)
-  const useEth = doUseETH(ammExchange?.cash)
+  const useEth = doUseETH(ammExchange?.cash?.id)
   // modal and loading
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [attemptingTxn, setAttemptingTxn] = useState(false) // clicked confirm
@@ -76,7 +76,6 @@ function RemoveLiquidity({
       throw new Error('missing currency amounts')
     }
 
-    if (!currencyA) throw new Error('missing tokens')
     const liquidityAmount = liquidity
     if (!liquidityAmount) throw new Error('missing liquidity amount')
 
@@ -86,7 +85,7 @@ function RemoveLiquidity({
         setAttemptingTxn(false)
 
         addTransaction(response, {
-          summary: 'Remove ' + formatShares(liquidity)
+          summary: 'Remove ' + formatToDisplayValue(liquidity, ammExchange?.cash?.decimals)
         })
 
         setTxHash(response.hash)
@@ -94,7 +93,7 @@ function RemoveLiquidity({
         ReactGA.event({
           category: 'Liquidity',
           action: 'Remove',
-          label: currencyA?.symbol
+          label: ammExchange?.cash?.symbol
         })
       })
       .catch((error: Error) => {
@@ -130,7 +129,7 @@ function RemoveLiquidity({
             <TokenLogo tokenInfo={ammExchange?.cash} showSymbol size={'12px'} />
           </Text>
           <Text fontSize={24} fontWeight={500} style={{ marginLeft: '10px' }}>
-            {formatTokenAmount(breakdown.cashShares, currencyA?.decimals)}
+            {formattedNum(breakdown.cashShares)}
           </Text>
         </RowBetween>
       </AutoColumn>
@@ -145,7 +144,7 @@ function RemoveLiquidity({
             LP Tokens Burned
           </Text>
           <Text fontWeight={500} fontSize={16}>
-            {liquidity}
+            {formatToDisplayValue(liquidity, ammExchange?.cash?.decimals)}
           </Text>
         </RowBetween>
 
@@ -158,7 +157,7 @@ function RemoveLiquidity({
     )
   }
 
-  const pendingText = `Removing ${liquidity} ${currencyA?.symbol}`
+  const pendingText = `Removing ${formatToDisplayValue(liquidity, ammExchange?.cash?.decimals)} LP tokens`
 
   const updateLiquidityPercent = (value: number) => {
     if (value === 0) return setError('Enter an amount')
@@ -169,7 +168,13 @@ function RemoveLiquidity({
 
     setLiquidity(newLiquidity)
     getRemoveLiquidityBreakdown(augurClient, marketId, ammExchange?.sharetoken, ammExchange?.fee, newLiquidity, result => {
-      setBreakdown(result)
+      const decimals = ammExchange?.cash?.decimals || 18;
+      const breakdown = {
+        noShares: formatShares(result?.noShares, decimals),
+        yesShares: formatShares(result?.yesShares, decimals),
+        cashShares: formatShares(result?.cashShares, decimals)
+      }
+      setBreakdown(breakdown)
       setError(null)
     }, useEth)
     if (newLiquidity === '0') setError('Enter an amount')
@@ -251,7 +256,7 @@ function RemoveLiquidity({
                   <Text fontSize={12} fontWeight={500}>
                     LP Tokens:
                     </Text>
-                  <Text fontSize={12}>{formatShares(liquidity)}</Text>
+                  <Text fontSize={12}>{formatToDisplayValue(liquidity, ammExchange?.cash?.decimals)}</Text>
                 </RowBetween>
                 <RowBetween>
                   <Text fontSize={12} fontWeight={500}>
@@ -267,7 +272,7 @@ function RemoveLiquidity({
                 </RowBetween>
                 <RowBetween>
                   <TokenLogo showSymbol size={'12px'} tokenInfo={ammExchange?.cash} />
-                  <Text fontSize={12}>{formatTokenAmount(breakdown?.cashShares, currencyA?.decimals)}</Text>
+                  <Text fontSize={12}>{formattedNum(breakdown?.cashShares)}</Text>
                 </RowBetween>
               </AutoColumn>
             </LightCard>

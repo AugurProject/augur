@@ -152,6 +152,7 @@ export const formatCurrencyAmount = (outputAmount: TokenAmount | CurrencyAmount)
 }
 
 export const formatToDisplayValue = (num = "0", decimals = "18") => {
+  if (isNaN(Number(num))) return "0"
   const displayValue = new BN(num).times(YES_NO_NUM_TICKS).div(new BN(10).pow(decimals))
   return toSignificant(String(displayValue), 6)
 }

@@ -62,9 +62,9 @@ export function getRemoveLiquidityBreakdown(augurClient, marketId: string, paraS
     useEth
   }).then(results => {
     const breakdown = {
-      noShares: formatShares(results.noShares),
-      yesShares: formatShares(results.yesShares),
-      cashShares: results.cashShares
+      noShares: results?.noShares,
+      yesShares: results?.yesShares,
+      cashShares: results?.cashShares
     }
     setMethod(breakdown)
   })
