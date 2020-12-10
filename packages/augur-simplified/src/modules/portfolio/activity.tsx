@@ -2,6 +2,7 @@ import React from 'react';
 import Styles from 'modules/portfolio/activity.styles.less';
 import { ADD_LIQUIDITY, BUY, SELL, USDC } from 'modules/constants';
 import { UsdIcon } from 'modules/common/icons';
+import { Pagination } from 'modules/common/pagination';
 
 const fakeActivityData = [
   {
@@ -125,6 +126,13 @@ export const Activity = () => (
         </div>
       ))}
     </div>
+    <Pagination
+      page={1}
+      itemCount={10}
+      itemsPerPage={9}
+      action={() => null}
+      updateLimit={() => null}
+    />
   </div>
 );
 

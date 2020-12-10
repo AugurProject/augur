@@ -6,6 +6,7 @@ import { SecondaryButton } from 'modules/common/buttons';
 import { LIQUIDITY, POSITIONS, USDC } from 'modules/constants';
 import classNames from 'classnames';
 import { LiquidityTable, PositionTable } from 'modules/common/tables';
+import { Pagination } from 'modules/common/pagination';
 
 const fakePositionsData = [
   {
@@ -118,6 +119,13 @@ export const PortfolioView = () => {
             fakeLiquidityData.map((market) => (
               <LiquidityTable key={market.id} market={market} />
             ))}
+          <Pagination
+            page={1}
+            itemCount={10}
+            itemsPerPage={9}
+            action={() => null}
+            updateLimit={() => null}
+          />
         </div>
       </section>
       <section>
