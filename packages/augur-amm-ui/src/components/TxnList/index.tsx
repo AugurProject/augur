@@ -144,6 +144,13 @@ const TXN_TYPE = {
   REMOVE: 'Removes'
 }
 
+const TXN_TYPE_DROP_DOWN = {
+  ALL: 'All',
+  SWAP: 'Swaps',
+  ADD: 'Adds',
+  REMOVE: 'Removes'
+}
+
 const ITEMS_PER_PAGE = 10
 
 function processTransactions(allExchanges, cashData, cashTokens) {
@@ -374,7 +381,7 @@ function TxnList({ allExchanges, color, cashTokens, cashData }) {
       <DashGrid center={true} style={{ height: 'fit-content', padding: '0 0 1rem 0' }}>
         {below780 ? (
           <RowBetween area="txn">
-            <DropdownSelect options={TXN_TYPE} active={txFilter} setActive={setTxFilter} />
+            <DropdownSelect options={TXN_TYPE_DROP_DOWN} active={txFilter} setActive={setTxFilter} />
           </RowBetween>
         ) : (
             <RowFixed area="txn" gap="10px" pl={4}>
@@ -392,7 +399,7 @@ function TxnList({ allExchanges, color, cashTokens, cashData }) {
                 }}
                 active={txFilter === TXN_TYPE.SWAP}
               >
-                Swaps
+                Swap
             </SortText>
               <SortText
                 onClick={() => {
@@ -400,7 +407,7 @@ function TxnList({ allExchanges, color, cashTokens, cashData }) {
                 }}
                 active={txFilter === TXN_TYPE.ADD}
               >
-                Adds
+                Add
             </SortText>
               <SortText
                 onClick={() => {
@@ -408,7 +415,7 @@ function TxnList({ allExchanges, color, cashTokens, cashData }) {
                 }}
                 active={txFilter === TXN_TYPE.REMOVE}
               >
-                Removes
+                Remove
               </SortText>
             </RowFixed>
           )}
