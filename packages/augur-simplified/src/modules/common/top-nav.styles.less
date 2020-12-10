@@ -2,6 +2,8 @@
 @import (reference) '~modules/common/buttons.styles.less';
 
 .TopNav {
+  .TwoTonePage; 
+
   align-items: center;
   background: var(--light-background-color);
   border-bottom: @size-1 solid var(--simple-border);
@@ -27,7 +29,6 @@
     width: 100%;
 
     &:first-of-type {
-      max-width: @size-912;
       padding-left: @size-88;
       grid-gap: @size-80;
 
@@ -62,9 +63,9 @@
     }
 
     &:last-of-type {
-      max-width: @size-528;
       padding-right: @size-88;
       grid-gap: @size-8;
+      background: unset;
 
       > button {
         .RoundedButton;

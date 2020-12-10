@@ -3,7 +3,7 @@ import Styles from 'modules/markets/markets-view.styles.less';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKET } from 'modules/constants';
 import { Link } from 'react-router-dom';
-import { ValueLabel, IconLabel, CategoryLabel } from 'modules/common/labels';
+import { ValueLabel, AppViewStats, CategoryLabel } from 'modules/common/labels';
 import { formatDai } from 'utils/format-number';
 import { EthIcon, PillIcon, UsdIcon } from 'modules/common/icons';
 import classNames from 'classnames';
@@ -129,50 +129,6 @@ const fakeMarketData = [
   },
 ];
 
-const fakeMarketViewStats = {
-  totalAccountValue: 15571.58,
-  positions: {
-    hourChange: 56.29,
-    value: 5045,
-  },
-  availableFunds: 10526.58,
-  daiAmount: 526.58,
-  cashAmount: 5000,
-};
-
-const MarketViewStats = () => {
-  return (
-    <div className={Styles.MarketViewStats}>
-      <ValueLabel
-        large
-        label={'total account value'}
-        value={formatDai(fakeMarketViewStats.totalAccountValue).full}
-      />
-      <ValueLabel
-        large
-        label={'positions'}
-        sublabel={`${
-          formatDai(fakeMarketViewStats.positions.hourChange).full
-        } (24hr)`}
-        value={formatDai(fakeMarketViewStats.positions.value).full}
-      />
-      <ValueLabel
-        large
-        label={'available funds'}
-        value={formatDai(fakeMarketViewStats.availableFunds).full}
-      />
-      <IconLabel
-        icon={EthIcon}
-        value={formatDai(fakeMarketViewStats.daiAmount).full}
-      />
-      <IconLabel
-        icon={UsdIcon}
-        value={formatDai(fakeMarketViewStats.cashAmount).full}
-      />
-    </div>
-  );
-};
-
 const OutcomesTable = ({ outcomes }) => {
   return (
     <div className={Styles.OutcomesTable}>
@@ -222,7 +178,7 @@ const MarketCard = ({ market }) => {
 const MarketsView = () => {
   return (
     <div className={Styles.MarketsView}>
-      <MarketViewStats />
+      <AppViewStats showCashAmounts />
       <ul>
         <SquareDropdown
           onChange={() => null}
