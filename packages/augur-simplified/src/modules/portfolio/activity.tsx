@@ -8,6 +8,7 @@ const fakeActivityData = [
     date: '04/12',
     activity: [
       {
+        id: '04/12-0',
         type: BUY,
         currency: USDC,
         description: `Will Pfizer's COVID-19 vaccine be the first to receive FDA approval or Emergency Use Authorization (EUA)?`,
@@ -16,6 +17,7 @@ const fakeActivityData = [
         value: '- 400.00 USDC',
       },
       {
+        id: '04/12-1',
         type: BUY,
         currency: USDC,
         description: `Will Pfizer's COVID-19 vaccine be the first to receive FDA approval or Emergency Use Authorization (EUA)?`,
@@ -24,6 +26,7 @@ const fakeActivityData = [
         value: '- 400.00 USDC',
       },
       {
+        id: '04/12-2',
         type: SELL,
         currency: USDC,
         description: `Will Pfizer's COVID-19 vaccine be the first to receive FDA approval or Emergency Use Authorization (EUA)?`,
@@ -37,6 +40,7 @@ const fakeActivityData = [
     date: '03/12',
     activity: [
       {
+        id: '03/12-0',
         type: ADD_LIQUIDITY,
         currency: USDC,
         description: `Will Pfizer's COVID-19 vaccine be the first to receive FDA approval or Emergency Use Authorization (EUA)?`,
@@ -50,6 +54,7 @@ const fakeActivityData = [
     date: '30/11',
     activity: [
       {
+        id: '30/11-0',
         type: BUY,
         currency: USDC,
         description: `Will Pfizer's COVID-19 vaccine be the first to receive FDA approval or Emergency Use Authorization (EUA)?`,
@@ -58,6 +63,7 @@ const fakeActivityData = [
         value: '- 400.00 USDC',
       },
       {
+        id: '30/11-1',
         type: BUY,
         currency: USDC,
         description: `Will Pfizer's COVID-19 vaccine be the first to receive FDA approval or Emergency Use Authorization (EUA)?`,
@@ -66,6 +72,7 @@ const fakeActivityData = [
         value: '- 400.00 USDC',
       },
       {
+        id: '30/11-2',
         type: SELL,
         currency: USDC,
         description: `Will Pfizer's COVID-19 vaccine be the first to receive FDA approval or Emergency Use Authorization (EUA)?`,
@@ -78,6 +85,7 @@ const fakeActivityData = [
 ];
 
 interface ActivityItem {
+  id: string;
   type: string;
   currency: string;
   description: string;
@@ -107,11 +115,11 @@ export const Activity = () => (
     <span>your activity</span>
     <div>
       {fakeActivityData.map((activityGroup) => (
-        <div>
+        <div key={activityGroup.date}>
           <span>{activityGroup.date}</span>
           <div>
             {activityGroup.activity.map((activityItem) => (
-              <ActivityCard activity={activityItem} />
+              <ActivityCard key={activityItem.id} activity={activityItem} />
             ))}
           </div>
         </div>

@@ -9,10 +9,12 @@ import { LiquidityTable, PositionTable } from 'modules/common/tables';
 
 const fakePositionsData = [
   {
+    id: '0',
     description: `Will Pfizer's COVID-19 vaccine be the first to receive FDA approval or Emergency Use Authorization (EUA)?`,
     asset: USDC,
     positions: [
       {
+        id: '0',
         outcome: 'Yes',
         quantityOwned: 300,
         avgPricePaid: '$0.67',
@@ -21,6 +23,7 @@ const fakePositionsData = [
         profitLoss: '+$24.00',
       },
       {
+        id: '1',
         outcome: 'Invalid',
         quantityOwned: 10,
         avgPricePaid: '$0.05',
@@ -32,10 +35,12 @@ const fakePositionsData = [
     claimableWinnings: '$24.00',
   },
   {
+    id: '1',
     description: `Which team will win the 2021 English Premier League?`,
     asset: USDC,
     positions: [
       {
+        id: '0',
         outcome: 'Liverpool F.C.',
         quantityOwned: 300,
         avgPricePaid: '$0.67',
@@ -49,10 +54,12 @@ const fakePositionsData = [
 
 const fakeLiquidityData = [
   {
+    id: '0x01',
     description: `Will Pfizer's COVID-19 vaccine be the first to receive FDA approval or Emergency Use Authorization (EUA)?`,
     asset: USDC,
     liquidity: [
       {
+        id: '0',
         liquiditySharesOwned: 300,
         feesEarned: '$0.67',
         initialValue: '$201.00',
@@ -61,10 +68,12 @@ const fakeLiquidityData = [
     ],
   },
   {
+    id: '0x02',
     description: `How many electoral college votes will be cast for Joe Biden?`,
     asset: USDC,
     liquidity: [
       {
+        id: '1',
         liquiditySharesOwned: 300,
         feesEarned: '$0.67',
         initialValue: '$201.00',
@@ -81,7 +90,7 @@ export const PortfolioView = () => {
     <div className={Styles.PortfolioView}>
       <section>
         <AppViewStats />
-        <SecondaryButton text={'$24.00 in Winnings to claim'} />
+        <SecondaryButton text="$24.00 in Winnings to claim" />
         <div>
           <span
             onClick={() => setTableView(POSITIONS)}
@@ -101,8 +110,14 @@ export const PortfolioView = () => {
           </span>
         </div>
         <div>
-          {tableView === POSITIONS && fakePositionsData.map(market => <PositionTable market={market} />)}
-          {tableView === LIQUIDITY && fakeLiquidityData.map(market => <LiquidityTable market={market} />)}
+          {tableView === POSITIONS &&
+            fakePositionsData.map((market) => (
+              <PositionTable key={market.id} market={market} />
+            ))}
+          {tableView === LIQUIDITY &&
+            fakeLiquidityData.map((market) => (
+              <LiquidityTable key={market.id} market={market} />
+            ))}
         </div>
       </section>
       <section>
