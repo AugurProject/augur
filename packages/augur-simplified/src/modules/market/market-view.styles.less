@@ -8,12 +8,14 @@
     &:first-of-type {
       display: flex;
       flex-flow: column nowrap;
-      grid-gap: @size-48;
+      grid-gap: @size-40;
 
       > h1 {
         .text-36-bold;
 
         color: var(--simple-primary-text);
+        margin: 0;
+        padding: 0;
       }
     }
   }
@@ -23,7 +25,34 @@
   display: flex;
   flex-flow: row nowrap;
   width: 100%;
+  grid-gap: @size-8;
+  align-items: center;
 }
+
+.RoundedLabel {
+  .RoundedButton;
+  .text-16;
+
+  color: var(--simple-primary-text);
+  line-height: 140%;
+  height: @size-44;
+  min-height: @size-44;
+  max-height: @size-44;
+  white-space: nowrap;
+  padding: 0 @size-16;
+}
+
+.CategoryIcon,
+.CategoryLabel {
+  .RoundedLabel;
+}
+
+.CurrencyLabel {
+  .RoundedLabel;
+
+  margin-left: auto;
+}
+
 
 .StatsRow {
   display: flex;

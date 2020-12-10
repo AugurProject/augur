@@ -3,12 +3,14 @@ import Styles from 'modules/market/market-view.styles.less';
 import { formatDai } from 'utils/format-number';
 import classNames from 'classnames';
 import { createBigNumber } from 'utils/create-big-number';
+import { PillIcon, USDCIcon } from 'modules/common/icons';
 
 const MARKET_DATA = {
   id: '0xdeadbeef',
   description:
     "Will Pfizer's COVID-19 vaccine be the first to receive FDA approval or Emergency Use Authorization (EUA)?",
   expirationDate: 'July 31, 2021',
+  categories: ['Health', 'Covid-19', 'vaccine'],
   totalLiquidity: formatDai(createBigNumber(83375)),
   twentyFourHourVolume: formatDai(createBigNumber(12027)),
   totalVolume: formatDai(createBigNumber(350019)),
@@ -30,7 +32,11 @@ const MarketView = ({ market = MARKET_DATA }) => {
   return (
     <div className={Styles.MarketView}>
       <section>
-        <div className={Styles.TopRow}></div>
+        <div className={Styles.TopRow}>
+          <span className={Styles.CategoryIcon}>{PillIcon}</span>
+          <span className={Styles.CategoryLabel}>{market.categories[1]}</span>
+          <span className={Styles.CurrencyLabel}>{USDCIcon} USDC Market</span>
+        </div>
         <h1>{market.description}</h1>
         <ul className={Styles.StatsRow}>
           <li>
