@@ -266,22 +266,19 @@ def test_amm_yes_position(contractsFixture, market, shareToken, cash, factory, a
     amm.enterPosition(yesPositionCost, True, sharesReceived)
 
     assert cash.balanceOf(account0) == 0
-    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == yesPositionSets
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == sharesReceived
 
     assert cash.balanceOf(amm.address) == yesPositionCost
-    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, amm.address) == sets - yesPositionSets
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, amm.address) == sets
     assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == sets
     assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == sets - sharesReceived
 
     # Exiting requires you to send shares.
     shareToken.setApprovalForAll(amm.address, True)
 
-    (payoutAll, inv, no, yes) = amm.rateExitAll()
-    assert inv == 9894506271814924370 # due to fees, some invalids aren't needed
-    assert no == 0
-    assert yes == 18810000000000000000
+    payoutAll = amm.rateExitAll()
     assert payoutAll == 9795561209096775126300
 
     shareToken.setApprovalForAll(factory.address, True)
@@ -310,7 +307,7 @@ def test_amm_no_position(contractsFixture, market, shareToken, cash, factory, am
     amm.enterPosition(cost, False, sharesReceived)
 
     assert cash.balanceOf(account0) == 0
-    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == sets
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == sharesReceived
     assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == sharesReceived
     assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == 0
 
@@ -338,7 +335,7 @@ def test_amm_swap(contractsFixture, market, shareToken, cash, factory, amm, acco
 
     amm.swap(1 * ATTO, True, noSharesReceived)
 
-    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == sets
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == noSharesReceived
     assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == noSharesReceived
     assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == yesShares - ATTO # spent one Yes share to buy some No shares
 
@@ -362,21 +359,19 @@ def test_amm_fees_work(sessionFixture, market, shareToken, cash, factory, accoun
     assert lpTokens == amm.addInitialLiquidity(liquidityCash, liquidityRatio, True, account0)
 
     tradeCash = 10000 * ATTO
-    invalidFromPosition = tradeCash // market.getNumTicks()
     cash.faucet(tradeCash)
     yesShares = amm.rateEnterPosition(tradeCash, True)
     amm.enterPosition(tradeCash, True, yesShares)
     assert yesShares == 18943000000000000000
 
-    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == invalidFromPosition
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == yesShares
     assert cash.balanceOf(account0) == 0
 
     # Now remove liquidity and verify that LP tokens yield what they should.
-    (invalidRemoved, noRemoved, yesRemoved, cashRemoved, setsSold) = amm.removeLiquidity(lpTokens, 0)
+    (noRemoved, yesRemoved, cashRemoved, setsSold) = amm.removeLiquidity(lpTokens, 0)
 
-    assert invalidRemoved == liquiditySets - invalidFromPosition
     assert noRemoved == liquiditySets
     assert yesRemoved == liquiditySets - yesShares
     assert cashRemoved == tradeCash
@@ -387,7 +382,7 @@ def test_amm_fees_work(sessionFixture, market, shareToken, cash, factory, accoun
     assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == 0
     assert cash.balanceOf(amm.address) == 0
 
-    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == invalidRemoved + invalidFromPosition
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == liquiditySets
     assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == liquiditySets
     assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == liquiditySets
     assert cash.balanceOf(account0) == tradeCash

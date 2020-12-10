@@ -607,8 +607,8 @@ export async function getRemoveLiquidity({
   const alsoSell = false;
   const results: RemoveLiquidityRate = await augurClient.amm.getRemoveLiquidity(marketId, paraShareToken, new BN(String(fee)), new BN(String(lpTokens)), alsoSell);
   return {
-    noShares: results.no.toFixed(),
-    yesShares: results.yes.toFixed(),
+    noShares: results.short.toFixed(),
+    yesShares: results.long.toFixed(),
     cashShares: results.cash.toFixed()
   }
 }
@@ -701,25 +701,23 @@ export async function estimateTrade(augurClient, trade: TradeInfo, includeFee: b
     return String(breakdown)
   }
   if (tradeDirection === TradingDirection.EXIT) {
-    let yesShares = new BN('0')
-    let noShares = new BN('0')
+    let longShares = new BN('0')
+    let shortShares = new BN('0')
     let invalidShares = new BN(trade.balance.outcomes[0])
     if (trade.currencyIn.symbol === MarketTokens.NO_SHARES) {
-      noShares = new BN(String(trade.inputAmount.raw))
-      invalidShares = BN.minimum(invalidShares, noShares)
+      shortShares = new BN(String(trade.inputAmount.raw))
+      shortShares = BN.minimum(invalidShares, shortShares)
     } else {
-      yesShares = new BN(String(trade.inputAmount.raw))
-      invalidShares = BN.minimum(invalidShares, yesShares)
+      longShares = new BN(String(trade.inputAmount.raw))
     }
 
-    console.log(tradeDirection, 'invalid:', String(invalidShares), 'no:', String(noShares), 'yes:', String(yesShares))
+    console.log(tradeDirection, 'no:', String(shortShares), 'yes:', String(longShares))
     breakdown = await augurClient.amm.getExitPosition(
       trade.marketId,
       trade.amm.sharetoken,
       new BN(trade.amm.fee),
-      invalidShares,
-      noShares,
-      yesShares,
+      shortShares,
+      longShares,
       includeFee
     )
     return String(breakdown['cash'])
@@ -771,32 +769,29 @@ export async function doTrade(augurClient, trade: TradeInfo, minAmount: string, 
   }
 
   if (tradeDirection === TradingDirection.EXIT) {
-    let yesShares = new BN('0')
-    let noShares = new BN('0')
+    let longShares = new BN('0')
+    let shortShares = new BN('0')
     let invalidShares = new BN(trade.balance.outcomes[0])
     if (trade.currencyIn.symbol === MarketTokens.NO_SHARES) {
-      noShares = new BN(String(trade.inputAmount.raw))
-      invalidShares = BN.minimum(invalidShares, noShares)
+      shortShares = new BN(String(trade.inputAmount.raw))
+      shortShares = BN.minimum(invalidShares, shortShares)
     } else {
-      yesShares = new BN(String(trade.inputAmount.raw))
-      invalidShares = BN.minimum(invalidShares, yesShares)
+      longShares = new BN(String(trade.inputAmount.raw))
     }
 
     console.log('doExitPosition:', trade.marketId,
       trade.amm.sharetoken,
       trade.amm.fee,
-      String(invalidShares),
-      String(noShares),
-      String(yesShares),
+      String(shortShares),
+      String(longShares),
       String(minAmount))
 
     return augurClient.amm.doExitPosition(
       trade.marketId,
       trade.amm.sharetoken,
       new BN(trade.amm.fee),
-      invalidShares,
-      noShares,
-      yesShares,
+      shortShares,
+      longShares,
       new BN(String(minAmount))
     )
   }

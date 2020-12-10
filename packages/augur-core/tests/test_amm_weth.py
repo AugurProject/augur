@@ -121,22 +121,19 @@ def test_amm_weth_yes_position(sessionFixture, market, para_weth_share_token, we
     assert sharesReceived < 2 * yesPositionSets
     weth_amm.enterPosition(market.address, FEE, True, sharesReceived, value=yesPositionCost)
 
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, INVALID, account0) == yesPositionSets
+    assert para_weth_share_token.balanceOfMarketOutcome(market.address, INVALID, account0) == 0
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, account0) == 0
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, account0) == sharesReceived
 
     assert weth.balanceOf(amm.address) == yesPositionCost
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, INVALID, amm.address) == sets - yesPositionSets
+    assert para_weth_share_token.balanceOfMarketOutcome(market.address, INVALID, amm.address) == sets
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, amm.address) == sets
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, amm.address) == sets - sharesReceived
 
     # Exiting requires you to send shares to the weth-amm wrapper for it to pass along.
     para_weth_share_token.setApprovalForAll(weth_amm.address, True)
 
-    (payoutAll, inv, no, yes) = amm.rateExitAll()
-    assert inv == 9894506271814924370  # due to fees, some invalids aren't needed
-    assert no == 0
-    assert yes == 18810000000000000000
+    payoutAll = amm.rateExitAll()
     assert payoutAll == 9795561209096775126300
 
     weth_amm.exitAll(market.address, FEE, payoutAll)
@@ -145,6 +142,6 @@ def test_amm_weth_yes_position(sessionFixture, market, para_weth_share_token, we
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, weth_amm.address) == 0
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, weth_amm.address) == 0
 
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, INVALID, account0) == 105493728185075630
+    assert para_weth_share_token.balanceOfMarketOutcome(market.address, INVALID, account0) == 0
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, account0) == 0
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, account0) == 0
