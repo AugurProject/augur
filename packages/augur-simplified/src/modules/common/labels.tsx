@@ -2,7 +2,8 @@ import React from 'react';
 import Styles from 'modules/common/labels.styles.less';
 import classNames from 'classnames';
 import { formatDai } from 'utils/format-number';
-import { EthIcon, UsdIcon } from './icons';
+import { EthIcon, PillIcon, UsdIcon } from './icons';
+import { POPULAR_CATEGORIES_ICONS } from 'modules/constants';
 
 interface ValueLabelProps {
   large?: boolean;
@@ -53,6 +54,16 @@ interface CategoryProps {
 export const CategoryLabel = ({ category }: CategoryProps) => {
   return <div className={classNames(Styles.CategoryLabel)}>{category}</div>;
 };
+
+
+interface CategoryProps {
+  category: string;
+}
+
+export const CategoryIcon = ({ category }: CategoryProps) => {
+  return <div className={classNames(Styles.CategoryIcon, Styles[`${category.toLowerCase()}`])}>{POPULAR_CATEGORIES_ICONS[category]}</div>;
+};
+
 
 export const fakeMarketViewStats = {
   totalAccountValue: 15571.58,
