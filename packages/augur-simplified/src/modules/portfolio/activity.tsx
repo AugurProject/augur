@@ -77,7 +77,7 @@ const fakeActivityData = [
   },
 ];
 
-interface Activity {
+interface ActivityItem {
   type: string;
   currency: string;
   description: string;
@@ -87,7 +87,7 @@ interface Activity {
 }
 
 interface ActivityCardProps {
-  activity: Activity;
+  activity: ActivityItem;
 }
 
 const ActivityCard = ({ activity }: ActivityCardProps) => (
