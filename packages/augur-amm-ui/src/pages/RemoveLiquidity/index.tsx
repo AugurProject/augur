@@ -85,7 +85,7 @@ function RemoveLiquidity({
         setAttemptingTxn(false)
 
         addTransaction(response, {
-          summary: 'Remove ' + formatToDisplayValue(liquidity, ammExchange?.cash?.decimals)
+          summary: 'Removed ' + formatToDisplayValue(liquidity, ammExchange?.cash?.decimals) + ' LP tokens'
         })
 
         setTxHash(response.hash)
