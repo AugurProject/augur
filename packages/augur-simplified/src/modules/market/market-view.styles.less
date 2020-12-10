@@ -1,5 +1,136 @@
 @import (reference) '~assets/styles/shared';
+@import (reference) '~modules/common/buttons.styles.less';
 
 .MarketView {
   .TwoTonePage;
+
+  > section {
+    &:first-of-type {
+      display: flex;
+      flex-flow: column nowrap;
+      grid-gap: @size-40;
+
+      > h1 {
+        .text-36-bold;
+
+        color: var(--simple-primary-text);
+        margin: 0;
+        padding: 0;
+      }
+    }
+  }
+}
+
+.TopRow {
+  display: flex;
+  flex-flow: row nowrap;
+  width: 100%;
+  grid-gap: @size-8;
+  align-items: center;
+}
+
+.RoundedLabel {
+  .RoundedButton;
+  .text-16;
+
+  color: var(--simple-primary-text);
+  line-height: 140%;
+  height: @size-44;
+  min-height: @size-44;
+  max-height: @size-44;
+  white-space: nowrap;
+  padding: 0 @size-16;
+}
+
+.CategoryIcon,
+.CategoryLabel {
+  .RoundedLabel;
+}
+
+.CurrencyLabel {
+  .RoundedLabel;
+
+  margin-left: auto;
+}
+
+
+.StatsRow {
+  display: flex;
+  flex-flow: row nowrap;
+  width: 100%;
+  border: @size-1 solid var(--simple-border);
+  border-radius: @size-8;
+  height: @size-86;
+  
+  > li {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    flex: 1;
+    grid-gap: @size-8;
+
+    &:not(:last-of-type) {
+      border-right: @size-1 solid var(--simple-border);
+    }
+
+    > span:first-of-type {
+      .text-16;
+
+      color: var(--simple-secondary-text);
+    }
+
+    > span:last-of-type {
+      .text-20-semi-bold;
+
+      color: var(--simple-primary-text);
+    }
+  }
+}
+
+.Details {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  grid-gap: @size-24;
+
+  > h4 {
+    .text-20-bold;
+
+    color: var(--simple-primary-text);
+    line-height: @size-24;
+    margin: 0;
+  }
+
+  > p {
+    .text-14;
+
+    color: var(--simple-primary-text);
+    line-height: @size-22;
+    flex: 1;
+    margin: 0;
+  }
+
+  > button {
+    .RoundedButton;
+    .text-16-bold;
+  
+    background: none;
+    border: none;
+    line-height: 140%;
+    padding: 0;
+    text-decoration: underline;
+
+    &:hover {
+      border: none;
+    }
+  }
+}
+
+.isClosed {
+  > p:not(:first-of-type) {
+    display: none;
+  }
 }
