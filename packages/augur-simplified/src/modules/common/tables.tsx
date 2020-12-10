@@ -1,7 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Styles from 'modules/common/tables.styles.less';
 import { UsdIcon } from './icons';
-import { PrimaryButton, SecondaryButton } from './buttons';
+import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
+import classNames from 'classnames';
+import {
+  POSITIONS,
+  LIQUIDITY,
+  fakeLiquidityData,
+  fakePositionsData,
+  fakeTransactionsData,
+} from 'modules/constants';
+import { Pagination } from 'modules/common/pagination';
 
 interface Position {
   id: string;
@@ -15,6 +24,7 @@ interface Position {
 
 interface PositionsTableProps {
   market: MarketPosition;
+  singleMarket?: boolean;
 }
 
 interface Liquidity {
@@ -40,6 +50,7 @@ interface MarketPosition {
 
 interface LiquidityTableProps {
   market: MarketLiquidity;
+  singleMarket?: boolean;
 }
 
 const MarketTableHeader = ({ market }) => {
@@ -83,21 +94,39 @@ interface PositionFooterProps {
 export const PositionFooter = ({ claimableWinnings }: PositionFooterProps) => {
   return (
     <div className={Styles.PositionFooter}>
-      {claimableWinnings && <SecondaryButton text={`${claimableWinnings} in Winnings to claim`} />}
+      {claimableWinnings && (
+        <SecondaryButton text={`${claimableWinnings} in Winnings to claim`} />
+      )}
       <PrimaryButton text="trade" />
     </div>
   );
 };
 
-export const PositionTable = ({ market }: PositionsTableProps) => {
+export const PositionTable = ({
+  market,
+  singleMarket,
+}: PositionsTableProps) => {
   return (
     <div className={Styles.PositionTable}>
-      <MarketTableHeader market={market} />
+      {!singleMarket && <MarketTableHeader market={market} />}
       <PositionHeader />
       {market.positions.map((position) => (
         <PositionRow key={position.id} position={position} />
       ))}
-      <PositionFooter claimableWinnings={market.claimableWinnings} />
+      {!singleMarket && (
+        <PositionFooter claimableWinnings={market.claimableWinnings} />
+      )}
+      {singleMarket && (
+        <div className={Styles.PaginationFooter}>
+          <Pagination
+            page={1}
+            itemCount={10}
+            itemsPerPage={9}
+            action={() => null}
+            updateLimit={() => null}
+          />
+        </div>
+      )}
     </div>
   );
 };
@@ -133,15 +162,144 @@ export const LiquidityFooter = () => {
   );
 };
 
-export const LiquidityTable = ({ market }: LiquidityTableProps) => {
+export const LiquidityTable = ({
+  market,
+  singleMarket,
+}: LiquidityTableProps) => {
   return (
     <div className={Styles.LiquidityTable}>
-      <MarketTableHeader market={market} />
+      {!singleMarket && <MarketTableHeader market={market} />}
       <LiquidityHeader />
       {market.liquidity.map((liquidity) => (
         <LiquidityRow key={liquidity.id} liquidity={liquidity} />
       ))}
-      <LiquidityFooter />
+      {!singleMarket && <LiquidityFooter />}
+      {singleMarket && (
+        <div className={Styles.PaginationFooter}>
+          <Pagination
+            page={1}
+            itemCount={10}
+            itemsPerPage={9}
+            action={() => null}
+            updateLimit={() => null}
+          />
+        </div>
+      )}
+    </div>
+  );
+};
+
+interface PositionsLiquidityViewSwitcherProps {
+  marketId?: string;
+}
+
+export const PositionsLiquidityViewSwitcher = ({
+  marketId,
+}: PositionsLiquidityViewSwitcherProps) => {
+  const [tableView, setTableView] = useState(POSITIONS);
+
+  return (
+    <div className={Styles.PositionsLiquidityViewSwitcher}>
+      <div>
+        <span
+          onClick={() => setTableView(POSITIONS)}
+          className={classNames({
+            [Styles.Selected]: tableView === POSITIONS,
+          })}
+        >
+          {POSITIONS}
+        </span>
+        <span
+          onClick={() => setTableView(LIQUIDITY)}
+          className={classNames({
+            [Styles.Selected]: tableView === LIQUIDITY,
+          })}
+        >
+          {LIQUIDITY}
+        </span>
+      </div>
+      <div>
+        {!marketId && (
+          <>
+            {tableView === POSITIONS &&
+              fakePositionsData.map((market) => (
+                <PositionTable key={market.id} market={market} />
+              ))}
+            {tableView === LIQUIDITY &&
+              fakeLiquidityData.map((market) => (
+                <LiquidityTable key={market.id} market={market} />
+              ))}
+            <Pagination
+              page={1}
+              itemCount={10}
+              itemsPerPage={9}
+              action={() => null}
+              updateLimit={() => null}
+            />
+          </>
+        )}
+        {marketId && (
+          <>
+            {tableView === POSITIONS && (
+              <PositionTable singleMarket market={fakePositionsData[0]} />
+            )}
+            {tableView === LIQUIDITY && (
+              <LiquidityTable singleMarket market={fakeLiquidityData[0]} />
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const TransactionsHeader = () => {
+  return (
+    <ul className={Styles.TransactionsHeader}>
+      <li>
+        <span>all</span>
+        <span>swaps</span>
+        <span>adds</span>
+        <span>removes</span>
+      </li>
+      <li>total value</li>
+      <li>token amount</li>
+      <li>share amount</li>
+      <li>account</li>
+      <li>time</li>
+    </ul>
+  );
+};
+
+const TransactionRow = ({ transaction }) => {
+  return (
+    <ul className={Styles.TransactionRow}>
+      <li>{transaction.title}</li>
+      <li>{transaction.totalValue}</li>
+      <li>{transaction.tokenAmount}</li>
+      <li>{transaction.shareAmount}</li>
+      <li>{transaction.account}</li>
+      <li>{transaction.time}</li>
+    </ul>
+  );
+};
+
+export const TransactionsTable = () => {
+  return (
+    <div className={Styles.TransactionsTable}>
+      <TransactionsHeader />
+      {fakeTransactionsData[0].transactions.map((transaction) => (
+        <TransactionRow key={transaction.id} transaction={transaction} />
+      ))}
+      <div className={Styles.PaginationFooter}>
+        <Pagination
+          page={1}
+          itemCount={10}
+          itemsPerPage={9}
+          action={() => null}
+          updateLimit={() => null}
+        />
+      </div>
     </div>
   );
 };

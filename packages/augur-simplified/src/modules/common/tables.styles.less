@@ -109,20 +109,99 @@
 }
 
 .FooterSharedStyles {
-    display: flex;
-    justify-content: flex-end;
-    padding: @size-20;
-    border-top: @size-1 solid var(--simple-border);
+  display: flex;
+  justify-content: flex-end;
+  padding: @size-20;
+  border-top: @size-1 solid var(--simple-border);
 
-    > button:nth-of-type(2) {
-        margin-left: @size-11;
-    }
+  > button:nth-of-type(2) {
+    margin-left: @size-11;
+  }
 }
 
 .LiquidityFooter {
-    .FooterSharedStyles;
+  .FooterSharedStyles;
 }
 
 .PositionFooter {
-    .FooterSharedStyles;
+  .FooterSharedStyles;
+}
+
+.PositionsLiquidityViewSwitcher {
+  flex-direction: column;
+
+  > div:nth-of-type(1) {
+    margin-top: @size-64;
+    margin-bottom: @size-24;
+    display: flex;
+
+    > span {
+      .TableTitle;
+
+      cursor: pointer;
+
+      &.Selected {
+        color: var(--simple-primary-text);
+      }
+
+      &:first-of-type {
+        margin-right: @size-32;
+      }
+    }
+  }
+
+  > div:nth-of-type(2) {
+    > div {
+      &:not(:last-of-type) {
+        margin-bottom: @size-12;
+      }
+    }
+
+    > div:last-of-type {
+      justify-content: center;
+
+      &:not(:first-of-type) {
+        margin-top: @size-40;
+      }
+    }
+  }
+}
+
+.PaginationFooter {
+  .FooterSharedStyles;
+
+  justify-content: center;
+}
+
+.TransactionsSharedRowHeader {
+  grid-template-columns: @size-150 repeat(5, 1fr);
+}
+
+.TransactionsHeader {
+  .RowHeaderSharedStyles;
+  .HeaderSharedStyles;
+  .TransactionsSharedRowHeader;
+
+  > li:first-of-type {
+    > span:not(:first-of-type) {
+      color: var(--simple-secondary-text);
+      margin-left: @size-8;
+    }
+  }
+}
+
+.TransactionsTable {
+  .SharedTable;
+}
+
+.TransactionRow {
+  .RowHeaderSharedStyles;
+  .RowSharedStyles;
+  .TransactionsSharedRowHeader;
+
+  > li {
+    &:first-of-type {
+      white-space: nowrap;
+    }
+  }
 }

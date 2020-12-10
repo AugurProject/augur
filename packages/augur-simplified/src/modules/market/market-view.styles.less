@@ -9,6 +9,7 @@
       display: flex;
       flex-flow: column nowrap;
       grid-gap: @size-40;
+      margin-bottom: @size-32;
 
       > h1 {
         .text-36-bold;
@@ -137,5 +138,16 @@
 .isClosed {
   > p:not(:first-of-type) {
     display: none;
+  }
+}
+
+.TransactionsTable {
+  > span {
+    .TableTitle;
+
+    color: var(--simple-primary-text);
+    margin-bottom: @size-24;
+    display: flex;
+    margin-top: @size-16;
   }
 }

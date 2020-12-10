@@ -6,6 +6,7 @@ import { createBigNumber } from 'utils/create-big-number';
 import { UsdIcon } from 'modules/common/icons';
 import { CategoryIcon, CategoryLabel } from 'modules/common/labels';
 import { COVID, MEDICAL } from 'modules/constants';
+import { PositionsLiquidityViewSwitcher, TransactionsTable } from 'modules/common/tables';
 
 const MARKET_DATA = {
   id: '0xdeadbeef',
@@ -31,6 +32,7 @@ const MARKET_DATA = {
 
 const MarketView = ({ market = MARKET_DATA }) => {
   const [showMoreDetails, setShowMoreDetails] = useState(false);
+
   return (
     <div className={Styles.MarketView}>
       <section>
@@ -59,7 +61,7 @@ const MarketView = ({ market = MARKET_DATA }) => {
           </li>
         </ul>
         <section>Charts go here...</section>
-        <section>Liquidity/positions tables here</section>
+        <PositionsLiquidityViewSwitcher marketId={market.id} />
         <div
           className={classNames(Styles.Details, {
             [Styles.isClosed]: !showMoreDetails,
@@ -74,6 +76,12 @@ const MarketView = ({ market = MARKET_DATA }) => {
               {showMoreDetails ? 'Read Less' : 'Read More'}
             </button>
           )}
+        </div>
+        <div className={Styles.TransactionsTable}>
+          <span>
+            Transactions
+          </span>
+          <TransactionsTable />
         </div>
       </section>
       <section>SideBar Thing</section>
