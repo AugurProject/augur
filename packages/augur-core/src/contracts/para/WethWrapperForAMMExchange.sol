@@ -30,7 +30,7 @@ contract WethWrapperForAMMExchange {
         IMarket _market,
         uint256 _fee,
         uint256 _ratioFactor,
-        bool _keepYes,
+        bool _keepLong,
         address _recipient
     ) public payable returns (address _ammAddress, uint256 _lpTokens) {
         weth.deposit.value(msg.value)();
@@ -40,7 +40,7 @@ contract WethWrapperForAMMExchange {
             _fee,
             msg.value,
             _ratioFactor,
-            _keepYes,
+            _keepLong,
             _recipient
         );
     }
@@ -51,10 +51,10 @@ contract WethWrapperForAMMExchange {
         return _amm;
     }
 
-    function addInitialLiquidity(IMarket _market, uint256 _fee, uint256 _ratioFactor, bool _keepYes, address _recipient) external payable returns (uint256) {
+    function addInitialLiquidity(IMarket _market, uint256 _fee, uint256 _ratioFactor, bool _keepLong, address _recipient) external payable returns (uint256) {
         weth.deposit.value(msg.value)();
         IAMMExchange _amm = getAMM(_market, _fee);
-        return _amm.addInitialLiquidity(msg.value, _ratioFactor, _keepYes, _recipient);
+        return _amm.addInitialLiquidity(msg.value, _ratioFactor, _keepLong, _recipient);
     }
 
     function addLiquidity(IMarket _market, uint256 _fee, address _recipient) public payable returns (uint256) {
@@ -63,12 +63,12 @@ contract WethWrapperForAMMExchange {
         return _amm.addLiquidity(msg.value, _recipient);
     }
 
-    function removeLiquidity(IMarket _market, uint256 _fee, uint256 _poolTokensToSell, uint256 _minSetsSold) external returns (uint256 _invalidShare, uint256 _noShare, uint256 _yesShare, uint256 _cashShare, uint256 _setsSold) {
+    function removeLiquidity(IMarket _market, uint256 _fee, uint256 _poolTokensToSell, uint256 _minSetsSold) external returns (uint256 _shortShare, uint256 _longShare, uint256 _cashShare, uint256 _setsSold) {
         IAMMExchange _amm = getAMM(_market, _fee);
         _amm.transferFrom(msg.sender, address(this), _poolTokensToSell);
 
-        (_invalidShare, _noShare, _yesShare, _cashShare, _setsSold) = _amm.removeLiquidity(_poolTokensToSell, _minSetsSold);
-        shareTransfer(_market, address(this), msg.sender, _invalidShare, _noShare, _yesShare);
+        (_shortShare, _longShare, _cashShare, _setsSold) = _amm.removeLiquidity(_poolTokensToSell, _minSetsSold);
+        shareTransfer(_market, address(this), msg.sender, _shortShare, _shortShare, _longShare);
 
         if (_cashShare > 0) {
             weth.withdraw(_cashShare);
@@ -76,29 +76,24 @@ contract WethWrapperForAMMExchange {
         }
     }
 
-    function enterPosition(IMarket _market, uint256 _fee, bool _buyYes, uint256 _minShares) public payable returns (uint256) {
+    function enterPosition(IMarket _market, uint256 _fee, bool _buyLong, uint256 _minShares) public payable returns (uint256) {
         IAMMExchange _amm = getAMM(_market, _fee);
         uint256 _numTicks = _market.getNumTicks();
-        uint256 _setsToBuy = msg.value / _numTicks; // safemath division is identical to regular division
         weth.deposit.value(msg.value)();
 
-        uint256 shares = _amm.enterPosition(msg.value, _buyYes, _minShares);
-        if (_buyYes) {
-            shareTransfer(_market, address(this), msg.sender, _setsToBuy, 0, shares);
+        uint256 shares = _amm.enterPosition(msg.value, _buyLong, _minShares);
+        if (_buyLong) {
+            shareTransfer(_market, address(this), msg.sender, 0, 0, shares);
         } else {
-            shareTransfer(_market, address(this), msg.sender, _setsToBuy, shares, 0);
+            shareTransfer(_market, address(this), msg.sender, shares, shares, 0);
         }
         return shares;
     }
 
-    function exitPosition(IMarket _market, uint256 _fee, uint256 _invalidShares, uint256 _noShares, uint256 _yesShares, uint256 _minCashPayout) public returns (uint256) {
+    function exitPosition(IMarket _market, uint256 _fee, uint256 _shortShares, uint256 _longShares, uint256 _minCashPayout) public returns (uint256) {
         IAMMExchange _amm = getAMM(_market, _fee);
-        shareTransfer(_market, msg.sender, address(this), _invalidShares, _noShares, _yesShares);
-        uint256 _cashPayout = _amm.exitPosition(_invalidShares, _noShares, _yesShares, _minCashPayout);
-
-        // Exiting a position can involve GAINING some shares
-        (uint256 _remainingInvalid, uint256 _remainingNo, uint256 _remainingYes) = _amm.shareBalances(address(this));
-        shareTransfer(_market, address(this), msg.sender, _remainingInvalid, _remainingNo, _remainingYes);
+        shareTransfer(_market, msg.sender, address(this), _shortShares, _shortShares, _longShares);
+        uint256 _cashPayout = _amm.exitPosition(_shortShares, _longShares, _minCashPayout);
 
         if (_cashPayout > 0) {
             weth.withdraw(_cashPayout);
@@ -110,7 +105,8 @@ contract WethWrapperForAMMExchange {
     function exitAll(IMarket _market, uint256 _fee, uint256 _minCashPayout) external returns (uint256) {
         IAMMExchange _amm = getAMM(_market, _fee);
         (uint256 _invalid, uint256 _no, uint256 _yes) = _amm.shareBalances(msg.sender);
-        return exitPosition(_market, _fee, _invalid, _no, _yes, _minCashPayout);
+        _no = SafeMathUint256.min(_invalid, _no);
+        return exitPosition(_market, _fee, _no, _yes, _minCashPayout);
     }
 
     function shareTransfer(IMarket _market, address _from, address _to, uint256 _invalidAmount, uint256 _noAmount, uint256 _yesAmount) private {

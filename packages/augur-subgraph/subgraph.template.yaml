@@ -198,7 +198,7 @@ templates:
       eventHandlers:
         - event: EnterPosition(address,uint256,uint256,bool,uint256)
           handler: handleEnterPosition
-        - event: ExitPosition(address,uint256,uint256,uint256,uint256)
+        - event: ExitPosition(address,uint256,uint256,uint256)
           handler: handleExitPosition
         - event: SwapPosition(address,uint256,uint256,bool)
           handler: handleSwapPosition
