@@ -171,6 +171,7 @@
 @size-80: 5rem; // 80px
 @size-82: 5.125rem; // 82px
 @size-85: 5.3125rem; // 85px
+@size-86: 5.375rem; // 86px
 @size-87: 5.4375rem; // 87px
 @size-88: 5.5rem; // 88px
 @size-90: 5.625rem; // 90px
@@ -252,12 +253,13 @@
 @line-height-paragraph: 1.25rem; // 20px for the 12px paragraph font-size
 @line-height-small-spacing: 0.9375rem; // 15px for smallest text
 
-// defaults
+// defaults`
 .text-default {
   font-family: @Inter;
   font-style: normal;
   font-weight: @weight-normal;
   line-height: @line-height-normal;
+  letter-spacing: -0.01rem;
 }
 
 .mono-default {
@@ -452,6 +454,12 @@
   .text-default;
 
   font-size: @size-20;
+}
+
+.text-20-semi-bold {
+  .text-20;
+
+  font-weight: @weight-semi-bold;
 }
 
 .text-20-bold {
