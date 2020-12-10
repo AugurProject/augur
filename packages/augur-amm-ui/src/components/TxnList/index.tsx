@@ -303,12 +303,16 @@ function TxnList({ allExchanges, color, cashTokens, cashData }) {
   }, [allExchanges, cashTokens, cashData])
 
   useEffect(() => {
-    const filtered = transactions.filter(item => {
-      if (txFilter !== TXN_TYPE.ALL) {
-        return item.type === txFilter
-      }
-      return true
-    })
+    const filtered = transactions
+      .filter(item => {
+        if (txFilter !== TXN_TYPE.ALL) {
+          if (txFilter === TXN_TYPE.SWAP) {
+            return [TXN_TYPE.ENTER, TXN_TYPE.EXIT, TXN_TYPE.SWAP].includes(item.type)
+          }
+          return item.type === txFilter
+        }
+        return true
+      })
 
     let extraPages = 1
     if (filtered.length % ITEMS_PER_PAGE === 0) {
@@ -330,7 +334,7 @@ function TxnList({ allExchanges, color, cashTokens, cashData }) {
         })
         .slice(ITEMS_PER_PAGE * (page - 1), page * ITEMS_PER_PAGE)
     setFilteredList(filteredList)
-  }, [transactions, setFilteredList, txFilter])
+  }, [transactions, setFilteredList, txFilter, page, sortDirection, sortedColumn])
 
   useEffect(() => {
     setPage(1)
@@ -398,14 +402,14 @@ function TxnList({ allExchanges, color, cashTokens, cashData }) {
               >
                 Adds
             </SortText>
-              <SortText
+              {/* <SortText
                 onClick={() => {
                   setTxFilter(TXN_TYPE.REMOVE)
                 }}
                 active={txFilter === TXN_TYPE.REMOVE}
               >
                 Removes
-            </SortText>
+            </SortText> */}
             </RowFixed>
           )}
 
