@@ -2,7 +2,7 @@ import React from 'react';
 import Styles from 'modules/common/labels.styles.less';
 import classNames from 'classnames';
 import { formatDai } from 'utils/format-number';
-import { EthIcon, UsdIcon } from './icons';
+import { EthIcon, PlusIcon, UsdIcon } from 'modules/common/icons';
 import { POPULAR_CATEGORIES_ICONS } from 'modules/constants';
 
 interface ValueLabelProps {
@@ -113,6 +113,21 @@ export const AppViewStats = ({ showCashAmounts }: AppViewStatsProps) => {
           />
         </>
       )}
+    </div>
+  );
+};
+
+
+export const AddLiquidity = () => {
+  return (
+    <div
+      className={classNames(Styles.AddLiquidity)}
+    >
+      <span>
+        {PlusIcon}
+        add liquidity
+      </span>
+      <span>earn fees as a liquidity provider</span>
     </div>
   );
 };

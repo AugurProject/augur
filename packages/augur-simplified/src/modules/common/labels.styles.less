@@ -54,10 +54,9 @@
 
 .CategoryLabel {
   .text-14;
+  .SimpleBorder;
 
   color: var(--simple-primary-text);
-  border-radius: @size-8;
-  border: @size-1 solid var(--simple-border);
   white-space: nowrap;
   justify-content: center;
   display: flex;
@@ -71,10 +70,11 @@
 
 
 .AppStats {
+  .SimpleBorder;
+
   display: flex;
   padding: 0 @size-36;
   border-radius: @size-16;
-  border: @size-1 solid var(--simple-border);
   height: @size-150;
   background: var(--simple-light-bg);
 
@@ -138,5 +138,35 @@
 
   &.politics {
     border: @size-1 solid var(--politics-color);
+  }
+}
+
+.AddLiquidity {
+  .SimpleBorder;
+
+  background: var(--simple-light-bg);
+  padding: @size-16;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: fit-content;
+
+  > span:first-of-type {
+    .text-20-bold;
+
+    text-transform: capitalize;
+    color: var(--simple-primary-text);
+
+    > svg {
+      margin-right: @size-10;
+    }
+  }
+
+  > span:last-of-type {
+    .text-16;
+
+    margin-top: @size-8;
+    text-transform: capitalize;
+    color: var(--simple-secondary-text);
   }
 }

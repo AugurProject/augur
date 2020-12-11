@@ -4,7 +4,7 @@ import { formatDai } from 'utils/format-number';
 import classNames from 'classnames';
 import { createBigNumber } from 'utils/create-big-number';
 import { UsdIcon } from 'modules/common/icons';
-import { CategoryIcon, CategoryLabel } from 'modules/common/labels';
+import { AddLiquidity, CategoryIcon, CategoryLabel } from 'modules/common/labels';
 import { COVID, MEDICAL } from 'modules/constants';
 import { PositionsLiquidityViewSwitcher, TransactionsTable } from 'modules/common/tables';
 
@@ -84,7 +84,9 @@ const MarketView = ({ market = MARKET_DATA }) => {
           <TransactionsTable />
         </div>
       </section>
-      <section>SideBar Thing</section>
+      <section>
+        <AddLiquidity />
+      </section>
     </div>
   );
 };
