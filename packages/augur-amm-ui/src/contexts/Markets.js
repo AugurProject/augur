@@ -531,7 +531,11 @@ export const useMarketAmmTradeData = (marketId, cashAddress) => {
   const amms = useMarketAmmExchanges(marketId)
   const amm = amms.find(a => a.cash.address === cashAddress)
   if (!amm) return []
+
+  console.log('chart amm', marketId, cashAddress, amm)
   const enters = calculateTradePrice(amm.enters)
+  console.log('chart data enter', enters)
   const exits = calculateTradePrice(amm.exits)
+  console.log('chart data exits', exits)
   return [...enters, ...exits].sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))
 }

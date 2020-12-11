@@ -66,7 +66,9 @@ const PairChart = ({ marketId, amms, color }) => {
 
   useEffect(() => {
     if (amms && amms.length > 0 && selectedCash === undefined) {
-      setSelectedCash(amms[0].cash)
+      const amm = amms.find(a => a.enters.length > 0)
+      console.log('selecting cash', amm?.cash)
+      setSelectedCash(amm ? amm?.cash : amms[0].cash)
     }
   }, [amms, selectedCash])
 
@@ -78,14 +80,6 @@ const PairChart = ({ marketId, amms, color }) => {
 
   let utcStartTime = getTimeframe(timeWindow)
   chartData = chartData?.filter(entry => entry.timestamp >= utcStartTime)
-
-  if (chartData && chartData.length === 0 || (amms.length === 0)) {
-    return (
-      <ChartWrapper>
-        <EmptyCard height="300px">No historical data yet.</EmptyCard>{' '}
-      </ChartWrapper>
-    )
-  }
 
   const aspect = below1080 ? 60 / 20 : below1600 ? 60 / 28 : 60 / 22
 
@@ -107,7 +101,7 @@ const PairChart = ({ marketId, amms, color }) => {
                   active={selectedCash?.address === a.cash.address}
                   onClick={() => {
                     setTimeWindow(timeframeOptions.ALL_TIME)
-                    setSelectedCash(a?.cash?.address)
+                    setSelectedCash(a?.cash)
                   }}
                 >
                   <TokenLogo tokenInfo={a.cash.address} />
@@ -140,72 +134,78 @@ const PairChart = ({ marketId, amms, color }) => {
         </OptionsRow>
       )}
 
-      <ResponsiveContainer aspect={aspect}>
-        <LineChart margin={{ top: 0, right: 10, bottom: 6, left: 0 }} barCategoryGap={1} data={chartData}>
-          <defs>
-            <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor={color} stopOpacity={0.35} />
-              <stop offset="95%" stopColor={color} stopOpacity={0} />
-            </linearGradient>
-          </defs>
-          <XAxis
-            tickLine={false}
-            axisLine={false}
-            interval="preserveEnd"
-            tickMargin={14}
-            minTickGap={80}
-            tickFormatter={tick => toNiceDate(tick)}
-            dataKey="timestamp"
-            tick={{ fill: textColor }}
-            type={'number'}
-            domain={['dataMin', 'dataMax']}
-          />
-          <YAxis
-            type="number"
-            orientation="right"
-            tickFormatter={tick => '$' + toK(tick)}
-            axisLine={false}
-            tickLine={false}
-            interval="preserveEnd"
-            minTickGap={80}
-            yAxisId={0}
-            tickMargin={16}
-            tick={{ fill: textColor }}
-          />
-          <Tooltip
-            cursor={true}
-            formatter={val => formattedNum(val, false)}
-            labelFormatter={label => toNiceDateYear(label)}
-            labelStyle={{ paddingTop: 4 }}
-            contentStyle={{
-              padding: '10px 14px',
-              borderRadius: 10,
-              borderColor: color,
-              color: 'black'
-            }}
-            wrapperStyle={{ top: -70, left: -10 }}
-          />
-          <Line
-            strokeWidth={2}
-            dot={false}
-            type="monotone"
-            name={`YES (${selectedCash.symbol})`}
-            dataKey={'yes'}
-            yAxisId={0}
-            stroke={darken(0.12, 'green')}
-          />
-          <Line
-            strokeWidth={2}
-            dot={false}
-            type="monotone"
-            name={`NO (${selectedCash.symbol})`}
-            dataKey={'no'}
-            yAxisId={0}
-            stroke={darken(0.12, 'red')}
-          />
+    {chartData && chartData.length === 0 || (amms.length === 0) ?
 
-        </LineChart>
-      </ResponsiveContainer>
+        <EmptyCard height="300px">No historical data yet.</EmptyCard>
+
+    :
+    (<ResponsiveContainer aspect={aspect}>
+      <LineChart margin={{ top: 0, right: 10, bottom: 6, left: 0 }} barCategoryGap={1} data={chartData}>
+        <defs>
+          <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor={color} stopOpacity={0.35} />
+            <stop offset="95%" stopColor={color} stopOpacity={0} />
+          </linearGradient>
+        </defs>
+        <XAxis
+          tickLine={false}
+          axisLine={false}
+          interval="preserveEnd"
+          tickMargin={14}
+          minTickGap={80}
+          tickFormatter={tick => toNiceDate(tick)}
+          dataKey="timestamp"
+          tick={{ fill: textColor }}
+          type={'number'}
+          domain={['dataMin', 'dataMax']}
+        />
+        <YAxis
+          type="number"
+          orientation="right"
+          tickFormatter={tick => '$' + toK(tick)}
+          axisLine={false}
+          tickLine={false}
+          interval="preserveEnd"
+          minTickGap={80}
+          yAxisId={0}
+          tickMargin={16}
+          tick={{ fill: textColor }}
+        />
+        <Tooltip
+          cursor={true}
+          formatter={val => formattedNum(val, false)}
+          labelFormatter={label => toNiceDateYear(label)}
+          labelStyle={{ paddingTop: 4 }}
+          contentStyle={{
+            padding: '10px 14px',
+            borderRadius: 10,
+            borderColor: color,
+            color: 'black'
+          }}
+          wrapperStyle={{ top: -70, left: -10 }}
+        />
+        <Line
+          strokeWidth={2}
+          dot={false}
+          type="monotone"
+          name={`YES (${selectedCash.symbol})`}
+          dataKey={'yes'}
+          yAxisId={0}
+          stroke={darken(0.12, 'green')}
+        />
+        <Line
+          strokeWidth={2}
+          dot={false}
+          type="monotone"
+          name={`NO (${selectedCash.symbol})`}
+          dataKey={'no'}
+          yAxisId={0}
+          stroke={darken(0.12, 'red')}
+        />
+
+      </LineChart>
+    </ResponsiveContainer>)
+    }
     </ChartWrapper>
   )
 }

@@ -20,7 +20,7 @@ import { useTransactionAdder } from '../../state/transactions/hooks'
 
 import AppBody from '../AppBody'
 import { MaxButton, Wrapper } from '../../components/swap/styleds'
-import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
+import { ApprovalState, useApproveCallbackStub } from '../../hooks/useApproveCallback'
 import { Dots } from '../../components/swap/styleds'
 import { getRemoveLiquidityBreakdown } from '../../state/burn/hooks'
 import { doUseETH, useAmmFactoryAddress, useAugurClient } from '../../contexts/Application'
@@ -29,7 +29,7 @@ import { useWalletModalToggle } from '../../state/application/hooks'
 import { useLPTokenBalances } from '../../state/wallet/hooks'
 import { useMarketAmm } from '../../contexts/Markets'
 import { tryParseAmount } from '../../state/swap/hooks'
-import { formatTokenAmount, formatShares, removeAmmLiquidity, formatToDisplayValue, formattedNum } from '../../utils'
+import { formatShares, removeAmmLiquidity, formatToDisplayValue, formattedNum } from '../../utils'
 import { Token } from '@uniswap/sdk'
 
 function RemoveLiquidity({
@@ -47,10 +47,13 @@ function RemoveLiquidity({
   const [breakdown, setBreakdown] = useState({ noShares: '0', yesShares: '0', cashShares: '0' })
   const [liquidityPercentage, setLiquidityPercentage] = useState('0')
   const [error, setError] = useState('Enter an amount')
-  const [approval, approveCallback] = useApproveCallback(
+
+  // keep this just incase we need a approval to remove liquidity
+  const [approval, approveCallback] = useApproveCallbackStub(
     tryParseAmount(userTokenBalances[ammExchangeId], currencyLP),
     ammFactory
   )
+
 
   const theme = useContext(ThemeContext)
   const useEth = doUseETH(ammExchange?.cash?.id)

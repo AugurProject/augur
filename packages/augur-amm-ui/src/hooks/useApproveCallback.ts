@@ -46,6 +46,15 @@ export function useIsTokenApprovedForAll(account?: string, paraShareToken?: stri
   ])
 }
 
+export function useApproveCallbackStub(
+  amountToApprove?: CurrencyAmount,
+  spender?: string,
+): [ApprovalState, () => Promise<void>] {
+  const approve = useCallback(async (): Promise<void> => {
+    return;
+  }, [])
+  return [ApprovalState.APPROVED, approve   ]
+}
 // returns a variable indicating the state of the approval and a function which approves if necessary or early returns
 export function useApproveCallback(
   amountToApprove?: CurrencyAmount,
