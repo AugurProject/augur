@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import Styles from 'modules/common/selection.styles.less';
-import { SimpleChevron } from './icons';
+import { SimpleChevron, UsdIcon } from './icons';
+import { USDC } from 'modules/constants';
 
 export interface NameValuePair {
   label: string;
   value: string | number;
+  icon?: any;
 }
 
 export interface DropdownProps {
@@ -13,7 +15,7 @@ export interface DropdownProps {
   onChange: any;
   className?: string;
   defaultValue?: string | number;
-  options: NameValuePair[];
+  options?: NameValuePair[];
   large?: boolean;
   staticLabel?: string;
   staticMenuLabel?: string;
@@ -40,20 +42,21 @@ interface DropdownState {
 }
 
 function findSelected(options, defaultVal) {
-  const foundOption = options.find(
-    o => o.value === defaultVal
-  );
-  const defaultValue = defaultVal ? {
-    label: defaultVal.toString(),
-    value: defaultVal,
-  } : null;
+  const foundOption = options.find((o) => o.value === defaultVal);
+  const defaultValue = defaultVal
+    ? {
+        label: defaultVal.toString(),
+        value: defaultVal,
+      }
+    : null;
 
   return foundOption ? foundOption : defaultValue;
 }
 
 class Dropdown extends Component<DropdownProps, DropdownState> {
   state: DropdownState = {
-    selected: this.props.defaultValue !== null
+    selected:
+      this.props.defaultValue !== null
         ? findSelected(this.props.options, this.props.defaultValue)
         : null,
     showList: false,
@@ -69,19 +72,19 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
 
   componentDidMount() {
     this.measure();
-//    window.addEventListener('click', this.handleWindowOnClick);
+    //    window.addEventListener('click', this.handleWindowOnClick);
   }
 
   componentWillUnmount() {
-//    window.removeEventListener('click', this.handleWindowOnClick);
+    //    window.removeEventListener('click', this.handleWindowOnClick);
   }
 
   componentDidUpdate(prevProps: DropdownProps, prevState: DropdownState) {
     this.measure();
     if (prevProps.defaultValue !== this.props.defaultValue) {
       this.setState({
-        selected: findSelected(this.props.options, this.props.defaultValue)
-      })
+        selected: findSelected(this.props.options, this.props.defaultValue),
+      });
     }
     if (
       JSON.stringify(this.props.options) !==
@@ -105,7 +108,8 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
       this.props.disabled !== nextProps.disabled ||
       this.props.staticLabel !== nextProps.staticLabel ||
       this.props.defaultValue !== nextProps.defaultValue ||
-      JSON.stringify(this.props.options) !== JSON.stringify(nextProps.options) ||
+      JSON.stringify(this.props.options) !==
+        JSON.stringify(nextProps.options) ||
       this.props.className !== nextProps.className
     ) {
       return true;
@@ -184,7 +188,7 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
           [Styles.showColor]: showColor,
           [Styles.Disabled]: disabled,
         })}
-        ref={dropdown => {
+        ref={(dropdown) => {
           this.refDropdown = dropdown;
         }}
         role="button"
@@ -200,7 +204,8 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
             [Styles.SelectedLabel]: selected,
           })}
         >
-          <span ref={ref => (this.labelRef = ref)}>
+          <span ref={(ref) => (this.labelRef = ref)}>
+            {selected?.icon ? selected.icon : null}
             {selected ? selected.label : staticLabel}
           </span>
           {SimpleChevron}
@@ -211,7 +216,7 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
               [`${Styles.active}`]: showList,
             })}
           >
-            {sortedList.map(option => (
+            {sortedList.map((option) => (
               <button
                 key={`${option.value}${option.label}`}
                 value={option.value}
@@ -227,12 +232,12 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
         </div>
         {selected && (
           <select
-            onChange={e => {
+            onChange={(e) => {
               this.dropdownSelect(e.target.options[e.target.selectedIndex]);
             }}
             value={selected.value}
           >
-            {sortedList.map(option => (
+            {sortedList.map((option) => (
               <option
                 key={`${option.value}${option.label}`}
                 value={option.value}
@@ -249,3 +254,13 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
 
 export const SquareDropdown = (props: DropdownProps) => <Dropdown {...props} />;
 
+const currencyValues = [{ label: USDC, value: USDC, icon: UsdIcon }];
+
+export const CurrencyDropdown = (props: DropdownProps) => (
+  <Dropdown
+    {...props}
+    defaultValue={currencyValues[0].label}
+    options={currencyValues}
+    className={Styles.CurrencyDropdown}
+  />
+);

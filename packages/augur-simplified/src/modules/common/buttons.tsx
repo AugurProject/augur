@@ -7,10 +7,11 @@ import { Arrow } from './icons';
 interface ButtonProps {
   text?: string;
   className?: string
+  disabled?: boolean;
 }
 
-const Button = ({ text, className }: ButtonProps) => {
-  return <button className={classNames(className)}>{text}</button>;
+const Button = ({ text, className, disabled }: ButtonProps) => {
+  return <button className={classNames(className, {[Styles.disabled]: disabled})}>{text}</button>;
 };
 
 export const PrimaryButton = (props: ButtonProps) => {

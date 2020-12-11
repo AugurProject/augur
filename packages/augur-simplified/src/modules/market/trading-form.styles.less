@@ -1,0 +1,279 @@
+@import (reference) '~assets/styles/shared';
+
+.TradingForm {
+  border-radius: @size-16;
+  display: flex;
+  height: fit-content;
+  background: var(--simple-light-bg);
+  box-shadow: 0 @size-8 @size-40 var(--simple-shadow-10);
+  display: flex;
+  flex-direction: column;
+
+  > div:first-of-type {
+    padding: @size-16 @size-32;
+    border-bottom: @size-1 solid var(--simple-border);
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    flex: 1;
+    align-items: center;
+    margin-bottom: @size-24;
+
+    > span {
+      .text-20-bold;
+
+      color: var(--simple-secondary-text);
+      text-transform: capitalize;
+      cursor: pointer;
+
+      &:first-of-type {
+        margin-right: @size-40;
+      }
+
+      &.Selected {
+        color: var(--simple-primary-text);
+      }
+    }
+
+    > div {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+
+      > span {
+        &:first-of-type {
+          .text-16;
+
+          color: var(--simple-secondary-text);
+          text-transform: capitalize;
+        }
+
+        &:nth-of-type(2) {
+          .text-20-semi-bold;
+
+          color: var(--simple-primary-text);
+          margin-top: @size-4;
+        }
+      }
+    }
+  }
+
+  > div:nth-of-type(2) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 @size-24 @size-24;
+
+    > button {
+      flex: 1;
+      margin-top: @size-24;
+    }
+  }
+}
+
+.Outcomes {
+  display: flex;
+  flex-direction: column;
+
+  > div {
+    &:not(:first-of-type) {
+      margin-top: @size-8;
+    }
+  }
+
+  &.YesNo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    > div {
+      &:not(:first-of-type) {
+        margin-top: 0;
+      }
+
+      &:last-of-type {
+        margin-top: @size-8;
+      }
+    }
+  }
+}
+
+.SelectedBorders {
+  border: @size-1 solid var(--simple-sell);
+
+  &.Buy {
+    background: var(--simple-buy-15);
+    border: @size-1 solid var(--simple-buy);
+  }
+}
+
+.Outcome {
+  .SimpleBorder;
+
+  display: flex;
+  color: var(--simple-primary-text);
+  cursor: pointer;
+  padding: @size-10 @size-16;
+  flex: 1;
+  text-transform: capitalize;
+
+  > span {
+    &:first-of-type {
+      .text-14-semi-bold;
+    }
+    &:last-of-type {
+      .text-16-semi-bold;
+
+      flex: 1;
+      justify-content: flex-end;
+      display: flex;
+    }
+  }
+
+  &.Selected {
+    .SelectedBorders;
+
+    background: var(--simple-sell-15);
+  }
+
+  &.YesNo {
+    color: var(--simple-secondary-text);
+    display: flex;
+    flex-direction: column;
+
+    &:first-of-type {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      border-right-color: transparent;
+    }
+
+    &:nth-of-type(2) {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      border-left-color: transparent;
+    }
+
+    > span {
+      &:first-of-type {
+        .text-16-bold;
+      }
+
+      &:last-of-type {
+        .text-30-bold;
+
+        justify-content: flex-start;
+        display: flex;
+        margin-top: @size-8;
+      }
+    }
+
+    &.Selected {
+      .SelectedBorders;
+
+      color: var(--simple-primary-text);
+    }
+
+    &.InvalidSelected {
+      &:first-of-type {
+        border-right: @size-1 solid var(--simple-border);
+      }
+    }
+  }
+
+  &.Invalid {
+    color: var(--simple-secondary-text);
+    grid-column: 1 / span 2;
+
+    > span:first-of-type {
+      .text-16;
+    }
+  }
+}
+
+.AmountInput {
+  .SimpleBorder;
+
+  display: flex;
+  padding: @size-24;
+  background: var(--light-background-color);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: @size-24;
+
+  > span:first-of-type {
+    .text-16-bold;
+
+    text-transform: capitalize;
+    color: var(--simple-secondary-text);
+  }
+
+  > span:nth-of-type(2) {
+    .text-14;
+
+    display: flex;
+    justify-content: flex-end;
+    text-transform: capitalize;
+    color: var(--simple-secondary-text);
+  }
+}
+
+.AmountInputDropdown {
+  grid-column: 1 / span 2;
+  margin-top: @size-14;
+  background-color: var(--simple-light-bg);
+  border-radius: @size-8;
+  display: flex;
+  height: @size-50;
+  min-height: @size-50;
+  border: @size-1 solid transparent;
+  outline: 0;
+
+  &:focus-within {
+    border: @size-1 solid var(--simple-border);
+    outline: 0;
+  }
+
+  > input {
+    .text-20-bold;
+
+    width: unset;
+    color: var(--simple-primary-text);
+    background-color: var(--simple-light-bg);
+    border-radius: @size-8;
+    border: 0;
+    outline: 0;
+    
+    &:focus {
+      border: 0;
+      outline: 0;
+    }
+  }
+
+  > div {
+    margin-left: -@size-80;
+  }
+}
+
+.OrderInfo {
+    display: flex;
+    flex-direction: column;
+    margin-top: @size-24;
+
+    > div {
+        display: flex;
+        flex: 1;
+
+        > span {
+            .text-16-semi-bold;
+
+            color: var(--simple-secondary-text);
+            text-transform: capitalize;
+
+            &:first-of-type {
+                flex: 1;
+            }
+        }
+        
+        &:not(:last-of-type) {
+            margin-bottom: @size-12;;
+        }
+    }
+}

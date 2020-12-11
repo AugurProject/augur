@@ -8,6 +8,7 @@ import SimpleChartSection from 'modules/common/charts';
 import { AddLiquidity, CategoryIcon, CategoryLabel } from 'modules/common/labels';
 import { COVID, MEDICAL } from 'modules/constants';
 import { PositionsLiquidityViewSwitcher, TransactionsTable } from 'modules/common/tables';
+import TradingForm from 'modules/market/trading-form';
 
 const MARKET_DATA = {
   id: '0xdeadbeef',
@@ -90,6 +91,7 @@ const MarketView = ({ market = MARKET_DATA }) => {
         </div>
       </section>
       <section>
+        <TradingForm />
         <AddLiquidity />
       </section>
     </div>

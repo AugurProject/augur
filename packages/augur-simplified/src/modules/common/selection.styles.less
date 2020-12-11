@@ -7,7 +7,7 @@
   display: flex;
   position: relative;
   width: 100%;
- 
+
   > span {
     display: none;
   }
@@ -86,7 +86,7 @@
         &:not(:last-of-type)::before {
           background: var(--color-secondary-action-outline-50);
           bottom: 0;
-          content: "";
+          content: '';
           height: @size-1;
           position: absolute;
         }
@@ -107,7 +107,6 @@
 
     color: var(--simple-primary-text);
     text-transform: capitalize;
-
   }
 
   &.Selected {
@@ -132,7 +131,7 @@
   .Dropdown;
 
   height: @size-32;
-  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   @media @breakpoint-mobile {
     height: @size-40;
@@ -358,197 +357,6 @@
   });
 }
 
-:root[theme="BETTING"],
-:root[theme="SPORTS"] {
-  .MenuItems {
-    > div:hover {
-      background: var(--color-table-header);
-    }
-  }
-  .Dropdown {
-    > span {
-      display: flex;
-    }
-
-    > button {
-      // arrow
-      > svg {
-        > path {
-          fill: var(--color-primary-text);
-        }
-      }
-    }
-  }
-
-  .Normal {
-    align-items: center;
-
-    > span {
-      display: flex;
-      height: 100%;
-      border-bottom: @size-1 solid transparent;
-    }
-
-    > button {
-      .text-12;
-
-      text-transform: none;
-      display: flex;
-      flex-flow: row nowrap;
-      height: 100%;
-      align-items: center;
-      justify-content: center;
-
-      > span {
-        height: 100%;
-        align-items: center;
-        justify-content: center;
-      }
-
-      @media @breakpoint-mobile {
-        .text-12;
-      }
-    }
-
-    &.Minimal {
-      height: @size-24;
-      border: 0;
-
-      > span {
-        .text-14;
-
-        white-space: nowrap;
-        text-transform: capitalize;
-        margin-right: @size-4;
-        color: var(--color-secondary-text);
-        display: flex;
-        align-items: center;
-        margin-left: @size-2;
-      }
-
-      > button {
-        background-color: transparent;
-        padding: 0;
-
-        > span {
-          .text-14;
-
-          border: none;
-          color: var(--color-primary-text);
-          padding: 0;
-          position: relative;
-
-          &:before {
-            content: "";
-            display: block;
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: @size-2;
-            border-bottom: @size-1 dotted var(--color-primary-text);
-          }
-        }
-
-        > svg {
-          width: @size-10;
-          height: @size-7;
-          margin: @size-2 @size-8 0 @size-4;
-
-          > path {
-            stroke: var(--color-primary-text);
-            fill: none;
-          }
-        }
-      }
-
-      &.isOpen,
-      &:hover {
-        > button > span:before {
-          border-bottom: @size-1 solid var(--color-primary-text);
-        }
-      }
-    }
-
-    > div {
-      max-height: unset;
-      top: calc(100% + @size-12);
-      margin-bottom: @size-16;
-      overflow: visible;
-
-      > div {
-        margin-top: @size-4;
-        border: @size-1 solid var(--color-secondary-action-outline);
-        box-shadow: 0px 0px @size-4 var(--color-primary-text-15);
-        border-radius: @border-radius-default;
-        min-width: fit-content;
-        width: 100%;
-
-        > button {
-          .text-14;
-
-          background: transparent;
-          color: var(--color-secondary-text);
-          padding: @size-12 @size-16;
-          text-transform: none;
-          height: unset;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          grid-gap: 0 @size-8;
-
-          > svg {
-            width: @size-10;
-            height: @size-8;
-            display: flex;
-
-            > path {
-              fill: var(--color-primary-text);
-            }
-          }
-
-          &.Selected {
-            color: var(--color-primary-text);
-          }
-
-          &:hover {
-            background-color: var(--color-active-background);
-          }
-        }
-      }
-    }
-  }
-
-  .Large {
-    height: @size-36;
-
-    .Normal;
-
-    > button {
-      background-color: var(--color-secondary-action);
-    }
-
-    &:hover,
-    &:focus,
-    &:hover:focus {
-      border: @size-1 solid var(--color-dark-text);
-
-      > button > span {
-        border-right: @size-1 solid vaR(--color-dark-text);
-      }
-    }
-  }
-
-  .showColor {
-    .generate-betting-indexed-color-outcome-classes({
-      &.showColor-@{newIndex} {
-        &::before {
-          background-color: @value;
-        };
-      }
-    });
-  }
-}
-
 .PillSelection {
   align-items: center;
   display: flex;
@@ -621,7 +429,7 @@
     > li {
       background: var(--color-module-background);
 
-      &:first-of-type:hover:not([class*="Selected"]) {
+      &:first-of-type:hover:not([class*='Selected']) {
         border-right: 0;
       }
 
@@ -632,7 +440,7 @@
         text-transform: capitalize;
       }
 
-      &[class*="Selected"] {
+      &[class*='Selected'] {
         border: @size-1 solid var(--color-primary-text);
 
         > button {
@@ -647,10 +455,10 @@
   }
 }
 
-:root[theme="BETTING"],
-:root[theme="SPORTS"] {
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
   .PillSelection {
-      > li > button {
+    > li > button {
       padding: @size-6 @size-8;
     }
 
@@ -855,8 +663,8 @@
   }
 }
 
-:root[theme="BETTING"],
-:root[theme="SPORTS"] {
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
   .DotSelection {
     > button {
       > svg {
@@ -904,7 +712,7 @@
 
     &:not(:last-of-type) {
       &::after {
-        content: "";
+        content: '';
         height: 1px;
         background: var(--color-secondary-action-outline);
         width: 100%;
@@ -929,9 +737,8 @@
 
     color: var(--color-inactive-text);
     cursor: pointer;
-    height: @size-32 ;
+    height: @size-32;
     margin: @size-24 @size-32 @size-24 0;
-
 
     &.selected {
       color: var(--color-primary-text);
@@ -941,5 +748,58 @@
     @media @breakpoint-mobile {
       .text-12;
     }
+  }
+}
+
+.CurrencyDropdown {
+  background-color: transparent;
+  border: 0;
+
+  > button {
+    background-color: transparent;
+    border: 0;
+    align-items: center;
+
+    > span {
+      .text-16-semi-bold;
+
+      margin-right: @size-8;
+      margin-left: @size-4;
+      justify-content: center;
+      align-items: center;
+      display: flex;
+
+      > svg {
+        margin-right: @size-4;
+        height: @size-22;
+        width: @size-22;
+      }
+    }
+
+    > svg {
+      margin-left: 0;
+      height: @size-6;
+      width: @size-10;
+
+      > path {
+        fill: var(--simple-primary-text);
+      }
+    }
+
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: transparent;
+      border: 0;
+      outline: 0;
+    }
+  }
+
+  &:hover,
+  &:active,
+  &:focus {
+    background-color: transparent;
+    border: 0;
+    outline: 0;
   }
 }
