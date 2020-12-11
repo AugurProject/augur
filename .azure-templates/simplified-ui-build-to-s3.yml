@@ -28,10 +28,6 @@ jobs:
           versionSpec: '3.6'
       - bash: |
           set -euo pipefail
-          yarn build
-        displayName: yarn build
-      - bash: |
-          set -euo pipefail
           ( cd packages/augur-simplified && node scripts/build.js)
         displayName: ui build
         env:
