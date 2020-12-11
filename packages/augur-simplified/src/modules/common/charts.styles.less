@@ -1,7 +1,231 @@
 @import (reference) '~assets/styles/shared';
+@import (reference) '~modules/common/buttons.styles.less';
 
 .PriceHistoryChart {
   display: flex;
   flex-flow: column nowrap;
   grid-gap: @size-24;
+
+  svg {
+    :global {
+      .highcharts-background {
+        fill: transparent;
+      }
+
+      .highcharts-no-data {
+        font-size: @size-16;
+      }
+
+      .highcharts-label-box {
+        fill: var(--color-module-background);
+        font-weight: bold;
+
+        > text > tspan:last-child {
+          font-size: @size-12;
+        }
+      }
+
+      .highcharts-crosshair-label.highcharts-crosshair-label
+        > .highcharts-label-box {
+        stroke: var(--color-primary-text);
+      }
+
+      .highcharts-crosshair-label {
+        background-color: var(--color-module-background);
+        border-radius: @size-5;
+        color: var(--color-primary-text);
+        font-size: @size-10;
+        z-index: @above-all-content;
+        // ugh... we need !important here because inline styles are inserted.
+        > text {
+          color: var(--color-primary-text) !important;
+          fill: var(--color-primary-text) !important;
+
+          > tspan {
+            color: var(--color-primary-text) !important;
+            fill: var(--color-primary-text) !important;
+          }
+        }
+      }
+
+      g.highcharts-yaxis-labels > g.highcharts-crosshair-label {
+        > path {
+          transform: translateX(@size-38);
+        }
+
+        > text {
+          .text-12;
+
+          fill: var(--simple-primary-text);
+          transform: translateX(@size-38);
+
+          > tspan {
+            color: var(--simple-primary-text);
+            fill: var(--simple-primary-text);
+          }
+        }
+      }
+
+      g.highcharts-xaxis-labels > g.highcharts-crosshair-label > path {
+        transform: translateY(@size-4);
+      }
+
+      g.highcharts-xaxis-labels > g.highcharts-crosshair-label > text {
+        .mono-9;
+
+        fill: var(--color-primary-text);
+        transform: translateY(@size-4);
+      }
+
+      .highcharts-crosshair {
+        .dashline-long;
+      }
+
+      .highcharts-halo,
+      path.highcharts-point,
+      .highcharts-tracker > path {
+        fill: var(--simple-primary-text);
+        stroke: var(--simple-primary-text);
+      }
+
+      // --- mulitple line styling
+      .highcharts-line-series.highcharts-color-0,
+      .highcharts-area-series.highcharts-color-0 {
+        fill: var(--color-outcome-invalid);
+        stroke: var(--color-outcome-invalid);
+      }
+
+      g.highcharts-area-series.highcharts-color-0 > path.highcharts-area {
+        fill: var(--color-outcome-invalid-40);
+        stroke: var(--color-outcome-invalid-40);
+      }
+
+      g.highcharts-line-series.highcharts-color-0 > path.highcharts-graph,
+      g.highcharts-area-series.highcharts-color-0 > path.highcharts-graph {
+        stroke: var(--color-outcome-invalid);
+      }
+
+      .highcharts-line-series.highcharts-color-1,
+      .highcharts-area-series.highcharts-color-1 {
+        fill: var(--simple-buy);
+      }
+
+      g.highcharts-line-series.highcharts-color-1 > path.highcharts-graph,
+      g.highcharts-area-series.highcharts-color-1 > path.highcharts-graph {
+        stroke: var(--simple-buy);
+      }
+
+      .highcharts-line-series.highcharts-color-2,
+      .highcharts-area-series.highcharts-color-2 {
+        fill: var(--simple-sell);
+      }
+
+      g.highcharts-line-series.highcharts-color-2 > path.highcharts-graph,
+      g.highcharts-area-series.highcharts-color-2 > path.highcharts-graph {
+        stroke: var(--simple-sell);
+      }
+
+      .highcharts-line-series.highcharts-color-3,
+      .highcharts-area-series.highcharts-color-3 {
+        fill: var(--color-outcome-three);
+        stroke: var(--color-outcome-three);
+      }
+
+      g.highcharts-area-series.highcharts-color-3 > path.highcharts-area {
+        fill: var(--color-outcome-three-40);
+        stroke: var(--color-outcome-three-40);
+      }
+
+      g.highcharts-line-series.highcharts-color-3 > path.highcharts-graph,
+      g.highcharts-area-series.highcharts-color-3 > path.highcharts-graph {
+        stroke: var(--color-outcome-three);
+      }
+
+      .highcharts-line-series.highcharts-color-4,
+      .highcharts-area-series.highcharts-color-4 {
+        fill: var(--color-outcome-four);
+        stroke: var(--color-outcome-four);
+      }
+
+      g.highcharts-area-series.highcharts-color-4 > path.highcharts-area {
+        fill: var(--color-outcome-four-40);
+        stroke: var(--color-outcome-four-40);
+      }
+
+      g.highcharts-line-series.highcharts-color-4 > path.highcharts-graph,
+      g.highcharts-area-series.highcharts-color-4 > path.highcharts-graph {
+        stroke: var(--color-outcome-four);
+      }
+
+      .highcharts-line-series.highcharts-color-5,
+      .highcharts-area-series.highcharts-color-5 {
+        fill: var(--color-outcome-five);
+        stroke: var(--color-outcome-five);
+      }
+
+      g.highcharts-area-series.highcharts-color-5 > path.highcharts-area {
+        fill: var(--color-outcome-five-40);
+        stroke: var(--color-outcome-five-40);
+      }
+
+      g.highcharts-line-series.highcharts-color-5 > path.highcharts-graph,
+      g.highcharts-area-series.highcharts-color-5 > path.highcharts-graph {
+        stroke: var(--color-outcome-five);
+      }
+
+      .highcharts-line-series.highcharts-color-6,
+      .highcharts-area-series.highcharts-color-6 {
+        fill: var(--color-outcome-six);
+        stroke: var(--color-outcome-six);
+      }
+
+      g.highcharts-area-series.highcharts-color-6 > path.highcharts-area {
+        fill: var(--color-outcome-six-40);
+        stroke: var(--color-outcome-six-40);
+      }
+
+      g.highcharts-line-series.highcharts-color-6 > path.highcharts-graph,
+      g.highcharts-area-series.highcharts-color-6 > path.highcharts-graph {
+        stroke: var(--color-outcome-six);
+      }
+
+      .highcharts-line-series.highcharts-color-7,
+      .highcharts-area-series.highcharts-color-7 {
+        fill: var(--color-outcome-seven);
+        stroke: var(--color-outcome-seven);
+      }
+
+      g.highcharts-area-series.highcharts-color-7 > path.highcharts-area {
+        fill: var(--color-outcome-seven-40);
+        stroke: var(--color-outcome-seven-40);
+      }
+
+      g.highcharts-line-series.highcharts-color-7 > path.highcharts-graph,
+      g.highcharts-area-series.highcharts-color-7 > path.highcharts-graph {
+        stroke: var(--color-outcome-seven);
+      }
+
+      text.highcharts-title tspan,
+      text.highcharts-title > tspan {
+        .text-10;
+
+        color: var(--color-primary-text);
+        fill: var(--color-primary-text);
+        text-transform: capitalize;
+      }
+    }
+  }
+}
+
+.SimpleChartSection {
+  
+}
+
+.SelectOutcomeButton {
+  .RoundedButton;
+}
+
+.isSelected {
+  > span {
+  }
 }

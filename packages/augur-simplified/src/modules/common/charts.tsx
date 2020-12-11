@@ -3,6 +3,9 @@ import Highcharts from 'highcharts/highstock';
 import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
 import { createBigNumber } from 'utils/create-big-number';
 import Styles from 'modules/common/charts.styles.less';
+import classNames from 'classnames';
+import { formatDai } from 'utils/format-number';
+import { Checkbox } from 'modules/common/icons';
 
 const HIGHLIGHTED_LINE_WIDTH = 2;
 const NORMAL_LINE_WIDTH = 1;
@@ -29,10 +32,9 @@ const getMockPriceTime = (market) => ({
     while (outcomePriceTime.length < MOCK_WEEK_IN_HOURS) {
       const rand = getRandomInt(5);
       let priceVariance = getRandomInt(rand) * 0.1;
-      let nextPrice =
-        Boolean(Math.round(Math.random()))
-          ? lastPrice.plus(priceVariance)
-          : lastPrice.minus(priceVariance);
+      let nextPrice = Boolean(Math.round(Math.random()))
+        ? lastPrice.plus(priceVariance)
+        : lastPrice.minus(priceVariance);
       if (nextPrice.gt(market.maxPriceBigNumber)) {
         nextPrice = market.maxPriceBigNumber;
       } else if (nextPrice.lt(market.minPriceBigNumber)) {
@@ -51,16 +53,10 @@ const getMockPriceTime = (market) => ({
   }),
 });
 
-export const PriceHistoryChart = ({ market }) => {
+export const PriceHistoryChart = ({ market, selectedOutcomes }) => {
   const container = useRef(null);
   // eslint-disable-next-line
   const [forceRender, setForceRender] = useState(false);
-  // eslint-disable-next-line
-  const [selectedOutcomes, setSelectedOutcomes] = useState(
-    market.outcomes.map((outcome) =>
-      Boolean(outcome.id === DEFAULT_SELECTED_ID)
-    )
-  );
   const { maxPriceBigNumber: maxPrice, minPriceBigNumber: minPrice } = market;
   // const { priceTimeArray } = useMemo(() => getMockPriceTime(market), [market]);
   const { priceTimeArray } = getMockPriceTime(market);
@@ -97,7 +93,7 @@ export const PriceHistoryChart = ({ market }) => {
         chart.redraw();
       }
     }
-     // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [selectedOutcomes, options, priceTimeArray]);
 
   useEffect(() => {
@@ -120,7 +116,57 @@ export const PriceHistoryChart = ({ market }) => {
   return <section className={Styles.PriceHistoryChart} ref={container} />;
 };
 
-export default PriceHistoryChart;
+export const SelectOutcomeButton = ({
+  outcome,
+  toggleSelected,
+  isSelected,
+}) => {
+  return (
+    <button
+      className={classNames(Styles.SelectOutcomeButton, {
+        [Styles.isSelected]: isSelected,
+      })}
+    >
+      <span>{Checkbox}</span>
+      {outcome.label}{' '}
+      <b>{formatDai(createBigNumber(outcome.lastPrice)).full}</b>
+    </button>
+  );
+};
+
+export const SimpleChartSection = ({ market }) => {
+  // eslint-disable-next-line
+  const [selectedOutcomes, setSelectedOutcomes] = useState(
+    market.outcomes.map((outcome) =>
+      Boolean(outcome.id === DEFAULT_SELECTED_ID)
+    )
+  );
+
+  const toggleOutcome = (id) => {
+    const updates = selectedOutcomes;
+    updates[id] = !updates[id];
+    setSelectedOutcomes(updates);
+  };
+
+  return (
+    <section className={Styles.SimpleChartSection}>
+      <PriceHistoryChart market={market} selectedOutcomes={selectedOutcomes} />
+      <ul>
+        {market.outcomes.map((outcome) => (
+          <li key={`${outcome.id}_${outcome.value}`}>
+            <SelectOutcomeButton
+              outcome={outcome}
+              toggleSelected={toggleOutcome}
+              isSelected={selectedOutcomes[outcome.id]}
+            />
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+};
+
+export default SimpleChartSection;
 
 // helper functions:
 const handleSeries = (
@@ -147,6 +193,16 @@ const handleSeries = (
       lineWidth: isSelected ? HIGHLIGHTED_LINE_WIDTH : NORMAL_LINE_WIDTH,
       marker: {
         symbol: 'cicle',
+      },
+      fillColor: {
+        linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 },
+        stops: [
+          [
+            0,
+            index === 1 ? 'rgba(5, 177, 105, 0.15)' : 'rgba(216, 17, 89, 0.15)',
+          ], // start
+          [1, '#F6F7F8'], // end
+        ],
       },
       // @ts-ignore
       data,

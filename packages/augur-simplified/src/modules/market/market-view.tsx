@@ -4,7 +4,7 @@ import { formatDai } from 'utils/format-number';
 import classNames from 'classnames';
 import { createBigNumber } from 'utils/create-big-number';
 import { UsdIcon } from 'modules/common/icons';
-import { PriceHistoryChart } from 'modules/common/charts';
+import SimpleChartSection from 'modules/common/charts';
 import { CategoryIcon, CategoryLabel } from 'modules/common/labels';
 import { COVID, MEDICAL } from 'modules/constants';
 import { PositionsLiquidityViewSwitcher, TransactionsTable } from 'modules/common/tables';
@@ -65,7 +65,7 @@ const MarketView = ({ market = MARKET_DATA }) => {
             <span>{market.expirationDate}</span>
           </li>
         </ul>
-        <PriceHistoryChart {...{ market }} />
+        <SimpleChartSection {...{ market }} />
         <PositionsLiquidityViewSwitcher marketId={market.id} />
         <div
           className={classNames(Styles.Details, {
