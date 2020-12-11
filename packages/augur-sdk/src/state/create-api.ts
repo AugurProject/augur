@@ -52,7 +52,8 @@ export async function buildSyncStrategies(client:Augur, db:Promise<DB>, provider
 
     try {
       const { warpSyncHash } = await client.warpSync.getLastWarpSyncData(
-        client.contracts.universe.address);
+        await client.contracts.getOriginUniverseAddress()
+      );
 
       // await warpSyncStrategy.start(currentBlock, warpSyncHash);
     } catch (e) {
