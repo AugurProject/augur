@@ -159,9 +159,34 @@ export class AMM {
   }
 
   async getExitPosition(market: string, paraShareToken: string, fee: BigNumber, shortShares: BigNumber, longShares: BigNumber, includeFee: Boolean): Promise<BigNumber> {
-    // TODO calculate without fee too
-    // if (!includeFee) throw Error('Not implemented: getExitPosition(includeFee=false)');
-    return this.intermediary(paraShareToken).rateExitPosition(market, paraShareToken, fee, shortShares, longShares);
+    const exchange = await this.intermediary(paraShareToken).calculateExchangeAddress(market, paraShareToken, fee);
+    let { yes: poolLong, no: poolShort } = await this.intermediary(paraShareToken).shareBalances(market, paraShareToken, fee, exchange);
+
+    let setsToSell = new BigNumber(shortShares); // if they are identical, sets to sell is equal to either
+    if (longShares.gt(shortShares)) {
+      const delta = longShares.minus(shortShares);
+      const shortShareToBuy = AMM.quadratic(
+        new BigNumber(1),
+        AMM.neg(delta.plus(poolLong).plus(poolShort)),
+        delta.times(poolShort),
+        longShares
+      );
+      setsToSell = shortShares.plus(shortShareToBuy);
+    } else if (shortShares.gt(longShares)) {
+      const delta = shortShares.minus(longShares);
+      const longSharesToBuy = AMM.quadratic(
+        new BigNumber(1),
+        AMM.neg(delta.plus(poolLong).plus(poolShort)),
+        delta.times(poolLong),
+        shortShares
+      );
+      setsToSell = longShares.plus(longSharesToBuy);
+    }
+
+    const cash = setsToSell.times(NUMTICKS);
+    return includeFee
+      ? AMM.applyFee(cash, fee)
+      : cash;
   }
 
   async exchangeAddress(market: string, paraShareToken: string, fee: BigNumber): Promise<string> {
@@ -260,6 +285,42 @@ export class AMM {
 
   private static applyFee(amount: BigNumber, fee: BigNumber): BigNumber {
     return amount.times(new BigNumber(1000).minus(fee)).idiv(1000);
+  }
+
+  // From AMMExchange.sol
+  private static quadratic(a: BigNumber, b: BigNumber, c: BigNumber, max: BigNumber): BigNumber {
+    const neg = (n: BigNumber) => new BigNumber(-1).times(n);
+
+    const piece = AMM.sqrt(b.pow(2).minus(a.times(c).times(4)));
+    const denom = a.times(2);
+    let resultPlus = neg(b).plus(piece).idiv(denom);
+    let resultMinus = neg(b).minus(piece).idiv(denom);
+
+    if (resultMinus.lt(0)) resultMinus = neg(resultMinus);
+    if (resultPlus.lt(0)) resultPlus = neg(resultPlus);
+    return resultPlus.gt(max)
+      ? resultMinus
+      : resultPlus
+  }
+
+  // From SafeMathUint256.sol
+  private static sqrt(y: BigNumber): BigNumber {
+    let z = new BigNumber(0);
+    if (y.gt(3)) {
+      let x = y.plus(1).idiv(2);
+      z = y;
+      while (x.lt(z)) {
+        z = x;
+        x = y.idiv(x).plus(x).idiv(2);
+      }
+    } else if (!y.eq(0)) {
+      z = new BigNumber(1);
+    }
+    return z;
+  }
+
+  private static neg(n: BigNumber): BigNumber {
+    return new BigNumber(-1).times(n);
   }
 
   private static keepLong(longPercent: BigNumber, shortPercent: BigNumber): Boolean {

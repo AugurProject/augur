@@ -233,14 +233,24 @@ contract AMMExchange is IAMMExchange, ERC20 {
         (uint256 _poolShort, uint256 _poolLong) = yesNoShareBalances(address(this));
 
         // Figure out how many shares we're buying in our synthetic swap and use that to figure out the final balance of Yes/No (setsToSell)
-        uint256 _setsToSell;
+        uint256 _setsToSell = _shortSharesToSell; // if short and long to sell are identical, sets to sell is equal to either
         if (_longSharesToSell > _shortSharesToSell) {
             uint256 _delta = _longSharesToSell.sub(_shortSharesToSell);
-            uint256 _shortSharesToBuy = quadratic(1, -int256(_delta.add(_poolLong).add(_poolShort)), int256(_delta.mul(_poolShort)), _longSharesToSell);
+            uint256 _shortSharesToBuy = quadratic(
+                1,
+                -int256(_delta.add(_poolLong).add(_poolShort)),
+                int256(_delta.mul(_poolShort)),
+                _longSharesToSell
+            );
             _setsToSell = _shortSharesToSell.add(_shortSharesToBuy);
         } else if (_shortSharesToSell > _longSharesToSell) {
             uint256 _delta = _shortSharesToSell.sub(_longSharesToSell);
-            uint256 _longSharesToBuy = quadratic(1, -int256(_delta.add(_poolLong).add(_poolShort)), int256(_delta.mul(_poolLong)), _shortSharesToSell);
+            uint256 _longSharesToBuy = quadratic(
+                1,
+                -int256(_delta.add(_poolLong).add(_poolShort)),
+                int256(_delta.mul(_poolLong)),
+                _shortSharesToSell
+            );
             _setsToSell = _longSharesToSell.add(_longSharesToBuy);
         }
 
