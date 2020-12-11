@@ -603,6 +603,14 @@
         color: var(--color-secondary-text);
       }
     }
+
+    &.Disabled {
+      opacity: .25;
+
+      > button {
+        pointer-events: none;
+      }
+    }
   }
 
   &.LargePillSelection {

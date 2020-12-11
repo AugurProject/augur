@@ -391,7 +391,7 @@ const MarketsView = () => {
         <section>
           <h3>{sportsTitle}</h3>
           <PillSelection
-            options={SPORTS_MARKET_TYPES}
+            options={sportsOptions}
             defaultSelection={
               SPORTS_MARKET_TYPES[0].header === sportsGroupTypeFilter ? 0 : 1
             }
