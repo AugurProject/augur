@@ -79,6 +79,8 @@
 
       .highcharts-crosshair {
         .dashline-long;
+
+        stroke: var(--simple-primary-text);
       }
 
       .highcharts-halo,
@@ -218,14 +220,68 @@
 }
 
 .SimpleChartSection {
-  
+  display: flex;
+  flex-flow: column nowrap;
+  grid-gap: @size-24;
+
+  > div {
+    display: flex;
+    flex-flow: row wrap;
+    grid-gap: @size-8;
+  }
 }
 
 .SelectOutcomeButton {
   .RoundedButton;
+  .text-14;
+  
+  background: transparent;
+  color: var(--simple-primary-text);
+  height: @size-44;
+  padding: 0 @size-12;
+  flex: 0 auto;
+  white-space: nowrap;
+
+  > span {
+    border: @size-2 solid var(--simple-border-dk);
+    border-radius: @size-4;
+    background: var(--simple-light-bg);
+    height: @size-20;
+    width: @size-20;
+    min-height: @size-20;
+    min-width: @size-20;
+    max-height: @size-20;
+    max-width: @size-20;
+    box-sizing: border-box;
+
+    > svg {
+      height: @size-16;
+      width: @size-16;
+      border-radius: @size-4;
+    }
+  }
+
+  > b {
+    .text-16-semi-bold;
+
+    color: var(--simple-primary-text);
+  }
 }
 
-.isSelected {
+.isSelected_0 {
   > span {
+    background: var(--color-outcome-invalid);
+  }
+}
+
+.isSelected_1 {
+  > span {
+    background: var(--simple-buy);
+  }
+}
+
+.isSelected_2 {
+  > span {
+    background: var(--simple-sell);
   }
 }

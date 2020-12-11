@@ -279,7 +279,6 @@ export const Arrow = (
 
 export const Checkbox = (
   <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-    <rect width="20" height="20" rx="3" fill="#05B169" />
     <path
       fillRule="evenodd"
       clipRule="evenodd"

@@ -124,11 +124,12 @@ export const SelectOutcomeButton = ({
   return (
     <button
       className={classNames(Styles.SelectOutcomeButton, {
-        [Styles.isSelected]: isSelected,
+        [Styles[`isSelected_${outcome.id}`]]: isSelected,
       })}
+      onClick={() => toggleSelected(outcome.id)}
     >
       <span>{Checkbox}</span>
-      {outcome.label}{' '}
+      {outcome.label}
       <b>{formatDai(createBigNumber(outcome.lastPrice)).full}</b>
     </button>
   );
@@ -143,7 +144,7 @@ export const SimpleChartSection = ({ market }) => {
   );
 
   const toggleOutcome = (id) => {
-    const updates = selectedOutcomes;
+    const updates = [].concat(selectedOutcomes);
     updates[id] = !updates[id];
     setSelectedOutcomes(updates);
   };
@@ -151,17 +152,16 @@ export const SimpleChartSection = ({ market }) => {
   return (
     <section className={Styles.SimpleChartSection}>
       <PriceHistoryChart market={market} selectedOutcomes={selectedOutcomes} />
-      <ul>
+      <div>
         {market.outcomes.map((outcome) => (
-          <li key={`${outcome.id}_${outcome.value}`}>
-            <SelectOutcomeButton
-              outcome={outcome}
-              toggleSelected={toggleOutcome}
-              isSelected={selectedOutcomes[outcome.id]}
-            />
-          </li>
+          <SelectOutcomeButton
+            key={`${outcome.id}_${outcome.value}`}
+            outcome={outcome}
+            toggleSelected={toggleOutcome}
+            isSelected={selectedOutcomes[outcome.id]}
+          />
         ))}
-      </ul>
+      </div>
     </section>
   );
 };
@@ -228,7 +228,7 @@ const handleSeries = (
 
 const getOptions = ({ maxPrice, minPrice }) => ({
   lang: {
-    noData: 'Loading...',
+    noData: 'No data...',
   },
   title: {
     text: '',
@@ -239,8 +239,8 @@ const getOptions = ({ maxPrice, minPrice }) => ({
     styledMode: false,
     animation: false,
     reflow: true,
-    marginTop: 0,
-    spacing: [20, 20, 20, 20],
+    marginTop: 11,
+    spacing: [22, 0, 22, 0],
   },
   credits: {
     enabled: false,
@@ -277,7 +277,7 @@ const getOptions = ({ maxPrice, minPrice }) => ({
       label: {
         enabled: true,
         shape: 'square',
-        padding: 2,
+        padding: 4,
         format: '{value:%b %d %l:%M %p}',
       },
     },
@@ -296,7 +296,7 @@ const getOptions = ({ maxPrice, minPrice }) => ({
     crosshair: {
       snap: true,
       label: {
-        padding: 2,
+        padding: 4,
         enabled: true,
         style: {},
         borderRadius: 5,
