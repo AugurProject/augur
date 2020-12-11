@@ -7,6 +7,11 @@ import {
   PoliticsIcon,
 } from './common/icons';
 
+// # Market Types
+export const YES_NO = MarketTypeName.YesNo;
+export const CATEGORICAL = MarketTypeName.Categorical;
+export const SCALAR = MarketTypeName.Scalar;
+
 // MAIN VIEWS
 export const MARKET = 'market';
 export const MARKETS = 'markets';
@@ -20,7 +25,6 @@ export const ADD_LIQUIDITY = 'add liquidity';
 
 export const ETHER = createBigNumber(10).pow(18);
 export const GWEI_CONVERSION = 1000000000;
-export const SCALAR = MarketTypeName.Scalar;
 export const TEN = createBigNumber(10, 10);
 export const ZERO = createBigNumber(0);
 
