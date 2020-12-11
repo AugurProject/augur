@@ -7,7 +7,7 @@
   display: flex;
   position: relative;
   width: 100%;
- 
+
   > span {
     display: none;
   }
@@ -86,7 +86,7 @@
         &:not(:last-of-type)::before {
           background: var(--color-secondary-action-outline-50);
           bottom: 0;
-          content: "";
+          content: '';
           height: @size-1;
           position: absolute;
         }
@@ -107,7 +107,6 @@
 
     color: var(--simple-primary-text);
     text-transform: capitalize;
-
   }
 
   &.Selected {
@@ -132,7 +131,7 @@
   .Dropdown;
 
   height: @size-32;
-  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   @media @breakpoint-mobile {
     height: @size-40;
@@ -358,8 +357,8 @@
   });
 }
 
-:root[theme="BETTING"],
-:root[theme="SPORTS"] {
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
   .MenuItems {
     > div:hover {
       background: var(--color-table-header);
@@ -439,7 +438,7 @@
           position: relative;
 
           &:before {
-            content: "";
+            content: '';
             display: block;
             position: absolute;
             bottom: 0;
@@ -621,7 +620,7 @@
     > li {
       background: var(--color-module-background);
 
-      &:first-of-type:hover:not([class*="Selected"]) {
+      &:first-of-type:hover:not([class*='Selected']) {
         border-right: 0;
       }
 
@@ -632,7 +631,7 @@
         text-transform: capitalize;
       }
 
-      &[class*="Selected"] {
+      &[class*='Selected'] {
         border: @size-1 solid var(--color-primary-text);
 
         > button {
@@ -647,10 +646,10 @@
   }
 }
 
-:root[theme="BETTING"],
-:root[theme="SPORTS"] {
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
   .PillSelection {
-      > li > button {
+    > li > button {
       padding: @size-6 @size-8;
     }
 
@@ -855,8 +854,8 @@
   }
 }
 
-:root[theme="BETTING"],
-:root[theme="SPORTS"] {
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
   .DotSelection {
     > button {
       > svg {
@@ -904,7 +903,7 @@
 
     &:not(:last-of-type) {
       &::after {
-        content: "";
+        content: '';
         height: 1px;
         background: var(--color-secondary-action-outline);
         width: 100%;
@@ -929,9 +928,8 @@
 
     color: var(--color-inactive-text);
     cursor: pointer;
-    height: @size-32 ;
+    height: @size-32;
     margin: @size-24 @size-32 @size-24 0;
-
 
     &.selected {
       color: var(--color-primary-text);
@@ -941,5 +939,58 @@
     @media @breakpoint-mobile {
       .text-12;
     }
+  }
+}
+
+.CurrencyDropdown {
+  background-color: transparent;
+  border: 0;
+
+  > button {
+    background-color: transparent;
+    border: 0;
+    align-items: center;
+
+    > span {
+      .text-16-semi-bold;
+
+      margin-right: @size-8;
+      margin-left: @size-4;
+      justify-content: center;
+      align-items: center;
+      display: flex;
+
+      > svg {
+        margin-right: @size-4;
+        height: @size-22;
+        width: @size-22;
+      }
+    }
+
+    > svg {
+      margin-left: 0;
+      height: @size-6;
+      width: @size-10;
+
+      > path {
+        fill: var(--simple-primary-text);
+      }
+    }
+
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: transparent;
+      border: 0;
+      outline: 0;
+    }
+  }
+
+  &:hover,
+  &:active,
+  &:focus {
+    background-color: transparent;
+    border: 0;
+    outline: 0;
   }
 }

@@ -10,7 +10,7 @@
   flex-direction: column;
 
   > div:first-of-type {
-    padding: @size-28 @size-32 @size-16;
+    padding: @size-16 @size-32;
     border-bottom: @size-1 solid var(--simple-border);
     display: grid;
     grid-template-columns: auto auto 1fr;
@@ -130,7 +130,7 @@
 
   &.Selected {
     .SelectedBorders;
-    
+
     background: var(--simple-sell-15);
   }
 
@@ -186,4 +186,90 @@
       .text-16;
     }
   }
+}
+
+.AmountInput {
+  .SimpleBorder;
+
+  display: flex;
+  padding: @size-24;
+  background: var(--light-background-color);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: @size-24;
+
+  > span:first-of-type {
+    .text-16-bold;
+
+    text-transform: capitalize;
+    color: var(--simple-secondary-text);
+  }
+
+  > span:nth-of-type(2) {
+    .text-14;
+
+    display: flex;
+    justify-content: flex-end;
+    text-transform: capitalize;
+    color: var(--simple-secondary-text);
+  }
+}
+
+.AmountInputDropdown {
+  grid-column: 1 / span 2;
+  margin-top: @size-14;
+  background-color: var(--simple-light-bg);
+  border-radius: @size-8;
+  display: flex;
+  height: @size-50;
+  min-height: @size-50;
+
+  &:focus-within {
+    border: @size-1 solid var(--simple-border);
+    outline: 0;
+  }
+
+  > input {
+    .text-20-bold;
+
+    width: unset;
+    color: var(--simple-primary-text);
+    background-color: var(--simple-light-bg);
+    border-radius: @size-8;
+
+    &:focus {
+      border: 0;
+      outline: 0;
+    }
+  }
+
+  > div {
+    margin-left: -@size-80;
+  }
+}
+
+.OrderInfo {
+    display: flex;
+    flex-direction: column;
+    margin-top: @size-24;
+
+    > div {
+        display: flex;
+        flex: 1;
+
+        > span {
+            .text-16-semi-bold;
+
+            color: var(--simple-secondary-text);
+            text-transform: capitalize;
+
+            &:first-of-type {
+                flex: 1;
+            }
+        }
+        
+        &:not(:last-of-type) {
+            margin-bottom: @size-12;;
+        }
+    }
 }

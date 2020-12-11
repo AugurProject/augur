@@ -3,6 +3,7 @@ import Styles from 'modules/market/trading-form.styles.less';
 import classNames from 'classnames';
 import { BUY, SELL, YES_NO } from 'modules/constants';
 import { PrimaryButton } from 'modules/common/buttons';
+import { CurrencyDropdown } from 'modules/common/selection';
 
 const fakeYesNoOutcomes = [
   {
@@ -53,7 +54,14 @@ const fakeScalarOutcomes = [
   },
 ];
 
-const Outcome = ({ outcome, marketType, selected, onClick, orderType, invalidSelected }) => {
+const Outcome = ({
+  outcome,
+  marketType,
+  selected,
+  onClick,
+  orderType,
+  invalidSelected,
+}) => {
   return (
     <div
       onClick={onClick}
@@ -62,7 +70,7 @@ const Outcome = ({ outcome, marketType, selected, onClick, orderType, invalidSel
         [Styles.Selected]: selected,
         [Styles.Invalid]: outcome.isInvalid,
         [Styles.Buy]: orderType === BUY,
-        [Styles.InvalidSelected]: invalidSelected
+        [Styles.InvalidSelected]: invalidSelected,
       })}
     >
       <span>{outcome.name}</span>
@@ -71,10 +79,26 @@ const Outcome = ({ outcome, marketType, selected, onClick, orderType, invalidSel
   );
 };
 
-const TradingForm = ({
-  outcomes = fakeYesNoOutcomes,
-  marketType = YES_NO,
-}) => {
+const AmountInput = () => {
+    const [amount, updateAmount] = useState('');
+    return (
+        <div className={Styles.AmountInput}>
+            <span>
+                amount
+            </span>
+            <span>balance: $1000</span>
+            <div className={Styles.AmountInputDropdown}>
+                <input
+                    onChange={e => updateAmount(e.target.value)}
+                    value={amount}
+                    placeholder={'$0'}
+                />
+                <CurrencyDropdown onChange={() => null}/>
+            </div>
+        </div>
+    )
+};
+const TradingForm = ({ outcomes = fakeYesNoOutcomes, marketType = YES_NO }) => {
   const [orderType, setOrderType] = useState(BUY);
   const [selectedOutcome, setSelectedOutcome] = useState(outcomes[0]);
   return (
@@ -114,6 +138,33 @@ const TradingForm = ({
               invalidSelected={selectedOutcome.isInvalid}
             />
           ))}
+        </div>
+        <AmountInput />
+        <div className={Styles.OrderInfo}>
+            <div>
+                <span>
+                    average price
+                </span>
+                <span>
+                    $0.00
+                </span>
+            </div>
+            <div>
+                <span>
+                    shares bought
+                </span>
+                <span>
+                    0.00
+                </span>
+            </div>
+            <div>
+                <span>
+                    max winnings
+                </span>
+                <span>
+                    $0.00
+                </span>
+            </div>
         </div>
         <PrimaryButton disabled text={orderType} />
       </div>
