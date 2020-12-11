@@ -45,7 +45,7 @@ const determineStartState = ({ type, marketTypes }) => {
   // const hasMoneyLineMarket = marketTypes.find(uniqueType =>
   //   uniqueType.includes(MONEY_LINE)
   // );
-  
+
   return marketTypes.length <= 4;
 };
 
@@ -82,6 +82,7 @@ export const SportsMarketCard = ({
       : undefined;
 
   const moreWagersText = `More Wagers (${numExtraWagers})`;
+  const oneOrMoreExtraWagers = numExtraWagers >= 1;
 
   return (
     <div
@@ -98,9 +99,10 @@ export const SportsMarketCard = ({
       <SportsGroupMarkets sportsGroup={sportsGroup} />
       {!isFutures && (
         <article className={classNames({
-          [Styles.ComboFooter]: type === COMBO
+          [Styles.ComboFooter]: type === COMBO,
+          [Styles.ExtraWagersPositioning]: oneOrMoreExtraWagers
         })}>
-          {showMoreButtonVisible && (
+          {showMoreButtonVisible && oneOrMoreExtraWagers && (
             <button
               className={Styles.showMoreButton}
               onClick={() => setShowMore(!showMore)}

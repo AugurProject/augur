@@ -52,6 +52,10 @@
     flex-flow: row nowrap;
     justify-content: space-between;
 
+    &.ExtraWagersPositioning {
+      grid-row: 7;
+    }
+
     @media @breakpoint-mobile {
       flex-flow: row wrap;
     }
@@ -95,6 +99,7 @@
       align-items: center;
       justify-content: flex-end;
       text-transform: uppercase;
+      margin-left: auto;
 
       > svg {
         width: @size-10;
@@ -126,7 +131,7 @@
   > section[class*="SportsMarketContainer"] {
     display: none;
 
-    &:first-of-type {
+    &:nth-of-type(-n+4) { // first 4 elements
       display: flex;
     }
   }
