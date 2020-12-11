@@ -19,10 +19,10 @@ export const TopNav = () => {
       <section>
         <Logo />
         <ol>
-          <li>
+          <li className={classNames({[Styles.Active]: path === MARKETS})}>
             <Link to={makePath(MARKETS)}>Markets</Link>
           </li>
-          <li>
+          <li className={classNames({[Styles.Active]: path === PORTFOLIO})}>
             <Link to={makePath(PORTFOLIO)}>Portfolio</Link>
           </li>
         </ol>
