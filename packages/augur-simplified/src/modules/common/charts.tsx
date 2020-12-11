@@ -10,12 +10,41 @@ import { Checkbox } from 'modules/common/icons';
 const HIGHLIGHTED_LINE_WIDTH = 2;
 const NORMAL_LINE_WIDTH = 1;
 const DEFAULT_SELECTED_ID = 1;
+const FIFTEEN_MIN_MS = 900000;
 const ONE_HOUR_MS = 3600 * 1000;
-const ONE_WEEK_MS = 24 * ONE_HOUR_MS * 7;
+const ONE_QUARTER_DAY = ONE_HOUR_MS * 6;
+const ONE_DAY_MS = 24 * ONE_HOUR_MS;
+const ONE_WEEK_MS = ONE_DAY_MS * 7;
+const ONE_MONTH_MS = ONE_DAY_MS * 30;
 const DATE = new Date();
 const END_TIME = DATE.getTime();
-const START_TIME = END_TIME - ONE_WEEK_MS;
-const MOCK_WEEK_IN_HOURS = (END_TIME - START_TIME) / ONE_HOUR_MS;
+
+const RANGE_OPTIONS = [
+  {
+    id: 0,
+    label: '24hr',
+    tick: FIFTEEN_MIN_MS,
+    startTime: END_TIME - ONE_DAY_MS
+  },
+  {
+    id: 1,
+    label: '7d',
+    tick: ONE_HOUR_MS,
+    startTime: END_TIME - ONE_WEEK_MS
+  },
+  {
+    id: 2,
+    label: '30d',
+    tick: ONE_QUARTER_DAY,
+    startTime: END_TIME - ONE_MONTH_MS
+  },
+  {
+    id: 3,
+    label: 'All time',
+    tick: ONE_DAY_MS,
+    startTime: END_TIME - (ONE_MONTH_MS * 6)
+  },
+];
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
@@ -24,12 +53,14 @@ interface HighcartsChart extends Highcharts.Chart {
   renderTo?: string | Element | React.ReactNode;
 }
 
-const getMockPriceTime = (market) => ({
+const getMockPriceTime = (market, rangeSelection) => ({
   priceTimeArray: market.outcomes.map((outcome) => {
+    const { startTime, tick } = RANGE_OPTIONS[rangeSelection];
+    const totalTicks = (END_TIME - startTime) / tick;
     const outcomePriceTime = [];
     let lastPrice = createBigNumber(outcome.lastPrice);
     let curTimestamp = END_TIME;
-    while (outcomePriceTime.length < MOCK_WEEK_IN_HOURS) {
+    while (outcomePriceTime.length < totalTicks) {
       const rand = getRandomInt(5);
       let priceVariance = getRandomInt(rand) * 0.1;
       let nextPrice = Boolean(Math.round(Math.random()))
@@ -46,20 +77,20 @@ const getMockPriceTime = (market) => ({
         timestamp: curTimestamp,
         logIndex: 0,
       });
-      curTimestamp = curTimestamp - ONE_HOUR_MS;
+      curTimestamp = curTimestamp - tick;
       lastPrice = nextPrice;
     }
     return outcomePriceTime;
   }),
 });
 
-export const PriceHistoryChart = ({ market, selectedOutcomes }) => {
+export const PriceHistoryChart = ({ market, selectedOutcomes, rangeSelection }) => {
   const container = useRef(null);
   // eslint-disable-next-line
   const [forceRender, setForceRender] = useState(false);
   const { maxPriceBigNumber: maxPrice, minPriceBigNumber: minPrice } = market;
   // const { priceTimeArray } = useMemo(() => getMockPriceTime(market), [market]);
-  const { priceTimeArray } = getMockPriceTime(market);
+  const { priceTimeArray } = getMockPriceTime(market, rangeSelection);
   const options = useMemo(
     () =>
       getOptions({
@@ -142,6 +173,7 @@ export const SimpleChartSection = ({ market }) => {
       Boolean(outcome.id === DEFAULT_SELECTED_ID)
     )
   );
+  const [rangeSelection, setRangeSelection] = useState(3);
 
   const toggleOutcome = (id) => {
     const updates = [].concat(selectedOutcomes);
@@ -151,7 +183,21 @@ export const SimpleChartSection = ({ market }) => {
 
   return (
     <section className={Styles.SimpleChartSection}>
-      <PriceHistoryChart market={market} selectedOutcomes={selectedOutcomes} />
+      <ul className={Styles.RangeSelection}>
+          {RANGE_OPTIONS.map(({ id, label }) => (
+            <li key={`range-option-${id}`}>
+              <button
+                className={classNames({
+                  [Styles.selected]: rangeSelection === id,
+                })}
+                onClick={() => rangeSelection !== id && setRangeSelection(id)}
+              >
+                {label}
+              </button>
+            </li>
+          ))}
+        </ul>
+      <PriceHistoryChart {...{ market, selectedOutcomes, rangeSelection }} />
       <div>
         {market.outcomes.map((outcome) => (
           <SelectOutcomeButton

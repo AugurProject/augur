@@ -222,12 +222,35 @@
 .SimpleChartSection {
   display: flex;
   flex-flow: column nowrap;
-  grid-gap: @size-24;
+  grid-gap: @size-16;
 
   > div {
     display: flex;
     flex-flow: row wrap;
     grid-gap: @size-8;
+  }
+}
+
+.RangeSelection {
+  display: flex;
+  flex-flow: row nowrap;
+  grid-gap: @size-2;
+  align-self: flex-end;
+
+  > li > button {
+    .RoundedButton;
+    .text-12-semi-bold;
+
+    color: var(--simple-secondary-text);
+
+    &.selected {
+      color: var(--simple-primary-text);
+      border: @size-1 solid var(--simple-secondary-text);
+    }
+
+    &:hover {
+      border: @size-1 solid var(--simple-secondary-text);
+    }
   }
 }
 
