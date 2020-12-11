@@ -2,12 +2,11 @@
 
 .Button {
   .text-16-bold;
+  .SimpleBorder;
 
   color: var(--simple-primary-text);
   padding: @size-13 @size-16;
   background: var(--light-background-color);
-  border: @size-1 solid var(--simple-border);
-  border-radius: @size-8;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -19,9 +18,9 @@
 }
 
 .RoundedButton {
+  .SimpleBorder;
+  
   background: transparent;
-  border: @size-1 solid var(--simple-border);
-  border-radius: @size-8;
   box-sizing: border-box;
   cursor: pointer;
   display: flex;

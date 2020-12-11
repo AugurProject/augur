@@ -287,3 +287,22 @@ export const Checkbox = (
     />
   </svg>
 );
+
+export const PlusIcon = (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <path
+      d="M8 1.14282V14.8571"
+      stroke="#8B959E"
+      strokeWidth="2"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+    />
+    <path
+      d="M14.8571 8H1.14282"
+      stroke="#8B959E"
+      strokeWidth="2"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+    />
+  </svg>
+);

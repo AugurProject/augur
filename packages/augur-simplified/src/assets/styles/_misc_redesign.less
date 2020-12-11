@@ -121,7 +121,7 @@
     }
 
     &:last-of-type {
-      background: var(--simple-light-bg);
+      background: var(--simple-light-bg-50);
       flex: 1;
       max-width: @size-528;
       padding-left: @size-44;
@@ -135,4 +135,9 @@
 
   color: var(--simple-secondary-text);
   text-transform: capitalize;
+}
+
+.SimpleBorder {
+  border: @size-1 solid var(--simple-border);
+  border-radius: @size-8;
 }
