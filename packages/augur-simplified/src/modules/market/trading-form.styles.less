@@ -1,0 +1,189 @@
+@import (reference) '~assets/styles/shared';
+
+.TradingForm {
+  border-radius: @size-16;
+  display: flex;
+  height: fit-content;
+  background: var(--simple-light-bg);
+  box-shadow: 0 @size-8 @size-40 var(--simple-shadow-10);
+  display: flex;
+  flex-direction: column;
+
+  > div:first-of-type {
+    padding: @size-28 @size-32 @size-16;
+    border-bottom: @size-1 solid var(--simple-border);
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    flex: 1;
+    align-items: center;
+    margin-bottom: @size-24;
+
+    > span {
+      .text-20-bold;
+
+      color: var(--simple-secondary-text);
+      text-transform: capitalize;
+      cursor: pointer;
+
+      &:first-of-type {
+        margin-right: @size-40;
+      }
+
+      &.Selected {
+        color: var(--simple-primary-text);
+      }
+    }
+
+    > div {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+
+      > span {
+        &:first-of-type {
+          .text-16;
+
+          color: var(--simple-secondary-text);
+          text-transform: capitalize;
+        }
+
+        &:nth-of-type(2) {
+          .text-20-semi-bold;
+
+          color: var(--simple-primary-text);
+          margin-top: @size-4;
+        }
+      }
+    }
+  }
+
+  > div:nth-of-type(2) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 @size-24 @size-24;
+
+    > button {
+      flex: 1;
+      margin-top: @size-24;
+    }
+  }
+}
+
+.Outcomes {
+  display: flex;
+  flex-direction: column;
+
+  > div {
+    &:not(:first-of-type) {
+      margin-top: @size-8;
+    }
+  }
+
+  &.YesNo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    > div {
+      &:not(:first-of-type) {
+        margin-top: 0;
+      }
+
+      &:last-of-type {
+        margin-top: @size-8;
+      }
+    }
+  }
+}
+
+.SelectedBorders {
+  border: @size-1 solid var(--simple-sell);
+
+  &.Buy {
+    background: var(--simple-buy-15);
+    border: @size-1 solid var(--simple-buy);
+  }
+}
+
+.Outcome {
+  .SimpleBorder;
+
+  display: flex;
+  color: var(--simple-primary-text);
+  cursor: pointer;
+  padding: @size-10 @size-16;
+  flex: 1;
+  text-transform: capitalize;
+
+  > span {
+    &:first-of-type {
+      .text-14-semi-bold;
+    }
+    &:last-of-type {
+      .text-16-semi-bold;
+
+      flex: 1;
+      justify-content: flex-end;
+      display: flex;
+    }
+  }
+
+  &.Selected {
+    .SelectedBorders;
+    
+    background: var(--simple-sell-15);
+  }
+
+  &.YesNo {
+    color: var(--simple-secondary-text);
+    display: flex;
+    flex-direction: column;
+
+    &:first-of-type {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      border-right-color: transparent;
+    }
+
+    &:nth-of-type(2) {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      border-left-color: transparent;
+    }
+
+    > span {
+      &:first-of-type {
+        .text-16-bold;
+      }
+
+      &:last-of-type {
+        .text-30-bold;
+
+        justify-content: flex-start;
+        display: flex;
+        margin-top: @size-8;
+      }
+    }
+
+    &.Selected {
+      .SelectedBorders;
+
+      color: var(--simple-primary-text);
+    }
+
+    &.InvalidSelected {
+      &:first-of-type {
+        border-right: @size-1 solid var(--simple-border);
+      }
+    }
+  }
+
+  &.Invalid {
+    color: var(--simple-secondary-text);
+    grid-column: 1 / span 2;
+
+    > span:first-of-type {
+      .text-16;
+    }
+  }
+}
