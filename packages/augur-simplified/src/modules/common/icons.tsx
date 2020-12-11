@@ -277,13 +277,19 @@ export const Arrow = (
   </svg>
 );
 
+export const Checkbox = (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M15.5893 6.07745C15.9147 6.40289 15.9147 6.93053 15.5893 7.25596L8.92259 13.9226C8.59716 14.2481 8.06952 14.2481 7.74408 13.9226L4.41075 10.5893C4.08531 10.2639 4.08531 9.73622 4.41075 9.41079C4.73619 9.08535 5.26382 9.08535 5.58926 9.41079L8.33334 12.1549L14.4108 6.07745C14.7362 5.75201 15.2638 5.75201 15.5893 6.07745Z"
+      fill="white"
+    />
+  </svg>
+);
+
 export const PlusIcon = (
-  <svg
-    width="16"
-    height="16"
-    viewBox="0 0 16 16"
-    fill="none"
-  >
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
     <path
       d="M8 1.14282V14.8571"
       stroke="#8B959E"

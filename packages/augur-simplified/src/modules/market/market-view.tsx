@@ -4,6 +4,7 @@ import { formatDai } from 'utils/format-number';
 import classNames from 'classnames';
 import { createBigNumber } from 'utils/create-big-number';
 import { UsdIcon } from 'modules/common/icons';
+import SimpleChartSection from 'modules/common/charts';
 import { AddLiquidity, CategoryIcon, CategoryLabel } from 'modules/common/labels';
 import { COVID, MEDICAL } from 'modules/constants';
 import { PositionsLiquidityViewSwitcher, TransactionsTable } from 'modules/common/tables';
@@ -13,6 +14,10 @@ const MARKET_DATA = {
   id: '0xdeadbeef',
   description:
     "Will Pfizer's COVID-19 vaccine be the first to receive FDA approval or Emergency Use Authorization (EUA)?",
+  minPrice: 0,
+  maxPrice: 1,
+  minPriceBigNumber: createBigNumber(0),
+  maxPriceBigNumber: createBigNumber(1),
   expirationDate: 'July 31, 2021',
   categories: [MEDICAL, COVID, 'vaccine'],
   totalLiquidity: formatDai(createBigNumber(83375)),
@@ -61,7 +66,7 @@ const MarketView = ({ market = MARKET_DATA }) => {
             <span>{market.expirationDate}</span>
           </li>
         </ul>
-        <section>Charts go here...</section>
+        <SimpleChartSection {...{ market }} />
         <PositionsLiquidityViewSwitcher marketId={market.id} />
         <div
           className={classNames(Styles.Details, {
