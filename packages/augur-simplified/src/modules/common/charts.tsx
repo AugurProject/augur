@@ -148,20 +148,20 @@ export const PriceHistoryChart = ({ market, selectedOutcomes, rangeSelection }) 
 };
 
 export const SelectOutcomeButton = ({
-  outcome,
+  outcome: { id, label, lastPrice },
   toggleSelected,
   isSelected,
 }) => {
   return (
     <button
       className={classNames(Styles.SelectOutcomeButton, {
-        [Styles[`isSelected_${outcome.id}`]]: isSelected,
+        [Styles[`isSelected_${id}`]]: isSelected,
       })}
-      onClick={() => toggleSelected(outcome.id)}
+      onClick={() => toggleSelected(id)}
     >
       <span>{Checkbox}</span>
-      {outcome.label}
-      <b>{formatDai(createBigNumber(outcome.lastPrice)).full}</b>
+      {label}
+      <b>{formatDai(createBigNumber(lastPrice)).full}</b>
     </button>
   );
 };
