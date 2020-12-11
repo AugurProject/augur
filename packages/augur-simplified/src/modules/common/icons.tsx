@@ -265,12 +265,7 @@ export const FinanceIcon = (
 );
 
 export const Arrow = (
-  <svg
-    width="12"
-    height="9"
-    viewBox="0 0 12 9"
-    fill="none"
-  >
+  <svg width="12" height="9" viewBox="0 0 12 9" fill="none">
     <path
       d="M6.62499 0.920467C6.47854 0.774021 6.47854 0.536584 6.62499 0.390137C6.77143 0.24369 7.00887 0.24369 7.15532 0.390137L10.8902 3.84725C11.0366 3.9937 11.0366 4.23114 10.8902 4.37758L7.12499 7.89017C6.97854 8.03661 6.7411 8.03661 6.59466 7.89017C6.44821 7.74372 6.44821 7.50628 6.59466 7.35984L9.71689 4.4902L1.49999 4.4902C1.29289 4.4902 1.12499 4.3223 1.12499 4.1152C1.12499 3.90809 1.29289 3.7402 1.49999 3.7402L9.72245 3.7402L6.62499 0.920467Z"
       fill="#15171A"
@@ -278,6 +273,30 @@ export const Arrow = (
       strokeWidth="0.5"
       strokeLinecap="round"
       strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const PlusIcon = (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+  >
+    <path
+      d="M8 1.14282V14.8571"
+      stroke="#8B959E"
+      strokeWidth="2"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+    />
+    <path
+      d="M14.8571 8H1.14282"
+      stroke="#8B959E"
+      strokeWidth="2"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
     />
   </svg>
 );
