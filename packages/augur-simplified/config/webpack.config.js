@@ -1,3 +1,4 @@
+
 'use strict';
 
 const fs = require('fs');
@@ -50,7 +51,7 @@ const imageInlineSizeLimit = parseInt(
 );
 
 // Check if TypeScript is setup
-const useTypeScript = fs.existsSync(paths.appTsConfig);
+const useTypeScript = fs.existsSync(paths.appTsConfig) && typeof process.env.SKIP_TYPECHECKING === "undefined";
 
 // Get the path to the uncompiled service worker (if it exists).
 const swSrc = paths.swSrc;
@@ -90,6 +91,8 @@ module.exports = function (webpackEnv) {
   // Omit trailing slash as %PUBLIC_URL%/xyz looks better than %PUBLIC_URL%xyz.
   // Get environment variables to inject into our app.
   const env = getClientEnvironment(paths.publicUrlOrPath.slice(0, -1));
+
+
 
   const shouldUseReactRefresh = env.raw.FAST_REFRESH;
 
