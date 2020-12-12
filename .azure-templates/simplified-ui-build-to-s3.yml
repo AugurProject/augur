@@ -28,6 +28,8 @@ jobs:
           versionSpec: '3.6'
       - bash: |
           set -euo pipefail
+          # Need to build twice to generate style type files
+          ( set +x && cd packages/augur-simplified && node scripts/build.js)
           ( cd packages/augur-simplified && node scripts/build.js)
         displayName: ui build
         env:
