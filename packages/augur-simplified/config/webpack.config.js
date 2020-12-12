@@ -52,6 +52,7 @@ const imageInlineSizeLimit = parseInt(
 
 // Check if TypeScript is setup
 const useTypeScript = fs.existsSync(paths.appTsConfig) && typeof process.env.SKIP_TYPECHECKING === "undefined";
+const skipTypechecking = typeof process.env.SKIP_TYPECHECKING !== "undefined";
 
 // Get the path to the uncompiled service worker (if it exists).
 const swSrc = paths.swSrc;
@@ -696,6 +697,7 @@ module.exports = function (webpackEnv) {
         }),
       // TypeScript type checking
       useTypeScript &&
+      !skipTypechecking &&
         new ForkTsCheckerWebpackPlugin({
           typescript: resolve.sync('typescript', {
             basedir: paths.appNodeModules,
