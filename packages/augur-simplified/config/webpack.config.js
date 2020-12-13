@@ -51,7 +51,7 @@ const imageInlineSizeLimit = parseInt(
 );
 
 // Check if TypeScript is setup
-const useTypeScript = fs.existsSync(paths.appTsConfig) && typeof process.env.SKIP_TYPECHECKING === "undefined";
+const useTypeScript = fs.existsSync(paths.appTsConfig);
 const skipTypechecking = typeof process.env.SKIP_TYPECHECKING !== "undefined";
 
 // Get the path to the uncompiled service worker (if it exists).
