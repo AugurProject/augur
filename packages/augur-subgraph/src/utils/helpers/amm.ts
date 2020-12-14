@@ -83,7 +83,6 @@ export function updateAMM(id: string):AMMExchange {
     Address.fromString(amm.market), BigInt.fromI32(2), Address.fromString(id)).times(market.numTicks).toBigDecimal().div(decimals);
 
   let totalShares = amm.liquidityNo.plus(amm.liquidityYes);
-  amm.liquidity = amm.liquidityNo.times(amm.liquidityNo).plus(amm.liquidityYes.times(amm.liquidityYes)).div(totalShares).plus(amm.liquidityCash);
 
   let ZERO = BigDecimal.fromString('0');
   if(totalShares.gt(ZERO)) {
@@ -94,6 +93,7 @@ export function updateAMM(id: string):AMMExchange {
     amm.percentageYes = ZERO;
   }
 
+  amm.liquidity = amm.liquidityNo.times(amm.percentageYes).plus(amm.liquidityYes.times(amm.percentageNo)).plus(amm.liquidityCash);
   amm.totalSupply = ammExchangeInstance.totalSupply();
 
   amm.save();
