@@ -13,7 +13,7 @@ export const AppStatusStore = {
   actions: STUBBED_APP_STATUS_ACTIONS,
 };
 
-export const AppProvider = ({ children }) => {
+export const AppStatusProvider = ({ children }) => {
   const state = useAppStatus();
 
   if (!AppStatusStore.actionsSet) {

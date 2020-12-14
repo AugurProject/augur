@@ -1,8 +1,8 @@
 import { useReducer } from 'react';
 import {
-  APP_STATUS_ACTIONS,
+  // APP_STATUS_ACTIONS,
   MOCK_APP_STATUS_STATE,
-  DEFAULT_APP_STATUS_STATE
+  // DEFAULT_APP_STATUS_STATE
 } from 'modules/stores/constants';
 import { windowRef } from 'utils/window-ref';
 
@@ -53,6 +53,7 @@ export function AppStatusReducer(state, action) {
 export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
   const [state, pureDispatch] = useReducer(AppStatusReducer, defaultState);
   const dispatch = dispatchMiddleware(pureDispatch);
+  console.log(dispatch);
   windowRef.appStatus = state;
   return {
     ...state,

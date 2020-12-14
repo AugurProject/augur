@@ -4,13 +4,16 @@ import App from 'modules/App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import { windowRef } from 'utils/window-ref';
+import { AppStatusProvider } from 'modules/stores/app-status';
 
 windowRef.appStatus = {};
 
 ReactDOM.render(
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>,
+  <AppStatusProvider>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </AppStatusProvider>,
   document.getElementById('root')
 );
 
