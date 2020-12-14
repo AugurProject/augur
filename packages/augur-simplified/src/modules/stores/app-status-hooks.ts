@@ -40,6 +40,8 @@ const middleware = (dispatch, action) => {
 export const dispatchMiddleware = dispatch => action =>
   middleware(dispatch, action);
 
+export const keyedObjToArray = (KeyedObject) => Object.entries(KeyedObject).map(i => i[1]);
+
 export function AppStatusReducer(state, action) {
   const updatedState = { ...state };
   switch (action.type) {

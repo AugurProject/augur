@@ -1,9 +1,24 @@
-import { COVID, FEDERAL_FUNDS, FINANCE, MEDICAL, REPUSD, CRYPTO } from 'modules/constants';
+import {
+  COVID,
+  FEDERAL_FUNDS,
+  FINANCE,
+  MEDICAL,
+  REPUSD,
+  CRYPTO,
+  ADD_LIQUIDITY,
+  BUY,
+  SELL,
+  USDC,
+} from 'modules/constants';
 import { createBigNumber } from 'utils/create-big-number';
 import { formatDai } from 'utils/format-number';
 
 export const DEFAULT_APP_STATUS_STATE = {
+  loginAccount: null,
   marketInfos: {},
+  userInfo: {
+    activity: {},
+  },
 };
 
 export const STUBBED_APP_STATUS_ACTIONS = {};
@@ -142,6 +157,88 @@ export const MOCK_APP_STATUS_STATE = {
           price: 0,
         },
       ],
+    },
+  },
+  userInfo: {
+    activity: {
+      '04/12': {
+        date: '04/12',
+        activity: [
+          {
+            id: '04/12-0',
+            type: BUY,
+            currency: USDC,
+            description: `Will Pfizer's COVID-19 vaccine be the first to receive FDA approval or Emergency Use Authorization (EUA)?`,
+            subheader: '100 Yes @ .40',
+            time: '02:58 PM',
+            value: '- 400.00 USDC',
+          },
+          {
+            id: '04/12-1',
+            type: BUY,
+            currency: USDC,
+            description: `Will Pfizer's COVID-19 vaccine be the first to receive FDA approval or Emergency Use Authorization (EUA)?`,
+            subheader: '100 Yes @ .40',
+            time: '02:58 PM',
+            value: '- 400.00 USDC',
+          },
+          {
+            id: '04/12-2',
+            type: SELL,
+            currency: USDC,
+            description: `Will Pfizer's COVID-19 vaccine be the first to receive FDA approval or Emergency Use Authorization (EUA)?`,
+            subheader: '100 Yes @ .40',
+            time: '02:58 PM',
+            value: '- 400.00 USDC',
+          },
+        ],
+      },
+      '03/12': {
+        date: '03/12',
+        activity: [
+          {
+            id: '03/12-0',
+            type: ADD_LIQUIDITY,
+            currency: USDC,
+            description: `Will Pfizer's COVID-19 vaccine be the first to receive FDA approval or Emergency Use Authorization (EUA)?`,
+            subheader: '100 Yes @ .40',
+            time: '02:58 PM',
+            value: '- 400.00 USDC',
+          },
+        ],
+      },
+      '30/11': {
+        date: '30/11',
+        activity: [
+          {
+            id: '30/11-0',
+            type: BUY,
+            currency: USDC,
+            description: `Will Pfizer's COVID-19 vaccine be the first to receive FDA approval or Emergency Use Authorization (EUA)?`,
+            subheader: '100 Yes @ .40',
+            time: '02:58 PM',
+            value: '- 400.00 USDC',
+          },
+          {
+            id: '30/11-1',
+            type: BUY,
+            currency: USDC,
+            description: `Will Pfizer's COVID-19 vaccine be the first to receive FDA approval or Emergency Use Authorization (EUA)?`,
+            subheader: '100 Yes @ .40',
+            time: '02:58 PM',
+            value: '- 400.00 USDC',
+          },
+          {
+            id: '30/11-2',
+            type: SELL,
+            currency: USDC,
+            description: `Will Pfizer's COVID-19 vaccine be the first to receive FDA approval or Emergency Use Authorization (EUA)?`,
+            subheader: '100 Yes @ .40',
+            time: '02:58 PM',
+            value: '- 400.00 USDC',
+          },
+        ],
+      },
     },
   },
 };
