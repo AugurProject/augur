@@ -723,9 +723,9 @@ export interface Web3 {
 }
 
 export interface WindowApp extends Window {
-  app: object;
-  web3: Web3;
-  ethereum: {
+  app?: any;
+  web3?: Web3;
+  ethereum?: {
     selectedAddress;
     networkVersion: string;
     isMetaMask?: boolean;

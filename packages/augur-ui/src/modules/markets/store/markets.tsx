@@ -1,7 +1,5 @@
-
-
 import React from 'react';
-import { DEFAULT_MARKETS_STATE, STUBBED_MARKETS_ACTIONS, MARKETS_ACTIONS } from './constants';
+import { DEFAULT_MARKETS_STATE, STUBBED_MARKETS_ACTIONS } from './constants';
 import { useMarkets } from './markets-hooks';
 
 export const MarketsContext = React.createContext({

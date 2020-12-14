@@ -25,34 +25,34 @@ const fakeYesNoOutcomes = [
   },
 ];
 
-const fakeScalarOutcomes = [
-  {
-    id: 0,
-    name: '293 of fewer',
-    price: '$0.75',
-  },
-  {
-    id: 1,
-    name: '294 to 296',
-    price: '$0.15',
-  },
-  {
-    id: 2,
-    name: '297 to 299',
-    price: '$0.05',
-  },
-  {
-    id: 3,
-    name: '300 to 302',
-    price: '$0.03',
-  },
-  {
-    id: 4,
-    name: 'Invalid',
-    price: '$0.00',
-    isInvalid: true,
-  },
-];
+// const fakeScalarOutcomes = [
+//   {
+//     id: 0,
+//     name: '293 of fewer',
+//     price: '$0.75',
+//   },
+//   {
+//     id: 1,
+//     name: '294 to 296',
+//     price: '$0.15',
+//   },
+//   {
+//     id: 2,
+//     name: '297 to 299',
+//     price: '$0.05',
+//   },
+//   {
+//     id: 3,
+//     name: '300 to 302',
+//     price: '$0.03',
+//   },
+//   {
+//     id: 4,
+//     name: 'Invalid',
+//     price: '$0.00',
+//     isInvalid: true,
+//   },
+// ];
 
 const Outcome = ({
   outcome,
