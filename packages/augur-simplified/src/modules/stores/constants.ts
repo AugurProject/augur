@@ -1,4 +1,4 @@
-import { COVID, MEDICAL } from 'modules/constants';
+import { COVID, FEDERAL_FUNDS, FINANCE, MEDICAL, REPUSD, CRYPTO } from 'modules/constants';
 import { createBigNumber } from 'utils/create-big-number';
 import { formatDai } from 'utils/format-number';
 
@@ -36,6 +36,112 @@ export const MOCK_APP_STATUS_STATE = {
       ],
       settlementFee: '0.1',
       marketCurrency: 'USDC',
+    },
+    '0x01': {
+      id: '0x01',
+      subcategory: COVID,
+      category: MEDICAL,
+      description:
+        "Will Pfizer's COVID-19 vaccine be the first to receive FDA approval or Emergency Use Authorization (EUA)?",
+      volume: 350019,
+      outcomes: [
+        {
+          description: 'yes',
+          price: 0.75,
+        },
+        {
+          description: 'no',
+          price: 0.25,
+        },
+      ],
+    },
+    '0x02': {
+      id: '0x02',
+      subcategory: 'Covid-19',
+      category: MEDICAL,
+      description: "Will Pfizer's thing happen?",
+      volume: 350019,
+      outcomes: [
+        {
+          description: 'yes',
+          price: 0.75,
+        },
+        {
+          description: 'no',
+          price: 0.25,
+        },
+      ],
+    },
+    '0x03': {
+      id: '0x03',
+      subcategory: REPUSD,
+      category: CRYPTO,
+      inUsd: true,
+      description: 'How many electoral college votes?',
+      volume: 350019,
+      outcomes: [
+        {
+          description: '306',
+          price: 0.75,
+        },
+        {
+          description: '303 - 305',
+          price: 0.25,
+        },
+      ],
+    },
+    '0x04': {
+      id: '0x04',
+      subcategory: FEDERAL_FUNDS,
+      category: FINANCE,
+      description: "Will Pfizer's thing happen?",
+      volume: 350019,
+      outcomes: [
+        {
+          description: 'yes',
+          price: 0.75,
+        },
+        {
+          description: 'no',
+          price: 0.25,
+        },
+      ],
+    },
+    '0x05': {
+      id: '0x05',
+      subcategory: 'Us Politics',
+      category: FINANCE,
+      inUsd: true,
+      description: 'How many electoral college votes?',
+      volume: 350019,
+      outcomes: [
+        {
+          description: '306',
+          price: 0.75,
+        },
+        {
+          description: '303 - 305',
+          price: 0.25,
+        },
+      ],
+    },
+    '0x06': {
+      id: '0x06',
+      subcategory: 'Us Politics',
+      category: FINANCE,
+      description: 'How many electoral college votes?',
+      volume: 0,
+      noLiquidity: true,
+      outcomes: [
+        {
+          description: '306',
+          price: 0,
+        },
+        {
+          description: '303 - 305',
+          price: 0,
+        },
+      ],
     },
   },
 };
