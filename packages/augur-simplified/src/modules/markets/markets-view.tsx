@@ -18,6 +18,7 @@ import { PrimaryButton } from 'modules/common/buttons';
 import { SquareDropdown } from 'modules/common/selection';
 import { Pagination } from 'modules/common/pagination';
 import { useAppStatusStore } from 'modules/stores/app-status';
+import { keyedObjToArray } from 'modules/stores/app-status-hooks';
 
 const OutcomesTable = ({ outcomes }) => {
   return (
@@ -64,12 +65,12 @@ const MarketCard = ({ market }) => {
     </article>
   );
 };
-// TODO: when we have real data we can pull this out and simpley do a map to m[1]
-const TEMPORARY_FILTER = (ml) => ml.map(m => m[0] !== '0xdeadbeef' ? m[1] : null).filter(i => !!i);
+// TODO: when we have real data we can pull this out
+const TEMPORARY_FILTER = (ml) => ml.filter(i => i.id !== '0xdeadbeef');
 
 const MarketsView = () => {
   const { marketInfos } = useAppStatusStore();
-  const markets = TEMPORARY_FILTER(Object.entries(marketInfos));
+  const markets = TEMPORARY_FILTER(keyedObjToArray(marketInfos))
   return (
     <div className={Styles.MarketsView}>
       <AppViewStats showCashAmounts />
