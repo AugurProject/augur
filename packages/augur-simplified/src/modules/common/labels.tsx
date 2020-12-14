@@ -71,7 +71,7 @@ export const fakeMarketViewStats = {
     hourChange: 56.29,
     value: 5045,
   },
-  availableFunds: 10526.58,
+  availableFunds: 1526.58,
   daiAmount: 526.58,
   cashAmount: 5000,
 };
