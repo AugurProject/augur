@@ -30,7 +30,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
     event ExitPosition(address sender, uint256 shortShares, uint256 longShares, uint256 cashPayout);
     event SwapPosition(address sender, uint256 inputShares, uint256 outputShares, bool inputLong);
     event AddLiquidity(address sender, uint256 cash, uint256 shortShares, uint256 longShares, uint256 lpTokens);
-    event RemoveLiquidity(address sender, uint256 cash, uint256 shortShares, uint256 longShares);
+    event RemoveLiquidity(address sender, uint256 cash, uint256 shortShares, uint256 longShares, uint256 completeSetsSold);
 
 
     function initialize(IMarket _market, ParaShareToken _shareToken, uint256 _fee) public {
@@ -137,7 +137,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
         _cashShare -= _creatorFee + _reportingFee;
         cash.transfer(msg.sender, _cashShare);
 
-        emit RemoveLiquidity(msg.sender, _cashShare, _setsSold, _setsSold);
+        emit RemoveLiquidity(msg.sender, _cashShare, _shortShare, _longShare, _setsSold);
         // CONSIDER: convert min(poolInvalid, poolYes, poolNo) to DAI by selling complete sets. Selling complete sets incurs Augur fees, maybe we should let the user sell the sets themselves if they want to pay the fee?
     }
 
