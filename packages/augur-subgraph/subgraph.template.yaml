@@ -204,7 +204,7 @@ templates:
           handler: handleSwapPosition
         - event: AddLiquidity(address,uint256,uint256,uint256,uint256)
           handler: handleAddLiquidity
-        - event: RemoveLiquidity(address,uint256,uint256,uint256)
+        - event: RemoveLiquidity(address,uint256,uint256,uint256,uint256)
           handler: handleRemoveLiquidity
   - kind: ethereum/contract
     name: Cash
