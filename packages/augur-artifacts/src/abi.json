@@ -21497,6 +21497,12 @@
 					"internalType": "uint256",
 					"name": "longShares",
 					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "completeSetsSold",
+					"type": "uint256"
 				}
 			],
 			"name": "RemoveLiquidity",
