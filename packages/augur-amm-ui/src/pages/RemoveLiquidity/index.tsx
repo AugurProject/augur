@@ -20,7 +20,7 @@ import { useTransactionAdder } from '../../state/transactions/hooks'
 
 import AppBody from '../AppBody'
 import { MaxButton, Wrapper } from '../../components/swap/styleds'
-import { ApprovalState, useApproveCallbackStub } from '../../hooks/useApproveCallback'
+import { ApprovalState, useApproveCallbackRemoveLiquidity } from '../../hooks/useApproveCallback'
 import { Dots } from '../../components/swap/styleds'
 import { getRemoveLiquidityBreakdown } from '../../state/burn/hooks'
 import { doUseETH, useAmmFactoryAddress, useAugurClient } from '../../contexts/Application'
@@ -49,9 +49,9 @@ function RemoveLiquidity({
   const [error, setError] = useState('Enter an amount')
 
   // keep this just incase we need a approval to remove liquidity
-  const [approval, approveCallback] = useApproveCallbackStub(
+  const [approval, approveCallback] = useApproveCallbackRemoveLiquidity(
     tryParseAmount(userTokenBalances[ammExchangeId], currencyLP),
-    ammFactory
+    ammExchange
   )
 
 

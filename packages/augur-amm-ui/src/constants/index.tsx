@@ -12,6 +12,7 @@ export const BUNDLE_ID = '1'
 export const DEFAULT_NETWORK = '42' // 1 is mainnet
 
 export const SHOW_AMT_AND_USD = ['WETH']
+export const REMOVE_NEEDS_APPROVAL = ['WETH']
 
 export enum NetworkId {
   Mainnet = '1',

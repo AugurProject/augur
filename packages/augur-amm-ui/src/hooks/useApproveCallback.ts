@@ -8,11 +8,12 @@ import { computeSlippageAdjustedAmounts } from '../utils/prices'
 import { calculateGasMargin, getTradeType, TradingDirection } from '../utils'
 import { useTokenContract, useTokenERC1155Contract } from './useContract'
 import { useActiveWeb3React } from './index'
-import { useAmmFactoryAddress } from '../contexts/Application'
+import { useAmmFactoryAddress, useWethWrapper } from '../contexts/Application'
 import { useSingleCallResult } from '../state/multicall/hooks'
 import { TradeInfo } from './Trades'
 import { useMarketCashTokens } from '../contexts/Markets'
 import { ParaShareToken } from '@augurproject/sdk-lite/build'
+import { AmmMarket, REMOVE_NEEDS_APPROVAL } from '../constants'
 
 export enum ApprovalState {
   UNKNOWN,
@@ -46,16 +47,21 @@ export function useIsTokenApprovedForAll(account?: string, paraShareToken?: stri
   ])
 }
 
-export function useApproveCallbackStub(
+export function useApproveCallbackRemoveLiquidity(
   amountToApprove?: CurrencyAmount,
-  spender?: string,
+  ammExchange?: AmmMarket,
 ): [ApprovalState, () => Promise<void>] {
-  const approve = useCallback(async (): Promise<void> => {
-    return;
-  }, [])
-  return [ApprovalState.APPROVED, approve   ]
+  const spender = useWethWrapper()
+  const [approval, approveCallback] = useApproveCallback(amountToApprove, spender);
+  const needsApproval = REMOVE_NEEDS_APPROVAL.includes(ammExchange?.cash?.name)
+
+  if (!needsApproval) return [ApprovalState.APPROVED, null]
+
+    return [approval, approveCallback]
+
 }
-// returns a variable indicating the state of the approval and a function which approves if necessary or early returns
+
+
 export function useApproveCallback(
   amountToApprove?: CurrencyAmount,
   spender?: string,

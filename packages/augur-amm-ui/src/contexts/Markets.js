@@ -241,6 +241,7 @@ export function useMarketsByAMMLiquidityVolume() {
               String(amm.volumeYes),
               String(cashPrice)
             )
+            newMarket.amm.cash = cashToken;
             if (hasPastMarket) {
               // add 24 hour volume, find correct cash
               const pastCashAmm = [...hasPastMarket.amms].find(a => a.shareToken.cash.id === s.cash)
@@ -268,7 +269,6 @@ export function useMarketsByAMMLiquidityVolume() {
                   String(volYestwentyfour),
                   String(cashPrice)
                 )
-                newMarket.amm.cash = cashToken;
                 newMarket.amm.volume24hrUSD = volume24hrUsd
               }
             }

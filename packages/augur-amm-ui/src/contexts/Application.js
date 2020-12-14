@@ -419,3 +419,9 @@ export function doUseETH(cash) {
   const found = config.Cashes.find(c => c.address.toLowerCase() === cash.toLowerCase())
   return found?.name === "ETH"
 }
+
+export function useWethWrapper() {
+  const [state] = useApplicationContext()
+  const addresses = state[AUGUR_CONFIG]?.addresses
+  return addresses?.WethWrapperForAMMExchange;
+}
