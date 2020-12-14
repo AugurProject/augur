@@ -260,7 +260,7 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
   return (
     <>
       <AppBody>
-        <SwapPoolTabs token={marketId} />
+        <SwapPoolTabs token={marketId} amm={ammExchange}/>
         <Wrapper id="swap-page">
           <ConfirmSwapModal
             isOpen={showConfirm}

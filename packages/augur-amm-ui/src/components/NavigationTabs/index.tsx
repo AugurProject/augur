@@ -5,6 +5,8 @@ import { Link as HistoryLink } from 'react-router-dom'
 import { ArrowLeft } from 'react-feather'
 import { RowBetween } from '../Row'
 import QuestionHelper from '../QuestionHelper'
+import { AmmExchangeInfo, AmmMarket } from '../../constants'
+import { getDisplaySymbol } from '../../utils'
 
 const Tabs = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -23,7 +25,8 @@ const StyledArrowLeft = styled(ArrowLeft)`
   color: ${({ theme }) => theme.text1};
 `
 
-export function SwapPoolTabs({ token }: { token: string }) {
+export function SwapPoolTabs({ token, amm }: { token: string, amm: AmmMarket }) {
+  const cash = getDisplaySymbol(amm?.cash?.name)
   return (
     <Tabs>
       <RowBetween style={{ padding: '1rem' }}>
@@ -33,7 +36,7 @@ export function SwapPoolTabs({ token }: { token: string }) {
         <ActiveText>Swap</ActiveText>
         <QuestionHelper
           text={
-            'Swap market cash (weth, dai, ...) for market shares or vice versa. It is also possible to swap Yes shares for No shares and vice versa.'
+            `Swap ${cash} for market shares or vice versa. This allows for enter and exit market positions.`
           }
         />
       </RowBetween>
