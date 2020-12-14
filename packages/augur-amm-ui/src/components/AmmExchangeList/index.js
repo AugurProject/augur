@@ -10,7 +10,7 @@ import { withRouter } from 'react-router-dom'
 import TokenLogo from '../TokenLogo'
 import { RowFixed, AutoRow } from '../Row'
 import { useLPTokenBalances } from '../../state/wallet/hooks'
-import { TYPE, StyledInternalLink } from '../../Theme'
+import { TYPE, StyledInternalLink, DisabledStyledLink } from '../../Theme'
 import { greaterThanZero, getDisplayLiquidity, toPercent, formattedNum } from '../../utils'
 
 dayjs.extend(utc)
@@ -70,7 +70,7 @@ function AmmExchangeList({ allExchanges, disbaleLinks, marketId }) {
     useEffect(() => {
       if (userTokenBalances && ammExchange?.id) {
         setHasLpTokens(greaterThanZero(userTokenBalances[ammExchange.id]))
-        setLiquidityUSD(getDisplayLiquidity(ammExchange));
+        setLiquidityUSD(getDisplayLiquidity(ammExchange))
       }
     }, [ammExchange])
 
@@ -84,32 +84,41 @@ function AmmExchangeList({ allExchanges, disbaleLinks, marketId }) {
           <TYPE.header area="name" fontWeight="500">
             {Number(ammExchange.priceNo).toFixed(2)}
           </TYPE.header>
-          {!below800 && <TYPE.header area="name" fontWeight="500">
-            {liquidityUSD}
-          </TYPE.header>}
+          {!below800 && (
+            <TYPE.header area="name" fontWeight="500">
+              {liquidityUSD}
+            </TYPE.header>
+          )}
           <TYPE.header area="fee" fontWeight="500">
             {toPercent(ammExchange.feePercent)}
           </TYPE.header>
-          {!below1080 && <TYPE.header area="name" fontWeight="500">
-            {formattedNum(ammExchange.volumeYesUSD, true)}
-          </TYPE.header>}
-          {!below1080 && <TYPE.header area="name" fontWeight="500">
-            {formattedNum(ammExchange.volumeNoUSD, true)}
-          </TYPE.header>}
+          {!below1080 && (
+            <TYPE.header area="name" fontWeight="500">
+              {formattedNum(ammExchange.volumeYesUSD, true)}
+            </TYPE.header>
+          )}
+          {!below1080 && (
+            <TYPE.header area="name" fontWeight="500">
+              {formattedNum(ammExchange.volumeNoUSD, true)}
+            </TYPE.header>
+          )}
           <TYPE.header area="name" fontWeight="500">
             <RowFixed style={{ flexFlow: 'row nowrap', justifyContent: 'space-around', marginTop: '0.5rem' }}>
-            <StyledInternalLink to={`/add/${marketId}/${ammExchange.cash.address}/${ammExchange.id}`}>
+              <StyledInternalLink to={`/add/${marketId}/${ammExchange.cash.address}/${ammExchange.id}`}>
                 Add
               </StyledInternalLink>
-              <StyledInternalLink disabled={!hasLPTokens} to={`/remove/${marketId}/${ammExchange.id}`}>
-                Remove
-              </StyledInternalLink>
-              <StyledInternalLink
-                disabled={!ammExchange && !ammExchange.id}
-                to={`/swap/${marketId}/${ammExchange.cash.address}/${ammExchange.id}`}
-              >
-                Trade
-              </StyledInternalLink>
+              {hasLPTokens && (
+                <StyledInternalLink disabled={!hasLPTokens} to={`/remove/${marketId}/${ammExchange.id}`}>
+                  Remove
+                </StyledInternalLink>
+              )}
+              {!hasLPTokens && <DisabledStyledLink>Remove</DisabledStyledLink>}
+              {ammExchange && ammExchange?.id && (
+                <StyledInternalLink to={`/swap/${marketId}/${ammExchange.cash.address}/${ammExchange.id}`}>
+                  Trade
+                </StyledInternalLink>
+              )}
+              {!ammExchange || (!ammExchange?.id && <DisabledStyledLink>Trade</DisabledStyledLink>)}
             </RowFixed>
           </TYPE.header>
         </DashGrid>

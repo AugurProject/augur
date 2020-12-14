@@ -67,7 +67,6 @@ const PairChart = ({ marketId, amms, color }) => {
   useEffect(() => {
     if (amms && amms.length > 0 && selectedCash === undefined) {
       const amm = amms.find(a => a.enters.length > 0)
-      console.log('selecting cash', amm?.cash)
       setSelectedCash(amm ? amm?.cash : amms[0].cash)
     }
   }, [amms, selectedCash])

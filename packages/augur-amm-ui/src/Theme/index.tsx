@@ -328,6 +328,26 @@ const BackArrowLink = styled(StyledInternalLink)`
   color: ${({ theme }) => theme.text1};
 `
 
+export const DisabledStyledLink = styled(StyledInternalLink)`
+  text-decoration: none;
+  cursor: default;
+  color: ${({ theme }) => theme.primary4};
+  font-weight: 500;
+
+  :hover {
+    text-decoration: none;
+  }
+
+  :focus {
+    outline: none;
+    text-decoration: none;
+  }
+
+  :active {
+    text-decoration: none;
+  }
+`
+
 export function BackArrow({ to }: { to: string }) {
   return (
     <BackArrowLink to={to}>
