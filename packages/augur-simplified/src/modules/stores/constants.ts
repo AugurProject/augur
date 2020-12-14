@@ -13,7 +13,12 @@ import {
 import { createBigNumber } from 'utils/create-big-number';
 import { formatDai } from 'utils/format-number';
 
+export const STUBBED_APP_STATUS_ACTIONS = {
+  setIsMobile: () => {},
+};
+
 export const DEFAULT_APP_STATUS_STATE = {
+  isMobile: false,
   loginAccount: null,
   marketInfos: {},
   userInfo: {
@@ -21,9 +26,9 @@ export const DEFAULT_APP_STATUS_STATE = {
   },
 };
 
-export const STUBBED_APP_STATUS_ACTIONS = {};
-
-export const APP_STATUS_ACTIONS = {};
+export const APP_STATUS_ACTIONS = {
+  SET_IS_MOBILE: 'SET_IS_MOBILE',
+};
 
 export const MOCK_APP_STATUS_STATE = {
   marketInfos: {
