@@ -2,14 +2,7 @@ import React from 'react';
 import Styles from 'modules/markets/markets-view.styles.less';
 import makePath from 'modules/routes/helpers/make-path';
 import {
-  COVID,
-  CRYPTO,
-  FEDERAL_FUNDS,
-  FINANCE,
   MARKET,
-  MEDICAL,
-  POLITICS,
-  REPUSD,
 } from 'modules/constants';
 import { Link } from 'react-router-dom';
 import {
@@ -24,132 +17,8 @@ import classNames from 'classnames';
 import { PrimaryButton } from 'modules/common/buttons';
 import { SquareDropdown } from 'modules/common/selection';
 import { Pagination } from 'modules/common/pagination';
-
-const fakeMarketData = [
-  {
-    id: '0',
-    subcategory: COVID,
-    category: MEDICAL,
-    description:
-      "Will Pfizer's COVID-19 vaccine be the first to receive FDA approval or Emergency Use Authorization (EUA)?",
-    volume: 350019,
-    outcomes: [
-      {
-        description: 'yes',
-        price: 0.75,
-      },
-      {
-        description: 'no',
-        price: 0.25,
-      },
-    ],
-  },
-  {
-    id: '1',
-    subcategory: 'Us Politics',
-    category: POLITICS,
-    description: 'How many electoral college votes will be cast for Joe Biden?',
-    volume: 350019,
-    outcomes: [
-      {
-        description: '306',
-        price: 0.75,
-      },
-      {
-        description: '303 - 305',
-        price: 0.25,
-      },
-    ],
-  },
-  {
-    id: '2',
-    subcategory: 'Covid-19',
-    category: MEDICAL,
-    description: "Will Pfizer's thing happen?",
-    volume: 350019,
-    outcomes: [
-      {
-        description: 'yes',
-        price: 0.75,
-      },
-      {
-        description: 'no',
-        price: 0.25,
-      },
-    ],
-  },
-  {
-    id: '3',
-    subcategory: REPUSD,
-    category: CRYPTO,
-    inUsd: true,
-    description: 'How many electoral college votes?',
-    volume: 350019,
-    outcomes: [
-      {
-        description: '306',
-        price: 0.75,
-      },
-      {
-        description: '303 - 305',
-        price: 0.25,
-      },
-    ],
-  },
-  {
-    id: '4',
-    subcategory: FEDERAL_FUNDS,
-    category: FINANCE,
-    description: "Will Pfizer's thing happen?",
-    volume: 350019,
-    outcomes: [
-      {
-        description: 'yes',
-        price: 0.75,
-      },
-      {
-        description: 'no',
-        price: 0.25,
-      },
-    ],
-  },
-  {
-    id: '5',
-    subcategory: 'Us Politics',
-    category: FINANCE,
-    inUsd: true,
-    description: 'How many electoral college votes?',
-    volume: 350019,
-    outcomes: [
-      {
-        description: '306',
-        price: 0.75,
-      },
-      {
-        description: '303 - 305',
-        price: 0.25,
-      },
-    ],
-  },
-  {
-    id: '6',
-    subcategory: 'Us Politics',
-    category: FINANCE,
-    description: 'How many electoral college votes?',
-    volume: 0,
-    noLiquidity: true,
-    outcomes: [
-      {
-        description: '306',
-        price: 0,
-      },
-      {
-        description: '303 - 305',
-        price: 0,
-      },
-    ],
-  },
-];
+import { useAppStatusStore } from 'modules/stores/app-status';
+import { keyedObjToArray } from 'modules/stores/app-status-hooks';
 
 const OutcomesTable = ({ outcomes }) => {
   return (
@@ -196,8 +65,12 @@ const MarketCard = ({ market }) => {
     </article>
   );
 };
+// TODO: when we have real data we can pull this out
+const TEMPORARY_FILTER = (ml) => ml.filter(i => i.id !== '0xdeadbeef');
 
 const MarketsView = () => {
+  const { marketInfos } = useAppStatusStore();
+  const markets = TEMPORARY_FILTER(keyedObjToArray(marketInfos))
   return (
     <div className={Styles.MarketsView}>
       <AppViewStats showCashAmounts />
@@ -236,7 +109,7 @@ const MarketsView = () => {
         />
       </ul>
       <section>
-        {fakeMarketData.map((market) => (
+        {markets.map((market) => (
           <MarketCard key={market.id} market={market} />
         ))}
       </section>
