@@ -27,7 +27,7 @@ import { useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from '../../s
 import { useUserSlippageTolerance } from '../../state/user/hooks'
 import { TYPE } from '../../Theme'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
-import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
+import { computePriceImpact, computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
 import AppBody from '../AppBody'
 import Loader from '../../components/Loader'
 import { RouteComponentProps } from 'react-router-dom'
@@ -190,7 +190,7 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
   // the callback to execute the swap
   const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(trade, outputAmount, minAmount, useEth)
 
-  const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
+  const { priceImpactWithoutFee } = computePriceImpact(trade, minAmount, trade?.outputAmount);
 
   const handleSwap = useCallback(() => {
     if (priceImpactWithoutFee && !confirmPriceImpactWithoutFee(priceImpactWithoutFee)) {

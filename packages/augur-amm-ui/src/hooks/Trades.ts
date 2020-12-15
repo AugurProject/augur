@@ -32,6 +32,7 @@ export interface TradeInfo {
   executionPrice?: string
   minAmount?: string
   approvalType?: ApprovalType
+  fee?: string
 }
 
 /**
@@ -89,7 +90,8 @@ export function getTradeExactIn(
       balance: userCashBalances,
       priceImpact: new Percent(JSBI.BigInt(0)),
       executionPrice: String(executionPrice),
-      approvalType
+      approvalType,
+      fee: ammExchange.fee
     }
   }
   return null

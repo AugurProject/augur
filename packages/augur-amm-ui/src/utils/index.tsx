@@ -136,9 +136,10 @@ export const isMarketCurrency = (currency: Token | Currency): boolean => {
 
 export const formatCurrencyAmountDisplay = (num = "0", outputAmount: TokenAmount | CurrencyAmount): string => {
   if (!outputAmount) return "0"
-  let oAmount = formatShares(num, String(outputAmount?.currency?.decimals))
+  const decimals = String(outputAmount?.currency?.decimals)
+  let oAmount = formatShares(num, String(decimals))
   if (isMarketCurrency(outputAmount?.currency)) {
-    oAmount = formatShares(String(outputAmount.raw), String(outputAmount?.currency?.decimals))
+    oAmount = formatShares(String(num), String(decimals))
   }
   return oAmount;
 }

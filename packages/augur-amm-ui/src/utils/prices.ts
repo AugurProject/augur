@@ -4,29 +4,28 @@ import { ALLOWED_PRICE_IMPACT_HIGH, ALLOWED_PRICE_IMPACT_LOW, ALLOWED_PRICE_IMPA
 import { Field } from '../state/swap/actions'
 import { TradeInfo } from '../hooks/Trades'
 import { BigNumber as BN } from 'bignumber.js'
+import { formatCurrencyAmount, formatCurrencyAmountDisplay, isMarketCurrency } from '.'
 
-const BASE_FEE = new Percent(JSBI.BigInt(30), JSBI.BigInt(10000))
 const ONE_HUNDRED_PERCENT = new Percent(JSBI.BigInt(10000), JSBI.BigInt(10000))
-const INPUT_FRACTION_AFTER_FEE = ONE_HUNDRED_PERCENT.subtract(BASE_FEE)
 
 export function computePriceImpact(
   trade,
   minAmount,
-  outputAmount: TokenAmount
+  outputAmount: TokenAmount | CurrencyAmount
 ): { priceImpactWithoutFee: Percent; slippageAdjustedAmounts: string } {
   if (!trade || !minAmount || !outputAmount) return { priceImpactWithoutFee: undefined, slippageAdjustedAmounts: undefined }
 
   const currencyOutDecimals = new BN(trade?.currencyOut?.decimals)
   const displayActualPrice = new BN(trade.executionPrice)
-  const rawInputAmount = new BN(String(trade?.inputAmount?.raw))
-  const inputAmountDecimals = new BN(String(trade?.inputAmount?.decimals))
   const rawOutputAmount = new BN(String(outputAmount?.raw))
 
-  // normalize price by num ticks and pool percentage convert to price
-  const rawSlipRate = rawOutputAmount.eq(0) ? new BN(0) :  (rawInputAmount).div(rawOutputAmount).div(YES_NO_NUM_TICKS)
-  console.log('slip rate', `${String(rawInputAmount)} / ${String(rawOutputAmount)} = ${String(rawSlipRate)}`)
-  const impact = (rawSlipRate.minus(displayActualPrice)).div(displayActualPrice)
-  console.log('slippage:', String(displayActualPrice), '-', String(rawSlipRate), '/', String(displayActualPrice), '=', String(impact))
+  const displayInAmount = formatCurrencyAmount(trade?.inputAmount);
+  const displayOutAmount = formatCurrencyAmountDisplay(String(outputAmount?.raw), trade?.currencyOut);
+
+  const rawSlipRate = new BN(displayInAmount).eq(0) ? new BN(0) :  new BN(displayInAmount).div(new BN(displayOutAmount))
+  console.log('slip rate', `${String(displayInAmount)} / ${String(displayOutAmount)} = ${String(rawSlipRate)}`)
+  const impact = (rawSlipRate.minus(displayActualPrice)).div(displayActualPrice).abs()
+  console.log('slippage:', String(rawSlipRate), '-', String(displayActualPrice), '/', String(displayActualPrice), '=', String(impact))
   const adjMinAmount = String(new BN(String(rawOutputAmount)).div(new BN(10).pow(new BN(currencyOutDecimals))).toFixed(8))
   const prepDecimal = new Percent(JSBI.BigInt(impact.times(new BN(BIPS_CONSTANT)).toFixed(0)), BIPS_BASE)
 
@@ -39,10 +38,12 @@ export function computePriceImpact(
 // computes price breakdown for the trade
 export function computeTradePriceBreakdown(
   trade?: TradeInfo
-): { priceImpactWithoutFee?: Percent; realizedLPFee?: CurrencyAmount } {
+): { priceImpactWithoutFee?: Percent } {
   // for each hop in our trade, take away the x*y=k price impact from 0.3% fees
   // e.g. for 3 tokens/2 hops: 1 - ((1 - .03) * (1-.03))
-  const realizedLPFee = !trade ? undefined : ONE_HUNDRED_PERCENT.subtract(INPUT_FRACTION_AFTER_FEE)
+
+  const tradeFee = new Percent(JSBI.BigInt(trade?.fee || 0), JSBI.BigInt(10000))
+  const realizedLPFee = ONE_HUNDRED_PERCENT.subtract(tradeFee)
 
   // remove lp fees from price impact
   const priceImpactWithoutFeeFraction = trade && realizedLPFee ? trade.priceImpact.subtract(realizedLPFee) : undefined
@@ -52,15 +53,7 @@ export function computeTradePriceBreakdown(
     ? new Percent(priceImpactWithoutFeeFraction?.numerator, priceImpactWithoutFeeFraction?.denominator)
     : undefined
 
-  // the amount of the input that accrues to LPs
-  const realizedLPFeeAmount =
-    realizedLPFee &&
-    trade &&
-    (trade.inputAmount instanceof TokenAmount
-      ? new TokenAmount(trade.inputAmount.token, realizedLPFee.multiply(trade.inputAmount.raw).quotient)
-      : CurrencyAmount.ether(realizedLPFee.multiply(trade.inputAmount.raw).quotient))
-
-  return { priceImpactWithoutFee: priceImpactWithoutFeePercent, realizedLPFee: realizedLPFeeAmount }
+  return { priceImpactWithoutFee: priceImpactWithoutFeePercent }
 }
 
 // computes the minimum amount out and maximum amount in for a trade given a user specified allowed slippage in bips
