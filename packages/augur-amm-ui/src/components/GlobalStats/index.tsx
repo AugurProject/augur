@@ -32,7 +32,8 @@ export default function GlobalStats() {
     let total = new BN("0")
     if (cashData && Object.keys(cashData).length > 0) {
       total = Object.keys(liquidities).reduce((p, cash) => {
-        const cashValue = calculateLiquidity(Number(cashTokens[cash]?.decimals), String(liquidities[cash]), String(cashData[cash]?.priceUSD))
+        const liquidity = liquidities[cash].liquidity;
+        const cashValue = calculateLiquidity(Number(cashTokens[cash]?.decimals), String(liquidity), String(cashData[cash]?.priceUSD))
         return p.plus(new BN(cashValue))
       }, new BN(0))
     }

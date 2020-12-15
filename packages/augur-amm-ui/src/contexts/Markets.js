@@ -224,7 +224,11 @@ export function useMarketsByAMMLiquidityVolume() {
             cashData && cashData[s.cash] && cashData[s.cash]?.priceUSD ? cashData[s.cash]?.priceUSD : '0'
           const hasPastMarket = keyedPastMarkets[s.id]
           if (amm) {
-            const cashToken = {...cashTokens[s.cash], priceUSD: cashPrice}
+            const priceYes = new BigNumber(amm?.priceYes || 0);
+            const priceNo = new BigNumber(amm?.priceNo || 0);
+            const volumeYes = priceYes.times(new BigNumber(String(amm.volumeYes)))
+            const volumeNo = priceNo.times(new BigNumber(String(amm.volumeNo)))
+            const cashToken = { ...cashTokens[s.cash], priceUSD: cashPrice }
             // liquidity in USD
             newMarket.amm.liquidityUSD = calculateLiquidity(
               Number(cashToken?.decimals),
@@ -233,15 +237,15 @@ export function useMarketsByAMMLiquidityVolume() {
             )
             newMarket.amm.volumeNoUSD = calculateVolume(
               Number(cashToken?.decimals),
-              String(amm.volumeNo),
+              String(volumeNo),
               String(cashPrice)
             )
             newMarket.amm.volumeYesUSD = calculateVolume(
               Number(cashToken?.decimals),
-              String(amm.volumeYes),
+              String(volumeYes),
               String(cashPrice)
             )
-            newMarket.amm.cash = cashToken;
+            newMarket.amm.cash = cashToken
             if (hasPastMarket) {
               // add 24 hour volume, find correct cash
               const pastCashAmm = [...hasPastMarket.amms].find(a => a.shareToken.cash.id === s.cash)
@@ -317,7 +321,7 @@ export function useMarketAmm(marketId, amm) {
   if (doesExist) {
     const exchange = market.amms.find(a => a.id.toLowerCase() === amm?.toLowerCase())
     const cash = cashTokens[exchange?.shareToken?.cash?.id]
-    ammExchange = exchange ? {...shapeAMMData(exchange), cash } : null
+    ammExchange = exchange ? { ...shapeAMMData(exchange), cash } : null
   }
   return ammExchange
 }
@@ -385,7 +389,7 @@ export function usePositionMarkets(positions) {
     const market = markets.find(m => m.id === marketId)
     const info = { market, ...position }
     // TODO: should come in from the graph, here for testing only
-    info.market.winningOutcome = "1"
+    info.market.winningOutcome = '1'
     return info
   })
 
@@ -418,8 +422,11 @@ function sumAmmParam(markets, param) {
         if (!m.amm) return p
         const currentCash = p[m.cash.toLowerCase()]
         return currentCash
-          ? { ...p, [m.cash.toLowerCase()]: new BN(m.amm[param] || 0).plus(currentCash) }
-          : { ...p, [m.cash.toLowerCase()]: new BN(m.amm[param] || 0) }
+          ? {
+              ...p,
+              [m.cash.toLowerCase()]: { ammId: m.amm?.id, [param]: new BN(m.amm[param] || 0).plus(currentCash[param]) }
+            }
+          : { ...p, [m.cash.toLowerCase()]: { ammId: m.amm?.id, [param]: new BN(m.amm[param] || 0) } }
       }, {})
     : {}
 }
@@ -473,39 +480,50 @@ export function useAmmTransactions() {
   }, [markets, marketsPast])
 }
 
+function ammPrices(markets) {
+  return markets
+    ? markets.reduce((p, m) => {
+        if (!m.amm) return p
+        const { priceYes, priceNo } = m.amm
+        if (!p[m.amm?.id]) p[m.amm?.id] = {}
+        if (!p[m.amm?.id][m.amm?.cash?.id]) p[m.amm?.id][m.amm?.cash?.id] = {}
+        p[m.amm?.id][m.amm?.cash?.id] = { priceYes, priceNo }
+        return p
+      }, {})
+    : {}
+}
+
 function useCalcVolumes(markets, marketsPast) {
   return useMemo(() => {
     const volumeYes = sumAmmParam(markets, 'volumeYes')
     const volumeNo = sumAmmParam(markets, 'volumeNo')
     const volumeYesPast = sumAmmParam(marketsPast, 'volumeYes')
     const volumeNoPast = sumAmmParam(marketsPast, 'volumeNo')
+    const marketAmmPrices = ammPrices(markets)
 
-    const volume = Object.keys(volumeYes).reduce(
-      (p, c) => ({
+    const volume = Object.keys(volumeYes).reduce((p, c) => {
+      const ammId = volumeYes[c].ammId
+      const { priceYes, priceNo } = marketAmmPrices[ammId][c]
+      return {
         ...p,
-        [c]: volumeYes[c].plus(volumeNo[c] || 0)
-      }),
-      {}
-    )
+        [c]: new BigNumber(volumeYes[c].volumeYes || 0)
+          .times(new BigNumber(String(priceYes)))
+          .plus(new BigNumber(volumeNo[c].volumeNo || 0).times(new BigNumber(String(priceNo))))
+      }
+    }, {})
 
-    const past = Object.keys(volumeYesPast).reduce(
-      (p, c) => ({
+    const past = Object.keys(volumeYesPast).reduce((p, c) => {
+      const ammId = volumeYesPast[c.ammId]
+      const { priceYes, priceNo } = marketAmmPrices[ammId][c]
+      return {
         ...p,
-        [c]: volumeYesPast[c].plus(volumeNoPast[c] || 0)
-      }),
-      {}
-    )
+        [c]: new BigNumber(volumeYesPast[c].volumeYes || 0)
+          .times(new BigNumber(String(priceYes)))
+          .plus(new BigNumber(volumeNoPast[c].volumeNo || 0).times(new BigNumber(String(priceNo))))
+      }
+    }, {})
 
-    const diff = Object.keys(volume).reduce(
-      (p, c) => ({
-        ...p,
-        [c]: volume[c].minus(past[c] || 0)
-      }),
-      {}
-    )
-
-    const totalDiff = Object.keys(diff).reduce((p, c) => p.plus(new BN(diff[c] || 0)), new BN(0))
-    return { volume, past, diff, totalDiff: String(totalDiff) }
+    return { volume, past }
   }, [markets, marketsPast])
 }
 
