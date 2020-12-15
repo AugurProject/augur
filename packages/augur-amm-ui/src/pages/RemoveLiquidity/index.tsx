@@ -292,7 +292,7 @@ function RemoveLiquidity({
                     mr="0.5rem"
                     fontWeight={500}
                     fontSize={16}
-                    padding={'8px'}
+                    padding={'10px'}
                     borderRadius={'8px'}
                   >
                     {approval === ApprovalState.PENDING ? (

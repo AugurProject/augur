@@ -33,27 +33,27 @@ export default function DistributionPanel({
   const NO = 'NO'
 
   // switch to convert already existing pool percentage to odds
-  const [yesInput, setYesInput] = useState(distroPercentage[DISTRO_NO_ID])
-  const [noInput, setNoInput] = useState(distroPercentage[DISTRO_YES_ID])
+  const [yesInput, setYesInput] = useState(String(distroPercentage[DISTRO_NO_ID]))
+  const [noInput, setNoInput] = useState(String(distroPercentage[DISTRO_YES_ID]))
 
-  const setDistributionInput = (value: number, type) => {
+  const setDistributionInput = (value: string, type) => {
     let yes, no = 0
-    if (isNaN(value) || value > 100) {
-      setYesInput(0)
-      setNoInput(0)
+    if (isNaN(Number(value)) || Number(value) > 100 || value === '') {
+      setYesInput('')
+      setNoInput('')
       return
     }
     if (type === YES) {
-      yes = value
-      no = 100 - value
+      yes = Number(value)
+      no = 100 - Number(value)
     }
 
     if (type === NO) {
-      no = value
-      yes = 100 - value
+      no = Number(value)
+      yes = 100 - Number(value)
     }
-    setYesInput(yes)
-    setNoInput(no)
+    setYesInput(String(yes))
+    setNoInput(String(no))
     updateDistribution([yes, no])
   }
   return (
@@ -72,7 +72,7 @@ export default function DistributionPanel({
                 min={0}
                 max={100}
                 onUserInput={val => {
-                  if (!isNaN(Number(val))) setDistributionInput(Number(val), YES)
+                  if (!isNaN(Number(val))) setDistributionInput(val, YES)
                 }}
               />
               <TYPE.light fontSize={18} disabled={disableInputs}>
@@ -94,7 +94,7 @@ export default function DistributionPanel({
                 min={0}
                 max={100}
                 onUserInput={val => {
-                  if (!isNaN(Number(val))) setDistributionInput(Number(val), NO)
+                  if (!isNaN(Number(val))) setDistributionInput(val, NO)
                 }}
               />
               <TYPE.light fontSize={18} disabled={disableInputs}>

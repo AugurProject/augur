@@ -38,12 +38,12 @@ const Base = styled(RebassButton)<{
   }
 `
 
-export const ButtonPrimary = styled(Base)`
+export const ButtonPrimary = styled(Base)<{fontSize}>`
   background-color: ${({ theme }) => theme.primary};
   color: black;
   border-radius: 8px;
   padding: 9px 12px;
-  font-size: 12px;
+  font-size: ${({ fontSize }) => fontSize ? fontSize : '12px' };
   font-weight: bold;
   &:focus {
     box-shadow: 0 0 0 1pt ${({ theme }) => darken(0.05, theme.primary)};
