@@ -112,13 +112,13 @@ function AmmExchangeList({ allExchanges, disbaleLinks, marketId }) {
                   Remove
                 </StyledInternalLink>
               )}
-              {!hasLPTokens && <DisabledStyledLink>Remove</DisabledStyledLink>}
+              {!hasLPTokens && <DisabledStyledLink to="">Remove</DisabledStyledLink>}
               {ammExchange && ammExchange?.id && (
                 <StyledInternalLink to={`/swap/${marketId}/${ammExchange.cash.address}/${ammExchange.id}`}>
                   Trade
                 </StyledInternalLink>
               )}
-              {!ammExchange || (!ammExchange?.id && <DisabledStyledLink>Trade</DisabledStyledLink>)}
+              {!ammExchange || (!ammExchange?.id && <DisabledStyledLink  to="">Trade</DisabledStyledLink>)}
             </RowFixed>
           </TYPE.header>
         </DashGrid>

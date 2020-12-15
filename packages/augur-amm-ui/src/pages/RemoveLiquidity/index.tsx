@@ -40,9 +40,8 @@ function RemoveLiquidity({
   const { account, chainId, library } = useActiveWeb3React()
   const [userTokenBalances] = useLPTokenBalances()
   const ammExchange = useMarketAmm(marketId, ammExchangeId)
-  const currencyA = useCurrency(ammExchange?.cash?.id)
-  const currencyLP = useMemo(() => new Token(chainId, ammExchangeId, Number(ammExchange?.cash?.decimals || 18), currencyA?.symbol, currencyA?.name), [ammExchangeId, ammExchange?.cash?.decimals])
-  const ammFactory = useAmmFactoryAddress()
+  const currencyLP = useMemo(() => new Token(chainId, ammExchangeId, Number(ammExchange?.cash?.decimals || 18), ammExchange?.cash?.symbol, ammExchange?.cash?.name), [ammExchangeId, ammExchange?.cash?.decimals])
+
   const [liquidity, setLiquidity] = useState('0')
   const [breakdown, setBreakdown] = useState({ noShares: '0', yesShares: '0', cashShares: '0' })
   const [liquidityPercentage, setLiquidityPercentage] = useState('0')

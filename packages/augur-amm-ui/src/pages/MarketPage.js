@@ -21,11 +21,13 @@ import {
   useMarketNonExistingAmms,
   useMarketAmmExchanges,
   useMarketCashTokens,
-  useMarketVolumeByCash
+  useMarketVolumeByCash,
+  useMarketDataRefresher
 } from '../contexts/Markets'
 import { ButtonOutlined } from '../components/ButtonStyled'
 import PairChart from '../components/PairChart'
 import { BigNumber as BN } from 'bignumber.js'
+import { useBlockNumber } from '../state/application/hooks'
 
 const DashboardWrapper = styled.div`
   width: 100%;
@@ -81,6 +83,12 @@ function MarketPage({ marketId }) {
       setTotalLiquidity(formattedNum(String(total), true))
     }
   }, [allExchanges?.length, cashData])
+
+  const { updateIsDataClean } = useMarketDataRefresher()
+  const latestBlock = useBlockNumber()
+  useEffect(() => {
+    updateIsDataClean(false)
+  }, [latestBlock])
 
   // detect color from token
   const backgroundColor = useColor(id, symbol)

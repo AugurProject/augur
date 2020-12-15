@@ -10,10 +10,11 @@ import GlobalStats from '../components/GlobalStats'
 import { Text } from 'rebass'
 import { useMedia } from 'react-use'
 import Panel from '../components/Panel'
-import { useMarketsByAMMLiquidityVolume, useMarketCashAddresses } from '../contexts/Markets'
+import { useMarketsByAMMLiquidityVolume, useMarketCashAddresses, useMarketDataRefresher } from '../contexts/Markets'
 import { RowBetween } from '../components/Row'
 import { ContentWrapper } from '../components'
 import TokenLogo from '../components/TokenLogo'
+import { useBlockNumber } from '../state/application/hooks'
 
 const ClickableText = styled(Text)`
   text-align: end;
@@ -49,7 +50,6 @@ function MarketListPage() {
   const below800 = useMedia('(max-width: 800px)')
   const [cashFilter, setCashFilter] = useState(null)
   const [filteredMarkets, setFilteredMarkets] = useState(markets)
-  // scrolling refs
 
   const updateCashFilter = cash => {
     setCashFilter(cash)
@@ -70,6 +70,12 @@ function MarketListPage() {
       top: 0
     })
   }, [])
+
+  const { updateIsDataClean } = useMarketDataRefresher()
+  const latestBlock = useBlockNumber()
+  useEffect(() => {
+    updateIsDataClean(false)
+  }, [latestBlock])
 
   return (
     <ContentWrapper>
@@ -92,15 +98,18 @@ function MarketListPage() {
                     />
                   </ClickableText>
                 ))}
-                <ClickableText style={{ opacity: cashFilter === null ? '1' : '0.4' }} onClick={() => updateCashFilter(null)}>
-                  <TokenLogo
-                    tokenInfo={null}
-                    size={'16px'}
-                    uppercase={false}
-                    customErrorLabel={'All Markets'}
-                    style={{ paddingRight: '1rem', opacity: null === cashFilter ? '1' : '0.4' }}
-                    />
-                </ClickableText>
+              <ClickableText
+                style={{ opacity: cashFilter === null ? '1' : '0.4' }}
+                onClick={() => updateCashFilter(null)}
+              >
+                <TokenLogo
+                  tokenInfo={null}
+                  size={'16px'}
+                  uppercase={false}
+                  customErrorLabel={'All Markets'}
+                  style={{ paddingRight: '1rem', opacity: null === cashFilter ? '1' : '0.4' }}
+                />
+              </ClickableText>
             </RowFlat>
           </RowBetween>
         </ListOptions>

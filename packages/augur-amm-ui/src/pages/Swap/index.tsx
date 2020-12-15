@@ -82,7 +82,7 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
   useEffect(() => {
     async function estimate(augurClient, trade) {
       try {
-        const resultWithFee = await estimateTrade(augurClient, trade, true, useEth);
+        const resultWithFee = await estimateTrade(augurClient, trade, false, useEth);
         if (resultWithFee) {
           console.log('estimate trade with fee', resultWithFee, trade.currencyOut.decimals, trade)
           const outToken = new Token(
@@ -95,17 +95,22 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
           const estCurrency = resultWithFee === '0' ? null : new TokenAmount(outToken, JSBI.BigInt(String(resultWithFee)))
           setOutputAmount(estCurrency)
         }
-        const resultWithoutFee = await estimateTrade(augurClient, trade, false, useEth);
+
+        if (ammExchange.fee === "0") return setRealizedLPFee("0");
+
+        const resultWithoutFee = await estimateTrade(augurClient, trade, true, useEth);
         console.log('estimate trade without fee', resultWithoutFee, trade)
         let feeValue = "0";
         if (resultWithoutFee) {
           feeValue = String(new BN(String(resultWithFee)).minus(new BN(resultWithoutFee)))
         }
 
+        console.log('feeValue', feeValue, resultWithFee, resultWithoutFee)
         let lpFee = formatToDisplayValue(feeValue, trade.currencyOut.decimals);
         if (isMarketCurrency(trade.currencyOut)){
           lpFee = formatShares(feeValue, trade.currencyOut.decimals)
         }
+        console.log('lpFee', String(lpFee))
         setRealizedLPFee(lpFee)
       } catch (e) {
         console.error("Estimate trade error:", e)

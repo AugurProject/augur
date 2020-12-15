@@ -21,6 +21,7 @@ import { TradeInfo } from '../hooks/Trades'
 import { MarketCurrency } from '../model/MarketCurrency'
 import { EthersProvider } from '@augurproject/ethersjs-provider'
 import { convertDisplayAmountToOnChainAmount } from '@augurproject/utils/build'
+import { useActiveWeb3React } from '../hooks'
 
 // format libraries
 const Decimal = toFormat(_Decimal)
