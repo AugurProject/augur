@@ -29,7 +29,7 @@ import { useWalletModalToggle } from '../../state/application/hooks'
 import { useLPTokenBalances } from '../../state/wallet/hooks'
 import { useMarketAmm } from '../../contexts/Markets'
 import { tryParseAmount } from '../../state/swap/hooks'
-import { formatShares, removeAmmLiquidity, formatToDisplayValue, formattedNum } from '../../utils'
+import { formatShares, removeAmmLiquidity, formatToDisplayValue, formattedNum, formatTokenAmount } from '../../utils'
 import { Token } from '@uniswap/sdk'
 
 function RemoveLiquidity({
@@ -171,10 +171,11 @@ function RemoveLiquidity({
     setLiquidity(newLiquidity)
     getRemoveLiquidityBreakdown(augurClient, marketId, ammExchange?.sharetoken, ammExchange?.fee, newLiquidity, result => {
       const decimals = ammExchange?.cash?.decimals || 18;
+      console.log('decimals', decimals, result?.cashShares)
       const breakdown = {
         noShares: formatShares(result?.noShares, decimals),
         yesShares: formatShares(result?.yesShares, decimals),
-        cashShares: formatShares(result?.cashShares, decimals)
+        cashShares: formatTokenAmount(result?.cashShares, decimals)
       }
       setBreakdown(breakdown)
       setError(null)
