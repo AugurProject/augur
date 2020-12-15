@@ -458,11 +458,11 @@ function sumAmmTransactions(markets) {
         return currentCash
           ? {
               ...p,
-              [m.cash.toLowerCase()]: new BN(m.amm.swaps.length + m.amm.enters.length + m.amm.exits.length).plus(
+              [m.cash.toLowerCase()]: new BN(m.amm.swaps.length + m.amm.enters.length + m.amm.exits.length + m.amm.addLiquidity.length + m.amm.removeLiquidity.length).plus(
                 currentCash
               )
             }
-          : { ...p, [m.cash.toLowerCase()]: new BN(m.amm.swaps.length + m.amm.enters.length + m.amm.exits.length) }
+          : { ...p, [m.cash.toLowerCase()]: new BN(m.amm.swaps.length + m.amm.enters.length + m.amm.exits.length + m.amm.addLiquidity.length + m.amm.removeLiquidity.length) }
       }, {})
     : {}
 }
@@ -479,6 +479,21 @@ export function useAmmTransactions() {
     return { tx, past, totalDiff: String(totalDiff) }
   }, [markets, marketsPast])
 }
+
+export function useAmmMarketTransactions(marketId) {
+  const markets = useMarketsByAMM().find(m => m.id === marketId)
+  const marketsPast = useMarketsByAMMPast().find(m => m.id === marketId)
+
+  return useMemo(() => {
+    if ((markets || []).length === 0) return 0;
+    const tx = sumAmmTransactions([markets])
+    const past = sumAmmTransactions([marketsPast])
+
+    const totalDiff = Object.keys(tx).reduce((p, t) => p + ((tx[t] || 0) - (past[t] || 0)), 0)
+    return { tx, past, totalDiff: String(totalDiff) }
+  }, [markets, marketsPast])
+}
+
 
 function ammPrices(markets) {
   return markets

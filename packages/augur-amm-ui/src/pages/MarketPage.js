@@ -22,7 +22,8 @@ import {
   useMarketAmmExchanges,
   useMarketCashTokens,
   useMarketVolumeByCash,
-  useMarketDataRefresher
+  useMarketDataRefresher,
+  useAmmMarketTransactions
 } from '../contexts/Markets'
 import { ButtonOutlined } from '../components/ButtonStyled'
 import PairChart from '../components/PairChart'
@@ -61,13 +62,15 @@ const WarningGrouping = styled.div`
 `
 
 function MarketPage({ marketId }) {
-  const { id, name, symbol, priceUSD, priceChangeUSD, oneDayTxns } = useTokenData(marketId)
+  const { id, name, symbol, priceUSD, priceChangeUSD } = useTokenData(marketId)
   const cashes = useMarketNonExistingAmms(marketId)
   const [totalLiquidity, setTotalLiquidity] = useState('0')
   const cashTokens = useMarketCashTokens()
   const cashData = useTokenDayPriceData()
   const allExchanges = useMarketAmmExchanges(marketId)
   const volumes = useMarketVolumeByCash(marketId)
+  const ammTransactions = useAmmMarketTransactions(marketId)
+  const [oneDayTxns, setOneDayTxns] = useState(0)
 
   useEffect(() => {
     document.querySelector('body').scrollTo(0, 0)
@@ -89,6 +92,12 @@ function MarketPage({ marketId }) {
   useEffect(() => {
     updateIsDataClean(false)
   }, [latestBlock])
+
+
+  useEffect(() => {
+    const { totalDiff: tx } = ammTransactions;
+    setOneDayTxns(tx)
+  }, [ammTransactions ])
 
   // detect color from token
   const backgroundColor = useColor(id, symbol)
