@@ -1,10 +1,14 @@
 import { useReducer } from 'react';
 import {
-  // APP_STATUS_ACTIONS,
+  APP_STATUS_ACTIONS,
   MOCK_APP_STATUS_STATE,
-  // DEFAULT_APP_STATUS_STATE
+  // DEFAULT_APP_STATUS_STATE,
 } from 'modules/stores/constants';
 import { windowRef } from 'utils/window-ref';
+
+const {
+  SET_IS_MOBILE
+} = APP_STATUS_ACTIONS;
 
 const isAsync = obj => {
   return (
@@ -45,6 +49,10 @@ export const keyedObjToArray = (KeyedObject) => Object.entries(KeyedObject).map(
 export function AppStatusReducer(state, action) {
   const updatedState = { ...state };
   switch (action.type) {
+    case SET_IS_MOBILE: {
+      updatedState['isMobile'] = action.isMobile;
+      break;
+    }
     default:
     console.log(`Error: ${action.type} not caught by Markets reducer`);
   }
@@ -55,10 +63,11 @@ export function AppStatusReducer(state, action) {
 export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
   const [state, pureDispatch] = useReducer(AppStatusReducer, defaultState);
   const dispatch = dispatchMiddleware(pureDispatch);
-  console.log(dispatch);
   windowRef.appStatus = state;
   return {
     ...state,
-    actions: {},
+    actions: {
+      setIsMobile: isMobile => dispatch({ type: SET_IS_MOBILE, isMobile }),
+    },
   };
 };
