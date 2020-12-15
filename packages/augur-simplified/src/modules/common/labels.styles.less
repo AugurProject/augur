@@ -1,14 +1,18 @@
 @import (reference) '~assets/styles/shared';
 
 .ValueLabel {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-row-gap: @size-4;
+
+  > span {
+    display: flex;
+    align-items: center;
+  }
 
   > span:first-of-type {
     .text-12;
 
-    margin-bottom: @size-4;
     color: var(--simple-secondary-text);
     text-transform: capitalize;
   }
@@ -17,23 +21,22 @@
     .text-16-semi-bold;
 
     color: var(--simple-primary-text);
+    grid-column: 1 / span 2;
   }
 
   &.large {
+    grid-row-gap: @size-10;
+
     > span:first-of-type {
       .text-16-bold;
+    }
 
-      margin-bottom: @size-10;
-
-      > span {
-        .text-14;
-        
-        margin-left: @size-4;
-      }
+    > span:nth-of-type(2) {
+      .text-14;
     }
 
     > span:last-of-type {
-        .text-36-bold;
+      .text-36-bold;
     }
   }
 }
@@ -46,7 +49,7 @@
 
   > span:nth-of-type(2) {
     .text-14;
-    
+
     color: var(--simple-primary-text);
     margin-top: @size-12;
   }
@@ -68,7 +71,6 @@
   height: 100%;
 }
 
-
 .AppStats {
   .SimpleBorder;
 
@@ -79,8 +81,6 @@
   background: var(--simple-light-bg);
 
   > div {
-    display: flex;
-    justify-content: center;
     border-right: @size-1 solid var(--simple-border);
     padding: @size-36;
 
@@ -94,7 +94,7 @@
       margin: @size-36 0;
       padding: 0 @size-36;
     }
-    
+
     &:last-of-type {
       border-right: 0;
       padding-right: 0;
@@ -104,6 +104,7 @@
   &.CashAmounts {
     > div {
       padding-right: @size-36;
+
       &:last-of-type {
         border-right: @size-1 solid var(--simple-border);
       }
@@ -167,5 +168,76 @@
     margin-top: @size-8;
     text-transform: capitalize;
     color: var(--simple-secondary-text);
+  }
+}
+
+@media @breakpoint-mobile-tablet {
+  .ValueLabel {
+    &.large {
+      grid-template-columns: 1fr;
+      grid-row-gap: @size-2;
+
+      > span {
+        justify-content: center;
+        text-align: center;
+      }
+
+      > span:first-of-type {
+        .text-12;
+
+        align-items: flex-end;
+      }
+
+      > span:last-of-type {
+        .text-14-semi-bold;
+
+        grid-row: 2;
+        align-items: flex-start;
+      }
+    }
+
+    &.Sublabel {
+      > span:nth-of-type(2) {
+        .text-12-semi-bold;
+
+        grid-column: 1 / span 2;
+        grid-row: 3;
+      }
+
+      > span:last-of-type {
+        grid-row: 2;
+      }
+    }
+  }
+
+  .AppStats {
+    padding: 0 @size-14;
+    height: @size-85;
+    justify-content: center;
+
+    > div:last-of-type,
+    > div:nth-last-of-type(2) {
+      display: none;
+    }
+
+    > div:nth-of-type(3) {
+      margin: 0;
+      border-right: 0;
+      border-left: @size-1 solid var(--simple-border);
+    }
+
+    &.CashAmounts {
+      > div {
+        flex: 1;
+        position: relative;
+        padding: 0 @size-14;
+      }
+
+      > div:nth-of-type(2) {
+        border: 0;
+        height: fit-content;
+        margin: auto;
+      }
+    }
   }
 }

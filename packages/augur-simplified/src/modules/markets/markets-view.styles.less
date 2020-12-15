@@ -48,16 +48,14 @@
     grid-template-columns: @size-50 auto 1fr;
     padding: @size-24;
 
-    > div {
-      display: flex;
-    }
-
     > div:first-of-type {
+      display: flex;
       margin-right: @size-6;
     }
 
     > div:nth-of-type(3) {
       justify-content: flex-end;
+      display: flex;
     }
 
     > span {
@@ -128,6 +126,19 @@
     }
     &:not(:first-of-type) {
       border-top: @size-1 solid var(--simple-border);
+    }
+  }
+}
+
+@media @breakpoint-mobile-tablet {
+  .MarketsView {
+
+    > ul {
+      display: none;
+    }
+
+    > section {
+      grid-template-columns: 1fr;
     }
   }
 }

@@ -22,12 +22,13 @@ export const ValueLabel = ({
     <div
       className={classNames(Styles.ValueLabel, {
         [Styles.large]: large,
+        [Styles.Sublabel]: sublabel,
       })}
     >
       <span>
         {label}
-        {sublabel && <span>{sublabel}</span>}
       </span>
+      {sublabel && <span>{sublabel}</span>}
       <span>{value}</span>
     </div>
   );

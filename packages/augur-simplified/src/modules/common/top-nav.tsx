@@ -7,25 +7,32 @@ import makePath from 'modules/routes/helpers/make-path';
 import Logo from 'modules/common/logo';
 import parsePath from 'modules/routes/helpers/parse-path';
 import classNames from 'classnames';
-import { GearIcon } from 'modules/common/icons';
+import { GearIcon, ThreeLinesIcon } from 'modules/common/icons';
+import { useAppStatusStore } from 'modules/stores/app-status';
 
 export const TopNav = () => {
   const location = useLocation();
   const path = parsePath(location.pathname)[0];
+  const { isMobile } = useAppStatusStore();
+
   return (
-    <nav className={classNames(Styles.TopNav, {
-      [Styles.TwoTone]: path !== MARKETS,
-    })}>
+    <nav
+      className={classNames(Styles.TopNav, {
+        [Styles.TwoTone]: path !== MARKETS,
+      })}
+    >
       <section>
         <Logo />
-        <ol>
-          <li className={classNames({[Styles.Active]: path === MARKETS})}>
-            <Link to={makePath(MARKETS)}>Markets</Link>
-          </li>
-          <li className={classNames({[Styles.Active]: path === PORTFOLIO})}>
-            <Link to={makePath(PORTFOLIO)}>Portfolio</Link>
-          </li>
-        </ol>
+        {!isMobile && (
+          <ol>
+            <li className={classNames({ [Styles.Active]: path === MARKETS })}>
+              <Link to={makePath(MARKETS)}>Markets</Link>
+            </li>
+            <li className={classNames({ [Styles.Active]: path === PORTFOLIO })}>
+              <Link to={makePath(PORTFOLIO)}>Portfolio</Link>
+            </li>
+          </ol>
+        )}
       </section>
       <section>
         <button
@@ -34,12 +41,22 @@ export const TopNav = () => {
         >
           Connect Account
         </button>
-        <button
-          title="This doesn't do anything yet!"
-          onClick={() => alert('TODO: Make this work.')}
-        >
-          {GearIcon}
-        </button>
+        {!isMobile && (
+          <button
+            title="This doesn't do anything yet!"
+            onClick={() => alert('TODO: Make this work.')}
+          >
+            {GearIcon}
+          </button>
+        )}
+        {isMobile && (
+          <button
+            title="This doesn't do anything yet!"
+            onClick={() => alert('TODO: Make this work.')}
+          >
+            {ThreeLinesIcon}
+          </button>
+        )}
       </section>
     </nav>
   );
