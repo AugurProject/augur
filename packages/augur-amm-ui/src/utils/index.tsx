@@ -691,7 +691,7 @@ export async function estimateTrade(augurClient, trade: TradeInfo, includeFee: b
 
   if (tradeDirection === TradingDirection.ENTRY) {
     const cash = new BN(String(trade.inputAmount.raw))
-    console.log(tradeDirection, String(cash), 'output yes:', outputYesShares)
+    console.log(tradeDirection, 'marketId', trade.marketId, 'shareToken', trade.amm.sharetoken, 'fee', trade.amm.fee, 'cash', String(cash), 'output yes:', outputYesShares, 'includeFee:', includeFee)
     breakdown = await augurClient.amm.getEnterPosition(
       trade.marketId,
       trade.amm.sharetoken,
@@ -700,6 +700,7 @@ export async function estimateTrade(augurClient, trade: TradeInfo, includeFee: b
       outputYesShares,
       includeFee
     )
+    console.log('breakdown', JSON.stringify(breakdown))
     return String(breakdown)
   }
   if (tradeDirection === TradingDirection.EXIT) {

@@ -36,6 +36,7 @@ import { estimateTrade, formatCurrencyAmount, formatShares, formatToDisplayValue
 import { doUseETH, useAugurClient } from '../../contexts/Application'
 import { useMarketAmm } from '../../contexts/Markets'
 import { useMarketBalance } from '../../state/wallet/hooks'
+import { useCurrency, useMarketToken } from '../../hooks/Tokens'
 
 const ClickableText = styled(Text)`
   text-align: end;
@@ -63,6 +64,7 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
   const useEth = doUseETH(ammExchange?.shareToken?.cash?.id)
   // for expert mode
   const toggleSettings = useToggleSettingsMenu()
+  const cashCurrency = useMarketToken(ammExchange?.cash?.name)
 
   // get custom setting values for user
   const [allowedSlippage] = useUserSlippageTolerance()
@@ -77,14 +79,14 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
     account,
     ammExchange,
     userCashBalances
-   )
+  )
 
   useEffect(() => {
     async function estimate(augurClient, trade) {
       try {
         const resultWithFee = await estimateTrade(augurClient, trade, false, useEth);
         if (resultWithFee) {
-          console.log('estimate trade with fee', resultWithFee, trade.currencyOut.decimals, trade)
+          console.log('estimate trade with fee', resultWithFee, trade?.currencyOut?.decimals, trade)
           const outToken = new Token(
             chainId,
             trade.marketId,
@@ -107,7 +109,7 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
 
         console.log('feeValue', feeValue, resultWithFee, resultWithoutFee)
         let lpFee = formatToDisplayValue(feeValue, trade.currencyOut.decimals);
-        if (isMarketCurrency(trade.currencyOut)){
+        if (isMarketCurrency(trade.currencyOut)) {
           lpFee = formatShares(feeValue, trade.currencyOut.decimals)
         }
         console.log('lpFee', String(lpFee))
@@ -131,6 +133,8 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
       setMinAmount(String(slipAmount))
     }
   }, [trade, outputAmount, allowedSlippage, setMinAmount])
+
+  useEffect(() => handleInputSelect(cashCurrency), [cashCurrency])
 
   const parsedAmounts = {
     [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
@@ -265,7 +269,7 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
   return (
     <>
       <AppBody>
-        <SwapPoolTabs token={marketId} amm={ammExchange}/>
+        <SwapPoolTabs token={marketId} amm={ammExchange} />
         <Wrapper id="swap-page">
           <ConfirmSwapModal
             isOpen={showConfirm}

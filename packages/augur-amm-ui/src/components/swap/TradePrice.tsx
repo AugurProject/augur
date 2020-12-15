@@ -29,7 +29,6 @@ export default function TradePrice({ trade, estTokenAmount }: TradePriceProps) {
     const OutPerIn = String(new BigNumber(String(displayInAmount)).div(new BigNumber(String(displayEstimateAmount))))
     const InPerOut = String(new BigNumber(String(displayEstimateAmount)).div(new BigNumber(String(displayInAmount))))
 
-    console.log('OutPerIn', OutPerIn, 'InPerOut', InPerOut)
     const label = showInverted
       ? `${formattedNum(InPerOut)} ${trade.currencyOut.symbol} per ${trade.currencyIn.symbol}`
       : `${formattedNum(OutPerIn)} ${trade.currencyIn.symbol} per ${trade.currencyOut.symbol}`
