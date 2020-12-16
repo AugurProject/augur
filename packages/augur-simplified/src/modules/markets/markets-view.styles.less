@@ -28,6 +28,10 @@
 }
 
 .MarketCard {
+  &:hover {
+    .HoverDropShadow;
+  }
+  
   > a {
     text-decoration: none;
     color: unset;
@@ -36,7 +40,6 @@
   > a > div {
     .text-14-bold;
     .SimpleBorder;
-
 
     display: flex;
     flex-flow: row nowrap;
@@ -48,16 +51,14 @@
     grid-template-columns: @size-50 auto 1fr;
     padding: @size-24;
 
-    > div {
-      display: flex;
-    }
-
     > div:first-of-type {
+      display: flex;
       margin-right: @size-6;
     }
 
     > div:nth-of-type(3) {
       justify-content: flex-end;
+      display: flex;
     }
 
     > span {
@@ -80,13 +81,13 @@
   }
 
   &.NoLiquidity {
-    > a > div  {
+    > a > div {
       > div:nth-of-type(4) {
         grid-column: 1 / span 3;
         margin-right: 0;
         display: flex;
         flex-direction: column;
-        
+
         > span {
           .text-14-semi-bold;
 
@@ -111,7 +112,7 @@
     > span {
       display: flex;
       align-items: center;
-      
+
       &:first-of-type {
         .text-14;
 
@@ -129,5 +130,47 @@
     &:not(:first-of-type) {
       border-top: @size-1 solid var(--simple-border);
     }
+  }
+}
+
+@media @breakpoint-mobile-tablet {
+  .MarketsView {
+    padding: @size-16;
+
+    > ul {
+      display: none;
+    }
+
+    > section {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .MarketCard {
+
+    > a > div {
+      > span {
+        margin-bottom: @size-16;
+        height: unset;
+      }
+      > div:nth-of-type(4) {
+        grid-column: 1 / span 3;
+        display: flex;
+        flex: 1;
+        margin: @size-16 0 0;
+
+        > span:first-of-type {
+          margin-right: @size-8;
+        }
+        > span:last-of-type {
+          .text-16-semi-bold;
+        }
+      }
+    }
+  }
+
+  .OutcomesTable {
+    grid-row: 3;
+    grid-column: 1 / span 3;
   }
 }

@@ -7,7 +7,8 @@ import {
 import { windowRef } from 'utils/window-ref';
 
 const {
-  SET_IS_MOBILE
+  SET_IS_MOBILE,
+  SET_FILTER_SIDEBAR
 } = APP_STATUS_ACTIONS;
 
 const isAsync = obj => {
@@ -53,6 +54,10 @@ export function AppStatusReducer(state, action) {
       updatedState['isMobile'] = action.isMobile;
       break;
     }
+    case SET_FILTER_SIDEBAR: {
+      updatedState['filterSidebar'] = action.filterSidebar;
+      break;
+    }
     default:
     console.log(`Error: ${action.type} not caught by Markets reducer`);
   }
@@ -67,6 +72,7 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
   return {
     ...state,
     actions: {
+      setFilterSidebar: filterSidebar => dispatch({type: SET_FILTER_SIDEBAR, filterSidebar}),
       setIsMobile: isMobile => dispatch({ type: SET_IS_MOBILE, isMobile }),
     },
   };

@@ -6,11 +6,9 @@ import classNames from 'classnames';
 import {
   POSITIONS,
   LIQUIDITY,
-  fakeLiquidityData,
-  fakePositionsData,
-  fakeTransactionsData,
 } from 'modules/constants';
 import { Pagination } from 'modules/common/pagination';
+import { useAppStatusStore } from 'modules/stores/app-status';
 
 interface Position {
   id: string;
@@ -197,6 +195,10 @@ export const PositionsLiquidityViewSwitcher = ({
   marketId,
 }: PositionsLiquidityViewSwitcherProps) => {
   const [tableView, setTableView] = useState(POSITIONS);
+  const {
+    positions,
+    liquidity
+  } = useAppStatusStore();
 
   return (
     <div className={Styles.PositionsLiquidityViewSwitcher}>
@@ -222,11 +224,11 @@ export const PositionsLiquidityViewSwitcher = ({
         {!marketId && (
           <>
             {tableView === POSITIONS &&
-              fakePositionsData.map((market) => (
+              positions.map((market) => (
                 <PositionTable key={market.id} market={market} />
               ))}
             {tableView === LIQUIDITY &&
-              fakeLiquidityData.map((market) => (
+              liquidity.map((market) => (
                 <LiquidityTable key={market.id} market={market} />
               ))}
             <Pagination
@@ -241,10 +243,10 @@ export const PositionsLiquidityViewSwitcher = ({
         {marketId && (
           <>
             {tableView === POSITIONS && (
-              <PositionTable singleMarket market={fakePositionsData[0]} />
+              <PositionTable singleMarket market={positions[0]} />
             )}
             {tableView === LIQUIDITY && (
-              <LiquidityTable singleMarket market={fakeLiquidityData[0]} />
+              <LiquidityTable singleMarket market={liquidity[0]} />
             )}
           </>
         )}
@@ -285,10 +287,13 @@ const TransactionRow = ({ transaction }) => {
 };
 
 export const TransactionsTable = () => {
+  const {
+    transactions
+  } = useAppStatusStore();
   return (
     <div className={Styles.TransactionsTable}>
       <TransactionsHeader />
-      {fakeTransactionsData[0].transactions.map((transaction) => (
+      {transactions[0].transactions.map((transaction) => (
         <TransactionRow key={transaction.id} transaction={transaction} />
       ))}
       <div className={Styles.PaginationFooter}>

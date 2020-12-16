@@ -37,6 +37,13 @@
     padding: @size-16;
     display: grid;
     grid-template-columns: 1fr auto auto; 
+    cursor: pointer;
+
+    &:hover {
+        .HoverDropShadow;
+
+        background-color: var(--simple-light-bg);
+    }
 
     > div,
     > span {

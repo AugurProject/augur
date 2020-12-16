@@ -1,9 +1,7 @@
 import React from 'react';
 import Styles from 'modules/markets/markets-view.styles.less';
 import makePath from 'modules/routes/helpers/make-path';
-import {
-  MARKET,
-} from 'modules/constants';
+import { MARKET } from 'modules/constants';
 import { Link } from 'react-router-dom';
 import {
   ValueLabel,
@@ -12,7 +10,7 @@ import {
   CategoryIcon,
 } from 'modules/common/labels';
 import { formatDai } from 'utils/format-number';
-import { EthIcon, UsdIcon } from 'modules/common/icons';
+import { EthIcon, FilterIcon, UsdIcon } from 'modules/common/icons';
 import classNames from 'classnames';
 import { PrimaryButton } from 'modules/common/buttons';
 import { SquareDropdown } from 'modules/common/selection';
@@ -66,14 +64,19 @@ const MarketCard = ({ market }) => {
   );
 };
 // TODO: when we have real data we can pull this out
-const TEMPORARY_FILTER = (ml) => ml.filter(i => i.id !== '0xdeadbeef');
+const TEMPORARY_FILTER = (ml) => ml.filter((i) => i.id !== '0xdeadbeef');
 
 const MarketsView = () => {
-  const { marketInfos } = useAppStatusStore();
-  const markets = TEMPORARY_FILTER(keyedObjToArray(marketInfos))
+  const {
+    marketInfos,
+    isMobile,
+    actions: { setFilterSidebar },
+  } = useAppStatusStore();
+  const markets = TEMPORARY_FILTER(keyedObjToArray(marketInfos));
   return (
     <div className={Styles.MarketsView}>
       <AppViewStats showCashAmounts />
+      {isMobile && <PrimaryButton text='filters' icon={FilterIcon} action={() => setFilterSidebar(true)} />}
       <ul>
         <SquareDropdown
           onChange={() => null}

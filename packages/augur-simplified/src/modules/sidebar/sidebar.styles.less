@@ -1,0 +1,12 @@
+@import (reference) '~assets/styles/shared';
+
+div.Sidebar {
+    @media @breakpoint-mobile-tablet {
+        position: absolute;
+        background: var(--light-background-color);
+        z-index: @above-all-content-top-layer;
+        top: 0;
+        bottom: 0;
+        margin: 0;
+    }
+}

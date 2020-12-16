@@ -5,7 +5,6 @@
 @default-above: 2;
 //	Above Content
 @above-all-content: 10;
-@above-all-content-above: 11;
 @above-all-content-top-layer: 12;
 //	View Chrome
 @mask: 20;
@@ -140,4 +139,9 @@
 .SimpleBorder {
   border: @size-1 solid var(--simple-border);
   border-radius: @size-8;
+}
+
+.HoverDropShadow {
+  transition: all 0.3s ease-out;
+  filter: drop-shadow(0 @size-8 @size-40 var(--simple-shadow-10));
 }
