@@ -15,12 +15,12 @@ import { formatDai } from 'utils/format-number';
 
 export const STUBBED_APP_STATUS_ACTIONS = {
   setIsMobile: (isMobile) => {},
-  setFilterSidebar: (filterSidebar) => {}
+  setSidebar: (sidebarType) => {}
 };
 
 export const DEFAULT_APP_STATUS_STATE = {
   isMobile: false,
-  filterSidebar: false,
+  sidebarType: null,
   loginAccount: null,
   marketInfos: {},
   positions: [],
@@ -33,7 +33,7 @@ export const DEFAULT_APP_STATUS_STATE = {
 
 export const APP_STATUS_ACTIONS = {
   SET_IS_MOBILE: 'SET_IS_MOBILE',
-  SET_FILTER_SIDEBAR: 'SET_FILTER_SIDEBAR'
+  SET_SIDEBAR: 'SET_SIDEBAR'
 };
 
 export const fakePositionsData = [
@@ -150,7 +150,7 @@ export const MOCK_APP_STATUS_STATE = {
   positions: fakePositionsData,
   liquidity: fakeLiquidityData,
   transactions: fakeTransactionsData,
-  filterSidebar: false,
+  sidebarType: null,
   marketInfos: {
     '0xdeadbeef': {
       id: '0xdeadbeef',

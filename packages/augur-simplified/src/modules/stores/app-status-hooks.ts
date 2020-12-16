@@ -8,7 +8,7 @@ import { windowRef } from 'utils/window-ref';
 
 const {
   SET_IS_MOBILE,
-  SET_FILTER_SIDEBAR
+  SET_SIDEBAR
 } = APP_STATUS_ACTIONS;
 
 const isAsync = obj => {
@@ -54,8 +54,8 @@ export function AppStatusReducer(state, action) {
       updatedState['isMobile'] = action.isMobile;
       break;
     }
-    case SET_FILTER_SIDEBAR: {
-      updatedState['filterSidebar'] = action.filterSidebar;
+    case SET_SIDEBAR: {
+      updatedState['sidebarType'] = action.sidebarType;
       break;
     }
     default:
@@ -72,7 +72,7 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
   return {
     ...state,
     actions: {
-      setFilterSidebar: filterSidebar => dispatch({type: SET_FILTER_SIDEBAR, filterSidebar}),
+      setSidebar: sidebarType => dispatch({type: SET_SIDEBAR, sidebarType}),
       setIsMobile: isMobile => dispatch({ type: SET_IS_MOBILE, isMobile }),
     },
   };

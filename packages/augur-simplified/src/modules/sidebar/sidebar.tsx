@@ -4,36 +4,37 @@ import { CloseIcon } from 'modules/common/icons';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { CheckboxGroup, RadioBarGroup } from 'modules/common/selection';
+import { SIDEBAR_TYPES } from 'modules/constants';
 
 const categoryItems = [
   {
     label: 'All',
     value: 'All',
-    selected: true
+    selected: true,
   },
   {
     label: 'Crypto',
-    value: 'Crypto'
+    value: 'Crypto',
   },
   {
     label: 'Economics',
-    value: 'Economics'
+    value: 'Economics',
   },
   {
     label: 'Entertainment',
-    value: 'Entertainment'
+    value: 'Entertainment',
   },
   {
     label: 'Medical',
-    value: 'Medical'
+    value: 'Medical',
   },
   {
     label: 'Sports',
-    value: 'Sports'
+    value: 'Sports',
   },
   {
     label: 'Other',
-    value: 'Other'
+    value: 'Other',
   },
 ];
 
@@ -41,19 +42,19 @@ const sortByItems = [
   {
     label: 'Total Volume',
     value: 'Total Volume',
-    selected: true
+    selected: true,
   },
   {
     label: '24hr volume',
-    value: '24hr volume'
+    value: '24hr volume',
   },
   {
     label: 'liquidity',
-    value: 'liquidity'
+    value: 'liquidity',
   },
   {
     label: 'ending soon',
-    value: 'ending soon'
+    value: 'ending soon',
   },
 ];
 
@@ -61,15 +62,15 @@ const marketStatusItems = [
   {
     label: 'Open',
     value: 'Open',
-    selected: true
+    selected: true,
   },
   {
     label: 'In Settlement',
-    value: 'In Settlement'
+    value: 'In Settlement',
   },
   {
     label: 'Finalised',
-    value: 'Finalised'
+    value: 'Finalised',
   },
 ];
 
@@ -77,38 +78,69 @@ const currencyItems = [
   {
     label: 'All',
     value: 'All',
-    selected: true
+    selected: true,
   },
   {
     label: 'ETH',
-    value: 'ETH'
+    value: 'ETH',
   },
   {
     label: 'USDC',
-    value: 'USDC'
+    value: 'USDC',
   },
 ];
 
-export const Sidebar = () => {
+interface SideBarHeaderProps {
+  header?: string;
+}
+const SideBarHeader = ({ header }: SideBarHeaderProps) => {
   const {
-    actions: { setFilterSidebar },
+    actions: { setSidebar },
   } = useAppStatusStore();
   return (
-    <div className={Styles.Sidebar}>
-      <div className={Styles.Header}>
-        <span>filters</span>
-        <span onClick={() => setFilterSidebar(false)}>{CloseIcon}</span>
-      </div>
+    <div className={Styles.Header}>
+      <span>{header}</span>
+      <span onClick={() => setSidebar(null)}>{CloseIcon}</span>
+    </div>
+  );
+};
+
+const FilterSideBar = () => {
+  return (
+    <>
+      <SideBarHeader header={'filters'} />
       <div className={Styles.Body}>
-        <CheckboxGroup title='categories' items={categoryItems}/>
-        <RadioBarGroup title='sort by' items={sortByItems}/>
-        <CheckboxGroup title='market status' items={marketStatusItems}/>
-        <CheckboxGroup title='currency' items={currencyItems}/>
+        <CheckboxGroup title="categories" items={categoryItems} />
+        <RadioBarGroup title="sort by" items={sortByItems} />
+        <CheckboxGroup title="market status" items={marketStatusItems} />
+        <CheckboxGroup title="currency" items={currencyItems} />
       </div>
       <div className={Styles.Footer}>
-        <PrimaryButton text='reset all' />
-        <SecondaryButton text='apply filters' />
+        <PrimaryButton text="reset all" />
+        <SecondaryButton text="apply filters" />
       </div>
+    </>
+  );
+};
+
+const NavigationSideBar = () => {
+  return (
+    <>
+      <SideBarHeader />
+      <div className={Styles.Body}>
+      </div>
+      <div className={Styles.Footer}>
+      </div>
+    </>
+  );
+};
+
+export const Sidebar = () => {
+  const { sidebarType } = useAppStatusStore();
+  return (
+    <div className={Styles.Sidebar}>
+      {sidebarType === SIDEBAR_TYPES.FILTERS && <FilterSideBar />}
+      {sidebarType === SIDEBAR_TYPES.NAVIGATION && <NavigationSideBar />}
     </div>
   );
 };
