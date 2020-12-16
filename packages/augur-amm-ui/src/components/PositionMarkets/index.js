@@ -170,18 +170,23 @@ function PositionMarketList({ positions, loading, itemMax = 20 }) {
 
   const getWinningOutcomeLabel = item => {
     if (item?.market?.status === 'FINALIZED') {
-      const hasWinningShares = String(item.outcomes[Number(item?.market?.winningOutcome)])
-      if (hasWinningShares !== '0') {
-        return (
-          <DataText area="status">
-            <ButtonSecondary
-              style={{ height: '50%', width: '70%', justifyContent: 'center' }}
-              onClick={() => claimWinnings(item.paraShareToken.id, item.market)}
-            >
-              Claim Winnings
-            </ButtonSecondary>
-          </DataText>
-        )
+      const findWinner = item?.market?.outcomes.find(o => o.payoutNumerator !== "0")
+      console.log('findWinner', findWinner)
+      if (findWinner) {
+        const id = findWinner.id.split('-')[1]
+        const hasWinningShares = String(item.outcomes[Number(id)])
+        if (hasWinningShares !== '0') {
+          return (
+            <DataText area="status">
+              <ButtonSecondary
+                style={{ height: '50%', width: '70%', justifyContent: 'center' }}
+                onClick={() => claimWinnings(item.paraShareToken.id, item.market)}
+              >
+                Claim Winnings
+              </ButtonSecondary>
+            </DataText>
+          )
+        }
       }
     }
 
