@@ -31,7 +31,7 @@ module.exports = {
     },
     footer: {
       style: 'dark',
-      copyright: `Copyright © ${new Date().getFullYear()} PM Research LTD. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Forecast Foundation OU. Built with Docusaurus.`,
     },
   },
   presets: [
