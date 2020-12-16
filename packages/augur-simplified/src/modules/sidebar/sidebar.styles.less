@@ -14,6 +14,13 @@ div.Sidebar {
   }
 }
 
+.Icon {
+  .SimpleBorder;
+
+  padding: @size-12 @size-16;
+  display: flex;
+}
+
 .Header {
   padding: @size-10 @size-12;
   border-bottom: @size-1 solid var(--simple-border);
@@ -33,28 +40,55 @@ div.Sidebar {
   }
 
   > span:last-of-type {
-    .SimpleBorder;
-
-    padding: @size-12 @size-16;
-    display: flex;
+    .Icon;
   }
 }
 
 .Body {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    padding: @size-24 @size-16;
-    padding-right: @size-66;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: @size-24 @size-16;
+  padding-right: @size-66;
 
-    > div:not(:last-of-type) {
-      margin-bottom: @size-24;
+  > div:not(:last-of-type) {
+    margin-bottom: @size-24;
+  }
+
+  > ol {
+    > li {
+      &:first-of-type {
+        margin-bottom: @size-32;
+      }
+      > a {
+        .text-30-bold;
+
+        color: var(--simple-secondary-text);
+        text-decoration: none;
+      }
+
+      &.Active {
+        > a {
+          color: var(--simple-primary-text);
+        }
+      }
     }
+  }
 }
 
 .Footer {
-    border-top: @size-1 solid var(--simple-border);
-    display: flex;
-    justify-content: space-between;
-    padding: @size-12 @size-16;
+  border-top: @size-1 solid var(--simple-border);
+  display: flex;
+  justify-content: space-between;
+  padding: @size-12 @size-16;
+}
+
+.NavigationFooter {
+  .Footer;
+
+  justify-content: flex-end;
+
+  > svg {
+    .Icon;
+  }
 }
