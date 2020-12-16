@@ -46,6 +46,9 @@ module.exports = {
           // Please change this to your repo.
           editUrl:
             'https://github.com/AugurProject/augur/edit/v2/augur.sh/',
+          remarkPlugins: [
+            require('remark-math')
+          ],
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),

@@ -16,7 +16,8 @@
     "@mdx-js/react": "^1.5.8",
     "clsx": "^1.1.1",
     "react": "^16.8.4",
-    "react-dom": "^16.8.4"
+    "react-dom": "^16.8.4",
+    "remark-math": "4.0.0"
   },
   "browserslist": {
     "production": [

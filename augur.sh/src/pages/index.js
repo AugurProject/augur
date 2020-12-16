@@ -7,48 +7,42 @@ import useThemeContext from '@theme/hooks/useThemeContext';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import styles from './styles.module.css';
 
-const features = (imageUrl) => [
+const features = () => [
   {
-    title: <>Easy to Use</>,
+    title: <>Predict</>,
     imageUrl: '/img/augur-logo/augur-logo-full/Vertical/Whiteblank.svg',
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+      Augur is a fully decentralized prediction market platform built on
+      Ethereum. Augur's Oracle will markets resolve properly, and its built in
+      trading support makes it easier to prediction market support to your
+      application.
       </>
     ),
   },
   {
-    title: <>Focus on What Matters</>,  //center
-    imageUrl,
+    title: <>Learn</>,
+    imageUrl: '/img/augur-logo/augur-logo-full/Vertical/Whiteblank.svg',
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+      The Augur protocol is built to robustly handle many of the major needs for generic Yes/No, Categorical, and Scalar markets. Discover how this was accomplished and how your project can take advantage of these features.
       </>
     ),
   },
   {
-    title: <>Powered by React</>,
+    title: <>Build</>,  //center
     imageUrl: '/img/augur-logo/augur-logo-full/Vertical/Whiteblank.svg',
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+      Interact with the Augur platform through typescript, javascript or directly via Solidity. With full SDKs, as well as support for The Graph and even native support for Layer2 chains there is a world of applications to build.
       </>
     ),
   },
 ];
 
-function Feature({imageUrl, title, description}) {
-  const imgUrl = useBaseUrl(imageUrl);
+function Feature({title, description}) {
   return (
     <div className={clsx('col col--4', styles.feature)}>
-      {imgUrl && (
-        <div className="text--center">
-          <img className={styles.featureImage} src={imgUrl} alt={title} />
-        </div>
-      )}
       <h3>{title}</h3>
       <p>{description}</p>
     </div>
@@ -77,14 +71,12 @@ function Header() {
 }
 
 function Main(){
-  const { isDarkTheme } = useThemeContext();
-  const imageUrl= isDarkTheme ? '/img/augur-logo/augur-logo-full/Vertical/White.svg' : '/img/augur-logo/augur-logo-full/Vertical/Black.svg';
   return <main>
-    {features(imageUrl).length > 0 && (
+    {features().length > 0 && (
       <section className={styles.features}>
         <div className="container">
           <div className="row">
-            {features(imageUrl).map((props, idx) => (
+            {features().map((props, idx) => (
               <Feature key={idx} {...props} />
             ))}
           </div>
