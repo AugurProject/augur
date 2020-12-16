@@ -23,6 +23,7 @@ const AppBody = () => {
     filterSidebar,
     actions: { setIsMobile },
   } = useAppStatusStore();
+
   useEffect(() => {
     function handleRezize() {
       checkIsMobile(setIsMobile);
@@ -33,6 +34,18 @@ const AppBody = () => {
       window.removeEventListener('resize', handleRezize);
     };
   }, []);
+
+
+  useEffect(() => {
+    if (
+      filterSidebar
+    ) {
+      document.body.classList.add('App--noScroll');
+    } else {
+      document.body.classList.remove('App--noScroll');
+    }
+  }, [filterSidebar]);
+
 
   return (
     <div className={Styles.App}>
