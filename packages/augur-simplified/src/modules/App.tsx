@@ -3,7 +3,11 @@ import Styles from 'modules/App.styles.less';
 import Routes from 'modules/routes/routes';
 import TopNav from 'modules/common/top-nav';
 import 'assets/styles/shared.less';
-import { AppStatusProvider, useAppStatusStore } from 'modules/stores/app-status';
+import {
+  AppStatusProvider,
+  useAppStatusStore,
+} from 'modules/stores/app-status';
+import { Sidebar } from 'modules/sidebar/sidebar';
 
 function checkIsMobile(setIsMobile) {
   const isMobile =
@@ -16,6 +20,7 @@ function checkIsMobile(setIsMobile) {
 
 const AppBody = () => {
   const {
+    filterSidebar,
     actions: { setIsMobile },
   } = useAppStatusStore();
   useEffect(() => {
@@ -31,6 +36,7 @@ const AppBody = () => {
 
   return (
     <div className={Styles.App}>
+      {filterSidebar && <Sidebar />}
       <TopNav />
       <Routes />
     </div>
