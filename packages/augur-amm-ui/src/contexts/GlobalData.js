@@ -193,7 +193,7 @@ export default function Provider({ children }) {
   )
 }
 
-const TESTNET_ETH_PRICE  = '400'
+const TESTNET_ETH_PRICE  = '600'
 
 const getEthPrice = async (url) => {
   const networkId = getNetworkId()
