@@ -50,6 +50,8 @@ export function handleAddLiquidity(event: AddLiquidityEvent): void {
   addLiquidity.yesShares = event.params.longShares;
   addLiquidity.sender = event.params.sender.toHexString();
   addLiquidity.save();
+
+  updateAMM(addLiquidity.ammExchange);
 }
 
 export function handleRemoveLiquidity(event: RemoveLiquidityEvent): void {
@@ -64,6 +66,8 @@ export function handleRemoveLiquidity(event: RemoveLiquidityEvent): void {
   removeLiquidity.yesShares = event.params.longShares;
   removeLiquidity.sender = event.params.sender.toHexString();
   removeLiquidity.save();
+
+  updateAMM(removeLiquidity.ammExchange);
 }
 
 export function handleEnterPosition(event: EnterPositionEvent): void {
@@ -96,6 +100,8 @@ export function handleEnterPosition(event: EnterPositionEvent): void {
 
   enterPosition.sender = event.params.sender.toHexString();
   enterPosition.save();
+
+  updateAMM(enterPosition.ammExchange);
 }
 
 export function handleExitPosition(event: ExitPositionEvent): void {
@@ -127,6 +133,8 @@ export function handleExitPosition(event: ExitPositionEvent): void {
     event.params.shortShares,
     event.params.longShares
   );
+
+  updateAMM(exitPosition.ammExchange);
 }
 
 export function handleSwapPosition(event: SwapPositionEvent): void {
@@ -154,4 +162,6 @@ export function handleSwapPosition(event: SwapPositionEvent): void {
       event.params.outputShares
     );
   }
+
+  updateAMM(swapPosition.ammExchange);
 }
