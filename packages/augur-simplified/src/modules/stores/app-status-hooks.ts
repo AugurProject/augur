@@ -2,14 +2,22 @@ import { useReducer } from 'react';
 import {
   APP_STATUS_ACTIONS,
   MOCK_APP_STATUS_STATE,
+  APP_STATE_KEYS,
   // DEFAULT_APP_STATUS_STATE,
 } from 'modules/stores/constants';
 import { windowRef } from 'utils/window-ref';
 
 const {
   SET_IS_MOBILE,
-  SET_FILTER_SIDEBAR
+  SET_FILTER_SIDEBAR,
+  UPDATE_GRAPH_DATA,
 } = APP_STATUS_ACTIONS;
+
+const {
+  IS_MOBILE,
+  FILTER_SIDEBAR,
+  GRAPH_DATA,
+} = APP_STATE_KEYS;
 
 const isAsync = obj => {
   return (
@@ -51,11 +59,15 @@ export function AppStatusReducer(state, action) {
   const updatedState = { ...state };
   switch (action.type) {
     case SET_IS_MOBILE: {
-      updatedState['isMobile'] = action.isMobile;
+      updatedState[IS_MOBILE] = action[IS_MOBILE];
       break;
     }
     case SET_FILTER_SIDEBAR: {
-      updatedState['filterSidebar'] = action.filterSidebar;
+      updatedState[FILTER_SIDEBAR] = action[FILTER_SIDEBAR];
+      break;
+    }
+    case UPDATE_GRAPH_DATA: {
+      updatedState[GRAPH_DATA] = action[GRAPH_DATA];
       break;
     }
     default:
@@ -74,6 +86,7 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
     actions: {
       setFilterSidebar: filterSidebar => dispatch({type: SET_FILTER_SIDEBAR, filterSidebar}),
       setIsMobile: isMobile => dispatch({ type: SET_IS_MOBILE, isMobile }),
+      updateGraphData: graphData => dispatch({ type: UPDATE_GRAPH_DATA, graphData }),
     },
   };
 };
