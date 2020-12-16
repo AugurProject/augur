@@ -7,6 +7,15 @@ module.exports = {
   favicon: 'img/favicon.ico',
   organizationName: 'augurproject', // Usually your GitHub org/user name.
   projectName: 'augur', // Usually your repo name.
+  stylesheets: [
+    {
+      href: 'https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css',
+      type: 'text/css',
+      integrity:
+      'sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X',
+      crossorigin: 'anonymous',
+    },
+  ],
   themeConfig: {
     navbar: {
       title: 'Augur Docs',
@@ -45,10 +54,13 @@ module.exports = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl:
-            'https://github.com/AugurProject/augur/edit/v2/augur.sh/',
+            'https://github.com/AugurProject/augur/edit/documentation/augur.sh/',
           remarkPlugins: [
             require('remark-math')
           ],
+          rehypePlugins: [
+            require('rehype-katex')
+          ]
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
