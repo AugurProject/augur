@@ -155,9 +155,11 @@ async function getMarketsData(updateMarkets, config) {
     console.error(e)
   }
 
-  if (response) {
+  if (response?.data) {
     console.log(JSON.stringify(response.data, null, 1))
     updateMarkets(response.data)
+  } else if (response?.errors) {
+    console.error(response?.errors)
   }
 }
 
@@ -419,7 +421,7 @@ export function useAmmMarkets(balances) {
 function sumAmmParam(markets, param) {
   return markets
     ? markets.reduce((p, m) => {
-        if (!m.amm) return p
+        if (!m?.amm) return p
         const currentCash = p[m.cash.toLowerCase()]
         return currentCash
           ? {

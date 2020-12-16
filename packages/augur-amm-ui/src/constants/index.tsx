@@ -310,6 +310,11 @@ export interface ExitEvent {
   yesShares: string
   noShares: string
 }
+
+export interface Outcome {
+  id: string
+  isFinalNumerator: string
+}
 export interface MarketAmmExchange {
   id: string
   volumeYes: string
@@ -328,6 +333,7 @@ export interface MarketAmmExchange {
   exits: ExitEvent[]
   fee: string
   feePercent: string
+  outcomes: Outcome[]
 }
 
 // todo: fill in

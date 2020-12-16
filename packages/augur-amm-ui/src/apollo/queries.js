@@ -46,6 +46,11 @@ export const GET_MARKETS = blockNumber => {
     endTimestamp
     status
     categories
+    outcomes {
+      id
+      isFinalNumerator
+      payoutNumerator
+    }
     amms {
       id
       shareToken {
