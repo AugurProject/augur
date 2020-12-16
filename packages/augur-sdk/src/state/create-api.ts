@@ -5,6 +5,7 @@ import { logger, LoggerLevels, SDKConfiguration } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
 import { SupportedProvider } from 'ethereum-types';
 import { JsonRpcProvider } from '@ethersproject/providers';
+import { ParaZeroX } from '../api/ParaZeroX';
 import { ZeroX } from '../api/ZeroX';
 import { Augur } from '../Augur';
 import { BaseConnector, EmptyConnector } from '../connector';
@@ -121,7 +122,11 @@ export async function createClient(
   let zeroX: ZeroX = null;
   if (config.zeroX) {
     const rpcEndpoint = (config.zeroX.rpc?.enabled) ? config.zeroX.rpc.ws : undefined;
-    zeroX = new ZeroX(rpcEndpoint)
+    if(config.paraDeploy) {
+      zeroX = new ParaZeroX(rpcEndpoint);
+    } else {
+      zeroX = new ZeroX(rpcEndpoint);
+    }
   }
 
   const client = await Augur.create(

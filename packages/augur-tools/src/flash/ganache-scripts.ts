@@ -73,7 +73,7 @@ export function addGanacheScripts(flash: FlashSession) {
       let config = this.deriveConfig({
         deploy: { normalTime: false, writeArtifacts: true },
       });
-      const { addresses } = await deployContracts(
+      const { addresses, uploadBlockNumber } = await deployContracts(
         this.network,
         provider,
         this.getAccount(),
@@ -82,7 +82,7 @@ export function addGanacheScripts(flash: FlashSession) {
       );
       config.addresses = addresses;
 
-      const baseSeed = await createSeed(provider, db, addresses);
+      const baseSeed = await createSeed(provider, db, addresses, uploadBlockNumber);
 
       console.log('Prepare seed for paras');
 
@@ -111,7 +111,7 @@ export function addGanacheScripts(flash: FlashSession) {
         );
       }
 
-      const parasSeed = await createSeed(provider, db, addresses, config.paraDeploys);
+      const parasSeed = await createSeed(provider, db, addresses, config.uploadBlockNumber, config.paraDeploys);
 
       const seeds = {
         'default': baseSeed,
@@ -211,7 +211,7 @@ async function makeSeed(
   name = 'default',
   filepath = defaultSeedPath
 ) {
-  const seed = await createSeed(provider, ganacheDb, config.addresses);
+  const seed = await createSeed(provider, ganacheDb, config.addresses, config.uploadBlockNumber);
   const seeds = {};
   seeds[name] = seed;
   await writeSeeds(seeds, filepath);

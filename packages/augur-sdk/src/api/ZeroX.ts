@@ -343,7 +343,7 @@ export class ZeroX {
     let maxProtocolFeeInDai = remainingToPay.multipliedBy(await this.client.getExchangeRate(true)).div(QUINTILLION);
     maxProtocolFeeInDai = maxProtocolFeeInDai.decimalPlaces(0);
 
-    const result: Event[] = await this.client.contracts.ZeroXTrade.trade(
+    const result: Event[] = await this.client.contracts.getZeroXTrade().trade(
       params.amount,
       params.fingerprint,
       params.tradeGroupId,
@@ -452,7 +452,7 @@ export class ZeroX {
     if (!this.client) throw new Error('To place ZeroX order, make sure Augur client instance was initialized with it enabled.');
     const salt = new BigNumber(Date.now());
     const sender = await this.client.getAccount();
-    const result = await this.client.contracts.ZeroXTrade.createZeroXOrder_(
+    const result = await this.client.contracts.getZeroXTrade().createZeroXOrder_(
       params.direction,
       params.amount,
       params.price,
@@ -511,7 +511,7 @@ export class ZeroX {
   async signWalletOrder(signedOrder: SignedOrder, orderHash: string): Promise<string> {
     const walletAddress: string = signedOrder[0];
 
-    const eip1271OrderWithHash = await this.client.contracts.ZeroXTrade.encodeEIP1271OrderWithHash_(
+    const eip1271OrderWithHash = await this.client.contracts.getZeroXTrade().encodeEIP1271OrderWithHash_(
       signedOrder,
       orderHash
     );
@@ -575,18 +575,11 @@ export class ZeroX {
 
     const gasPrice = await this.client.getGasPrice();
     const exchangeFeeMultiplier = await this.client.contracts.zeroXExchange.protocolFeeMultiplier_();
-    let protocolFee = gasPrice.multipliedBy(exchangeFeeMultiplier).multipliedBy(orders.length);
-    let attachedEth = undefined;
+    const protocolFee = gasPrice.multipliedBy(exchangeFeeMultiplier).multipliedBy(orders.length).multipliedBy(MAX_PROTOCOL_FEE_MULTIPLIER);
+    let maxProtocolFeeInDai = protocolFee.multipliedBy(await this.client.getExchangeRate(true)).div(QUINTILLION);
+    maxProtocolFeeInDai = maxProtocolFeeInDai.decimalPlaces(0);
 
-    if (this.client.config.paraDeploy) {
-      const walletEthBalance = await this.client.getEthBalance(await this.client.getAccount());
-      attachedEth = BigNumber.min(protocolFee, walletEthBalance);
-      protocolFee = protocolFee.gt(walletEthBalance) ? protocolFee.minus(walletEthBalance) : new BigNumber(0);
-    }
-
-    const maxProtocolFeeInDai = protocolFee.multipliedBy(await this.client.getExchangeRate(true)).multipliedBy(MAX_PROTOCOL_FEE_MULTIPLIER).div(QUINTILLION).decimalPlaces(0);
-
-    return (this.client.contracts.ZeroXTrade as ParaZeroXTrade).cancelOrders(orders, signatures, maxProtocolFeeInDai, { attachedEth });
+    return this.client.contracts.getZeroXTrade().cancelOrders(orders, signatures, maxProtocolFeeInDai);
   }
 
   async simulateTrade(
@@ -773,7 +766,7 @@ export class ZeroX {
       if (!account) return null;
       const cashAllowance = await this.client.contracts.cash.allowance_(
         account,
-        this.client.contracts.augur.address
+        this.client.contracts.getAugur().address
       );
       if (cashAllowance.lt(cost)) {
         return `Cash allowance: ${cashAllowance.toString()} will not cover trade cost: ${cost.toString()}`;

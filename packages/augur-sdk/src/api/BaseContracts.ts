@@ -1,6 +1,8 @@
-import { ContractInterfaces } from '@augurproject/core';
-import { ContractAddresses } from '@augurproject/utils';
 import { ContractDependenciesEthers } from '@augurproject/contract-dependencies-ethers';
+import { ContractInterfaces } from '@augurproject/core';
+import { Event } from '@augurproject/core/build/libraries/GenericContractInterfaces';
+import { ContractAddresses } from '@augurproject/utils';
+import BigNumber from 'bignumber.js';
 
 export type SomeRepToken =
   | ContractInterfaces.ReputationToken
@@ -9,6 +11,151 @@ export type SomeTime =
   | ContractInterfaces.Time
   | ContractInterfaces.TimeControlled;
 const RELAY_HUB_ADDRESS = '0xD216153c06E857cD7f72665E0aF1d7D82172F494';
+
+export interface AugurInterface {
+  address: string;
+  getTimestamp_(options?: { sender?: string }): Promise<BigNumber>;
+  isKnownUniverse_(
+    universe: string,
+    options?: { sender?: string }
+  ): Promise<boolean>;
+  lookup_(key: string, options?: { sender?: string }): Promise<string>;
+}
+
+export interface UniverseInterface {
+  getReportingFeeDivisor_(options?: { sender?: string }): Promise<BigNumber>;
+}
+
+export interface ZeroXInterface {
+  cancelOrders(
+    orders: Array<{
+      makerAddress: string;
+      takerAddress: string;
+      feeRecipientAddress: string;
+      senderAddress: string;
+      makerAssetAmount: BigNumber;
+      takerAssetAmount: BigNumber;
+      makerFee: BigNumber;
+      takerFee: BigNumber;
+      expirationTimeSeconds: BigNumber;
+      salt: BigNumber;
+      makerAssetData: string;
+      takerAssetData: string;
+      makerFeeAssetData: string;
+      takerFeeAssetData: string;
+    }>,
+    signatures: Array<string>,
+    maxProtocolFeeDai: BigNumber,
+    options?: {
+      attachedEth?: BigNumber,
+      sender?: string
+    }
+  ): Promise<Array<Event>>;
+
+  createZeroXOrder_(
+    type: number,
+    attoshares: BigNumber,
+    price: BigNumber,
+    market: string,
+    outcome: number,
+    expirationTimeSeconds: BigNumber,
+    salt: BigNumber,
+    options?: { sender?: string }
+  ): Promise<{
+    _zeroXOrder: {
+      makerAddress: string;
+      takerAddress: string;
+      feeRecipientAddress: string;
+      senderAddress: string;
+      makerAssetAmount: BigNumber;
+      takerAssetAmount: BigNumber;
+      makerFee: BigNumber;
+      takerFee: BigNumber;
+      expirationTimeSeconds: BigNumber;
+      salt: BigNumber;
+      makerAssetData: string;
+      takerAssetData: string;
+      makerFeeAssetData: string;
+      takerFeeAssetData: string;
+    };
+    _orderHash: string;
+  }>;
+
+  createZeroXOrder_(
+    type: number,
+    attoshares: BigNumber,
+    price: BigNumber,
+    market: string,
+    outcome: number,
+    expirationTimeSeconds: BigNumber,
+    salt: BigNumber,
+    options?: { sender?: string }
+  ): Promise<{
+    _zeroXOrder: {
+      makerAddress: string;
+      takerAddress: string;
+      feeRecipientAddress: string;
+      senderAddress: string;
+      makerAssetAmount: BigNumber;
+      takerAssetAmount: BigNumber;
+      makerFee: BigNumber;
+      takerFee: BigNumber;
+      expirationTimeSeconds: BigNumber;
+      salt: BigNumber;
+      makerAssetData: string;
+      takerAssetData: string;
+      makerFeeAssetData: string;
+      takerFeeAssetData: string;
+    };
+    _orderHash: string;
+  }>;
+
+  encodeEIP1271OrderWithHash_(
+    zeroXOrder: {
+      makerAddress: string;
+      takerAddress: string;
+      feeRecipientAddress: string;
+      senderAddress: string;
+      makerAssetAmount: BigNumber;
+      takerAssetAmount: BigNumber;
+      makerFee: BigNumber;
+      takerFee: BigNumber;
+      expirationTimeSeconds: BigNumber;
+      salt: BigNumber;
+      makerAssetData: string;
+      takerAssetData: string;
+      makerFeeAssetData: string;
+      takerFeeAssetData: string;
+    },
+    orderHash: string,
+    options?: { sender?: string }
+  ): Promise<string>;
+  trade(
+    requestedFillAmount: BigNumber,
+    fingerprint: string,
+    tradeGroupId: string,
+    unused: BigNumber,
+    maxTrades: BigNumber,
+    orders: Array<{
+      makerAddress: string;
+      takerAddress: string;
+      feeRecipientAddress: string;
+      senderAddress: string;
+      makerAssetAmount: BigNumber;
+      takerAssetAmount: BigNumber;
+      makerFee: BigNumber;
+      takerFee: BigNumber;
+      expirationTimeSeconds: BigNumber;
+      salt: BigNumber;
+      makerAssetData: string;
+      takerAssetData: string;
+      makerFeeAssetData: string;
+      takerFeeAssetData: string;
+    }>,
+    signatures: Array<string>,
+    options?: { sender?: string; attachedEth?: BigNumber }
+  ): Promise<Array<Event>>;
+}
 
 export abstract class BaseContracts {
   cash: ContractInterfaces.Cash;
@@ -79,7 +226,6 @@ export abstract class BaseContracts {
       dependencies,
       addresses.SimulateTrade
     );
-    ;
     this.buyParticipationTokens = new ContractInterfaces.BuyParticipationTokens(
       dependencies,
       addresses.BuyParticipationTokens
@@ -140,11 +286,11 @@ export abstract class BaseContracts {
     this.erc20Proxy1155 = new ContractInterfaces.ERC20Proxy1155Nexus(
       dependencies,
       addresses.ERC20Proxy1155Nexus
-    )
+    );
     this.ammFactory = new ContractInterfaces.AMMFactory(
       dependencies,
       addresses.AMMFactory
-    )
+    );
 
     if (typeof addresses.Time !== 'undefined') {
       this.time = new ContractInterfaces.Time(dependencies, addresses.Time);
@@ -233,6 +379,10 @@ export abstract class BaseContracts {
     );
   }
 
+  async getReportingFeeDivisor(): Promise<BigNumber> {
+    return this.getUniverse().getReportingFeeDivisor_();
+  }
+
   isTimeControlled(
     contract: SomeTime
   ): contract is ContractInterfaces.TimeControlled {
@@ -254,11 +404,26 @@ export abstract class BaseContracts {
   wethWrapperForAMMExchangeFromAddress(
     address: string
   ): ContractInterfaces.WethWrapperForAMMExchange {
-    return new ContractInterfaces.WethWrapperForAMMExchange(this.dependencies,
-      address);
+    return new ContractInterfaces.WethWrapperForAMMExchange(
+      this.dependencies,
+      address
+    );
   }
 
-  abstract async getOriginUniverse(): Promise<ContractInterfaces.Universe>;
-//   abstract async getOriginUniverseAddress(): Promise<string>;
-}
+  abstract getAugur(): AugurInterface;
 
+  abstract getZeroXTrade(): ZeroXInterface;
+
+
+  abstract getUniverse(): UniverseInterface;
+
+  abstract getOriginCash(): Promise<ContractInterfaces.Cash>;
+
+  abstract async getOriginUniverse(): Promise<ContractInterfaces.Universe>;
+
+  abstract async getOriginUniverseAddress(): Promise<string>;
+
+  async getTimestamp(): Promise<BigNumber> {
+    return this.getAugur().getTimestamp_();
+  }
+}

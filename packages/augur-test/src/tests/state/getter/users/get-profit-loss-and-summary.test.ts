@@ -909,8 +909,9 @@ async function verifyThirtyDayPL(
   await user.sync();
   for (const address of _.keys(result)) {
     const plResult = result[address];
+    const universeAddress = await user.augur.contracts.getOriginUniverseAddress();
     const profitLossSummary = await user.api.route('getProfitLossSummary', {
-      universe: user.augur.contracts.universe.address,
+      universe: universeAddress,
       account: address,
     });
 
@@ -972,8 +973,9 @@ async function verifyCash(
   balances: Balances,
   feeAdjustment = true
 ): Promise<Balances> {
+  const universe = await user.augur.contracts.getOriginUniverse();
   const marketFeeDivisor = (await market.getMarketCreatorSettlementFeeDivisor_()).toNumber();
-  const reportingFeeDivisor = (await user.augur.contracts.universe.getOrCacheReportingFeeDivisor_()).toNumber();
+  const reportingFeeDivisor = (await universe.getOrCacheReportingFeeDivisor_()).toNumber();
   const actualBalances: Balances = {};
   for (const address in balances) {
     const balance = balances[address];

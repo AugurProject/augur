@@ -682,12 +682,14 @@ export function addScripts(flash: FlashSession) {
         }
       });
       const user = await this.createUser(this.getAccount(), this.config);
+      const universeAddress = await user.augur.contracts.getOriginUniverseAddress();
+
       const million = QUINTILLION.multipliedBy(1e7);
       await user.faucetRepUpTo(million, million);
       await user.faucetCashUpTo(million, million);
       await user.approveIfNecessary();
 
-      await user.initWarpSync(user.augur.contracts.universe.address);
+      await user.initWarpSync(universeAddress);
       await user.addEthExchangeLiquidity(new BigNumber(600e18), new BigNumber(4e18));
       await user.addTokenExchangeLiquidity(new BigNumber(100e18), new BigNumber(10e18));
       const markets = await createCannedMarkets(user, false);
@@ -1465,7 +1467,7 @@ export function addScripts(flash: FlashSession) {
         this.pushConfig({ addresses });
         const { WETH9, USDT } = this.config.addresses;
         const paraWeth = await deployPara(this.network, this.provider, this.getAccount(), compilerOutput, this.config, WETH9);
-        
+
         await deployPara(this.network, this.provider, this.getAccount(), compilerOutput, this.config, USDT);
       }
 
@@ -2313,7 +2315,8 @@ export function addScripts(flash: FlashSession) {
       sync();
 
       api.augur.events.once(SubscriptionEventName.NewBlock, async () => {
-        const { warpSyncHash } = await api.augur.warpSync.getLastWarpSyncData(api.augur.contracts.universe.address);
+        const universeAddress = await api.augur.contracts.getOriginUniverseAddress();
+        const { warpSyncHash } = await api.augur.warpSync.getLastWarpSyncData(universeAddress);
         const warpSyncHash32 = warpSyncHash ? CIDTool.base32(warpSyncHash) : null;
         console.log(`\n\nPrevious Warp Sync Hash: ${warpSyncHash} ( ${warpSyncHash32} )`);
 

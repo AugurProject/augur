@@ -22,6 +22,7 @@ export interface Seed {
   paras?: ParaDeploys;
   data: LevelDBRow[];
   metadata: Metadata;
+  uploadBlockNumber: number;
 }
 
 export interface SeedFile {
@@ -202,13 +203,15 @@ export async function createSeed(
   provider: EthersProvider,
   db: MemDown,
   addresses: ContractAddresses,
+  uploadBlockNumber: number,
   paras?: ParaDeploys,
-  metadata: Metadata = {}
+  metadata: Metadata = {},
 ): Promise<Seed> {
   const seed: Seed = {
     addresses,
     data: await extractSeed(db),
     metadata,
+    uploadBlockNumber,
   };
   if (paras) seed.paras = paras;
   return seed;

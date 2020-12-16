@@ -23,9 +23,11 @@ import { BigNumber } from 'bignumber.js';
 import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers';
 import { BytesLike } from '@ethersproject/bytes';
 import { EventEmitter } from 'events';
+import { BaseContracts } from './api/BaseContracts';
 import { BestOffer } from './api/BestOffer';
 import { ContractEvents } from './api/ContractEvents';
 import { Contracts } from './api/Contracts';
+import { ParaContracts } from './api/ParaContracts';
 import {
   DisputeWindow,
   GetDisputeWindowParams,
@@ -72,7 +74,7 @@ export class Augur<TProvider extends Provider = Provider> {
   syncableFlexSearch: SyncableFlexSearch;
 
   readonly contractEvents: ContractEvents;
-  readonly contracts: Contracts;
+  readonly contracts: BaseContracts;
   readonly onChainTrade: OnChainTrade;
   readonly trade: Trade;
   readonly market: Market;
@@ -143,7 +145,6 @@ export class Augur<TProvider extends Provider = Provider> {
         `Augur config must include addresses. Config=${JSON.stringify(config)}`
       );
 
-
     // This is the non-para deploy universe.
     this.universeAddress = config.addresses.Universe;
     const addresses = buildParaAddresses(config);
@@ -159,7 +160,11 @@ export class Augur<TProvider extends Provider = Provider> {
     if (this.zeroX) this.zeroX.client = this;
 
     // API
-    this.contracts = new Contracts(addresses, this.dependencies);
+    if(this.config.paraDeploy) {
+      this.contracts = new ParaContracts(addresses, this.dependencies)
+    } else {
+      this.contracts = new Contracts(addresses, this.dependencies);
+    }
 
     this.market = new Market(this);
     this.liquidity = new Liquidity(this);
@@ -233,7 +238,7 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   async getTimestamp(): Promise<BigNumber> {
-    return this.contracts.augur.getTimestamp_();
+    return this.contracts.getTimestamp();
   }
 
   async getEthBalance(address: string): Promise<string> {
@@ -588,14 +593,6 @@ export class Augur<TProvider extends Provider = Provider> {
     });
   };
 
-  getTotalOnChainFrozenFunds = (
-    params: Parameters<typeof Users.getTotalOnChainFrozenFunds>[2]
-  ): ReturnType<typeof Users.getTotalOnChainFrozenFunds> => {
-    return this.bindTo(Users.getTotalOnChainFrozenFunds)({
-      ...params,
-      universe: this.universeAddress,
-    });
-  };
   getAccountTransactionHistory = (
     params: Parameters<typeof Accounts.getAccountTransactionHistory>[2]
   ): ReturnType<typeof Accounts.getAccountTransactionHistory> => {

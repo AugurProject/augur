@@ -157,7 +157,7 @@ export class MarketDB extends DerivedDB {
         .toArray();
     }
 
-    const reportingFeeDivisor = await this.augur.contracts.universe.getReportingFeeDivisor_();
+    const reportingFeeDivisor = await this.augur.contracts.getUniverse().getReportingFeeDivisor_();
     const ETHInAttoDAI = await this.augur.getExchangeRate();
     const gasLevels = await getGasStation(this.augur.networkId);
 

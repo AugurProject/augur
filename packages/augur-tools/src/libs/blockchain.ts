@@ -15,6 +15,7 @@ import {ParaAugurDeployer} from '@augurproject/core/build/libraries/ParaAugurDep
 
 export interface UsefulContractObjects {
   addresses: ContractAddresses;
+  uploadBlockNumber: number;
 }
 
 export async function deployContracts(
@@ -34,9 +35,11 @@ export async function deployContracts(
     signer,
     compiledContracts
   );
+
+  const uploadBlockNumber = await contractDeployer.getBlockNumber();
   const addresses = await contractDeployer.deploy(env);
 
-  return { addresses };
+  return { addresses, uploadBlockNumber };
 }
 
 export async function deployParaContracts(

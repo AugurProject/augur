@@ -1,10 +1,11 @@
 import { Market } from '@augurproject/core/build/libraries/ContractInterfaces';
-import { ORDER_TYPES, SECONDS_IN_A_DAY } from '@augurproject/sdk-lite';
 import {
   MarketReportingState,
   NullWarpSyncHash,
+  ORDER_TYPES,
+  SECONDS_IN_A_DAY,
   SubscriptionEventName,
-} from '@augurproject/sdk-lite/build';
+} from '@augurproject/sdk-lite';
 import { databasesToSync } from '@augurproject/sdk/build/warp/WarpController';
 import { ACCOUNTS, defaultSeedPath, loadSeed, Seed } from '@augurproject/tools';
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
@@ -40,6 +41,8 @@ describe('Warp Sync markets', () => {
 
   beforeEach(async () => {
     seed = await loadSeed(defaultSeedPath);
+    console.log('seed.uploadBlockNumber', seed.uploadBlockNumber);
+
     provider = await makeProvider(seed, ACCOUNTS);
     const config = disableZeroX(provider.getConfig());
 
@@ -204,16 +207,9 @@ describe('Warp Sync markets', () => {
       endTimestamp = (await market.getEndTime_()).toNumber();
     });
 
-    test('should create an initial checkpoint', async () => {
+    test('should not create an initial checkpoint', async () => {
+      await john.sync();
       await expect(john.db.warpCheckpoints.table.toArray()).resolves.toEqual([
-        {
-          _id: 1,
-          begin: expect.objectContaining({
-            number: john.config.uploadBlockNumber,
-          }),
-          endTimestamp,
-          market: market.address,
-        },
       ]);
 
       await expect(john.api.route('getWarpSyncStatus', undefined)).resolves.toEqual({
@@ -226,7 +222,7 @@ describe('Warp Sync markets', () => {
     test('should create subsequent checkpoints after warp market end time', async () => {
       const amountToTransfer = new BigNumber(1000);
       const { timestamp: currentBlockTimestamp } = await provider.getBlock(
-        'latest'
+          'latest'
       );
 
       const sizeOfStep = Math.floor((endTimestamp - currentBlockTimestamp) / 2);
@@ -243,16 +239,7 @@ describe('Warp Sync markets', () => {
       await john.transferCash(mary.account.address, amountToTransfer);
       await john.transferCash(mary.account.address, amountToTransfer);
 
-      await expect(john.db.warpCheckpoints.table.toArray()).resolves.toEqual([
-        {
-          _id: expect.any(Number),
-          begin: expect.objectContaining({
-            number: john.config.uploadBlockNumber,
-          }),
-          endTimestamp,
-          market: market.address,
-        },
-      ]);
+      await expect(john.db.warpCheckpoints.table.toArray()).resolves.toEqual([]);
 
       // Force the db to prune.
       for (let i = 0; i < 30; i++) {

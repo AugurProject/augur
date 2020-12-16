@@ -29,7 +29,7 @@ describe('State API :: get-platform-activity-stats :: ', () => {
 
   test('getPlatformActivityStats', async () => {
     // Create markets with multiple users
-    const universe = john.augur.contracts.universe;
+    const universe = await john.augur.contracts.getOriginUniverse();
     const yesNoMarket = await john.createReasonableYesNoMarket();
     const categoricalMarket = await john.createReasonableMarket([
       stringTo32ByteHex('A'),

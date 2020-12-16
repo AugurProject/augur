@@ -411,6 +411,8 @@ export class Users {
       ignoreAwaitingAndFinalizedMarkets: true,
     });
 
+    await getFrozenFundsPerMarket(db, params.account, params.universe, augur.precision)
+
     const funds = await Users.getTotalOnChainFrozenFunds(augur, db, {
       account: params.account,
       universe: params.universe,
@@ -600,14 +602,14 @@ export class Users {
     params: t.TypeOf<typeof Users.getAccountTimeRangedStatsParams>
   ): Promise<AccountTimeRangedStatsResult> {
     // guards
-    if (!(await augur.contracts.augur.isKnownUniverse_(params.universe))) {
+    if (!(await augur.contracts.getAugur().isKnownUniverse_(params.universe))) {
       throw new Error('Unknown universe: ' + params.universe);
     }
 
     const startTime = params.startTime ? params.startTime : 0;
     const endTime = params.endTime
       ? params.endTime
-      : await augur.contracts.augur.getTimestamp_();
+      : await augur.contracts.getTimestamp();
 
     if (params.startTime > params.endTime) {
       throw new Error('startTime must be less than or equal to endTime');
@@ -847,7 +849,7 @@ export class Users {
       .toArray();
     const marketFinalizedByMarket = _.keyBy(marketFinalizedResults, 'market');
 
-    const endTime = await augur.contracts.augur.getTimestamp_();
+    const endTime = await augur.contracts.getTimestamp();
     const periodInterval = ONE_DAY * 60 * 60 * 24;
     const startTime = endTime.minus(periodInterval);
 
@@ -1194,7 +1196,6 @@ export class Users {
     };
   }
 
-  @Getter('getTotalOnChainFrozenFundsParams')
   static async getTotalOnChainFrozenFunds(
     augur: Augur,
     db: DB,
@@ -1241,7 +1242,7 @@ export class Users {
     }
     const ignoreAwaitingAndFinalizedMarkets =
       params.ignoreAwaitingAndFinalizedMarkets;
-    const now = await augur.contracts.augur.getTimestamp_();
+    const now = await augur.contracts.getAugur().getTimestamp_();
     const startTime = params.startTime!;
     const endTime = params.endTime || now.toNumber();
     const periodInterval =
@@ -1426,7 +1427,7 @@ export class Users {
     params: t.TypeOf<typeof Users.getProfitLossSummaryParams>
   ): Promise<NumericDictionary<MarketTradingPosition>> {
     const result: NumericDictionary<MarketTradingPosition> = {};
-    const now = await augur.contracts.augur.getTimestamp_();
+    const now = await augur.contracts.getTimestamp();
     const endTime = params.endTime || now.toNumber();
 
     for (const days of [ONE_DAY, DAYS_IN_MONTH]) {

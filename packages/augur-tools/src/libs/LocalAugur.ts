@@ -17,6 +17,7 @@ export async function makeProviderWithDB(
       db,
       accounts,
       seed.addresses,
+      seed.uploadBlockNumber,
       seed.paras,
     ),
   ];
@@ -32,6 +33,7 @@ export async function makeProvider(
     db,
     accounts,
     seed.addresses,
+    seed.uploadBlockNumber,
     seed.paras
   );
 }

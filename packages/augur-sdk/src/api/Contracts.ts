@@ -1,7 +1,12 @@
+import { ContractDependenciesEthers } from '@augurproject/contract-dependencies-ethers';
 import { ContractInterfaces } from '@augurproject/core';
 import { ContractAddresses } from '@augurproject/utils';
-import { ContractDependenciesEthers } from '@augurproject/contract-dependencies-ethers';
-import { BaseContracts } from './BaseContracts';
+import {
+  AugurInterface,
+  BaseContracts,
+  UniverseInterface,
+  ZeroXInterface,
+} from './BaseContracts';
 
 export type SomeRepToken =
   | ContractInterfaces.ReputationToken
@@ -15,7 +20,7 @@ export class Contracts extends BaseContracts {
   augur: ContractInterfaces.Augur;
   augurTrading: ContractInterfaces.AugurTrading;
   universe: ContractInterfaces.Universe;
-  ZeroXTrade: ContractInterfaces.ZeroXTrade;
+  zeroXTrade: ContractInterfaces.ZeroXTrade;
 
   reputationToken: SomeRepToken | null = null;
 
@@ -35,7 +40,7 @@ export class Contracts extends BaseContracts {
       addresses.Universe
     );
 
-    this.ZeroXTrade = new ContractInterfaces.ZeroXTrade(
+    this.zeroXTrade = new ContractInterfaces.ZeroXTrade(
       dependencies,
       addresses.ZeroXTrade
     )
@@ -44,6 +49,10 @@ export class Contracts extends BaseContracts {
   async setReputationToken(networkId: string) {
     const address = await this.universe.getReputationToken_();
     this.reputationToken = this.reputationTokenFromAddress(address, networkId);
+  }
+
+  getAugur(): AugurInterface {
+    return this.augur;
   }
 
   async getOriginCash(): Promise<ContractInterfaces.Cash> {
@@ -56,5 +65,13 @@ export class Contracts extends BaseContracts {
 
   async getOriginUniverseAddress(): Promise<string> {
     return this.universe.address;
+  }
+
+  getUniverse(): UniverseInterface {
+    return this.universe;
+  }
+
+  getZeroXTrade(): ZeroXInterface {
+    return this.zeroXTrade;
   }
 }
