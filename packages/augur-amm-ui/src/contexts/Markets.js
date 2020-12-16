@@ -183,7 +183,7 @@ export function useAllMarketData() {
 
 function shapeMarketsByAmm(markets) {
   const marketsByAmm = (markets || []).reduce((p, m) => {
-    if (!m.amms || m.amms.length === 0) return [...p, { ...m, amm: null }]
+    if (!m?.amms || m.amms.length === 0) return [...p, { ...m, amm: null }]
     const splitOut = m.amms.map(amm => ({ ...m, amm: shapeAMMData(amm), cash: amm.shareToken.cash.id }))
     return p.concat(splitOut)
   }, [])
@@ -333,7 +333,7 @@ export function useMarketAmmExchanges(marketId) {
   const cashes = useMarketCashTokens()
   const markets = marketsLV.filter(m => m.id === marketId)
   const ammExchanges =
-    markets.length > 0 && markets.filter(m => m.amm).length > 0 ? markets.reduce((p, m) => [...p, m.amm], []) : []
+    markets.length > 0 && markets.filter(m => m?.amm).length > 0 ? markets.reduce((p, m) => [...p, m.amm], []) : []
 
   return ammExchanges.length > 0
     ? ammExchanges.map(ammExchange => ({
@@ -455,7 +455,7 @@ export function useVolumesByCash() {
 function sumAmmTransactions(markets) {
   return markets
     ? markets.reduce((p, m) => {
-        if (!m.amm) return p
+        if (!m?.amm) return p
         const currentCash = p[m.cash.toLowerCase()]
         const swaps = m.amm.swaps || [];
         const enters = m.amm.enters || [];
@@ -505,7 +505,7 @@ export function useAmmMarketTransactions(marketId) {
 function ammPrices(markets) {
   return markets
     ? markets.reduce((p, m) => {
-        if (!m.amm) return p
+        if (!m?.amm) return p
         const { priceYes, priceNo } = m.amm
         if (!p[m.amm?.id]) p[m.amm?.id] = {}
         if (!p[m.amm?.id][m.amm?.cash?.id]) p[m.amm?.id][m.amm?.cash?.id] = {}
