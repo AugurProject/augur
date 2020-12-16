@@ -26,6 +26,16 @@ export const GET_MARKETS = blockNumber => {
   markets(where: { marketType: YES_NO, description_not: null }) {
     description
     id
+    outcomes {
+      id
+      value
+    }
+    marketType
+    numTicks
+    noShowBond
+    universe {
+      id
+    }
     endTimestamp
     status
     categories

@@ -57,7 +57,7 @@ export function augurV2Client(uri: string) {
   });
 }
 
-export async function test(updateMarkets) {
+export async function getMarketsData(updateMarkets) {
   const config = getConfig();
   let response = null;
   try {
@@ -69,7 +69,10 @@ export async function test(updateMarkets) {
   }
 
   if (response) {
-    console.log(JSON.stringify(response.data, null, 1));
+    if (response.errors) {
+      console.error(JSON.stringify(response.errors, null, 1));
+    }
+    // console.log(JSON.stringify(response.data, null, 1));
     updateMarkets(response.data);
   }
 }

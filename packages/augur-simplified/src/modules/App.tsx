@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { ApolloProvider } from 'react-apollo'
-import { client, test } from 'modules/apollo/client'
+import { client, getMarketsData } from 'modules/apollo/client'
 import Styles from 'modules/App.styles.less';
 import Routes from 'modules/routes/routes';
 import TopNav from 'modules/common/top-nav';
@@ -23,11 +23,11 @@ function checkIsMobile(setIsMobile) {
 const AppBody = () => {
   const {
     filterSidebar,
-    actions: { setIsMobile },
+    actions: { setIsMobile, updateGraphData },
   } = useAppStatusStore();
 
   useEffect(() => {
-    test(console.log);
+    getMarketsData(updateGraphData);
     function handleRezize() {
       checkIsMobile(setIsMobile);
     }
