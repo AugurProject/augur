@@ -455,14 +455,19 @@ function sumAmmTransactions(markets) {
     ? markets.reduce((p, m) => {
         if (!m.amm) return p
         const currentCash = p[m.cash.toLowerCase()]
+        const swaps = m.amm.swaps || [];
+        const enters = m.amm.enters || [];
+        const exits = m.amm.exits || [];
+        const addLiquidity = m.amm.addLiquidity || [];
+        const removeLiquidity = m.amm.removeLiquidity || [];
         return currentCash
           ? {
               ...p,
-              [m.cash.toLowerCase()]: new BN(m.amm.swaps.length + m.amm.enters.length + m.amm.exits.length + m.amm.addLiquidity.length + m.amm.removeLiquidity.length).plus(
+              [m.cash.toLowerCase()]: new BN(swaps.length + enters.length + exits.length + addLiquidity.length + removeLiquidity.length).plus(
                 currentCash
               )
             }
-          : { ...p, [m.cash.toLowerCase()]: new BN(m.amm.swaps.length + m.amm.enters.length + m.amm.exits.length + m.amm.addLiquidity.length + m.amm.removeLiquidity.length) }
+          : { ...p, [m.cash.toLowerCase()]: new BN(swaps.length + enters.length + exits.length + addLiquidity.length + removeLiquidity.length) }
       }, {})
     : {}
 }
@@ -528,7 +533,7 @@ function useCalcVolumes(markets, marketsPast) {
     }, {})
 
     const past = Object.keys(volumeYesPast).reduce((p, c) => {
-      const ammId = volumeYesPast[c.ammId]
+      const ammId = volumeYesPast[c].ammId
       const { priceYes, priceNo } = marketAmmPrices[ammId][c]
       return {
         ...p,
