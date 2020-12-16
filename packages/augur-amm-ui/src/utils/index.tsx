@@ -606,7 +606,7 @@ export async function getRemoveLiquidity({
     console.error('getRemoveLiquidity: augurClient is null or no amm address')
     return null
   }
-  const alsoSell = false;
+  const alsoSell = true;
   const results: RemoveLiquidityRate = await augurClient.amm.getRemoveLiquidity(marketId, paraShareToken, new BN(String(fee)), new BN(String(lpTokens)), alsoSell);
   return {
     noShares: results.short.toFixed(),
@@ -617,7 +617,7 @@ export async function getRemoveLiquidity({
 
 export function removeAmmLiquidity({ marketId, paraShareToken, fee, augurClient, lpTokens, useEth }) {
   if (!augurClient || !marketId || !paraShareToken || !fee) return console.error('removeAmmLiquidity: augurClient is null or no amm address')
-  const alsoSell = false;
+  const alsoSell = true;
   return augurClient.amm.doRemoveLiquidity(marketId, paraShareToken, new BN(fee), new BN(lpTokens), alsoSell)
 }
 
