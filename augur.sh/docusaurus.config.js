@@ -3,7 +3,7 @@ module.exports = {
   tagline: 'Augur Documentation',
   url: 'https://your-docusaurus-test-site.com',
   baseUrl: '/',
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
   favicon: 'img/favicon.ico',
   organizationName: 'augur', // Usually your GitHub org/user name.
   projectName: 'augur', // Usually your repo name.
