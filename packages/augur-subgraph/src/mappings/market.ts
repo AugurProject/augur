@@ -62,6 +62,7 @@ export function handleMarketCreated(event: MarketCreated): void {
   market.creator = creator.id;
   market.universe = universe.id;
   market.owner = creator.id;
+  market.fee = event.params.feePerCashInAttoCash;
   market.numTicks = event.params.numTicks;
   market.designatedReporter = designatedReporter.id;
   market.endTimestamp = event.params.endTime;
