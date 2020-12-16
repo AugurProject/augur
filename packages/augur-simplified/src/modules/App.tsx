@@ -1,4 +1,6 @@
 import React, { useEffect } from 'react';
+import { ApolloProvider } from 'react-apollo'
+import { client, test } from 'modules/apollo/client'
 import Styles from 'modules/App.styles.less';
 import Routes from 'modules/routes/routes';
 import TopNav from 'modules/common/top-nav';
@@ -23,7 +25,9 @@ const AppBody = () => {
     filterSidebar,
     actions: { setIsMobile },
   } = useAppStatusStore();
+
   useEffect(() => {
+    test(console.log);
     function handleRezize() {
       checkIsMobile(setIsMobile);
     }
@@ -32,6 +36,7 @@ const AppBody = () => {
     return () => {
       window.removeEventListener('resize', handleRezize);
     };
+    // eslint-disable-next-line
   }, []);
 
   return (
@@ -45,9 +50,11 @@ const AppBody = () => {
 
 function App() {
   return (
-    <AppStatusProvider>
-      <AppBody />
-    </AppStatusProvider>
+    <ApolloProvider client={client}>
+      <AppStatusProvider>
+        <AppBody />
+      </AppStatusProvider>
+    </ApolloProvider>
   );
 }
 
