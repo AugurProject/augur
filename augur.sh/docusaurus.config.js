@@ -1,17 +1,17 @@
 module.exports = {
   title: 'Augur Docs',
   tagline: 'Augur Documentation',
-  url: 'https://your-docusaurus-test-site.com',
+  url: 'https://docs.augur.sh',
   baseUrl: '/',
   onBrokenLinks: 'warn',
   favicon: 'img/favicon.ico',
-  organizationName: 'augur', // Usually your GitHub org/user name.
+  organizationName: 'augurproject', // Usually your GitHub org/user name.
   projectName: 'augur', // Usually your repo name.
   themeConfig: {
     navbar: {
       title: 'Augur Docs',
       logo: {
-        alt: 'My Site Logo',
+        alt: 'Augur',
         src: 'img/augur-logo/Glyph/Color.svg',
         srcDark: 'img/augur-logo/Glyph/White.svg',
       },
