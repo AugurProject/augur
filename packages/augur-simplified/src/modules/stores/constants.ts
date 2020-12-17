@@ -15,8 +15,8 @@ import { formatDai } from 'utils/format-number';
 
 export const STUBBED_APP_STATUS_ACTIONS = {
   setIsMobile: isMobile => {},
-  setSidebar: (sidebarType) => {}
-  updateGraphData: graphData => {},
+  setSidebar: (sidebarType) => {},
+  updateGraphData: graphData => {}
 };
 
 export const DEFAULT_APP_STATUS_STATE = {
