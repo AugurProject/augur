@@ -31,9 +31,9 @@ export const DEFAULT_APP_STATUS_STATE = {
     activity: {},
   },
   graphData: {
-    markets: [],
-    past: [],
-    paraShareTokens: [],
+    markets: {},
+    past: {},
+    paraShareTokens: {},
   },
 };
 

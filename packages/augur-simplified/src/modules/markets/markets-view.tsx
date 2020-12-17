@@ -16,7 +16,7 @@ import { PrimaryButton } from 'modules/common/buttons';
 import { SquareDropdown } from 'modules/common/selection';
 import { Pagination } from 'modules/common/pagination';
 import { useAppStatusStore } from 'modules/stores/app-status';
-import { keyedObjToArray, arrayToKeyedObject } from 'modules/stores/app-status-hooks';
+import { keyedObjToArray } from 'modules/stores/app-status-hooks';
 
 const OutcomesTable = ({ outcomes }) => {
   return (
