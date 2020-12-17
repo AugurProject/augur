@@ -30455,6 +30455,31 @@
 					"type": "address"
 				},
 				{
+					"internalType": "address payable",
+					"name": "_shareHolder",
+					"type": "address"
+				},
+				{
+					"internalType": "bytes32",
+					"name": "_fingerprint",
+					"type": "bytes32"
+				}
+			],
+			"name": "claimTradingProceeds",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "contract IMarket",
+					"name": "_market",
+					"type": "address"
+				},
+				{
 					"internalType": "uint256",
 					"name": "_fee",
 					"type": "uint256"

@@ -2,6 +2,8 @@
 
 from pytest import fixture, skip
 
+from tests.reporting_utils import proceedToInitialReporting
+from utils import stringToBytes
 
 FEE = 10 # 10/1000 aka 1%
 ATTO = 10 ** 18
@@ -17,6 +19,10 @@ def weth(sessionFixture):
 @fixture
 def account0(sessionFixture):
     return sessionFixture.accounts[0]
+
+@fixture
+def account1(sessionFixture):
+    return sessionFixture.accounts[1]
 
 @fixture
 def factory(sessionFixture):
@@ -145,3 +151,36 @@ def test_amm_weth_yes_position(sessionFixture, market, para_weth_share_token, we
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, INVALID, account0) == 0
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, account0) == 0
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, account0) == 0
+
+def test_amm_weth_yes_position(contractsFixture, sessionFixture, universe, market, para_weth_share_token, weth_amm, account0, account1, amm, weth):
+    if not sessionFixture.paraAugur:
+        return skip("Test is only for para augur")
+
+    numticks = market.getNumTicks()
+    sets = 100 * ATTO
+    liquidityCost = sets * numticks
+    ratio_50_50 = 10 ** 18
+
+    para_weth_share_token.setApprovalForAll(weth_amm.address, True)
+
+    weth_amm.addInitialLiquidity(market.address, FEE, ratio_50_50, True, account1, value=liquidityCost)
+
+    yesPositionSets = 10 * ATTO
+    yesPositionCost = yesPositionSets * numticks
+    sharesReceived = amm.rateEnterPosition(yesPositionCost, True)
+
+    weth_amm.enterPosition(market.address, FEE, False, sharesReceived, value=yesPositionCost)
+
+
+    proceedToInitialReporting(contractsFixture, market)
+
+    market.doInitialReport([0, market.getNumTicks(), 0], "", 0)
+
+    disputeWindow = contractsFixture.applySignature('DisputeWindow', market.getDisputeWindow())
+    contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
+
+    balanceBeforeFinalization = contractsFixture.ethBalance(account0)
+    weth_amm.claimTradingProceeds(market.address, account0, stringToBytes(""))
+
+    # Should have more eth than before because market resolved in account0's favor.
+    assert contractsFixture.ethBalance(account0) > balanceBeforeFinalization
