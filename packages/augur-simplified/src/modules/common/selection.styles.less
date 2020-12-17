@@ -805,3 +805,23 @@
 .list {
   display: flex;
 }
+
+.SmallDropdown {
+  > button {
+    padding: @size-12;
+    background-color: var(--simple-light-bg);
+
+    > span {
+      .text-12-semi-bold;
+    }
+
+    > svg {
+      width: @size-10;
+      height: @size-6;
+
+      > path {
+        fill: var(--simple-secondary-text);
+      }
+    }
+  }
+}

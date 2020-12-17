@@ -1,11 +1,23 @@
 import React, { useState } from 'react';
 import Styles from 'modules/common/tables.styles.less';
 import { UsdIcon } from './icons';
-import { PrimaryButton, SecondaryButton, SmallRoundedButton } from 'modules/common/buttons';
+import {
+  PrimaryButton,
+  SecondaryButton,
+  SmallRoundedButton,
+} from 'modules/common/buttons';
 import classNames from 'classnames';
-import { POSITIONS, LIQUIDITY } from 'modules/constants';
+import {
+  POSITIONS,
+  LIQUIDITY,
+  ALL,
+  ADD,
+  REMOVE,
+  SWAP,
+} from 'modules/constants';
 import { Pagination } from 'modules/common/pagination';
 import { useAppStatusStore } from 'modules/stores/app-status';
+import { SmallDropdown } from './selection';
 
 interface Position {
   id: string;
@@ -298,13 +310,58 @@ export const PositionsLiquidityViewSwitcher = ({
 };
 
 const TransactionsHeader = () => {
+  const [selectedType, setSelectedType] = useState(ALL);
+  const { isMobile } = useAppStatusStore();
   return (
     <ul className={Styles.TransactionsHeader}>
       <li>
-        <span>all</span>
-        <span>swaps</span>
-        <span>adds</span>
-        <span>removes</span>
+        {isMobile ? (
+          <SmallDropdown
+            onChange={(value) => setSelectedType(value)}
+            options={[
+              { label: ALL, value: 0 },
+              { label: SWAP, value: 1 },
+              { label: ADD, value: 2 },
+              { label: REMOVE, value: 3 },
+            ]}
+            defaultValue={ALL}
+          />
+        ) : (
+          <>
+            <span
+              className={classNames({
+                [Styles.Selected]: selectedType === ALL,
+              })}
+              onClick={() => setSelectedType(ALL)}
+            >
+              all
+            </span>
+            <span
+              className={classNames({
+                [Styles.Selected]: selectedType === SWAP,
+              })}
+              onClick={() => setSelectedType(SWAP)}
+            >
+              swaps
+            </span>
+            <span
+              className={classNames({
+                [Styles.Selected]: selectedType === ADD,
+              })}
+              onClick={() => setSelectedType(ADD)}
+            >
+              adds
+            </span>
+            <span
+              className={classNames({
+                [Styles.Selected]: selectedType === REMOVE,
+              })}
+              onClick={() => setSelectedType(REMOVE)}
+            >
+              removes
+            </span>
+          </>
+        )}
       </li>
       <li>total value</li>
       <li>token amount</li>

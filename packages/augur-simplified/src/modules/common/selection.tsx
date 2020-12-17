@@ -257,6 +257,8 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
 
 export const SquareDropdown = (props: DropdownProps) => <Dropdown {...props} />;
 
+export const SmallDropdown = (props: DropdownProps) => <Dropdown {...props} className={Styles.SmallDropdown} />;
+
 const currencyValues = [{ label: USDC, value: USDC, icon: UsdIcon }];
 
 export const CurrencyDropdown = (props: DropdownProps) => (
