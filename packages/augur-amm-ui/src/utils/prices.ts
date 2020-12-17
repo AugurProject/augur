@@ -24,11 +24,16 @@ export function computePriceImpact(
 
   const rawSlipRate = new BN(displayInAmount).eq(0) ? new BN(0) :  new BN(displayInAmount).div(new BN(displayOutAmount))
   console.log('slip rate', `${String(displayInAmount)} / ${String(displayOutAmount)} = ${String(rawSlipRate)}`)
+
+  // TODO: when trade estimation gets worked out add this back in
   const impact = (rawSlipRate.minus(displayActualPrice)).div(displayActualPrice).abs()
-  console.log('slippage:', String(rawSlipRate), '-', String(displayActualPrice), '/', String(displayActualPrice), '=', String(impact))
+  //const impact = new BN(0.0001);
+
+  console.log('faked slippage:', String(rawSlipRate), '-', String(displayActualPrice), '/', String(displayActualPrice), '=', String(impact))
   const adjMinAmount = String(new BN(String(rawOutputAmount)).div(new BN(10).pow(new BN(currencyOutDecimals))).toFixed(8))
   const prepDecimal = new Percent(JSBI.BigInt(impact.times(new BN(BIPS_CONSTANT)).toFixed(0)), BIPS_BASE)
 
+  console.log('prepDecimal', String(prepDecimal.toFixed(2)))
   return {
     priceImpactWithoutFee: prepDecimal,
     slippageAdjustedAmounts: adjMinAmount
@@ -42,6 +47,7 @@ export function computeTradePriceBreakdown(
   // for each hop in our trade, take away the x*y=k price impact from 0.3% fees
   // e.g. for 3 tokens/2 hops: 1 - ((1 - .03) * (1-.03))
 
+  console.log('trade?.fee', trade?.fee)
   const tradeFee = new Percent(JSBI.BigInt(trade?.fee || 0), JSBI.BigInt(10000))
   const realizedLPFee = ONE_HUNDRED_PERCENT.subtract(tradeFee)
 
@@ -70,10 +76,10 @@ export function computeSlippageAdjustedAmounts(
 }
 
 export function warningSeverity(priceImpact: Percent | undefined): 0 | 1 | 2 | 3 | 4 {
-  if (!priceImpact?.lessThan(BLOCKED_PRICE_IMPACT_NON_EXPERT)) return 4
-  if (!priceImpact?.lessThan(ALLOWED_PRICE_IMPACT_HIGH)) return 3
-  if (!priceImpact?.lessThan(ALLOWED_PRICE_IMPACT_MEDIUM)) return 2
-  if (!priceImpact?.lessThan(ALLOWED_PRICE_IMPACT_LOW)) return 1
+  if (priceImpact && !priceImpact?.lessThan(BLOCKED_PRICE_IMPACT_NON_EXPERT)) return 4
+  if (priceImpact && !priceImpact?.lessThan(ALLOWED_PRICE_IMPACT_HIGH)) return 3
+  if (priceImpact && !priceImpact?.lessThan(ALLOWED_PRICE_IMPACT_MEDIUM)) return 2
+  if (priceImpact && !priceImpact?.lessThan(ALLOWED_PRICE_IMPACT_LOW)) return 1
   return 0
 }
 

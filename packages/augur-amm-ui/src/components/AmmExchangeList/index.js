@@ -79,10 +79,10 @@ function AmmExchangeList({ allExchanges, disbaleLinks, marketId }) {
         <DashGrid style={{ height: '48px', alignItems: 'center' }} disbaleLinks={disbaleLinks} focus={true}>
           <TokenLogo size={below600 ? '16px' : '18px'} tokenInfo={ammExchange.cash.address} margin={!below740} />
           <TYPE.header area="name" fontWeight="500">
-            {Number(ammExchange.priceYes).toFixed(2)}
+            {Number(ammExchange?.priceYes || 0).toFixed(2)}
           </TYPE.header>
           <TYPE.header area="name" fontWeight="500">
-            {Number(ammExchange.priceNo).toFixed(2)}
+            {Number(ammExchange?.priceNo || 0).toFixed(2)}
           </TYPE.header>
           {!below800 && (
             <TYPE.header area="name" fontWeight="500">

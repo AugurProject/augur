@@ -66,8 +66,8 @@ export function getTradeExactIn(
 
   if (currencyAmountIn && currencyOut && inputCurrency) {
     // do any amount conversion here
-    const no = new BN(ammExchange.priceNo)
-    const yes = new BN(ammExchange.priceYes)
+    const no = new BN(ammExchange?.priceNo || 0)
+    const yes = new BN(ammExchange?.priceYes || 0)
     let executionPrice = currencyOut.symbol === MarketTokens.NO_SHARES ? no : yes
 
     console.log('no price', String(no))
@@ -91,7 +91,7 @@ export function getTradeExactIn(
       priceImpact: new Percent(JSBI.BigInt(0)),
       executionPrice: String(executionPrice),
       approvalType,
-      fee: ammExchange.fee
+      fee: ammExchange?.fee || "0"
     }
   }
   return null

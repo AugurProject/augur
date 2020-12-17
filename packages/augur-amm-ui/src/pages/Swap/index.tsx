@@ -98,7 +98,7 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
           setOutputAmount(estCurrency)
         }
 
-        if (ammExchange.fee === "0") return setRealizedLPFee("0");
+        if (ammExchange?.fee === "0") return setRealizedLPFee("0");
 
         const resultWithoutFee = await estimateTrade(augurClient, trade, true, useEth);
         console.log('estimate trade without fee', resultWithoutFee, trade)
