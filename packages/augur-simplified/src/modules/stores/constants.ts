@@ -14,8 +14,9 @@ import { createBigNumber } from 'utils/create-big-number';
 import { formatDai } from 'utils/format-number';
 
 export const STUBBED_APP_STATUS_ACTIONS = {
-  setIsMobile: (isMobile) => {},
+  setIsMobile: isMobile => {},
   setSidebar: (sidebarType) => {}
+  updateGraphData: graphData => {},
 };
 
 export const DEFAULT_APP_STATUS_STATE = {
@@ -29,11 +30,25 @@ export const DEFAULT_APP_STATUS_STATE = {
   userInfo: {
     activity: {},
   },
+  graphData: {},
+};
+
+export const APP_STATE_KEYS = {
+  IS_MOBILE: 'isMobile',
+  FILTER_SIDEBAR: 'filterSidebar',
+  LOGIN_ACCOUNT: 'loginAccount',
+  MARKET_INFOS: 'marketInfos',
+  POSITIONS: 'positions',
+  LIQUIDITY: 'liquidity',
+  TRANSACTIONS: 'transactions',
+  USER_INFO: 'userInfo',
+  GRAPH_DATA: 'graphData',
 };
 
 export const APP_STATUS_ACTIONS = {
   SET_IS_MOBILE: 'SET_IS_MOBILE',
-  SET_SIDEBAR: 'SET_SIDEBAR'
+  SET_SIDEBAR: 'SET_SIDEBAR',
+  UPDATE_GRAPH_DATA: 'UPDATE_GRAPH_DATA',
 };
 
 export const fakePositionsData = [
