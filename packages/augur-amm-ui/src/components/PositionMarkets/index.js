@@ -13,10 +13,12 @@ import { TYPE } from '../../Theme'
 import { BasicLink } from '../Link'
 import { usePositionMarkets } from '../../contexts/Markets'
 import TokenLogo from '../TokenLogo'
-import { MarketTokens } from '../../constants'
+import { MarketTokens, REMOVE_NEEDS_APPROVAL } from '../../constants'
 import { ButtonSecondary } from '../ButtonStyled'
 import { useActiveWeb3React } from '../../hooks'
 import { useClaimTradingProceeds } from '../../hooks/useClaimTradingProceeds'
+import { useWethWrapper } from '../../contexts/Application'
+import { ApprovalState, useApproveERC1155Callback } from '../../hooks/useApproveCallback'
 
 dayjs.extend(utc)
 
@@ -137,7 +139,10 @@ function PositionMarketList({ positions, loading, itemMax = 20 }) {
   const below800 = useMedia('(max-width: 816px)')
   const { account } = useActiveWeb3React()
   const { claimWinnings } = useClaimTradingProceeds()
+  const wrapper = useWethWrapper();
 
+  // hard coding value for testing
+  const [approvalState, approve] = useApproveERC1155Callback("0x76eCfb6d07DF1A1bD31f485D7160b201C64f878E", wrapper, {symbol: 'WETH', name: 'WETH'})
   useEffect(() => {
     setMaxPage(1) // edit this to do modular
     setPage(1)
@@ -171,20 +176,34 @@ function PositionMarketList({ positions, loading, itemMax = 20 }) {
   const getWinningOutcomeLabel = item => {
     if (item?.market?.status === 'FINALIZED') {
       const findWinner = item?.market?.outcomes.find(o => o.payoutNumerator !== "0")
-      console.log('findWinner', findWinner)
       if (findWinner) {
         const id = findWinner.id.split('-')[1]
         const hasWinningShares = String(item.outcomes[Number(id)])
         if (hasWinningShares !== '0') {
+          console.log('item', item)
+          const needsApproval = REMOVE_NEEDS_APPROVAL.includes(item?.cash?.name)
+          console.log('approvalState', approvalState, needsApproval)
+          if (approvalState === ApprovalState.APPROVED || !needsApproval) {
+            return (
+              <DataText area="status">
+                <ButtonSecondary
+                  style={{ height: '50%', width: '70%', justifyContent: 'center' }}
+                  onClick={() => claimWinnings(wrapper, item.market)}
+                >
+                  Claim Winnings
+                </ButtonSecondary>
+              </DataText>
+            )
+          }
           return (
-            <DataText area="status">
-              <ButtonSecondary
-                style={{ height: '50%', width: '70%', justifyContent: 'center' }}
-                onClick={() => claimWinnings(item.paraShareToken.id, item.market)}
-              >
-                Claim Winnings
-              </ButtonSecondary>
-            </DataText>
+          <DataText area="status">
+          <ButtonSecondary
+            style={{ height: '50%', width: '70%', justifyContent: 'center' }}
+            onClick={() => approve()}
+          >
+            Approve
+          </ButtonSecondary>
+        </DataText>
           )
         }
       }
