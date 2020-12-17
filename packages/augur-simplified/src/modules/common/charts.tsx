@@ -4,9 +4,10 @@ import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
 import { createBigNumber } from 'utils/create-big-number';
 import Styles from 'modules/common/charts.styles.less';
 import classNames from 'classnames';
-import { formatDai } from 'utils/format-number';
+import { formatDai, formatPercent } from 'utils/format-number';
 import { Checkbox } from 'modules/common/icons';
 import { SmallRoundedButton } from './buttons';
+import { useAppStatusStore } from 'modules/stores/app-status';
 
 const HIGHLIGHTED_LINE_WIDTH = 2;
 const NORMAL_LINE_WIDTH = 1;
@@ -54,12 +55,12 @@ interface HighcartsChart extends Highcharts.Chart {
   renderTo?: string | Element | React.ReactNode;
 }
 
-const getMockPriceTime = (market, rangeSelection) => ({
-  priceTimeArray: market.outcomes.map(outcome => {
+const getMockPriceTime = (formattedOutcomes, market, rangeSelection) => ({
+  priceTimeArray: formattedOutcomes.map(outcome => {
     const { startTime, tick } = RANGE_OPTIONS[rangeSelection];
     const totalTicks = (END_TIME - startTime) / tick;
     const outcomePriceTime = [];
-    let lastPrice = createBigNumber(outcome?.lastPrice || '0.5');
+    let lastPrice = createBigNumber(outcome.lastPrice);
     let curTimestamp = END_TIME;
     while (outcomePriceTime.length < totalTicks) {
       const rand = getRandomInt(5);
@@ -86,6 +87,7 @@ const getMockPriceTime = (market, rangeSelection) => ({
 });
 
 export const PriceHistoryChart = ({
+  formattedOutcomes,
   market,
   selectedOutcomes,
   rangeSelection,
@@ -95,7 +97,7 @@ export const PriceHistoryChart = ({
   const [forceRender, setForceRender] = useState(false);
   const { maxPriceBigNumber: maxPrice, minPriceBigNumber: minPrice } = market;
   // const { priceTimeArray } = useMemo(() => getMockPriceTime(market), [market]);
-  const { priceTimeArray } = getMockPriceTime(market, rangeSelection);
+  const { priceTimeArray } = getMockPriceTime(formattedOutcomes, market, rangeSelection);
   const options = useMemo(
     () =>
       getOptions({
@@ -153,12 +155,10 @@ export const PriceHistoryChart = ({
 };
 
 export const SelectOutcomeButton = ({
-  outcome: { value, lastPrice },
-  outcomeIdx,
+  outcome: { outcomeIdx, label, lastPrice },
   toggleSelected,
   isSelected,
 }) => {
-  const label = value.toLowerCase();
   return (
     <button
       className={classNames(Styles.SelectOutcomeButton, {
@@ -174,9 +174,11 @@ export const SelectOutcomeButton = ({
 };
 
 export const SimpleChartSection = ({ market }) => {
+  const { graphData: { paraShareTokens } } = useAppStatusStore();
+  const formattedOutcomes = getFormattedOutcomes({ market, paraShareTokens });
   // eslint-disable-next-line
   const [selectedOutcomes, setSelectedOutcomes] = useState(
-    market.outcomes.map((outcome, outcomeIdx) =>
+    formattedOutcomes.map(({ outcomeIdx }) =>
       Boolean(outcomeIdx === DEFAULT_SELECTED_ID)
     )
   );
@@ -187,7 +189,7 @@ export const SimpleChartSection = ({ market }) => {
     updates[id] = !updates[id];
     setSelectedOutcomes(updates);
   };
-  console.log('simpleChart', market, selectedOutcomes);
+  
   return (
     <section className={Styles.SimpleChartSection}>
       <ul className={Styles.RangeSelection}>
@@ -201,15 +203,14 @@ export const SimpleChartSection = ({ market }) => {
           </li>
         ))}
       </ul>
-      <PriceHistoryChart {...{ market, selectedOutcomes, rangeSelection }} />
+      <PriceHistoryChart {...{ market, formattedOutcomes, selectedOutcomes, rangeSelection }} />
       <div>
-        {market.outcomes.map((outcome, outcomeIdx) => (
+        {formattedOutcomes.map((outcome) => (
           <SelectOutcomeButton
             key={`${outcome.id}_${outcome.value}`}
             outcome={outcome}
-            outcomeIdx={outcomeIdx}
             toggleSelected={toggleOutcome}
-            isSelected={selectedOutcomes[outcomeIdx]}
+            isSelected={selectedOutcomes[outcome.outcomeIdx]}
           />
         ))}
       </div>
@@ -365,3 +366,18 @@ const getOptions = ({
     enabled: false,
   },
 });
+
+export const getFormattedOutcomes = ({ market: { amms, outcomes }, paraShareTokens }) => {
+  let formattedOutcomes = outcomes.map((outcome, outcomeIdx) => ({
+    ...outcome,
+    outcomeIdx,
+    label: outcome.value.toLowerCase(),
+    lastPrice: '0.5',
+  }));
+  amms.forEach(({ percentageNo, percentageYes, shareToken: { id: shareTokenId } }) => {
+    formattedOutcomes.forEach(fmrOut => {
+      fmrOut.lastPrice = fmrOut.outcomeIdx === 0 ? formatPercent('0').formatted : fmrOut.outcomeIdx === 1 ? formatPercent(percentageNo / 100).formatted : formatPercent(percentageYes / 100).formatted;
+    })
+  })
+  return formattedOutcomes;
+};
