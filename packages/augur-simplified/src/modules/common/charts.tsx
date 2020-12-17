@@ -10,7 +10,7 @@ import { SmallRoundedButton } from './buttons';
 
 const HIGHLIGHTED_LINE_WIDTH = 2;
 const NORMAL_LINE_WIDTH = 1;
-const DEFAULT_SELECTED_ID = 1;
+const DEFAULT_SELECTED_ID = 2;
 const FIFTEEN_MIN_MS = 900000;
 const ONE_HOUR_MS = 3600 * 1000;
 const ONE_QUARTER_DAY = ONE_HOUR_MS * 6;
@@ -55,11 +55,11 @@ interface HighcartsChart extends Highcharts.Chart {
 }
 
 const getMockPriceTime = (market, rangeSelection) => ({
-  priceTimeArray: market.outcomes.map((outcome) => {
+  priceTimeArray: market.outcomes.map(outcome => {
     const { startTime, tick } = RANGE_OPTIONS[rangeSelection];
     const totalTicks = (END_TIME - startTime) / tick;
     const outcomePriceTime = [];
-    let lastPrice = createBigNumber(outcome.lastPrice);
+    let lastPrice = createBigNumber(outcome?.lastPrice || '0.5');
     let curTimestamp = END_TIME;
     while (outcomePriceTime.length < totalTicks) {
       const rand = getRandomInt(5);
@@ -67,10 +67,10 @@ const getMockPriceTime = (market, rangeSelection) => ({
       let nextPrice = Boolean(Math.round(Math.random()))
         ? lastPrice.plus(priceVariance)
         : lastPrice.minus(priceVariance);
-      if (nextPrice.gt(market.maxPriceBigNumber)) {
-        nextPrice = market.maxPriceBigNumber;
-      } else if (nextPrice.lt(market.minPriceBigNumber)) {
-        nextPrice = market.minPriceBigNumber;
+      if (nextPrice.gt(market.maxPriceBigNumber || 1)) {
+        nextPrice = createBigNumber(market.maxPriceBigNumber || 1);
+      } else if (nextPrice.lt(market.minPriceBigNumber || 0)) {
+        nextPrice = createBigNumber(market.minPriceBigNumber || 0);
       }
       outcomePriceTime.push({
         price: nextPrice.toFixed(2),
@@ -153,16 +153,18 @@ export const PriceHistoryChart = ({
 };
 
 export const SelectOutcomeButton = ({
-  outcome: { id, label, lastPrice },
+  outcome: { value, lastPrice },
+  outcomeIdx,
   toggleSelected,
   isSelected,
 }) => {
+  const label = value.toLowerCase();
   return (
     <button
       className={classNames(Styles.SelectOutcomeButton, {
-        [Styles[`isSelected_${id}`]]: isSelected,
+        [Styles[`isSelected_${outcomeIdx}`]]: isSelected,
       })}
-      onClick={() => toggleSelected(id)}
+      onClick={() => toggleSelected(outcomeIdx)}
     >
       <span>{Checkbox}</span>
       {label}
@@ -174,18 +176,18 @@ export const SelectOutcomeButton = ({
 export const SimpleChartSection = ({ market }) => {
   // eslint-disable-next-line
   const [selectedOutcomes, setSelectedOutcomes] = useState(
-    market.outcomes.map((outcome) =>
-      Boolean(outcome.id === DEFAULT_SELECTED_ID)
+    market.outcomes.map((outcome, outcomeIdx) =>
+      Boolean(outcomeIdx === DEFAULT_SELECTED_ID)
     )
   );
   const [rangeSelection, setRangeSelection] = useState(3);
 
-  const toggleOutcome = (id) => {
+  const toggleOutcome = id => {
     const updates = [].concat(selectedOutcomes);
     updates[id] = !updates[id];
     setSelectedOutcomes(updates);
   };
-
+  console.log('simpleChart', market, selectedOutcomes);
   return (
     <section className={Styles.SimpleChartSection}>
       <ul className={Styles.RangeSelection}>
@@ -201,12 +203,13 @@ export const SimpleChartSection = ({ market }) => {
       </ul>
       <PriceHistoryChart {...{ market, selectedOutcomes, rangeSelection }} />
       <div>
-        {market.outcomes.map((outcome) => (
+        {market.outcomes.map((outcome, outcomeIdx) => (
           <SelectOutcomeButton
             key={`${outcome.id}_${outcome.value}`}
             outcome={outcome}
+            outcomeIdx={outcomeIdx}
             toggleSelected={toggleOutcome}
-            isSelected={selectedOutcomes[outcome.id]}
+            isSelected={selectedOutcomes[outcomeIdx]}
           />
         ))}
       </div>
@@ -232,7 +235,7 @@ const handleSeries = (
     ) {
       mostRecentTradetime = priceTimeData[length - 1].timestamp;
     }
-    const data = priceTimeData.map((pts) => [
+    const data = priceTimeData.map(pts => [
       pts.timestamp,
       createBigNumber(pts.price).toNumber(),
     ]);
@@ -247,7 +250,7 @@ const handleSeries = (
         stops: [
           [
             0,
-            index === 1 ? 'rgba(5, 177, 105, 0.15)' : 'rgba(216, 17, 89, 0.15)',
+            index === 2 ? 'rgba(5, 177, 105, 0.15)' : 'rgba(216, 17, 89, 0.15)',
           ], // start
           [1, '#F6F7F8'], // end
         ],
@@ -259,7 +262,7 @@ const handleSeries = (
 
     series.push({ ...baseSeriesOptions });
   });
-  series.forEach((seriesObject) => {
+  series.forEach(seriesObject => {
     const seriesData = seriesObject.data;
     // make sure we have a trade to fill chart
     if (
@@ -274,7 +277,10 @@ const handleSeries = (
   return series;
 };
 
-const getOptions = ({ maxPrice, minPrice }) => ({
+const getOptions = ({
+  maxPrice = createBigNumber(1),
+  minPrice = createBigNumber(0),
+}) => ({
   lang: {
     noData: 'No data...',
   },
