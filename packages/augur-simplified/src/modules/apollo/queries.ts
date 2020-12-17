@@ -29,6 +29,8 @@ export const GET_MARKETS = blockNumber => {
     outcomes {
       id
       value
+      isFinalNumerator
+      payoutNumerator
     }
     marketType
     numTicks
