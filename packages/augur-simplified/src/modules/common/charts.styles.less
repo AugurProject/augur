@@ -1,5 +1,4 @@
 @import (reference) '~assets/styles/shared';
-@import (reference) '~modules/common/buttons.styles.less';
 
 .PriceHistoryChart {
   display: flex;
@@ -109,22 +108,22 @@
 
       .highcharts-line-series.highcharts-color-1,
       .highcharts-area-series.highcharts-color-1 {
-        fill: var(--simple-buy);
+        fill: var(--simple-yes);
       }
 
       g.highcharts-line-series.highcharts-color-1 > path.highcharts-graph,
       g.highcharts-area-series.highcharts-color-1 > path.highcharts-graph {
-        stroke: var(--simple-buy);
+        stroke: var(--simple-yes);
       }
 
       .highcharts-line-series.highcharts-color-2,
       .highcharts-area-series.highcharts-color-2 {
-        fill: var(--simple-sell);
+        fill: var(--simple-no);
       }
 
       g.highcharts-line-series.highcharts-color-2 > path.highcharts-graph,
       g.highcharts-area-series.highcharts-color-2 > path.highcharts-graph {
-        stroke: var(--simple-sell);
+        stroke: var(--simple-no);
       }
 
       .highcharts-line-series.highcharts-color-3,
@@ -287,12 +286,12 @@
 
 .isSelected_1 {
   > span {
-    background: var(--simple-buy);
+    background: var(--simple-yes);
   }
 }
 
 .isSelected_2 {
   > span {
-    background: var(--simple-sell);
+    background: var(--simple-no);
   }
 }

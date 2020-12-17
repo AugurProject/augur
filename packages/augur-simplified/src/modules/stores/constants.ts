@@ -16,13 +16,15 @@ import { formatDai } from 'utils/format-number';
 export const STUBBED_APP_STATUS_ACTIONS = {
   setIsMobile: isMobile => {},
   setSidebar: (sidebarType) => {},
-  updateGraphData: graphData => {}
+  updateGraphData: graphData => {},
+  setShowTradingForm: showTradingForm => {}
 };
 
 export const DEFAULT_APP_STATUS_STATE = {
   isMobile: false,
   sidebarType: null,
   loginAccount: null,
+  showTradingForm: false,
   marketInfos: {},
   positions: [],
   liquidity: [],
@@ -49,6 +51,7 @@ export const APP_STATUS_ACTIONS = {
   SET_IS_MOBILE: 'SET_IS_MOBILE',
   SET_SIDEBAR: 'SET_SIDEBAR',
   UPDATE_GRAPH_DATA: 'UPDATE_GRAPH_DATA',
+  SET_SHOW_TRADING_FORM: 'SET_SHOW_TRADING_FORM'
 };
 
 export const fakePositionsData = [
@@ -166,6 +169,7 @@ export const MOCK_APP_STATUS_STATE = {
   liquidity: fakeLiquidityData,
   transactions: fakeTransactionsData,
   sidebarType: null,
+  showTradingForm: false,
   marketInfos: {
     '0xdeadbeef': {
       id: '0xdeadbeef',

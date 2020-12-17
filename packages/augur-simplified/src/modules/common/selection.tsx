@@ -26,10 +26,8 @@ export interface DropdownProps {
   large?: boolean;
   staticLabel?: string;
   staticMenuLabel?: string;
-  stretchOutOnMobile?: boolean;
   sortByStyles?: object;
   openTop?: boolean;
-  stretchOut?: boolean;
   activeClassName?: string;
   showColor?: boolean;
   disabled?: boolean;
@@ -170,7 +168,6 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
     const {
       sortByStyles,
       large,
-      stretchOutOnMobile,
       openTop,
       className,
       activeClassName,
@@ -188,7 +185,6 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
         className={classNames(className, {
           [Styles.Large]: large,
           [Styles.Normal]: !large,
-          [Styles.stretchOut]: stretchOutOnMobile,
           [Styles.isOpen]: showList,
           [Styles.openTop]: openTop,
           [`${activeClassName}`]: showList,

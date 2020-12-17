@@ -12,12 +12,23 @@ import {
   PositionsLiquidityViewSwitcher,
   TransactionsTable,
 } from 'modules/common/tables';
-import TradingForm from 'modules/market/trading-form';
+import TradingForm, {
+  fakeYesNoOutcomes,
+  OutcomesGrid,
+} from 'modules/market/trading-form';
 import { useAppStatusStore } from 'modules/stores/app-status';
+import { YES_NO, BUY } from 'modules/constants';
 
 const MarketView = ({ defaultMarket = null }) => {
   const [showMoreDetails, setShowMoreDetails] = useState(false);
-  const { marketInfos, isMobile } = useAppStatusStore();
+  const [selectedOutcome, setSelectedOutcome] = useState(fakeYesNoOutcomes[0]);
+
+  const {
+    marketInfos,
+    isMobile,
+    showTradingForm,
+    actions: { setShowTradingForm },
+  } = useAppStatusStore();
   const market = !!defaultMarket ? defaultMarket : marketInfos['0xdeadbeef'];
 
   return (
@@ -47,6 +58,19 @@ const MarketView = ({ defaultMarket = null }) => {
             <span>{market.expirationDate}</span>
           </li>
         </ul>
+        {isMobile && (
+          <OutcomesGrid
+            outcomes={fakeYesNoOutcomes}
+            selectedOutcome={fakeYesNoOutcomes[0]}
+            showAllHighlighted
+            setSelectedOutcome={(outcome) => {
+              setSelectedOutcome(outcome);
+              setShowTradingForm(true);
+            }}
+            marketType={YES_NO}
+            orderType={BUY}
+          />
+        )}
         <SimpleChartSection {...{ market }} />
         <PositionsLiquidityViewSwitcher marketId={market.id} />
         <div
@@ -69,10 +93,10 @@ const MarketView = ({ defaultMarket = null }) => {
           <TransactionsTable />
         </div>
       </section>
-      {!isMobile && (
+      {(!isMobile || showTradingForm) && (
         <section>
-          <TradingForm />
-          <AddLiquidity />
+          <TradingForm initialSelectedOutcome={selectedOutcome} />
+          {!isMobile && <AddLiquidity />}
         </section>
       )}
     </div>

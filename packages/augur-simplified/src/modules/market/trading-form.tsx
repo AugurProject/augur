@@ -4,8 +4,17 @@ import classNames from 'classnames';
 import { BUY, SELL, YES_NO } from 'modules/constants';
 import { PrimaryButton } from 'modules/common/buttons';
 import { CurrencyDropdown } from 'modules/common/selection';
+import { useAppStatusStore } from 'modules/stores/app-status';
+import { CloseIcon } from 'modules/common/icons';
 
-const fakeYesNoOutcomes = [
+interface Outcome {
+  id: number;
+  name: string;
+  price: string;
+  isInvalid?: boolean;
+}
+
+export const fakeYesNoOutcomes = [
   {
     id: 0,
     name: 'yes',
@@ -61,6 +70,7 @@ const Outcome = ({
   onClick,
   orderType,
   invalidSelected,
+  showAllHighlighted
 }) => {
   return (
     <div
@@ -69,7 +79,8 @@ const Outcome = ({
         [Styles.YesNo]: !outcome.isInvalid && marketType === YES_NO,
         [Styles.Selected]: selected,
         [Styles.Invalid]: outcome.isInvalid,
-        [Styles.Buy]: orderType === BUY,
+        [Styles.Yes]: outcome.name === 'yes',
+        [Styles.ShowAllHighlighted]: showAllHighlighted,
         [Styles.InvalidSelected]: invalidSelected,
       })}
     >
@@ -80,27 +91,71 @@ const Outcome = ({
 };
 
 const AmountInput = () => {
-    const [amount, updateAmount] = useState('');
-    return (
-        <div className={Styles.AmountInput}>
-            <span>
-                amount
-            </span>
-            <span>balance: $1000</span>
-            <div className={Styles.AmountInputDropdown}>
-                <input
-                    onChange={e => updateAmount(e.target.value)}
-                    value={amount}
-                    placeholder={'$0'}
-                />
-                <CurrencyDropdown onChange={() => null}/>
-            </div>
-        </div>
-    )
+  const [amount, updateAmount] = useState('');
+  return (
+    <div className={Styles.AmountInput}>
+      <span>amount</span>
+      <span>balance: $1000</span>
+      <div className={Styles.AmountInputDropdown}>
+        <input
+          onChange={(e) => updateAmount(e.target.value)}
+          value={amount}
+          placeholder={'$0'}
+        />
+        <CurrencyDropdown onChange={() => null} />
+      </div>
+    </div>
+  );
 };
-const TradingForm = ({ outcomes = fakeYesNoOutcomes, marketType = YES_NO }) => {
+
+interface OutcomesGridProps {
+  outcomes: Outcome[];
+  selectedOutcome: Outcome;
+  setSelectedOutcome: Function;
+  marketType: string;
+  orderType: string;
+  showAllHighlighted?: boolean;
+}
+export const OutcomesGrid = ({
+  outcomes,
+  selectedOutcome,
+  setSelectedOutcome,
+  marketType,
+  orderType,
+  showAllHighlighted,
+}: OutcomesGridProps) => {
+  return (
+    <div
+      className={classNames(Styles.Outcomes, {
+        [Styles.YesNo]: marketType === YES_NO,
+      })}
+    >
+      {outcomes.map((outcome) => (
+        <Outcome
+          key={outcome.id}
+          selected={
+            outcome.id === selectedOutcome.id ||
+            (showAllHighlighted && !outcome.isInvalid)
+          }
+          showAllHighlighted={showAllHighlighted}
+          outcome={outcome}
+          onClick={() => setSelectedOutcome(outcome)}
+          marketType={marketType}
+          orderType={orderType}
+          invalidSelected={selectedOutcome.isInvalid}
+        />
+      ))}
+    </div>
+  );
+};
+
+const TradingForm = ({ outcomes = fakeYesNoOutcomes, initialSelectedOutcome, marketType = YES_NO }) => {
+  const {
+    isMobile,
+    actions: { setShowTradingForm },
+  } = useAppStatusStore();
   const [orderType, setOrderType] = useState(BUY);
-  const [selectedOutcome, setSelectedOutcome] = useState(outcomes[0]);
+  const [selectedOutcome, setSelectedOutcome] = useState(initialSelectedOutcome);
   return (
     <div className={Styles.TradingForm}>
       <div>
@@ -120,51 +175,30 @@ const TradingForm = ({ outcomes = fakeYesNoOutcomes, marketType = YES_NO }) => {
           <span>fee</span>
           <span>0.1%</span>
         </div>
+        {isMobile && <div onClick={() => setShowTradingForm(false)}>{CloseIcon}</div>}
       </div>
       <div>
-        <div
-          className={classNames(Styles.Outcomes, {
-            [Styles.YesNo]: marketType === YES_NO,
-          })}
-        >
-          {outcomes.map((outcome) => (
-            <Outcome
-              key={outcome.id}
-              selected={outcome.id === selectedOutcome.id}
-              outcome={outcome}
-              onClick={() => setSelectedOutcome(outcome)}
-              marketType={marketType}
-              orderType={orderType}
-              invalidSelected={selectedOutcome.isInvalid}
-            />
-          ))}
-        </div>
+        <OutcomesGrid
+          outcomes={outcomes}
+          selectedOutcome={selectedOutcome}
+          setSelectedOutcome={setSelectedOutcome}
+          marketType={marketType}
+          orderType={orderType}
+        />
         <AmountInput />
         <div className={Styles.OrderInfo}>
-            <div>
-                <span>
-                    average price
-                </span>
-                <span>
-                    $0.00
-                </span>
-            </div>
-            <div>
-                <span>
-                    shares bought
-                </span>
-                <span>
-                    0.00
-                </span>
-            </div>
-            <div>
-                <span>
-                    max winnings
-                </span>
-                <span>
-                    $0.00
-                </span>
-            </div>
+          <div>
+            <span>average price</span>
+            <span>$0.00</span>
+          </div>
+          <div>
+            <span>shares bought</span>
+            <span>0.00</span>
+          </div>
+          <div>
+            <span>max winnings</span>
+            <span>$0.00</span>
+          </div>
         </div>
         <PrimaryButton disabled text={orderType} />
       </div>

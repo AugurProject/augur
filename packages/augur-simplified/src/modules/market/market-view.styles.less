@@ -1,5 +1,4 @@
 @import (reference) '~assets/styles/shared';
-@import (reference) '~modules/common/buttons.styles.less';
 
 .MarketView {
   .TwoTonePage;
@@ -165,7 +164,7 @@
   .MarketView {
     padding: @size-24 @size-16 @size-40;
 
-    > section:last-of-type {
+    > section:first-of-type {
       background-color: var(--light-background-color);
       padding: 0;
       max-width: unset;
@@ -184,9 +183,13 @@
         margin-bottom: @size-48;
       }
 
-      > div:nth-of-type(3) {
+      > div:nth-of-type(4) {
         margin: @size-40 0;
       }
+    }
+
+    > section:nth-of-type(2) {
+      padding: 0;
     }
   }
 
@@ -200,6 +203,7 @@
     display: grid;
     grid-template-columns: repeat(3,1fr);
     height: unset;
+    margin-bottom: @size-24;
 
     > li {
       padding: @size-12;

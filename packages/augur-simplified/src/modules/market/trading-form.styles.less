@@ -2,6 +2,7 @@
 
 .TradingForm {
   .HoverDropShadow;
+
   border-radius: @size-16;
   display: flex;
   height: fit-content;
@@ -97,11 +98,20 @@
 }
 
 .SelectedBorders {
-  border: @size-1 solid var(--simple-sell);
+  border: @size-1 solid var(--simple-no);
 
-  &.Buy {
-    background: var(--simple-buy-15);
-    border: @size-1 solid var(--simple-buy);
+  &.ShowAllHighlighted {
+    border-left: 0;
+  }
+
+  &.Yes {
+    background: var(--simple-yes-15);
+    border: @size-1 solid var(--simple-yes);
+  }
+
+  &.Invalid {
+    background: var(--simple-invalid-15);
+    border: @size-1 solid var(--simple-invalid);
   }
 }
 
@@ -131,7 +141,7 @@
   &.Selected {
     .SelectedBorders;
 
-    background: var(--simple-sell-15);
+    background: var(--simple-no-15);
   }
 
   &.YesNo {
@@ -240,7 +250,8 @@
     border-radius: @size-8;
     border: 0;
     outline: 0;
-    
+    flex: 1;
+
     &:focus {
       border: 0;
       outline: 0;
@@ -276,4 +287,31 @@
             margin-bottom: @size-12;;
         }
     }
+}
+
+@media @breakpoint-mobile-tablet {
+  .TradingForm {
+    filter: unset;
+    border-radius: unset;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 12;
+    height: 100vh;
+    width: unset;
+
+    > div:first-of-type {
+      flex: unset;
+      grid-template-columns: auto auto 1fr auto;
+
+      > div:last-of-type {
+        .SimpleBorder;
+
+        margin-left: @size-24;
+        padding: @size-12 @size-16;
+      }
+    }
+  }
 }

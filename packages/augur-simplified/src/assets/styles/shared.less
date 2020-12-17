@@ -75,5 +75,25 @@ textarea {
 }
 
 :global .App--noScroll {
-  overflow-y: hidden;
+  overflow: hidden;
+}
+
+
+.RoundedButton {
+  .SimpleBorder;
+  .text-12-semi-bold;
+
+  background: transparent;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  grid-gap: @size-8;
+  outline: none;
+
+  &:hover {
+    border: @size-1 solid var(--simple-secondary-text);
+  }
 }
