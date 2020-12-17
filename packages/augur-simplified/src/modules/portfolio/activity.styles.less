@@ -101,3 +101,15 @@
         justify-content: flex-end;
     }
 }
+
+@media @breakpoint-mobile-tablet {
+    .Activity {
+        > span:first-of-type {
+            display: none;
+        }
+
+        > div > div:first-of-type > span {
+            margin-top: 0;
+        }
+    }
+}

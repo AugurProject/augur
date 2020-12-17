@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
 import Styles from 'modules/common/tables.styles.less';
 import { UsdIcon } from './icons';
-import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
+import { PrimaryButton, SecondaryButton, SmallRoundedButton } from 'modules/common/buttons';
 import classNames from 'classnames';
-import {
-  POSITIONS,
-  LIQUIDITY,
-} from 'modules/constants';
+import { POSITIONS, LIQUIDITY } from 'modules/constants';
 import { Pagination } from 'modules/common/pagination';
 import { useAppStatusStore } from 'modules/stores/app-status';
 
@@ -61,13 +58,34 @@ const MarketTableHeader = ({ market }) => {
 };
 
 const PositionHeader = () => {
+  const { isMobile } = useAppStatusStore();
   return (
     <ul className={Styles.PositionHeader}>
       <li>outcome</li>
-      <li>quantity owned</li>
-      <li>avg. price paid</li>
+      <li>
+        {isMobile ? (
+          <>
+            qty
+            <br />
+            owned
+          </>
+        ) : (
+          'quantity owned'
+        )}
+      </li>
+      <li>
+        {isMobile ? (
+          <>
+            avg.
+            <br />
+            price
+          </>
+        ) : (
+          'avg. price paid'
+        )}
+      </li>
       <li>init. value</li>
-      <li>cur. value</li>
+      <li>cur.{isMobile ? <br /> : ' '}value</li>
       <li>p/l</li>
     </ul>
   );
@@ -90,12 +108,14 @@ interface PositionFooterProps {
   claimableWinnings?: string;
 }
 export const PositionFooter = ({ claimableWinnings }: PositionFooterProps) => {
+  const { isMobile } = useAppStatusStore();
+  if (isMobile && !claimableWinnings) return null;
   return (
     <div className={Styles.PositionFooter}>
       {claimableWinnings && (
         <SecondaryButton text={`${claimableWinnings} in Winnings to claim`} />
       )}
-      <PrimaryButton text="trade" />
+      {!isMobile && <PrimaryButton text="trade" />}
     </div>
   );
 };
@@ -130,12 +150,13 @@ export const PositionTable = ({
 };
 
 const LiquidityHeader = () => {
+  const { isMobile } = useAppStatusStore();
   return (
     <ul className={Styles.LiquidityHeader}>
-      <li>liquidity shares owned</li>
-      <li>cur. value</li>
-      <li>fees earned</li>
-      <li>fees earned</li>
+      <li>liquidity shares{isMobile ? <br /> : ''}owned</li>
+      <li>init.{isMobile ? <br /> : ''}value</li>
+      <li>cur.{isMobile ? <br /> : ''}value</li>
+      <li>fees{isMobile ? <br /> : ''}earned</li>
     </ul>
   );
 };
@@ -144,8 +165,8 @@ const LiquidityRow = ({ liquidity }) => {
   return (
     <ul className={Styles.LiquidityRow}>
       <li>{liquidity.liquiditySharesOwned}</li>
+      <li>{liquidity.initialValue}</li>
       <li>{liquidity.currentValue}</li>
-      <li>{liquidity.feesEarned}</li>
       <li>{liquidity.feesEarned}</li>
     </ul>
   );
@@ -189,22 +210,28 @@ export const LiquidityTable = ({
 
 interface PositionsLiquidityViewSwitcherProps {
   marketId?: string;
+  showActivityButton?: boolean;
+  setActivity?: Function;
+  setTables?: Function;
 }
 
 export const PositionsLiquidityViewSwitcher = ({
   marketId,
+  showActivityButton,
+  setActivity,
+  setTables,
 }: PositionsLiquidityViewSwitcherProps) => {
   const [tableView, setTableView] = useState(POSITIONS);
-  const {
-    positions,
-    liquidity
-  } = useAppStatusStore();
+  const { positions, liquidity } = useAppStatusStore();
 
   return (
     <div className={Styles.PositionsLiquidityViewSwitcher}>
       <div>
         <span
-          onClick={() => setTableView(POSITIONS)}
+          onClick={() => {
+            setTables && setTables();
+            setTableView(POSITIONS);
+          }}
           className={classNames({
             [Styles.Selected]: tableView === POSITIONS,
           })}
@@ -212,45 +239,60 @@ export const PositionsLiquidityViewSwitcher = ({
           {POSITIONS}
         </span>
         <span
-          onClick={() => setTableView(LIQUIDITY)}
+          onClick={() => {
+            setTables && setTables();
+            setTableView(LIQUIDITY);
+          }}
           className={classNames({
             [Styles.Selected]: tableView === LIQUIDITY,
           })}
         >
           {LIQUIDITY}
         </span>
-      </div>
-      <div>
-        {!marketId && (
-          <>
-            {tableView === POSITIONS &&
-              positions.map((market) => (
-                <PositionTable key={market.id} market={market} />
-              ))}
-            {tableView === LIQUIDITY &&
-              liquidity.map((market) => (
-                <LiquidityTable key={market.id} market={market} />
-              ))}
-            <Pagination
-              page={1}
-              itemCount={10}
-              itemsPerPage={9}
-              action={() => null}
-              updateLimit={() => null}
-            />
-          </>
-        )}
-        {marketId && (
-          <>
-            {tableView === POSITIONS && (
-              <PositionTable singleMarket market={positions[0]} />
-            )}
-            {tableView === LIQUIDITY && (
-              <LiquidityTable singleMarket market={liquidity[0]} />
-            )}
-          </>
+        {showActivityButton && (
+          <SmallRoundedButton
+            action={() => {
+              setTableView(null);
+              setActivity();
+            }}
+            text="your activity"
+            selected={tableView === null}
+          />
         )}
       </div>
+      {tableView !== null && (
+        <div>
+          {!marketId && (
+            <>
+              {tableView === POSITIONS &&
+                positions.map((market) => (
+                  <PositionTable key={market.id} market={market} />
+                ))}
+              {tableView === LIQUIDITY &&
+                liquidity.map((market) => (
+                  <LiquidityTable key={market.id} market={market} />
+                ))}
+              <Pagination
+                page={1}
+                itemCount={10}
+                itemsPerPage={9}
+                action={() => null}
+                updateLimit={() => null}
+              />
+            </>
+          )}
+          {marketId && (
+            <>
+              {tableView === POSITIONS && (
+                <PositionTable singleMarket market={positions[0]} />
+              )}
+              {tableView === LIQUIDITY && (
+                <LiquidityTable singleMarket market={liquidity[0]} />
+              )}
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 };
@@ -287,9 +329,7 @@ const TransactionRow = ({ transaction }) => {
 };
 
 export const TransactionsTable = () => {
-  const {
-    transactions
-  } = useAppStatusStore();
+  const { transactions } = useAppStatusStore();
   return (
     <div className={Styles.TransactionsTable}>
       <TransactionsHeader />

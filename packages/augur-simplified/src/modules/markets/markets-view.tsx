@@ -1,7 +1,7 @@
 import React from 'react';
 import Styles from 'modules/markets/markets-view.styles.less';
 import makePath from 'modules/routes/helpers/make-path';
-import { MARKET } from 'modules/constants';
+import { FILTERS, MARKET, SIDEBAR_TYPES } from 'modules/constants';
 import { Link } from 'react-router-dom';
 import {
   ValueLabel,
@@ -70,13 +70,13 @@ const MarketsView = () => {
   const {
     marketInfos,
     isMobile,
-    actions: { setFilterSidebar },
+    actions: { setSidebar },
   } = useAppStatusStore();
   const markets = TEMPORARY_FILTER(keyedObjToArray(marketInfos));
   return (
     <div className={Styles.MarketsView}>
       <AppViewStats showCashAmounts />
-      {isMobile && <PrimaryButton text='filters' icon={FilterIcon} action={() => setFilterSidebar(true)} />}
+      {isMobile && <PrimaryButton text='filters' icon={FilterIcon} action={() => setSidebar(SIDEBAR_TYPES.FILTERS)} />}
       <ul>
         <SquareDropdown
           onChange={() => null}

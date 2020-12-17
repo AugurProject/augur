@@ -22,7 +22,7 @@ function checkIsMobile(setIsMobile) {
 
 const AppBody = () => {
   const {
-    filterSidebar,
+    sidebarType,
     actions: { setIsMobile, updateGraphData },
   } = useAppStatusStore();
 
@@ -39,9 +39,22 @@ const AppBody = () => {
     // eslint-disable-next-line
   }, []);
 
+
+  useEffect(() => {
+    if (
+      sidebarType
+    ) {
+      document.body.classList.add('App--noScroll');
+      window.scrollTo(0, 0);
+    } else {
+      document.body.classList.remove('App--noScroll');
+    }
+  }, [sidebarType]);
+
+
   return (
     <div className={Styles.App}>
-      {filterSidebar && <Sidebar />}
+      {sidebarType && <Sidebar />}
       <TopNav />
       <Routes />
     </div>
