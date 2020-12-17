@@ -16,7 +16,7 @@ const Button = ({ text, className, disabled, action, icon }: ButtonProps) => {
   return (
     <button
       className={classNames(className, { [Styles.disabled]: disabled })}
-      onClick={(e) => action(e)}
+      onClick={(e) => action && action(e)}
     >
       {text}
       {icon && icon}
