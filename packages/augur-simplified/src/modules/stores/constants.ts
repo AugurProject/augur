@@ -30,7 +30,11 @@ export const DEFAULT_APP_STATUS_STATE = {
   userInfo: {
     activity: {},
   },
-  graphData: {},
+  graphData: {
+    markets: [],
+    past: [],
+    paraShareTokens: [],
+  },
 };
 
 export const APP_STATE_KEYS = {
@@ -162,6 +166,7 @@ export const fakeTransactionsData = {
 };
 
 export const MOCK_APP_STATUS_STATE = {
+  ...DEFAULT_APP_STATUS_STATE,
   positions: fakePositionsData,
   liquidity: fakeLiquidityData,
   transactions: fakeTransactionsData,

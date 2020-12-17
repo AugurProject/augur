@@ -55,6 +55,11 @@ export const dispatchMiddleware = dispatch => action =>
 
 export const keyedObjToArray = (KeyedObject) => Object.entries(KeyedObject).map(i => i[1]);
 
+export const arrayToKeyedObject = (ArrayOfObj) => ArrayOfObj.reduce((acc, obj) => {
+  acc[obj.id] = obj;
+  return acc;
+}, {});
+
 export function AppStatusReducer(state, action) {
   const updatedState = { ...state };
   switch (action.type) {

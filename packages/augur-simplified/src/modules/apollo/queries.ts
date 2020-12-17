@@ -32,6 +32,24 @@ export const GET_MARKETS = blockNumber => {
     }
     marketType
     numTicks
+    timestamp
+    fee
+    openInterest
+    outcomeVolumes
+    prices
+    designatedReporter
+    extraInfoRaw
+    owner {
+      id
+    }
+    creator {
+      id
+    }
+    offsetName
+    template {
+      id
+      question
+    }
     noShowBond
     universe {
       id
