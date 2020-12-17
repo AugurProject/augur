@@ -10,13 +10,24 @@ interface ButtonProps {
   disabled?: boolean;
   action?: Function;
   icon?: any;
+  selected?: boolean;
 }
 
-const Button = ({ text, className, disabled, action, icon }: ButtonProps) => {
+const Button = ({
+  text,
+  className,
+  disabled,
+  action,
+  icon,
+  selected,
+}: ButtonProps) => {
   return (
     <button
-      className={classNames(className, { [Styles.disabled]: disabled })}
-      onClick={(e) => action(e)}
+      className={classNames(className, {
+        [Styles.disabled]: disabled,
+        [Styles.selected]: selected,
+      })}
+      onClick={(e) => action && action(e)}
     >
       {text}
       {icon && icon}
@@ -51,3 +62,7 @@ export const DirectionButton = (props: DirectionButtonProps) => (
     {Arrow}
   </button>
 );
+
+export const SmallRoundedButton = (props: ButtonProps) => {
+  return <Button className={Styles.SmallRoundedButton} {...props} />;
+};

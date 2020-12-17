@@ -803,3 +803,68 @@
     outline: 0;
   }
 }
+
+.SelectionGroup {
+  > span {
+    .text-16;
+
+    color: var(--simple-primary-text);
+    text-transform: capitalize;
+    margin-bottom: @size-16;
+    display: flex;
+  }
+
+  > div {
+    display: flex;
+    grid-gap: @size-6;
+    flex-flow: row wrap;
+  }
+}
+
+.SharedSelectionItem {
+  .SimpleBorder;
+
+  padding: @size-10 @size-12;
+  display: flex;
+  align-items: center;
+
+  > input {
+    width: @size-20;
+    height: @size-20;
+    margin: 0;
+    display: flex;
+    pointer-events: none;
+  }
+
+  > span {
+    .text-16-semi-bold;
+
+    color: var(--simple-secondary-text);
+    text-transform: capitalize;
+    white-space: nowrap;
+    margin-left: @size-8;
+  }
+
+  &.Selected {
+    border: @size-1 solid var(--simple-primary-text);
+
+    > span {
+      color: var(--simple-primary-text);
+    }
+  }
+}
+
+.Checkbox {
+  .SharedSelectionItem;
+}
+
+.RadioBar {
+  .SharedSelectionItem;
+
+  > input {
+    width: @size-20;
+    height: @size-20;
+    margin: 0;
+    display: flex;
+  }
+}

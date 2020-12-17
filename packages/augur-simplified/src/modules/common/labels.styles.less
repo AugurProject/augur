@@ -216,29 +216,29 @@
     height: @size-85;
     justify-content: center;
 
-    > div:last-of-type,
-    > div:nth-last-of-type(2) {
+
+    > div {
+      flex: 1;
+      position: relative;
+      padding: 0;
+    }
+
+    > div:nth-of-type(4),
+    > div:nth-of-type(5) {
       display: none;
     }
 
     > div:nth-of-type(3) {
       margin: 0;
       border-right: 0;
+      padding: 0;
       border-left: @size-1 solid var(--simple-border);
     }
 
-    &.CashAmounts {
-      > div {
-        flex: 1;
-        position: relative;
-        padding: 0 @size-14;
-      }
-
-      > div:nth-of-type(2) {
-        border: 0;
-        height: fit-content;
-        margin: auto;
-      }
+    > div:nth-of-type(2) {
+      border: 0;
+      height: fit-content;
+      margin: auto;
     }
   }
 }

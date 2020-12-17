@@ -7,19 +7,11 @@ import {
 } from 'modules/stores/constants';
 import { windowRef } from 'utils/window-ref';
 
-const {
-  SET_IS_MOBILE,
-  SET_FILTER_SIDEBAR,
-  UPDATE_GRAPH_DATA,
-} = APP_STATUS_ACTIONS;
+const { SET_IS_MOBILE, SET_SIDEBAR, UPDATE_GRAPH_DATA } = APP_STATUS_ACTIONS;
 
-const {
-  IS_MOBILE,
-  FILTER_SIDEBAR,
-  GRAPH_DATA,
-} = APP_STATE_KEYS;
+const { IS_MOBILE, FILTER_SIDEBAR, GRAPH_DATA } = APP_STATE_KEYS;
 
-const isAsync = obj => {
+const isAsync = (obj) => {
   return (
     !!obj &&
     (typeof obj === 'object' || typeof obj === 'function') &&
@@ -27,7 +19,7 @@ const isAsync = obj => {
   );
 };
 
-const isPromise = obj => {
+const isPromise = (obj) => {
   return (
     !!obj &&
     (typeof obj === 'object' || typeof obj === 'function') &&
@@ -42,7 +34,7 @@ const middleware = (dispatch, action) => {
       dispatch({ ...action, payload: v });
     })();
   } else if (action.payload && isPromise(action.payload)) {
-    action.payload.then(v => {
+    action.payload.then((v) => {
       dispatch({ ...action, payload: v });
     });
   } else {
@@ -50,7 +42,7 @@ const middleware = (dispatch, action) => {
   }
 };
 
-export const dispatchMiddleware = dispatch => action =>
+export const dispatchMiddleware = (dispatch) => (action) =>
   middleware(dispatch, action);
 
 export const keyedObjToArray = (KeyedObject: object) => Object.entries(KeyedObject).map(i => i[1]);
@@ -67,8 +59,8 @@ export function AppStatusReducer(state, action) {
       updatedState[IS_MOBILE] = action[IS_MOBILE];
       break;
     }
-    case SET_FILTER_SIDEBAR: {
-      updatedState[FILTER_SIDEBAR] = action[FILTER_SIDEBAR];
+    case SET_SIDEBAR: {
+      updatedState['sidebarType'] = action.sidebarType;
       break;
     }
     case UPDATE_GRAPH_DATA: {
@@ -80,7 +72,7 @@ export function AppStatusReducer(state, action) {
       break;
     }
     default:
-    console.log(`Error: ${action.type} not caught by Markets reducer`);
+      console.log(`Error: ${action.type} not caught by Markets reducer`);
   }
   windowRef.appStatus = updatedState;
   return updatedState;
@@ -93,9 +85,10 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
   return {
     ...state,
     actions: {
-      setFilterSidebar: filterSidebar => dispatch({type: SET_FILTER_SIDEBAR, filterSidebar}),
-      setIsMobile: isMobile => dispatch({ type: SET_IS_MOBILE, isMobile }),
-      updateGraphData: graphData => dispatch({ type: UPDATE_GRAPH_DATA, graphData }),
+      setSidebar: (sidebarType) => dispatch({ type: SET_SIDEBAR, sidebarType }),
+      setIsMobile: (isMobile) => dispatch({ type: SET_IS_MOBILE, isMobile }),
+      updateGraphData: (graphData) =>
+        dispatch({ type: UPDATE_GRAPH_DATA, graphData }),
     },
   };
 };

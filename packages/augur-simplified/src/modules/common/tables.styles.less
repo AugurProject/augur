@@ -1,4 +1,5 @@
 @import (reference) '~assets/styles/shared';
+@import (reference) '~modules/common/buttons.styles.less';
 
 .MarketTableHeader {
   padding: @size-20 @size-32;
@@ -12,11 +13,16 @@
 
     color: var(--simple-primary-text);
     flex: 1;
+    margin-right: @size-12;
   }
 
   > svg {
     width: @size-20;
     height: @size-20;
+  }
+
+  @media @breakpoint-mobile-tablet {
+    padding: @size-16;
   }
 }
 
@@ -33,6 +39,7 @@
 .RowHeaderSharedStyles {
   padding: @size-20 @size-32;
   display: grid;
+  align-items: center;
 
   &:not(:last-of-type) {
     border-bottom: @size-1 solid var(--simple-border);
@@ -42,8 +49,13 @@
     display: flex;
 
     &:not(:first-of-type) {
+      text-align: right;
       justify-content: flex-end;
     }
+  }
+
+  @media @breakpoint-mobile-tablet {
+    padding: @size-10 @size-16;
   }
 }
 
@@ -62,12 +74,23 @@
 
     color: var(--simple-primary-text);
   }
+  @media @breakpoint-mobile-tablet {
+    padding: @size-20 @size-16;
+  }
 }
 
 // positions table
 
 .PositionRowHeader {
   grid-template-columns: repeat(6, 1fr);
+
+  @media @breakpoint-mobile-tablet {
+    grid-template-columns: repeat(5, 1fr);
+    
+    > li:nth-of-type(4) {
+      display: none;
+    }
+  }
 }
 
 .PositionTable {
@@ -116,6 +139,12 @@
 
   > button:nth-of-type(2) {
     margin-left: @size-11;
+  }
+
+  @media @breakpoint-mobile-tablet {
+    > button {
+      flex: 1;
+    }
   }
 }
 
@@ -201,6 +230,16 @@
   > li {
     &:first-of-type {
       white-space: nowrap;
+    }
+  }
+}
+
+@media @breakpoint-mobile-tablet {
+  .PositionsLiquidityViewSwitcher {
+    > div:first-of-type {
+      > button {
+        margin-left: auto;
+      }
     }
   }
 }
