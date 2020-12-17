@@ -39,7 +39,7 @@ export const DEFAULT_APP_STATUS_STATE = {
 
 export const APP_STATE_KEYS = {
   IS_MOBILE: 'isMobile',
-  FILTER_SIDEBAR: 'filterSidebar',
+  SIDEBAR_TYPE: 'sidebarType',
   LOGIN_ACCOUNT: 'loginAccount',
   MARKET_INFOS: 'marketInfos',
   POSITIONS: 'positions',

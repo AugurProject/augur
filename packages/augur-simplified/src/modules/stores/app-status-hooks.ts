@@ -9,7 +9,7 @@ import { windowRef } from 'utils/window-ref';
 
 const { SET_IS_MOBILE, SET_SIDEBAR, UPDATE_GRAPH_DATA } = APP_STATUS_ACTIONS;
 
-const { IS_MOBILE, FILTER_SIDEBAR, GRAPH_DATA } = APP_STATE_KEYS;
+const { IS_MOBILE, SIDEBAR_TYPE, GRAPH_DATA } = APP_STATE_KEYS;
 
 const isAsync = (obj) => {
   return (
@@ -60,7 +60,7 @@ export function AppStatusReducer(state, action) {
       break;
     }
     case SET_SIDEBAR: {
-      updatedState['sidebarType'] = action.sidebarType;
+      updatedState[SIDEBAR_TYPE] = action.sidebarType;
       break;
     }
     case UPDATE_GRAPH_DATA: {
