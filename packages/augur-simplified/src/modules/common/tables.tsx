@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Styles from 'modules/common/tables.styles.less';
 import { UsdIcon } from './icons';
-import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
+import { PrimaryButton, SecondaryButton, SmallRoundedButton } from 'modules/common/buttons';
 import classNames from 'classnames';
 import { POSITIONS, LIQUIDITY } from 'modules/constants';
 import { Pagination } from 'modules/common/pagination';
@@ -58,14 +58,32 @@ const MarketTableHeader = ({ market }) => {
 };
 
 const PositionHeader = () => {
-  const {
-    isMobile
-  } = useAppStatusStore();
+  const { isMobile } = useAppStatusStore();
   return (
     <ul className={Styles.PositionHeader}>
       <li>outcome</li>
-      <li>{isMobile ? <>qty<br/>owned</>  : 'quantity owned'}</li>
-      <li>{isMobile ? <>avg.<br/>price</> : 'avg. price paid'}</li>
+      <li>
+        {isMobile ? (
+          <>
+            qty
+            <br />
+            owned
+          </>
+        ) : (
+          'quantity owned'
+        )}
+      </li>
+      <li>
+        {isMobile ? (
+          <>
+            avg.
+            <br />
+            price
+          </>
+        ) : (
+          'avg. price paid'
+        )}
+      </li>
       <li>init. value</li>
       <li>cur.{isMobile ? <br /> : ' '}value</li>
       <li>p/l</li>
@@ -90,9 +108,7 @@ interface PositionFooterProps {
   claimableWinnings?: string;
 }
 export const PositionFooter = ({ claimableWinnings }: PositionFooterProps) => {
-  const {
-    isMobile
-  } = useAppStatusStore();
+  const { isMobile } = useAppStatusStore();
   if (isMobile && !claimableWinnings) return null;
   return (
     <div className={Styles.PositionFooter}>
@@ -134,9 +150,7 @@ export const PositionTable = ({
 };
 
 const LiquidityHeader = () => {
-  const {
-    isMobile
-  } = useAppStatusStore();
+  const { isMobile } = useAppStatusStore();
   return (
     <ul className={Styles.LiquidityHeader}>
       <li>liquidity shares{isMobile ? <br /> : ''}owned</li>
@@ -236,15 +250,14 @@ export const PositionsLiquidityViewSwitcher = ({
           {LIQUIDITY}
         </span>
         {showActivityButton && (
-          <button
-            className={classNames({ [Styles.selected]: tableView === null })}
-            onClick={() => {
+          <SmallRoundedButton
+            action={() => {
               setTableView(null);
               setActivity();
             }}
-          >
-            Your activity
-          </button>
+            text="your activity"
+            selected={tableView === null}
+          />
         )}
       </div>
       {tableView !== null && (

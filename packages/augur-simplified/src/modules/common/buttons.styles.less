@@ -38,18 +38,24 @@
   justify-content: center;
   grid-gap: @size-8;
   outline: none;
+
+  &:hover {
+    border: @size-1 solid var(--simple-secondary-text);
+  }
+}
+
+.SmallRoundedButton {
+  .RoundedButton;
+
   color: var(--simple-secondary-text);
   height: @size-25;
   min-height: @size-25;
   max-height: @size-25;
   padding: @size-4 @size-8;
+  text-transform: capitalize;
 
   &.selected {
     color: var(--simple-primary-text);
-    border: @size-1 solid var(--simple-secondary-text);
-  }
-
-  &:hover {
     border: @size-1 solid var(--simple-secondary-text);
   }
 }

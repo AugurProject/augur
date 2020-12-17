@@ -6,6 +6,7 @@ import Styles from 'modules/common/charts.styles.less';
 import classNames from 'classnames';
 import { formatDai } from 'utils/format-number';
 import { Checkbox } from 'modules/common/icons';
+import { SmallRoundedButton } from './buttons';
 
 const HIGHLIGHTED_LINE_WIDTH = 2;
 const NORMAL_LINE_WIDTH = 1;
@@ -24,25 +25,25 @@ const RANGE_OPTIONS = [
     id: 0,
     label: '24hr',
     tick: FIFTEEN_MIN_MS,
-    startTime: END_TIME - ONE_DAY_MS
+    startTime: END_TIME - ONE_DAY_MS,
   },
   {
     id: 1,
     label: '7d',
     tick: ONE_HOUR_MS,
-    startTime: END_TIME - ONE_WEEK_MS
+    startTime: END_TIME - ONE_WEEK_MS,
   },
   {
     id: 2,
     label: '30d',
     tick: ONE_QUARTER_DAY,
-    startTime: END_TIME - ONE_MONTH_MS
+    startTime: END_TIME - ONE_MONTH_MS,
   },
   {
     id: 3,
     label: 'All time',
     tick: ONE_DAY_MS,
-    startTime: END_TIME - (ONE_MONTH_MS * 6)
+    startTime: END_TIME - ONE_MONTH_MS * 6,
   },
 ];
 
@@ -84,7 +85,11 @@ const getMockPriceTime = (market, rangeSelection) => ({
   }),
 });
 
-export const PriceHistoryChart = ({ market, selectedOutcomes, rangeSelection }) => {
+export const PriceHistoryChart = ({
+  market,
+  selectedOutcomes,
+  rangeSelection,
+}) => {
   const container = useRef(null);
   // eslint-disable-next-line
   const [forceRender, setForceRender] = useState(false);
@@ -184,19 +189,16 @@ export const SimpleChartSection = ({ market }) => {
   return (
     <section className={Styles.SimpleChartSection}>
       <ul className={Styles.RangeSelection}>
-          {RANGE_OPTIONS.map(({ id, label }) => (
-            <li key={`range-option-${id}`}>
-              <button
-                className={classNames({
-                  [Styles.selected]: rangeSelection === id,
-                })}
-                onClick={() => rangeSelection !== id && setRangeSelection(id)}
-              >
-                {label}
-              </button>
-            </li>
-          ))}
-        </ul>
+        {RANGE_OPTIONS.map(({ id, label }) => (
+          <li key={`range-option-${id}`}>
+            <SmallRoundedButton
+              text={label}
+              selected={rangeSelection === id}
+              action={() => rangeSelection !== id && setRangeSelection(id)}
+            />
+          </li>
+        ))}
+      </ul>
       <PriceHistoryChart {...{ market, selectedOutcomes, rangeSelection }} />
       <div>
         {market.outcomes.map((outcome) => (
