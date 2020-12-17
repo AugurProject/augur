@@ -58,3 +58,12 @@ export const POPULAR_CATEGORIES_ICONS = {
   [CRYPTO]: CryptoIcon,
   [FINANCE]: FinanceIcon,
 };
+
+// side bar types
+export const NAVIGATION = 'NAVIGATION';
+export const FILTERS = 'FILTERS';
+
+export const SIDEBAR_TYPES = {
+  [NAVIGATION]: NAVIGATION,
+  [FILTERS]: FILTERS
+}
