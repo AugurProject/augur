@@ -9,7 +9,7 @@ import { windowRef } from 'utils/window-ref';
 
 const { SET_IS_MOBILE, SET_SIDEBAR, UPDATE_GRAPH_DATA } = APP_STATUS_ACTIONS;
 
-const { IS_MOBILE, FILTER_SIDEBAR, GRAPH_DATA } = APP_STATE_KEYS;
+const { IS_MOBILE, SIDEBAR_TYPE, GRAPH_DATA } = APP_STATE_KEYS;
 
 const isAsync = (obj) => {
   return (
@@ -45,8 +45,12 @@ const middleware = (dispatch, action) => {
 export const dispatchMiddleware = (dispatch) => (action) =>
   middleware(dispatch, action);
 
-export const keyedObjToArray = (KeyedObject) =>
-  Object.entries(KeyedObject).map((i) => i[1]);
+export const keyedObjToArray = (KeyedObject: object) => Object.entries(KeyedObject).map(i => i[1]);
+
+export const arrayToKeyedObject = (ArrayOfObj: Array<{ id: string }>) => ArrayOfObj.reduce((acc, obj) => {
+  acc[obj.id] = obj;
+  return acc;
+}, {});
 
 export function AppStatusReducer(state, action) {
   const updatedState = { ...state };
@@ -56,11 +60,15 @@ export function AppStatusReducer(state, action) {
       break;
     }
     case SET_SIDEBAR: {
-      updatedState['sidebarType'] = action.sidebarType;
+      updatedState[SIDEBAR_TYPE] = action.sidebarType;
       break;
     }
     case UPDATE_GRAPH_DATA: {
-      updatedState[GRAPH_DATA] = action[GRAPH_DATA];
+      updatedState[GRAPH_DATA] = {
+        markets: arrayToKeyedObject(action[GRAPH_DATA].markets),
+        past: arrayToKeyedObject(action[GRAPH_DATA].past),
+        paraShareTokens: arrayToKeyedObject(action[GRAPH_DATA].paraShareTokens),
+      };
       break;
     }
     default:

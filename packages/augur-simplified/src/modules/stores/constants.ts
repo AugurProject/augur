@@ -30,12 +30,16 @@ export const DEFAULT_APP_STATUS_STATE = {
   userInfo: {
     activity: {},
   },
-  graphData: {},
+  graphData: {
+    markets: {},
+    past: {},
+    paraShareTokens: {},
+  },
 };
 
 export const APP_STATE_KEYS = {
   IS_MOBILE: 'isMobile',
-  FILTER_SIDEBAR: 'filterSidebar',
+  SIDEBAR_TYPE: 'sidebarType',
   LOGIN_ACCOUNT: 'loginAccount',
   MARKET_INFOS: 'marketInfos',
   POSITIONS: 'positions',
@@ -162,6 +166,7 @@ export const fakeTransactionsData = {
 };
 
 export const MOCK_APP_STATUS_STATE = {
+  ...DEFAULT_APP_STATUS_STATE,
   positions: fakePositionsData,
   liquidity: fakeLiquidityData,
   transactions: fakeTransactionsData,
