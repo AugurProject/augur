@@ -128,6 +128,9 @@ type Market @entity {
   "Market type as a string enum"
   marketType: MarketType!
 
+  "Fee (per cash) in AttoCash"
+  fee: BigInt!
+
   "Possible outcomes of the market"
   outcomes: [Outcome!]! @derivedFrom(field:"market")
 
