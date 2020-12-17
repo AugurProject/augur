@@ -151,7 +151,7 @@ export class AMM {
     const outputShares = setsToBuy.plus(swappedForShares);
     return includeFee
       ? AMM.applyFee(outputShares, fee)
-      : setsToBuy.plus(outputShares);
+      : outputShares;
   }
 
   async doExitPosition(market: string, paraShareToken: string, fee: BigNumber, shortShares: BigNumber, longShares: BigNumber, minCash: BigNumber): Promise<TransactionResponse> {
