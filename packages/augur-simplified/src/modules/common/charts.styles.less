@@ -109,22 +109,22 @@
 
       .highcharts-line-series.highcharts-color-1,
       .highcharts-area-series.highcharts-color-1 {
-        fill: var(--simple-buy);
+        fill: var(--simple-sell);
       }
 
       g.highcharts-line-series.highcharts-color-1 > path.highcharts-graph,
       g.highcharts-area-series.highcharts-color-1 > path.highcharts-graph {
-        stroke: var(--simple-buy);
+        stroke: var(--simple-sell);
       }
 
       .highcharts-line-series.highcharts-color-2,
       .highcharts-area-series.highcharts-color-2 {
-        fill: var(--simple-sell);
+        fill: var(--simple-buy);
       }
 
       g.highcharts-line-series.highcharts-color-2 > path.highcharts-graph,
       g.highcharts-area-series.highcharts-color-2 > path.highcharts-graph {
-        stroke: var(--simple-sell);
+        stroke: var(--simple-buy);
       }
 
       .highcharts-line-series.highcharts-color-3,
@@ -252,6 +252,7 @@
   padding: 0 @size-12;
   flex: 0 auto;
   white-space: nowrap;
+  text-transform: capitalize;
 
   > span {
     border: @size-2 solid var(--simple-border-dk);
@@ -287,12 +288,12 @@
 
 .isSelected_1 {
   > span {
-    background: var(--simple-buy);
+    background: var(--simple-sell);
   }
 }
 
 .isSelected_2 {
   > span {
-    background: var(--simple-sell);
+    background: var(--simple-buy);
   }
 }
