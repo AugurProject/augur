@@ -174,7 +174,9 @@ export const SelectOutcomeButton = ({
 };
 
 export const SimpleChartSection = ({ market }) => {
-  const { graphData: { paraShareTokens } } = useAppStatusStore();
+  const {
+    graphData: { paraShareTokens },
+  } = useAppStatusStore();
   const formattedOutcomes = getFormattedOutcomes({ market, paraShareTokens });
   // eslint-disable-next-line
   const [selectedOutcomes, setSelectedOutcomes] = useState(
@@ -189,7 +191,7 @@ export const SimpleChartSection = ({ market }) => {
     updates[id] = !updates[id];
     setSelectedOutcomes(updates);
   };
-  
+
   return (
     <section className={Styles.SimpleChartSection}>
       <ul className={Styles.RangeSelection}>
@@ -203,9 +205,11 @@ export const SimpleChartSection = ({ market }) => {
           </li>
         ))}
       </ul>
-      <PriceHistoryChart {...{ market, formattedOutcomes, selectedOutcomes, rangeSelection }} />
+      <PriceHistoryChart
+        {...{ market, formattedOutcomes, selectedOutcomes, rangeSelection }}
+      />
       <div>
-        {formattedOutcomes.map((outcome) => (
+        {formattedOutcomes.map(outcome => (
           <SelectOutcomeButton
             key={`${outcome.id}_${outcome.value}`}
             outcome={outcome}
@@ -367,17 +371,27 @@ const getOptions = ({
   },
 });
 
-export const getFormattedOutcomes = ({ market: { amms, outcomes }, paraShareTokens }) => {
+export const getFormattedOutcomes = ({
+  market: { amms, outcomes },
+  paraShareTokens,
+}) => {
   let formattedOutcomes = outcomes.map((outcome, outcomeIdx) => ({
     ...outcome,
     outcomeIdx,
     label: outcome.value.toLowerCase(),
     lastPrice: '0.5',
   }));
-  amms.forEach(({ percentageNo, percentageYes, shareToken: { id: shareTokenId } }) => {
-    formattedOutcomes.forEach(fmrOut => {
-      fmrOut.lastPrice = fmrOut.outcomeIdx === 0 ? formatPercent('0').formatted : fmrOut.outcomeIdx === 1 ? formatPercent(percentageNo / 100).formatted : formatPercent(percentageYes / 100).formatted;
-    })
-  })
+  amms.forEach(
+    ({ percentageNo, percentageYes, shareToken: { id: shareTokenId } }) => {
+      formattedOutcomes.forEach(fmrOut => {
+        fmrOut.lastPrice =
+          fmrOut.outcomeIdx === 0
+            ? formatPercent('0').formatted
+            : fmrOut.outcomeIdx === 1
+            ? formatPercent(percentageNo / 100).formatted
+            : formatPercent(percentageYes / 100).formatted;
+      });
+    }
+  );
   return formattedOutcomes;
 };
