@@ -28,9 +28,13 @@ const MarketView = ({ defaultMarket = null }) => {
     isMobile,
     showTradingForm,
     actions: { setShowTradingForm },
+    graphData: { markets }
   } = useAppStatusStore();
-  const market = !!defaultMarket ? defaultMarket : marketInfos['0xdeadbeef'];
 
+  const marketKeys = Object.keys(markets);
+  const market = !!defaultMarket ? defaultMarket : markets[marketKeys[0]];
+  if (!market) return <div className={Styles.MarketView} />;
+  // console.log(market);
   return (
     <div className={Styles.MarketView}>
       <section>
@@ -43,19 +47,19 @@ const MarketView = ({ defaultMarket = null }) => {
         <ul className={Styles.StatsRow}>
           <li>
             <span>24hr Volume</span>
-            <span>{market.twentyFourHourVolume.full}</span>
+            <span>{market.twentyFourHourVolume?.full || '$0.00'}</span>
           </li>
           <li>
             <span>Total Volume</span>
-            <span>{market.totalVolume.full}</span>
+            <span>{market.totalVolume?.full || '$0.00'}</span>
           </li>
           <li>
             <span>Liquidity</span>
-            <span>{market.totalLiquidity.full}</span>
+            <span>{market.totalLiquidity?.full || '$0.00'}</span>
           </li>
           <li>
             <span>Expires</span>
-            <span>{market.expirationDate}</span>
+            <span>{new Date(Number(market?.endTimestamp * 1000)).toDateString() || 'missing'}</span>
           </li>
         </ul>
         {isMobile && (
@@ -79,14 +83,15 @@ const MarketView = ({ defaultMarket = null }) => {
           })}
         >
           <h4>Market Details</h4>
-          {market.details.map((detail, i) => (
+          {market?.details?.map((detail, i) => (
             <p key={`${detail.substring(5, 25)}-${i}`}>{detail}</p>
           ))}
-          {market.details.length > 1 && (
+          {market?.details?.length > 1 && (
             <button onClick={() => setShowMoreDetails(!showMoreDetails)}>
               {showMoreDetails ? 'Read Less' : 'Read More'}
             </button>
           )}
+          {(!market.details || market?.details?.length === 0) && <p>There are no additional details for this Market.</p>}
         </div>
         <div className={Styles.TransactionsTable}>
           <span>Transactions</span>

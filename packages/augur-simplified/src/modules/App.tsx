@@ -28,7 +28,22 @@ const AppBody = () => {
   } = useAppStatusStore();
 
   useEffect(() => {
+    // get data immediately, then setup interval
     getMarketsData(updateGraphData);
+    let isMounted = true;
+    const intervalId = setInterval(() => {
+      getMarketsData((data) => {
+        if (isMounted) updateGraphData(data);
+      });
+    }, 15000);
+    return (() => {
+      isMounted = false;
+      clearInterval(intervalId);
+    })
+    // eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
     function handleRezize() {
       checkIsMobile(setIsMobile);
     }

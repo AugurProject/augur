@@ -33,6 +33,7 @@
     "sdk": "yarn workspace @augurproject/sdk",
     "tools": "yarn workspace @augurproject/tools",
     "ui": "yarn workspace @augurproject/ui",
+    "sim": "yarn workspace @augurproject/simplified",
     "an": "yarn workspace @augurproject/node",
     "flash": "yarn workspace @augurproject/tools --silent flash",
     "flash-util": "yarn workspace @augurproject/tools --silent flash --network none",
