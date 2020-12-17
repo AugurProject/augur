@@ -3,16 +3,23 @@ import Styles from 'modules/market/market-view.styles.less';
 import classNames from 'classnames';
 import { UsdIcon } from 'modules/common/icons';
 import SimpleChartSection from 'modules/common/charts';
-import { AddLiquidity, CategoryIcon, CategoryLabel } from 'modules/common/labels';
-import { PositionsLiquidityViewSwitcher, TransactionsTable } from 'modules/common/tables';
+import {
+  AddLiquidity,
+  CategoryIcon,
+  CategoryLabel,
+} from 'modules/common/labels';
+import {
+  PositionsLiquidityViewSwitcher,
+  TransactionsTable,
+} from 'modules/common/tables';
 import TradingForm from 'modules/market/trading-form';
 import { useAppStatusStore } from 'modules/stores/app-status';
 
 const MarketView = ({ defaultMarket = null }) => {
   const [showMoreDetails, setShowMoreDetails] = useState(false);
-  const { marketInfos } = useAppStatusStore();
+  const { marketInfos, isMobile } = useAppStatusStore();
   const market = !!defaultMarket ? defaultMarket : marketInfos['0xdeadbeef'];
-  
+
   return (
     <div className={Styles.MarketView}>
       <section>
@@ -58,16 +65,16 @@ const MarketView = ({ defaultMarket = null }) => {
           )}
         </div>
         <div className={Styles.TransactionsTable}>
-          <span>
-            Transactions
-          </span>
+          <span>Transactions</span>
           <TransactionsTable />
         </div>
       </section>
-      <section>
-        <TradingForm />
-        <AddLiquidity />
-      </section>
+      {!isMobile && (
+        <section>
+          <TradingForm />
+          <AddLiquidity />
+        </section>
+      )}
     </div>
   );
 };
