@@ -11410,6 +11410,24 @@ export class WethWrapperForAMMExchange<TBigNumber> extends Contract<TBigNumber> 
 		return <TBigNumber>result[0]
 	}
 
+	public claimTradingProceeds = async (market: string, shareHolder: string, fingerprint: string, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"address payable","name":"_shareHolder","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"}],"name":"claimTradingProceeds","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [market, shareHolder, fingerprint], 'claimTradingProceeds', options.sender)
+	}
+
+	public claimTradingProceeds_estimateGas = async (market: string, shareHolder: string, fingerprint: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"address payable","name":"_shareHolder","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"}],"name":"claimTradingProceeds","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [market, shareHolder, fingerprint], 'claimTradingProceeds', options.sender)
+	}
+
+	public claimTradingProceeds_ = async (market: string, shareHolder: string, fingerprint: string, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"address payable","name":"_shareHolder","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"}],"name":"claimTradingProceeds","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [market, shareHolder, fingerprint], options.sender)
+	}
+
 	public enterPosition = async (market: string, fee: TBigNumber, buyLong: boolean, minShares: TBigNumber, options?: { sender?: string, attachedEth?: TBigNumber }): Promise<Array<Event>> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"uint256","name":"_fee","type":"uint256"},{"internalType":"bool","name":"_buyLong","type":"bool"},{"internalType":"uint256","name":"_minShares","type":"uint256"}],"name":"enterPosition","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":true,"stateMutability":"payable","type":"function"}
