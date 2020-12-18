@@ -73,7 +73,16 @@
       padding-right: @size-88;
       grid-gap: @size-8;
 
-      > button {
+      > button:first-of-type {
+        &:first-of-type {
+          margin-left: auto;
+          min-height: @size-48;
+          width: @size-21;
+          max-width: 175px;
+        }
+      }
+
+      > button:last-of-type {
         .RoundedButton;
         .text-16-bold;
 
@@ -83,10 +92,6 @@
         height: @size-48;
         padding: 0 @size-14;
         color: var(--simple-primary-text);
-
-        &:first-of-type {
-          margin-left: auto;
-        }
       }
     }
   }

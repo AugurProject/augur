@@ -9,6 +9,8 @@ import parsePath from 'modules/routes/helpers/parse-path';
 import classNames from 'classnames';
 import { GearIcon, ThreeLinesIcon } from 'modules/common/icons';
 import { useAppStatusStore } from 'modules/stores/app-status';
+import ConnectAccount from 'modules/ConnectAccount/index';
+
 
 export const TopNav = () => {
   const location = useLocation();
@@ -38,12 +40,7 @@ export const TopNav = () => {
         )}
       </section>
       <section>
-        <button
-          title="This doesn't do anything yet!"
-          onClick={() => alert('TODO: Make this work.')}
-        >
-          Connect Account
-        </button>
+        <ConnectAccount darkMode={false} />
         {!isMobile && (
           <button
             title="This doesn't do anything yet!"
