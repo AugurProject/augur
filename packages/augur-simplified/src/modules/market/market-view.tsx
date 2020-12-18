@@ -19,12 +19,24 @@ import TradingForm, {
 import { useAppStatusStore } from 'modules/stores/app-status';
 import { YES_NO, BUY } from 'modules/constants';
 
+const getDetails = market => {
+  const rawInfo = market?.extraInfoRaw || "{}";
+  const { longDescription } = JSON.parse(rawInfo, (key, value) => {
+    if (key === 'longDescription') {
+      const processDesc = value.split('\n');
+      return processDesc;
+    } else {
+      return value;
+    }
+  });
+  return longDescription || [];
+};
+
 const MarketView = ({ defaultMarket = null }) => {
   const [showMoreDetails, setShowMoreDetails] = useState(false);
   const [selectedOutcome, setSelectedOutcome] = useState(fakeYesNoOutcomes[0]);
 
   const {
-    marketInfos,
     isMobile,
     showTradingForm,
     actions: { setShowTradingForm },
@@ -32,9 +44,9 @@ const MarketView = ({ defaultMarket = null }) => {
   } = useAppStatusStore();
 
   const marketKeys = Object.keys(markets);
-  const market = !!defaultMarket ? defaultMarket : markets[marketKeys[0]];
+  const market = !!defaultMarket ? defaultMarket : markets[marketKeys[4]];
   if (!market) return <div className={Styles.MarketView} />;
-  // console.log(market);
+  const details = getDetails(market);
   return (
     <div className={Styles.MarketView}>
       <section>
@@ -83,15 +95,15 @@ const MarketView = ({ defaultMarket = null }) => {
           })}
         >
           <h4>Market Details</h4>
-          {market?.details?.map((detail, i) => (
+          {details.map((detail, i) => (
             <p key={`${detail.substring(5, 25)}-${i}`}>{detail}</p>
           ))}
-          {market?.details?.length > 1 && (
+          {details.length > 1 && (
             <button onClick={() => setShowMoreDetails(!showMoreDetails)}>
               {showMoreDetails ? 'Read Less' : 'Read More'}
             </button>
           )}
-          {(!market.details || market?.details?.length === 0) && <p>There are no additional details for this Market.</p>}
+          {details.length === 0 && <p>There are no additional details for this Market.</p>}
         </div>
         <div className={Styles.TransactionsTable}>
           <span>Transactions</span>
