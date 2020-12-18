@@ -28,7 +28,7 @@
     "resolveJsonModule": false
   },
   "include": [
-    "./src/**/*"
+    "./src/**"
   ],
   "exclude": [
     "./src/**/*.test.ts"
