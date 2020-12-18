@@ -4,7 +4,6 @@ import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
 import { lighten } from 'polished'
 import { Activity } from 'react-feather'
 import { ethers } from 'ethers'
-import { Button as RebassButton } from 'rebass/styled-components'
 import WalletModal from './components/WalletModal'
 import Identicon from './components/Identicon'
 import CoinbaseWalletIcon from './assets/coinbaseWalletIcon.svg'
@@ -34,7 +33,7 @@ const IconWrapper = ({ children }) => (
 )
 
 const Web3StatusConnect = ({ children, darkMode, onClick }) => (
-  <RebassButton
+  <button
     onClick={onClick}
     style={{
       width: '100%',
@@ -57,11 +56,11 @@ const Web3StatusConnect = ({ children, darkMode, onClick }) => (
     }}
   >
       {children}
-  </RebassButton>
+  </button>
 )
 
 const Web3StatusConnected = ({ children, darkMode, onClick }) => (
-  <RebassButton
+  <button
     onClick={onClick}
     style={{
       width: '100%',
@@ -84,11 +83,11 @@ const Web3StatusConnected = ({ children, darkMode, onClick }) => (
     }}
   >
       {children}
-  </RebassButton>
+  </button>
 )
 
-const Web3StatusError = ({ children, darkMode, onClick }) => (
-  <RebassButton
+const Web3StatusError = ({ children, onClick }) => (
+  <button
     onClick={onClick}
     style={{
       width: '100%',
@@ -111,7 +110,7 @@ const Web3StatusError = ({ children, darkMode, onClick }) => (
     }}
   >
       {children}
-  </RebassButton>
+  </button>
 )
 
 const Text = ({ children }) => (

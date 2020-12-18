@@ -1,7 +1,5 @@
 import React from 'react'
-import { animated, useTransition } from 'react-spring'
 import { transparentize } from 'polished'
-// import { useGesture } from 'react-use-gesture'
 
 
 const Overlay = ({ children, darkMode, onDismiss }) => (
@@ -39,22 +37,16 @@ const Content = ({ children, darkMode }) => (
   }>{children}</div>
 )
 
-
-const AnimatedDialogOverlay = animated(Overlay)
-
-
 const StyledDialogOverlay = ({ onDismiss, darkMode, children }) => (
-  <AnimatedDialogOverlay onDismiss={onDismiss} darkMode={darkMode}>
+  <Overlay onDismiss={onDismiss} darkMode={darkMode}>
     {children}
-  </AnimatedDialogOverlay>
+  </Overlay>
 )
 
-const AnimatedDialogContent = animated(Content)
-
 const StyledDialogContent = ({ darkMode, children }) => (
-  <AnimatedDialogContent darkMode={darkMode}>
+  <Content darkMode={darkMode}>
     {children}
-  </AnimatedDialogContent>
+  </Content>
 )
 
 interface ModalProps {
@@ -70,46 +62,21 @@ interface ModalProps {
 export default function Modal({
   isOpen,
   onDismiss,
-  minHeight = false,
-  maxHeight = 90,
-  initialFocusRef,
   children,
   darkMode
 }: ModalProps) {
 
-  const fadeTransition = useTransition(isOpen, null, {
-    config: { duration: 200 },
-    from: { opacity: 0 },
-    enter: { opacity: 1 },
-    leave: { opacity: 0 }
-  })
-
-  // const [{}, set] = useSpring(() => ({ y: 0, config: { mass: 1, tension: 210, friction: 20 } }))
-  // const bind = useGesture({
-  //   onDrag: state => {
-  //     set({
-  //       y: state.down ? state.movement[1] : 0
-  //     })
-  //     if (state.movement[1] > 300 || (state.velocity > 3 && state.direction[1] > 0)) {
-  //       onDismiss()
-  //     }
-  //   }
-  // })
-
   return (
     <>
-      {fadeTransition.map(
-        ({ item, key, props }) =>
-          item && (
-            <StyledDialogOverlay key={key} onDismiss={onDismiss} darkMode={darkMode}>
-              <StyledDialogContent
-                darkMode={darkMode}
-              >
-                {children}
-              </StyledDialogContent>
-            </StyledDialogOverlay>
-          )
-      )}
+      {isOpen &&
+        <StyledDialogOverlay onDismiss={onDismiss} darkMode={darkMode}>
+          <StyledDialogContent
+            darkMode={darkMode}
+          >
+            {children}
+          </StyledDialogContent>
+        </StyledDialogOverlay>
+      }
     </>
   )
 }
