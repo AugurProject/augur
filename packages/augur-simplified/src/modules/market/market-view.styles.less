@@ -33,12 +33,12 @@
   display: flex;
   flex-flow: row nowrap;
   width: 100%;
-  grid-gap: @size-8;
   align-items: center;
   height: @size-42;
 
   > div:nth-of-type(2) {
     padding: 0 @size-16;
+    margin-left: @size-8;
   }
 }
 
@@ -163,6 +163,7 @@
 @media @breakpoint-mobile-tablet {
   .MarketView {
     padding: @size-24 @size-16 @size-40;
+    position: relative;
 
     > section:first-of-type {
       background-color: var(--light-background-color);

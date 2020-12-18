@@ -743,14 +743,18 @@
 
     color: var(--simple-primary-text);
     text-transform: capitalize;
-    margin-bottom: @size-16;
+    margin-bottom: @size-10;
     display: flex;
   }
 
   > div {
     display: flex;
-    grid-gap: @size-6;
     flex-flow: row wrap;
+
+    > div {
+      margin-right: @size-6;
+      margin-bottom: @size-6;
+    }
   }
 }
 

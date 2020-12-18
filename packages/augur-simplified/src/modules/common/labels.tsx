@@ -9,6 +9,7 @@ import {
   UsdIcon,
 } from 'modules/common/icons';
 import { POPULAR_CATEGORIES_ICONS } from 'modules/constants';
+import { useAppStatusStore } from 'modules/stores/app-status';
 
 interface ValueLabelProps {
   large?: boolean;
@@ -94,6 +95,7 @@ interface AppViewStatsProps {
 }
 
 export const AppViewStats = ({ showCashAmounts }: AppViewStatsProps) => {
+  const { isMobile } = useAppStatusStore();
   return (
     <div
       className={classNames(Styles.AppStats, {
@@ -102,7 +104,7 @@ export const AppViewStats = ({ showCashAmounts }: AppViewStatsProps) => {
     >
       <ValueLabel
         large
-        label={'total account value'}
+        label={isMobile ? 'total acc. value' : 'total account value'}
         value={formatDai(fakeMarketViewStats.totalAccountValue).full}
       />
       <ValueLabel
