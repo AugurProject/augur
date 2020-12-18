@@ -133,16 +133,8 @@
   height: @size-32;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
-  @media @breakpoint-mobile {
-    height: @size-40;
-  }
-
   > button {
     .text-12-medium;
-
-    @media @breakpoint-mobile {
-      .text-12-bold;
-    }
 
     background: var(--color-dark-grey);
     padding: 0 @size-12;
@@ -153,11 +145,6 @@
       display: flex;
       border-right: @size-1 solid var(--color-secondary-action-outline);
       padding: @size-5 @size-8 @size-5 0;
-
-      @media @breakpoint-mobile {
-        border-right: @size-1 solid var(--color-secondary-action);
-        padding: @size-10 0;
-      }
     }
 
     &:hover {
@@ -180,11 +167,6 @@
       padding: 0 @size-12;
       height: @size-32;
 
-      @media @breakpoint-mobile {
-        .text-12-bold;
-        height: @size-48;
-      }
-
       &::before {
         left: @size-12;
         right: @size-12;
@@ -201,17 +183,9 @@
   max-width: -moz-fit-content;
   border: 0;
 
-  @media @breakpoint-mobile {
-    height: @size-32;
-  }
-
   > button {
     .text-10-semi-bold;
     .SimpleBorder;
-
-    @media @breakpoint-mobile {
-      .text-10-bold;
-    }
 
     background: var(--simple-alternate-background);
     padding: @size-12 @size-18 @size-12 @size-16;
@@ -226,11 +200,6 @@
       white-space: nowrap;
       flex: 1;
       display: flex;
-
-      @media @breakpoint-mobile {
-        border-right: @size-1 solid var(--color-secondary-action-outline);
-        padding: @size-9 @size-8 @size-9 0;
-      }
     }
 
     // arrow
@@ -268,38 +237,10 @@
         display: none;
       }
 
-      @media @breakpoint-mobile {
-        .text-10-bold;
-        height: @size-40;
-      }
-
       &::before {
         left: @size-8;
         right: @size-8;
       }
-    }
-  }
-}
-
-.stretchOut {
-  @media @breakpoint-mobile {
-    height: @size-48;
-    // height: unset;
-    max-width: unset;
-
-    > div {
-      left: 0;
-    }
-
-    > button {
-      .mono-9;
-    }
-
-    > .list > button {
-      .text-12;
-      // height: unset;
-      height: @size-48;
-      padding: 1rem 0.75rem;
     }
   }
 }
@@ -648,10 +589,6 @@
       fill: var(--color-secondary-text);
       height: @size-16;
       width: @size-16;
-
-      @media @breakpoint-mobile {
-        transform: scale(1.3);
-      }
     }
   }
 
@@ -743,10 +680,6 @@
     &.selected {
       color: var(--color-primary-text);
       border-bottom: @size-1 solid var(--color-primary-text);
-    }
-
-    @media @breakpoint-mobile {
-      .text-12;
     }
   }
 }
@@ -866,5 +799,29 @@
     height: @size-20;
     margin: 0;
     display: flex;
+  }
+}
+
+.list {
+  display: flex;
+}
+
+.SmallDropdown {
+  > button {
+    padding: @size-12;
+    background-color: var(--simple-light-bg);
+
+    > span {
+      .text-12-semi-bold;
+    }
+
+    > svg {
+      width: @size-10;
+      height: @size-6;
+
+      > path {
+        fill: var(--simple-secondary-text);
+      }
+    }
   }
 }

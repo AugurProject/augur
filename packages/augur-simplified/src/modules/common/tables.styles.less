@@ -203,6 +203,17 @@
 
 .TransactionsSharedRowHeader {
   grid-template-columns: @size-150 repeat(5, 1fr);
+
+  @media @breakpoint-mobile-tablet {
+    grid-template-columns: @size-150 repeat(2, 1fr);
+    > li {
+      &:nth-of-type(3),
+      &:nth-of-type(4),
+      &:nth-of-type(5) {
+        display: none;
+      }
+    }
+  }
 }
 
 .TransactionsHeader {
@@ -212,8 +223,16 @@
 
   > li:first-of-type {
     > span:not(:first-of-type) {
-      color: var(--simple-secondary-text);
       margin-left: @size-8;
+    }
+
+    > span {
+      cursor: pointer;
+      color: var(--simple-secondary-text);
+
+      &.Selected {
+        color: var(--simple-primary-text);
+      }
     }
   }
 }

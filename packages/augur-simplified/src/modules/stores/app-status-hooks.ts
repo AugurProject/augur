@@ -7,7 +7,12 @@ import {
 } from 'modules/stores/constants';
 import { windowRef } from 'utils/window-ref';
 
-const { SET_IS_MOBILE, SET_SIDEBAR, UPDATE_GRAPH_DATA } = APP_STATUS_ACTIONS;
+const {
+  SET_SHOW_TRADING_FORM,
+  SET_IS_MOBILE,
+  SET_SIDEBAR,
+  UPDATE_GRAPH_DATA,
+} = APP_STATUS_ACTIONS;
 
 const { IS_MOBILE, SIDEBAR_TYPE, GRAPH_DATA } = APP_STATE_KEYS;
 
@@ -71,6 +76,10 @@ export function AppStatusReducer(state, action) {
       };
       break;
     }
+    case SET_SHOW_TRADING_FORM: {
+      updatedState['showTradingForm'] = action.showTradingForm;
+      break;
+    }
     default:
       console.log(`Error: ${action.type} not caught by Markets reducer`);
   }
@@ -85,6 +94,8 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
   return {
     ...state,
     actions: {
+      setShowTradingForm: (showTradingForm) =>
+        dispatch({ type: SET_SHOW_TRADING_FORM, showTradingForm }),
       setSidebar: (sidebarType) => dispatch({ type: SET_SIDEBAR, sidebarType }),
       setIsMobile: (isMobile) => dispatch({ type: SET_IS_MOBILE, isMobile }),
       updateGraphData: (graphData) =>

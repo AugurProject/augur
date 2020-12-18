@@ -23,6 +23,7 @@ function checkIsMobile(setIsMobile) {
 const AppBody = () => {
   const {
     sidebarType,
+    showTradingForm,
     actions: { setIsMobile, updateGraphData },
   } = useAppStatusStore();
 
@@ -57,14 +58,14 @@ const AppBody = () => {
 
   useEffect(() => {
     if (
-      sidebarType
+      sidebarType || showTradingForm
     ) {
       document.body.classList.add('App--noScroll');
       window.scrollTo(0, 0);
     } else {
       document.body.classList.remove('App--noScroll');
     }
-  }, [sidebarType]);
+  }, [sidebarType, showTradingForm]);
 
 
   return (

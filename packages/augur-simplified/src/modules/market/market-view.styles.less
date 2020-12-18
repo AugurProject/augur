@@ -1,5 +1,4 @@
 @import (reference) '~assets/styles/shared';
-@import (reference) '~modules/common/buttons.styles.less';
 
 .MarketView {
   .TwoTonePage;
@@ -158,5 +157,71 @@
     margin-bottom: @size-24;
     display: flex;
     margin-top: @size-16;
+  }
+}
+
+@media @breakpoint-mobile-tablet {
+  .MarketView {
+    padding: @size-24 @size-16 @size-40;
+
+    > section:first-of-type {
+      background-color: var(--light-background-color);
+      padding: 0;
+      max-width: unset;
+      grid-gap: unset;
+
+      > div:first-of-type {
+        margin-bottom: @size-16;
+      }
+
+      > h1 {
+        margin-bottom: @size-24;
+      }
+
+      > section {
+        margin-top: @size-40;
+        margin-bottom: @size-48;
+      }
+
+      > div:nth-of-type(4) {
+        margin: @size-40 0;
+      }
+    }
+
+    > section:nth-of-type(2) {
+      padding: 0;
+    }
+  }
+
+  .TransactionsTable {
+    > span {
+      margin-top: 0;
+    }
+  }
+
+  .StatsRow {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    height: unset;
+    margin-bottom: @size-24;
+
+    > li {
+      padding: @size-12;
+      height: unset;
+      grid-gap: @size-4;
+
+      > span:first-of-type {
+        .text-12;
+      }
+
+      > span:last-of-type {
+        .text-16-semi-bold;
+      }
+      
+      &:last-of-type {
+        grid-column: 1 / span 3;
+        border-top: @size-1 solid var(--simple-border);
+      }
+    }
   }
 }

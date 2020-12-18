@@ -3,14 +3,34 @@ import Styles from 'modules/market/market-view.styles.less';
 import classNames from 'classnames';
 import { UsdIcon } from 'modules/common/icons';
 import SimpleChartSection from 'modules/common/charts';
-import { AddLiquidity, CategoryIcon, CategoryLabel } from 'modules/common/labels';
-import { PositionsLiquidityViewSwitcher, TransactionsTable } from 'modules/common/tables';
-import TradingForm from 'modules/market/trading-form';
+import {
+  AddLiquidity,
+  CategoryIcon,
+  CategoryLabel,
+} from 'modules/common/labels';
+import {
+  PositionsLiquidityViewSwitcher,
+  TransactionsTable,
+} from 'modules/common/tables';
+import TradingForm, {
+  fakeYesNoOutcomes,
+  OutcomesGrid,
+} from 'modules/market/trading-form';
 import { useAppStatusStore } from 'modules/stores/app-status';
+import { YES_NO, BUY } from 'modules/constants';
 
 const MarketView = ({ defaultMarket = null }) => {
   const [showMoreDetails, setShowMoreDetails] = useState(false);
-  const { graphData: { markets }} = useAppStatusStore();
+  const [selectedOutcome, setSelectedOutcome] = useState(fakeYesNoOutcomes[0]);
+
+  const {
+    marketInfos,
+    isMobile,
+    showTradingForm,
+    actions: { setShowTradingForm },
+    graphData: { markets }
+  } = useAppStatusStore();
+
   const marketKeys = Object.keys(markets);
   const market = !!defaultMarket ? defaultMarket : markets[marketKeys[0]];
   if (!market) return <div className={Styles.MarketView} />;
@@ -42,6 +62,19 @@ const MarketView = ({ defaultMarket = null }) => {
             <span>{new Date(Number(market?.endTimestamp * 1000)).toDateString() || 'missing'}</span>
           </li>
         </ul>
+        {isMobile && (
+          <OutcomesGrid
+            outcomes={fakeYesNoOutcomes}
+            selectedOutcome={fakeYesNoOutcomes[0]}
+            showAllHighlighted
+            setSelectedOutcome={(outcome) => {
+              setSelectedOutcome(outcome);
+              setShowTradingForm(true);
+            }}
+            marketType={YES_NO}
+            orderType={BUY}
+          />
+        )}
         <SimpleChartSection {...{ market }} />
         <PositionsLiquidityViewSwitcher marketId={market.id} />
         <div
@@ -61,16 +94,16 @@ const MarketView = ({ defaultMarket = null }) => {
           {(!market.details || market?.details?.length === 0) && <p>There are no additional details for this Market.</p>}
         </div>
         <div className={Styles.TransactionsTable}>
-          <span>
-            Transactions
-          </span>
+          <span>Transactions</span>
           <TransactionsTable />
         </div>
       </section>
-      <section>
-        <TradingForm />
-        <AddLiquidity />
-      </section>
+      {(!isMobile || showTradingForm) && (
+        <section>
+          <TradingForm initialSelectedOutcome={selectedOutcome} />
+          {!isMobile && <AddLiquidity />}
+        </section>
+      )}
     </div>
   );
 };

@@ -67,3 +67,9 @@ export const SIDEBAR_TYPES = {
   [NAVIGATION]: NAVIGATION,
   [FILTERS]: FILTERS
 }
+
+//  transaction types
+export const ALL = 'all';
+export const SWAP = 'swap';
+export const ADD = 'add';
+export const REMOVE = 'remove';
