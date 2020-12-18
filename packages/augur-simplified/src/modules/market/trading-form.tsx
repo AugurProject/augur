@@ -7,7 +7,7 @@ import { CurrencyDropdown } from 'modules/common/selection';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import { CloseIcon } from 'modules/common/icons';
 
-interface Outcome {
+interface OutcomeType {
   id: number;
   name: string;
   price: string;
@@ -68,7 +68,6 @@ const Outcome = ({
   marketType,
   selected,
   onClick,
-  orderType,
   invalidSelected,
   showAllHighlighted
 }) => {
@@ -109,11 +108,11 @@ const AmountInput = () => {
 };
 
 interface OutcomesGridProps {
-  outcomes: Outcome[];
-  selectedOutcome: Outcome;
+  outcomes: OutcomeType[];
+  selectedOutcome: OutcomeType;
   setSelectedOutcome: Function;
   marketType: string;
-  orderType: string;
+  orderType?: string;
   showAllHighlighted?: boolean;
 }
 export const OutcomesGrid = ({
@@ -121,7 +120,6 @@ export const OutcomesGrid = ({
   selectedOutcome,
   setSelectedOutcome,
   marketType,
-  orderType,
   showAllHighlighted,
 }: OutcomesGridProps) => {
   return (
@@ -141,7 +139,6 @@ export const OutcomesGrid = ({
           outcome={outcome}
           onClick={() => setSelectedOutcome(outcome)}
           marketType={marketType}
-          orderType={orderType}
           invalidSelected={selectedOutcome.isInvalid}
         />
       ))}

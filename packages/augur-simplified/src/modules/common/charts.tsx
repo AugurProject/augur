@@ -255,7 +255,7 @@ const handleSeries = (
         stops: [
           [
             0,
-            index === 2 ? 'rgba(5, 177, 105, 0.15)' : 'rgba(216, 17, 89, 0.15)',
+            index === 2 ? 'rgba(5, 177, 105, 0.15)' : 'rgba(255, 125, 94, 0.15)',
           ], // start
           [1, '#F6F7F8'], // end
         ],
