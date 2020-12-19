@@ -109,6 +109,7 @@ export interface AmmTransaction {
 }
 export interface AmmExchange {
   id: string,
+  marketId: string,
   liquidity: string,
   liquidityUSD: string,
   liquidity24hrUSD: string,

@@ -114,7 +114,7 @@ export const processGraphMarkets = (graphData: GraphData): ProcessedData => {
 
     } else if (amms.length === 1) {
 
-      const ammExchange = shapeAmmExchange(market.amms[0], past?.amms[0], cashes)
+      const ammExchange = shapeAmmExchange(market.amms[0], past?.amms[0], cashes, marketId)
       markets[`${marketId}-${ammExchange.id}`] = shapeMarketInfo(market, ammExchange);
       ammExchanges[ammExchange.id] = ammExchange;
     } else {
@@ -125,7 +125,7 @@ export const processGraphMarkets = (graphData: GraphData): ProcessedData => {
       Object.keys(marketAmms).forEach(ammId => {
         const amm = marketAmms[ammId];
         const pastAmm = pastMarketAmms[ammId];
-        const newAmmExchange = shapeAmmExchange(amm, pastAmm, cashes);
+        const newAmmExchange = shapeAmmExchange(amm, pastAmm, cashes, marketId);
         markets[`${marketId}-${ammId}`] = shapeMarketInfo(market, newAmmExchange);
         ammExchanges[newAmmExchange.id] = newAmmExchange;
       })
@@ -158,7 +158,7 @@ const shapeOutcomes = (graphOutcomes: GraphMarketOutcome[]): MarketOutcome[] =>
   }));
 
 
-const shapeAmmExchange = (amm: GraphAmmExchange, past: GraphAmmExchange, cashes: Cashes): AmmExchange => {
+const shapeAmmExchange = (amm: GraphAmmExchange, past: GraphAmmExchange, cashes: Cashes, marketId: string): AmmExchange => {
   let transactions = [];
   transactions = transactions.concat(amm.enters.map(e => ({ ...e, tx_type: TransactionTypes.ENTER, sender: e.sender.id })));
   transactions = transactions.concat(amm.exits.map(e => ({ ...e, tx_type: TransactionTypes.EXIT, sender: e.sender.id })));
@@ -185,6 +185,7 @@ const shapeAmmExchange = (amm: GraphAmmExchange, past: GraphAmmExchange, cashes:
 
   return {
     id: amm.id,
+    marketId,
     liquidity: amm.liquidity,
     liquidity24hrUSD,
     liquidityInvalid: amm.liquidityInvalid,
