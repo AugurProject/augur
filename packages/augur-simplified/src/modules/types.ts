@@ -23,6 +23,12 @@ export enum SizeTypes {
   LARGE = 'large',
 }
 
+export const TransactionTypes = {
+  ENTER: 'ENTER',
+  EXIT: 'EXIT',
+  ADD_LIQUIDITY: 'ADD_LIQUIDITY',
+  REMOVE_LIQUIDITY: 'REMOVE_LIQUIDITY'
+}
 export interface TextLink {
   text: string;
   link?: string;
@@ -92,6 +98,7 @@ export interface CoreStats {
 
 export interface AmmTransaction {
   id: string,
+  tx_type: string,
   cash: string,
   noShares: string,
   yesShares: string,
@@ -101,23 +108,34 @@ export interface AmmTransaction {
   price: string | null,
 }
 export interface AmmExchange {
+  id: string,
   liquidity: string,
+  liquidityUSD: string,
+  liquidity24hrUSD: string,
+  liquidityNo: string,
+  liquidityYes: string,
+  liquidityInvalid: string,
+  liquidityCash: string,
   priceYes: string,
   priceNo: string,
   percentageYes: string,
   percentageNo: string,
   volumeYes: string,
   volumeNo: string,
-  volume24hrTotal: string,
+  volumeYesUSD: string,
+  volumeNoUSD: string,
   volume24hrTotalUSD: string,
   volumeTotal: string,
   volumeTotalUSD: string,
   feePercent: string,
-  transactions: {
-    [txType: string] : AmmTransaction[]
-  }
+  cash: Cash,
+  sharetoken: string,
+  transactions: AmmTransaction[]
 }
 
+export interface Cashes {
+  [address: string]: Cash
+}
 export interface MarketInfo {
   marketId: string,
   description: string,
@@ -127,15 +145,25 @@ export interface MarketInfo {
   longDescription: string,
   fee: string,
   categories: string[],
-  outcomes: {
-    id: string,
-    isFinalNumerator: boolean,
-    payoutNumerator: string,
-    value: string,
-  }
-  amms: AmmExchange[]
+  outcomes: MarketOutcome[],
+  amms: AmmExchange | null
 }
 
+export interface MarketOutcome {
+  id: number,
+  isFinalNumerator: boolean,
+  payoutNumerator: string,
+  name: string,
+}
+export interface Cash {
+  address: string,
+  name: string,
+  symbol: string,
+  asset: string,
+  decimals: number,
+  usdPrice?: string,
+  displayDecimals: number,
+}
 export interface MarketInfos {
   [marketId: string]: MarketInfo;
 }

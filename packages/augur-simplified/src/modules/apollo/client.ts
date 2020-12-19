@@ -1,60 +1,43 @@
-import { ApolloClient } from 'apollo-client';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { HttpLink } from 'apollo-link-http';
+import ApolloClient from 'apollo-boost';
 import { GET_MARKETS, GET_BLOCK, CASH_TOKEN_DATA } from 'modules/apollo/queries';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import { Cash } from '../types';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { ErrorPolicy, FetchPolicy } from 'apollo-client';
 
 dayjs.extend(utc);
 
-export const client = new ApolloClient({
-  link: new HttpLink({
-    uri: 'https://api.thegraph.com/subgraphs/name/ianlapham/uniswapv2',
-  }),
-  cache: new InMemoryCache(),
-  // @ts-ignore
-  shouldBatch: true,
-});
+const defaultOptions = {
+  watchQuery: {
+    fetchPolicy: 'no-cache' as FetchPolicy,
+    errorPolicy: 'ignore' as ErrorPolicy,
+  },
+  query: {
+    fetchPolicy: 'no-cache' as FetchPolicy,
+    errorPolicy: 'all' as ErrorPolicy,
+  },
+};
 
-export const healthClient = new ApolloClient({
-  link: new HttpLink({
-    uri: 'https://api.thegraph.com/index-node/graphql',
-  }),
-  cache: new InMemoryCache(),
-  // @ts-ignore
-  shouldBatch: true,
-});
+export const client = augurV2Client('https://api.thegraph.com/subgraphs/name/ianlapham/uniswapv2');
+
+export const healthClient = augurV2Client('https://api.thegraph.com/index-node/graphql');
 
 export function blockClient(uri: string) {
   return new ApolloClient({
-    link: new HttpLink({
-      uri,
-    }),
-    cache: new InMemoryCache(),
-    // @ts-ignore
-    shouldBatch: true,
+    uri,
   });
 }
 
 export function augurV2Client(uri: string) {
-  const defaultOptions = {
-    watchQuery: {
-      fetchPolicy: 'no-cache',
-      errorPolicy: 'ignore',
-    },
-    query: {
-      fetchPolicy: 'no-cache',
-      errorPolicy: 'all',
-    },
-  };
-  return new ApolloClient({
-    link: new HttpLink({
-      uri,
-    }),
-    cache: new InMemoryCache(),
-    // @ts-ignore
-    defaultOptions: defaultOptions,
+  const client = new ApolloClient({
+    uri,
+    cache: new InMemoryCache({
+      addTypename: false
+    })
   });
+  client.defaultOptions = defaultOptions;
+  return client;
 }
 
 export async function getMarketsData(updateMarkets) {
@@ -67,7 +50,7 @@ export async function getMarketsData(updateMarkets) {
     const block = await getPastDayBlockNumber(config);
     const query = GET_MARKETS(block);
     response = await augurV2Client(config.augurClient).query({ query });
-    responseUsd = await getCashTokenData(cashes.map(c => c.address));
+    responseUsd = await getCashTokenData(cashes);
   } catch (e) {
     console.error(e);
   }
@@ -77,7 +60,7 @@ export async function getMarketsData(updateMarkets) {
       console.error(JSON.stringify(response.errors, null, 1));
     }
     // console.log(JSON.stringify(response.data, null, 1));
-    updateMarkets({ ...response.data, pricesUsd: responseUsd });
+    updateMarkets({ ...response.data, cashes: responseUsd });
   }
 }
 
@@ -117,28 +100,27 @@ export async function getBlockFromTimestamp(timestamp, url) {
   return result ? result?.data?.blocks?.[0]?.number : 0;
 }
 
-const getCashTokenData = async (cashes: string[]): Promise<{ usdPrice: string, cashAddress: string }[]> => {
+const getCashTokenData = async (cashes: Cash[]): Promise<{ [address: string]: Cash }> => {
   let bulkResults = []
   try {
     bulkResults = await Promise.all(
-      cashes.map(async address => {
+      cashes.map(async cash => {
         let usdPrice = await client.query({
           query: CASH_TOKEN_DATA,
           variables: {
-            tokenAddr: address
+            tokenAddr: cash.address
           },
           fetchPolicy: 'cache-first'
         })
-        let tokenData = { usdPrice: usdPrice?.data?.tokenDayDatas[0], cashAddress: address }
+        let tokenData = { usdPrice: usdPrice?.data?.tokenDayDatas[0], ...cash }
         if (!tokenData.usdPrice) {
 
           // TOOD remove this, used only form kovan testing
           tokenData = {
-            cashAddress: address,
-            usdPrice: address.toLowerCase() === "0x7290c2b7D5Fc91a112d462fe06aBBB8948668f56".toLowerCase() ? '600' : '1'
+            ...cash,
+            usdPrice: cash.address.toLowerCase() === "0x7290c2b7D5Fc91a112d462fe06aBBB8948668f56".toLowerCase() ? '600' : '1'
           }
         }
-        console.log('tokenData', tokenData)
         return tokenData
       })
     )
@@ -146,7 +128,7 @@ const getCashTokenData = async (cashes: string[]): Promise<{ usdPrice: string, c
     console.error(e)
   }
 
-  return (bulkResults || []).reduce((p, a) => ({ ...p, [a.cashAddress]: a }), {})
+  return (bulkResults || []).reduce((p, a) => ({ ...p, [a.address]: a }), {})
 }
 
 const jsonConfig = {
@@ -174,22 +156,20 @@ const jsonConfig = {
     networkId: '42',
     Cashes: [
       {
-        address: '0x7290c2b7D5Fc91a112d462fe06aBBB8948668f56',
+        address: '0x7290c2b7d5fc91a112d462fe06abbb8948668f56',
         name: 'ETH',
         symbol: 'ETH',
         asset: 'eth.svg',
+        decimals: 18,
+        displayDecimals: 4,
       },
       {
-        address: '0x25e27c08B7B3f2159aC23e4711801e0F7aD270A3',
-        name: 'DAI',
-        symbol: 'DAI',
-        asset: 'dai.svg',
-      },
-      {
-        address: '0x1997d08B1a9aeD5143b995e929707400625D5f6C',
+        address: '0x1997d08b1a9aed5143b995e929707400625d5f6c',
         name: 'USDT',
         symbol: 'USDT',
         asset: 'usdt.svg',
+        decimals: 6,
+        displayDecimals: 2,
       },
     ],
     augurClient:

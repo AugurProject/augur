@@ -82,8 +82,11 @@ export function AppStatusReducer(state, action) {
       break;
     }
     case UPDATE_PROCESSED: {
+      const { markets, cashes, ammExchanges } = action[PROCESSED];
       updatedState[PROCESSED] = {
-        markets: {...action[PROCESSED].markets},
+        markets,
+        cashes,
+        ammExchanges
       }
       break;
     }
