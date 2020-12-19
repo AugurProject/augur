@@ -1,7 +1,7 @@
 import React from 'react';
 import Styles from 'modules/markets/markets-view.styles.less';
 import makePath from 'modules/routes/helpers/make-path';
-import { FILTERS, MARKET, SIDEBAR_TYPES } from 'modules/constants';
+import { MARKET, SIDEBAR_TYPES } from 'modules/constants';
 import { Link } from 'react-router-dom';
 import {
   ValueLabel,

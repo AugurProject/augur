@@ -1,5 +1,4 @@
 @import (reference) '~assets/styles/shared';
-@import (reference) '~modules/common/buttons.styles.less';
 
 .TopNav {
   align-items: center;
@@ -8,9 +7,9 @@
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
-  height: @size-80;
-  min-height: @size-80;
-  max-height: @size-80;
+  height: @simple-top-bar-height;
+  min-height: @simple-top-bar-height;
+  max-height: @simple-top-bar-height;
   width: 100%;
   position: fixed;
   z-index: @above-all-content;
@@ -73,7 +72,16 @@
       padding-right: @size-88;
       grid-gap: @size-8;
 
-      > button {
+      > button:first-of-type {
+        &:first-of-type {
+          margin-left: auto;
+          min-height: @size-48;
+          width: @size-21;
+          max-width: 175px;
+        }
+      }
+
+      > button:last-of-type {
         .RoundedButton;
         .text-16-bold;
 
@@ -83,10 +91,6 @@
         height: @size-48;
         padding: 0 @size-14;
         color: var(--simple-primary-text);
-
-        &:first-of-type {
-          margin-left: auto;
-        }
       }
     }
   }

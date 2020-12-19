@@ -2,8 +2,14 @@ import React from 'react';
 import Styles from 'modules/common/labels.styles.less';
 import classNames from 'classnames';
 import { formatDai } from 'utils/format-number';
-import { EthIcon, PlusIcon, UsdIcon } from 'modules/common/icons';
+import {
+  AugurBlankIcon,
+  EthIcon,
+  PlusIcon,
+  UsdIcon,
+} from 'modules/common/icons';
 import { POPULAR_CATEGORIES_ICONS } from 'modules/constants';
+import { useAppStatusStore } from 'modules/stores/app-status';
 
 interface ValueLabelProps {
   large?: boolean;
@@ -25,9 +31,7 @@ export const ValueLabel = ({
         [Styles.Sublabel]: sublabel,
       })}
     >
-      <span>
-        {label}
-      </span>
+      <span>{label}</span>
       {sublabel && <span>{sublabel}</span>}
       <span>{value}</span>
     </div>
@@ -56,15 +60,24 @@ export const CategoryLabel = ({ category }: CategoryProps) => {
   return <div className={classNames(Styles.CategoryLabel)}>{category}</div>;
 };
 
-
 interface CategoryProps {
   category: string;
 }
 
 export const CategoryIcon = ({ category }: CategoryProps) => {
-  return <div className={classNames(Styles.CategoryIcon, Styles[`${category.toLowerCase()}`])}>{POPULAR_CATEGORIES_ICONS[category]}</div>;
+  return (
+    <div
+      className={classNames(
+        Styles.CategoryIcon,
+        Styles[`${category.toLowerCase()}`]
+      )}
+    >
+      {POPULAR_CATEGORIES_ICONS[category]
+        ? POPULAR_CATEGORIES_ICONS[category]
+        : AugurBlankIcon}
+    </div>
+  );
 };
-
 
 export const fakeMarketViewStats = {
   totalAccountValue: 15571.58,
@@ -82,11 +95,16 @@ interface AppViewStatsProps {
 }
 
 export const AppViewStats = ({ showCashAmounts }: AppViewStatsProps) => {
+  const { isMobile } = useAppStatusStore();
   return (
-    <div className={classNames(Styles.AppStats, {[Styles.CashAmounts]: showCashAmounts})}>
+    <div
+      className={classNames(Styles.AppStats, {
+        [Styles.CashAmounts]: showCashAmounts,
+      })}
+    >
       <ValueLabel
         large
-        label={'total account value'}
+        label={isMobile ? 'total acc. value' : 'total account value'}
         value={formatDai(fakeMarketViewStats.totalAccountValue).full}
       />
       <ValueLabel
@@ -118,12 +136,9 @@ export const AppViewStats = ({ showCashAmounts }: AppViewStatsProps) => {
   );
 };
 
-
 export const AddLiquidity = () => {
   return (
-    <div
-      className={classNames(Styles.AddLiquidity)}
-    >
+    <div className={classNames(Styles.AddLiquidity)}>
       <span>
         {PlusIcon}
         add liquidity

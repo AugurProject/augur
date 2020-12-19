@@ -3,18 +3,50 @@ import Styles from 'modules/market/market-view.styles.less';
 import classNames from 'classnames';
 import { UsdIcon } from 'modules/common/icons';
 import SimpleChartSection from 'modules/common/charts';
-import { AddLiquidity, CategoryIcon, CategoryLabel } from 'modules/common/labels';
-import { PositionsLiquidityViewSwitcher, TransactionsTable } from 'modules/common/tables';
-import TradingForm from 'modules/market/trading-form';
+import {
+  AddLiquidity,
+  CategoryIcon,
+  CategoryLabel,
+} from 'modules/common/labels';
+import {
+  PositionsLiquidityViewSwitcher,
+  TransactionsTable,
+} from 'modules/common/tables';
+import TradingForm, {
+  fakeYesNoOutcomes,
+  OutcomesGrid,
+} from 'modules/market/trading-form';
 import { useAppStatusStore } from 'modules/stores/app-status';
+import { YES_NO, BUY } from 'modules/constants';
+
+const getDetails = market => {
+  const rawInfo = market?.extraInfoRaw || "{}";
+  const { longDescription } = JSON.parse(rawInfo, (key, value) => {
+    if (key === 'longDescription') {
+      const processDesc = value.split('\n');
+      return processDesc;
+    } else {
+      return value;
+    }
+  });
+  return longDescription || [];
+};
 
 const MarketView = ({ defaultMarket = null }) => {
   const [showMoreDetails, setShowMoreDetails] = useState(false);
-  const { graphData: { markets }} = useAppStatusStore();
+  const [selectedOutcome, setSelectedOutcome] = useState(fakeYesNoOutcomes[0]);
+
+  const {
+    isMobile,
+    showTradingForm,
+    actions: { setShowTradingForm },
+    graphData: { markets }
+  } = useAppStatusStore();
+
   const marketKeys = Object.keys(markets);
-  const market = !!defaultMarket ? defaultMarket : markets[marketKeys[0]];
+  const market = !!defaultMarket ? defaultMarket : markets[marketKeys[4]];
   if (!market) return <div className={Styles.MarketView} />;
-  // console.log(market);
+  const details = getDetails(market);
   return (
     <div className={Styles.MarketView}>
       <section>
@@ -42,6 +74,19 @@ const MarketView = ({ defaultMarket = null }) => {
             <span>{new Date(Number(market?.endTimestamp * 1000)).toDateString() || 'missing'}</span>
           </li>
         </ul>
+        {isMobile && (
+          <OutcomesGrid
+            outcomes={fakeYesNoOutcomes}
+            selectedOutcome={fakeYesNoOutcomes[0]}
+            showAllHighlighted
+            setSelectedOutcome={(outcome) => {
+              setSelectedOutcome(outcome);
+              setShowTradingForm(true);
+            }}
+            marketType={YES_NO}
+            orderType={BUY}
+          />
+        )}
         <SimpleChartSection {...{ market }} />
         <PositionsLiquidityViewSwitcher marketId={market.id} />
         <div
@@ -50,27 +95,27 @@ const MarketView = ({ defaultMarket = null }) => {
           })}
         >
           <h4>Market Details</h4>
-          {market?.details?.map((detail, i) => (
+          {details.map((detail, i) => (
             <p key={`${detail.substring(5, 25)}-${i}`}>{detail}</p>
           ))}
-          {market?.details?.length > 1 && (
+          {details.length > 1 && (
             <button onClick={() => setShowMoreDetails(!showMoreDetails)}>
               {showMoreDetails ? 'Read Less' : 'Read More'}
             </button>
           )}
-          {(!market.details || market?.details?.length === 0) && <p>There are no additional details for this Market.</p>}
+          {details.length === 0 && <p>There are no additional details for this Market.</p>}
         </div>
         <div className={Styles.TransactionsTable}>
-          <span>
-            Transactions
-          </span>
+          <span>Transactions</span>
           <TransactionsTable />
         </div>
       </section>
-      <section>
-        <TradingForm />
-        <AddLiquidity />
-      </section>
+      {(!isMobile || showTradingForm) && (
+        <section>
+          <TradingForm initialSelectedOutcome={selectedOutcome} />
+          {!isMobile && <AddLiquidity />}
+        </section>
+      )}
     </div>
   );
 };
