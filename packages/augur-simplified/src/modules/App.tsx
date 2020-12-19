@@ -10,6 +10,7 @@ import {
   useAppStatusStore,
 } from 'modules/stores/app-status';
 import { Sidebar } from 'modules/sidebar/sidebar';
+import { processGraphMarkets } from 'utils/process-data';
 
 function checkIsMobile(setIsMobile) {
   const isMobile =
@@ -29,11 +30,17 @@ const AppBody = () => {
 
   useEffect(() => {
     // get data immediately, then setup interval
-    getMarketsData(updateGraphData);
+    getMarketsData((data) => {
+      updateGraphData(data);
+      processGraphMarkets(data);
+    });
     let isMounted = true;
     const intervalId = setInterval(() => {
       getMarketsData((data) => {
-        if (isMounted) updateGraphData(data);
+        if (isMounted) {
+          updateGraphData(data);
+          processGraphMarkets(data);
+        }
       });
     }, 15000);
     return (() => {

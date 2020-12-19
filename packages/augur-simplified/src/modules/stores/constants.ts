@@ -17,7 +17,8 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   setIsMobile: isMobile => {},
   setSidebar: (sidebarType) => {},
   updateGraphData: graphData => {},
-  setShowTradingForm: showTradingForm => {}
+  setShowTradingForm: showTradingForm => {},
+  updateProcessed: processed => {},
 };
 
 export const DEFAULT_APP_STATUS_STATE = {
@@ -31,6 +32,7 @@ export const DEFAULT_APP_STATUS_STATE = {
   transactions: {},
   userInfo: {
     activity: {},
+    balances: {},
   },
   graphData: {
     markets: {},
@@ -49,13 +51,15 @@ export const APP_STATE_KEYS = {
   TRANSACTIONS: 'transactions',
   USER_INFO: 'userInfo',
   GRAPH_DATA: 'graphData',
+  PROCESSED: 'processed'
 };
 
 export const APP_STATUS_ACTIONS = {
   SET_IS_MOBILE: 'SET_IS_MOBILE',
   SET_SIDEBAR: 'SET_SIDEBAR',
   UPDATE_GRAPH_DATA: 'UPDATE_GRAPH_DATA',
-  SET_SHOW_TRADING_FORM: 'SET_SHOW_TRADING_FORM'
+  SET_SHOW_TRADING_FORM: 'SET_SHOW_TRADING_FORM',
+  UPDATE_PROCESSED: 'UPDATE_PROCESSED',
 };
 
 export const fakePositionsData = [

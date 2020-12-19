@@ -1,7 +1,7 @@
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { HttpLink } from 'apollo-link-http';
-import { GET_MARKETS, GET_BLOCK } from 'modules/apollo/queries';
+import { GET_MARKETS, GET_BLOCK, CASH_TOKEN_DATA } from 'modules/apollo/queries';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 
@@ -59,11 +59,15 @@ export function augurV2Client(uri: string) {
 
 export async function getMarketsData(updateMarkets) {
   const config = getConfig();
+  // TODO: get network from provider
+  const cashes = jsonConfig[42].Cashes;
   let response = null;
+  let responseUsd = null;
   try {
     const block = await getPastDayBlockNumber(config);
     const query = GET_MARKETS(block);
     response = await augurV2Client(config.augurClient).query({ query });
+    responseUsd = await getCashTokenData(cashes.map(c => c.address));
   } catch (e) {
     console.error(e);
   }
@@ -73,7 +77,7 @@ export async function getMarketsData(updateMarkets) {
       console.error(JSON.stringify(response.errors, null, 1));
     }
     // console.log(JSON.stringify(response.data, null, 1));
-    updateMarkets(response.data);
+    updateMarkets({ ...response.data, pricesUsd: responseUsd });
   }
 }
 
@@ -111,6 +115,38 @@ export async function getBlockFromTimestamp(timestamp, url) {
     console.error('getBlockFromTimestamp', e);
   }
   return result ? result?.data?.blocks?.[0]?.number : 0;
+}
+
+const getCashTokenData = async (cashes: string[]): Promise<{ usdPrice: string, cashAddress: string }[]> => {
+  let bulkResults = []
+  try {
+    bulkResults = await Promise.all(
+      cashes.map(async address => {
+        let usdPrice = await client.query({
+          query: CASH_TOKEN_DATA,
+          variables: {
+            tokenAddr: address
+          },
+          fetchPolicy: 'cache-first'
+        })
+        let tokenData = { usdPrice: usdPrice?.data?.tokenDayDatas[0], cashAddress: address }
+        if (!tokenData.usdPrice) {
+
+          // TOOD remove this, used only form kovan testing
+          tokenData = {
+            cashAddress: address,
+            usdPrice: address.toLowerCase() === "0x7290c2b7D5Fc91a112d462fe06aBBB8948668f56".toLowerCase() ? '600' : '1'
+          }
+        }
+        console.log('tokenData', tokenData)
+        return tokenData
+      })
+    )
+  } catch (e) {
+    console.error(e)
+  }
+
+  return (bulkResults || []).reduce((p, a) => ({ ...p, [a.cashAddress]: a }), {})
 }
 
 const jsonConfig = {

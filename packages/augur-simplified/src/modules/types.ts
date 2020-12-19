@@ -3,7 +3,6 @@ import { Getters } from '@augurproject/sdk';
 import { BUY, SELL } from 'modules/constants';
 import type {
   Address,
-  MarketInfo,
   PayoutNumeratorValue,
   MarketInfoOutcome,
   DisputeInfo,
@@ -90,6 +89,53 @@ export interface CoreStats {
   totalFunds: ValueLabelPair;
   realizedPL: ValueLabelPair;
 }
+
+export interface AmmTransaction {
+  id: string,
+  cash: string,
+  noShares: string,
+  yesShares: string,
+  sender: string,
+  timestamp: string,
+  tx_hash: string,
+  price: string | null,
+}
+export interface AmmExchange {
+  liquidity: string,
+  priceYes: string,
+  priceNo: string,
+  percentageYes: string,
+  percentageNo: string,
+  volumeYes: string,
+  volumeNo: string,
+  volume24hrTotal: string,
+  volume24hrTotalUSD: string,
+  volumeTotal: string,
+  volumeTotalUSD: string,
+  feePercent: string,
+  transactions: {
+    [txType: string] : AmmTransaction[]
+  }
+}
+
+export interface MarketInfo {
+  marketId: string,
+  description: string,
+  endTimestamp: string,
+  status: string,
+  extraInfoRaw: string,
+  longDescription: string,
+  fee: string,
+  categories: string[],
+  outcomes: {
+    id: string,
+    isFinalNumerator: boolean,
+    payoutNumerator: string,
+    value: string,
+  }
+  amms: AmmExchange[]
+}
+
 export interface MarketInfos {
   [marketId: string]: MarketInfo;
 }
@@ -110,7 +156,7 @@ export interface OutcomeFormatted extends MarketInfoOutcome {
   isTradeable: boolean;
 }
 
-export interface MarketData extends MarketInfo {
+export interface MarketData {
   id: string;
   description: string;
   marketId: string;
