@@ -25,21 +25,21 @@ const AppBody = () => {
   const {
     sidebarType,
     showTradingForm,
-    actions: { setIsMobile, updateGraphData },
+    actions: { setIsMobile, updateGraphData, updateProcessed },
   } = useAppStatusStore();
 
   useEffect(() => {
     // get data immediately, then setup interval
     getMarketsData((data) => {
       updateGraphData(data);
-      processGraphMarkets(data);
+      updateProcessed(processGraphMarkets(data));
     });
     let isMounted = true;
     const intervalId = setInterval(() => {
       getMarketsData((data) => {
         if (isMounted) {
           updateGraphData(data);
-          processGraphMarkets(data);
+          updateProcessed(processGraphMarkets(data));
         }
       });
     }, 15000);
