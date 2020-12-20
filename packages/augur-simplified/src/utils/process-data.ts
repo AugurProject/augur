@@ -70,11 +70,6 @@ interface GraphAmmExchange {
   removeLiquidity: GraphRemoveLiquidity[]
 }
 
-interface PriceUsd {
-  priceUSD: string,
-  cashAddress: string,
-}
-
 interface GraphData {
   markets: GraphMarket[],
   past: GraphMarket[],
@@ -102,7 +97,7 @@ export const processGraphMarkets = (graphData: GraphData): ProcessedData => {
 
   let markets = {};
   let ammExchanges = {};
-  Object.keys(keyedMarkets).map(marketId => {
+  Object.keys(keyedMarkets).forEach(marketId => {
     const market = keyedMarkets[marketId]
     const past = keyedPastMarkets[marketId];
     const amms = market.amms;
