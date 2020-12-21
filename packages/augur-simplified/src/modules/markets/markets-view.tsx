@@ -29,6 +29,7 @@ import {
   POPULAR_CATEGORIES_ICONS,
   sortByItems,
   TOTAL_VOLUME,
+  USDT,
   YES_OUTCOME_ID,
 } from '../constants';
 
@@ -68,7 +69,8 @@ const MarketCard = ({ market }) => {
           <CategoryIcon category={categories[0]} />
           <CategoryLabel category={categories[1]} />
           <div>
-            {ammExchange && ammExchange?.cash.name === ETH ? EthIcon : UsdIcon}
+            {ammExchange && ammExchange?.cash.name === ETH && EthIcon} 
+            {ammExchange && ammExchange?.cash.name === USDT && UsdIcon}
           </div>
           <span>{description}</span>
           {!ammExchange ? (
