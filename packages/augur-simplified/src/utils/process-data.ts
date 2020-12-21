@@ -1,5 +1,4 @@
-import { MarketInfo } from "modules/types";
-import { AmmExchange, Cash, Cashes, MarketOutcome, TransactionTypes } from "../modules/types";
+import { Trades, AmmExchange, Cash, Cashes, MarketOutcome, TransactionTypes, MarketInfo } from "modules/types";
 import { BigNumber as BN } from 'bignumber.js'
 
 interface GraphMarket {
@@ -33,7 +32,7 @@ interface GraphEnter extends GraphTransaction {
   price: string,
 }
 
-interface GraphExits extends GraphTransaction {
+interface GraphExit extends GraphTransaction {
   price: string,
 }
 
@@ -65,7 +64,7 @@ interface GraphAmmExchange {
   percentageYes: string,
   feePercent: string,
   enters: GraphEnter[],
-  exits: GraphExits[],
+  exits: GraphExit[],
   addLiquidity: GraphAddLiquidity[],
   removeLiquidity: GraphRemoveLiquidity[]
 }
@@ -103,13 +102,10 @@ export const processGraphMarkets = (graphData: GraphData): ProcessedData => {
     const amms = market.amms;
 
     // keying markets by marketId or marketId-ammExchange.id.
-    if (amms.length < Object.keys(cashes).length) {
-
+    if (amms.length === 0) {
       markets[marketId] = shapeMarketInfo(market, null);
-
     } else if (amms.length === 1) {
-
-      const ammExchange = shapeAmmExchange(market.amms[0], past?.amms[0], cashes, marketId)
+      const ammExchange = shapeAmmExchange(market.amms[0], past?.amms[0], cashes, market)
       markets[`${marketId}-${ammExchange.id}`] = shapeMarketInfo(market, ammExchange);
       ammExchanges[ammExchange.id] = ammExchange;
     } else {
@@ -120,13 +116,14 @@ export const processGraphMarkets = (graphData: GraphData): ProcessedData => {
       Object.keys(marketAmms).forEach(ammId => {
         const amm = marketAmms[ammId];
         const pastAmm = pastMarketAmms[ammId];
-        const newAmmExchange = shapeAmmExchange(amm, pastAmm, cashes, marketId);
+        const newAmmExchange = shapeAmmExchange(amm, pastAmm, cashes, market);
         markets[`${marketId}-${ammId}`] = shapeMarketInfo(market, newAmmExchange);
         ammExchanges[newAmmExchange.id] = newAmmExchange;
       })
     }
   });
 
+  console.log('markets', markets)
   //console.log(cashes, markets, ammExchanges)
   return { cashes, markets, ammExchanges };
 }
@@ -153,14 +150,19 @@ const shapeOutcomes = (graphOutcomes: GraphMarketOutcome[]): MarketOutcome[] =>
   }));
 
 
-const shapeAmmExchange = (amm: GraphAmmExchange, past: GraphAmmExchange, cashes: Cashes, marketId: string): AmmExchange => {
+const shapeAmmExchange = (amm: GraphAmmExchange, past: GraphAmmExchange, cashes: Cashes, market: MarketInfo): AmmExchange => {
+  const marketId = market.id;
+  const outcomes = shapeOutcomes(market.outcomes);
+  const cash: Cash = cashes[amm.shareToken.cash.id]
   let transactions = [];
   transactions = transactions.concat(amm.enters.map(e => ({ ...e, tx_type: TransactionTypes.ENTER, sender: e.sender.id })));
   transactions = transactions.concat(amm.exits.map(e => ({ ...e, tx_type: TransactionTypes.EXIT, sender: e.sender.id })));
   transactions = transactions.concat(amm.addLiquidity.map(e => ({ ...e, tx_type: TransactionTypes.ADD_LIQUIDITY, sender: e.sender.id })));
   transactions = transactions.concat(amm.removeLiquidity.map(e => ({ ...e, tx_type: TransactionTypes.REMOVE_LIQUIDITY, sender: e.sender.id })));
 
-  const cash = cashes[amm.shareToken.cash.id]
+  let outcomeTrades = outcomes.reduce((p, o) => ({ ...p, [o.id]: [] }), {});
+
+  const trades = getAmmTradeData(outcomeTrades, amm.enters, amm.exits, cash.displayDecimals)
   const priceYes = (Number(amm.percentageNo) / 100);
   const priceNo = (Number(amm.percentageYes) / 100);
 
@@ -203,6 +205,7 @@ const shapeAmmExchange = (amm: GraphAmmExchange, past: GraphAmmExchange, cashes:
     volume24hrTotalUSD,
     volumeTotalUSD,
     transactions,
+    trades,
   }
 }
 
@@ -236,4 +239,21 @@ const calculatePastLiquidityInUsd = (volume: string, pastVolume: string, priceUs
   return String(new BN(volume)
     .minus(new BN(pastVolume))
     .times(new BN(priceUsd)))
+}
+
+// TODO: this needs to chagne when categoricals come along. We'll need to change up graph data processing
+const calculateTradePrice = (txs: (GraphEnter | GraphExit)[], trades: Trades, displayDecimals: number) => {
+  return txs.reduce((p, tx) => {
+    if (tx.noShares !== '0') {
+      p[1].push({ shares: tx.noShares, price: Number.parseFloat(tx.price).toPrecision(displayDecimals), timestamp: Number(tx.timestamp) })
+    } else {
+      p[2].push({ shares: tx.yesShares, price: Number.parseFloat(tx.price).toPrecision(displayDecimals), timestamp: Number(tx.timestamp) })
+    }
+    return p;
+  }, trades)
+}
+
+export const getAmmTradeData = (outcomeTrades: { [outcome: number]: [] }, enters: GraphEnter[], exits: GraphExit[], displayDecimals: number) => {
+  const enterTrades = calculateTradePrice(enters, outcomeTrades, displayDecimals)
+  return calculateTradePrice(exits, enterTrades, displayDecimals)
 }
