@@ -72,6 +72,11 @@ export const LIST_VALUES = {
     'Defensive Rookie of the year',
     'AP Most Valuable Player',
   ],
+  FOOTBALL_EVENT_UPDATED: [
+    'Super Bowl',
+    'AFC Championship',
+    'NFC Championship',
+  ],
   FOOTBALL_EVENT: [
     'Super Bowl',
     'AFC Championship game',
