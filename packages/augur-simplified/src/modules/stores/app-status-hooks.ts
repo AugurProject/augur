@@ -12,9 +12,10 @@ const {
   SET_IS_MOBILE,
   SET_SIDEBAR,
   UPDATE_GRAPH_DATA,
+  UPDATE_PROCESSED,
 } = APP_STATUS_ACTIONS;
 
-const { IS_MOBILE, SIDEBAR_TYPE, GRAPH_DATA } = APP_STATE_KEYS;
+const { IS_MOBILE, SIDEBAR_TYPE, GRAPH_DATA, PROCESSED } = APP_STATE_KEYS;
 
 const isAsync = (obj) => {
   return (
@@ -80,6 +81,15 @@ export function AppStatusReducer(state, action) {
       updatedState['showTradingForm'] = action.showTradingForm;
       break;
     }
+    case UPDATE_PROCESSED: {
+      const { markets, cashes, ammExchanges } = action[PROCESSED];
+      updatedState[PROCESSED] = {
+        markets,
+        cashes,
+        ammExchanges
+      }
+      break;
+    }
     default:
       console.log(`Error: ${action.type} not caught by Markets reducer`);
   }
@@ -100,6 +110,8 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
       setIsMobile: (isMobile) => dispatch({ type: SET_IS_MOBILE, isMobile }),
       updateGraphData: (graphData) =>
         dispatch({ type: UPDATE_GRAPH_DATA, graphData }),
+      updateProcessed: (processed) =>
+        dispatch({ type: UPDATE_PROCESSED, processed})
     },
   };
 };

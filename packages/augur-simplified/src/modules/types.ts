@@ -3,7 +3,6 @@ import { Getters } from '@augurproject/sdk';
 import { BUY, SELL } from 'modules/constants';
 import type {
   Address,
-  MarketInfo,
   PayoutNumeratorValue,
   MarketInfoOutcome,
   DisputeInfo,
@@ -24,6 +23,12 @@ export enum SizeTypes {
   LARGE = 'large',
 }
 
+export const TransactionTypes = {
+  ENTER: 'ENTER',
+  EXIT: 'EXIT',
+  ADD_LIQUIDITY: 'ADD_LIQUIDITY',
+  REMOVE_LIQUIDITY: 'REMOVE_LIQUIDITY'
+}
 export interface TextLink {
   text: string;
   link?: string;
@@ -90,6 +95,76 @@ export interface CoreStats {
   totalFunds: ValueLabelPair;
   realizedPL: ValueLabelPair;
 }
+
+export interface AmmTransaction {
+  id: string,
+  tx_type: string,
+  cash: string,
+  noShares: string,
+  yesShares: string,
+  sender: string,
+  timestamp: string,
+  tx_hash: string,
+  price: string | null,
+}
+export interface AmmExchange {
+  id: string,
+  marketId: string,
+  liquidity: string,
+  liquidityUSD: string,
+  liquidity24hrUSD: string,
+  liquidityNo: string,
+  liquidityYes: string,
+  liquidityInvalid: string,
+  liquidityCash: string,
+  priceYes: string,
+  priceNo: string,
+  percentageYes: string,
+  percentageNo: string,
+  volumeYes: string,
+  volumeNo: string,
+  volumeYesUSD: string,
+  volumeNoUSD: string,
+  volume24hrTotalUSD: string,
+  volumeTotal: string,
+  volumeTotalUSD: string,
+  feePercent: string,
+  cash: Cash,
+  sharetoken: string,
+  transactions: AmmTransaction[]
+}
+
+export interface Cashes {
+  [address: string]: Cash
+}
+export interface MarketInfo {
+  marketId: string,
+  description: string,
+  endTimestamp: string,
+  status: string,
+  extraInfoRaw: string,
+  longDescription: string,
+  fee: string,
+  categories: string[],
+  outcomes: MarketOutcome[],
+  amms: AmmExchange | null
+}
+
+export interface MarketOutcome {
+  id: number,
+  isFinalNumerator: boolean,
+  payoutNumerator: string,
+  name: string,
+}
+export interface Cash {
+  address: string,
+  name: string,
+  symbol: string,
+  asset: string,
+  decimals: number,
+  usdPrice?: string,
+  displayDecimals: number,
+}
 export interface MarketInfos {
   [marketId: string]: MarketInfo;
 }
@@ -110,7 +185,7 @@ export interface OutcomeFormatted extends MarketInfoOutcome {
   isTradeable: boolean;
 }
 
-export interface MarketData extends MarketInfo {
+export interface MarketData {
   id: string;
   description: string;
   marketId: string;

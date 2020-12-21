@@ -23,7 +23,7 @@ export const GET_BLOCK = timestamp => {
 export const GET_MARKETS = blockNumber => {
   const queryString = `
   {
-  markets(where: { marketType: YES_NO, description_not: null }) {
+  markets(where: { marketType: YES_NO, description_not: null, fee_lte: 20000000000000000 }) {
     description
     id
     outcomes {
