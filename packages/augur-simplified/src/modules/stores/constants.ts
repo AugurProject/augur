@@ -19,6 +19,7 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   updateGraphData: graphData => {},
   setShowTradingForm: showTradingForm => {},
   updateProcessed: processed => {},
+  updateLoginAccount: updateLoginAccount => {},
 };
 
 export const DEFAULT_APP_STATUS_STATE = {
@@ -60,6 +61,7 @@ export const APP_STATUS_ACTIONS = {
   UPDATE_GRAPH_DATA: 'UPDATE_GRAPH_DATA',
   SET_SHOW_TRADING_FORM: 'SET_SHOW_TRADING_FORM',
   UPDATE_PROCESSED: 'UPDATE_PROCESSED',
+  SET_LOGIN_ACCOUNT: 'SET_LOGIN_ACCOUNT'
 };
 
 export const fakePositionsData = [

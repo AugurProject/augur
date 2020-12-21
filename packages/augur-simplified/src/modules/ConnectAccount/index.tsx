@@ -13,6 +13,7 @@ import WalletConnectIcon from './assets/walletConnectIcon.svg'
 import { fortmatic, injected, portis, walletconnect, walletlink } from './connectors'
 import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core'
 import { Web3Provider } from '@ethersproject/providers'
+import { useActiveWeb3React } from './hooks'
 
 const Web3ProviderNetwork = createWeb3ReactRoot('NETWORK')
 
@@ -185,13 +186,15 @@ function StatusIcon({ connector, darkMode, account }: { connector: AbstractConne
   return null
 }
 
-function App({ darkMode }) {
+function App({ updateLoginAccount, darkMode }) {
   const { account, connector, error } = useWeb3React()
   const [showModal, setShowModal] = useState<boolean>()
 
+  const activeWeb3 = useActiveWeb3React()
   let innerStatusContent = null
 
   if (account) {
+    updateLoginAccount(activeWeb3);
     innerStatusContent = (
       <Web3StatusConnected id="web3-status-connected" onClick={() => setShowModal(!showModal)} darkMode={darkMode}>
         <>
@@ -227,11 +230,11 @@ function App({ darkMode }) {
   )
 }
 
-export default function ConnectAccount({ darkMode }) {
+export default function ConnectAccount({ updateLoginAccount, darkMode }) {
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
       <Web3ProviderNetwork getLibrary={getLibrary}>
-        <App darkMode={darkMode} />
+        <App updateLoginAccount={updateLoginAccount} darkMode={darkMode} />
       </Web3ProviderNetwork>
     </Web3ReactProvider>
   );
