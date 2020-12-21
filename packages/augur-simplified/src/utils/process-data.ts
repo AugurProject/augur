@@ -1,5 +1,4 @@
-import { MarketInfo } from "modules/types";
-import { AmmExchange, Cash, Cashes, MarketOutcome, TransactionTypes } from "../modules/types";
+import { AmmExchange, Cash, Cashes, MarketOutcome, TransactionTypes, MarketInfo } from "modules/types";
 import { BigNumber as BN } from 'bignumber.js'
 
 interface GraphMarket {
