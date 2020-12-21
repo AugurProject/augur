@@ -13,9 +13,10 @@ const {
   SET_SIDEBAR,
   UPDATE_GRAPH_DATA,
   UPDATE_PROCESSED,
+  SET_LOGIN_ACCOUNT,
 } = APP_STATUS_ACTIONS;
 
-const { IS_MOBILE, SIDEBAR_TYPE, GRAPH_DATA, PROCESSED } = APP_STATE_KEYS;
+const { IS_MOBILE, SIDEBAR_TYPE, GRAPH_DATA, PROCESSED, LOGIN_ACCOUNT } = APP_STATE_KEYS;
 
 const isAsync = (obj) => {
   return (
@@ -69,6 +70,10 @@ export function AppStatusReducer(state, action) {
       updatedState[SIDEBAR_TYPE] = action.sidebarType;
       break;
     }
+    case SET_LOGIN_ACCOUNT: {
+      updatedState[LOGIN_ACCOUNT] = action.account;
+      break;
+    }
     case UPDATE_GRAPH_DATA: {
       updatedState[GRAPH_DATA] = {
         markets: arrayToKeyedObject(action[GRAPH_DATA].markets),
@@ -111,7 +116,9 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
       updateGraphData: (graphData) =>
         dispatch({ type: UPDATE_GRAPH_DATA, graphData }),
       updateProcessed: (processed) =>
-        dispatch({ type: UPDATE_PROCESSED, processed})
+        dispatch({ type: UPDATE_PROCESSED, processed}),
+      updateLoginAccount: (account) =>
+        dispatch({ type: SET_LOGIN_ACCOUNT, account }),
     },
   };
 };

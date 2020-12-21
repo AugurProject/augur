@@ -11,14 +11,26 @@ import { GearIcon, ThreeLinesIcon } from 'modules/common/icons';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import ConnectAccount from 'modules/ConnectAccount/index';
 
-
 export const TopNav = () => {
   const location = useLocation();
   const path = parsePath(location.pathname)[0];
   const {
     isMobile,
-    actions: { setSidebar },
+    loginAccount,
+    actions: { setSidebar, updateLoginAccount },
   } = useAppStatusStore();
+
+  const handleAccountUpdate = (activeWeb3) => {
+    if (activeWeb3) {
+      if (loginAccount && loginAccount.account) {
+        if (loginAccount.account !== activeWeb3.account) {
+          updateLoginAccount(activeWeb3);
+        }
+      } else {
+        updateLoginAccount(activeWeb3);
+      }
+    }
+  }
 
   return (
     <nav
@@ -40,7 +52,7 @@ export const TopNav = () => {
         )}
       </section>
       <section>
-        <ConnectAccount darkMode={false} />
+        <ConnectAccount updateLoginAccount={handleAccountUpdate} darkMode={false} />
         {!isMobile && (
           <button
             title="This doesn't do anything yet!"
