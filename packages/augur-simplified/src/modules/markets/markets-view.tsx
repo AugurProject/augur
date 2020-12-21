@@ -16,15 +16,15 @@ import { PrimaryButton } from 'modules/common/buttons';
 import { SquareDropdown } from 'modules/common/selection';
 import { Pagination } from 'modules/common/pagination';
 import { useAppStatusStore } from 'modules/stores/app-status';
-import { keyedObjToArray } from 'modules/stores/app-status-hooks';
+import { INVALID_OUTCOME_ID } from '../constants';
 
-const OutcomesTable = ({ outcomes }) => {
+const OutcomesTable = ({ outcomes, marketId }) => {
   return (
     <div className={Styles.OutcomesTable}>
-      {outcomes.map((outcome) => (
-        <div key={`${outcome.description}-${outcome.price}-${outcome.id}`}>
-          <span>{outcome.description}</span>
-          <span>{formatDai(outcome.price).full}</span>
+      {outcomes.filter(outcome => outcome.id !== INVALID_OUTCOME_ID).map((outcome) => (
+        <div key={`${outcome.name}-${marketId}-${outcome.id}`}>
+          <span>{outcome.name.toLowerCase()}</span>
+          <span>{formatDai(5).full}</span>
         </div>
       ))}
     </div>
@@ -32,6 +32,16 @@ const OutcomesTable = ({ outcomes }) => {
 };
 
 const MarketCard = ({ market }) => {
+  const {
+    categories,
+    description,
+    outcomes,
+    marketId
+  } = market;
+  market.inUsd = true;
+  market.noLiquidity = false;
+  market.volume = 5;
+
   return (
     <article
       className={classNames(Styles.MarketCard, {
@@ -40,10 +50,10 @@ const MarketCard = ({ market }) => {
     >
       <Link to={makePath(MARKET)}>
         <div>
-          <CategoryIcon category={market.category} />
-          <CategoryLabel category={market.subcategory} />
+          <CategoryIcon category={categories[0]} />
+          <CategoryLabel category={categories[1]} />
           <div>{market.inUsd ? UsdIcon : EthIcon}</div>
-          <span>{market.description}</span>
+          <span>{description}</span>
           {market.noLiquidity ? (
             <div>
               <span>Market requires Initial liquidity</span>
@@ -55,7 +65,7 @@ const MarketCard = ({ market }) => {
                 label="total volume"
                 value={formatDai(market.volume).full}
               />
-              <OutcomesTable outcomes={market.outcomes} />
+              <OutcomesTable marketId={marketId} outcomes={outcomes} />
             </>
           )}
         </div>
@@ -63,16 +73,13 @@ const MarketCard = ({ market }) => {
     </article>
   );
 };
-// TODO: when we have real data we can pull this out
-const TEMPORARY_FILTER = (ml) => ml.filter((i) => i.id !== '0xdeadbeef');
 
 const MarketsView = () => {
   const {
-    marketInfos,
     isMobile,
     actions: { setSidebar },
+    processed: { markets }
   } = useAppStatusStore();
-  const markets = TEMPORARY_FILTER(keyedObjToArray(marketInfos));
   return (
     <div className={Styles.MarketsView}>
       <AppViewStats showCashAmounts />
@@ -112,8 +119,8 @@ const MarketsView = () => {
         />
       </ul>
       <section>
-        {markets.map((market) => (
-          <MarketCard key={market.id} market={market} />
+        {Object.values(markets).map((market, index) => (
+          <MarketCard key={`${market.marketId}-${index}`} market={market} />
         ))}
       </section>
       <Pagination

@@ -31,6 +31,11 @@ export const DEFAULT_APP_STATUS_STATE = {
   positions: [],
   liquidity: [],
   transactions: {},
+  processed: {
+    markets: {},
+    cashes: {},
+    ammExchanges: {}
+  },
   userInfo: {
     activity: {},
     balances: {},
