@@ -75,3 +75,4 @@ export const ADD = 'add';
 export const REMOVE = 'remove';
 
 export const INVALID_OUTCOME_ID = 0;
+export const YES_OUTCOME_ID = 2;

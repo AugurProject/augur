@@ -16,45 +16,39 @@ import { PrimaryButton } from 'modules/common/buttons';
 import { SquareDropdown } from 'modules/common/selection';
 import { Pagination } from 'modules/common/pagination';
 import { useAppStatusStore } from 'modules/stores/app-status';
-import { INVALID_OUTCOME_ID } from '../constants';
+import { ETH, INVALID_OUTCOME_ID, YES_OUTCOME_ID } from '../constants';
 
-const OutcomesTable = ({ outcomes, marketId }) => {
+const OutcomesTable = ({ outcomes, marketId, priceNo, priceYes }) => {
   return (
     <div className={Styles.OutcomesTable}>
-      {outcomes.filter(outcome => outcome.id !== INVALID_OUTCOME_ID).map((outcome) => (
-        <div key={`${outcome.name}-${marketId}-${outcome.id}`}>
-          <span>{outcome.name.toLowerCase()}</span>
-          <span>{formatDai(5).full}</span>
-        </div>
-      ))}
+      {outcomes
+        .filter((outcome) => outcome.id !== INVALID_OUTCOME_ID)
+        .map((outcome) => (
+          <div key={`${outcome.name}-${marketId}-${outcome.id}`}>
+            <span>{outcome.name.toLowerCase()}</span>
+            <span>{formatDai(outcome.name === YES_OUTCOME_ID ? priceYes : priceNo).full}</span>
+          </div>
+        ))}
     </div>
   );
 };
 
 const MarketCard = ({ market }) => {
-  const {
-    categories,
-    description,
-    outcomes,
-    marketId
-  } = market;
-  market.inUsd = true;
-  market.noLiquidity = false;
-  market.volume = 5;
+  const { categories, description, outcomes, marketId, ammExchange } = market;
 
   return (
     <article
       className={classNames(Styles.MarketCard, {
-        [Styles.NoLiquidity]: market.noLiquidity,
+        [Styles.NoLiquidity]: !ammExchange,
       })}
     >
       <Link to={makePath(MARKET)}>
         <div>
           <CategoryIcon category={categories[0]} />
           <CategoryLabel category={categories[1]} />
-          <div>{market.inUsd ? UsdIcon : EthIcon}</div>
+          <div>{ammExchange && ammExchange?.cash.name === ETH ? EthIcon : UsdIcon}</div>
           <span>{description}</span>
-          {market.noLiquidity ? (
+          {!ammExchange ? (
             <div>
               <span>Market requires Initial liquidity</span>
               <PrimaryButton text="Earn fees as a liquidity provider" />
@@ -63,9 +57,14 @@ const MarketCard = ({ market }) => {
             <>
               <ValueLabel
                 label="total volume"
-                value={formatDai(market.volume).full}
+                value={formatDai(market.ammExchange?.volumeTotalUSD).full}
               />
-              <OutcomesTable marketId={marketId} outcomes={outcomes} />
+              <OutcomesTable
+                marketId={marketId}
+                priceNo={ammExchange?.priceNo}
+                priceYes={ammExchange?.priceYes}
+                outcomes={outcomes}
+              />
             </>
           )}
         </div>
@@ -78,12 +77,18 @@ const MarketsView = () => {
   const {
     isMobile,
     actions: { setSidebar },
-    processed: { markets }
+    processed: { markets },
   } = useAppStatusStore();
   return (
     <div className={Styles.MarketsView}>
       <AppViewStats showCashAmounts />
-      {isMobile && <PrimaryButton text='filters' icon={FilterIcon} action={() => setSidebar(SIDEBAR_TYPES.FILTERS)} />}
+      {isMobile && (
+        <PrimaryButton
+          text="filters"
+          icon={FilterIcon}
+          action={() => setSidebar(SIDEBAR_TYPES.FILTERS)}
+        />
+      )}
       <ul>
         <SquareDropdown
           onChange={() => null}
