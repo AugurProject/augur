@@ -1,0 +1,9 @@
+specVersion: 0.0.2
+description: Subgraph for the Augur v2 ({{=<% %>=}}{{ network }}<%={{ }}=%>) contracts which tracks Universes, Markets, all the market events and disputing process, all user related balances and token events within the Augur ecosystem (Reputation, Participation and Dispute tokens), as well as metadata from the Augur contract.
+repository: https://github.com/AugurProject/augur-v2-subgraph
+schema:
+  file: ./schema.graphql
+dataSources:
+{{#entities}}
+{{> contractPartial }}
+{{/entities}}

@@ -19,6 +19,9 @@
     },
     "writeArtifacts": true
   },
+  "gsn": {
+    "enabled": true
+  },
   "zeroX": {
     "rpc": {
       "enabled": false,

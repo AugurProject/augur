@@ -1,7 +1,7 @@
 import generateDownloadAccountLink from './generate-download-account-link';
 import getValue from 'utils/get-value';
 import { formatRep, formatDai, formatEther, formatNone } from 'utils/format-number';
-import { ZERO } from 'modules/common/constants';
+import { DAI, DEFAULT_PARA_TOKEN, USDC, USDT, WETH, ZERO } from 'modules/common/constants';
 import { createBigNumber, BigNumber } from "utils/create-big-number";
 import { AppStatus } from 'modules/app/store/app-status';
 
@@ -29,10 +29,22 @@ export const getLoginAccountFormatted = loginAccount => {
       zeroStyled: false,
       decimalsRounded: 4,
     }),
+    usdt: formatDai(loginAccount.balances.usdt, {
+      zeroStyled: false,
+      decimalsRounded: 4,
+    }),
+    usdc: formatDai(loginAccount.balances.usdc, {
+      zeroStyled: false,
+      decimalsRounded: 4,
+    }),
+    weth: formatEther(loginAccount.balances.weth, {
+      zeroStyled: false,
+      decimalsRounded: 4,
+    }),
   };
 };
 
-export const getAccountFunds = loginAccount => {
+export const getAccountFunds = (loginAccount, paraToken) => {
   let totalAvailableTradingBalance = ZERO;
   let totalFrozenFunds = ZERO;
   let totalRealizedPL = ZERO;
@@ -40,16 +52,34 @@ export const getAccountFunds = loginAccount => {
     ? loginAccount.totalOpenOrdersFrozenFunds
     : ZERO;
 
-  if (loginAccount.balances.dai && loginAccount.balances.dai) {
-    totalAvailableTradingBalance = createBigNumber(
-      loginAccount.balances.dai
-    ).minus(totalOpenOrderFunds);
+  if (paraToken === DAI) {
+    if (loginAccount.balances.dai) {
+      totalAvailableTradingBalance = createBigNumber(
+        loginAccount.balances.dai
+      ).minus(totalOpenOrderFunds);
+    }
+  } else if (paraToken === USDT) {
+    if (loginAccount.balances.usdt) {
+      totalAvailableTradingBalance = createBigNumber(
+        loginAccount.balances.usdt
+      ).minus(totalOpenOrderFunds);
+    }
+  } else if (paraToken === USDC) {
+    if (loginAccount.balances.usdc) {
+      totalAvailableTradingBalance = createBigNumber(
+        loginAccount.balances.usdc
+      ).minus(totalOpenOrderFunds);
+    }
+  } else if (paraToken === WETH) {
+    if (loginAccount.balances.weth) {
+      totalAvailableTradingBalance = createBigNumber(
+        loginAccount.balances.weth
+      ).minus(totalOpenOrderFunds);
+    }
   }
 
   if (loginAccount.totalFrozenFunds) {
-    totalFrozenFunds = createBigNumber(loginAccount.totalFrozenFunds).plus(
-      totalOpenOrderFunds
-    );
+    totalFrozenFunds = createBigNumber(loginAccount.totalFrozenFunds);
   }
 
   if (loginAccount.totalRealizedPL) {
@@ -68,36 +98,61 @@ export const getAccountFunds = loginAccount => {
 
 export const totalTradingBalance = (): BigNumber =>
 {
-  const { loginAccount } = AppStatus.get();
-  return createBigNumber(loginAccount.balances.dai).minus(
-    loginAccount.totalOpenOrdersFrozenFunds
-  );
+  const { paraTokenName, loginAccount } = AppStatus.get();
+  if (!paraTokenName) return null;
+
+
+  if (paraTokenName === DAI) {
+    return createBigNumber(loginAccount.balances.dai).minus(
+      loginAccount.totalOpenOrdersFrozenFunds
+    );
+  } else if (paraTokenName === USDT) {
+      return createBigNumber(loginAccount.balances.usdt).minus(
+        loginAccount.totalOpenOrdersFrozenFunds
+      );
+  } else if (paraTokenName === USDC) {
+      return createBigNumber(loginAccount.balances.usdc).minus(
+        loginAccount.totalOpenOrdersFrozenFunds
+      );
+  } else if (paraTokenName === WETH) {
+      return createBigNumber(loginAccount.balances.weth).minus(
+        loginAccount.totalOpenOrdersFrozenFunds
+      );
+  }
 }
 
-export const getCoreStats = (isLogged, loginAccount) => {
-  const accountFunds = getAccountFunds(loginAccount);
+export const getCoreStats = (isLogged, loginAccount, paraToken) => {
+  const accountFunds = getAccountFunds(loginAccount, paraToken);
+  if (!accountFunds) return null;
+
+  const formatValue = (value) => {
+    if (paraToken !== WETH) {
+      return formatDai(value, { removeComma: true });
+    }
+    return formatEther(value, { removeComma: true });
+  }
+
   const availableFunds = {
     label: 'Available Funds',
-    value: formatDai(accountFunds.totalAvailableTradingBalance, {
-      removeComma: true,
-    }),
+    value: formatValue(accountFunds.totalAvailableTradingBalance),
     useFull: true,
   };
   const frozenFunds = {
     label: 'Frozen Funds',
-    value: formatDai(accountFunds.totalFrozenFunds, { removeComma: true }),
+    value: formatValue(accountFunds.totalFrozenFunds),
     useFull: true,
   };
   const totalFunds = {
     label: 'Total Funds',
-    value: formatDai(accountFunds.totalAccountValue, { removeComma: true }),
+    value: formatValue(accountFunds.totalAccountValue),
     useFull: true,
   };
   const realizedPL = {
     label: '30 Day P/L',
-    value: formatDai(accountFunds.totalRealizedPL, { removeComma: true }),
+    value: formatValue(accountFunds.totalRealizedPL),
     useFull: true,
   };
+
   if (!isLogged) {
     availableFunds.value = formatNone();
     frozenFunds.value = formatNone();

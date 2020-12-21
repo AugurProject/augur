@@ -40,7 +40,7 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import { track, MODAL_VIEWED } from 'services/analytics/helpers';
 import {
   ModalCreateMarket,
-  ModalDaiFaucet,
+  ModalTokenFaucet,
   ModalCreationHelp,
   ModalFinalize,
   ModalDiscard,
@@ -97,8 +97,8 @@ function selectModal(type, props, closeModal, modal) {
       );
     case TYPES.MODAL_HARDWARE_WALLET:
       return <HardwareWallet />;
-    case TYPES.MODAL_DAI_FAUCET:
-      return <ModalDaiFaucet />;
+    case TYPES.MODAL_TOKEN_FAUCET:
+      return <ModalTokenFaucet />;
     case TYPES.MODAL_CREATION_HELP:
       return <ModalCreationHelp {...modal} />;
     case TYPES.MODAL_TRANSFER:

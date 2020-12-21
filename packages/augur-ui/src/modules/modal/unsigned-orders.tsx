@@ -27,10 +27,12 @@ import {
 import {
   ADDLIQUIDITY,
   BUY,
+  DEFAULT_PARA_TOKEN,
   MAX_BULK_ORDER_COUNT,
   THEMES,
+  WETH,
 } from 'modules/common/constants';
-import { formatDai, formatMarketShares } from 'utils/format-number';
+import { formatDai, formatEther, formatMarketShares } from 'utils/format-number';
 import Styles from 'modules/modal/modal.styles.less';
 import OpenOrdersTable from 'modules/market/components/market-orders-positions-table/open-orders-table';
 import { LiquidityOrder } from 'modules/types';
@@ -86,7 +88,7 @@ const orderRow = (
     zeroXEnabled,
   }: UnsignedOrdersProps
 ) => {
-  const { loginAccount, theme } = useAppStatusStore();
+  const { paraTokenName, loginAccount, theme } = useAppStatusStore();
   const isTrading = theme === THEMES.TRADING;
   const {
     actions: { removeLiquidity },
@@ -142,9 +144,9 @@ const orderRow = (
         <span className={type === BUY ? Styles.bid : Styles.ask}>{type}</span>
       )}
       <span>{formatMarketShares(marketType, quantity).formatted}</span>
-      <span>{formatDai(Number(price)).formatted}</span>
-      <span>{formatDai(Number(orderEstimate)).full}</span>
-      <div className={Styles.OrdersButtons}>
+      <span>{paraTokenName !== WETH ? formatDai(Number(price)).formatted : formatEther(Number(price)).formatted}</span>
+      <span>{paraTokenName !== WETH ? formatDai(Number(orderEstimate)).full : formatEther(Number(orderEstimate)).full}</span>
+      <div>
         {buttons.map((Button: DefaultButtonProps, index: number) => {
           if (index === 0)
             return isTrading ? (

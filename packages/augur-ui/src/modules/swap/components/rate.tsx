@@ -1,10 +1,10 @@
 import React from 'react';
-import { DAI, REP, ETH, USDC, USDT } from 'modules/common/constants';
+import { DAI, REP, ETH, USDC, USDT, WETH } from 'modules/common/constants';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
-import { formatEther, formatDai } from 'utils/format-number';
-import { FormattedNumber } from 'modules/types';
+import { formatEther, formatRep, formatDai } from 'utils/format-number';
 
 import Styles from 'modules/swap/components/rate.styles.less';
+import { FormattedNumber } from 'modules/types';
 
 interface RateProps {
   baseToken: string;
@@ -73,6 +73,15 @@ export const Rate = ({
     }
     else if (baseToken === USDT) {
       displayRate = `1 USDT = ${formatEther((createBigNumber(usdtDaiRate)).multipliedBy(ethRate)).formattedValue} ETH`;
+    }
+    else if (baseToken === WETH) {
+      displayRate = `1 WETH = 1 ETH`;
+    }
+  }
+
+  else if (swapForToken === WETH) {
+    if (baseToken === ETH) {
+      displayRate = `1 ETH = 1 WETH`;
     }
   }
 

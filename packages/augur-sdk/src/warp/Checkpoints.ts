@@ -1,5 +1,5 @@
 import { MarketCreated } from '@augurproject/sdk-lite/build/events';
-import { Block } from 'ethers/providers';
+import { Block } from '@ethersproject/providers';
 import { Provider } from '..';
 
 /*

@@ -33,11 +33,17 @@
         "./utils/*"
       ]
     },
+    "allowSyntheticDefaultImports": true,
+    "typeRoots": [
+      "types",
+      "node_modules/@types"
+    ],
     "esModuleInterop": true,
     "resolveJsonModule": false
   },
   "include": [
-    "./src/**/*"
+    "./src/**/*",
+    "../augur-artifacts/src/environments/*.json"
   ],
   "exclude": [
     "./src/**/*.test.ts"

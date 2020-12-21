@@ -1,5 +1,5 @@
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
-import { BUY, ZERO, ZEROX_GAS_FEE, BUY_INDEX } from 'modules/common/constants';
+import { BUY, ZERO, ZEROX_GAS_FEE, BUY_INDEX, DEFAULT_PARA_TOKEN } from 'modules/common/constants';
 import logError from 'utils/log-error';
 import { generateTrade } from 'modules/trades/helpers/generate-trade';
 import { NodeStyleCallback, AccountPosition } from 'modules/types';
@@ -27,6 +27,7 @@ export const updateTradeCost = ({
   }
   const {
     accountPositions,
+    paraTokenName,
     loginAccount: { address },
   } = AppStatus.get();
   const { marketInfos } = Markets.get();
@@ -47,6 +48,7 @@ export const updateTradeCost = ({
     outcomeId,
     accountPositions,
     address,
+    paraTokenName,
     callback
   );
 };
@@ -66,6 +68,7 @@ export const updateTradeShares = ({
 
   const {
     accountPositions,
+    paraTokenName,
     loginAccount: { address },
   } = AppStatus.get();
   // const { marketInfos } = Markets.get();
@@ -111,6 +114,7 @@ export const updateTradeShares = ({
     outcomeId,
     accountPositions,
     address,
+    paraTokenName,
     callback
   );
 };
@@ -122,6 +126,7 @@ export const runSimulateTrade = async (
   outcomeId: number,
   accountPositions: AccountPosition,
   takerAddress: string,
+  paraTokenName: string,
   callback: NodeStyleCallback
 ) => {
   let sharesFilledAvgPrice = '';
@@ -245,7 +250,7 @@ export const runSimulateTrade = async (
     reversal,
   };
 
-  const order = generateTrade(market, tradeInfo);
+  const order = generateTrade(market, tradeInfo, paraTokenName);
 
   if (callback) callback(null, { ...order, gasLimit });
 };

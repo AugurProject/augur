@@ -47,6 +47,11 @@ def test_publicFillOrder_bid(contractsFixture, cash, market, universe):
         "frozenFunds": fix(fillerCost),
     }
 
+    if contractsFixture.paraAugur:
+        orderEventLog['para'] = cash.address
+        marketVolumeChangedLog['para'] = cash.address
+        profitLossChangedLog['para'] = cash.address
+
     with BuyWithCash(cash, fillerCost, contractsFixture.accounts[2], "filling order"):
         with AssertLog(contractsFixture, "ProfitLossChanged", profitLossChangedLog):
             with AssertLog(contractsFixture, "OrderEvent", orderEventLog):
@@ -122,7 +127,7 @@ def test_fill_order_with_shares_escrowed_sell_with_shares(contractsFixture, cash
     createOrder = contractsFixture.contracts['CreateOrder']
     fillOrder = contractsFixture.contracts['FillOrder']
     orders = contractsFixture.contracts['Orders']
-    shareToken = contractsFixture.contracts['ShareToken']
+    shareToken = contractsFixture.getShareToken()
     fingerprint = longTo32Bytes(11)
 
     # buy complete sets for both users
@@ -154,7 +159,7 @@ def test_fill_order_with_shares_escrowed_sell_with_shares_categorical(contractsF
     createOrder = contractsFixture.contracts['CreateOrder']
     fillOrder = contractsFixture.contracts['FillOrder']
     orders = contractsFixture.contracts['Orders']
-    shareToken = contractsFixture.contracts['ShareToken']
+    shareToken = contractsFixture.getShareToken()
     fingerprint = longTo32Bytes(11)
 
     # buy complete sets for both users
@@ -193,7 +198,7 @@ def test_fill_buy_order_with_buy_categorical(contractsFixture, cash, categorical
     createOrder = contractsFixture.contracts['CreateOrder']
     fillOrder = contractsFixture.contracts['FillOrder']
     orders = contractsFixture.contracts['Orders']
-    shareToken = contractsFixture.contracts['ShareToken']
+    shareToken = contractsFixture.getShareToken()
     fingerprint = longTo32Bytes(11)
 
     # create order with cash
@@ -228,8 +233,8 @@ def test_malicious_order_creator(contractsFixture, cash, market, universe):
     createOrder = contractsFixture.contracts['CreateOrder']
     fillOrder = contractsFixture.contracts['FillOrder']
     orders = contractsFixture.contracts['Orders']
-    augur = contractsFixture.contracts['Augur']
-    shareToken = contractsFixture.contracts['ShareToken']
+    augur = contractsFixture.contracts['ParaAugur'] if contractsFixture.paraAugur else contractsFixture.contracts['Augur']
+    shareToken = contractsFixture.getShareToken()
     augurTrading = contractsFixture.contracts['AugurTrading']
 
     maliciousTrader = contractsFixture.upload('solidity_test_helpers/MaliciousTrader.sol', 'maliciousTrader')
@@ -272,7 +277,7 @@ def test_complete_set_auto_sale(contractsFixture, cash, market, universe):
     fillOrder = contractsFixture.contracts['FillOrder']
     orders = contractsFixture.contracts['Orders']
     tradeGroupID = longTo32Bytes(42)
-    shareToken = contractsFixture.contracts['ShareToken']
+    shareToken = contractsFixture.getShareToken()
     fingerprint = longTo32Bytes(11)
 
     # create non matching orders

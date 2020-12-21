@@ -27,6 +27,7 @@ import { Markets } from 'modules/markets/store/markets';
 import { updateAlert } from 'modules/alerts/actions/alerts';
 import { checkAccountApproval } from 'modules/auth/actions/approve-account';
 import { MarketData } from 'modules/types';
+import { augurSdk } from 'services/augursdk';
 
 export const placeMarketTrade = async ({
   marketId,
@@ -93,6 +94,8 @@ export const placeMarketTrade = async ({
     market.id
   );
 
+  const Augur = augurSdk ? augurSdk.get() : undefined;
+
   placeTrade(
     orderType,
     market.id,
@@ -127,7 +130,8 @@ export const placeMarketTrade = async ({
             orderType,
             amount: convertDisplayAmountToOnChainAmount(
               createBigNumber(tradeInProgress.numShares),
-              createBigNumber(tickSize)
+              createBigNumber(tickSize),
+              Augur.precision,
             ),
             marketId,
           },

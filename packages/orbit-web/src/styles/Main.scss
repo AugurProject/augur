@@ -1,6 +1,6 @@
 html,
 body {
-  font-family: 'Inter';
+  font-family: 'Roboto';
   font-weight: normal;
   background: #222222;
   color: white;
@@ -19,11 +19,4 @@ h1 {
 #root {
   width: 100%;
   height: 100%;
-}
-
-:root[theme='BETTING'],
-:root[theme='SPORTS'] {
-  body {
-    background: red;
-  }
 }

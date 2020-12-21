@@ -93,6 +93,8 @@ const calculateParams = (
   const marketTypeNumber = marketNameToType(marketType);
   let formattedOrderBook = {};
 
+  const Augur = augurSdk ? augurSdk.get() : undefined;
+
   Object.entries(orderBook).forEach(([outcome, orders]: Array<any>) => {
     formattedOrderBook[outcome] = { bids: [], asks: [] };
     orders.forEach(order => {
@@ -104,7 +106,8 @@ const calculateParams = (
         ).toFixed(),
         amount: convertDisplayAmountToOnChainAmount(
           createBigNumber(order.quantity),
-          createBigNumber(tickSize)
+          createBigNumber(tickSize),
+          Augur.precision,
         ).toFixed(),
       };
       if (order.type === BUY) {
@@ -281,4 +284,4 @@ export const Visibility = () => {
   );
 };
 
-export default Visibility; 
+export default Visibility;

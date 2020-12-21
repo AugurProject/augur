@@ -71,4 +71,17 @@ library SafeMathInt256 {
     function fxpDiv(int256 a, int256 b, int256 base) internal pure returns (int256) {
         return div(mul(a, base), b);
     }
+
+    function sqrt(int256 y) internal pure returns (int256 z) {
+        if (y > 3) {
+            int256 x = (y + 1) / 2;
+            z = y;
+            while (x < z) {
+                z = x;
+                x = (y / x + x) / 2;
+            }
+        } else if (y != 0) {
+            z = 1;
+        }
+    }
 }

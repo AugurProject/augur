@@ -1,9 +1,9 @@
 import type { EthersSigner } from '@augurproject/contract-dependencies-ethers';
 import type { Augur, Connectors } from '@augurproject/sdk';
 
-import { NetworkId, SDKConfiguration } from '@augurproject/utils';
-import type { JsonRpcProvider } from 'ethers/providers';
-import { NULL_ADDRESS } from 'modules/common/constants';
+import { logger, SDKConfiguration, NetworkId } from '@augurproject/utils';
+import type { JsonRpcProvider } from '@ethersproject/providers';
+import { DEFAULT_PARA_TOKEN, NULL_ADDRESS } from 'modules/common/constants';
 
 import {
   listenToUpdates,
@@ -41,6 +41,19 @@ export class SDK {
     const { Connectors, EthersProvider, createClient } = await import(/* webpackChunkName: 'augur-sdk' */ '@augurproject/sdk');
 
     this.config = config;
+
+    if (config.paraDeploys) {
+      let paraOfChoice = process.env.PARA_DEPLOY_TOKEN_NAME || DEFAULT_PARA_TOKEN;
+      for (const key of Object.keys(config.paraDeploys)) {
+        if (!paraOfChoice) paraOfChoice = config.paraDeploys[key].name;
+        if (config.paraDeploys[key].name === paraOfChoice) {
+          config.paraDeploy = key;
+          logger.log(`Setting paraDeploy name ${paraOfChoice} with address ${key}.`)
+          break;
+        }
+      }
+    }
+
 
     if ((isSafari() || isMobileSafari()) && this.config.zeroX) {
       this.config.zeroX.delayTillSDKReady = true;

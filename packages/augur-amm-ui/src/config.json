@@ -1,0 +1,42 @@
+{
+  "1": {
+    "networkId": "1",
+    "Cashes": [
+      { "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", "name": "wrapped ETH", "symbol": "wETH" },
+      {
+        "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
+        "name": "DAI",
+        "symbol": "DAI"
+      }
+    ],
+    "augurClient": "https://api.thegraph.com/subgraphs/name/augurproject/augur-v2",
+    "blockClient": "https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks",
+    "network": "mainnet"
+  },
+  "42": {
+    "networkId": "42",
+    "Cashes": [
+      {
+        "address": "0x7290c2b7D5Fc91a112d462fe06aBBB8948668f56",
+        "name": "ETH",
+        "symbol": "ETH",
+        "asset": "eth.svg"
+      },
+      {
+        "address": "0x25e27c08B7B3f2159aC23e4711801e0F7aD270A3",
+        "name": "DAI",
+        "symbol": "DAI",
+        "asset": "dai.svg"
+      },
+      {
+        "address": "0x1997d08B1a9aeD5143b995e929707400625D5f6C",
+        "name": "USDT",
+        "symbol": "USDT",
+        "asset": "usdt.svg"
+      }
+    ],
+    "augurClient": "https://api.thegraph.com/subgraphs/name/augurproject/augur-v2-staging",
+    "blockClient": "https://api.thegraph.com/subgraphs/name/blocklytics/kovan-blocks",
+    "network": "kovan"
+  }
+}

@@ -1,10 +1,10 @@
-import { getAddress } from 'ethers/utils/address';
 import * as _ from 'lodash';
 import { ethers } from 'ethers';
+import { BytesLike } from '@ethersproject/bytes';
 import { BigNumber } from 'bignumber.js';
-import { TransactionRequest, TransactionResponse } from 'ethers/providers';
+import { TransactionRequest, TransactionResponse } from '@ethersproject/providers';
 
-import { getGasStation, NetworkId } from '@augurproject/utils';
+import { NetworkId } from '@augurproject/utils';
 
 import {
   Dependencies,
@@ -19,6 +19,7 @@ import {
   isInstanceOfArray,
   isObject,
 } from './utils';
+import { ParamType } from '@ethersproject/abi';
 
 
 export interface EthersSigner {
@@ -26,15 +27,15 @@ export interface EthersSigner {
     transaction: ethers.providers.TransactionRequest
   ): Promise<ethers.providers.TransactionResponse>;
   getAddress(): Promise<string>;
-  signMessage(message: ethers.utils.Arrayish | string): Promise<string>;
+  signMessage(message: BytesLike): Promise<string>;
 }
 
 export interface EthersProvider {
-  call(transaction: Transaction<ethers.utils.BigNumber>): Promise<string>;
-  estimateGas(transaction: TransactionRequest): Promise<ethers.utils.BigNumber>;
+  call(transaction: Transaction<ethers.BigNumber>): Promise<string>;
+  estimateGas(transaction: TransactionRequest): Promise<ethers.BigNumber>;
   listAccounts(): Promise<string[]>;
-  getBalance(address: string): Promise<ethers.utils.BigNumber>;
-  getGasPrice(networkId?: NetworkId): Promise<ethers.utils.BigNumber>;
+  getBalance(address: string): Promise<ethers.BigNumber>;
+  getGasPrice(networkId?: NetworkId): Promise<ethers.BigNumber>;
   getTransaction(hash: string): Promise<TransactionResponse>;
   waitForTransaction(
     hash: string,
@@ -94,20 +95,20 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
   setGasPrice(gasPrice: BigNumber): void {
     if (gasPrice.lt(MIN_GAS_PRICE)) gasPrice = MIN_GAS_PRICE;
     // @ts-ignore
-    this.provider.overrideGasPrice = new ethers.utils.BigNumber(
+    this.provider.overrideGasPrice = ethers.BigNumber.from(
       gasPrice.toNumber()
     );
   }
 
   transactionToEthersTransaction(
     transaction: Transaction<BigNumber>
-  ): Transaction<ethers.utils.BigNumber> {
-    const transactionObj: Transaction<ethers.utils.BigNumber> = {
+  ): Transaction<ethers.BigNumber> {
+    const transactionObj: Transaction<ethers.BigNumber> = {
       to: transaction.to,
       data: transaction.data,
       value: transaction.value
-        ? new ethers.utils.BigNumber(transaction.value.toString())
-        : new ethers.utils.BigNumber(0),
+        ? ethers.BigNumber.from(transaction.value.toString())
+        : ethers.BigNumber.from(0),
     };
     if (transaction.from) {
       transactionObj.from = transaction.from;
@@ -116,7 +117,7 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
   }
 
   ethersTransactionToTransaction(
-    transaction: Transaction<ethers.utils.BigNumber>
+    transaction: Transaction<ethers.BigNumber>
   ): Transaction<BigNumber> {
     return {
       to: transaction.to,
@@ -136,14 +137,14 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
     const ethersParams = _.map(parameters, param => {
       return this.encodeParam(param);
     });
-    const txData = this.abiCoder.encode(abiFunction.inputs, ethersParams);
+    const txData = this.abiCoder.encode(paramTypes(abiFunction.inputs), ethersParams);
     this.storeTxMetadata(abiFunction, parameters, txData);
     return txData.substr(2);
   }
 
   private encodeParam(param: any): any {
     if (isInstanceOfBigNumber(param)) {
-      return new ethers.utils.BigNumber(param.toFixed());
+      return ethers.BigNumber.from(param.toFixed());
     } else if (isInstanceOfArray(param)) {
       return param.length > 0
         ? _.map(param, value => this.encodeParam(value))
@@ -174,7 +175,7 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
   }
 
   decodeParams(abiParameters: AbiParameter[], encoded: string) {
-    const results = this.abiCoder.decode(abiParameters, encoded);
+    const results = this.abiCoder.decode(paramTypes(abiParameters), encoded);
     return _.map(results, result => {
       if (isInstanceOfEthersBigNumber(result)) {
         return new BigNumber(result.toString());
@@ -195,10 +196,10 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
 
   async getDefaultAddress(): Promise<string | undefined> {
     if (this.signer) {
-      return getAddress(await this.signer.getAddress());
+      return ethers.utils.getAddress(await this.signer.getAddress());
     }
 
-    if (this.address) return getAddress(this.address);
+    if (this.address) return ethers.utils.getAddress(this.address);
 
     return undefined;
   }
@@ -269,7 +270,7 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
   }
 
   async sendTransaction(
-    tx: Transaction<ethers.utils.BigNumber>,
+    tx: Transaction<ethers.BigNumber>,
     txMetadata: TransactionMetadata
   ): Promise<ethers.providers.TransactionReceipt> {
     tx.gasLimit = tx.gasLimit || await this.provider.estimateGas(tx);
@@ -295,9 +296,17 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
   }
 
   async estimateGasForEthersTransaction(
-    transaction: Transaction<ethers.utils.BigNumber>
+    transaction: Transaction<ethers.BigNumber>
   ): Promise<BigNumber> {
     const estimate = await this.provider.estimateGas(transaction);
     return new BigNumber(estimate.toString());
   }
+}
+
+function paramType(fragment: AbiParameter): ParamType {
+  return ParamType.from(fragment);
+}
+
+function paramTypes(fragments: AbiParameter[]): ParamType[] {
+  return fragments.map(paramType);
 }

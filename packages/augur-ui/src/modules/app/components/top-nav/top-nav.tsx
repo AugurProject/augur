@@ -33,7 +33,7 @@ const SPREAD_INDEX = 3;
 
 const TopNav = ({ isLogged, menuData }: TopNavProps) => {
   const {
-    env: { ui: { reportingOnly: disableMarketCreation } },
+    env: { ui: { marketCreationEnabled } },
     currentBasePath,
     pendingQueue,
     loginAccount: { balances: walletBalances },
@@ -45,7 +45,6 @@ const TopNav = ({ isLogged, menuData }: TopNavProps) => {
     pendingQueue[TRANSACTIONS][MIGRATE_FROM_LEG_REP_TOKEN];
   const showMigrateRepButton =
     walletBalances.legacyRep !== '0' ||
-    walletBalances.signerBalances.legacyRep !== '0' ||
     !!pending;
   const isCurrentItem = item => {
     if (item.route === 'markets' && currentBasePath === 'market') return true;
@@ -70,7 +69,7 @@ const TopNav = ({ isLogged, menuData }: TopNavProps) => {
                   }
                 >
                   <SecondaryButton
-                    disabled={item.disabled || disableMarketCreation}
+                    disabled={item.disabled || !marketCreationEnabled}
                     text="Create Market"
                     action={() => null}
                   />

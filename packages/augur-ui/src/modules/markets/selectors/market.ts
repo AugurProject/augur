@@ -1,4 +1,5 @@
 import {
+  DEFAULT_PARA_TOKEN,
   INVALID_OUTCOME_ID,
   SCALAR,
   SCALAR_DOWN_ID,
@@ -15,8 +16,7 @@ import { formatNumber } from 'utils/format-number';
 
 export const selectMarket = (marketId): MarketData | null => {
   const { marketInfos } = Markets.get();
-  const { blockchain: { currentAugurTimestamp } } = AppStatus.get();
-
+  const { paraTokenName, blockchain: { currentAugurTimestamp } } = AppStatus.get();
   if (
     !marketId ||
     !marketInfos ||
@@ -26,7 +26,7 @@ export const selectMarket = (marketId): MarketData | null => {
     return null;
   }
 
-  return convertMarketInfoToMarketData(marketInfos[marketId], currentAugurTimestamp * 1000);
+  return convertMarketInfoToMarketData(marketInfos[marketId], currentAugurTimestamp * 1000, paraTokenName);
 };
 
 export const selectSortedMarketOutcomes = (marketType, outcomes: OutcomeFormatted[]) => {

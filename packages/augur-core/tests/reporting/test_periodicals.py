@@ -4,7 +4,10 @@ from utils import longToHexString, EtherDelta, TokenDelta, PrintGasUsed
 from reporting_utils import proceedToNextRound, proceedToFork, finalize
 
 def test_periodicals(kitchenSinkFixture, market, universe, cash, reputationToken):
-    shareToken = kitchenSinkFixture.contracts['ShareToken']
+    if kitchenSinkFixture.paraAugur:
+        return
+    
+    shareToken = kitchenSinkFixture.getShareToken()
     repOracle = kitchenSinkFixture.contracts["RepOracle"]
 
     # Move time forward

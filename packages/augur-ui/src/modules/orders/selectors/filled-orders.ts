@@ -1,8 +1,8 @@
 import { createBigNumber } from 'utils/create-big-number';
-import { BUY, SELL, ZERO } from 'modules/common/constants';
+import { BUY, DEFAULT_PARA_TOKEN, SELL, WETH, ZERO } from 'modules/common/constants';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { isSameAddress } from 'utils/isSameAddress';
-import { formatDai } from 'utils/format-number';
+import { formatDai, formatEther } from 'utils/format-number';
 import getUserOpenOrders from 'modules/orders/selectors/user-open-orders';
 import { Markets } from 'modules/markets/store/markets';
 import { AppStatus } from 'modules/app/store/app-status';
@@ -11,7 +11,8 @@ function findOrders(
   tradesCreatedOrFilledByThisAccount,
   accountId,
   marketInfos,
-  openOrders
+  openOrders,
+  paraTokenName,
 ) {
   // Each input tradesCreatedOrFilledByThisAccount will be associated with exactly
   // one order. But if tradesCreatedOrFilledByThisAccount includes self-filled trades
@@ -98,7 +99,7 @@ function findOrders(
         );
         // amount has been format-number'ed
         foundOrder.amount = createBigNumber(foundOrder.amount).plus(amountBN);
-        foundOrder.price = formatDai(
+        foundOrder.price = paraTokenName !== WETH ? formatDai(
           foundOrder.trades
             .reduce(
               (p, t) => p.plus(createBigNumber(t.price).times(t.amount)),
@@ -106,7 +107,13 @@ function findOrders(
             )
             .div(foundOrder.amount)
             .toFixed(8)
-        ).formattedValue;
+        ).formattedValue :
+        formatEther(foundOrder.trades
+          .reduce(
+            (p, t) => p.plus(createBigNumber(t.price).times(t.amount)),
+            ZERO
+          )
+          .div(foundOrder.amount).toFixed(8)).formattedValue;
         foundOrder.trades
           .sort((a, b) => b.logIndex - a.logIndex)
           .sort((a, b) => b.timestamp.timestamp - a.timestamp.timestamp);
@@ -163,6 +170,7 @@ export default function(marketId) {
 
 export const selectUserFilledOrders = marketId => {
   const {
+    paraTokenName,
     loginAccount: { address, mixedCaseAddress: accountId },
     filledOrders,
   } = AppStatus.get();
@@ -170,7 +178,6 @@ export const selectUserFilledOrders = marketId => {
   const openOrders = getUserOpenOrders(marketId);
   const userFilledOrders = filledOrders || [];
   const filledMarketOrders = userFilledOrders[marketId];
-
   if (
     !filledMarketOrders ||
     filledMarketOrders.length < 1 ||
@@ -183,7 +190,8 @@ export const selectUserFilledOrders = marketId => {
     filledMarketOrders,
     accountId,
     marketInfos[marketId],
-    openOrders
+    openOrders,
+    paraTokenName,
   );
   orders
     .sort((a, b) => b.logIndex - a.logIndex)

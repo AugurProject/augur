@@ -1,11 +1,12 @@
 import React from 'react';
 import Row from 'modules/common/row';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import { COLUMN_TYPES } from 'modules/common/constants';
-import { formatMarketShares, formatDai } from 'utils/format-number';
+import { COLUMN_TYPES, DEFAULT_PARA_TOKEN, WETH } from 'modules/common/constants';
+import { formatMarketShares, formatDai, formatEther } from 'utils/format-number';
 
 export const InitialLiquidity = ({ order, selectedOutcome }) => {
   const {
+    paraTokenName,
     newMarket: { marketType },
     actions: { removeOrderFromNewMarket },
   } = useAppStatusStore();
@@ -32,13 +33,13 @@ export const InitialLiquidity = ({ order, selectedOutcome }) => {
     {
       key: 'price',
       columnType: VALUE,
-      value: formatDai(price),
+      value: paraTokenName !== WETH ? formatDai(price) : formatEther(price),
       keyId: `order-price-${id}`,
     },
     {
       key: 'orderEstimate',
       columnType: VALUE,
-      value: formatDai(orderEstimate),
+      value: paraTokenName !== WETH ? formatDai(orderEstimate) : formatEther(orderEstimate),
       keyId: `order-orderEstimate-${id}`,
     },
     {
