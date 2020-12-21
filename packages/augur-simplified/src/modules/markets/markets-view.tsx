@@ -69,7 +69,7 @@ const MarketCard = ({ market }) => {
           <CategoryIcon category={categories[0]} />
           <CategoryLabel category={categories[1]} />
           <div>
-            {ammExchange && ammExchange?.cash.name === ETH && EthIcon} 
+            {ammExchange && ammExchange?.cash.name === ETH && EthIcon}
             {ammExchange && ammExchange?.cash.name === USDT && UsdIcon}
           </div>
           <span>{description}</span>
@@ -113,21 +113,19 @@ const MarketsView = () => {
   const [filteredMarkets, setFilteredMarkets] = useState([]);
 
   useEffect(() => {
-    applyFiltersAndSort(Object.values(markets));
-  }, [markets]);
-
-  useEffect(() => {
     setPage(1);
     applyFiltersAndSort(Object.values(markets));
-  }, [sortBy, categories, reportingState, currency]);
+  }, [sortBy, categories, reportingState, currency, markets]);
 
   const applyFiltersAndSort = (passedInMarkets) => {
     let updatedFilteredMarkets = passedInMarkets;
     updatedFilteredMarkets = updatedFilteredMarkets.filter((market) => {
-      if (categories !== ALL_MARKETS && categories !== OTHER) {
-        if (market.categories[0].toLowerCase() !== categories.toLowerCase()) {
-          return false;
-        }
+      if (
+        categories !== ALL_MARKETS &&
+        categories !== OTHER &&
+        market.categories[0].toLowerCase() !== categories.toLowerCase()
+      ) {
+        return false;
       }
       if (
         categories === OTHER &&
@@ -153,10 +151,12 @@ const MarketsView = () => {
     });
     updatedFilteredMarkets = updatedFilteredMarkets.sort((marketA, marketB) => {
       if (sortBy === TOTAL_VOLUME) {
-        return marketB?.ammExchange?.volumeTotal - marketA?.ammExchange?.volumeTotal;
+        return (
+          marketB?.ammExchange?.volumeTotal - marketA?.ammExchange?.volumeTotal
+        );
       }
       return true;
-    })
+    });
     setFilteredMarkets(updatedFilteredMarkets);
   };
 
