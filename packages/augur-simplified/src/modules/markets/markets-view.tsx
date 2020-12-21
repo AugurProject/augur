@@ -46,7 +46,7 @@ const MarketCard = ({ market }) => {
         <div>
           <CategoryIcon category={categories[0]} />
           <CategoryLabel category={categories[1]} />
-          <div>{ammExchange && ammExchange?.name === ETH ? EthIcon : UsdIcon}</div>
+          <div>{ammExchange && ammExchange?.cash.name === ETH ? EthIcon : UsdIcon}</div>
           <span>{description}</span>
           {!ammExchange ? (
             <div>
