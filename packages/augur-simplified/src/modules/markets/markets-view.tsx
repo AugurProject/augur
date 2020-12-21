@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Styles from 'modules/markets/markets-view.styles.less';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKET, SIDEBAR_TYPES } from 'modules/constants';
@@ -17,14 +17,22 @@ import { SquareDropdown } from 'modules/common/selection';
 import { Pagination } from 'modules/common/pagination';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import {
+  ALL,
+  ALL_MARKETS,
   categoryItems,
   currencyItems,
   ETH,
   INVALID_OUTCOME_ID,
   marketStatusItems,
+  OPEN,
+  OTHER,
+  POPULAR_CATEGORIES_ICONS,
   sortByItems,
+  TOTAL_VOLUME,
   YES_OUTCOME_ID,
 } from '../constants';
+
+const PAGE_LIMIT = 20;
 
 const OutcomesTable = ({ outcomes, marketId, priceNo, priceYes }) => {
   return (
@@ -88,6 +96,9 @@ const MarketCard = ({ market }) => {
   );
 };
 
+const getOffset = (page) => {
+  return (page - 1) * PAGE_LIMIT;
+};
 const MarketsView = () => {
   const {
     isMobile,
@@ -96,6 +107,55 @@ const MarketsView = () => {
     processed: { markets },
   } = useAppStatusStore();
   const { sortBy, categories, reportingState, currency } = marketsViewSettings;
+  const [page, setPage] = useState(1);
+  const [filteredMarkets, setFilteredMarkets] = useState([]);
+
+  useEffect(() => {
+    applyFiltersAndSort(Object.values(markets));
+  }, [markets]);
+
+  useEffect(() => {
+    applyFiltersAndSort(Object.values(markets));
+  }, [sortBy, categories, reportingState, currency]);
+
+  const applyFiltersAndSort = (passedInMarkets) => {
+    setPage(1);
+    let updatedFilteredMarkets = passedInMarkets;
+    updatedFilteredMarkets = updatedFilteredMarkets.filter((market) => {
+      if (categories !== ALL_MARKETS && categories !== OTHER) {
+        if (market.categories[0].toLowerCase() !== categories.toLowerCase()) {
+          return false;
+        }
+      }
+      if (
+        categories === OTHER &&
+        POPULAR_CATEGORIES_ICONS[market.categories[0].toLowerCase()]
+      ) {
+        return false;
+      }
+      if (currency !== ALL) {
+        if (!market.ammExchange) {
+          return false;
+        } else if (market?.ammExchange?.cash?.name !== currency) {
+          return false;
+        }
+      }
+      if (reportingState === OPEN) {
+        if (market.reportingState !== 'TRADING') {
+          return false;
+        }
+      } else if (market.reportingState !== reportingState) {
+        return false;
+      }
+      return true;
+    });
+    updatedFilteredMarkets = updatedFilteredMarkets.sort((marketA, marketB) => {
+      if (sortBy === TOTAL_VOLUME) {
+        return marketB?.ammExchange?.volumeTotal - marketA?.ammExchange?.volumeTotal;
+      }
+    })
+    setFilteredMarkets(updatedFilteredMarkets);
+  };
 
   return (
     <div className={Styles.MarketsView}>
@@ -138,16 +198,20 @@ const MarketsView = () => {
         />
       </ul>
       <section>
-        {Object.values(markets).map((market, index) => (
-          <MarketCard key={`${market.marketId}-${index}`} market={market} />
-        ))}
+        {filteredMarkets
+          .slice(getOffset(page), getOffset(page) + PAGE_LIMIT)
+          .map((market, index) => (
+            <MarketCard key={`${market.marketId}-${index}`} market={market} />
+          ))}
       </section>
       <Pagination
-        page={1}
-        itemCount={10}
-        itemsPerPage={9}
-        action={() => null}
-        updateLimit={() => null}
+        page={page}
+        itemCount={filteredMarkets.length}
+        itemsPerPage={PAGE_LIMIT}
+        action={(page) => {
+          setPage(page);
+        }}
+        updateLimit={null}
       />
     </div>
   );

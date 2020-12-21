@@ -12,7 +12,7 @@ import {
 } from 'modules/constants';
 import { createBigNumber } from 'utils/create-big-number';
 import { formatDai } from 'utils/format-number';
-import { ALL, ALL_MARKETS, categoryItems, currencyItems, marketStatusItems, OPEN, TOTAL_VOLUME } from '../constants';
+import { ALL, ALL_MARKETS, OPEN, TOTAL_VOLUME } from '../constants';
 
 export const STUBBED_APP_STATUS_ACTIONS = {
   setIsMobile: isMobile => {},

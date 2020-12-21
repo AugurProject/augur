@@ -91,7 +91,6 @@ export const categoryItems = [
   {
     label: ALL_MARKETS,
     value: ALL_MARKETS,
-    selected: true,
   },
   {
     label: CRYPTO,
@@ -143,7 +142,6 @@ export const marketStatusItems = [
   {
     label: OPEN,
     value: OPEN,
-    selected: true,
   },
   {
     label: IN_SETTLEMENT,
@@ -159,14 +157,13 @@ export const currencyItems = [
   {
     label: ALL,
     value: ALL,
-    selected: true,
   },
   {
     label: ETH,
     value: ETH,
   },
   {
-    label: USDC,
-    value: USDC,
+    label: USDT,
+    value: USDT,
   },
 ];

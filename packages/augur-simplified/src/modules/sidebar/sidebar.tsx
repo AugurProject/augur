@@ -3,7 +3,7 @@ import Styles from 'modules/sidebar/sidebar.styles.less';
 import { CloseIcon, GearIcon } from 'modules/common/icons';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
-import { CheckboxGroup, RadioBarGroup } from 'modules/common/selection';
+import { RadioBarGroup } from 'modules/common/selection';
 import { MARKETS, PORTFOLIO, SIDEBAR_TYPES } from 'modules/constants';
 import Logo from 'modules/common/logo';
 import classNames from 'classnames';
@@ -16,8 +16,7 @@ import {
   currencyItems,
   marketStatusItems,
   sortByItems,
-} from '../constants';
-import { use } from 'chai';
+} from 'modules/constants';
 
 interface SideBarHeaderProps {
   header?: string;
