@@ -891,6 +891,21 @@ export interface Trade {
   gasLimit?: BigNumber;
 }
 
+export enum TradingDirection {
+  ENTRY = 'ENTRY',
+  EXIT = 'EXIT',
+}
+export interface TradeInfo {
+  marketId: string;
+  tradeType: TradingDirection;
+  buyYesShares: boolean;
+  inputAmount?: string;
+  minAmountOut?: number;
+  minAmount?: string;
+  fee?: string;
+  userBalances?: string[]
+}
+
 export interface PriceTimeSeriesData {
   tokenVolume: number;
   period: number;
