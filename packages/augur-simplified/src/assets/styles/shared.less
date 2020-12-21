@@ -1,0 +1,99 @@
+// NOTE -- There is import order dependence, so please don't reorder before checking inheritence
+// This is so that there is not circular dependencies amoung these stylesheets
+@import '_colors';
+@import '_typography';
+@import '_misc_redesign';
+@import '_responsive';
+
+html {
+  font-size: @size-16;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--light-background-color);
+}
+
+ul,
+ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  color: var(--color-dark-grey);
+  font-family: @Inter;
+  font-size: @size-16;
+  font-style: normal;
+  font-weight: 400;
+  margin: 0;
+}
+
+label {
+  color: var(--color-primary-text);
+  display: block;
+  margin-bottom: @size-10;
+
+  &[for] {
+    cursor: pointer;
+  }
+}
+
+input,
+textarea {
+  background-color: var(--color-dark-grey);
+  border: @size-1 solid transparent;
+  color: var(--color-primary-text);
+  display: block;
+  font-family: @Inter;
+  padding: @size-12 @size-16;
+  width: 100%;
+
+  &:focus {
+    border: @size-1 solid var(--color-secondary-action-outline);
+  }
+
+  &:disabled {
+    background-color: var(--color-inactive-text);
+    cursor: default;
+  }
+
+  &::placeholder {
+    color: var(--color-secondary-text);
+    font-family: @Inter;
+  }
+}
+
+:global .App--windowsScrollBars {
+  ::-webkit-scrollbar {
+    width: @size-6;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-secondary-action-outline);
+    border-radius: @border-radius-full-round;
+  }
+}
+
+:global .App--noScroll {
+  overflow: hidden;
+}
+
+
+.RoundedButton {
+  .SimpleBorder;
+  .text-12-semi-bold;
+
+  background: transparent;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  grid-gap: @size-8;
+  outline: none;
+
+  &:hover {
+    border: @size-1 solid var(--simple-secondary-text);
+  }
+}

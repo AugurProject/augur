@@ -429,7 +429,8 @@ export const PillSelection = ({
   const renderButton = (option: SelectionOption): React.ReactNode => (
     <li
       className={classNames({
-        [Styles.Selected]: selected === option.id
+        [Styles.Selected]: selected === option.id,
+        [Styles.Disabled]: option.isDisabled
       })}
       key={option.label}
     >

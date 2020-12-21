@@ -1,0 +1,249 @@
+@import (reference) '~assets/styles/shared';
+
+.ValueLabel {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-row-gap: @size-4;
+
+  > span {
+    display: flex;
+    align-items: center;
+  }
+
+  > span:first-of-type {
+    .text-12;
+
+    color: var(--simple-secondary-text);
+    text-transform: capitalize;
+    white-space: nowrap;
+  }
+
+  > span:last-of-type {
+    .text-16-semi-bold;
+
+    color: var(--simple-primary-text);
+    grid-column: 1 / span 2;
+  }
+
+  &.large {
+    grid-row-gap: @size-10;
+
+    > span:first-of-type {
+      .text-16-bold;
+    }
+
+    > span:nth-of-type(2) {
+      .text-14;
+    }
+
+    > span:last-of-type {
+      .text-36-bold;
+    }
+  }
+}
+
+.IconLabel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  > span:nth-of-type(2) {
+    .text-14;
+
+    color: var(--simple-primary-text);
+    margin-top: @size-12;
+  }
+}
+
+.CategoryLabel {
+  .text-14;
+  .SimpleBorder;
+
+  color: var(--simple-primary-text);
+  white-space: nowrap;
+  justify-content: center;
+  display: flex;
+  text-transform: capitalize;
+  padding-left: @size-8;
+  padding-right: @size-8;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.AppStats {
+  .SimpleBorder;
+
+  display: flex;
+  padding: 0 @size-36;
+  border-radius: @size-16;
+  height: @size-150;
+  background: var(--simple-light-bg);
+
+  > div {
+    border-right: @size-1 solid var(--simple-border);
+    padding: @size-36;
+
+    &:first-of-type {
+      padding-left: 0;
+    }
+
+    &:nth-of-type(3),
+    &:nth-of-type(4),
+    &:nth-of-type(5) {
+      margin: @size-36 0;
+      padding: 0 @size-36;
+    }
+
+    &:last-of-type {
+      border-right: 0;
+      padding-right: 0;
+    }
+  }
+
+  &.CashAmounts {
+    > div {
+      padding-right: @size-36;
+
+      &:last-of-type {
+        border-right: @size-1 solid var(--simple-border);
+      }
+    }
+  }
+}
+
+.CategoryIcon {
+  display: flex;
+  border-radius: @size-8;
+  justify-content: center;
+  align-items: center;
+  width: @size-42;
+  height: 100%;
+  border: @size-1 solid var(--simple-invalid);
+
+  > svg {
+    width: @size-20;
+    height: @size-20;
+  }
+
+  &.medical {
+    border: @size-1 solid var(--medical-color);
+  }
+
+  &.crypto {
+    border: @size-1 solid var(--crypto-color);
+  }
+
+  &.finance {
+    border: @size-1 solid var(--finance-color);
+  }
+
+  &.politics {
+    border: @size-1 solid var(--politics-color);
+  }
+}
+
+.AddLiquidity {
+  .SimpleBorder;
+
+  background: var(--simple-light-bg);
+  padding: @size-16;
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+
+  > span:first-of-type {
+    .text-20-bold;
+
+    text-transform: capitalize;
+    color: var(--simple-primary-text);
+
+    > svg {
+      margin-right: @size-10;
+    }
+  }
+
+  > span:last-of-type {
+    .text-16;
+
+    margin-top: @size-8;
+    text-transform: capitalize;
+    color: var(--simple-secondary-text);
+  }
+}
+
+@media @breakpoint-mobile-tablet {
+  .ValueLabel {
+    &.large {
+      grid-template-columns: 1fr;
+      grid-row-gap: @size-2;
+
+      > span {
+        justify-content: center;
+        text-align: center;
+      }
+
+      > span:first-of-type {
+        .text-12;
+
+        align-items: flex-end;
+      }
+
+      > span:last-of-type {
+        .text-14-semi-bold;
+
+        grid-row: 2;
+        align-items: flex-start;
+      }
+    }
+
+    &.Sublabel {
+      > span:nth-of-type(2) {
+        .text-12-semi-bold;
+
+        grid-column: 1 / span 2;
+        grid-row: 3;
+      }
+
+      > span:last-of-type {
+        grid-row: 2;
+      }
+    }
+  }
+
+  .AppStats {
+    padding: 0 @size-14;
+    height: @size-85;
+    justify-content: center;
+
+    > div {
+      flex: 1;
+      position: relative;
+      padding: 0;
+    }
+
+    > div:nth-of-type(4),
+    > div:nth-of-type(5) {
+      display: none;
+    }
+
+    > div:nth-of-type(3) {
+      margin: 0;
+      border-right: 0;
+      padding: 0;
+      border-left: @size-1 solid var(--simple-border);
+    }
+
+    > div:nth-of-type(2) {
+      border: 0;
+      height: fit-content;
+      margin: auto;
+      padding: 0;
+    }
+
+    > div:nth-of-type(1) {
+      padding: 0;
+    }
+  }
+}

@@ -1066,7 +1066,7 @@ export const InputFactory = ({
       <FormDropdown
         options={valueOptions}
         sort={!input.noSort}
-        defaultValue={input.userInput === '' ? valueOptions?.length === 1 ? valueOptions[0].label : null : input.userInput}
+        defaultValue={input.userInput === '' ? null : input.userInput}
         disabled={input.values.length === 0}
         staticLabel={
           input.values.length === 0 ? input.defaultLabel : input.placeholder

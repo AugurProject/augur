@@ -1,0 +1,94 @@
+@import (reference) '~assets/styles/shared';
+
+div.Sidebar {
+  @media @breakpoint-mobile-tablet {
+    position: absolute;
+    background: var(--light-background-color);
+    z-index: @above-all-content-top-layer;
+    top: 0;
+    bottom: 0;
+    margin: 0;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+}
+
+.Icon {
+  .SimpleBorder;
+
+  padding: @size-12 @size-16;
+  display: flex;
+}
+
+.Header {
+  padding: @size-10 @size-12;
+  border-bottom: @size-1 solid var(--simple-border);
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+
+  > span:first-of-type {
+    .text-20-bold;
+
+    text-transform: capitalize;
+    flex: 1;
+    justify-content: center;
+    display: flex;
+    padding-left: @size-58;
+  }
+
+  > span:last-of-type {
+    .Icon;
+  }
+}
+
+.Body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: @size-24 @size-16;
+  padding-right: @size-66;
+
+  > div:not(:last-of-type) {
+    margin-bottom: @size-24;
+  }
+
+  > ol {
+    > li {
+      &:first-of-type {
+        margin-bottom: @size-32;
+      }
+      > a {
+        .text-30-bold;
+
+        color: var(--simple-secondary-text);
+        text-decoration: none;
+      }
+
+      &.Active {
+        > a {
+          color: var(--simple-primary-text);
+        }
+      }
+    }
+  }
+}
+
+.Footer {
+  border-top: @size-1 solid var(--simple-border);
+  display: flex;
+  justify-content: space-between;
+  padding: @size-12 @size-16;
+}
+
+.NavigationFooter {
+  .Footer;
+
+  justify-content: flex-end;
+
+  > svg {
+    .Icon;
+  }
+}

@@ -34,21 +34,55 @@
       height: @size-24;
     }
 
-    > button[class*='SecondaryButton'] {
+    > button[class*='SecondaryButton'][title*='setup'] {
+      order: 1;
+    }
+
+    > button[class*='ProcessingSpinnerButton'] {
+      order: 2;
+    }
+
+    > div[class*='ActiveBets'] {
+      order: 3;
+    }
+
+    > div[class*='HelpResources'] {
+      order: 4;
+    }
+
+    > div[class*='OddsMenu'] {
+      order: 5;
+    }
+
+    > div[class*='Dropdown'] {
+      order: 6;
+    }
+
+    > div[class*='AlertsDiv'] {
+      order: 7;
+    }
+
+    > button[class*='SecondaryButton'][title*='Connect'] {
       margin-left: @size-24;
       margin-right: @size-12;
+      order: 8;
 
       @media @breakpoint-mobile-tablet {
         margin-left: @size-14;
       }
     }
 
-    > button[class*='PrimaryButton'] {
+    > button[class*='PrimaryButton'][title*='Sign up'] {
       margin-right: @size-24;
+      order: 8;
 
       @media @breakpoint-mobile-tablet {
         margin-right: @size-14;
       }
+    }
+
+    > div[class*='ConnectAccount'] {
+      order: 8;
     }
   }
 }
@@ -276,7 +310,6 @@
         border: @size-1 solid var(--color-secondary-action);
         color: var(--color-secondary-action);
         background: transparent;
-        order: 2;
 
         &:hover {
           border: @size-1 solid var(--color-secondary-action);
@@ -304,7 +337,6 @@
 
       > button[class*='PrimaryButton'][title*='Sign up'] {
         color: var(--color-module-background);
-        order: 2;
 
         &:hover {
           border: @size-1 solid var(--color-secondary-action);
@@ -331,8 +363,6 @@
       }
 
       > button:not([title*='Sign up']):not([title*='Connect']) {
-        order: 0;
-
         &[class*='Confirmed'] {
           > svg {
             width: @size-10;
@@ -374,14 +404,9 @@
     display: none;
   }
 
-  .AlertsDiv {
-    order: 3;
-  }
-
   .ActiveBets {
     .AlertsDiv;
 
-    order: 2;
     display: none;
     height: 100%;
     width: @size-56;

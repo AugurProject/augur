@@ -93,12 +93,14 @@ export const SPORTS_MARKET_TYPES = [
     label: "Daily",
     id: 0,
     value: 0,
+    isDisabled: false,
   },
   {
     header: SPORTS_GROUP_TYPES.FUTURES,
     label: "Futures",
     id: 1,
     value: 1,
+    isDisabled: false,
   }
 ];
 

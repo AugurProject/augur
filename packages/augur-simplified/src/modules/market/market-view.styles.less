@@ -1,0 +1,228 @@
+@import (reference) '~assets/styles/shared';
+
+.MarketView {
+  .TwoTonePage;
+
+  > section {
+    &:first-of-type {
+      display: flex;
+      flex-flow: column nowrap;
+      grid-gap: @size-40;
+      margin-bottom: @size-32;
+
+      > h1 {
+        .text-36-bold;
+
+        color: var(--simple-primary-text);
+        margin: 0;
+        padding: 0;
+      }
+    }
+    &:last-of-type {
+      display: flex;
+      flex-direction: column;
+
+      > div:first-of-type {
+        margin-bottom: @size-32;
+      }
+    }
+  }
+}
+
+.topRow {
+  display: flex;
+  flex-flow: row nowrap;
+  width: 100%;
+  align-items: center;
+  height: @size-42;
+
+  > div:nth-of-type(2) {
+    padding: 0 @size-16;
+    margin-left: @size-8;
+  }
+}
+
+.RoundedLabel {
+  .RoundedButton;
+  .text-16;
+
+  color: var(--simple-primary-text);
+  line-height: 140%;
+  height: @size-44;
+  min-height: @size-44;
+  max-height: @size-44;
+  white-space: nowrap;
+  padding: 0 @size-16;
+}
+
+.CategoryIcon,
+.CategoryLabel {
+  .RoundedLabel;
+}
+
+.CurrencyLabel {
+  .RoundedLabel;
+
+  margin-left: auto;
+}
+
+
+.StatsRow {
+  .SimpleBorder;
+
+  display: flex;
+  flex-flow: row nowrap;
+  width: 100%;
+  height: @size-86;
+  
+  > li {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    flex: 1;
+    grid-gap: @size-8;
+
+    &:not(:last-of-type) {
+      border-right: @size-1 solid var(--simple-border);
+    }
+
+    > span:first-of-type {
+      .text-16;
+
+      color: var(--simple-secondary-text);
+    }
+
+    > span:last-of-type {
+      .text-20-semi-bold;
+
+      color: var(--simple-primary-text);
+    }
+  }
+}
+
+.Details {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  grid-gap: @size-24;
+
+  > h4 {
+    .text-20-bold;
+
+    color: var(--simple-primary-text);
+    line-height: @size-24;
+    margin: 0;
+  }
+
+  > p {
+    .text-14;
+
+    color: var(--simple-primary-text);
+    line-height: @size-22;
+    flex: 1;
+    margin: 0;
+  }
+
+  > button {
+    .RoundedButton;
+    .text-16-bold;
+  
+    background: none;
+    border: none;
+    line-height: 140%;
+    padding: 0;
+    text-decoration: underline;
+    color: var(--simple-primary-text);
+
+    &:hover {
+      border: none;
+    }
+  }
+}
+
+.isClosed {
+  > p:not(:first-of-type) {
+    display: none;
+  }
+}
+
+.TransactionsTable {
+  > span {
+    .TableTitle;
+
+    color: var(--simple-primary-text);
+    margin-bottom: @size-24;
+    display: flex;
+    margin-top: @size-16;
+  }
+}
+
+@media @breakpoint-mobile-tablet {
+  .MarketView {
+    padding: @size-24 @size-16 @size-40;
+    position: relative;
+
+    > section:first-of-type {
+      background-color: var(--light-background-color);
+      padding: 0;
+      max-width: unset;
+      grid-gap: unset;
+
+      > div:first-of-type {
+        margin-bottom: @size-16;
+      }
+
+      > h1 {
+        margin-bottom: @size-24;
+      }
+
+      > section {
+        margin-top: @size-40;
+        margin-bottom: @size-48;
+      }
+
+      > div:nth-of-type(4) {
+        margin: @size-40 0;
+      }
+    }
+
+    > section:nth-of-type(2) {
+      padding: 0;
+    }
+  }
+
+  .TransactionsTable {
+    > span {
+      margin-top: 0;
+    }
+  }
+
+  .StatsRow {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    height: unset;
+    margin-bottom: @size-24;
+
+    > li {
+      padding: @size-12;
+      height: unset;
+      grid-gap: @size-4;
+
+      > span:first-of-type {
+        .text-12;
+      }
+
+      > span:last-of-type {
+        .text-16-semi-bold;
+      }
+      
+      &:last-of-type {
+        grid-column: 1 / span 3;
+        border-top: @size-1 solid var(--simple-border);
+      }
+    }
+  }
+}

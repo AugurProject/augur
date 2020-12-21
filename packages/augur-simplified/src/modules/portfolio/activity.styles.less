@@ -1,0 +1,115 @@
+@import (reference) '~assets/styles/shared';
+
+.Activity {
+    display: flex;
+    flex-direction: column;
+
+    > span {
+        .text-20-bold;
+
+        color: var(--simple-primary-text);
+        text-transform: capitalize;
+    }
+
+    > div {
+        > div {
+            > span {
+                .text-14-semi-bold;
+
+                color: var(--simple-secondary-text);
+                margin-bottom: @size-12;
+                margin-top: @size-32;
+                display: flex;
+            }
+        }
+    }
+
+    > div:last-of-type {
+        justify-content: center;
+        margin-top: @size-32;
+    }
+}
+
+.ActivityCard {
+    .SimpleBorder;
+
+    margin-bottom: @size-6;
+    padding: @size-16;
+    display: grid;
+    grid-template-columns: 1fr auto auto; 
+    cursor: pointer;
+
+    &:hover {
+        .HoverDropShadow;
+
+        background-color: var(--simple-light-bg);
+    }
+
+    > div,
+    > span {
+        display: flex;
+        align-items: center;
+    }
+
+    > div:nth-of-type(1) {
+        .text-10-semi-bold;
+
+        color: var(--simple-primary-text);
+        text-transform: uppercase;
+    }
+
+    > div:nth-of-type(2) {
+        .text-12-semi-bold;
+
+        color: var(--simple-primary-text);
+    }
+
+    > div:nth-of-type(3) {
+        > svg {
+            width: @size-16;
+            height: @size-16;
+            margin-left: @size-10;
+        }
+    }
+
+    > span {
+        .text-12; 
+
+        color: var(--simple-primary-text);
+        grid-column: 1 / span 3;
+        margin: @size-8 0;
+    }
+
+    > div:nth-of-type(4) {
+        .text-12-semi-bold;
+
+        grid-column: 1 / span 3;
+        color: var(--simple-primary-text);
+        margin-bottom: @size-4;
+    }
+
+    > div:nth-of-type(5), 
+    > div:nth-of-type(6) {
+        .text-12-semi-bold;
+
+        color: var(--simple-secondary-text);
+    }
+
+    > div:nth-of-type(6) {
+        text-transform: capitalize;
+        grid-column: span 2;
+        justify-content: flex-end;
+    }
+}
+
+@media @breakpoint-mobile-tablet {
+    .Activity {
+        > span:first-of-type {
+            display: none;
+        }
+
+        > div > div:first-of-type > span {
+            margin-top: 0;
+        }
+    }
+}

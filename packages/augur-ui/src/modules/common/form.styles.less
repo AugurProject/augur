@@ -1215,6 +1215,14 @@
   }
 }
 
+
+:root[theme="SPORTS"],
+:root[theme="BETTING"] {
+  div.FormDropdown > div {
+    background-color: none;
+  }
+}
+
 div.FormDropdownActive {
   > button {
     background-color: transparent;
@@ -1489,7 +1497,7 @@ button.MaxDark {
       color: var(--color-primary-text);
       border: @size-1 solid var(--color-secondary-action);
       cursor: pointer;
-      
+
       &.DateInput_input__disabled {
         color: var(--color-inactive-text);
       }
@@ -2519,6 +2527,10 @@ div.error > div > div > div > div > input {
       }
     }
 
+    &.active:hover:not(.loading) > span:nth-of-type(2) {
+      color: var(--color-secondary-text);
+    }
+
     @media @breakpoint-mobile-tablet {
       margin: @size-10 0;
 
@@ -2557,7 +2569,7 @@ div.error > div > div > div > div > input {
         color: var(--color-dark-text);
       }
 
-      > span:nth-of-type(2) {  
+      > span:nth-of-type(2) {
         .text-10;
 
         background: transparent;

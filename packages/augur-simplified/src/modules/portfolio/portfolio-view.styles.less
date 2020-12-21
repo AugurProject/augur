@@ -1,0 +1,64 @@
+@import (reference) '~assets/styles/shared';
+
+.PortfolioView {
+  .TwoTonePage;
+
+  > section:first-of-type {
+    flex-direction: column;
+
+    > button {
+      margin-top: @size-24;
+    }
+
+    > div:nth-of-type(2) {
+      margin-bottom: @size-24;
+      display: flex;
+
+      > span {
+        .text-20-bold;
+
+        color: var(--simple-secondary-text);
+        text-transform: capitalize;
+        cursor: pointer;
+
+        &.Selected {
+          color: var(--simple-primary-text);
+        }
+
+        &:first-of-type {
+          margin-right: @size-32;
+        }
+      }
+
+      > div:first-of-type {
+        margin-top: @size-64;
+      }
+    }
+
+    > div:nth-of-type(3) {
+      > div {
+        &:not(:last-of-type) {
+          margin-bottom: @size-12;
+        }
+      }
+
+      > div:last-of-type {
+        justify-content: center;
+        margin-top: @size-40;
+      }
+    }
+  }
+}
+
+
+@media @breakpoint-mobile-tablet {
+  .PortfolioView {
+    padding: @size-16 @size-16 @size-40;
+    flex-direction: column;
+
+    > button {
+      margin-top: @size-16;
+      margin-bottom: @size-40;
+    }
+  }
+}

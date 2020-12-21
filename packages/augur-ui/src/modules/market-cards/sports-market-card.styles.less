@@ -49,8 +49,12 @@
     grid-row: auto;
     grid-column: 1 / span 2;
     display: flex;
-    flex-flow: row-reverse nowrap;
+    flex-flow: row nowrap;
     justify-content: space-between;
+
+    &.ExtraWagersPositioning {
+      grid-row: 7;
+    }
 
     @media @breakpoint-mobile {
       flex-flow: row wrap;
@@ -59,34 +63,34 @@
     > span[class*="ProgressLabel"] {
       display: none;
       flex-flow: row nowrap;
-  
+
       @media @breakpoint-mobile {
         display: flex;
         flex-flow: column nowrap;
 
         > span {
           text-align: right;
-          
+
           &:last-of-type {
             text-transform: capitalize;
           }
         }
       }
     }
-  
+
     > button.RulesButton {
       .RulesButton;
-  
+
       display: none;
 
       @media @breakpoint-mobile {
         display: flex;
       }
     }
-  
+
     > button.showMoreButton {
       .text-10-semi-bold;
-  
+
       color: var(--color-primary-text);
       grid-row: auto;
       grid-column: 2;
@@ -95,17 +99,18 @@
       align-items: center;
       justify-content: flex-end;
       text-transform: uppercase;
-  
+      margin-left: auto;
+
       > svg {
         width: @size-10;
         height: @size-6;
         margin-right: @size-4;
-  
+
         > path {
           fill: var(--color-primary-text);
         }
       }
-  
+
       @media @breakpoint-mobile {
         padding: @size-8;
         border: @size-1 solid var(--color-outline);
@@ -126,7 +131,7 @@
   > section[class*="SportsMarketContainer"] {
     display: none;
 
-    &:first-of-type {
+    &:nth-of-type(-n+4) { // first 4 elements
       display: flex;
     }
   }

@@ -187,7 +187,6 @@ const AppView = ({
       title: 'Create Market',
       route: CREATE_MARKET,
       requireLogin: true,
-      button: true,
       alternateStyle: true,
       disabled: !!forkingInfo || !marketCreationEnabled,
     },

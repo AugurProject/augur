@@ -1,0 +1,39 @@
+@import (reference) '~assets/styles/shared';
+
+.v2Logo {
+  width: @size-96;
+  height: @size-32;
+
+  > svg:first-of-type {
+    path:first-of-type {
+      fill: @color-brand;
+    }
+
+    path:last-of-type {
+      fill: black;
+    }
+
+    @media @breakpoint-mobile {
+      display: block;
+    }
+  }
+
+  > svg:last-of-type {
+    path {
+      fill: black;
+
+      &:first-of-type {
+        fill: @color-brand;
+      }
+    }
+  }
+}
+
+@media @breakpoint-mobile-tablet {
+  .v2Logo {
+    > svg {
+      width: @size-40;
+      height: @size-40;
+    }
+  }
+}

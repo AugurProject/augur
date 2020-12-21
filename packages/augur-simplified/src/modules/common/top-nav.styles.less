@@ -1,0 +1,116 @@
+@import (reference) '~assets/styles/shared';
+
+.TopNav {
+  align-items: center;
+  background: var(--light-background-color);
+  border-bottom: @size-1 solid var(--simple-border);
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  height: @simple-top-bar-height;
+  min-height: @simple-top-bar-height;
+  max-height: @simple-top-bar-height;
+  width: 100%;
+  position: fixed;
+  z-index: @above-all-content;
+
+  > section {
+    align-items: center;
+    box-sizing: border-box;
+    height: @size-80;
+    min-height: @size-80;
+    max-height: @size-80;
+    display: flex;
+    flex-flow: row nowrap;
+    flex: 1;
+    grid-gap: @size-16;
+    width: 100%;
+
+    &:first-of-type {
+      max-width: @size-912;
+      padding-left: @size-88;
+      grid-gap: @size-80;
+
+      > ol {
+        align-items: center;
+        list-style: none;
+        display: flex;
+        flex-flow: row nowrap;
+        grid-gap: @size-40;
+        margin: 0;
+        padding: 0;
+        min-height: @size-32;
+        height: @size-32;
+
+        > li {
+          flex: 0 auto;
+
+          > a {
+            .text-20-bold;
+
+            text-decoration: none;
+            color: var(--simple-secondary-text);
+          }
+
+          &:hover {
+            > a {
+              color: var(--simple-primary-text);
+            }
+          }
+
+          &.Active {
+            > a {
+              color: var(--simple-primary-text);
+            }
+          }
+        }
+      }
+    }
+
+    &:last-of-type {
+      max-width: @size-528;
+      padding-right: @size-88;
+      grid-gap: @size-8;
+
+      > button:first-of-type {
+        &:first-of-type {
+          margin-left: auto;
+          min-height: @size-48;
+          width: @size-21;
+          max-width: 175px;
+        }
+      }
+
+      > button:last-of-type {
+        .RoundedButton;
+        .text-16-bold;
+
+        background: var(--light-background-color);
+        min-height: @size-48;
+        max-height: @size-48;
+        height: @size-48;
+        padding: 0 @size-14;
+        color: var(--simple-primary-text);
+      }
+    }
+  }
+
+  &.TwoTone > section:last-of-type {
+    background: var(--simple-light-bg-50);
+  }
+}
+
+@media @breakpoint-mobile-tablet {
+  .TopNav {
+    > section:first-of-type {
+      padding-left: @size-16
+    }
+    > section:last-of-type {
+      padding-right: @size-16
+    }
+
+    &.TwoTone > section:last-of-type {
+      background: transparent;
+    }
+  }
+}

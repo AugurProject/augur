@@ -820,6 +820,10 @@
 			}
 		}
 
+    > span:last-of-type > span:first-of-type {
+      margin-right: 0;
+    }
+
 		@media @breakpoint-mobile-tablet {
 			grid-template-columns: @size-20 1fr 0fr 0fr 0fr;
 			margin-bottom: 0;
@@ -1258,7 +1262,7 @@
 						min-height: @size-30;
 						max-height: @size-35;
 						height: 100%;
-						
+
 						> a {
 							display: flex;
 							flex-flow: row nowrap;
@@ -1278,19 +1282,19 @@
 						width: @size-24;
 						height: @size-18;
 						justify-content: flex-end;
-	
+
 						> a {
 							display: flex;
 							height: 100%;
 							width: 100%;
 							align-items: center;
 							justify-content: flex-end;
-	
+
 								> svg {
 								width: @size-10;
 								height: @size-6;
 								transform: rotate(-.25turn);
-	
+
 								> path {
 									fill: var(--color-primary-text);
 								}
@@ -1314,7 +1318,7 @@
 					padding: 0;
 					border-top: 0;
 				}
-				
+
 			}
 		}
 
@@ -1454,7 +1458,7 @@
 								> svg {
 									display: flex;
 								}
-							} 
+							}
 						}
 
 						&:last-of-type {
@@ -1512,7 +1516,7 @@
 			max-height: @size-35;
 			min-height: @size-30;
 			padding: 0 @size-12;
-			
+
 			> button.FuturesBar > h6,
 			> span:first-of-type:not(:last-of-type) > a > h6,
 			> h6 {
@@ -1548,14 +1552,14 @@
 					align-items: center;
 					height: 100%;
 					margin-left: auto;
-	
+
 					@media @breakpoint-mobile {
 						display: none;
 					}
-	
+
 					> span {
 						margin: 0;
-	
+
 						&:last-of-type {
 							margin-left: @size-4;
 							text-transform: capitalize;

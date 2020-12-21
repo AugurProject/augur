@@ -1,0 +1,181 @@
+@import (reference) '~assets/styles/shared';
+
+.MarketsView {
+  display: flex;
+  flex-flow: column nowrap;
+  padding: @size-16 @size-88;
+
+  > ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-flow: row nowrap;
+    width: 100%;
+    grid-gap: @size-20;
+    margin: @size-12 0;
+  }
+
+  > button {
+    margin: @size-12 0;
+  }
+
+  > section {
+    display: grid;
+    grid-gap: @size-16;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  > div:last-of-type {
+    justify-content: center;
+    margin: @size-12 0;
+  }
+}
+
+.MarketCard {
+  &:hover {
+    .HoverDropShadow;
+  }
+  
+  > a {
+    text-decoration: none;
+    color: unset;
+  }
+
+  > a > div {
+    .text-14-bold;
+    .SimpleBorder;
+
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: var(--simple-light-bg);
+    display: grid;
+    grid-template-columns: @size-50 auto 1fr;
+    padding: @size-24;
+
+    > div:first-of-type {
+      display: flex;
+      margin-right: @size-6;
+    }
+
+    > div:nth-of-type(3) {
+      justify-content: flex-end;
+      display: flex;
+    }
+
+    > span {
+      .text-16-semi-bold;
+      .limit-lines(3);
+
+      color: var(--simple-primary-text);
+      grid-column: 1 / span 3;
+      margin-top: @size-16;
+      margin-bottom: @size-38;
+      text-align: left;
+      height: @size-60;
+    }
+
+    > div:nth-of-type(4) {
+      grid-column: 1 / span 2;
+      margin-right: @size-32;
+      margin-top: auto;
+    }
+  }
+
+  &.NoLiquidity {
+    > a > div {
+      > div:nth-of-type(4) {
+        grid-column: 1 / span 3;
+        margin-right: 0;
+        display: flex;
+        flex-direction: column;
+
+        > span {
+          .text-14-semi-bold;
+
+          color: var(--simple-secondary-text);
+          margin-bottom: @size-16;
+        }
+      }
+    }
+  }
+}
+
+.OutcomesTable {
+  .SimpleBorder;
+
+  display: flex;
+  flex-direction: column;
+
+  > div {
+    padding: @size-10 @size-16;
+    display: flex;
+
+    > span {
+      display: flex;
+      align-items: center;
+
+      &:first-of-type {
+        .text-14;
+
+        flex: 1;
+        color: var(--simple-primary-text);
+        text-transform: capitalize;
+      }
+
+      &:last-of-type {
+        .text-16-bold;
+
+        color: var(--simple-primary-text);
+      }
+    }
+    &:not(:first-of-type) {
+      border-top: @size-1 solid var(--simple-border);
+    }
+  }
+}
+
+@media @breakpoint-mobile-tablet {
+  .MarketsView {
+    padding: @size-16;
+
+    > ul {
+      display: none;
+    }
+
+    > section {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .MarketCard {
+
+    > a > div {
+      > span {
+        margin-bottom: @size-16;
+        height: unset;
+      }
+      > div:nth-of-type(4) {
+        grid-column: 1 / span 3;
+        display: flex;
+        flex: 1;
+        margin: @size-16 0 0;
+
+        > span:first-of-type {
+          margin-right: @size-8;
+        }
+        > span:last-of-type {
+          .text-16-semi-bold;
+        }
+      }
+    }
+  }
+
+  .OutcomesTable {
+    grid-row: 3;
+    grid-column: 1 / span 3;
+  }
+}

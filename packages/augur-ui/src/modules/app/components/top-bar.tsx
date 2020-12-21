@@ -201,6 +201,7 @@ const TopBar = () => {
           ethToDaiRate && (
             <PrimaryButton
               text='Continue account setup'
+              title='Continue account setup'
               action={() =>
                 handleShowOnboarding(6, setModal) // TODO fix onboarding for para token, jump to approvals for now
               }

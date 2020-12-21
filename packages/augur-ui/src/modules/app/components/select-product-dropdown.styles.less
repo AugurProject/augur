@@ -14,6 +14,7 @@
     border-left: @size-1 solid transparent;
     padding: @size-16;
     z-index: @above-all-content-top-layer;
+    height: 100%;
 
     &:hover {
       background-color: var(--color-module-background);
@@ -68,17 +69,22 @@
         &:hover {
           border-left: @size-1 solid var(--color-secondary-text);
           color: var(--color-primary-text);
+          padding: @size-16;
         }
 
-        &.Active {
-          border-left: @size-1 solid var(--color-primary-action);
+        &.Active,
+        &.Active:hover {
+          border-left: @size-4 solid var(--color-primary-action);
           color: var(--color-primary-text);
+          padding: @size-16 @size-16 @size-16 @size-13;
         }
       }
 
       > a,
       > button {
         > span {
+          align-items: center;
+          display: flex;
           margin-left: auto;
 
           > svg {
@@ -118,6 +124,15 @@
             border-radius: 50%;
             margin-right: @size-8;
           }
+
+          &:hover {
+            padding: @size-12 @size-24;
+          }
+
+          &.Active,
+          &.Active:hover {
+            padding: @size-12 @size-24 @size-12 @size-21;
+          }
         }
 
         > a:first-of-type,
@@ -130,11 +145,11 @@
               height: @size-12;
 
               path {
-                fill: var(--color-primary-text);
+                fill: var(--color-brand-secondary);
               }
 
               rect {
-                fill: #fff;
+                fill: var(--color-brand-secondary);
               }
             }
           }
@@ -162,6 +177,7 @@
   &.ShowDropdown {
     > button:first-of-type {
       background-color: var(--color-module-background);
+      border-top: none;
       border-right: @size-1 solid var(--color-secondary-action-outline);
       border-left: @size-1 solid var(--color-secondary-action-outline);
     }
@@ -194,6 +210,13 @@
       display: flex;
       width: 100%;
       align-items: center;
+      z-index: @default-z-index;
+      border-top: none;
+      height: unset;
+
+      &:hover {
+        border-top: none;
+      }
 
       > span:first-of-type {
         .text-12-medium;
@@ -204,6 +227,8 @@
       }
 
       > span:last-of-type {
+        display: flex;
+        align-items: center;
         margin-left: auto;
       }
     }
@@ -212,6 +237,7 @@
       position: static;
       width: 100%;
       border: 0;
+      z-index: @default-z-index;
 
       > div:first-of-type {
         display: none;
@@ -233,12 +259,6 @@
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .Dropdown {
-    order: 2;
-
-    @media @breakpoint-mobile-tablet {
-      order: 0;
-    }
-
     > button:first-of-type {
       background-color: var(--color-primary-text);
       border-top: @size-3 solid transparent;
@@ -260,6 +280,10 @@
       }
     }
 
+    > div:first-of-type {
+      box-shadow: @size-2 @size-2 @size-5 var(--color-secondary-text-50);
+    }
+
     > div:first-of-type > div:not(:first-of-type) > div {
       > a:first-of-type,
       > button:first-of-type {
@@ -269,12 +293,11 @@
       }
     }
 
-
-
     &.ShowDropdown {
       > button:first-of-type {
         background-color: var(--color-active-background);
         border-top: @size-3 solid var(--color-primary-action);
+        border-right: @size-1 solid var(--color-secondary-action-outline);
 
         > svg:first-of-type path {
           fill: var(--color-primary-text);
@@ -311,6 +334,7 @@
       &.ShowDropdown {
         > button:first-of-type {
           background-color: var(--color-secondary-text-25);
+          border-top: none;
 
           > svg:first-of-type path {
             fill: var(--color-module-background);
@@ -320,6 +344,7 @@
 
       > div:first-of-type {
         background-color: var(--color-primary-text);
+        box-shadow: none;
 
         > div:not(:first-of-type) {
           > a,
@@ -332,7 +357,9 @@
               border-left: @size-1 solid var(--color-primary-action);
             }
 
-            &.Active {
+            &.Active,
+            &.Active:hover {
+              border-left: @size-4 solid var(--color-primary-action);
               color: var(--color-module-background);
             }
           }

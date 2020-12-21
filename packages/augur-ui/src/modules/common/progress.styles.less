@@ -333,3 +333,14 @@
     color: var(--color-inactive-text);
   }
 }
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .ProgressLabel {
+    &.Finished {
+      > span:last-of-type {
+        color: var(--color-primary-text);
+      }
+    }
+  }
+}
