@@ -107,6 +107,13 @@ export interface AmmTransaction {
   tx_hash: string,
   price: string | null,
 }
+
+export interface Trades {
+  [outcomeIdx: number]: {
+    price: number,
+    timestamp: number,
+  }
+}
 export interface AmmExchange {
   id: string,
   marketId: string,
@@ -131,7 +138,8 @@ export interface AmmExchange {
   feePercent: string,
   cash: Cash,
   sharetoken: string,
-  transactions: AmmTransaction[]
+  transactions: AmmTransaction[],
+  trades: Trades,
 }
 
 export interface Cashes {
