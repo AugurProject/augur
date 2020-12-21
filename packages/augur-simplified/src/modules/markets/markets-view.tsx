@@ -153,6 +153,7 @@ const MarketsView = () => {
       if (sortBy === TOTAL_VOLUME) {
         return marketB?.ammExchange?.volumeTotal - marketA?.ammExchange?.volumeTotal;
       }
+      return true;
     })
     setFilteredMarkets(updatedFilteredMarkets);
   };
