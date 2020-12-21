@@ -45,11 +45,6 @@ export const DEFAULT_APP_STATUS_STATE = {
     past: {},
     paraShareTokens: {},
   },
-  processed: {
-    markets: {},
-    cashes: {},
-    ammExchanges: {},
-  },
 };
 
 export const APP_STATE_KEYS = {
