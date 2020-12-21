@@ -40,10 +40,15 @@ export const POSITIONS = 'positions';
 export const LIQUIDITY = 'liquidity';
 
 // categories
-export const MEDICAL = 'MEDICAL';
-export const POLITICS = 'POLITICS';
-export const FINANCE = 'FINANCE';
-export const CRYPTO = 'CRYPTO';
+export const MEDICAL = 'medical';
+export const POLITICS = 'politics';
+export const FINANCE = 'finance';
+export const CRYPTO = 'crypto';
+export const ENTERTAINMENT = 'entertainment';
+export const ECONOMICS = 'economics';
+export const SPORTS = 'sports';
+export const OTHER = 'other';
+export const ALL_MARKETS = 'all markets';
 
 // sub categories
 export const COVID = 'covid-19';
@@ -76,3 +81,92 @@ export const REMOVE = 'remove';
 
 export const INVALID_OUTCOME_ID = 0;
 export const YES_OUTCOME_ID = 2;
+
+
+export const OPEN = 'Open';
+export const IN_SETTLEMENT = 'In settlement';
+export const FINALIZED = 'Finalized';
+
+export const categoryItems = [
+  {
+    label: ALL_MARKETS,
+    value: ALL_MARKETS,
+    selected: true,
+  },
+  {
+    label: CRYPTO,
+    value: CRYPTO,
+  },
+  {
+    label: ECONOMICS,
+    value: ECONOMICS,
+  },
+  {
+    label: ENTERTAINMENT,
+    value: ENTERTAINMENT,
+  },
+  {
+    label: MEDICAL,
+    value: MEDICAL,
+  },
+  {
+    label: SPORTS,
+    value: SPORTS,
+  },
+  {
+    label: OTHER,
+    value: OTHER,
+  },
+];
+
+export const TOTAL_VOLUME = 'Total Volume';
+export const sortByItems = [
+  {
+    label: TOTAL_VOLUME,
+    value: TOTAL_VOLUME,
+  },
+  {
+    label: '24hr volume',
+    value: '24hr volume',
+  },
+  {
+    label: 'liquidity',
+    value: 'liquidity',
+  },
+  {
+    label: 'ending soon',
+    value: 'ending soon',
+  },
+];
+
+export const marketStatusItems = [
+  {
+    label: OPEN,
+    value: OPEN,
+    selected: true,
+  },
+  {
+    label: IN_SETTLEMENT,
+    value: IN_SETTLEMENT,
+  },
+  {
+    label: FINALIZED,
+    value: FINALIZED,
+  },
+];
+
+export const currencyItems = [
+  {
+    label: ALL,
+    value: ALL,
+    selected: true,
+  },
+  {
+    label: ETH,
+    value: ETH,
+  },
+  {
+    label: USDC,
+    value: USDC,
+  },
+];

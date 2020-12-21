@@ -16,7 +16,15 @@ import { PrimaryButton } from 'modules/common/buttons';
 import { SquareDropdown } from 'modules/common/selection';
 import { Pagination } from 'modules/common/pagination';
 import { useAppStatusStore } from 'modules/stores/app-status';
-import { ETH, INVALID_OUTCOME_ID, YES_OUTCOME_ID } from '../constants';
+import {
+  categoryItems,
+  currencyItems,
+  ETH,
+  INVALID_OUTCOME_ID,
+  marketStatusItems,
+  sortByItems,
+  YES_OUTCOME_ID,
+} from '../constants';
 
 const OutcomesTable = ({ outcomes, marketId, priceNo, priceYes }) => {
   return (
@@ -26,7 +34,12 @@ const OutcomesTable = ({ outcomes, marketId, priceNo, priceYes }) => {
         .map((outcome) => (
           <div key={`${outcome.name}-${marketId}-${outcome.id}`}>
             <span>{outcome.name.toLowerCase()}</span>
-            <span>{formatDai(outcome.name === YES_OUTCOME_ID ? priceYes : priceNo).full}</span>
+            <span>
+              {
+                formatDai(outcome.name === YES_OUTCOME_ID ? priceYes : priceNo)
+                  .full
+              }
+            </span>
           </div>
         ))}
     </div>
@@ -46,7 +59,9 @@ const MarketCard = ({ market }) => {
         <div>
           <CategoryIcon category={categories[0]} />
           <CategoryLabel category={categories[1]} />
-          <div>{ammExchange && ammExchange?.cash.name === ETH ? EthIcon : UsdIcon}</div>
+          <div>
+            {ammExchange && ammExchange?.cash.name === ETH ? EthIcon : UsdIcon}
+          </div>
           <span>{description}</span>
           {!ammExchange ? (
             <div>
@@ -76,9 +91,12 @@ const MarketCard = ({ market }) => {
 const MarketsView = () => {
   const {
     isMobile,
-    actions: { setSidebar },
+    marketsViewSettings,
+    actions: { setSidebar, updateMarketsViewSettings },
     processed: { markets },
   } = useAppStatusStore();
+  const { sortBy, categories, reportingState, currency } = marketsViewSettings;
+
   return (
     <div className={Styles.MarketsView}>
       <AppViewStats showCashAmounts />
@@ -91,36 +109,32 @@ const MarketsView = () => {
       )}
       <ul>
         <SquareDropdown
-          onChange={() => null}
-          options={[
-            { label: 'Open', value: 0 },
-            { label: 'Closed', value: 1 },
-          ]}
-          defaultValue="All Markets"
+          onChange={(value) => {
+            updateMarketsViewSettings({ categories: value });
+          }}
+          options={categoryItems}
+          defaultValue={categories}
         />
         <SquareDropdown
-          onChange={() => null}
-          options={[
-            { label: 'Open', value: 0 },
-            { label: 'Closed', value: 1 },
-          ]}
-          defaultValue="Volume"
+          onChange={(value) => {
+            updateMarketsViewSettings({ sortBy: value });
+          }}
+          options={sortByItems}
+          defaultValue={sortBy}
         />
         <SquareDropdown
-          onChange={() => null}
-          options={[
-            { label: 'Open', value: 0 },
-            { label: 'Closed', value: 1 },
-          ]}
-          defaultValue="Open"
+          onChange={(value) => {
+            updateMarketsViewSettings({ reportingState: value });
+          }}
+          options={marketStatusItems}
+          defaultValue={reportingState}
         />
         <SquareDropdown
-          onChange={() => null}
-          options={[
-            { label: 'Open', value: 0 },
-            { label: 'Closed', value: 1 },
-          ]}
-          defaultValue="All Currencies"
+          onChange={(value) => {
+            updateMarketsViewSettings({ currency: value });
+          }}
+          options={currencyItems}
+          defaultValue={currency}
         />
       </ul>
       <section>

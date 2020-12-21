@@ -11,90 +11,13 @@ import makePath from 'modules/routes/helpers/make-path';
 import parsePath from 'modules/routes/helpers/parse-path';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router';
-
-const categoryItems = [
-  {
-    label: 'All',
-    value: 'All',
-    selected: true,
-  },
-  {
-    label: 'Crypto',
-    value: 'Crypto',
-  },
-  {
-    label: 'Economics',
-    value: 'Economics',
-  },
-  {
-    label: 'Entertainment',
-    value: 'Entertainment',
-  },
-  {
-    label: 'Medical',
-    value: 'Medical',
-  },
-  {
-    label: 'Sports',
-    value: 'Sports',
-  },
-  {
-    label: 'Other',
-    value: 'Other',
-  },
-];
-
-const sortByItems = [
-  {
-    label: 'Total Volume',
-    value: 'Total Volume',
-    selected: true,
-  },
-  {
-    label: '24hr volume',
-    value: '24hr volume',
-  },
-  {
-    label: 'liquidity',
-    value: 'liquidity',
-  },
-  {
-    label: 'ending soon',
-    value: 'ending soon',
-  },
-];
-
-const marketStatusItems = [
-  {
-    label: 'Open',
-    value: 'Open',
-    selected: true,
-  },
-  {
-    label: 'In Settlement',
-    value: 'In Settlement',
-  },
-  {
-    label: 'Finalised',
-    value: 'Finalised',
-  },
-];
-
-const currencyItems = [
-  {
-    label: 'All',
-    value: 'All',
-    selected: true,
-  },
-  {
-    label: 'ETH',
-    value: 'ETH',
-  },
-  {
-    label: 'USDC',
-    value: 'USDC',
-  },
-];
+import {
+  categoryItems,
+  currencyItems,
+  marketStatusItems,
+  sortByItems,
+} from '../constants';
+import { use } from 'chai';
 
 interface SideBarHeaderProps {
   header?: string;
@@ -114,14 +37,47 @@ const SideBarHeader = ({ header, showLogo }: SideBarHeaderProps) => {
 };
 
 const FilterSideBar = () => {
+  const {
+    marketsViewSettings,
+    actions: { updateMarketsViewSettings },
+  } = useAppStatusStore();
+  const { categories, sortBy, reportingState, currency } = marketsViewSettings;
   return (
     <>
       <SideBarHeader header={'filters'} />
       <div className={Styles.Body}>
-        <CheckboxGroup title="categories" items={categoryItems} />
-        <RadioBarGroup title="sort by" items={sortByItems} />
-        <CheckboxGroup title="market status" items={marketStatusItems} />
-        <CheckboxGroup title="currency" items={currencyItems} />
+        <RadioBarGroup
+          update={(value) => {
+            updateMarketsViewSettings({ categories: value });
+          }}
+          title="categories"
+          selected={categories}
+          items={categoryItems}
+        />
+        <RadioBarGroup
+          update={(value) => {
+            updateMarketsViewSettings({ sortBy: value });
+          }}
+          title="sort by"
+          selected={sortBy}
+          items={sortByItems}
+        />
+        <RadioBarGroup
+          title="market status"
+          update={(value) => {
+            updateMarketsViewSettings({ reportingState: value });
+          }}
+          selected={reportingState}
+          items={marketStatusItems}
+        />
+        <RadioBarGroup
+          title="currency"
+          update={(value) => {
+            updateMarketsViewSettings({ currency: value });
+          }}
+          selected={currency}
+          items={currencyItems}
+        />
       </div>
       <div className={Styles.Footer}>
         <PrimaryButton text="reset all" />

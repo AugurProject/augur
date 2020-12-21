@@ -14,9 +14,17 @@ const {
   UPDATE_GRAPH_DATA,
   UPDATE_PROCESSED,
   SET_LOGIN_ACCOUNT,
+  UPDATE_MARKETS_VIEW_SETTINGS,
 } = APP_STATUS_ACTIONS;
 
-const { IS_MOBILE, SIDEBAR_TYPE, GRAPH_DATA, PROCESSED, LOGIN_ACCOUNT } = APP_STATE_KEYS;
+const {
+  IS_MOBILE,
+  SIDEBAR_TYPE,
+  GRAPH_DATA,
+  PROCESSED,
+  LOGIN_ACCOUNT,
+  MARKETS_VIEW_SETTINGS,
+} = APP_STATE_KEYS;
 
 const isAsync = (obj) => {
   return (
@@ -52,12 +60,14 @@ const middleware = (dispatch, action) => {
 export const dispatchMiddleware = (dispatch) => (action) =>
   middleware(dispatch, action);
 
-export const keyedObjToArray = (KeyedObject: object) => Object.entries(KeyedObject).map(i => i[1]);
+export const keyedObjToArray = (KeyedObject: object) =>
+  Object.entries(KeyedObject).map((i) => i[1]);
 
-export const arrayToKeyedObject = (ArrayOfObj: Array<{ id: string }>) => ArrayOfObj.reduce((acc, obj) => {
-  acc[obj.id] = obj;
-  return acc;
-}, {});
+export const arrayToKeyedObject = (ArrayOfObj: Array<{ id: string }>) =>
+  ArrayOfObj.reduce((acc, obj) => {
+    acc[obj.id] = obj;
+    return acc;
+  }, {});
 
 export function AppStatusReducer(state, action) {
   const updatedState = { ...state };
@@ -91,8 +101,15 @@ export function AppStatusReducer(state, action) {
       updatedState[PROCESSED] = {
         markets,
         cashes,
-        ammExchanges
-      }
+        ammExchanges,
+      };
+      break;
+    }
+    case UPDATE_MARKETS_VIEW_SETTINGS: {
+      updatedState[MARKETS_VIEW_SETTINGS] = {
+        ...updatedState[MARKETS_VIEW_SETTINGS],
+        ...action[MARKETS_VIEW_SETTINGS],
+      };
       break;
     }
     default:
@@ -109,6 +126,7 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
   return {
     ...state,
     actions: {
+      updateMarketsViewSettings: (marketsViewSettings) => dispatch({type: UPDATE_MARKETS_VIEW_SETTINGS, marketsViewSettings}),
       setShowTradingForm: (showTradingForm) =>
         dispatch({ type: SET_SHOW_TRADING_FORM, showTradingForm }),
       setSidebar: (sidebarType) => dispatch({ type: SET_SIDEBAR, sidebarType }),
@@ -116,7 +134,7 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
       updateGraphData: (graphData) =>
         dispatch({ type: UPDATE_GRAPH_DATA, graphData }),
       updateProcessed: (processed) =>
-        dispatch({ type: UPDATE_PROCESSED, processed}),
+        dispatch({ type: UPDATE_PROCESSED, processed }),
       updateLoginAccount: (account) =>
         dispatch({ type: SET_LOGIN_ACCOUNT, account }),
     },

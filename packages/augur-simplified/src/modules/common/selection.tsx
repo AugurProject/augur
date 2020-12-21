@@ -257,7 +257,9 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
 
 export const SquareDropdown = (props: DropdownProps) => <Dropdown {...props} />;
 
-export const SmallDropdown = (props: DropdownProps) => <Dropdown {...props} className={Styles.SmallDropdown} />;
+export const SmallDropdown = (props: DropdownProps) => (
+  <Dropdown {...props} className={Styles.SmallDropdown} />
+);
 
 const currencyValues = [{ label: USDC, value: USDC, icon: UsdIcon }];
 
@@ -328,8 +330,8 @@ const RadioBar = ({ item, selected, onClick }) => {
   );
 };
 
-export const RadioBarGroup = ({ title, items }) => {
-  const [selectedItem, setSelectedItem] = useState(items[0].value);
+export const RadioBarGroup = ({ title, items, selected, update }) => {
+  const [selectedItem, setSelectedItem] = useState(selected);
   return (
     <div className={Styles.SelectionGroup}>
       <span>{title}</span>
@@ -339,7 +341,10 @@ export const RadioBarGroup = ({ title, items }) => {
             item={item}
             key={item.value}
             selected={selectedItem === item.value}
-            onClick={() => setSelectedItem(item.value)}
+            onClick={() => {
+              update(item.value);
+              setSelectedItem(item.value);
+            }}
           />
         ))}
       </div>

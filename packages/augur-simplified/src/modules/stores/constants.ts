@@ -12,6 +12,7 @@ import {
 } from 'modules/constants';
 import { createBigNumber } from 'utils/create-big-number';
 import { formatDai } from 'utils/format-number';
+import { ALL, ALL_MARKETS, categoryItems, currencyItems, marketStatusItems, OPEN, TOTAL_VOLUME } from '../constants';
 
 export const STUBBED_APP_STATUS_ACTIONS = {
   setIsMobile: isMobile => {},
@@ -20,6 +21,7 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   setShowTradingForm: showTradingForm => {},
   updateProcessed: processed => {},
   updateLoginAccount: updateLoginAccount => {},
+  updateMarketsViewSettings: settings => {},
 };
 
 export const DEFAULT_APP_STATUS_STATE = {
@@ -31,6 +33,12 @@ export const DEFAULT_APP_STATUS_STATE = {
   positions: [],
   liquidity: [],
   transactions: {},
+  marketsViewSettings: {
+    categories: ALL_MARKETS,
+    reportingState: OPEN,
+    sortBy: TOTAL_VOLUME,
+    currency: ALL
+  },
   processed: {
     markets: {},
     cashes: {},
@@ -45,11 +53,6 @@ export const DEFAULT_APP_STATUS_STATE = {
     past: {},
     paraShareTokens: {},
   },
-  processed: {
-    markets: {},
-    cashes: {},
-    ammExchanges: {},
-  },
 };
 
 export const APP_STATE_KEYS = {
@@ -62,7 +65,8 @@ export const APP_STATE_KEYS = {
   TRANSACTIONS: 'transactions',
   USER_INFO: 'userInfo',
   GRAPH_DATA: 'graphData',
-  PROCESSED: 'processed'
+  PROCESSED: 'processed',
+  MARKETS_VIEW_SETTINGS: 'marketsViewSettings'
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -71,7 +75,8 @@ export const APP_STATUS_ACTIONS = {
   UPDATE_GRAPH_DATA: 'UPDATE_GRAPH_DATA',
   SET_SHOW_TRADING_FORM: 'SET_SHOW_TRADING_FORM',
   UPDATE_PROCESSED: 'UPDATE_PROCESSED',
-  SET_LOGIN_ACCOUNT: 'SET_LOGIN_ACCOUNT'
+  SET_LOGIN_ACCOUNT: 'SET_LOGIN_ACCOUNT',
+  UPDATE_MARKETS_VIEW_SETTINGS: 'UPDATE_MARKETS_VIEW_SETTINGS'
 };
 
 export const fakePositionsData = [

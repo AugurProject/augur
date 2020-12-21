@@ -72,8 +72,8 @@ export const CategoryIcon = ({ category }: CategoryProps) => {
         Styles[`${category.toLowerCase()}`]
       )}
     >
-      {POPULAR_CATEGORIES_ICONS[category.toUpperCase()]
-        ? POPULAR_CATEGORIES_ICONS[category.toUpperCase()]
+      {POPULAR_CATEGORIES_ICONS[category.toLowerCase()]
+        ? POPULAR_CATEGORIES_ICONS[category.toLowerCase()]
         : AugurBlankIcon}
     </div>
   );
