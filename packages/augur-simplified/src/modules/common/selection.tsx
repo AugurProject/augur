@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import classNames from 'classnames';
 import Styles from 'modules/common/selection.styles.less';
 import {
@@ -332,6 +332,9 @@ const RadioBar = ({ item, selected, onClick }) => {
 
 export const RadioBarGroup = ({ title, items, selected, update }) => {
   const [selectedItem, setSelectedItem] = useState(selected);
+  useEffect(() => {
+    setSelectedItem(selected);
+  }, [selected]);
   return (
     <div className={Styles.SelectionGroup}>
       <span>{title}</span>
