@@ -73,3 +73,5 @@ export const ALL = 'all';
 export const SWAP = 'swap';
 export const ADD = 'add';
 export const REMOVE = 'remove';
+
+export const INVALID_OUTCOME_ID = 0;
