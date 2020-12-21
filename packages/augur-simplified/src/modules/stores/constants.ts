@@ -45,6 +45,11 @@ export const DEFAULT_APP_STATUS_STATE = {
     past: {},
     paraShareTokens: {},
   },
+  processed: {
+    markets: {},
+    cashes: {},
+    ammExchanges: {},
+  },
 };
 
 export const APP_STATE_KEYS = {
@@ -184,8 +189,6 @@ export const MOCK_APP_STATUS_STATE = {
   positions: fakePositionsData,
   liquidity: fakeLiquidityData,
   transactions: fakeTransactionsData,
-  sidebarType: null,
-  showTradingForm: false,
   marketInfos: {
     '0xdeadbeef': {
       id: '0xdeadbeef',
