@@ -115,11 +115,11 @@ const MarketsView = () => {
   }, [markets]);
 
   useEffect(() => {
+    setPage(1);
     applyFiltersAndSort(Object.values(markets));
   }, [sortBy, categories, reportingState, currency]);
 
   const applyFiltersAndSort = (passedInMarkets) => {
-    setPage(1);
     let updatedFilteredMarkets = passedInMarkets;
     updatedFilteredMarkets = updatedFilteredMarkets.filter((market) => {
       if (categories !== ALL_MARKETS && categories !== OTHER) {
