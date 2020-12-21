@@ -123,7 +123,6 @@ export const processGraphMarkets = (graphData: GraphData): ProcessedData => {
     }
   });
 
-  console.log('markets', markets)
   //console.log(cashes, markets, ammExchanges)
   return { cashes, markets, ammExchanges };
 }
@@ -245,9 +244,9 @@ const calculatePastLiquidityInUsd = (volume: string, pastVolume: string, priceUs
 const calculateTradePrice = (txs: (GraphEnter | GraphExit)[], trades: Trades, displayDecimals: number) => {
   return txs.reduce((p, tx) => {
     if (tx.noShares !== '0') {
-      p[1].push({ shares: tx.noShares, price: Number.parseFloat(tx.price).toPrecision(displayDecimals), timestamp: Number(tx.timestamp) })
+      p[1].push({ shares: tx.noShares, price: Number(Number.parseFloat(tx.price).toPrecision(displayDecimals)), timestamp: Number(tx.timestamp) })
     } else {
-      p[2].push({ shares: tx.yesShares, price: Number.parseFloat(tx.price).toPrecision(displayDecimals), timestamp: Number(tx.timestamp) })
+      p[2].push({ shares: tx.yesShares, price: Number(Number.parseFloat(tx.price).toPrecision(displayDecimals)), timestamp: Number(tx.timestamp) })
     }
     return p;
   }, trades)
