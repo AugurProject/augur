@@ -5,6 +5,66 @@
   flex-flow: column nowrap;
   grid-gap: @size-24;
 
+  div {
+    :global {
+      .highcharts-tooltip {
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: center;
+        justify-content: stretch;
+        
+
+        > span {
+          flex: 1 100%;
+          border: @size-1 solid var(--simple-border);
+          border-radius: @size-8;
+          background: rgba(250, 251, 252, 0.9);
+          padding: @size-8;
+
+          > h5 {
+            .text-12;
+
+            color: var(--simple-primary-text);
+            margin: 0;
+            padding: 0;
+            margin-bottom: @size-4;
+          }
+
+          > ul {
+            display: grid;
+            grid-gap: @size-4;
+
+            > li {
+              display: grid;
+              grid-template-columns: 0fr 1fr;
+              grid-gap: @size-4;
+
+              > span:first-of-type {
+                grid-column: 1;
+                grid-row: 1;
+              }
+
+              > b {
+                .text-14-bold;
+
+                grid-column: 2;
+                grid-row: 1;
+                text-transform: capitalize;
+              }
+
+              > span:last-of-type {
+                .text-12;
+
+                grid-column: 2;
+                grid-row: 2;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   svg {
     :global {
       .highcharts-background {
@@ -13,20 +73,6 @@
 
       .highcharts-no-data {
         font-size: @size-16;
-      }
-
-      .highcharts-label-box {
-        fill: var(--color-module-background);
-        font-weight: bold;
-
-        > text > tspan:last-child {
-          font-size: @size-12;
-        }
-      }
-
-      .highcharts-crosshair-label.highcharts-crosshair-label
-        > .highcharts-label-box {
-        stroke: var(--color-primary-text);
       }
 
       .highcharts-crosshair-label {
@@ -77,33 +123,34 @@
       }
 
       .highcharts-crosshair {
-        .dashline-long;
+        stroke: var(--simple-chart-color);
 
-        stroke: var(--simple-primary-text);
+        opacity: 1;
       }
 
-      .highcharts-halo,
-      path.highcharts-point,
-      .highcharts-tracker > path {
-        fill: var(--simple-primary-text);
-        stroke: var(--simple-primary-text);
+      .highcharts-tooltip {
+        display: none;
+      }
+
+      .highcharts-halo {
+        fill: none;
+        stroke: none;
       }
 
       // --- mulitple line styling
       .highcharts-line-series.highcharts-color-0,
       .highcharts-area-series.highcharts-color-0 {
-        fill: var(--color-outcome-invalid);
-        stroke: var(--color-outcome-invalid);
+        fill: var(--simple-invalid);
       }
 
-      g.highcharts-area-series.highcharts-color-0 > path.highcharts-area {
-        fill: var(--color-outcome-invalid-40);
-        stroke: var(--color-outcome-invalid-40);
-      }
+      // g.highcharts-area-series.highcharts-color-0 > path.highcharts-area {
+      //   fill: var(--color-outcome-invalid-40);
+      //   stroke: var(--color-outcome-invalid-40);
+      // }
 
       g.highcharts-line-series.highcharts-color-0 > path.highcharts-graph,
       g.highcharts-area-series.highcharts-color-0 > path.highcharts-graph {
-        stroke: var(--color-outcome-invalid);
+        stroke: var(--simple-invalid);
       }
 
       .highcharts-line-series.highcharts-color-1,
@@ -281,7 +328,7 @@
 
 .isSelected_0 {
   > span {
-    background: var(--color-outcome-invalid);
+    background: var(--simple-invalid);
   }
 }
 

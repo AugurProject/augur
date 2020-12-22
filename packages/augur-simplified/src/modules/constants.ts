@@ -2,9 +2,11 @@ import { MarketTypeName } from '@augurproject/sdk-lite';
 import { createBigNumber } from 'utils/create-big-number';
 import {
   CryptoIcon,
+  EntertainmentIcon,
   FinanceIcon,
   PillIcon,
   PoliticsIcon,
+  SportsIcon,
 } from './common/icons';
 
 // # Market Types
@@ -62,6 +64,8 @@ export const POPULAR_CATEGORIES_ICONS = {
   [POLITICS]: PoliticsIcon,
   [CRYPTO]: CryptoIcon,
   [FINANCE]: FinanceIcon,
+  [SPORTS]: SportsIcon,
+  [ENTERTAINMENT]: EntertainmentIcon,
 };
 
 // side bar types
