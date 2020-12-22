@@ -118,7 +118,7 @@ export const TransferForm = () => {
   const gasCostDai = getGasCost(gasLimit, gasPrice, ethToDaiRate);
 
   const handleMax = () => {
-    const balance = balances.signerBalances[currency.toLowerCase()];
+    const balance = balances[currency.toLowerCase()];
 
     let newAmount = convertExponentialToDecimal(sanitizeArg(balance));
     if (currency === DAI) {
@@ -133,8 +133,8 @@ export const TransferForm = () => {
     const { errors: updatedErrors } = state;
     updatedErrors.amount = '';
     let newAmount = amount;
-    const balance = balances.signerBalances[currency.toLowerCase()];
-    const eth = balances.signerBalances.eth;
+    const balance = balances[currency.toLowerCase()];
+    const eth = balances.eth;
     let amountMinusGas = createBigNumber(eth).minus(createBigNumber(gasInEth));
     if (currency === ETH) {
       newAmount = createBigNumber(amount);
@@ -221,7 +221,7 @@ export const TransferForm = () => {
     formattedAmount = formatRep(amount || 0);
   }
 
-  const balance = balances.signerBalances[currency.toLowerCase()];
+  const balance = balances[currency.toLowerCase()];
 
   const breakdown = [
     {
@@ -298,6 +298,7 @@ export const TransferForm = () => {
           text={'Send'}
           action={() => {
             transferFunds(formattedAmount.fullPrecision, currency, address);
+            closeAction();
           }}
           queueName={TRANSACTIONS}
           queueId={currency === ETH ? SENDETHER : TRANSFER}

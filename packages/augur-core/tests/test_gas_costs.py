@@ -46,7 +46,7 @@ def test_disputeWindowCreation(localFixture, augur, universe, cash):
     with PrintGasUsed(localFixture, "REPORTING_WINDOW_CREATE", REPORTING_WINDOW_CREATE):
         universe.getOrCreateDisputeWindowByTimestamp(endTime, False)
 
-def test_marketCreation(localFixture, augur, universe):
+def test_marketCreation(localFixture, cash, augur, universe):
     marketCreationFee = universe.getOrCacheValidityBond()
 
     endTime = augur.getTimestamp() + timedelta(days=1).total_seconds()
@@ -57,7 +57,7 @@ def test_marketCreation(localFixture, augur, universe):
     numOutcomes = 2
 
     with PrintGasUsed(localFixture, "DisputeWindow:createMarket", MARKET_CREATION):
-        localFixture.contracts["Cash"].faucet(marketCreationFee)
+        cash.faucet(marketCreationFee)
         marketAddress = universe.createYesNoMarket(endTime, feePerEthInWei, affiliateFeeDivisor, designatedReporterAddress, "")
 
 def test_marketFinalization(localFixture, universe, market):
@@ -73,32 +73,32 @@ def test_marketFinalization(localFixture, universe, market):
     True,
     False
 ])
-def test_orderCreation(hints, localFixture, categoricalMarket):
+def test_orderCreation(hints, localFixture, cash, categoricalMarket):
     createOrder = localFixture.contracts['CreateOrder']
 
     for i in range(39, 43):
-        localFixture.contracts["Cash"].faucet(fix(1, i))
+        cash.faucet(fix(1, i))
         createOrder.publicCreateOrder(BID, fix(1), i, categoricalMarket.address, 1, longTo32Bytes(0), longTo32Bytes(0), "7", nullAddress)
 
-    localFixture.contracts["Cash"].faucet(fix(1, 44))
+    cash.faucet(fix(1, 44))
     worseOrderId = createOrder.publicCreateOrder(BID, fix(1), 44, categoricalMarket.address, 1, longTo32Bytes(0), longTo32Bytes(0), "7", nullAddress)
-    localFixture.contracts["Cash"].faucet(fix(1, 46))
+    cash.faucet(fix(1, 46))
     betterOrderId = createOrder.publicCreateOrder(BID, fix(1), 46, categoricalMarket.address, 1, longTo32Bytes(0), longTo32Bytes(0), "7", nullAddress)
 
     for i in range(47, 80):
-        localFixture.contracts["Cash"].faucet(fix(1, i))
+        cash.faucet(fix(1, i))
         createOrder.publicCreateOrder(BID, fix(1), i, categoricalMarket.address, 1, longTo32Bytes(0), longTo32Bytes(0), "7", nullAddress)
 
     if not hints:
         with PrintGasUsed(localFixture, "CreateOrder:publicCreateOrder NO Hints", CREATE_ORDER):
-            localFixture.contracts["Cash"].faucet(fix(1, 45))
+            cash.faucet(fix(1, 45))
             orderID = createOrder.publicCreateOrder(BID, fix(1), 45, categoricalMarket.address, 1, longTo32Bytes(0), longTo32Bytes(0), "7", nullAddress)
     else:
         with PrintGasUsed(localFixture, "CreateOrder:publicCreateOrder HINTS", CREATE_ORDER):
-            localFixture.contracts["Cash"].faucet(fix(1, 45))
+            cash.faucet(fix(1, 45))
             orderID = createOrder.publicCreateOrder(BID, fix(1), 45, categoricalMarket.address, 1, betterOrderId, worseOrderId, "7", nullAddress)
 
-def test_orderFilling(localFixture, market):
+def test_orderFilling(localFixture, cash, market):
     createOrder = localFixture.contracts['CreateOrder']
     fillOrder = localFixture.contracts['FillOrder']
     tradeGroupID = longTo32Bytes(42)
@@ -107,15 +107,15 @@ def test_orderFilling(localFixture, market):
     fillerCost = fix('2', '60')
 
     # create order
-    localFixture.contracts["Cash"].faucet(creatorCost, sender = localFixture.accounts[1])
+    cash.faucet(creatorCost, sender = localFixture.accounts[1])
     orderID = createOrder.publicCreateOrder(ASK, fix(2), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, nullAddress, sender = localFixture.accounts[1])
 
     with PrintGasUsed(localFixture, "FillOrder:publicFillOrder", FILL_ORDER):
-        localFixture.contracts["Cash"].faucet(fillerCost, sender = localFixture.accounts[2])
+        cash.faucet(fillerCost, sender = localFixture.accounts[2])
         fillOrderID = fillOrder.publicFillOrder(orderID, fix(2), tradeGroupID, "0x0000000000000000000000000000000000000000", sender = localFixture.accounts[2])
 
 def test_winningShareRedmption(localFixture, cash, market):
-    shareToken= localFixture.contracts['ShareToken']
+    shareToken= localFixture.getShareToken()
 
     acquireLongShares(localFixture, cash, market, YES, 1, shareToken.address, sender = localFixture.accounts[1])
     finalizeMarket(localFixture, market, [0, 0, market.getNumTicks()])
@@ -124,7 +124,7 @@ def test_winningShareRedmption(localFixture, cash, market):
         shareToken.claimTradingProceeds(market.address, localFixture.accounts[1], nullAddress)
 
 def test_winningShareRedmptionCategoricalMarket(localFixture, cash, categorical8Market):
-    shareToken= localFixture.contracts['ShareToken']
+    shareToken= localFixture.getShareToken()
 
     acquireLongShares(localFixture, cash, categorical8Market, 7, 1, shareToken.address, sender = localFixture.accounts[1])
     finalizeMarket(localFixture, categorical8Market, [0, 0, 0, 0, 0, 0, 0, categorical8Market.getNumTicks()])

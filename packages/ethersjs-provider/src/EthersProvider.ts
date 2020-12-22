@@ -3,6 +3,7 @@ import { BigNumber } from 'bignumber.js';
 import { Abi } from 'ethereum';
 import { JSONRPCErrorCallback, JSONRPCRequestPayload } from 'ethereum-types';
 import { ethers } from 'ethers';
+import { Network } from '@ethersproject/networks'
 import * as _ from 'lodash';
 
 import {
@@ -12,7 +13,7 @@ import {
 import { Log, LogValues } from '@augurproject/types';
 import { logger, LoggerLevels, NetworkId, getGasStation } from '@augurproject/utils';
 
-import { FasterAbiInterface } from './FasterAbiInterface';
+import { FasterAbiInterface, LogDescription } from './FasterAbiInterface';
 import { Counter, isInstanceOfArray, isInstanceOfBigNumber } from './utils';
 
 
@@ -45,7 +46,7 @@ interface PerformQueueTask {
 
 export class EthersProvider extends ethers.providers.BaseProvider
   implements EProvider {
-  gasLimit: ethers.utils.BigNumber | null = new ethers.utils.BigNumber(
+  gasLimit: ethers.BigNumber | null = ethers.BigNumber.from(
     10000000
   );
   gasEstimateIncreasePercentage: BigNumber | null = new BigNumber(10);
@@ -53,12 +54,12 @@ export class EthersProvider extends ethers.providers.BaseProvider
   private performQueue: AsyncQueue<PerformQueueTask>;
   provider: ethers.providers.JsonRpcProvider;
 
-  private _overrideGasPrice: ethers.utils.BigNumber | null = null;
+  private _overrideGasPrice: ethers.BigNumber | null = null;
   get overrideGasPrice() {
     return this._overrideGasPrice;
   }
-  set overrideGasPrice(gasPrice: ethers.utils.BigNumber | null) {
-    if (gasPrice !== null && gasPrice.eq(new ethers.utils.BigNumber(0))) {
+  set overrideGasPrice(gasPrice: ethers.BigNumber | null) {
+    if (gasPrice !== null && gasPrice.eq(ethers.BigNumber.from(0))) {
       this._overrideGasPrice = null;
     } else {
       this._overrideGasPrice = gasPrice;
@@ -194,6 +195,10 @@ export class EthersProvider extends ethers.providers.BaseProvider
     );
   }
 
+  detectNetwork(): Promise<Network> {
+    return this.provider.detectNetwork();
+  }
+
   onNewBlock(blockNumber: number): void {
     this._mostRecentLatestBlockHeaders = null;
     this._callCache = new Map<any, Promise<any>>();
@@ -216,7 +221,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
   }
 
   async call(
-    transaction: Transaction<ethers.utils.BigNumber>
+    transaction: Transaction<ethers.BigNumber>
   ): Promise<string> {
     const txRequest: ethers.providers.TransactionRequest = transaction;
     return super.call(txRequest);
@@ -230,7 +235,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
     return super.getBlockNumber();
   }
 
-  async getGasPrice(networkId?: NetworkId): Promise<ethers.utils.BigNumber> {
+  async getGasPrice(networkId?: NetworkId): Promise<ethers.BigNumber> {
     if (this.overrideGasPrice !== null) {
       return this.overrideGasPrice;
     }
@@ -240,7 +245,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
     networkId = networkId || await this.getNetworkId();
     const viaGasStation = await getGasStation(networkId)
       .then((gasStation) => {
-        return new ethers.utils.BigNumber(gasStation.standard);
+        return ethers.BigNumber.from(gasStation.standard);
       }).catch((err) => {
         console.warn('gas station query failed:', err);
         return null;
@@ -258,7 +263,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
 
   async estimateGas(
     transaction: ethers.providers.TransactionRequest
-  ): Promise<ethers.utils.BigNumber> {
+  ): Promise<ethers.BigNumber> {
     transaction.gasPrice = await this.getGasPrice();
     let gasEstimate = new BigNumber(
       (await super.estimateGas(transaction)).toString()
@@ -277,7 +282,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
         : gasEstimate;
     }
 
-    return new ethers.utils.BigNumber(gasEstimate.toFixed());
+    return ethers.BigNumber.from(gasEstimate.toFixed());
   }
 
   storeAbiData(abi: Abi, contractName: string): void {
@@ -296,7 +301,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
         `Contract name ${contractName} did not have event ${eventName}`
       );
     }
-    return contractInterface.events[eventName].topic;
+    return contractInterface.getEventTopic(contractInterface.events[eventName]);
   }
 
   encodeContractFunction(
@@ -313,7 +318,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
     }
     const ethersParams = _.map(funcParams, (param) => {
       if (isInstanceOfBigNumber(param)) {
-        return new ethers.utils.BigNumber(param.toFixed());
+        return ethers.BigNumber.from(param.toFixed());
       } else if (
         isInstanceOfArray(param) &&
         param.length > 0 &&
@@ -321,21 +326,21 @@ export class EthersProvider extends ethers.providers.BaseProvider
       ) {
         return _.map(
           param,
-          (value) => new ethers.utils.BigNumber(value.toFixed())
+          (value) => ethers.BigNumber.from(value.toFixed())
         );
       }
       return param;
     });
-    return func.encode(ethersParams);
+    return contractInterface.encodeFunctionData(func, ethersParams);
   }
 
   parseLogValues(contractName: string, log: Log): LogValues {
     const contractInterface = this.getContractInterface(contractName);
-    const parsedLog = contractInterface.fastParseLog(log);
+    const parsedLog: LogDescription = contractInterface.fastParseLog(log);
     const omittedValues = _.map(_.range(parsedLog.values.length), (n) =>
       n.toString()
     );
-    omittedValues.push('length');
+    omittedValues.push('length', 'toLowerCase');
     const logValues = _.omit(parsedLog.values, omittedValues);
     return {
       name: parsedLog.name,
@@ -477,8 +482,8 @@ export class EthersProvider extends ethers.providers.BaseProvider
     ];
   };
 
-  getLogs = async (filter: MultiAddressFilter): Promise<Log[]> => {
-    const logs = await this._getLogs(filter);
+  getLogs = async (filter: MultiAddressFilter | Promise<MultiAddressFilter>): Promise<Log[]> => {
+    const logs = await this._getLogs(await filter);
     return logs.map<Log>((log) => ({
       name: '',
       transactionHash: '',

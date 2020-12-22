@@ -4,9 +4,9 @@ import Styles from 'modules/market/components/market-view/market-view.styles.les
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 
-const ThreeBoxComments = lazy(() =>
-  import(/* webpackChunkName: '3box-comments' */ 'modules/market/components/common/comments/three-box-comments')
-);
+// const ThreeBoxComments = lazy(() =>
+//   import(/* webpackChunkName: '3box-comments' */ 'modules/market/components/common/comments/three-box-comments')
+// );
 
 const DEFAULT_NUM_POSTS = 10;
 
@@ -27,14 +27,6 @@ export const MarketComments = ({
 
   return isLogged ? (
     <section className={Styles.Comments}>
-      {comments === '3box' && (
-        <Suspense fallback={null}>
-          <ThreeBoxComments
-            adminEthAddr={threeBoxAdminAccount}
-            marketId={marketId}
-          />
-        </Suspense>
-      )}
       {comments === 'facebook' && (
         <FacebookComments
           marketId={marketId}

@@ -5,8 +5,10 @@ import {
   TransferButton,
   ViewTransactionsButton,
   REPFaucetButton,
-  DAIFaucetButton,
+  ParaTokenFaucetButton,
   ExternalLinkButton,
+  TransferButton,
+  WrapUnwrapEthAddfunds,
 } from 'modules/common/buttons';
 import {
   THEMES,
@@ -17,7 +19,10 @@ import {
   MODAL_TRANSFER,
   MODAL_CASHOUT,
   MODAL_REP_FAUCET,
-  MODAL_DAI_FAUCET,
+  MODAL_TOKEN_FAUCET,
+  ETH,
+  WETH,
+  DEFAULT_PARA_TOKEN,
 } from 'modules/common/constants';
 import { AccountAddressDisplay } from 'modules/modal/common';
 import { useAppStatusStore } from 'modules/app/store/app-status';
@@ -32,8 +37,10 @@ export const Transactions = () => {
   const {
     theme,
     loginAccount: { meta, balances },
+    paraTokenName,
     actions: { setModal },
   } = useAppStatusStore();
+  const showWrapEther = paraTokenName === 'WETH';
   const isTrading = theme === THEMES.TRADING;
   const networkId = getNetworkId();
   const targetAddress = meta.signer?._address;
@@ -42,7 +49,7 @@ export const Transactions = () => {
     networkId !== NETWORK_IDS.Kovan
       ? 'Use flash to transfer ETH to address'
       : null;
-  const signingWalletNoEth = createBigNumber(balances.signerBalances?.eth || 0).lte(ZERO);
+  const walletNoEth = createBigNumber(balances?.eth || 0).lte(ZERO);
 
   return (
     <QuadBox
@@ -69,17 +76,19 @@ export const Transactions = () => {
             <h4>Your funds</h4>
             <DepositButton action={() => setModal({ type: MODAL_ADD_FUNDS })} />
             <TransferButton action={() => setModal({ type: MODAL_TRANSFER })} />
+            {showWrapEther && <WrapUnwrapEthAddfunds action={() => setModal({type: MODAL_ADD_FUNDS, toToken: WETH, fromToken: ETH })} />}
           </div>
           {showFaucets && (
             <>
               <div>
                 <h4>REPv2 for test net</h4>
-                <h4>DAI for test net</h4>
+                <h4>{paraTokenName} for test net</h4>
                 <REPFaucetButton
                   action={() => setModal({ type: MODAL_REP_FAUCET })}
                 />
-                <DAIFaucetButton
-                  action={() => setModal({ type: MODAL_DAI_FAUCET })}
+                <ParaTokenFaucetButton
+                  title={`${paraTokenName} Faucet`}
+                  action={() => setModal({ token: paraTokenName, type: MODAL_TOKEN_FAUCET })}
                 />
               </div>
               <div>
@@ -91,7 +100,7 @@ export const Transactions = () => {
               </div>
             </>
           )}
-          {signingWalletNoEth && (
+          {walletNoEth && (
             <div>
               <ExternalLinkButton
                 URL={!localLabel ? 'https://faucet.kovan.network/' : null}

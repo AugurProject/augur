@@ -6,7 +6,7 @@ export function isInstanceOfBigNumber(object: any): boolean {
 }
 
 export function isInstanceOfEthersBigNumber(object: any): boolean {
-    return isObject(object) && object instanceof ethers.utils.BigNumber;
+    return isObject(object) && object instanceof ethers.BigNumber;
 }
 
 export function isInstanceOfArray(object: any): boolean {

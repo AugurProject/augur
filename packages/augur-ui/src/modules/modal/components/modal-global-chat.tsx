@@ -4,9 +4,9 @@ import Styles from 'modules/modal/modal.styles.less';
 import classNames from 'classnames';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 
-const ThreeBoxChat = lazy(() =>
-  import('modules/global-chat/components/three-box-chat')
-);
+// const ThreeBoxChat = lazy(() =>
+//   import('modules/global-chat/components/three-box-chat')
+// );
 
 export const ModalGlobalChat = () => {
   const {
@@ -37,16 +37,6 @@ export const ModalGlobalChat = () => {
         </div>
         {chat === 'orbit' && (
           <iframe src="./chat/index.html#/channel/augur" name={theme} key={theme} />
-        )}
-        {isLogged && chat === '3box' && (
-          <Suspense fallback={null}>
-            <ThreeBoxChat
-              provider={provider}
-              initialize3box={setInitialized3Box}
-              initialized3box={initialized3box || {}}
-              activatedFromStart
-            />
-          </Suspense>
         )}
       </div>
     </div>

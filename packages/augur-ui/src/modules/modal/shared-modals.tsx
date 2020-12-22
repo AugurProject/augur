@@ -18,6 +18,8 @@ import {
   LIQUIDITY_ORDERS,
   CANCELORDERS,
   CLAIMMARKETSPROCEEDS,
+  DEFAULT_PARA_TOKEN,
+  WETH,
 } from 'modules/common/constants';
 import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
 import { getTransactionLabel } from 'modules/auth/helpers/get-gas-price';
@@ -36,6 +38,7 @@ import {
   formatBlank,
   formatAttoDai,
   formatDai,
+  formatEther,
 } from 'utils/format-number';
 import { addPendingData } from 'modules/pending-queue/actions/pending-queue-management';
 import { disavowMarket } from 'modules/contracts/actions/contractCalls';
@@ -359,6 +362,7 @@ export const ModalClaimFees = () => {
 export const ModalClaimMarketsProceeds = () => {
   const {
     pendingQueue = [],
+    paraTokenName,
     loginAccount: { address: account },
     modal,
     gasPriceInfo,
@@ -368,7 +372,6 @@ export const ModalClaimMarketsProceeds = () => {
     theme,
     accountPositions
   } = useAppStatusStore();
-
   const isSportsTheme = theme === THEMES.SPORTS;
   const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
   const accountMarketClaimablePositions: MarketClaimablePositions = getLoginAccountClaimableWinnings();
@@ -392,10 +395,14 @@ export const ModalClaimMarketsProceeds = () => {
           pendingQueue[CLAIM_MARKETS_PROCEEDS] &&
           pendingQueue[CLAIM_MARKETS_PROCEEDS][marketId];
 
-        const unclaimedProceeds = formatDai(
+        const unclaimedProceeds = paraTokenName !== WETH ? formatDai(
+          claimablePosition.unclaimedProceeds
+        ) : formatEther(
           claimablePosition.unclaimedProceeds
         );
-        const unclaimedProfit = formatDai(
+        const unclaimedProfit = paraTokenName !== WETH ? formatDai(
+          claimablePosition.unclaimedProfit
+        ) : formatEther(
           claimablePosition.unclaimedProfit
         );
         let properties = [];
@@ -444,7 +451,7 @@ export const ModalClaimMarketsProceeds = () => {
   }
 
   const multiMarket = claimableMarkets.length > 1 ? 's' : '';
-  const totalUnclaimedProceedsFormatted = formatDai(totalUnclaimedProceeds);
+  const totalUnclaimedProceedsFormatted = paraTokenName !== WETH ? formatDai(totalUnclaimedProceeds) : formatEther(totalUnclaimedProceeds);
   const submitAllTxCount = Math.ceil(
     claimableMarkets.length / MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT
   );
@@ -589,6 +596,7 @@ export const ModalOpenOrders = () => {
 
 export const ModalUnsignedOrders = () => {
   const {
+    paraTokenName,
     loginAccount,
     modal,
     ethToDaiRate,
@@ -638,7 +646,7 @@ export const ModalUnsignedOrders = () => {
     maxPrice,
     transactionHash,
   } = market;
- 
+
   return (
     <UnsignedOrders
       title='Unsigned Orders'
@@ -659,7 +667,7 @@ export const ModalUnsignedOrders = () => {
       breakdown={[
         {
           label: 'Total Cost (DAI)',
-          value: formatDai(totalCost.toFixed()).full,
+          value: paraTokenName !== WETH ? formatDai(totalCost.toFixed()).full : formatEther(totalCost.toFixed()).full,
           highlight: true,
         },
       ]}

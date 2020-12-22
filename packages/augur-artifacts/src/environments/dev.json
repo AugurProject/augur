@@ -3,28 +3,39 @@
   "logLevel": 0,
   "uploadBlockNumber": 19830392,
   "ethereum": {
-    "http": "https://kovan.augur.net/ethereum-http",
+    "http": "https://kovan.infura.io/v3/595111ad66e2410784d484708624f7b1",
     "rpcRetryCount": 5,
     "rpcRetryInterval": 0,
-    "rpcConcurrency": 8,
-    "ws": "ws://localhost:8546"
+    "rpcConcurrency": 40,
+    "ws": "ws://localhost:8546",
+    "network": "kovan"
   },
   "gas": {
     "price": 20000000000,
-    "limit": 10000000
+    "limit": 10000000,
+    "override": false
   },
   "deploy": {
     "isProduction": false,
     "enableFaucets": true,
     "normalTime": true,
     "externalAddresses": {
-      "Exchange": "0x4eacd0aF335451709e1e7B570B8Ea68EdEC8bc97"
+      "Exchange": "0x4eacd0aF335451709e1e7B570B8Ea68EdEC8bc97",
+      "WETH9": "0xf68B100D9Acd8421F7f04E4548a604Ff3f0254E4",
+      "Cash": "0x5bc0ceB4d813282C4468288C8AB42Af5e7a43B27",
+      "USDC": "0x03722982dBb5b038348feF5a1Bc7f6e0f3d4C34E",
+      "USDT": "0x1997d08B1a9aeD5143b995e929707400625D5f6C"
     },
     "writeArtifacts": true,
     "serial": true
   },
   "uniswap": {
     "exchangeRateBufferMultiplier": 1.075
+  },
+  "gsn": {
+    "enabled": true,
+    "minDaiForSignerETHBalanceInDAI": 40,
+    "desiredSignerBalanceInETH": 0.04
   },
   "zeroX": {
     "rpc": {
@@ -102,9 +113,11 @@
     "AuditFunds": "0x107694aCf8525c326a45984cba92c17e8aa981Ea",
     "AugurWalletRegistryV2": "0xe59A5988E6C73e392F37Bb8aEdAD078A8b96f394",
     "RelayHubV2": "0x6EFF7F7154347B4b2611cb9aeee5dE6a679FF41C",
-    "USDC": "0xf9Bf04bDd519B37Ffe988Ea3273e08Bf1406b523",
-    "USDT": "0x0e236158806f3A411f99Fbf512496D90D8FBE67C",
-    "AccountLoader": "0x679FA27db29b84BE82C2b6d1fBdEb583D8f89d40"
+    "USDC": "0x03722982dBb5b038348feF5a1Bc7f6e0f3d4C34E",
+    "USDT": "0x1997d08B1a9aeD5143b995e929707400625D5f6C",
+    "AccountLoader": "0x00b076ea4abbfCE954515d204281915Cc6Abe966",
+    "ParaDeployer": "0x06e11c3A90DC2555CEacBcDc510Baa25A0882A70",
+    "OINexus": "0xB72C80a37175e7DcbAb53acC81dbbfB85C18174d"
   },
   "server": {
     "httpPort": 9003,
@@ -129,16 +142,87 @@
   "warpSync": {
     "enabled": true,
     "autoReport": false,
-    "createCheckpoints": true
+    "createCheckpoints": true,
+    "ipfsEndpoint": {
+      "version": 1,
+      "url": "https://cloudflare-ipfs.com/"
+    }
   },
   "ui": {
     "showReloadModal": true,
     "averageBlocktime": 2000,
-    "liteProvider": "torus",
+    "liteProvider": "jsonrpc",
     "trackBestOffer": true,
     "trackMarketInvalidBids": true,
     "fallbackProvider": "torus",
-    "primaryProvider": "wallet"
+    "primaryProvider": "wallet",
+    "marketCreationEnabled": true,
+    "reportingEnabled": true
   },
-  "averageBlocktime": 2000
+  "averageBlocktime": 2000,
+  "paraDeploys": {
+    "0x03722982dBb5b038348feF5a1Bc7f6e0f3d4C34E": {
+      "name": "USDC",
+      "decimals": 6,
+      "uploadBlockNumber": 22266047,
+      "addresses": {
+        "Augur": "0x243c750416bEDc7Ec4d657649FF7b8D1D69386Eb",
+        "AugurTrading": "0x22d0B27053012072Fb1f511E32195CEB94Bd0889",
+        "Universe": "0x95372dBb59fd7D86920890189aB5E4caB48946C5",
+        "Cash": "0x03722982dBb5b038348feF5a1Bc7f6e0f3d4C34E",
+        "ShareToken": "0xFE7D96Ed30E15A53ef46439CB07EDd2d358B990D",
+        "OICash": "0x933AA33A7D529fCEFAa9c32dCAfB53b3F6e240ff",
+        "CancelOrder": "0x542265ddbAD008967750a4294753fDC4a9044A5A",
+        "CreateOrder": "0x99D0fBaf28c37e410E9BC6edc1ae475395F1acF7",
+        "FillOrder": "0x873996ea0A3d826aedBfdAAF5969590630E3Bb15",
+        "Orders": "0xA66170dEDe7e7BbCB1684fd7251791d9Bc8E3649",
+        "Trade": "0x9D9d8A737841aA2BA2EdfA1dBECc0CeE696E31B3",
+        "SimulateTrade": "0xcf1C01B1761B665453DD9e1C337367834337547a",
+        "ZeroXTrade": "0x629Ac421E78A4c7b812ba9a85F34C17cE4AB3dB5",
+        "ProfitLoss": "0x146C136CEDFc87c88343DfF4e93e4122167ECe8f"
+      }
+    },
+    "0x1997d08B1a9aeD5143b995e929707400625D5f6C": {
+      "name": "USDT",
+      "decimals": 6,
+      "uploadBlockNumber": 22170440,
+      "addresses": {
+        "Augur": "0x7b799e7300aeeFEEbf144dE36a16884AD2d691ed",
+        "AugurTrading": "0x32ed86d5bc0B2f715d1a90E5bFBd46e1e023a2Cd",
+        "Universe": "0xA33912E70C1d221cdE05b277c3Ca7962ef5bDA18",
+        "Cash": "0x1997d08B1a9aeD5143b995e929707400625D5f6C",
+        "ShareToken": "0x8e35EcC3352b2F4982576cA15487D287e92f327a",
+        "OICash": "0xF76864E2Cd64300edE20070481c7d4904600a553",
+        "CancelOrder": "0xaB94dd805d0e84F7aFFd9290c7Bf8DB06A44971A",
+        "CreateOrder": "0x4B3eC3146Eb858BC4C85dc9FA7837B2a7331C165",
+        "FillOrder": "0x50551C7AD1D8814B22221E7Df4d3A2A1c7A98046",
+        "Orders": "0x5eaE5E6d7436544a5F8D826fc616afcd6530f4Be",
+        "Trade": "0xeC1D5A5feabb87De75Ae23FD09825299b10e84B4",
+        "SimulateTrade": "0xFF5101f63Cb8c928E91d43Dc2A17A8e6243755BA",
+        "ZeroXTrade": "0x25C7936c22EbEcbF5c93ca5eAc7995603F5E904a",
+        "ProfitLoss": "0x1B49c78AFC98DA4c59cbfDFFFB8F77E68f89A347"
+      }
+    },
+    "0xf68B100D9Acd8421F7f04E4548a604Ff3f0254E4": {
+      "name": "WETH",
+      "decimals": 18,
+      "uploadBlockNumber": 22170507,
+      "addresses": {
+        "Augur": "0xBb8657A8Fd64a0A45ca3281f0EC912407432a226",
+        "AugurTrading": "0x09340C70eDb8BDd3930aa5D227C3AA3978dB88A7",
+        "Universe": "0x6291543aF9149d743912165b58007ac4dA8470cf",
+        "Cash": "0xf68B100D9Acd8421F7f04E4548a604Ff3f0254E4",
+        "ShareToken": "0xA6D02EEB7C0CA116146Bc6fC8B5ebe18d89998eC",
+        "OICash": "0xa1E98BB98D8cbD6eC4f5C12f8eDE532a5A36C605",
+        "CancelOrder": "0xefac14eD9Ef357A520Ed22e4f1515c3a83478D1F",
+        "CreateOrder": "0x8640776A452150F665c6b425DDBF39492B109BC6",
+        "FillOrder": "0xadbCfffaBa440429cc402237e468082F2b529744",
+        "Orders": "0x5DD96Ce705e60a1efbF0C70F80dA5Dfff4353eE0",
+        "Trade": "0x59dcdFA8706158C21EE7f06aC62A06bc94cc3de9",
+        "SimulateTrade": "0x4b92B5d4fa36cce68B53D195d090Eb6F9308d9Ae",
+        "ZeroXTrade": "0xA2A8f47Ecf7b7Dea73Fa83Fb462b476f2ED3B8b5",
+        "ProfitLoss": "0x577d8C9f48FC4a66599b3f3ede81D61566256591"
+      }
+    }
+  }
 }

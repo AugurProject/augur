@@ -18,18 +18,21 @@ import {
   ODDS_TYPE,
   SPORTS_GROUP_MARKET_TYPES,
   THEMES,
+  DEFAULT_PARA_TOKEN,
+  WETH,
 } from './constants';
 import {
   formatBlank,
   calcPercentageFromPrice,
   formatMarketShares,
   formatDai,
+  formatEther,
 } from 'utils/format-number';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
 import { selectMarketOutcomeBestBidAsk } from 'modules/markets/selectors/select-market-outcome-best-bid-ask';
 import { useMarketsStore } from 'modules/markets/store/markets';
-import { useAppStatusStore } from 'modules/app/store/app-status';
+import { AppStatus, useAppStatusStore } from 'modules/app/store/app-status';
 import { OutcomeFormatted, UIOrder } from 'modules/types';
 import { OutcomeOrderBook } from '@augurproject/sdk-lite';
 import { Properties } from './row-column';
@@ -337,7 +340,7 @@ export const OpenOrder = ({
     outcomeName,
     expiry,
   } = openOrder;
-  const { theme } = useAppStatusStore();
+  const { theme, paraTokenName } = useAppStatusStore();
   const isTrading = theme === THEMES.TRADING;
   let { avgPrice } = openOrder;
   const {
@@ -399,7 +402,7 @@ export const OpenOrder = ({
       columnType: COLUMN_TYPES.VALUE,
       value: avgPrice,
       usePercent: !!avgPrice.percent,
-      useFull: marketType === SCALAR ? false : true,
+      useFull: marketType === SCALAR ? false : paraTokenName !== WETH ? true : false,
       showFullPrecision: marketType === SCALAR ? true : false,
       showDenomination: marketType === SCALAR ? true : false,
       keyId: 'openOrder-price-' + openOrder.id,
@@ -408,7 +411,7 @@ export const OpenOrder = ({
       key: 'tokensEscrowed',
       columnType: COLUMN_TYPES.VALUE,
       value: tokensEscrowed,
-      useFull: true,
+      useFull: paraTokenName !== WETH ? true : false,
       showEmptyDash: true,
       keyId: 'openOrder-tokensEscrowed-' + openOrder.id,
     },
@@ -458,6 +461,7 @@ export const FilledOrder = ({
   extendedViewNotOnMobile = false,
 }: FilledOrderProps) => {
   const { marketInfos } = useMarketsStore();
+  const { paraTokenName, theme } = AppStatus.get();
   const {
     marketType,
     amount,
@@ -470,7 +474,7 @@ export const FilledOrder = ({
     type,
   } = filledOrder;
   const orderQuantity = formatMarketShares(marketType, amount);
-  let orderPrice = formatDai(price, { roundDown: true });
+  let orderPrice = paraTokenName !== WETH ? formatDai(price, { roundDown: true }) : formatEther(price, { roundDown: true });
   const orderType = type;
 
   const formatOriginalQuantity = formatMarketShares(

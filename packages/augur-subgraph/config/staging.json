@@ -1,0 +1,7 @@
+{
+  "network": "kovan",
+  "Augur": "0xd50475cc7ae9dd46a09d8415a57f0df59e89b0f9",
+  "AugurTrading": "0x9307C37077fd428f18f2a4E94BaeeeA7Cc5681dd",
+  "AMMFactory": "0x9C8761AC94293F01b8cB929Ef60d597f074f0A26",
+  "startBlock": 19830392
+}

@@ -27,7 +27,7 @@ export default function parseQuery(searchString) {
 
 export function parseLocation(href) {
   let query = href;
-  if (query.indexOf('?') !== -1) {
+  if (query && query.indexOf('?') !== -1) {
     query = query.replace('#!', '&').split('?')[1];
   }
   return parseQuery(query);

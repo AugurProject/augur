@@ -26,6 +26,7 @@ import {
   MODAL_MARKET_LOADING,
   TUTORIAL_PRICE,
   TUTORIAL_QUANTITY,
+  DEFAULT_PARA_TOKEN,
 } from 'modules/common/constants';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
@@ -50,7 +51,7 @@ import {
   OUTCOME_ID_PARAM_NAME,
 } from 'modules/routes/constants/param-names';
 import { windowRef } from 'utils/window-ref';
-import { getAddress } from 'ethers/utils/address';
+import { ethers } from "ethers";
 import { hotLoadMarket } from 'modules/markets/actions/load-markets';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { useMarketsStore } from 'modules/markets/store/markets';
@@ -88,6 +89,7 @@ const MarketView = ({
   defaultMarket = null,
 }: MarketViewProps) => {
   const {
+    paraTokenName,
     modal: { type: modalType },
     zeroXStatus,
     isConnected,
@@ -116,10 +118,10 @@ const MarketView = ({
     isTutorial: tradingTutorial,
     preview
   } = getTutorialPreview(queryId, location);
-  const marketId = (preview) ? queryId : getAddress(queryId);
+  const marketId = (preview) ? queryId : ethers.utils.getAddress(queryId);
   const market = tradingTutorial ?
     TRADING_TUTORIAL_MARKET :
-    defaultMarket || convertMarketInfoToMarketData(marketInfos[marketId], currentAugurTimestamp * 1000);
+    defaultMarket || convertMarketInfoToMarketData(marketInfos[marketId], currentAugurTimestamp * 1000, paraTokenName);
   const defaultOutcomeId = market?.defaultSelectedOutcomeId;
   const cat5 = findType(market);
   const zeroXSynced = zeroXStatus === ZEROX_STATUSES.SYNCED;

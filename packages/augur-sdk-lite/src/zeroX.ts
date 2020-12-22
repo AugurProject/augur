@@ -1,13 +1,17 @@
-import { BigNumber as BN, defaultAbiCoder, ParamType } from 'ethers/utils';
-import { getAddress } from 'ethers/utils/address';
 import { BigNumber } from 'bignumber.js';
 
 import { ZeroXOrders, OutcomeOrders, OrderTypeOrders, ZeroXOrder } from './constants';
 import { OrderType } from './logs';
+import { ethers } from 'ethers';
+import { ParamType, JsonFragmentType } from '@ethersproject/abi'
+
+function paramType(fragment: {name: string, type: string}): ParamType {
+  return ParamType.from(fragment);
+}
 
 const multiAssetDataAbi: ParamType[] = [
-    { name: 'amounts', type: 'uint256[]' },
-    { name: 'nestedAssetData', type: 'bytes[]' },
+    paramType({name: 'amounts', type: 'uint256[]'}),
+    paramType({ name: 'nestedAssetData', type: 'bytes[]' }),
 ];
 
 // Original ABI from Go
@@ -28,10 +32,10 @@ const multiAssetDataAbi: ParamType[] = [
 //   },
 // ];
 const erc1155AssetDataAbi: ParamType[] = [
-    { name: 'address', type: 'address' },
-    { name: 'ids', type: 'uint256[]' },
-    { name: 'values', type: 'uint256[]' },
-    { name: 'callbackData', type: 'bytes' },
+    paramType({ name: 'address', type: 'address' }),
+    paramType({ name: 'ids', type: 'uint256[]' }),
+    paramType({ name: 'values', type: 'uint256[]' }),
+    paramType({ name: 'callbackData', type: 'bytes' }),
 ];
 
 export interface OrderData {
@@ -54,7 +58,7 @@ export function parseZeroXMakerAssetData(makerAssetData: string): OrderData {
 
 export function parseAssetData(assetData: string): ParsedAssetDataResults {
     try {
-        const multiAssetData = defaultAbiCoder.decode(multiAssetDataAbi, `0x${assetData.slice(10)}`);
+        const multiAssetData = ethers.utils.defaultAbiCoder.decode(multiAssetDataAbi, `0x${assetData.slice(10)}`);
         const nestedAssetData = multiAssetData[1] as string[];
         const orderData = parseTradeAssetData(nestedAssetData[0]);
         return {
@@ -69,7 +73,7 @@ export function parseAssetData(assetData: string): ParsedAssetDataResults {
 export function parseTradeAssetData(assetData: string): OrderData {
     // Remove the first 10 characters because assetData is prefixed in 0x, and then contains a selector.
     // Drop the selector and add back to 0x prefix so the AbiDecoder will treat it properly as hex.
-    const decoded = defaultAbiCoder.decode(erc1155AssetDataAbi, `0x${assetData.slice(10)}`);
+    const decoded = ethers.utils.defaultAbiCoder.decode(erc1155AssetDataAbi, `0x${assetData.slice(10)}`);
     const ids = decoded[1] as BigNumber[];
 
     if (ids.length !== 1) {
@@ -80,7 +84,7 @@ export function parseTradeAssetData(assetData: string): OrderData {
     // Since `ids[n]` is a BigNumber, it is possible for the higher order bits
     // to all be 0. This will result in the tokenid serialization here to be
     // less than the expected full 32 bytes (64 characters in hex).
-    const tokenid = new BN(`${ids[0].toString()}`).toHexString().substr(2).padStart(64, '0');
+    const tokenid = ethers.BigNumber.from(`${ids[0].toString()}`).toHexString().substr(2).padStart(64, '0');
 
     // From ZeroXTrade.sol
     //  assembly {
@@ -90,7 +94,7 @@ export function parseTradeAssetData(assetData: string): OrderData {
     //      _type :=           and(_tokenId, 0x00000000000000000000000000000000000000000000000000000000000000FF)
     //  }
     return {
-        market: getAddress(`0x${tokenid.substr(0, 40)}`),
+        market: ethers.utils.getAddress(`0x${tokenid.substr(0, 40)}`),
         price: `0x${tokenid.substr(40, 20)}`,
         outcome: `0x${tokenid.substr(60, 2)}`,
         orderType: `0x${tokenid.substr(62, 2)}`,
@@ -134,10 +138,10 @@ function removeCrossedOrdersInOutcome(
   if (Object.keys(orders[OrderType.Ask]).length === 0) return orders;
   if (Object.keys(orders[OrderType.Bid]).length === 0) return orders;
 
-  let asks = [
+  const asks = [
     ...Object.values(orders[OrderType.Ask]).filter(o => o.makerAddress !== allowedAccount).sort(sortOrdersAscending),
   ];
-  let bids = [
+  const bids = [
     ...Object.values(orders[OrderType.Bid]).filter(o => o.makerAddress !== allowedAccount).sort(sortOrdersDecending),
   ];
   let hasCrossOrders = hasCrossedOrders(asks, bids);
@@ -154,7 +158,7 @@ function removeCrossedOrdersInOutcome(
     bestAsk.price,
     (bidPrice, price) => parseFloat(bidPrice) >= parseFloat(price)
   );
-  let ignoreOrders = [];
+  const ignoreOrders = [];
   while (hasCrossOrders) {
     // get all orders that price cross
     // remove smallest sized crossed orders

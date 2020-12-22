@@ -1,4 +1,5 @@
 export { ContractDeployer } from './libraries/ContractDeployer';
+export { SideChainDeployer } from './libraries/SideChainDeployer';
 export { EthersFastSubmitWallet } from './libraries/EthersFastSubmitWallet';
 
 import * as GenericAugurInterfaces from './libraries/GenericContractInterfaces';

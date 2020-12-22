@@ -1,20 +1,32 @@
 import React, { useEffect, useRef } from 'react';
 import classNames from 'classnames';
 import Blockies from 'react-blockies';
-
 import ConnectDropdown from 'modules/auth/connect-dropdown';
 import ChevronFlip from 'modules/common/chevron-flip';
-import { formatDai } from 'utils/format-number';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import Styles from 'modules/auth/connect-account.styles.less';
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
 import { MOBILE_MENU_STATES } from 'modules/common/constants';
+import { BigNumber } from 'utils/create-big-number';
+import { formatDai, formatEther } from 'utils/format-number';
+import { WETH } from 'modules/common/constants';
+import { getAccountFunds } from './helpers/login-account';
+
+export const formatParaBalance = (balance: BigNumber, paraToken: string) => {
+  if (paraToken !== WETH) {
+    return formatDai(balance).full;
+  } else {
+    return formatEther(balance).full;
+  }
+}
 
 const ConnectAccount = () => {
   const connectAccount = useRef(null);
   const connectDropdown = useRef(null);
   const {
-    loginAccount: { meta: userInfo, balances },
+    loginAccount: { meta: userInfo },
+    loginAccount,
+    paraTokenName,
     isLogged,
     isMobile,
     restoredAccount,
@@ -34,6 +46,13 @@ const ConnectAccount = () => {
   }
 
   if ((!isLogged && !restoredAccount) || !userInfo) return null;
+  let formattedBalance = formatDai(0).full;
+
+  if (paraTokenName) {
+    const balances = getAccountFunds(loginAccount, paraTokenName);
+    const totalBalance = balances?.totalAvailableTradingBalance;
+    formattedBalance = formatParaBalance(totalBalance, paraTokenName);
+  }
 
   return (
     <div
@@ -56,7 +75,7 @@ const ConnectAccount = () => {
               <div>
                 {userInfo.email ? userInfo.email : userInfo.accountType}
               </div>
-              <span>{formatDai(balances.dai).full}</span>
+              <span>{formattedBalance}</span>
             </div>
           </div>
           <span>

@@ -20,7 +20,7 @@ $breakpoint-mobile: "all and (min-height: 16.01rem)";
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background-color: var(--orbit-page-background);
+  background-color: $orbit-page-background;
 
   display: flex;
   flex-flow: column nowrap;
@@ -108,7 +108,7 @@ $breakpoint-mobile: "all and (min-height: 16.01rem)";
   .instructionText {
     font-size: 0.8em;
     display: flex;
-    color: var(--orbit-color-secondary-text);
+    color: $placeholder-color;
     font-style: italic;
   }
 }
@@ -146,7 +146,7 @@ input[type='button'],
 }
 
 .Controls {
-  background-color: var(--color-module-background);
+  background-color: $bar-background-color;
   box-sizing: border-box;
   display: flex;
   justify-content: space-around;
@@ -154,7 +154,8 @@ input[type='button'],
   height: 100%;
   max-height: $controls-height-desktop;
   min-height: $controls-height-desktop;
-  color: var(--orbit-color-secondary-text);
+  padding: 0.1875rem; // 3px
+  color: rgb(128, 128, 128);
 
   @media #{$breakpoint-mobile} {
     max-height: $controls-height-mobile;
@@ -174,10 +175,12 @@ input[type='button'],
 }
 
 .ChannelStatus {
-  color: var(--orbit-color-secondary-text);
-  font-family: 'Inter', sans-serif;
+  margin-left: 0.5em;
+
+  color: $orbit-color-secondary-text;
+  font-family: 'Roboto Mono', sans-serif;
   font-size: 0.5625rem; // 9px
-  font-weight: 600;
+  font-weight: normal;
   cursor: default;
   display: flex;
   flex-direction: column;
@@ -185,7 +188,7 @@ input[type='button'],
   justify-content: center;
   text-transform: uppercase;
 
-  padding: 0 0.5rem; // 16px
+  padding: 0.5em 1em;
   border-radius: 16px;
   letter-spacing: 1px;
 
@@ -197,17 +200,19 @@ input[type='button'],
 .Messages {
   position: relative;
   box-sizing: border-box;
+
   overflow: hidden;
-  background-color: var(--orbit-page-background);
+
+  background-color: $orbit-page-background;
+
   flex: 1 1 auto;
-  margin: 0.5rem; // 8px
 
   .dateSeparator {
     display: flex;
     justify-content: flex-start;
-    margin: 0.625rem 0; // 10px
+    margin: 10px 0 10px 0;
     font-size: 0.5625rem; // 9px
-    color: var(--orbit-color-secondary-text);
+    color: $orbit-color-secondary-text;
     cursor: default;
     text-transform: uppercase;
   }
@@ -215,7 +220,7 @@ input[type='button'],
   .firstMessage {
     display: flex;
     justify-content: center;
-    color: var(--orbit-color-secondary-text);
+    color: $orbit-color-secondary-text;
     font-weight: bold;
     font-style: italic;
     font-size: 0.7em;
@@ -231,6 +236,7 @@ input[type='button'],
   &.size-normal {
     .dateSeparator {
       font-size: 0.7em;
+      margin-left: 0.3em;
     }
   }
 
@@ -243,14 +249,14 @@ input[type='button'],
 
   &.font-normal {
     .dateSeparator {
-      font-weight: 500;
+      font-weight: bold;
       padding-bottom: 0.2em;
     }
   }
 
   &.font-monospace {
     .dateSeparator {
-      font-family: 'Inter';
+      font-family: 'Roboto Mono';
       font-weight: normal;
       padding-bottom: 0.4em;
     }
@@ -327,19 +333,4 @@ input[type='button'],
   animation-duration: 0.3s;
   animation-fill-mode: both;
   animation-timing-function: ease-in;
-}
-
-:root[theme='BETTING'],
-:root[theme='SPORTS'] {
-  .Controls {
-    border-top: 0.0625rem solid var(--color-outline); // 1px
-  }
-
-  .Messages {
-    margin: 1rem; // 16px
-  }
-
-  .ChannelStatus {
-    padding: 0 1rem; // 16px
-  }
 }

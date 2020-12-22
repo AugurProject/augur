@@ -6074,7 +6074,7 @@ export const TEMPLATES = {
                       text: `If the event does not take place this market should resolve as 'Invalid'`,
                     },
                     {
-                      text: `Medal count is determined at event expiration, if event expiration is before the completion of the games this market should resolve as 'Invalid'`,
+                      text: `Metal count is determined at event expiration, if event expiration is before the completion of the games this market should resolve as 'Invalid'`,
                     },
                   ],
                 },
@@ -6170,10 +6170,10 @@ export const TEMPLATES = {
                       text: `If the event does not take place this market should resolve as 'Invalid'`,
                     },
                     {
-                      text: `Medal count is determined at event expiration, if event expiration is before the completion of the games this market should resolve as 'Invalid'`,
+                      text: `Metal count is determined at event expiration, if event expiration is before the completion of the games this market should resolve as 'Invalid'`,
                     },
                     {
-                      text: `Market should resolve as whole number value of medals`,
+                      text: `Market should resolve as whole number value of metals`,
                     },
                   ],
                 },
@@ -6422,7 +6422,7 @@ export const TEMPLATES = {
                       text: `If the event does not take place this market should resolve as 'Invalid'`,
                     },
                     {
-                      text: `Medal count is determined at event expiration, if event expiration is before the completion of the games this market should resolve as 'Invalid'`,
+                      text: `Metal count is determined at event expiration, if event expiration is before the completion of the games this market should resolve as 'Invalid'`,
                     },
                   ],
                 },
@@ -6518,7 +6518,7 @@ export const TEMPLATES = {
                       text: `If the event does not take place this market should resolve as 'Invalid'`,
                     },
                     {
-                      text: `Medal count is determined at event expiration, if event expiration is before the completion of the games this market should resolve as 'Invalid'`,
+                      text: `Metal count is determined at event expiration, if event expiration is before the completion of the games this market should resolve as 'Invalid'`,
                     },
                     {
                       text: `Market should resolve as whole number value of medals`,

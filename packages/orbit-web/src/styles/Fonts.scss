@@ -1,109 +1,38 @@
 // Fonts from https://github.com/google/fonts
 
 @font-face {
-  font-family: 'Inter';
-  font-style: normal;
+  font-family: 'Lato';
+  src: url('~fonts/lato/Lato-Thin.woff2') format('woff2'),
+       url('https://fonts.googleapis.com/css?family=Lato'),
+       url('~fonts/lato/Lato-Thin.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'LatoBold';
+  src: url('~fonts/lato/Lato-Light.woff2') format('woff2'),
+       url('https://fonts.googleapis.com/css?family=Lato'),
+       url('~fonts/lato/Lato-Light.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
   font-weight: 400;
-  font-display: swap;
-  src: url('../../../augur-ui/src/assets/fonts/Inter-Regular.woff2') format('woff2'),
-  url('../../../augur-ui/src/assets/fonts/Inter-Regular.woff') format('woff2');
+  src: url('../../../augur-ui/src/assets/fonts/Roboto-Regular.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'Inter';
-  font-style: italic;
-  font-weight: 400;
-  font-display: swap;
-  src: url('../../../augur-ui/src/assets/fonts/Inter-Italic.woff2') format('woff2'),
-  url('../../../augur-ui/src/assets/fonts/Inter-Italic.woff') format('woff2');
-}
-
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
+  font-family: 'Roboto';
   font-weight: 500;
-  font-display: swap;
-  src: url('../../../augur-ui/src/assets/fonts/Inter-Medium.woff2') format('woff2'),
-  url('../../../augur-ui/src/assets/fonts/Inter-Medium.woff') format('woff2');
+  src: url('../../../augur-ui/src/assets/fonts/Roboto-Medium.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'Inter';
-  font-style: italic;
-  font-weight: 500;
-  font-display: swap;
-  src: url('../../../augur-ui/src/assets/fonts/Inter-MediumItalic.woff2') format('woff2'),
-  url('../../../augur-ui/src/assets/fonts/Inter-MediumItalic.woff') format('woff2');
-}
-
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url('../../../augur-ui/src/assets/fonts/Inter-SemiBold.woff2') format('woff2'),
-  url('../../../augur-ui/src/assets/fonts/Inter-SemiBold.woff') format('woff2');
-}
-
-@font-face {
-  font-family: 'Inter';
-  font-style: italic;
-  font-weight: 600;
-  font-display: swap;
-  src: url('../../../augur-ui/src/assets/fonts/Inter-SemiBoldItalic.woff2') format('woff2'),
-  url('../../../augur-ui/src/assets/fonts/Inter-SemiBoldItalic.woff') format('woff2');
-}
-
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
+  font-family: 'Roboto';
   font-weight: 700;
-  font-display: swap;
-  src: url('../../../augur-ui/src/assets/fonts/Inter-Bold.woff2') format('woff2'),
-  url('../../../augur-ui/src/assets/fonts/Inter-Bold.woff') format('woff2');
+  src: url('../../../augur-ui/src/assets/fonts/Roboto-Bold.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'Inter';
-  font-style: italic;
-  font-weight: 700;
-  font-display: swap;
-  src: url('../../../augur-ui/src/assets/fonts/Inter-BoldItalic.woff2') format('woff2'),
-  url('../../../augur-ui/src/assets/fonts/Inter-BoldItalic.woff') format('woff2');
-}
-
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 800;
-  font-display: swap;
-  src: url('../../../augur-ui/src/assets/fonts/Inter-ExtraBold.woff2') format('woff2'),
-  url('../../../augur-ui/src/assets/fonts/Inter-ExtraBold.woff') format('woff2');
-}
-
-@font-face {
-  font-family: 'Inter';
-  font-style: italic;
-  font-weight: 800;
-  font-display: swap;
-  src: url('../../../augur-ui/src/assets/fonts/Inter-ExtraBoldItalic.woff2') format('woff2'),
-  url('../../../augur-ui/src/assets/fonts/Inter-ExtraBoldItalic.woff') format('woff2');
-}
-
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 900;
-  font-display: swap;
-  src: url('../../../augur-ui/src/assets/fonts/Inter-Black.woff2') format('woff2'),
-  url('../../../augur-ui/src/assets/fonts/Inter-Black.woff') format('woff2');
-}
-
-@font-face {
-  font-family: 'Inter';
-  font-style: italic;
-  font-weight: 900;
-  font-display: swap;
-  src: url('../../../augur-ui/src/assets/fonts/Inter-BlackItalic.woff2') format('woff2'),
-  url('../../../augur-ui/src/assets/fonts/Inter-BlackItalic.woff') format('woff2');
+  font-family: 'Roboto Mono';
+  src: url('../../../augur-ui/src/assets/fonts/Roboto-Mono-Regular.woff2') format('woff2');
 }

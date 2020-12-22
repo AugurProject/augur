@@ -26,7 +26,8 @@ export class DerivedDB extends RollbackTable {
     networkId: number,
     name: string,
     mergeEventNames: string[],
-    augur: Augur
+    augur: Augur,
+    private paraDeploy = false
   ) {
     super(networkId, augur, name, db);
     this.mergeEventNames = mergeEventNames;
@@ -72,6 +73,8 @@ export class DerivedDB extends RollbackTable {
     const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(
       this.dbName
     );
+
+    console.log('highestSyncedBlockNumber', this.dbName, highestSyncedBlockNumber);
     const documentById = {};
     for (const eventName of this.mergeEventNames) {
       const result = await this.getEvents(highestSyncedBlockNumber, eventName);
@@ -114,7 +117,7 @@ export class DerivedDB extends RollbackTable {
     highestSyncedBlockNumber: number,
     eventName: string
   ): Promise<BaseDocument[]> {
-    return await this.stateDB.dexieDB[eventName]
+    return this.stateDB.dexieDB[eventName]
       .where('blockNumber')
       .aboveOrEqual(highestSyncedBlockNumber)
       .toArray();
@@ -169,5 +172,11 @@ export class DerivedDB extends RollbackTable {
   // No-op by default. Can be overriden to provide custom document processing before being upserted into the DB.
   protected processDoc(log: ParsedLog): ParsedLog {
     return log;
+  }
+
+  async reset() {
+    console.log('reset-checkpoint-1', this.dbName);
+    await this.syncStatus.setHighestSyncBlock(this.dbName, 0, false);
+    await this.stateDB.dexieDB[this.dbName].clear();
   }
 }

@@ -1,7 +1,6 @@
 import { MarketData, ZeroXOrder, ZeroXOrders, OrderState, ignoreCrossedOrders } from '@augurproject/sdk-lite';
 import { BigNumber } from 'bignumber.js';
 import Dexie from 'dexie';
-import { getAddress } from 'ethers/utils/address';
 import * as t from 'io-ts';
 import * as _ from 'lodash';
 import {
@@ -14,6 +13,7 @@ import { DB } from '../db/DB';
 import { StoredOrder } from '../db/ZeroXOrders';
 import { getMarkets} from './OnChainTrading';
 import { Getter } from './Router';
+import { ethers } from 'ethers';
 
 
 export const ZeroXOrdersParams = t.partial({
@@ -50,7 +50,7 @@ export class ZeroXOrdersGetters {
       .equals(params.orderHash)
       .last();
     const markets = await getMarkets([storedOrder.market], db, false);
-    return ZeroXOrdersGetters.storedOrderToZeroXOrder(markets, storedOrder);
+    return ZeroXOrdersGetters.storedOrderToZeroXOrder(markets, storedOrder, augur.precision);
   }
 
   // TODO: Split this into a getter for orderbooks and a getter to get matching orders
@@ -69,7 +69,7 @@ export class ZeroXOrdersGetters {
     const ignoreCrossOrders = params.ignoreCrossOrders
     const outcome = params.outcome !== undefined ? `0x0${params.outcome.toString()}` : null;
     const orderType = params.orderType !== undefined ? `0x0${params.orderType}` : null;
-    const account = params.account ? getAddress(params.account) : null;
+    const account = params.account ? ethers.utils.getAddress(params.account) : null;
     const accountOnly = account && !ignoreCrossOrders;
 
     let storedOrders: StoredOrder[];
@@ -120,6 +120,7 @@ export class ZeroXOrdersGetters {
       typeof params.expirationCutoffSeconds === 'number'
         ? params.expirationCutoffSeconds
         : 0,
+      augur.precision,
     );
     return ignoreCrossOrders ? ignoreCrossedOrders(book, account) : book;
   }
@@ -129,13 +130,15 @@ export class ZeroXOrdersGetters {
     storedOrders: StoredOrder[],
     ignoredOrderIds: string[],
     expirationCutoffSeconds: number,
+    precision: BigNumber,
   ): ZeroXOrders {
     let orders = storedOrders.map(storedOrder => {
       return {
         storedOrder,
         zeroXOrder: ZeroXOrdersGetters.storedOrderToZeroXOrder(
           markets,
-          storedOrder
+          storedOrder,
+          precision
         ),
       };
     });
@@ -181,7 +184,8 @@ export class ZeroXOrdersGetters {
 
   static storedOrderToZeroXOrder(
     markets: _.Dictionary<MarketData>,
-    storedOrder: StoredOrder
+    storedOrder: StoredOrder,
+    precision: BigNumber,
   ): ZeroXOrder {
     const market = markets[storedOrder.market];
     if (!market) {
@@ -194,13 +198,15 @@ export class ZeroXOrdersGetters {
     const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
     const amount = convertOnChainAmountToDisplayAmount(
       new BigNumber(storedOrder.amount),
-      tickSize
+      tickSize,
+      precision,
     ).toString(10);
     const amountFilled = convertOnChainAmountToDisplayAmount(
       new BigNumber(storedOrder.signedOrder.makerAssetAmount).minus(
         new BigNumber(storedOrder.amount)
       ),
-      tickSize
+      tickSize,
+      precision
     ).toString(10);
     const price = convertOnChainPriceToDisplayPrice(
       new BigNumber(storedOrder.price, 16),

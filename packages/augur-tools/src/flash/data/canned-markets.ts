@@ -26,7 +26,6 @@ import {
   Template,
   TEMPLATES,
 } from '@augurproject/templates';
-import { formatBytes32String } from 'ethers/utils';
 import moment from 'moment';
 import { buildExtraInfo, getFilledInputs, fillInQuestion, getLongDescription } from '../../libs/templates';
 import {
@@ -41,6 +40,7 @@ import {
   today,
 } from '../time';
 import { LIST_VALUES } from '../../templates-lists';
+import {ethers} from 'ethers';
 
 interface AskBid {
   shares: string;
@@ -102,7 +102,7 @@ function massageMarkets(markets: CannedMarket[]): CannedMarket[] {
   return markets.map(
     (market): CannedMarket => {
       if (market.outcomes) {
-        market.outcomes = market.outcomes.map(formatBytes32String);
+        market.outcomes = market.outcomes.map(ethers.utils.formatBytes32String);
       }
       return market;
     }

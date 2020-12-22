@@ -202,9 +202,12 @@ export async function doTradeTakerView(
     minPrice.multipliedBy(10 ** 18),
     maxPrice.multipliedBy(10 ** 18)
   );
+
+  const precision = new BigNumber(10**18);
   const quantity = convertDisplayAmountToOnChainAmount(
     new BigNumber(trade.quantity),
-    tickSize
+    tickSize,
+    precision
   );
 
   const onChainLongPrice = convertDisplayPriceToOnChainPrice(

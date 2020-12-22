@@ -1,7 +1,7 @@
 import { ACCOUNTS, defaultSeedPath, loadSeed } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
-import { formatBytes32String } from 'ethers/utils';
 import { makeProvider } from '../../libs';
+import { ethers } from 'ethers';
 
 let john: TestContractAPI;
 let mary: TestContractAPI;
@@ -32,9 +32,9 @@ test('market :: createYesNoMarket', async () => {
 
 test('market :: createCategoricalMarket', async () => {
   const market = await john.createReasonableMarket([
-    formatBytes32String('yay'),
-    formatBytes32String('nay'),
-    formatBytes32String('bay'),
+    ethers.utils.formatBytes32String('yay'),
+    ethers.utils.formatBytes32String('nay'),
+    ethers.utils.formatBytes32String('bay'),
   ]);
   await expect(market).toBeDefined();
 });

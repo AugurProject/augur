@@ -11,6 +11,8 @@ import {
   SCALAR,
   MIN_ORDER_LIFESPAN,
   INVALID_OUTCOME_ID,
+  WETH,
+  DEFAULT_PARA_TOKEN,
 } from 'modules/common/constants';
 import { CancelTextButton } from 'modules/common/buttons';
 // @ts-ignore
@@ -21,11 +23,11 @@ import {
   MarketData,
 } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
-import { formatDai, formatMarketShares } from 'utils/format-number';
+import { formatDai, formatEther, formatMarketShares } from 'utils/format-number';
 import { NUMBER_OF_SECONDS_IN_A_DAY } from 'utils/format-date';
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { loadMarketOrderBook } from 'modules/orders/helpers/load-market-orderbook';
-import { useAppStatusStore } from 'modules/app/store/app-status';
+import { AppStatus, useAppStatusStore } from 'modules/app/store/app-status';
 import {
   orderAndAssignCumulativeShares,
   calcOrderbookPercentages,
@@ -86,7 +88,10 @@ const OrderBookSide = ({
   usePercent,
 }: OrderBookSideProps) => {
   const { updateOrderProperties } = Trading.actions;
-  const side = useRef({ clientHeight: 0, scrollHeight: 0, scrollTop: 0 });
+  const { paraTokenName } = AppStatus.get();
+  const side = useRef({
+    current: { clientHeight: 0, scrollHeight: 0, scrollTop: 0 },
+  });
   const { hoveredSide, hoveredOrderIndex } = hoverState;
   const isAsks = type === ASKS;
   const isScalar = marketType === SCALAR;
@@ -177,7 +182,7 @@ const OrderBookSide = ({
                 useFull
               />
               {isScalar && !usePercent ? (
-                <HoverValueLabel value={formatDai(orderPrice)} />
+                <HoverValueLabel value={paraTokenName !== WETH ? formatDai(orderPrice) : formatEther(orderPrice)} />
               ) : (
                 <span>
                   {usePercent

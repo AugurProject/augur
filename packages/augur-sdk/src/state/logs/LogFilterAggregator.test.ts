@@ -2,9 +2,7 @@ import { Log, ParsedLog } from '@augurproject/types';
 import { Block } from 'ethereumjs-blockstream';
 import { toChecksumAddress } from 'ethereumjs-util';
 import {
-  LogFilterAggregator,
-  LogFilterAggregatorDepsInterface,
-  ExtendedFilter,
+  LogFilterAggregator
 } from './LogFilterAggregator';
 
 // this extends syntax handles nested "mockify" types.
@@ -16,7 +14,6 @@ type Mockify<T> = {
 };
 
 describe('LogFilterAggregator', () => {
-  let deps: Mockify<LogFilterAggregatorDepsInterface>;
   let logFilterAggregator: LogFilterAggregator;
 
   const CONTRACT_ADDRESSES = ['0xSOMEUNKNOWNADDRESS', '0xSOMEADDRESS'] as const;
@@ -95,21 +92,7 @@ describe('LogFilterAggregator', () => {
       }))
     );
 
-    deps = {
-      getEventTopics: jest.fn(),
-      parseLogs,
-    };
-
-    logFilterAggregator = new LogFilterAggregator(deps);
-
-    deps.getEventTopics.mockImplementation(eventName => {
-      return {
-        SomeTopicFromAnotherAddress: ['0xSOMETOPICFROMANOTHERADDRESS'],
-        SomeEvent: ['0xSOMETOPIC'],
-        SomeOtherEvent: ['0xSOMEOTHERTOPIC'],
-        SomeEventWithoutLogs: ['0xSOMETOPICWITHOUTLOGS'],
-      }[eventName];
-    });
+    logFilterAggregator = new LogFilterAggregator();
   });
 
   describe('onLogsAdded', () => {

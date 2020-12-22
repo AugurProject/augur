@@ -1,6 +1,6 @@
 {
   "name": "orbit-web",
-  "version": "2.0.0-alpha.2",
+  "version": "2.1.1",
   "description": "Orbit Chat",
   "main": "src/components/index.js",
   "scripts": {
@@ -10,8 +10,10 @@
     "lint:fix": "eslint --fix src/ test/",
     "start": "webpack-dev-server --mode=development",
     "test-server": "http-server ./dist -s -p 8088",
-    "test": "npm run lint && jest --runInBand"
+    "test": "npm run lint && jest --runInBand",
+    "prepare": "webpack --mode=production"
   },
+  "private": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/orbitdb/orbit-web.git"
@@ -92,6 +94,7 @@
     "react-hot-loader": "4.12.13",
     "sass-loader": "8.0.0",
     "style-loader": "1.0.0",
+    "typescript": "3.9.7",
     "url-loader": "2.1.0",
     "webpack": "4.40.2",
     "webpack-babel-env-deps": "1.5.0",

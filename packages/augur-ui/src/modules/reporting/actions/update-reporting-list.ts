@@ -7,6 +7,21 @@ import {
   loadUpcomingDesignatedReportingMarkets,
 } from 'modules/markets/actions/load-markets';
 import { Markets } from 'modules/markets/store/markets';
+import { LoadReportingMarketsOptions } from 'modules/types';
+
+export const UPDATE_REPORTING_LIST = 'UPDATE_REPORTING_LIST';
+
+export function updateReportingList(
+  reportingState: string,
+  marketIds: string[],
+  params: Partial<LoadReportingMarketsOptions>,
+  isLoading: boolean
+) {
+  return {
+    type: UPDATE_REPORTING_LIST,
+    data: { params, marketIds, reportingState, isLoading },
+  };
+}
 
 const loadPerReportingState = {
   disputing: {

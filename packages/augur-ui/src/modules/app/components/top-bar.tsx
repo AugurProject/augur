@@ -74,8 +74,11 @@ export const Stats = () => {
     restoredAccount,
     isMobile,
     loginAccount,
+    paraTokenName,
   } = useAppStatusStore();
-  const stats = getCoreStats(isLogged, loginAccount);
+
+  if (!paraTokenName) return null;
+  const stats = getCoreStats(isLogged, loginAccount, paraTokenName);
   if (!stats) return null;
   const { availableFunds, frozenFunds, totalFunds, realizedPL } = stats;
 
@@ -200,7 +203,7 @@ const TopBar = () => {
               text='Continue account setup'
               title='Continue account setup'
               action={() =>
-                handleShowOnboarding(currentOnboardingStep, setModal)
+                handleShowOnboarding(6, setModal) // TODO fix onboarding for para token, jump to approvals for now
               }
             />
           )}

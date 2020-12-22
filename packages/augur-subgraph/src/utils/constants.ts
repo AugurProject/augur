@@ -1,0 +1,26 @@
+import { BigDecimal, BigInt } from "@graphprotocol/graph-ts";
+
+export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+export const STATUS_TRADING = "TRADING";
+export const STATUS_REPORTING = "REPORTING";
+export const STATUS_DISPUTING = "DISPUTING";
+export const STATUS_FINALIZED = "FINALIZED";
+export const STATUS_SETTLED = "SETTLED";
+export let BIGINT_ZERO = BigInt.fromI32(0);
+export let BIGINT_ONE = BigInt.fromI32(1);
+export let BIGDECIMAL_ZERO = new BigDecimal(BIGINT_ZERO);
+export const REPUTATION_TOKEN = "REPUTATION_TOKEN";
+export const DISPUTE_CROWDSOURCER = "DISPUTE_CROWDSOURCER";
+export const PARTICIPATION_TOKEN = "PARTICIPATION_TOKEN";
+export const YES_NO = "YES_NO";
+export const CATEGORICAL = "CATEGORICAL";
+export const SCALAR = "SCALAR";
+let marketTypes = new Array<String>(3);
+marketTypes[0] = YES_NO;
+marketTypes[1] = CATEGORICAL;
+marketTypes[2] = SCALAR;
+let tokenTypes = new Array<String>(3);
+tokenTypes[0] = REPUTATION_TOKEN;
+tokenTypes[1] = DISPUTE_CROWDSOURCER;
+tokenTypes[2] = PARTICIPATION_TOKEN;
+export { tokenTypes, marketTypes };

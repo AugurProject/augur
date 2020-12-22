@@ -832,10 +832,10 @@ export const ReportingBondsView = ({
     buttonDisabled = true;
   }
   let insufficientFunds = false;
-  if (userFunds.lt(createBigNumber(getGasInDai(gasEstimate).value))) {
-    buttonDisabled = true;
-    insufficientFunds = true;
-  }
+  // if (userFunds.lt(createBigNumber(getGasInDai(gasEstimate).value))) {
+  //   buttonDisabled = true;
+  //   insufficientFunds = true;
+  // }
 
   let insufficientRep = '';
   if (!enoughRepBalance) {
@@ -965,7 +965,7 @@ export interface ReportingCardProps {
 }
 
 export const ReportingCard = ({ market }: ReportingCardProps) => {
-  if (!market) return null;
+  if (!Object.keys(market).length) return null;
   const {
     universe: { forkingInfo },
     actions: { setModal },
@@ -975,6 +975,7 @@ export const ReportingCard = ({ market }: ReportingCardProps) => {
   const isForking = forkingInfo;
   isLogged = isLogged && !forkingInfo;
 
+  console.log('???', market);
   const { id, reportingState, disputeInfo, endTimeFormatted } = market;
 
   const preReporting = reportingState === REPORTING_STATE.PRE_REPORTING;

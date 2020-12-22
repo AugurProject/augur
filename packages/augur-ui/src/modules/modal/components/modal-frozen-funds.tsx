@@ -3,12 +3,12 @@ import { augurSdk } from 'services/augursdk';
 import { SecondaryButton } from 'modules/common/buttons';
 import { Breakdown, Title } from 'modules/modal/common';
 import Styles from 'modules/modal/modal.styles.less';
-import { formatDai } from 'utils/format-number';
+import { formatDai, formatEther } from 'utils/format-number';
 import type { Getters } from '@augurproject/sdk';
 import { LinearPropertyLabel } from 'modules/common/labels';
 import MarketTitle from 'modules/market/components/common/market-title';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import { THEMES } from 'modules/common/constants';
+import { THEMES, WETH } from 'modules/common/constants';
 const FROZEN_FUNDS_KEYS = ['openOrders', 'positions', 'createdMarkets'];
 const TITLES = {
   [FROZEN_FUNDS_KEYS[0]]: `Open Orders`,
@@ -23,29 +23,33 @@ const TOTAL_TITLES = {
 };
 
 export const ModalFrozenFunds = () => {
-  const { theme, universe: { id: universe }, loginAccount: { address: account }, actions: { closeModal }} = useAppStatusStore();
+  const { paraTokenName, theme, universe: { id: universe }, loginAccount: { address: account }, actions: { closeModal }} = useAppStatusStore();
   const [breakdowns, setBreakdowns] = useState([]);
   const [total, setTotal] = useState(formatDai('0'));
   const isSportsTheme = theme === THEMES.SPORTS;
-
+  const formatToken = (value) => {
+    if (paraTokenName !== WETH) {
+      return formatDai(value);
+    }
+    return formatEther(value);
+  }
   async function getBreakdown() {
     try {
       const breakdown: Getters.Users.FrozenFundsBreakdown = await (async () => {
         const Augur = augurSdk.get();
         return await Augur.getUserFrozenFundsBreakdown({ universe, account });
       })();
-      // const breakdown: Getters.Users.FrozenFundsBreakdown = await getUserFrozenFundsBreakdown();
-      setTotal(formatDai(breakdown.total));
+      setTotal(formatToken(breakdown.total));
       if (breakdown.total === '0') return;
       const updateBreakdowns = FROZEN_FUNDS_KEYS.reduce((p, key) => {
         if (breakdown[key].total === '0') return p;
-        const total = breakdown[key] ? formatDai(breakdown[key].total) : null;
+        const total = breakdown[key] ? formatToken(breakdown[key].total) : null;
         const rows = Object.keys(breakdown[key].markets).map(marketId => ({
           key: `${marketId}${key}`,
           marketId: marketId,
           showDenomination: true,
           label: `Frozen Funds`,
-          value: formatDai(breakdown[key].markets[marketId]),
+          value: formatToken(breakdown[key].markets[marketId]),
           regularCase: true,
           secondary: true,
         }));

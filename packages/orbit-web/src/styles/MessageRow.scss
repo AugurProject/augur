@@ -13,7 +13,7 @@
 
 .Message {
   display: grid;
-  grid-template-columns: 3rem calc(100% - 3rem); // 48px
+  grid-template-columns: 54px calc(100% - 54px);
   grid-template-rows: auto auto;
   padding-bottom: 1em;
   font-size: 0.625rem; // 10px
@@ -22,16 +22,16 @@
     align-self: flex-end;
     grid-column: 1;
     grid-row: 1;
-    color: var(--orbit-color-secondary-text);
-    font-family: 'Inter', sans-serif;
+    color: $orbit-color-secondary-text;
+    font-family: 'Roboto Mono', sans-serif;
     font-size: 0.5625rem; // 9px
   }
 
   &__Content {
-    color: var(--orbit-color-primary-text);
+    color: $orbit-color-primary-text;
     grid-column: 1 / span 2;
     grid-row: 2;
-    margin: 0.25em 0;
+    margin: 0.25em 0.5em 0;
     line-height: 1.5;
   }
 
@@ -54,8 +54,8 @@
     grid-column: 2;
     grid-row: 1;
     color: rgba(255, 255, 255, 0.95);
-    font-family: 'Inter', sans-serif;
-    font-size: 0.75rem; // 12px
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.6875rem; // 11px
     font-weight: 700;
     user-select: none;
   }
@@ -72,7 +72,7 @@
     align-items: center;
     font-weight: bold;
     font-size: 1.25em;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Roboto', sans-serif;
     color: rgb(95, 95, 95);
 
     // background-image: url('../images/earth.png') cover;
@@ -85,9 +85,14 @@
   .Message {
     padding-bottom: 1em;
 
+    &__User {
+      margin-left: 0.5em;
+    }
+
     &__Timestamp {
+      border-right: 1px solid $orbit-color-secondary-text;
       font-style: normal;
-      font-weight: 600;
+      padding: 0 0.5em;
     }
   }
 }
@@ -114,7 +119,7 @@
     &__Timestamp {
       border: none;
       font-style: italic;
-      padding: 0 0.5em 0 0; // 8px
+      padding: 0 0.5em;
     }
   }
 }
@@ -128,7 +133,7 @@
 
 .font-monospace {
   .Message {
-    font-family: 'Inter';
+    font-family: 'Roboto Mono';
     // font-size: .9em;
     font-weight: normal;
   }
