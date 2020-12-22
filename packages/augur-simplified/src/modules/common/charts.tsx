@@ -348,7 +348,21 @@ const getOptions = ({
     gridLineColor: null,
     labels: false,
   },
-  tooltip: { enabled: true, shape: 'square', shared: true, split: false },
+  tooltip: { 
+    enabled: true,
+    shape: 'square',
+    shared: true,
+    split: false,
+    useHTML: true,
+    formatter() {
+      let out = `<h5>${Highcharts.dateFormat('%b %e %k:%M %p', this.x)}</h5><ul>`;
+      this.points.forEach(point => {
+        out += `<li><span style="color:${point.color}">&#9679;</span><b>${point.series.name}</b><span>${formatDai(createBigNumber(point.y)).full}</span></li>`;
+      });
+      out += '</ul>';
+      return out;
+    }
+  },
   rangeSelector: {
     enabled: false,
   },
