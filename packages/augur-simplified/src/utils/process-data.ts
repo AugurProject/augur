@@ -136,7 +136,8 @@ const shapeMarketInfo = (market: GraphMarket, ammExchange: AmmExchange): MarketI
     categories: extraInfo?.categories || [],
     endTimestamp: market.endTimestamp,
     outcomes: shapeOutcomes(market.outcomes),
-    ammExchange: ammExchange
+    ammExchange: ammExchange,
+    reportingState: market.status
   }
 }
 
