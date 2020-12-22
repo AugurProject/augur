@@ -36,6 +36,28 @@ import { useAppStatusStore } from 'modules/stores/app-status';
 
 const PAGE_LIMIT = 20;
 
+const LoadingMarketCard = () => {
+  return (
+    <article className={Styles.LoadingMarketCard}>
+      <div>
+        <div/>
+        <div/>
+        <div/>
+      </div>
+      <div>
+        <div/>
+        <div/>
+        <div/>
+      </div>
+      <div>
+        <div/>
+        <div/>
+        <div/>
+      </div>
+    </article>
+  );
+}
+
 const OutcomesTable = ({ outcomes, marketId, priceNo, priceYes }) => {
   return (
     <div className={Styles.OutcomesTable}>
@@ -159,9 +181,11 @@ const MarketsView = () => {
   } = useAppStatusStore();
   const { sortBy, categories, reportingState, currency } = marketsViewSettings;
   const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(true);
   const [filteredMarkets, setFilteredMarkets] = useState([]);
 
   useEffect(() => {
+    if (Object.values(markets).length > 0) setLoading(false);
     setPage(1);
     applyFiltersAndSort(Object.values(markets), setFilteredMarkets, {
       categories,
@@ -169,13 +193,7 @@ const MarketsView = () => {
       currency,
       reportingState,
     });
-  }, [
-    sortBy,
-    categories,
-    reportingState,
-    currency,
-    markets
-  ]);
+  }, [sortBy, categories, reportingState, currency, markets]);
 
   return (
     <div className={Styles.MarketsView}>
@@ -218,11 +236,16 @@ const MarketsView = () => {
         />
       </ul>
       <section>
-        {filteredMarkets
-          .slice(getOffset(page), getOffset(page) + PAGE_LIMIT)
-          .map((market, index) => (
-            <MarketCard key={`${market.marketId}-${index}`} market={market} />
-          ))}
+        {loading &&
+          new Array(PAGE_LIMIT)
+            .fill(null)
+            .map((m, index) => <LoadingMarketCard key={index} />)}
+        {!loading &&
+          filteredMarkets
+            .slice(getOffset(page), getOffset(page) + PAGE_LIMIT)
+            .map((market, index) => (
+              <MarketCard key={`${market.marketId}-${index}`} market={market} />
+            ))}
       </section>
       <Pagination
         page={page}
