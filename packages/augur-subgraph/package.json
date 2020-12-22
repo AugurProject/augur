@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/subgraph",
-  "version": "0.2.0",
+  "version": "2.2.0",
   "private": true,
   "scripts": {
     "prepare:abi:Augur": "node ../augur-tools/build/flash/cli.js abi -c Augur > abis/Augur.json",
