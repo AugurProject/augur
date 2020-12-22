@@ -7,10 +7,9 @@ import classNames from 'classnames';
 import { formatDai, formatPercent } from 'utils/format-number';
 import { Checkbox } from 'modules/common/icons';
 import { SmallRoundedButton } from './buttons';
-import { useAppStatusStore } from 'modules/stores/app-status';
 
 const HIGHLIGHTED_LINE_WIDTH = 2;
-const NORMAL_LINE_WIDTH = 1;
+const NORMAL_LINE_WIDTH = 2;
 const DEFAULT_SELECTED_ID = 2;
 const FIFTEEN_MIN_MS = 900000;
 const ONE_HOUR_MS = 3600 * 1000;
@@ -120,10 +119,11 @@ export const PriceHistoryChart = ({
       const chart: HighcartsChart = Highcharts.charts.find(
         (chart: HighcartsChart) => chart?.renderTo === chartContainer
       );
+      const formattedOutcomes = getFormattedOutcomes({ market });
       const series =
         priceTimeArray.length === 0
           ? []
-          : handleSeries(priceTimeArray, selectedOutcomes);
+          : handleSeries(priceTimeArray, selectedOutcomes, formattedOutcomes);
       if (!chart || chart?.renderTo !== chartContainer) {
         // @ts-ignore
         Highcharts.stockChart(chartContainer, { ...options, series });
@@ -181,10 +181,7 @@ export const SelectOutcomeButton = ({
 };
 
 export const SimpleChartSection = ({ market }) => {
-  const {
-    graphData: { paraShareTokens },
-  } = useAppStatusStore();
-  const formattedOutcomes = getFormattedOutcomes({ market, paraShareTokens });
+  const formattedOutcomes = getFormattedOutcomes({ market });
   // eslint-disable-next-line
   const [selectedOutcomes, setSelectedOutcomes] = useState(
     formattedOutcomes.map(({ outcomeIdx }) =>
@@ -235,6 +232,7 @@ export default SimpleChartSection;
 const handleSeries = (
   priceTimeArray,
   selectedOutcomes,
+  formattedOutcomes,
   mostRecentTradetime = 0
 ) => {
   const series = [];
@@ -252,12 +250,29 @@ const handleSeries = (
       createBigNumber(pts.price).toNumber(),
     ]);
     const baseSeriesOptions = {
+      name: formattedOutcomes[index].label,
       type: isSelected ? 'area' : 'line',
       lineWidth: isSelected ? HIGHLIGHTED_LINE_WIDTH : NORMAL_LINE_WIDTH,
+      states: { 
+        hover: {
+          lineWidth: isSelected ? HIGHLIGHTED_LINE_WIDTH : NORMAL_LINE_WIDTH,
+        }
+      },
       color: SERIES_COLORS[index],
       fillColor: {
         linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 },
         stops: SERIES_GRADIENTS[index],
+      },
+      marker: {
+        enabled: false,
+        symbol: 'circle',
+        states: {
+          hover: {
+            enabled: true,
+            symbol: 'circle',
+            radius: 4,
+          }
+        }
       },
       // @ts-ignore
       data,
@@ -313,11 +328,6 @@ const getOptions = ({
         // units: [['minute', [1]]],
       },
     },
-    series: {
-      marker: {
-        enabled: false,
-      },
-    },
   },
   scrollbar: { enabled: false },
   navigator: { enabled: false },
@@ -346,7 +356,6 @@ const getOptions = ({
 
 export const getFormattedOutcomes = ({
   market: { amms, outcomes },
-  paraShareTokens,
 }) => {
   let formattedOutcomes = outcomes.map((outcome, outcomeIdx) => ({
     ...outcome,
