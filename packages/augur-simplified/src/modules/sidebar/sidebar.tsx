@@ -9,8 +9,7 @@ import Logo from 'modules/common/logo';
 import classNames from 'classnames';
 import makePath from 'modules/routes/helpers/make-path';
 import parsePath from 'modules/routes/helpers/parse-path';
-import { Link } from 'react-router-dom';
-import { useLocation } from 'react-router';
+import { Link, useLocation } from 'react-router-dom';
 
 const categoryItems = [
   {
