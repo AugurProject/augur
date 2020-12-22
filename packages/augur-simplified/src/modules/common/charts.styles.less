@@ -15,20 +15,6 @@
         font-size: @size-16;
       }
 
-      .highcharts-label-box {
-        fill: var(--color-module-background);
-        font-weight: bold;
-
-        > text > tspan:last-child {
-          font-size: @size-12;
-        }
-      }
-
-      .highcharts-crosshair-label.highcharts-crosshair-label
-        > .highcharts-label-box {
-        stroke: var(--color-primary-text);
-      }
-
       .highcharts-crosshair-label {
         background-color: var(--color-module-background);
         border-radius: @size-5;
@@ -77,16 +63,28 @@
       }
 
       .highcharts-crosshair {
-        .dashline-long;
+        stroke: var(--simple-chart-color);
 
-        stroke: var(--simple-primary-text);
+        opacity: 1;
+      }
+
+      .highcharts-label-box {
+        border: @size-1 solid var(--simple-border);
+        border-radius: @size-8;
+        fill: var(--simple-light-bg-50);
+        stroke: var(--simple-primary-text)
+      }
+
+      .highcharts-crosshair-label.highcharts-crosshair-label
+        > .highcharts-label-box {
+        stroke: var(--color-primary-text);
       }
 
       .highcharts-halo,
       path.highcharts-point,
       .highcharts-tracker > path {
-        fill: var(--simple-primary-text);
-        stroke: var(--simple-primary-text);
+        fill: none;
+        stroke: none;
       }
 
       // --- mulitple line styling

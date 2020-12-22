@@ -48,6 +48,13 @@ const RANGE_OPTIONS = [
   },
 ];
 
+const SERIES_COLORS = ['#58586B', '#FF7D5E', '#05B169'];
+const SERIES_GRADIENTS = [
+  [[0, 'rgba(88, 88, 107, .15)'], [1, 'rgba(88, 88, 107, 0)']],
+  [[0, 'rgba(255, 125, 94, .15)'], [1, 'rgba(255, 125, 94, 0)']],
+  [[0, 'rgba(5, 177, 105, .15)'], [1, 'rgba(5, 177, 105, 0)']],
+];
+
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
@@ -247,18 +254,10 @@ const handleSeries = (
     const baseSeriesOptions = {
       type: isSelected ? 'area' : 'line',
       lineWidth: isSelected ? HIGHLIGHTED_LINE_WIDTH : NORMAL_LINE_WIDTH,
-      marker: {
-        symbol: 'cicle',
-      },
+      color: SERIES_COLORS[index],
       fillColor: {
         linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 },
-        stops: [
-          [
-            0,
-            index === 2 ? 'rgba(5, 177, 105, 0.15)' : 'rgba(255, 125, 94, 0.15)',
-          ], // start
-          [1, '#F6F7F8'], // end
-        ],
+        stops: SERIES_GRADIENTS[index],
       },
       // @ts-ignore
       data,
@@ -324,48 +323,22 @@ const getOptions = ({
   navigator: { enabled: false },
   xAxis: {
     ordinal: false,
-    showFirstLabel: false,
-    showLastLabel: false,
     tickLength: 0,
     gridLineWidth: 0,
     gridLineColor: null,
     lineWidth: 0,
     labels: false,
-    crosshair: {
-      snap: true,
-      label: {
-        enabled: true,
-        shape: 'square',
-        padding: 4,
-        format: '{value:%b %d %l:%M %p}',
-      },
-    },
   },
   yAxis: {
     showEmpty: true,
     opposite: false,
     max: maxPrice.toFixed(2),
     min: minPrice.toFixed(2),
-    showFirstLabel: true,
-    showLastLabel: true,
     gridLineWidth: 0,
     gridLineColor: null,
-    offset: 2,
     labels: false,
-    crosshair: {
-      snap: true,
-      label: {
-        padding: 4,
-        enabled: true,
-        style: {},
-        borderRadius: 5,
-        shape: 'square',
-        // eslint-disable-next-line
-        format: '${value:.2f}',
-      },
-    },
   },
-  tooltip: { enabled: false },
+  tooltip: { enabled: true, shape: 'square', shared: true, split: false },
   rangeSelector: {
     enabled: false,
   },
