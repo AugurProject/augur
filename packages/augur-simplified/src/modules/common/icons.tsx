@@ -211,32 +211,32 @@ export const EntertainmentIcon = (
     <path
       d="M17.5 5.8335H2.5L4.16667 19.1668H15.8333L17.5 5.8335Z"
       stroke="#218380"
-      stroke-width="1.5"
-      stroke-miterlimit="10"
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
     />
     <path
       d="M15.8327 4.16668C15.8327 3.50364 15.5693 2.86776 15.1005 2.39892C14.6316 1.93007 13.9957 1.66668 13.3327 1.66668C12.9022 1.66925 12.4798 1.78415 12.1073 2.00002C11.8835 1.6429 11.5727 1.34849 11.204 1.1444C10.8353 0.940318 10.4208 0.833252 9.99935 0.833252C9.57793 0.833252 9.16341 0.940318 8.79471 1.1444C8.426 1.34849 8.11519 1.6429 7.89143 2.00002C7.51893 1.78415 7.09654 1.66925 6.66602 1.66668C6.00297 1.66668 5.36709 1.93007 4.89825 2.39892C4.42941 2.86776 4.16602 3.50364 4.16602 4.16668"
       stroke="#218380"
-      stroke-width="1.5"
-      stroke-miterlimit="10"
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
     />
     <path
       d="M7.08333 19.1668L6.25 5.8335"
       stroke="#218380"
-      stroke-width="1.5"
-      stroke-miterlimit="10"
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
     />
     <path
       d="M12.916 19.1668L13.7493 5.8335"
       stroke="#218380"
-      stroke-width="1.5"
-      stroke-miterlimit="10"
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
     />
     <path
       d="M10 5.8335V19.1668"
       stroke="#218380"
-      stroke-width="1.5"
-      stroke-miterlimit="10"
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
     />
   </svg>
 );
@@ -395,7 +395,7 @@ export const CloseIcon = (
 
 export const RadioButton = (
   <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-    <circle cx="10" cy="10" r="9" stroke="#DBE1E7" stroke-width="2" />
+    <circle cx="10" cy="10" r="9" stroke="#DBE1E7" strokeWidth="2" />
   </svg>
 );
 
@@ -421,7 +421,7 @@ export const EmptyCheckbox = (
       height="18"
       rx="2"
       stroke="#DBE1E7"
-      stroke-width="2"
+      strokeWidth="2"
     />
   </svg>
 );
@@ -430,8 +430,8 @@ export const FilledCheckbox = (
   <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
     <rect width="20" height="20" rx="3" fill="#15171A" />
     <path
-      fill-rule="evenodd"
-      clip-rule="evenodd"
+      fillRule="evenodd"
+      clipRule="evenodd"
       d="M15.5886 6.07733C15.914 6.40277 15.914 6.9304 15.5886 7.25584L8.92194 13.9225C8.5965 14.2479 8.06886 14.2479 7.74343 13.9225L4.41009 10.5892C4.08466 10.2637 4.08466 9.7361 4.41009 9.41066C4.73553 9.08523 5.26317 9.08523 5.5886 9.41066L8.33268 12.1547L14.4101 6.07733C14.7355 5.75189 15.2632 5.75189 15.5886 6.07733Z"
       fill="white"
     />
