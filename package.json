@@ -79,10 +79,10 @@
       "@augurproject/subgraph/@graphprotocol/graph-ts",
       "@augurproject/subgraph-base/@graphprotocol/graph-ts",
       "@augurproject/amm-ui/**",
+      "@augurproject/simplified/**/",
       "**/webpack",
       "**/eslint*",
-      "**/react*",
-      "@augurproject/simplified/**"
+      "**/jest"
     ]
   },
   "resolutions": {
