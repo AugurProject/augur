@@ -13,8 +13,7 @@ title: 'Summary'
 
 ## Architecture
 * [Contracts Overview](contracts/overview.md)
-* [Middleware Overview](architecture/middlewareOverview.md)
-* [UI Overview](architecture/uiOverview.md)
+* [Layer 2](architecture/layer2.md)
 
 ## API
 

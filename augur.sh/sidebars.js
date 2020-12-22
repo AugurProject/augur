@@ -24,9 +24,8 @@ module.exports = {
       type: 'category',
       label: 'Architecture',
       items: [
-        'architecture/contractOverview',
-        'architecture/middlewareOverview',
-        'architecture/uiOverview'
+        'contracts/overview',
+        'architecture/layer'
       ],
     },
     {
