@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import Styles from 'modules/common/top-nav.styles.less';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { MARKETS, PORTFOLIO, SIDEBAR_TYPES } from 'modules/constants';
 import makePath from 'modules/routes/helpers/make-path';
 import Logo from 'modules/common/logo';

@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Styles from 'modules/sidebar/sidebar.styles.less';
 import { CloseIcon, GearIcon } from 'modules/common/icons';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
-import { CheckboxGroup, RadioBarGroup } from 'modules/common/selection';
+import { RadioBarGroup } from 'modules/common/selection';
 import { MARKETS, PORTFOLIO, SIDEBAR_TYPES } from 'modules/constants';
 import Logo from 'modules/common/logo';
 import classNames from 'classnames';
@@ -95,6 +95,14 @@ const currencyItems = [
   },
 ];
 
+import {
+  categoryItems,
+  currencyItems,
+  marketStatusItems,
+  sortByItems,
+} from 'modules/constants';
+
+
 interface SideBarHeaderProps {
   header?: string;
   showLogo?: boolean;
@@ -113,18 +121,72 @@ const SideBarHeader = ({ header, showLogo }: SideBarHeaderProps) => {
 };
 
 const FilterSideBar = () => {
+  const {
+    marketsViewSettings,
+    actions: { updateMarketsViewSettings },
+  } = useAppStatusStore();
+  const { categories, sortBy, reportingState, currency } = marketsViewSettings;
+  const [localSettings, setLocalSettings] = useState({
+    categories,
+    sortBy,
+    reportingState,
+    currency,
+  });
   return (
     <>
       <SideBarHeader header={'filters'} />
       <div className={Styles.Body}>
-        <CheckboxGroup title="categories" items={categoryItems} />
-        <RadioBarGroup title="sort by" items={sortByItems} />
-        <CheckboxGroup title="market status" items={marketStatusItems} />
-        <CheckboxGroup title="currency" items={currencyItems} />
+        <RadioBarGroup
+          update={(value) => {
+            setLocalSettings({ ...localSettings, categories: value });
+          }}
+          title="categories"
+          selected={localSettings.categories}
+          items={categoryItems}
+        />
+        <RadioBarGroup
+          update={(value) => {
+            setLocalSettings({ ...localSettings, sortBy: value });
+          }}
+          title="sort by"
+          selected={localSettings.sortBy}
+          items={sortByItems}
+        />
+        <RadioBarGroup
+          title="market status"
+          update={(value) => {
+            setLocalSettings({ ...localSettings, reportingState: value });
+          }}
+          selected={localSettings.reportingState}
+          items={marketStatusItems}
+        />
+        <RadioBarGroup
+          title="currency"
+          update={(value) => {
+            setLocalSettings({ ...localSettings, currency: value });
+          }}
+          selected={localSettings.currency}
+          items={currencyItems}
+        />
       </div>
       <div className={Styles.Footer}>
-        <PrimaryButton text="reset all" />
-        <SecondaryButton text="apply filters" />
+        <PrimaryButton
+          text="reset all"
+          action={() => {
+            setLocalSettings({ categories, sortBy, reportingState, currency });
+          }}
+        />
+        <SecondaryButton
+          text="apply filters"
+          action={() => {
+            updateMarketsViewSettings({
+              categories: localSettings.categories,
+              sortBy: localSettings.sortBy,
+              reportingState: localSettings.reportingState,
+              currency: localSettings.currency,
+            });
+          }}
+        />
       </div>
     </>
   );

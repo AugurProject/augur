@@ -7,10 +7,9 @@ import classNames from 'classnames';
 import { formatDai, formatPercent } from 'utils/format-number';
 import { Checkbox } from 'modules/common/icons';
 import { SmallRoundedButton } from './buttons';
-import { useAppStatusStore } from 'modules/stores/app-status';
 
 const HIGHLIGHTED_LINE_WIDTH = 2;
-const NORMAL_LINE_WIDTH = 1;
+const NORMAL_LINE_WIDTH = 2;
 const DEFAULT_SELECTED_ID = 2;
 const FIFTEEN_MIN_MS = 900000;
 const ONE_HOUR_MS = 3600 * 1000;
@@ -46,6 +45,13 @@ const RANGE_OPTIONS = [
     tick: ONE_DAY_MS,
     startTime: END_TIME - ONE_MONTH_MS * 6,
   },
+];
+
+const SERIES_COLORS = ['#58586B', '#FF7D5E', '#05B169'];
+const SERIES_GRADIENTS = [
+  [[0, 'rgba(88, 88, 107, .15)'], [1, 'rgba(88, 88, 107, 0)']],
+  [[0, 'rgba(255, 125, 94, .15)'], [1, 'rgba(255, 125, 94, 0)']],
+  [[0, 'rgba(5, 177, 105, .15)'], [1, 'rgba(5, 177, 105, 0)']],
 ];
 
 function getRandomInt(max) {
@@ -113,10 +119,11 @@ export const PriceHistoryChart = ({
       const chart: HighcartsChart = Highcharts.charts.find(
         (chart: HighcartsChart) => chart?.renderTo === chartContainer
       );
+      const formattedOutcomes = getFormattedOutcomes({ market });
       const series =
         priceTimeArray.length === 0
           ? []
-          : handleSeries(priceTimeArray, selectedOutcomes);
+          : handleSeries(priceTimeArray, selectedOutcomes, formattedOutcomes);
       if (!chart || chart?.renderTo !== chartContainer) {
         // @ts-ignore
         Highcharts.stockChart(chartContainer, { ...options, series });
@@ -174,10 +181,7 @@ export const SelectOutcomeButton = ({
 };
 
 export const SimpleChartSection = ({ market }) => {
-  const {
-    graphData: { paraShareTokens },
-  } = useAppStatusStore();
-  const formattedOutcomes = getFormattedOutcomes({ market, paraShareTokens });
+  const formattedOutcomes = getFormattedOutcomes({ market });
   // eslint-disable-next-line
   const [selectedOutcomes, setSelectedOutcomes] = useState(
     formattedOutcomes.map(({ outcomeIdx }) =>
@@ -228,6 +232,7 @@ export default SimpleChartSection;
 const handleSeries = (
   priceTimeArray,
   selectedOutcomes,
+  formattedOutcomes,
   mostRecentTradetime = 0
 ) => {
   const series = [];
@@ -245,20 +250,29 @@ const handleSeries = (
       createBigNumber(pts.price).toNumber(),
     ]);
     const baseSeriesOptions = {
+      name: formattedOutcomes[index].label,
       type: isSelected ? 'area' : 'line',
       lineWidth: isSelected ? HIGHLIGHTED_LINE_WIDTH : NORMAL_LINE_WIDTH,
-      marker: {
-        symbol: 'cicle',
+      states: { 
+        hover: {
+          lineWidth: isSelected ? HIGHLIGHTED_LINE_WIDTH : NORMAL_LINE_WIDTH,
+        }
       },
+      color: SERIES_COLORS[index],
       fillColor: {
         linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 },
-        stops: [
-          [
-            0,
-            index === 2 ? 'rgba(5, 177, 105, 0.15)' : 'rgba(255, 125, 94, 0.15)',
-          ], // start
-          [1, '#F6F7F8'], // end
-        ],
+        stops: SERIES_GRADIENTS[index],
+      },
+      marker: {
+        enabled: false,
+        symbol: 'circle',
+        states: {
+          hover: {
+            enabled: true,
+            symbol: 'circle',
+            radius: 4,
+          }
+        }
       },
       // @ts-ignore
       data,
@@ -314,58 +328,41 @@ const getOptions = ({
         // units: [['minute', [1]]],
       },
     },
-    series: {
-      marker: {
-        enabled: false,
-      },
-    },
   },
   scrollbar: { enabled: false },
   navigator: { enabled: false },
   xAxis: {
     ordinal: false,
-    showFirstLabel: false,
-    showLastLabel: false,
     tickLength: 0,
     gridLineWidth: 0,
     gridLineColor: null,
     lineWidth: 0,
     labels: false,
-    crosshair: {
-      snap: true,
-      label: {
-        enabled: true,
-        shape: 'square',
-        padding: 4,
-        format: '{value:%b %d %l:%M %p}',
-      },
-    },
   },
   yAxis: {
     showEmpty: true,
     opposite: false,
     max: maxPrice.toFixed(2),
     min: minPrice.toFixed(2),
-    showFirstLabel: true,
-    showLastLabel: true,
     gridLineWidth: 0,
     gridLineColor: null,
-    offset: 2,
     labels: false,
-    crosshair: {
-      snap: true,
-      label: {
-        padding: 4,
-        enabled: true,
-        style: {},
-        borderRadius: 5,
-        shape: 'square',
-        // eslint-disable-next-line
-        format: '${value:.2f}',
-      },
-    },
   },
-  tooltip: { enabled: false },
+  tooltip: { 
+    enabled: true,
+    shape: 'square',
+    shared: true,
+    split: false,
+    useHTML: true,
+    formatter() {
+      let out = `<h5>${Highcharts.dateFormat('%b %e %k:%M %p', this.x)}</h5><ul>`;
+      this.points.forEach(point => {
+        out += `<li><span style="color:${point.color}">&#9679;</span><b>${point.series.name}</b><span>${formatDai(createBigNumber(point.y)).full}</span></li>`;
+      });
+      out += '</ul>';
+      return out;
+    }
+  },
   rangeSelector: {
     enabled: false,
   },
@@ -373,7 +370,6 @@ const getOptions = ({
 
 export const getFormattedOutcomes = ({
   market: { amms, outcomes },
-  paraShareTokens,
 }) => {
   let formattedOutcomes = outcomes.map((outcome, outcomeIdx) => ({
     ...outcome,

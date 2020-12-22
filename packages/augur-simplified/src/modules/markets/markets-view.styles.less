@@ -55,7 +55,8 @@
     display: grid;
     grid-template-columns: @size-50 auto 1fr;
     padding: @size-24;
-
+    grid-template-rows: @size-30 auto auto auto;
+    
     > div:first-of-type {
       display: flex;
       margin-right: @size-6;
@@ -177,5 +178,74 @@
   .OutcomesTable {
     grid-row: 3;
     grid-column: 1 / span 3;
+  }
+}
+
+.LoadingMarketCard {
+  .SimpleBorder;
+
+  background-color: var(--simple-light-bg);
+  padding: @size-24;
+  max-width: 405px;
+  max-height: 279px;
+
+  > div {
+    display: grid;
+
+    > div {
+      background-color: var(--simple-alternate-background);
+      border-radius: @size-8;
+    }
+
+    &:nth-of-type(1) {
+     grid-template-columns: @size-40 75px auto;
+     display: grid;
+     grid-template-rows: @size-32;
+     grid-gap: @size-8;
+     margin-bottom: @size-20;
+
+      > div:last-of-type {
+        width: @size-20;
+        height: @size-20;
+        margin-left: auto;
+        border-radius: @size-100;
+        margin-top: auto;
+        margin-bottom: auto;
+      }
+    }
+
+    &:nth-of-type(2) {
+      grid-template-columns: 1fr;
+      grid-template-rows: repeat(3, @size-16);
+      grid-gap: @size-4;
+      margin-bottom: @size-45;
+
+      > div:last-of-type {
+        max-width: 161px;
+      }
+    }
+
+    &:nth-of-type(3) {
+      grid-template-columns: 1fr 250px;
+      grid-template-rows: @size-46 repeat(2, @size-16);
+      display: grid;
+      grid-column-gap: @size-32;
+      grid-row-gap: @size-4;
+
+      > div:last-of-type {
+        grid-column: 2;
+        grid-row: 1 / span 3;
+      }
+
+      > div:nth-of-type(2) {
+        grid-column: 1;
+        grid-row: 3;
+      }
+
+      > div:first-of-type {
+        grid-row: 2;
+        width: @size-40;
+      }
+    }
   }
 }

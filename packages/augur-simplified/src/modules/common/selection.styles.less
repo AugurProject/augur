@@ -47,48 +47,48 @@
 
   // div wrapper for hover state when margin-top is not zero.
   > div {
+    .HoverDropShadow;
+
     min-width: 100%;
     max-height: 256px;
     overflow-y: auto;
     position: absolute;
     top: 106%;
-    z-index: @mask;
+    z-index: @default-above;
+    border-radius: @size-8;
+    cursor: pointer;
 
     > div:first-of-type {
-      background-color: var(--color-secondary-action);
-      border: @size-1 solid var(--color-secondary-action-outline);
-      border-radius: @border-radius-default;
-      box-shadow: 0 @size-8 @size-8 var(--color-dark-grey);
+      background-color: var(--simple-light-bg);
       display: none;
       margin-top: @size-2;
+      border-radius: @size-8;
+      overflow-x: hidden;
 
       &.active {
         display: block;
       }
 
       > button {
-        color: var(--color-primary-text);
-        background-color: var(--color-secondary-action);
+        .text-16-semi-bold;
+
+        color: var(--simple-secondary-text);
+        background-color: var(--simple-light-bg);
         position: relative;
         text-align: left;
-        transition: background-color 0.15s ease;
         white-space: nowrap;
         width: 100%;
+        border: 0;
+        margin: @size-16 @size-24;
+        padding: 0;
+        text-transform: capitalize;
 
-        &.invalidColor {
-          color: var(--color-outcome-invalid);
+        &:focus {
+          outline: 0;
         }
 
-        &:hover {
-          background-color: var(--color-secondary-action-outline);
-        }
-
-        &:not(:last-of-type)::before {
-          background: var(--color-secondary-action-outline-50);
-          bottom: 0;
-          content: '';
-          height: @size-1;
-          position: absolute;
+        &.Selected {
+          color: var(--simple-primary-text);
         }
       }
     }
@@ -153,24 +153,9 @@
   }
 
   > div {
-    > div:first-of-type {
-      margin-top: @size-4;
-    }
 
     > div {
       width: 100%;
-    }
-
-    > div > button {
-      .text-12-medium;
-
-      padding: 0 @size-12;
-      height: @size-32;
-
-      &::before {
-        left: @size-12;
-        right: @size-12;
-      }
     }
   }
 }
@@ -211,43 +196,22 @@
     }
 
     &:hover {
-      background: var(--simple-alternate-background);
+      border: @size-1 solid var(--simple-secondary-text);
     }
   }
 
   > div {
     width: fit-content;
 
-    > div:first-of-type {
-      margin: @size-2 auto;
-    }
-
     > div {
       width: 100%;
-    }
-
-    > div > button {
-      .text-10-semi-bold;
-
-      padding: 0 @size-8;
-      height: @size-24;
-      text-transform: uppercase;
-
-      > svg {
-        display: none;
-      }
-
-      &::before {
-        left: @size-8;
-        right: @size-8;
-      }
     }
   }
 }
 
 .isOpen {
   > button {
-    background: var(--color-secondary-hover);
+    border: @size-1 solid var(--simple-secondary-text);
 
     // arrow
     > svg {
@@ -353,7 +317,7 @@
       color: var(--color-secondary-text);
       height: 100%;
       padding: @size-4 @size-16;
-      text-transform: uppercase;
+      text-transform: capitalize;
 
       > span {
         .text-9;
@@ -438,7 +402,7 @@
       background: var(--color-page-background);
       padding: 0px @size-24;
       border-radius: 0;
-      text-transform: uppercase;
+      text-transform: capitalize;
     }
 
     &.Selected,
@@ -634,7 +598,7 @@
   top: 36px;
   user-select: none;
   width: 189px;
-  z-index: @above-all-content;
+  z-index: @default-above;
   outline: none;
 
   > div {
