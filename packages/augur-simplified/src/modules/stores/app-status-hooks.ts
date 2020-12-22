@@ -6,6 +6,7 @@ import {
   // DEFAULT_APP_STATUS_STATE,
 } from 'modules/stores/constants';
 import { windowRef } from 'utils/window-ref';
+import { getUserActvity } from 'utils/process-data';
 
 const {
   SET_SHOW_TRADING_FORM,
@@ -24,6 +25,7 @@ const {
   PROCESSED,
   LOGIN_ACCOUNT,
   MARKETS_VIEW_SETTINGS,
+  USER_INFO,
 } = APP_STATE_KEYS;
 
 const isAsync = (obj) => {
@@ -63,11 +65,14 @@ export const dispatchMiddleware = (dispatch) => (action) =>
 export const keyedObjToArray = (KeyedObject: object) =>
   Object.entries(KeyedObject).map((i) => i[1]);
 
-export const arrayToKeyedObject = (ArrayOfObj: Array<{ id: string }>) =>
+export const arrayToKeyedObject = (ArrayOfObj: Array<{ id: string }>) => arrayToKeyedObjectByProp(ArrayOfObj, 'id');
+
+export const arrayToKeyedObjectByProp = (ArrayOfObj: any[], prop: string) =>
   ArrayOfObj.reduce((acc, obj) => {
-    acc[obj.id] = obj;
+    acc[obj[prop]] = obj;
     return acc;
   }, {});
+
 
 export function AppStatusReducer(state, action) {
   const updatedState = { ...state };
@@ -82,6 +87,14 @@ export function AppStatusReducer(state, action) {
     }
     case SET_LOGIN_ACCOUNT: {
       updatedState[LOGIN_ACCOUNT] = action.account;
+
+      if (updatedState.processed?.ammExchanges) {
+        const activity = getUserActvity(action.account?.account, updatedState.processed?.markets, updatedState.processed?.ammExchanges);
+        updatedState[USER_INFO] = {
+          ...updatedState[USER_INFO],
+          activity,
+        }
+      }
       break;
     }
     case UPDATE_GRAPH_DATA: {
@@ -103,6 +116,13 @@ export function AppStatusReducer(state, action) {
         cashes,
         ammExchanges,
       };
+      if (updatedState?.loginAccount?.account) {
+        const activity = getUserActvity(updatedState?.loginAccount?.account, markets, ammExchanges);
+        updatedState[USER_INFO] = {
+          ...updatedState[USER_INFO],
+          activity,
+        }
+      }
       break;
     }
     case UPDATE_MARKETS_VIEW_SETTINGS: {

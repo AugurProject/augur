@@ -2,6 +2,7 @@ import { tickSizeToNumTickWithDisplayPrices } from '@augurproject/sdk';
 import {
   encodeNumberAsBase10String,
   encodeNumberAsJSNumber,
+  numTicksToTickSizeWithDisplayPrices,
   unfix,
 } from '@augurproject/utils';
 import {
@@ -16,51 +17,6 @@ import addCommas from 'utils/add-commas-to-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import getPrecision from 'utils/get-number-precision';
 
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-  Produces a formatted number object used for display and calculations
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
-The main function is `formatNumber`, however there are top-level functions that wrap for common cases like `formatEther`, `formatShares`, etc.
-
-A formatted number generally has three parts: the sign (+ or -), the stylized number, and a denomination (Eth, Rep, %, etc.)
-
-The formatted number object that is returned looks something like this:
-  {
-    value: the parsed number in numerical form, 0 if a bad input was passed in, can be used in calculations
-
-    formattedValue: the value in numerical form, possibly rounded, can be used in calculations
-    formatted: the value in string form with possibly additional formatting, like comma separator, used for display
-
-    o.roundedValue: the value in numerical form, with extra rounding, can be used in calculations
-    o.rounded: the value in string form, with extra rounding
-    o.roundedFormatted: the value in string form, with formatting, like comma separator, used for display
-
-    o.minimized: the value in string form, with trailing 0 decimals omitted, for example if the `formatted` value is 1.00, this minimized value would be 1
-  }
-
-The reason the number object has multiple states of rounding simultaneously,
-is because the ui can use it for multiple purposes. For example, when showing ether,
-we generally like to show it with 2 decimals, however when used in totals,
-maximum precision is not necessary, and we can opt to show the `rounded` display, which is only 1 decimal.
-Similar logic applies for `minimized`, sometimes we don't need to be consistent with the decimals
-and just show the prettiest, smallest representation of the value.
-
-The options object that is passed into `formatNumber` that enables all of this looks like:
-  {
-    decimals: the number of decimals for the precise case, can be 0-infinity
-    decimalsRounded: the number of decimals for the prettier case, can be 0-infinity
-    denomination: the string denomination of the number (ex. Eth, Rep, %), can be blank
-    positiveSign: boolean whether to include a plus sign at the beginning of positive numbers
-    zeroStyled: boolean, if true, when the value is 0, it formates it as a dash (-) instead
-  }
-
-TIP
-Sometimes (not always) it is a good idea to use the formatted values in calculations,
-rather than the original input number, so that values match up in the ui. For example, if you are
-adding the numbers 1.11 and 1.44, but displaying them as 1.1 and 1.4, it may look awkward
-if 1.1 + 1.4 = 2.6. If perfect precision isn't necessary, consider adding them using the formatted values.
-
-*/
 type NumStrBigNumber = number | BigNumber | string;
 
 export const ETHER_NUMBER_OF_DECIMALS = 4;
@@ -669,3 +625,22 @@ export function calcPercentageFromPrice(
   return Number(percentage.toFixed(2));
 }
 
+const YES_NO_NUM_TICKS = 1000
+export const onChainMarketSharesToDisplayFormatter = (num, precision) => {
+  // TODO: get max/min price from market
+  const numTicks = numTicksToTickSizeWithDisplayPrices(createBigNumber(YES_NO_NUM_TICKS), createBigNumber(0), createBigNumber(1))
+  const displayValue = String(convertOnChainAmountToDisplayAmount(createBigNumber(num), numTicks, createBigNumber(10).pow(createBigNumber(createBigNumber(precision)))))
+  if (isNaN(Number(displayValue))) {
+    console.log('num issue', num, precision)
+    return "0"
+  }
+  return displayValue;
+}
+
+export function convertOnChainAmountToDisplayAmount(
+  onChainAmount: BigNumber,
+  tickSize: BigNumber,
+  precision: BigNumber,
+) {
+  return onChainAmount.dividedBy(tickSize).dividedBy(precision);
+}

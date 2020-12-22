@@ -33,6 +33,7 @@ export const DEFAULT_APP_STATUS_STATE = {
   positions: [],
   liquidity: [],
   transactions: {},
+  activity: {}, // new place for user activity
   marketsViewSettings: {
     categories: ALL_MARKETS,
     reportingState: OPEN,
@@ -76,7 +77,7 @@ export const APP_STATUS_ACTIONS = {
   SET_SHOW_TRADING_FORM: 'SET_SHOW_TRADING_FORM',
   UPDATE_PROCESSED: 'UPDATE_PROCESSED',
   SET_LOGIN_ACCOUNT: 'SET_LOGIN_ACCOUNT',
-  UPDATE_MARKETS_VIEW_SETTINGS: 'UPDATE_MARKETS_VIEW_SETTINGS'
+  UPDATE_MARKETS_VIEW_SETTINGS: 'UPDATE_MARKETS_VIEW_SETTINGS',
 };
 
 export const fakePositionsData = [
@@ -328,8 +329,8 @@ export const MOCK_APP_STATUS_STATE = {
     },
   },
   userInfo: {
-    activity: {
-      '04/12': {
+    activity: [
+      {
         date: '04/12',
         activity: [
           {
@@ -361,7 +362,7 @@ export const MOCK_APP_STATUS_STATE = {
           },
         ],
       },
-      '03/12': {
+      {
         date: '03/12',
         activity: [
           {
@@ -375,7 +376,7 @@ export const MOCK_APP_STATUS_STATE = {
           },
         ],
       },
-      '30/11': {
+      {
         date: '30/11',
         activity: [
           {
@@ -407,6 +408,6 @@ export const MOCK_APP_STATUS_STATE = {
           },
         ],
       },
-    },
+    ],
   },
 };
