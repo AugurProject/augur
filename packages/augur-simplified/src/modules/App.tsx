@@ -65,14 +65,14 @@ const AppBody = () => {
 
   useEffect(() => {
     if (
-      sidebarType || showTradingForm
+      showTradingForm
     ) {
       document.body.classList.add('App--noScroll');
       window.scrollTo(0, 0);
     } else {
       document.body.classList.remove('App--noScroll');
     }
-  }, [sidebarType, showTradingForm]);
+  }, [showTradingForm]);
 
 
   return (
