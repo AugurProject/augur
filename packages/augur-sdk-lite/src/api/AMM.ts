@@ -365,7 +365,7 @@ export interface ExchangeContractIntermediary {
   removeLiquidity(market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber, minSetsSold: BigNumber): Promise<TransactionResponse>
   rateRemoveLiquidity(market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber, minSetsSold: BigNumber): Promise<RemoveLiquidityRate>
 
-  swap(market: string, paraShareToken: string, fee: BigNumber, inputShares: BigNumber, inputLong: Boolean, minShares: BigNumber): Promise<TransactionResponse>
+  swap(market: string, paraShareToken: string, fee: BigNumber, inputShares: BigNumber, buyLong: Boolean, minShares: BigNumber): Promise<TransactionResponse>
   enterPosition(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, buyLong: Boolean, minShares: BigNumber): Promise<TransactionResponse>
   exitPosition(market: string, paraShareToken: string, fee: BigNumber, shortShares: BigNumber, longShares: BigNumber, minCash: BigNumber): Promise<TransactionResponse>
   rateExitPosition(market: string, paraShareToken: string, fee: BigNumber, shortShares: BigNumber, longShares: BigNumber): Promise<BigNumber>
@@ -420,9 +420,10 @@ class ExchangeCommon {
     }
   }
 
-  async swap(market: string, paraShareToken: string, fee: BigNumber, inputShares: BigNumber, inputLong: Boolean, minShares: BigNumber): Promise<TransactionResponse> {
+  async swap(market: string, paraShareToken: string, fee: BigNumber, inputShares: BigNumber, buyLong: Boolean, minShares: BigNumber): Promise<TransactionResponse> {
     const exchangeAddress = await this.calculateExchangeAddress(market, paraShareToken, fee);
     const amm = this.exchangeContract(exchangeAddress);
+    const inputLong = !buyLong;
     return amm.swap(inputShares.toFixed(), inputLong, minShares.toFixed());
   }
 

@@ -96,6 +96,11 @@ export class ContractAPI {
     await this.augur.contracts.usdt.approve(spender, allowance);
   }
 
+  async balanceOfUSDT(who?: string) {
+    who = who || this.account.address;
+    return this.augur.contracts.usdt.balanceOf_(who);
+  }
+
   async getOriginCashAllowance(): Promise<BigNumber> {
     const owner = this.account.address;
     const authority = this.augur.config.addresses.Augur;
