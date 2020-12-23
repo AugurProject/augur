@@ -3,8 +3,7 @@ import Styles from 'modules/portfolio/activity.styles.less';
 import { UsdIcon } from 'modules/common/icons';
 import { Pagination } from 'modules/common/pagination';
 import { useAppStatusStore } from 'modules/stores/app-status';
-import { keyedObjToArray } from 'modules/stores/app-status-hooks';
-import { ActivityData, ActivityCardProps } from 'modules/types';
+import { ActivityCardProps } from 'modules/types';
 
 const ActivityCard = ({ activity }: ActivityCardProps) => (
   <div className={Styles.ActivityCard}>
