@@ -8,6 +8,7 @@ import { AMM, SignerOrProvider } from '@augurproject/sdk-lite';
 import { updateConfig } from '@augurproject/artifacts';
 import { SDKConfiguration } from '@augurproject/utils/build';
 import {ExchangeERC20, ExchangeETH} from '@augurproject/sdk-lite/build';
+import {deployWethAMMContract} from '../libs/blockchain';
 
 const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
 
@@ -445,25 +446,11 @@ export function addAMMScripts(flash: FlashSession) {
       this.pushConfig({ deploy: { serial }});
       console.log('Deploying: ', sanitizeConfig(this.config).deploy);
 
-      const signer = await makeSigner(this.accounts[0], this.provider);
-      const dependencies = makeDependencies(this.accounts[0], this.provider, signer);
-
-      const contractDeployer = new ContractDeployer(
-        this.config,
-        dependencies,
-        this.provider.provider,
-        signer,
-        compilerOutput
-      );
-
-      const ammFactory = this.config.addresses.AMMFactory;
-      const weth = this.config.addresses.WETH9;
-      const wethParaShareToken = this.config.paraDeploys[weth].addresses.ShareToken
-      const wethAmm = await contractDeployer.uploadWethAMMContract(ammFactory, wethParaShareToken);
-      console.log(`Deployed Weth AMM to: ${wethAmm}`);
+      const address = await deployWethAMMContract(this.provider, this.accounts[0], compilerOutput, this.config);
+      console.log(`Deployed Weth AMM to: ${address}`);
 
       await updateConfig(this.network, {
-        addresses: { WethWrapperForAMMExchange: wethAmm }
+        addresses: { WethWrapperForAMMExchange: address }
       });
     }
   });

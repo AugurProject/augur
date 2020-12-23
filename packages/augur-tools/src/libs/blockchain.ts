@@ -39,6 +39,29 @@ export async function deployContracts(
   return { addresses };
 }
 
+export async function deployWethAMMContract(
+  provider: EthersProvider,
+  account: Account,
+  compiledContracts: CompilerOutput,
+  config: SDKConfiguration
+): Promise<string> {
+  const signer = await makeSigner(account, provider);
+  const dependencies = makeDependencies(account, provider, signer);
+
+  const contractDeployer = new ContractDeployer(
+    config,
+    dependencies,
+    provider.provider,
+    signer,
+    compiledContracts
+  );
+  const ammFactory = config.addresses.AMMFactory;
+  const weth = config.addresses.WETH9;
+  const wethParaShareToken = config.paraDeploys[weth].addresses.ShareToken;
+  if (!wethParaShareToken) throw Error(`Cannot deploy wethAMMContract if WETH para is not deployed.`)
+  return contractDeployer.uploadWethAMMContract(ammFactory, wethParaShareToken)
+}
+
 export async function deployParaContracts(
   env: string,
   provider: EthersProvider,

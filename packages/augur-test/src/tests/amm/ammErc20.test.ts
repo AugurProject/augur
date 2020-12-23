@@ -16,7 +16,7 @@ import {makeProvider} from '../../libs';
 import {ContractInterfaces} from '@augurproject/core';
 
 
-describe('AMM Middleware', () => {
+describe('AMM Middleware for ERC20', () => {
   let john: TestContractAPI;
   let mary: TestContractAPI;
   let bob: TestContractAPI;
@@ -81,8 +81,8 @@ describe('AMM Middleware', () => {
     const initialLiquidity = bn(1000).times(1e6); // 1000 USDT
 
     beforeAll(async () => {
-      const yesPercent = bn(50);
-      const nopercent = bn(100).minus(yesPercent);
+      const longPercent = bn(50);
+      const shortPercent = bn(100).minus(longPercent);
 
       await mary.faucetUSDT(initialLiquidity);
       await mary.approveUSDT(config.addresses.AMMFactory);
@@ -98,8 +98,8 @@ describe('AMM Middleware', () => {
         usdtParaShare.address,
         fee,
         initialLiquidity,
-        yesPercent,
-        nopercent,
+        longPercent,
+        shortPercent,
       );
     });
 

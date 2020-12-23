@@ -1,3 +1,5 @@
+import {deployWethAMMContract} from '../libs/blockchain';
+
 const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { SDKConfiguration } from '@augurproject/utils';
@@ -82,7 +84,7 @@ export function addGanacheScripts(flash: FlashSession) {
       );
       config.addresses = addresses;
 
-      const baseSeed = await createSeed(provider, db, addresses);
+      const baseSeed = await createSeed(provider, db, config.addresses);
 
       console.log('Prepare seed for paras');
 
@@ -111,7 +113,10 @@ export function addGanacheScripts(flash: FlashSession) {
         );
       }
 
-      const parasSeed = await createSeed(provider, db, addresses, config.paraDeploys);
+      console.log('Deploying weth wrapper for amm');
+      config.addresses.WethWrapperForAMMExchange = await deployWethAMMContract(provider, this.getAccount(), compilerOutput, config);
+
+      const parasSeed = await createSeed(provider, db, config.addresses, config.paraDeploys);
 
       const seeds = {
         'default': baseSeed,

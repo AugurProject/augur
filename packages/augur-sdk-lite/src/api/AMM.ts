@@ -205,6 +205,10 @@ export class AMM {
     return this.intermediary(paraShareToken).balanceOf(market, paraShareToken, fee, account);
   }
 
+  async approveSpendingOfLiquidityTokens(market: string, paraShareToken: string, fee: BigNumber, spender: string, amount: BigNumber) {
+    return this.intermediary(paraShareToken).approveLPTokens(market, paraShareToken, fee, spender, amount);
+  }
+
   // Private methods
 
   private async doAddSubsequentLiquidity(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, recipient: string): Promise<TransactionResponse> {
@@ -375,6 +379,7 @@ export interface ExchangeContractIntermediary {
   totalSupply(market: string, paraShareToken: string, fee: BigNumber): Promise<BigNumber>
   balanceOf(market: string, paraShareToken: string, fee: BigNumber, account: string): Promise<BigNumber>
   shareBalances(market: string, paraShareToken: string, fee: BigNumber, account: string): Promise<ShareBalances>
+  approveLPTokens(market: string, paraShareToken: string, fee: BigNumber, spender: string, amount: BigNumber): Promise<void>
 }
 
 class ExchangeCommon {
@@ -467,6 +472,12 @@ class ExchangeCommon {
     }
   }
 
+  async approveLPTokens(market: string, paraShareToken: string, fee: BigNumber, spender: string, amount: BigNumber): Promise<void> {
+    const exchangeAddress = await this.calculateExchangeAddress(market, paraShareToken, fee);
+    const amm = this.exchangeContract(exchangeAddress);
+    return amm.approve(spender, amount.toString());
+  }
+
   protected exchangeContract(address: string): ethers.Contract {
     return new ethers.Contract(address, AMMExchangeAbi, this.signerOrProvider);
   }
@@ -557,3 +568,11 @@ export class ExchangeETH extends ExchangeCommon implements ExchangeContractInter
   }
 
 }
+
+
+//     function addAMMWithLiquidity (
+//         IMarket _market,
+//         uint256 _fee,
+//         uint256 _ratioFactor,
+//         bool _keepLong,
+//         address _recipient

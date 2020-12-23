@@ -41,6 +41,13 @@ def amm(sessionFixture, factory, market, para_weth_share_token):
     ammAddress = factory.addAMM(market.address, para_weth_share_token.address, FEE)
     return sessionFixture.applySignature("AMMExchange", ammAddress)
 
+def test_amm_create_with_initial_liquidity(sessionFixture, market, weth_amm, account0):
+    initialLiquidity = 5 * ATTO
+    numticks = 1000
+    (address, lpTokens) = weth_amm.addAMMWithLiquidity(market.address, FEE, ATTO, False, account0, value=initialLiquidity)
+    assert address != '0x' + ('0' * 40)
+    assert lpTokens == initialLiquidity / numticks
+
 
 def test_amm_weth_wrapper_getAMM(market, weth_amm, amm):
     maybe_amm = weth_amm.getAMM(market.address, FEE)
