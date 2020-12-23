@@ -25,7 +25,9 @@ const AppBody = () => {
   const {
     sidebarType,
     showTradingForm,
-    actions: { setIsMobile, updateGraphData, updateProcessed },
+    loginAccount,
+    processed,
+    actions: { setIsMobile, updateGraphData, updateProcessed, updateUserActivity },
   } = useAppStatusStore();
 
   useEffect(() => {
@@ -61,7 +63,6 @@ const AppBody = () => {
     };
     // eslint-disable-next-line
   }, []);
-
 
   useEffect(() => {
     if (

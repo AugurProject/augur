@@ -1,6 +1,8 @@
-import { Trades, AmmExchange, Cash, Cashes, MarketOutcome, TransactionTypes, MarketInfo } from "modules/types";
+import { AmmTransaction, Trades, AmmExchange, Cash, Cashes, MarketOutcome, TransactionTypes, MarketInfo, ActivityData } from "../modules/types";
 import { BigNumber as BN } from 'bignumber.js'
-
+import { getDayFormat, getTimeFormat } from "../utils/date-utils";
+import { convertAttoValueToDisplayValue } from "@augurproject/sdk";
+import { onChainMarketSharesToDisplayFormatter } from "./format-number";
 interface GraphMarket {
   id: string,
   description: string,
@@ -129,14 +131,17 @@ export const processGraphMarkets = (graphData: GraphData): ProcessedData => {
 
 const shapeMarketInfo = (market: GraphMarket, ammExchange: AmmExchange): MarketInfo => {
   const extraInfo = JSON.parse(market?.extraInfoRaw)
+  const feeAsPercent = convertAttoValueToDisplayValue(new BN(market.fee)).times(100)
   return {
     marketId: market.id,
     description: market.description,
     longDescription: extraInfo.longDescription,
     categories: extraInfo?.categories || [],
     endTimestamp: market.endTimestamp,
+    extraInfoRaw: market.extraInfoRaw,
+    fee: String(feeAsPercent),
     outcomes: shapeOutcomes(market.outcomes),
-    ammExchange: ammExchange,
+    amms: ammExchange,
     reportingState: market.status
   }
 }
@@ -150,7 +155,7 @@ const shapeOutcomes = (graphOutcomes: GraphMarketOutcome[]): MarketOutcome[] =>
   }));
 
 
-const shapeAmmExchange = (amm: GraphAmmExchange, past: GraphAmmExchange, cashes: Cashes, market: MarketInfo): AmmExchange => {
+const shapeAmmExchange = (amm: GraphAmmExchange, past: GraphAmmExchange, cashes: Cashes, market: GraphMarket): AmmExchange => {
   const marketId = market.id;
   const outcomes = shapeOutcomes(market.outcomes);
   const cash: Cash = cashes[amm.shareToken.cash.id]
@@ -253,7 +258,56 @@ const calculateTradePrice = (txs: (GraphEnter | GraphExit)[], trades: Trades, di
   }, trades)
 }
 
-export const getAmmTradeData = (outcomeTrades: { [outcome: number]: [] }, enters: GraphEnter[], exits: GraphExit[], displayDecimals: number) => {
+export const getAmmTradeData = (outcomeTrades: Trades, enters: GraphEnter[], exits: GraphExit[], displayDecimals: number) => {
   const enterTrades = calculateTradePrice(enters, outcomeTrades, displayDecimals)
   return calculateTradePrice(exits, enterTrades, displayDecimals)
+}
+
+export const getUserActvity = (account: string, markets: { [id: string]: MarketInfo }, ammExchanges: { [id: string]: AmmExchange }): ActivityData[] => {
+  if (!ammExchanges) return [];
+  const exchanges = Object.values(ammExchanges)
+  if (!exchanges || exchanges.length === 0) return []
+
+  const transactions = exchanges.reduce((p, exchange) => {
+    const cashName = exchange.cash?.name;
+    const userTx: AmmTransaction[] = exchange.transactions.filter(t => t.sender.toLowerCase() === account.toLowerCase())
+    if (userTx.length === 0) return p;
+
+    const datedUserTx = userTx.map(t => {
+      const type = t.tx_type === TransactionTypes.ENTER ? 'buy' : 'sell';
+      const shares = t.yesShares !== "0" ?
+        onChainMarketSharesToDisplayFormatter(t.yesShares, exchange.cash.decimals) :
+        onChainMarketSharesToDisplayFormatter(t.noShares, exchange.cash.decimals)
+      const price = Number(t.price).toFixed(2)
+      const subheader = `${shares} yes @ ${price}`
+      const value = String(new BN(price).times(new BN(shares)).times(new BN(exchange.cash.usdPrice)))
+      return ({
+        id: t.id,
+        currency: cashName,
+        description: markets[`${exchange.marketId}-${exchange.id}`]?.description,
+        type,
+        date: getDayFormat(t.timestamp),
+        time: getTimeFormat(t.timestamp),
+        subheader,
+        value,
+        txHash: t.tx_hash,
+      })
+    })
+    return [...p, ...datedUserTx]
+  }, [])
+
+  // form array of grouped by date activities
+  return transactions.reduce((p, t) => {
+    const item = p.find(x => x.date === t.date)
+    if (item) {
+      item.activity.push(t);
+      return p;
+    }
+    return [...p, {
+      date: t.date,
+      activity: [t]
+    }]
+
+  }, [])
+
 }

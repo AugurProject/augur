@@ -108,11 +108,13 @@ export interface AmmTransaction {
   price: string | null,
 }
 
+export interface Trade {
+  price: number,
+  timestamp: number,
+  shares: string,
+}
 export interface Trades {
-  [outcomeIdx: number]: {
-    price: number,
-    timestamp: number,
-  }
+  [outcomeIdx: number]: Trade[]
 }
 export interface AmmExchange {
   id: string,
@@ -149,7 +151,6 @@ export interface MarketInfo {
   marketId: string,
   description: string,
   endTimestamp: string,
-  status: string,
   extraInfoRaw: string,
   longDescription: string,
   fee: string,
@@ -875,23 +876,6 @@ export interface WalletObject {
   serializedPath: string;
 }
 
-export interface Trade {
-  numShares: FormattedNumber;
-  limitPrice: FormattedNumber;
-  potentialDaiProfit: FormattedNumber;
-  potentialDaiLoss: FormattedNumber;
-  totalCost: FormattedNumber;
-  sharesFilled: FormattedNumber;
-  shareCost: FormattedNumber;
-  side: typeof BUY | typeof SELL;
-  orderShareProfit: FormattedNumber;
-  orderShareTradingFee: FormattedNumber;
-  numFills: number;
-  selfTrade: boolean;
-  loopLimit: number;
-  gasLimit?: BigNumber;
-}
-
 export enum TradingDirection {
   ENTRY = 'ENTRY',
   EXIT = 'EXIT',
@@ -1007,3 +991,25 @@ export interface Initialized3box {
   profile?: object;
   openComments?: boolean;
 }
+
+
+export interface ActivityData {
+  date?: string;
+  activity?: ActivityItem[];
+}
+
+export interface ActivityItem {
+  id: string;
+  type: string;
+  currency: string;
+  description: string;
+  subheader: string;
+  time: string;
+  value: string;
+  txHash: string;
+}
+
+export interface ActivityCardProps {
+  activity: ActivityItem;
+}
+
