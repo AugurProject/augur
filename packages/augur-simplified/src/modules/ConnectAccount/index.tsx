@@ -186,7 +186,7 @@ function StatusIcon({ connector, darkMode, account }: { connector: AbstractConne
   return null
 }
 
-function App({ updateLoginAccount, darkMode }) {
+function App({ autoLogin, updateLoginAccount, darkMode }) {
   const { account, connector, error } = useWeb3React()
   const [showModal, setShowModal] = useState<boolean>()
 
@@ -196,7 +196,7 @@ function App({ updateLoginAccount, darkMode }) {
   if (account) {
     updateLoginAccount(activeWeb3);
     innerStatusContent = (
-      <Web3StatusConnected id="web3-status-connected" onClick={() => setShowModal(!showModal)} darkMode={darkMode}>
+      <Web3StatusConnected onClick={() => setShowModal(!showModal)} darkMode={darkMode}>
         <>
           <Text>{shortenAddress(account)}</Text>
         </>
@@ -225,16 +225,17 @@ function App({ updateLoginAccount, darkMode }) {
         toggleWalletModal={() => setShowModal(!showModal)}
         showModal={showModal}
         darkMode={darkMode}
+        autoLogin={autoLogin}
       />
     </>
   )
 }
 
-export default function ConnectAccount({ updateLoginAccount, darkMode }) {
+export default function ConnectAccount({ autoLogin, updateLoginAccount, darkMode }) {
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
       <Web3ProviderNetwork getLibrary={getLibrary}>
-        <App updateLoginAccount={updateLoginAccount} darkMode={darkMode} />
+        <App autoLogin={autoLogin} updateLoginAccount={updateLoginAccount} darkMode={darkMode} />
       </Web3ProviderNetwork>
     </Web3ReactProvider>
   );

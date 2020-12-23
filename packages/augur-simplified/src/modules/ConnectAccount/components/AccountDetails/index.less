@@ -1,21 +1,28 @@
 .LinkStyledButton {
+  cursor: pointer;
+  display: flex;
   text-decoration: none;
   background: none;
-  border: 1px solid #575a68;
+  border: 1px solid #DBE1E7;
+  border-radius: 8px;
   box-sizing: border-box;
-  border-radius: 12px;
-  padding: 9px 12px;
-  cursor: pointer;
-  font-weight: 500;
   outline: none;
+  padding: 4px 8px;
+
+  > span {
+    font-size: 12px;
+    font-weight: 500;
+    color: #8B959E;
+  }
 }
 
 .AccountControl > p {
-    min-width: 0;
-    margin: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 16px;
 }
 
 .hoverClose {
@@ -31,19 +38,23 @@
 }
 
 .darkLink {
-  text-decoration: none;
   cursor: pointer;
   font-weight: 500;
   color: #FAFAFA;
-  font-size: 1rem;
+  font-size: 0.75rem;
   margin: auto;
+  display: flex;
 }
 
 .lightLink {
-  text-decoration: none;
   cursor: pointer;
+  display: flex;
   font-weight: 500;
-  color: #1F1F1F;
-  font-size: 1rem;
-  margin: auto;
+  font-size: 12px;
+  margin: auto 6px;
+  padding: 4px 8px;
+  border: 1px solid #DBE1E7;
+  border-radius: 8px;
+  color: #8B959E;
+  text-decoration: none;
 }

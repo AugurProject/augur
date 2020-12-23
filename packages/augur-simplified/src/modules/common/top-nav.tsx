@@ -1,7 +1,7 @@
 import React from 'react';
+import { useLocation } from 'react-router';
 import Styles from 'modules/common/top-nav.styles.less';
 import { Link } from 'react-router-dom';
-import { useLocation } from 'react-router';
 import { MARKETS, PORTFOLIO, SIDEBAR_TYPES } from 'modules/constants';
 import makePath from 'modules/routes/helpers/make-path';
 import Logo from 'modules/common/logo';
@@ -9,6 +9,7 @@ import parsePath from 'modules/routes/helpers/parse-path';
 import classNames from 'classnames';
 import { GearIcon, ThreeLinesIcon } from 'modules/common/icons';
 import { useAppStatusStore } from 'modules/stores/app-status';
+import { useLocalStorage } from 'modules/stores/local-storage';
 import ConnectAccount from 'modules/ConnectAccount/index';
 
 export const TopNav = () => {
@@ -20,17 +21,32 @@ export const TopNav = () => {
     actions: { setSidebar, updateLoginAccount },
   } = useAppStatusStore();
 
+  const [user, setUser] = useLocalStorage('user', null);
+
+  const saveLoginStateToLocalStorage = (activeWeb3) => {
+    //  if using MM wallet save account to localStorage (for auto login)
+    if (activeWeb3?.library?.provider?.isMetaMask) {
+      setUser({ account: activeWeb3.account })
+    } else {
+      setUser({})
+    }
+  }
+
   const handleAccountUpdate = (activeWeb3) => {
     if (activeWeb3) {
       if (loginAccount && loginAccount.account) {
         if (loginAccount.account !== activeWeb3.account) {
           updateLoginAccount(activeWeb3);
+          saveLoginStateToLocalStorage(activeWeb3)
         }
       } else {
         updateLoginAccount(activeWeb3);
+        saveLoginStateToLocalStorage(activeWeb3)
       }
     }
   }
+
+  const autoLogin = user?.account || null;
 
   return (
     <nav
@@ -52,7 +68,7 @@ export const TopNav = () => {
         )}
       </section>
       <section>
-        <ConnectAccount updateLoginAccount={handleAccountUpdate} darkMode={false} />
+        <ConnectAccount updateLoginAccount={handleAccountUpdate} autoLogin={autoLogin} darkMode={false} />
         {!isMobile && (
           <button
             title="This doesn't do anything yet!"
