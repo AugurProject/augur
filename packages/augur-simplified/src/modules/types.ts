@@ -1,6 +1,5 @@
 import { ReactNode, MouseEvent } from 'react';
 import { Getters } from '@augurproject/sdk';
-import { BUY, SELL } from 'modules/constants';
 import type {
   Address,
   PayoutNumeratorValue,

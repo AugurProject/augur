@@ -25,9 +25,7 @@ const AppBody = () => {
   const {
     sidebarType,
     showTradingForm,
-    loginAccount,
-    processed,
-    actions: { setIsMobile, updateGraphData, updateProcessed, updateUserActivity },
+    actions: { setIsMobile, updateGraphData, updateProcessed },
   } = useAppStatusStore();
 
   useEffect(() => {

@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Styles from 'modules/markets/markets-view.styles.less';
-import makePath from 'modules/routes/helpers/make-path';
 import {
-  MARKET,
   SIDEBAR_TYPES,
   ALL,
   ALL_MARKETS,
@@ -19,7 +17,7 @@ import {
   USDT,
   YES_OUTCOME_ID,
 } from 'modules/constants';
-import { Link } from 'react-router-dom';
+import { MarketLink } from 'modules/routes/helpers/market-link';
 import {
   ValueLabel,
   AppViewStats,
@@ -40,23 +38,23 @@ const LoadingMarketCard = () => {
   return (
     <article className={Styles.LoadingMarketCard}>
       <div>
-        <div/>
-        <div/>
-        <div/>
+        <div />
+        <div />
+        <div />
       </div>
       <div>
-        <div/>
-        <div/>
-        <div/>
+        <div />
+        <div />
+        <div />
       </div>
       <div>
-        <div/>
-        <div/>
-        <div/>
+        <div />
+        <div />
+        <div />
       </div>
     </article>
   );
-}
+};
 
 const OutcomesTable = ({ outcomes, marketId, priceNo, priceYes }) => {
   return (
@@ -79,24 +77,29 @@ const OutcomesTable = ({ outcomes, marketId, priceNo, priceYes }) => {
 };
 
 const MarketCard = ({ market }) => {
-  const { categories, description, outcomes, marketId, ammExchange } = market;
-
+  const {
+    categories,
+    description,
+    outcomes,
+    marketId,
+    amm,
+  } = market;
   return (
     <article
       className={classNames(Styles.MarketCard, {
-        [Styles.NoLiquidity]: !ammExchange,
+        [Styles.NoLiquidity]: !amm,
       })}
     >
-      <Link to={makePath(MARKET)}>
+      <MarketLink id={marketId} ammId={amm?.id}>
         <div>
           <CategoryIcon category={categories[0]} />
           <CategoryLabel category={categories[1]} />
           <div>
-            {ammExchange && ammExchange?.cash.name === ETH && EthIcon}
-            {ammExchange && ammExchange?.cash.name === USDT && UsdIcon}
+            {amm?.cash?.name === ETH && EthIcon}
+            {amm?.cash?.name === USDT && UsdIcon}
           </div>
           <span>{description}</span>
-          {!ammExchange ? (
+          {!amm ? (
             <div>
               <span>Market requires Initial liquidity</span>
               <PrimaryButton text="Earn fees as a liquidity provider" />
@@ -105,18 +108,18 @@ const MarketCard = ({ market }) => {
             <>
               <ValueLabel
                 label="total volume"
-                value={formatDai(market.ammExchange?.volumeTotalUSD).full}
+                value={formatDai(market.amm?.volumeTotalUSD).full}
               />
               <OutcomesTable
                 marketId={marketId}
-                priceNo={ammExchange?.priceNo}
-                priceYes={ammExchange?.priceYes}
+                priceNo={amm?.priceNo}
+                priceYes={amm?.priceYes}
                 outcomes={outcomes}
               />
             </>
           )}
         </div>
-      </Link>
+      </MarketLink>
     </article>
   );
 };
