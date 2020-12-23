@@ -34,6 +34,7 @@
     "tools": "yarn workspace @augurproject/tools --silent",
     "core": "yarn workspace @augurproject/core --silent",
     "ui": "yarn workspace @augurproject/ui --silent",
+    "simp": "yarn workspace @augurproject/simplified --silent",
     "amm": "yarn --cwd packages/augur-amm-ui --silent",
     "flash": "yarn workspace @augurproject/tools --silent flash",
     "flash-util": "yarn workspace @augurproject/tools --silent flash --network none",

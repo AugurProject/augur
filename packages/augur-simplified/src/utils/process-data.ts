@@ -141,7 +141,7 @@ const shapeMarketInfo = (market: GraphMarket, ammExchange: AmmExchange): MarketI
     extraInfoRaw: market.extraInfoRaw,
     fee: String(feeAsPercent),
     outcomes: shapeOutcomes(market.outcomes),
-    amms: ammExchange,
+    amm: ammExchange,
     reportingState: market.status
   }
 }
