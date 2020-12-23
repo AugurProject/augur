@@ -6,6 +6,8 @@ import {
   ONE,
   UPPER_FIXED_PRECISION_BOUND,
   MIN_ORDER_LIFESPAN,
+  DEFAULT_PARA_TOKEN,
+  WETH,
 } from 'modules/common/constants';
 import { FORM_INPUT_TYPES } from 'modules/trading/store/constants';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
@@ -20,10 +22,11 @@ import {
   tickSizeToNumTickWithDisplayPrices,
   convertDisplayAmountToOnChainAmount,
   QUINTILLION,
-  DEFAULT_TRADE_INTERVAL,
+  getDefaultTradeInterval
 } from '@augurproject/utils';
-
+import { augurSdk } from 'services/augursdk';
 import { MarketData } from 'modules/types';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface TestResults {
   isOrderValid: boolean;
@@ -183,8 +186,8 @@ export const testPropertyCombo = (
   return { isOrderValid: errorCount === 0, errors, errorCount };
 };
 
-export const findMultipleOf = market => {
-  let tradeInterval = DEFAULT_TRADE_INTERVAL;
+export const findMultipleOf = (market, paraTokenName, paraTokenDecimals) => {
+  let tradeInterval = getDefaultTradeInterval(paraTokenName || DEFAULT_PARA_TOKEN);
   const numTicks = market.numTicks
     ? createBigNumber(market.numTicks)
     : tickSizeToNumTickWithDisplayPrices(
@@ -200,13 +203,12 @@ export const findMultipleOf = market => {
       numTicks
     );
   }
-
-  return tradeInterval.dividedBy(market.tickSize).dividedBy(10 ** 18);
+  return tradeInterval.dividedBy(market.tickSize).dividedBy(10 ** paraTokenDecimals);
 };
 
-export const findNearestValues = (value, market) => {
+export const findNearestValues = (value, market, paraTokenName, paraTokenDecimals) => {
   const valueBn = createBigNumber(value);
-  const multipleOf = findMultipleOf(market);
+  const multipleOf = findMultipleOf(market, paraTokenName, paraTokenDecimals);
 
   let firstValue = valueBn.minus(valueBn.mod(multipleOf));
   let secondValue = valueBn.plus(multipleOf).minus(valueBn.mod(multipleOf));
@@ -228,7 +230,9 @@ export const testQuantityAndExpiry = (
   fromExternal: boolean,
   props: Props,
   expiration?,
-  confirmationTimeEstimation?
+  confirmationTimeEstimation?,
+  paraTokenName?,
+  paraTokenDecimals?,
 ): TestResults => {
   const { market, currentTimestamp } = props;
   const isScalar: boolean = market.marketType === SCALAR;
@@ -271,7 +275,7 @@ export const testQuantityAndExpiry = (
         createBigNumber(market.maxPrice)
       );
 
-  let tradeInterval = DEFAULT_TRADE_INTERVAL;
+  let tradeInterval = getDefaultTradeInterval(paraTokenName || DEFAULT_PARA_TOKEN);
   if (market.marketType == SCALAR) {
     tradeInterval = getTradeInterval(
       createBigNumber(market.minPrice).times(QUINTILLION),
@@ -280,17 +284,15 @@ export const testQuantityAndExpiry = (
     );
   }
 
+  const Augur = augurSdk ? augurSdk.get() : undefined;
   if (
-    !convertDisplayAmountToOnChainAmount(
-      value,
-      createBigNumber(market.tickSize)
-    )
+    !convertDisplayAmountToOnChainAmount(value, createBigNumber(market.tickSize), Augur.precision)
       .mod(tradeInterval)
       .isEqualTo(0)
   ) {
     errorCount += 1;
     passedTest = false;
-    const multipleOf = findMultipleOf(market);
+    const multipleOf = findMultipleOf(market, paraTokenName, paraTokenDecimals);
     let firstValue = value.minus(value.mod(multipleOf));
     let secondValue = value.plus(multipleOf).minus(value.mod(multipleOf));
     if (firstValue.lt(ONE)) {
@@ -327,7 +329,9 @@ export const orderValidation = (
   changedProperty?: string,
   nextProps?: Props,
   confirmationTimeEstimation?,
-  fromExternal = false
+  fromExternal = false,
+  paraTokenName?,
+  paraTokenDecimals?,
 ): TestResults => {
   let errors = {
     [MULTIPLE_QUANTITY]: [],
@@ -370,7 +374,9 @@ export const orderValidation = (
       fromExternal,
       nextProps,
       expiration,
-      confirmationTimeEstimation
+      confirmationTimeEstimation,
+      paraTokenName,
+      paraTokenDecimals,
     );
 
     quantityValid = isThisOrderValid;

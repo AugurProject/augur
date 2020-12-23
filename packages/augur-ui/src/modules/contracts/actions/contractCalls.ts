@@ -22,8 +22,8 @@ import {
   convertDisplayValuetoAttoValue,
   numTicksToTickSizeWithDisplayPrices,
 } from '@augurproject/utils';
-import { TransactionResponse } from 'ethers/providers';
-import { formatBytes32String } from 'ethers/utils';
+import { TransactionResponse } from '@ethersproject/providers';
+import { ethers } from 'ethers';
 import {
   BUY,
   CATEGORICAL,
@@ -36,6 +36,8 @@ import {
   ZERO,
   NETWORK_IDS,
   DISPUTE_GAS_COST,
+  USDT,
+  USDC,
 } from 'modules/common/constants';
 import { constructMarketParams } from 'modules/create-market/helpers/construct-market-params';
 import {
@@ -123,12 +125,13 @@ export async function isRepV2Approved(account): Promise<boolean> {
   }
 }
 
+const allowance = createBigNumber(99999999999999999999).times(
+  TEN_TO_THE_EIGHTEENTH_POWER
+);
+
 export async function convertV1ToV2Approve() {
   const { contracts } = augurSdk.get();
 
-  const allowance = createBigNumber(99999999999999999999).times(
-    TEN_TO_THE_EIGHTEENTH_POWER
-  );
   let response = null;
   try {
     const getReputationToken = await contracts.universe.getReputationToken_();
@@ -152,9 +155,6 @@ export async function convertV1ToV2() {
 
 export async function convertV1ToV2_estimate() {
   const { contracts } = augurSdk.get();
-  const allowance = createBigNumber(99999999999999999999).times(
-    TEN_TO_THE_EIGHTEENTH_POWER
-  );
 
   let approvalGas = ZERO;
   let migrationGas = ZERO;
@@ -335,8 +335,17 @@ export async function finalizeMarket(marketId: string) {
   return market.finalize();
 }
 
-export function getDai() {
+export async function getDai() {
   const { contracts } = augurSdk.get();
+  const originCash = await contracts.getOriginCash();
+  return originCash.faucet(new BigNumber('1000000000000000000000'));
+}
+
+export async function getParaToken(tokenName) {
+  const { contracts } = augurSdk.get();
+  if (tokenName === USDT || tokenName === USDC) {
+    return contracts.cash.faucet(new BigNumber('1000000000'));
+  }
   return contracts.cash.faucet(new BigNumber('1000000000000000000000'));
 }
 
@@ -428,6 +437,20 @@ export async function checkSetApprovalAmount(account, contract): Promise<void> {
   } catch (error) {
     throw error;
   }
+}
+
+export async function wrapEth(
+  tokenAmount: BigNumber,
+): Promise<void> {
+  const { contracts } = augurSdk.get();
+  return contracts.weth.deposit({ attachedEth: tokenAmount.multipliedBy(10 ** 18) });
+}
+
+export async function unwrapEth(
+  tokenAmount: BigNumber,
+): Promise<void> {
+  const { contracts } = augurSdk.get();
+  return contracts.weth.withdraw(tokenAmount.multipliedBy(10 ** 18));
 }
 
 export async function uniswapTokenForDai(
@@ -961,14 +984,24 @@ export async function isContractApproval(account, contract, approvalContract): P
 
 export async function approvalsNeededMarketCreation(address) {
   const { contracts } = augurSdk.get();
-  const isApproved = await isContractApproval(address, contracts.augur.address, contracts.cash);
-  return Number(!isApproved); // true is 1, so negating. false is 0 so negating.
+  const augurContract = await contracts.augur.augur_();
+  const originCash = await contracts.getOriginCash();
+
+  // true is 1, so negating. false is 0 so negating.
+  let approvalsNeeded = 0;
+  approvalsNeeded += Number(!await isContractApproval(address, augurContract, originCash));
+  approvalsNeeded += Number(!await isContractApproval(address, augurContract, contracts.cash));
+
+  return approvalsNeeded
 }
 
 export async function approveMarketCreation(): Promise<void> {
   const { contracts } = augurSdk.get();
-  const augurContract = contracts.augur.address;
-  return await contracts.cash.approve(augurContract, APPROVAL_AMOUNT);
+  const augurContract = await contracts.augur.augur_();
+
+  const originCash = await contracts.getOriginCash();
+  await contracts.cash.approve(augurContract, APPROVAL_AMOUNT);
+  await originCash.approve(augurContract, APPROVAL_AMOUNT);
 }
 
 export async function approvalsNeededToTrade(address): Promise<number> {
@@ -978,10 +1011,10 @@ export async function approvalsNeededToTrade(address): Promise<number> {
   const fillShareAllContractApproval = await contracts.shareToken.isApprovedForAll_(address, contracts.fillOrder.address);
   // console.log(fillContractApproval, cashContractApproval, fillShareAllContractApproval);
   const approvals = [fillContractApproval, cashContractApproval, fillShareAllContractApproval].filter(a => !a);
-  return (approvals.length > 0 ? approvals.length + 1 : 0); // add additional 1 for referral address
+  return approvals.length;
 }
 
-export async function approveZeroX(address, ) {
+export async function approveZeroX(address) {
   const { contracts } = augurSdk.get();
   try {
     if (!(await isContractApproval(address, contracts.ZeroXTrade.address, contracts.cash))) {
@@ -993,7 +1026,7 @@ export async function approveZeroX(address, ) {
   }
 }
 
-export async function approveShareToken(address, ) {
+export async function approveShareToken(address) {
   const { contracts } = augurSdk.get();
   try {
     if (!(await contracts.shareToken.isApprovedForAll_(address, contracts.fillOrder.address))) {
@@ -1005,7 +1038,7 @@ export async function approveShareToken(address, ) {
   }
 }
 
-export async function approveFillOrder(address, ) {
+export async function approveFillOrder(address) {
   const { contracts } = augurSdk.get();
   try {
     if (!(await isContractApproval(address, contracts.fillOrder.address, contracts.cash))) {
@@ -1046,7 +1079,7 @@ export async function approveToTrade(address, referalAddress = NULL_ADDRESS) {
   if (!(await isContractApproval(address, contracts.ZeroXTrade.address, contracts.cash))) {
     approvals.push(contracts.cash.approve(contracts.ZeroXTrade.address, APPROVAL_AMOUNT));
   }
-  approvals.push(contracts.affiliates.setReferrer(referalAddress));
+  //approvals.push(contracts.affiliates.setReferrer(referalAddress));
   if (!(await contracts.shareToken.isApprovedForAll_(address, contracts.fillOrder.address))) {
     approvals.push(contracts.shareToken.setApprovalForAll(contracts.fillOrder.address, true));
   }
@@ -1086,7 +1119,8 @@ export async function createLiquidityOrder(order: MarketLiquidityOrder) {
     order.quantity,
     order.price,
     order.minPrice,
-    order.maxPrice
+    order.maxPrice,
+    Augur.precision,
   );
   return Augur.contracts.createOrder.publicCreateOrder(
     createBigNumber(order.orderType),
@@ -1094,8 +1128,8 @@ export async function createLiquidityOrder(order: MarketLiquidityOrder) {
     orderProperties.attoPrice,
     order.marketId,
     createBigNumber(order.outcomeId),
-    formatBytes32String(''),
-    formatBytes32String(''),
+    ethers.utils.ethers.utils.formatBytes32String(''),
+    ethers.utils.ethers.utils.formatBytes32String(''),
     orderProperties.tradeGroupId,
   );
 }
@@ -1119,7 +1153,8 @@ export async function createLiquidityOrders(
       o.quantity,
       o.price,
       minPrice,
-      maxPrice
+      maxPrice,
+      Augur.precision,
     );
     const orderType = o.type === BUY ? 0 : 1;
     outcomes.push(createBigNumber(o.outcomeId));
@@ -1138,7 +1173,7 @@ export async function createLiquidityOrders(
   );
 }
 
-function createOrderParameters(numTicks, numShares, price, minPrice, maxPrice) {
+function createOrderParameters(numTicks, numShares, price, minPrice, maxPrice, precision) {
   const tickSizeBigNumber = numTicksToTickSizeWithDisplayPrices(
     createBigNumber(numTicks),
     createBigNumber(minPrice),
@@ -1148,7 +1183,8 @@ function createOrderParameters(numTicks, numShares, price, minPrice, maxPrice) {
     tradeGroupId: generateTradeGroupId(),
     attoShares: convertDisplayAmountToOnChainAmount(
       createBigNumber(numShares),
-      tickSizeBigNumber
+      tickSizeBigNumber,
+      precision,
     ),
     attoPrice: convertDisplayPriceToOnChainPrice(
       createBigNumber(price),
@@ -1288,7 +1324,7 @@ export async function claimMarketsProceedsEstimateGas(
 export async function claimMarketsProceeds(
   markets: string[],
   shareHolder: string,
-  fingerprint: string = formatBytes32String('11'),
+  fingerprint: string = ethers.utils.formatBytes32String('11'),
 ) {
   const augur = augurSdk.get();
   augur.contracts.augurTrading.claimMarketsProceeds(
@@ -1373,12 +1409,119 @@ export async function migrateRepToUniverse(migration: doReportDisputeAddStake) {
   }
 }
 
+export async function runPeriodicals_estimateGas() {
+  try {
+    const { contracts } = augurSdk.get();
+    const gas = await contracts.universe.runPeriodicals_estimateGas();
+    return gas;
+  } catch (e) {
+    return ACCOUNT_ACTIVATION_GAS_COST;
+  }
+}
+
 export async function loadAccountData_exchangeRates(account: string) {
   const { contracts } = augurSdk.get();
   const sdk = await augurSdkLite.get();
   const repToken = contracts.getReputationToken();
   const usdc = contracts.usdc.address;
   const usdt = contracts.usdt.address;
-  const values: AccountData = await sdk.loadAccountData(account, repToken.address, usdc, usdt);
+  const collateral = contracts.cash.address;
+
+  const values: AccountData = await sdk.loadAccountData(account, repToken.address, usdc, usdt, collateral);
   return values;
+}
+
+export async function hasApprovedFeePool(account: string): Promise<number> {
+  const { contracts } = augurSdk.get();
+  const feePool = await getFeePool();
+  const currentAllowance = await contracts.reputationToken.allowance_(
+    account,
+    feePool.address
+  );
+
+  let approvalsNeeded = 1;
+  if (currentAllowance.gt(0)) {
+    approvalsNeeded = 0;
+  }
+  return approvalsNeeded;
+}
+
+export async function approveFeePool(): Promise<void> {
+  const { contracts } = augurSdk.get();
+  const feePool = await getFeePool();
+  const result = await contracts.reputationToken.approve(feePool.address, allowance);
+  return result;
+}
+
+interface FeePoolBalances {
+  totalRep: string;
+  totalFees: string;
+}
+export async function getFeePoolBalances(): Promise<FeePoolBalances> {
+  const feePool = await getFeePool();
+  const repBalance = await feePool.totalSupply_();
+  const feeBalance = await feePool.feeReserve_();
+  return { totalRep: repBalance, totalFees: feeBalance}
+}
+
+interface UserFeePoolBalances {
+  userRep: string;
+  userFees: string;
+}
+
+export async function getUserFeePoolBalances(account: string): Promise<UserFeePoolBalances> {
+  const feePool = await getFeePool();
+  const repBalance = await feePool.balanceOf_(account);
+  const feeBalance = await feePool.withdrawableFeesOf_(account);
+  return { userRep: repBalance, userFees: feeBalance}
+}
+
+export async function feePoolBalance(account: string): Promise<string> {
+  const feePool = await getFeePool();
+  const balance = await feePool.balanceOf_(account);
+  return String(balance);
+}
+
+export async function getEarnedFeesOf(account: string): Promise<string> {
+  const feePool = await getFeePool();
+  const amount = await feePool.earnedFeesOf_(account);
+  return String(amount);
+}
+
+export async function stakeInFeePool(amount: string): Promise<void> {
+  const stakedAmount = convertDisplayValuetoAttoValue(createBigNumber(amount));
+  const feePool = await getFeePool();
+  const staking = await feePool.stake(stakedAmount);
+  return staking;
+}
+
+export async function exitFeePool(amount: string): Promise<void> {
+  const feePool = await getFeePool();
+  const exiting = await feePool.exit(amount);
+  return exiting;
+}
+
+export async function redeemFeePool() {
+  const feePool = await getFeePool();
+  const redeeming = await feePool.redeem();
+  return redeeming;
+}
+
+interface IFeePot {
+    redeem: Function;
+    exit: Function;
+    stake: Function;
+    earnedFeesOf_: Function;
+    balanceOf_: Function;
+    totalSupply_: Function;
+    feeReserve_: Function;
+    withdrawableFeesOf_: Function;
+    address: string;
+}
+
+async function getFeePool(): Promise<IFeePot> {
+  const { contracts } = augurSdk.get();
+  const feePotAddress = await contracts.paraUniverse.getFeePot_();
+  const feePot = contracts.feePotFromAddress(feePotAddress) as IFeePot;
+  return feePot;
 }

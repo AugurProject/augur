@@ -1,8 +1,10 @@
 {
   "name": "@augurproject/simplified",
-  "version": "0.1.0",
+  "version": "2.2.0",
   "private": true,
   "dependencies": {
+    "@augurproject/sdk": "2.2.0",
+    "@augurproject/sdk-lite": "2.2.0",
     "@babel/core": "7.12.3",
     "@ethersproject/solidity": "^5.0.7",
     "@pmmmwh/react-refresh-webpack-plugin": "0.4.2",

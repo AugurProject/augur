@@ -682,19 +682,12 @@ export interface AccountBalances {
   eth: string;
   rep: string;
   dai: string;
+  weth: string;
   usdt: string;
   usdc: string;
   legacyRep: string;
   attoRep: string;
   legacyAttoRep?: string;
-  signerBalances: {
-    eth: string;
-    rep: string;
-    dai: string;
-    usdc: string;
-    usdt: string
-    legacyRep: string;
-  }
 }
 
 export interface LoginAccountMeta {

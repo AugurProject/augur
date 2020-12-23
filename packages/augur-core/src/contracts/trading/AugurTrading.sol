@@ -60,7 +60,7 @@ contract AugurTrading is IAugurTrading {
     mapping(address => bool) public trustedSender;
 
     address public uploader;
-    mapping(bytes32 => address) private registry;
+    mapping(bytes32 => address) internal registry;
 
     IAugur public augur;
     IShareToken public shareToken;
@@ -89,6 +89,9 @@ contract AugurTrading is IAugurTrading {
 
         shareToken = IShareToken(augur.lookup("ShareToken"));
         ICash _cash = ICash(augur.lookup("Cash"));
+
+        require(shareToken != IShareToken(0));
+        require(_cash != ICash(0));
 
         for (uint256 i = 0; i < _names.length; i++) {
             address _address = registry[_names[i]];

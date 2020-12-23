@@ -2,11 +2,12 @@ import { positionSummary } from 'modules/positions/selectors/positions-summary';
 import { Getters } from '@augurproject/sdk';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { AppStatus } from 'modules/app/store/app-status';
+import { DEFAULT_PARA_TOKEN } from 'modules/common/constants';
 
 export const selectUserMarketPositions = (
   marketId
 ): Getters.Users.TradingPosition[] => {
-  const { accountPositions } = AppStatus.get();
+  const { paraTokenName, accountPositions } = AppStatus.get();
   const marketInfo = selectMarket(marketId);
   const marketAccountPositions = accountPositions[marketId];
   if (
@@ -28,7 +29,8 @@ export const selectUserMarketPositions = (
         outcome,
         marketType,
         reportingState,
-        isFullLoss
+        isFullLoss,
+        paraTokenName
       ),
       outcomeName: outcome.description,
     };

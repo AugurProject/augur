@@ -44,22 +44,24 @@ import {
   NEW_MARKET,
   MARKETS_LIST,
   INITIALIZED_3BOX,
-  IS_PRODUCT_SWITCHER_OPEN,
-  MENU_CHANGE,
-  APP_MENUS_CLOSED,
+  PARA_TOKEN_NAME,
 } from 'modules/app/store/constants';
 import { EMPTY_STATE } from 'modules/create-market/constants';
-import { ZERO, NEW_ORDER_GAS_ESTIMATE, THEMES } from 'modules/common/constants';
+import { ZERO, NEW_ORDER_GAS_ESTIMATE, THEMES, WETH, DEFAULT_PARA_TOKEN } from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
 import { LiquidityOrder } from 'modules/types';
 import { windowRef } from 'utils/window-ref';
-import { formatDai, formatShares } from 'utils/format-number';
+import { formatDai, formatEther, formatShares } from 'utils/format-number';
 import { track, MODAL_CLOSED } from 'services/analytics/helpers';
 const {
   SET_THEME,
   SET_ODDS,
   SET_TIME_FORMAT,
   SET_INITIALIZED_3BOX,
+  SET_IS_ODDS_MENU_OPEN,
+  SET_IS_HELP_MENU_OPEN,
+  SET_IS_CONNECTION_TRAY_OPEN,
+  SET_IS_ALERTS_MENU_OPEN,
   CLOSE_APP_MENUS,
   SET_IS_MOBILE,
   SET_Ox_ENABLED,
@@ -75,6 +77,7 @@ const {
   SET_IS_RECONNECTION_PAUSED,
   SET_CAN_HOTLOAD,
   SET_ENV,
+  SET_PARA_TOKEN_NAME,
   UPDATE_GAS_PRICE_INFO,
   SET_MOBILE_MENU_STATE,
   SET_CURRENT_BASE_PATH,
@@ -158,8 +161,7 @@ const calculateLiquidity = orderBook => {
 };
 
 export function AppStatusReducer(state, action) {
-  let updatedState = { ...state };
-
+  const updatedState = { ...state };
   switch (action.type) {
     case SET_THEME: {
       updatedState[THEME] = action.theme;
@@ -174,13 +176,39 @@ export function AppStatusReducer(state, action) {
       updatedState[TIME_FORMAT] = action.timeFormat;
       break;
     }
-    case MENU_CHANGE: {
-      const { name, value } = action;
-      updatedState = { ...updatedState, ...APP_MENUS_CLOSED, [name]: value};
+    case SET_IS_ODDS_MENU_OPEN: {
+      updatedState[IS_ODDS_MENU_OPEN] = action.isOpen;
+      updatedState[IS_HELP_MENU_OPEN] = false;
+      updatedState[IS_CONNECTION_TRAY_OPEN] = false;
+      updatedState[IS_ALERTS_MENU_OPEN] = false;
+      break;
+    }
+    case SET_IS_HELP_MENU_OPEN: {
+      updatedState[IS_ODDS_MENU_OPEN] = false;
+      updatedState[IS_HELP_MENU_OPEN] = action.isOpen;
+      updatedState[IS_CONNECTION_TRAY_OPEN] = false;
+      updatedState[IS_ALERTS_MENU_OPEN] = false;
+      break;
+    }
+    case SET_IS_CONNECTION_TRAY_OPEN: {
+      updatedState[IS_ODDS_MENU_OPEN] = false;
+      updatedState[IS_HELP_MENU_OPEN] = false;
+      updatedState[IS_CONNECTION_TRAY_OPEN] = action.isOpen;
+      updatedState[IS_ALERTS_MENU_OPEN] = false;
+      break;
+    }
+    case SET_IS_ALERTS_MENU_OPEN: {
+      updatedState[IS_ODDS_MENU_OPEN] = false;
+      updatedState[IS_HELP_MENU_OPEN] = false;
+      updatedState[IS_CONNECTION_TRAY_OPEN] = false;
+      updatedState[IS_ALERTS_MENU_OPEN] = action.isOpen;
       break;
     }
     case CLOSE_APP_MENUS: {
-      updatedState = {...updatedState, ...APP_MENUS_CLOSED };
+      updatedState[IS_ODDS_MENU_OPEN] = false;
+      updatedState[IS_HELP_MENU_OPEN] = false;
+      updatedState[IS_CONNECTION_TRAY_OPEN] = false;
+      updatedState[IS_ALERTS_MENU_OPEN] = false;
       break;
     }
     case SET_IS_MOBILE: {
@@ -189,22 +217,6 @@ export function AppStatusReducer(state, action) {
     }
     case SET_Ox_ENABLED: {
       updatedState[Ox_ENABLED] = action.isOxEnabled;
-      break;
-    }
-    case SET_ETH_TO_DAI_RATE: {
-      updatedState[ETH_TO_DAI_RATE] = action.ethToDaiRate;
-      break;
-    }
-    case SET_REP_TO_DAI_RATE: {
-      updatedState[REP_TO_DAI_RATE] = action.repToDaiRate;
-      break;
-    }
-    case SET_USDT_TO_DAI_RATE: {
-      updatedState[USDT_TO_DAI_RATE] = action.usdtToDaiRate;
-      break;
-    }
-    case SET_USDC_TO_DAI_RATE: {
-      updatedState[USDC_TO_DAI_RATE] = action.usdcToDaiRate;
       break;
     }
     case UPDATE_DAI_RATES: {
@@ -244,6 +256,10 @@ export function AppStatusReducer(state, action) {
     }
     case SET_ENV: {
       updatedState[ENV] = action.env;
+      break;
+    }
+    case SET_PARA_TOKEN_NAME: {
+      updatedState[PARA_TOKEN_NAME] = action.paraTokenName;;
       break;
     }
     case SET_INITIALIZED_3BOX: {
@@ -537,6 +553,7 @@ export function AppStatusReducer(state, action) {
 
       let orderAdded = false;
 
+      const paraToken = updatedState[ENV].paraDeploys && updatedState[ENV].paraDeploys[updatedState[ENV].paraDeploy].name || DEFAULT_PARA_TOKEN;
       const updatedOrders: LiquidityOrder[] = existingOrders.map(
         (order: LiquidityOrder) => {
           const orderInfo = Object.assign({}, order);
@@ -571,10 +588,10 @@ export function AppStatusReducer(state, action) {
           mySize: quantity,
           cumulativeShares: quantity,
           orderEstimate: createBigNumber(orderEstimate),
-          avgPrice: formatDai(price),
+          avgPrice: paraToken !== WETH ? formatDai(price) : formatEther(price),
           unmatchedShares: formatShares(quantity),
           sharesEscrowed: formatShares(quantity),
-          tokensEscrowed: formatDai(createBigNumber(orderEstimate)),
+          tokensEscrowed: paraToken !== WETH ? formatDai(createBigNumber(orderEstimate)) : formatEther(createBigNumber(orderEstimate)),
           id: updatedOrders.length,
         } as any);
       }
@@ -679,24 +696,19 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       setOdds: odds => dispatch({ type: SET_ODDS, odds }),
       setTimeFormat: timeFormat =>
         dispatch({ type: SET_TIME_FORMAT, timeFormat }),
-      setIsOddsMenuOpen: isOpen => dispatch({ type: MENU_CHANGE, name: IS_ODDS_MENU_OPEN, value: isOpen }),
-      setIsHelpMenuOpen: isOpen => dispatch({ type: MENU_CHANGE, name: IS_HELP_MENU_OPEN, value: isOpen }),
-      setIsConnectionTrayOpen: isOpen => dispatch({ type: MENU_CHANGE, name: IS_CONNECTION_TRAY_OPEN, value: isOpen }),
-      setIsAlertsMenuOpen: isOpen => dispatch({ type: MENU_CHANGE, name: IS_ALERTS_MENU_OPEN, value: isOpen }),
-      setIsProductSwitcherOpen: isOpen => dispatch({ type: MENU_CHANGE, name: IS_PRODUCT_SWITCHER_OPEN, value: isOpen }),
+      setIsOddsMenuOpen: isOpen =>
+        dispatch({ type: SET_IS_ODDS_MENU_OPEN, isOpen }),
+      setIsHelpMenuOpen: isOpen =>
+        dispatch({ type: SET_IS_HELP_MENU_OPEN, isOpen }),
+      setIsConnectionTrayOpen: isOpen =>
+        dispatch({ type: SET_IS_CONNECTION_TRAY_OPEN, isOpen }),
+      setIsAlertsMenuOpen: isOpen =>
+        dispatch({ type: SET_IS_ALERTS_MENU_OPEN, isOpen }),
       closeAppMenus: () => dispatch({ type: CLOSE_APP_MENUS }),
       setIsMobile: isMobile => dispatch({ type: SET_IS_MOBILE, isMobile }),
       setOxEnabled: isOxEnabled =>
         dispatch({ type: SET_Ox_ENABLED, isOxEnabled }),
-      updateDaiRates: rates => dispatch({ type: UPDATE_DAI_RATES, ...rates }),
-      setEthToDaiRate: ethToDaiRate =>
-        dispatch({ type: SET_ETH_TO_DAI_RATE, ethToDaiRate }),
-      setRepToDaiRate: repToDaiRate =>
-        dispatch({ type: SET_REP_TO_DAI_RATE, repToDaiRate }),
-      setUsdtToDaiRate: usdtToDaiRate =>
-        dispatch({ type: SET_USDT_TO_DAI_RATE, usdtToDaiRate }),
-      setUsdcToDaiRate: usdcToDaiRate =>
-        dispatch({ type: SET_USDC_TO_DAI_RATE, usdcToDaiRate }),
+        updateTokenRates: rates => dispatch({ type: UPDATE_DAI_RATES, ...rates }),
       setOxStatus: OxStatus => dispatch({ type: SET_Ox_STATUS, OxStatus }),
       setRestoredAccount: restoredAccount =>
         dispatch({ type: SET_RESTORED_ACCOUNT, restoredAccount }),
@@ -708,6 +720,7 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       setCanHotload: canHotload =>
         dispatch({ type: SET_CAN_HOTLOAD, canHotload }),
       setEnv: env => dispatch({ type: SET_ENV, env }),
+      setParaTokenName: paraTokenName => dispatch({ type: SET_PARA_TOKEN_NAME, paraTokenName }),
       updateGasPriceInfo: gasPriceInfo =>
         dispatch({ type: UPDATE_GAS_PRICE_INFO, gasPriceInfo }),
       setMobileMenuState: mobileMenuState =>

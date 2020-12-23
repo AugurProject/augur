@@ -1,22 +1,3 @@
-:root {
-  --orbit-color-primary-text: #D7DDE0;
-  --orbit-color-secondary-text: #9599A5;
-  --orbit-page-background: #222124;
-  --orbit-dark-grey: #0E0E0F;
-  --color-outline: #252429;
-  --color-secondary-action-outline: #3C3B43;
-  --color-module-background: #1B1A1E;
-  --color-focused: #09CFE1;
-}
-
-:root[theme='BETTING'],
-:root[theme='SPORTS'] {
-  --orbit-color-primary-text: #0E0E21;
-  --orbit-color-secondary-text: #555577;
-  --orbit-page-background: #FFFFFF;
-  --orbit-dark-grey: #FFFFFF;
-  --color-outline: #D1D1D9;
-  --color-secondary-action-outline: #D1D1D9;
-  --color-module-background: #FFFFFF;
-  --color-focused: #1B91FF;
-}
+$orbit-color-primary-text: #D7DDE0;
+$orbit-color-secondary-text: #9599A5;
+$orbit-page-background: #222124;

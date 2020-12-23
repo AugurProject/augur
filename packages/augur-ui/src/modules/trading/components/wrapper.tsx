@@ -14,6 +14,11 @@ import {
   MODAL_ADD_FUNDS,
   MODAL_DISCLAIMER,
   TRADING_TUTORIAL,
+  DAI,
+  USDC,
+  USDT,
+  WETH,
+  DEFAULT_PARA_TOKEN,
 } from 'modules/common/constants';
 import Styles from 'modules/trading/components/wrapper.styles.less';
 import { OrderButton, PrimaryButton } from 'modules/common/buttons';
@@ -62,6 +67,7 @@ const getMarketPath = (id, theme) => ({
 interface defaultTradeProps {
   market: MarketData;
   selectedOutcome: OutcomeFormatted;
+  paraTokenName: string;
 }
 
 const getDefaultTrade = ({
@@ -74,6 +80,7 @@ const getDefaultTrade = ({
     cumulativeScale,
   },
   selectedOutcome,
+  paraTokenName,
 }: defaultTradeProps) => {
   if (!marketType || (!selectedOutcome && !isFinite(selectedOutcome.id)))
     return null;
@@ -86,7 +93,8 @@ const getDefaultTrade = ({
       minPrice,
       cumulativeScale,
     },
-    {}
+    {},
+    paraTokenName,
   );
 };
 
@@ -164,13 +172,15 @@ const Wrapper = ({
     accountPositions,
     userOpenOrders,
     loginAccount: {
-      balances: { dai, eth },
+      balances: { weth, usdt, usdc, dai },
+      tradingApproved,
     },
     theme,
     isLogged,
     restoredAccount,
     blockchain: { currentAugurTimestamp: currentTimestamp },
     actions: { setModal },
+    paraTokenName,
   } = useAppStatusStore();
   const {
     orderProperties,
@@ -181,7 +191,7 @@ const Wrapper = ({
   const isPreview = getIsPreview(location);
   const initialLiquidity = isPreview && !isTutorial;
   const [trade, setTrade] = useState(
-    getDefaultTrade({ market: market, selectedOutcome })
+    getDefaultTrade({ market, selectedOutcome, paraTokenName })
   );
   const [isSimulatingTrade, setIsSimulatingTrade] = useState(false);
   const marketId = market.id;
@@ -191,7 +201,6 @@ const Wrapper = ({
     ? totalTradingBalance().minus(newMarket.initialLiquidityDai)
     : totalTradingBalance();
   const disclaimerSeen = !!getValueFromlocalStorage(DISCLAIMER_SEEN);
-
   const hasHistory = !!accountPositions[marketId] || !!userOpenOrders[marketId];
   // if outcome id changes we clear form
   useEffect(() => {
@@ -225,7 +234,7 @@ const Wrapper = ({
   }
 
   function clearOrderConfirmation() {
-    setTrade(getDefaultTrade({ market: market, selectedOutcome }));
+    setTrade(getDefaultTrade({ market, selectedOutcome, paraTokenName }));
   }
 
   function handlePlaceMarketTrade(market: MarketData, selectedOutcome: OutcomeFormatted) {
@@ -317,6 +326,7 @@ const Wrapper = ({
         market.marketType
       );
       const formattedValue = formatDai(totalCost);
+
       const newTrade = {
         ...useValues,
         limitPrice: order.orderPrice,
@@ -408,7 +418,29 @@ const Wrapper = ({
 
   function getActionButton() {
     const { selectedNav } = orderProperties;
-    const hasFunds = !!dai;
+    const {
+      loginAccount,
+      env: { ui, paraDeploy, paraDeploys },
+      paraTokenName,
+    } = useAppStatusStore();
+    const disableTrading = Boolean(process.env.REPORTING_ONLY);
+    let hasFunds = false;
+
+    if (!paraDeploys || !paraDeploys[paraDeploy]) return null;
+    const paraTokenDecimals = paraDeploys[paraDeploy].decimals;
+    if (paraTokenName === USDT) {
+      hasFunds = !!loginAccount.balances.usdt;
+    }
+    else if (paraTokenName === USDC) {
+      hasFunds = !!loginAccount.balances.usdc;
+    }
+    else if (paraTokenName === DAI) {
+      hasFunds = !!loginAccount.balances.dai;
+    }
+    else if (paraTokenName === WETH) {
+      hasFunds = !!loginAccount.balances.weth;
+    }
+
     const validation = orderValidation(
       {...orderProperties},
       null,
@@ -422,7 +454,10 @@ const Wrapper = ({
         selectedOutcome,
         currentTimestamp,
       },
-      0
+      0,
+      false,
+      paraTokenName,
+      paraTokenDecimals,
     );
     let actionButton: any = (
       <OrderButton
@@ -453,11 +488,21 @@ const Wrapper = ({
           }
         }}
         disabled={
-          !validation.isOrderValid
+          !validation.isOrderValid || disableTrading
         }
       />
     );
     switch (true) {
+      case disableTrading:
+        actionButton = (
+          <PrimaryButton
+            id="reporting-ui"
+            disabled={disableTrading}
+            action={() => {}}
+            text="Trading Disabled in Reporting UI"
+          />
+        );
+        break;
       case !restoredAccount && !isLogged && !tradingTutorial:
         actionButton = (
           <PrimaryButton

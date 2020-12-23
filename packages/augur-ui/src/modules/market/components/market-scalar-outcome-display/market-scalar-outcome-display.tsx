@@ -6,15 +6,15 @@ import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import { DashlineLong } from 'modules/common/labels';
 import OutcomeTradingIndicator from "modules/market/components/common/outcome-trading-indicator/outcome-trading-indicator";
 import Styles from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display.styles.less';
-import { SCALAR_UP_ID } from 'modules/common/constants';
-import { formatDai } from 'utils/format-number';
+import { SCALAR_UP_ID, WETH } from 'modules/common/constants';
+import { formatDai, formatEther } from 'utils/format-number';
 import { FormattedNumber } from 'modules/types';
 
 
 export function calculatePosition(
   min: BigNumber,
   max: BigNumber,
-  lastPrice: FormattedNumber | null
+  lastPrice: FormattedNumber | null,
 ) {
   const range = max.minus(min);
   const pricePercentage = createBigNumber(lastPrice ? lastPrice.value : 0)
@@ -27,10 +27,11 @@ export function calculatePosition(
 };
 
 interface MarketScalarOutcomeDisplayProps {
-  outcomes: MarketInfoOutcome[],
-  max: BigNumber,
-  min: BigNumber,
-  scalarDenomination?: string,
+  outcomes: MarketInfoOutcome[];
+  max: BigNumber;
+  min: BigNumber;
+  scalarDenomination?: string;
+  paraTokenName: string;
 }
 
 const MarketScalarOutcomeDisplay: React.FC<MarketScalarOutcomeDisplayProps> = ({
@@ -38,9 +39,10 @@ const MarketScalarOutcomeDisplay: React.FC<MarketScalarOutcomeDisplayProps> = ({
   max,
   min,
   scalarDenomination,
+  paraTokenName,
 }) => {
   const lastPrice = getValue(outcomes[SCALAR_UP_ID], 'price');
-  const lastPriceFormatted = formatDai(lastPrice);
+  const lastPriceFormatted = paraTokenName !== WETH ? formatDai(lastPrice) : formatEther(lastPrice);
 
   const outcomeVerticalLinePosition = (): string => {
     let pos = calculatePosition(min, max, lastPrice === null ? null : lastPriceFormatted).toString();

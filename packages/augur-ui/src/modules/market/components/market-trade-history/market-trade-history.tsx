@@ -3,8 +3,8 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import { formatDai, formatMarketShares } from 'utils/format-number';
-import { SELL, SCALAR } from 'modules/common/constants';
+import { formatDai, formatEther, formatMarketShares } from 'utils/format-number';
+import { SELL, SCALAR, WETH, DAI, DEFAULT_PARA_TOKEN } from 'modules/common/constants';
 import { HoverValueLabel, DataArchivedLabel } from 'modules/common/labels';
 import OrderHeader from 'modules/market-charts/components/order-header/order-header';
 
@@ -13,6 +13,7 @@ import { useMarketsStore } from 'modules/markets/store/markets';
 import { marketTradingPriceTimeSeries } from 'modules/markets/selectors/market-trading-price-time-series';
 import { createBigNumber } from 'utils/create-big-number';
 import { getIsTutorial } from 'modules/market/store/market-utils';
+import { AppStatus } from 'modules/app/store/app-status';
 
 interface MarketTradeHistoryProps {
   marketId: string;
@@ -34,6 +35,7 @@ const MarketTradeHistory = ({
   outcome
 }: MarketTradeHistoryProps) => {
   const { marketTradingHistory } = useMarketsStore();
+  const { paraTokenName } = AppStatus.get();
   const tradingTutorial = getIsTutorial(marketId);
   let groupedTradeHistory = {};
   const groupedTradeHistoryVolume = {};
@@ -55,7 +57,6 @@ const MarketTradeHistory = ({
     });
   }
   const isScalar = marketType === SCALAR;
-
   return (
     <section className={Styles.TradeHistory}>
       <OrderHeader
@@ -101,7 +102,7 @@ const MarketTradeHistory = ({
                     </li>
                     <li>
                       {isScalar ? (
-                        <HoverValueLabel value={formatDai(price)} />
+                        <HoverValueLabel value={paraTokenName !== WETH ? formatDai(price) : formatEther(price)} />
                       ) : (
                         price.toFixed(2)
                       )}

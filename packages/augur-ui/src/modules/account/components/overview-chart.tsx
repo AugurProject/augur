@@ -5,10 +5,11 @@ import { PulseLoader } from 'react-spinners';
 import ProfitLossChart from 'modules/account/components/profit-loss-chart';
 import { MovementLabel } from 'modules/common/labels';
 import Styles from 'modules/account/components/overview-chart.styles.less';
-import { formatDai } from 'utils/format-number';
+import { formatDai, formatEther } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import getProfitLoss from 'modules/positions/actions/get-profit-loss';
+import { DEFAULT_PARA_TOKEN, WETH } from 'modules/common/constants';
 
 const ALL_TIME = 3;
 
@@ -39,35 +40,35 @@ export const OverviewChart = ({ timeframe }: OverviewChartProps) => {
     profitLossChange: null,
     profitLossChangeHasValue: false,
   });
-  const { blockchain: { currentAugurTimestamp }, universe: { id: universe }} = useAppStatusStore();
+  const { blockchain: { currentAugurTimestamp }, paraTokenName, universe: { id: universe }} = useAppStatusStore();
   const isLoading = currentAugurTimestamp === 0;
   const getChartData = async (timeRangeDataConfig: TimeFrameOption) => {
     if (currentAugurTimestamp === 0) {
       return;
     }
-  
+
     let startTime: number | null =
       currentAugurTimestamp - timeRangeDataConfig.periodInterval;
-  
+
     if (timeRangeDataConfig.id === ALL_TIME) {
       startTime = BEGINNING_START_TIME;
     }
-  
+
     try {
       const data = await getProfitLoss({
         universe,
         startTime,
         endTime: currentAugurTimestamp
       });
-  
+
       const firstData =
         data.length > 0 ? data[0] : { realized: 0, realizedPercent: 0 };
-  
+
       const lastData =
         data.length > 0
           ? data[data.length - 1]
           : { realized: 0, realizedPercent: 0 };
-  
+
       const chartValues = data.reduce(
         (p, d) => ({
           ...p,
@@ -77,7 +78,7 @@ export const OverviewChart = ({ timeframe }: OverviewChartProps) => {
         }),
         {}
       );
-  
+
       let profitLossData = [];
       profitLossData = profitLossData.concat(
         Object.keys(chartValues).reduce(
@@ -85,19 +86,19 @@ export const OverviewChart = ({ timeframe }: OverviewChartProps) => {
           []
         )
       );
-  
+
       profitLossData.push([
         currentAugurTimestamp * 1000,
         createBigNumber(data[data.length - 1].realized).toNumber(),
       ]);
-  
+
       if (container.current) {
         const realizedChange = createBigNumber(lastData.realized).minus(
           firstData.realized
         );
         setState({
           profitLossData,
-          profitLossChange: formatDai(realizedChange || 0),
+          profitLossChange: paraTokenName !== WETH ? formatDai(realizedChange || 0) : formatEther(realizedChange || 0),
           profitLossChangeHasValue: !createBigNumber(lastData.realized || 0).eq(
             constants.ZERO
           ),

@@ -1,0 +1,31 @@
+{
+  "name": "@augurproject/subgraph-base",
+  "version": "2.2.0",
+  "private": true,
+  "scripts": {
+    "prepare:abi:Augur": "node ../augur-tools/build/flash/cli.js abi -c Augur > abis/Augur.json",
+    "prepare:abi:AugurTrading": "node ../augur-tools/build/flash/cli.js abi -c AugurTrading > abis/AugurTrading.json",
+    "prepare:abi:AMMFactory": "node ../augur-tools/build/flash/cli.js abi -c AMMFactory > abis/AMMFactory.json",
+    "prepare:abi:AMMExchange": "node ../augur-tools/build/flash/cli.js abi -c AMMExchange > abis/AMMExchange.json",
+    "prepare:abi:ShareToken": "node ../augur-tools/build/flash/cli.js abi -c ShareToken > abis/ShareToken.json",
+    "prepare:abi:ParaAugur": "node ../augur-tools/build/flash/cli.js abi -c ParaAugur > abis/ParaAugur.json",
+    "prepare:abi:ParaAugurTrading": "node ../augur-tools/build/flash/cli.js abi -c ParaShareToken > abis/ParaShareToken.json",
+    "prepare:abi:ParaDeployer": "node ../augur-tools/build/flash/cli.js abi -c ParaDeployer > abis/ParaDeployer.json",
+    "prepare:abi:ParaShareToken": "node ../augur-tools/build/flash/cli.js abi -c ParaAugurTrading > abis/ParaAugurTrading.json",
+    "prepare:abi": "mkdir abis; yarn prepare:abi:Augur; yarn prepare:abi:AugurTrading; yarn prepare:abi:AMMFactory; yarn prepare:abi:AMMExchange; yarn prepare:abi:ParaAugur; yarn prepare:abi:ParaAugurTrading; yarn prepare:abi:ParaDeployer; yarn prepare:abi:ParaShareToken; yarn prepare:abi:ShareToken",
+    "prepare:mainnet": "mustache ../augur-artifacts/src/environments/mainnet.json subgraph.template.yaml > subgraph.yaml",
+    "prepare:staging": "mustache ../augur-artifacts/src/environments/v2.json subgraph.template.yaml > subgraph.yaml",
+    "create": "graph create augurproject/augur-v2-base-staging --node https://api.thegraph.com/deploy/",
+    "create-local": "graph create augurproject/augur-v2-base-staging --node http://127.0.0.1:8020",
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy:staging": "yarn prepare:staging && graph deploy augurproject/augur-v2-base-staging --access-token $GRAPH_TOKEN --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
+    "deploy:mainnet": "yarn prepare:mainnet && graph deploy augurproject/augur-v2-base --access-token $GRAPH_TOKEN --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
+    "deploy-local": "graph deploy augurproject/augur-v2-base-staging --ipfs http://localhost:5001 --node http://127.0.0.1:8020"
+  },
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "^0.18.0",
+    "@graphprotocol/graph-ts": "^0.18.0",
+    "mustache": "4.0.1"
+  }
+}

@@ -8,6 +8,8 @@ from constants import BID, ASK, YES, NO
 WEI_TO_ETH = 10**18
 
 def test_walkOrderList_bids(contractsFixture, market):
+    if contractsFixture.paraAugur:
+        return
     orders = contractsFixture.contracts['Orders']
     outcomeID = 1
     order = {
@@ -112,6 +114,8 @@ def test_walkOrderList_bids(contractsFixture, market):
     assert(orders.testRemoveOrder(orderId7) == 1), "Remove order 7"
 
 def test_walkOrderList_asks(contractsFixture, market):
+    if contractsFixture.paraAugur:
+        return
     orders = contractsFixture.contracts['Orders']
     outcomeID = 1
     order = {
@@ -228,6 +232,8 @@ def test_walkOrderList_asks(contractsFixture, market):
     ('worst', ASK, False),
 ])
 def test_orderBidSorting(where, orderType, hints, contractsFixture, market):
+    if contractsFixture.paraAugur:
+        return
     orders = contractsFixture.contracts['Orders']
 
     # setup pre-existing orders
@@ -274,6 +280,8 @@ def test_orderBidSorting(where, orderType, hints, contractsFixture, market):
     assert orders.getWorstOrderId(orderType, market.address, YES, nullAddress) == insertedOrder if where == 'worst' else worstOrderId
 
 def test_saveOrder(contractsFixture, market):
+    if contractsFixture.paraAugur:
+        return
     orders = contractsFixture.contracts['Orders']
 
     uints = [fix(10), 5000, NO, 0, fix(10)]
@@ -311,6 +319,8 @@ def test_saveOrder(contractsFixture, market):
     assert(orders.testRemoveOrder(orderId2) == 1), "Remove order 2"
 
 def test_removeOrder(contractsFixture, market):
+    if contractsFixture.paraAugur:
+        return
     orders = contractsFixture.contracts['Orders']
 
     uints = (fix('10'), 5000, NO, 0, fix('10'))

@@ -29,6 +29,8 @@ def test_register_non_contract(localFixture, augur):
         augur.registerContract("Testing", localFixture.accounts[0])
 
 def test_logs(localFixture, augur):
+    if localFixture.paraAugur:
+        return
     RegisterContractLog = {
         "contractAddress": augur.address,
         "key": stringToBytes("Testing")
@@ -53,7 +55,3 @@ def localFixture(fixture, localSnapshot):
 @pytest_fixture
 def augur(localFixture, localSnapshot):
     return localFixture.contracts["Augur"]
-
-@pytest_fixture
-def cash(localFixture, localSnapshot):
-    return localFixture.contracts["Cash"]

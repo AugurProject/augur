@@ -1,12 +1,12 @@
+import { extractIPFSUrl, IPFSHashVersion, SDKConfiguration, isDevNetworkId, mergeConfig } from '@augurproject/utils';
 import { augurSdk } from "services/augursdk";
 import { augurSdkLite } from "services/augursdklite";
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import isGlobalWeb3 from 'modules/auth/helpers/is-global-web3';
 import { checkIfMainnet } from 'modules/app/actions/check-if-mainnet';
 import logError from 'utils/log-error';
-import { isDevNetworkId, mergeConfig, SDKConfiguration } from '@augurproject/utils';
 import { toChecksumAddress } from 'ethereumjs-util';
-import { JsonRpcProvider, Web3Provider } from 'ethers/providers';
+import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 import { loginWithFortmatic } from 'modules/auth/actions/login-with-fortmatic';
 import {
   getWeb3Provider,
@@ -23,7 +23,9 @@ import {
   NETWORK_NAMES,
   SIGNIN_SIGN_WALLET,
   MODAL_REPORTING_ONLY,
-  DISCLAIMER_SEEN
+  DISCLAIMER_SEEN,
+  MODAL_NETWORK_DISCONNECTED,
+  DEFAULT_PARA_TOKEN
 } from 'modules/common/constants';
 import { listenForStartUpEvents } from 'modules/events/actions/listen-to-updates';
 import { windowRef } from 'utils/window-ref';
@@ -97,23 +99,6 @@ async function loadAccountIfStored() {
     errorModal();
   }
 }
-
-const isNetworkMismatch = async config => {
-  const provider = await detectEthereumProvider();
-  if (!provider) return false;
-  let chainId = windowRef.ethereum.chainId;
-  if (!chainId) {
-    await provider.enable();
-    chainId = windowRef.ethereum.chainId;
-  }
-
-  const web3NetworkId = String(createBigNumber(chainId));
-  const privateNetwork = isPrivateNetwork(config.networkId);
-  return privateNetwork ?
-    web3NetworkId !== "NaN" : // MM returns NaN for local networks
-    config.networkId !== web3NetworkId;
-}
-
 const isCorrectNetwork = async (config) => {
   const { setModal } = AppStatus.actions;
   const chainId = await windowRef.ethereum.request({ method: 'eth_chainId' });
@@ -132,11 +117,11 @@ const isCorrectNetwork = async (config) => {
   return !isMisMatched;
 }
 
-async function createDefaultProvider(config: SDKConfiguration) {
+async function createDefaultProvider(config: SDKConfiguration, canUseWeb3) {
   if (config.networkId && isDevNetworkId(config.networkId)) {
     // In DEV, use local ethereum node
     return new JsonRpcProvider(config.ethereum.http);
-  } else if (windowRef.web3 || windowRef.ethereum) {
+  } else if ((windowRef.web3 || windowRef.ethereum) && canUseWeb3 && config.ui.primaryProvider === 'wallet') {
     // Use the provider on window if it exists, otherwise use torus provider
     return getWeb3Provider(windowRef);
   } else if (config.ui?.fallbackProvider === "jsonrpc" && config.ethereum.http) {
@@ -170,8 +155,7 @@ function pollForNetwork() {
   setInterval(() => {
     const { modal } = AppStatus.get();
     const { setModal, closeModal } = AppStatus.actions;
-    const processEnvRef: AugurEnv = process.env;
-    if (!processEnvRef.ENABLE_MAINNET) {
+    if (!process.env.ENABLE_MAINNET) {
       const isMainnet = checkIfMainnet();
       if (isMainnet && isEmpty(modal)) {
         setModal({
@@ -189,7 +173,8 @@ export const connectAugur = async (
   isInitialConnection = false,
   callback: NodeStyleCallback = logError
 ) => {
-  const { loginAccount } = AppStatus.get();
+  const { setModal, closeModal } = AppStatus.actions;
+  const { modal, loginAccount } = AppStatus.get();
   const windowApp = windowRef as WindowApp;
 
   const loggedInUser = getLoggedInUserFromLocalStorage();
@@ -224,6 +209,16 @@ export const connectAugur = async (
       break;
     }
 
+  // Use the default gateway if currently using one.
+  const ipfsEndpoint = extractIPFSUrl(window.location.href);
+  if(ipfsEndpoint.version !== IPFSHashVersion.Invalid) {
+    config = mergeConfig(config, {
+      warpSync: {
+        ipfsEndpoint
+      }
+    });
+  }
+
   // Disable mesh for googleBot
   if (isGoogleBot()) {
     // @ts-ignore
@@ -245,6 +240,7 @@ export const connectAugur = async (
     })
   }
 
+  let useWeb3 = false;
   const we3Provider = await detectEthereumProvider();
   if (we3Provider) {
     try {
@@ -252,6 +248,7 @@ export const connectAugur = async (
       if (!correctNetwork) {
         return callback(null);
       }
+      useWeb3 = correctNetwork;
     } catch(e) {
       console.error('Error with web3 provider, moving on');
     }
@@ -270,11 +267,11 @@ export const connectAugur = async (
   // provider which may be slow.
   let provider = config.ui?.liteProvider === "jsonrpc" ?
     new JsonRpcProvider(config.ethereum.http) :
-    await createDefaultProvider(config);
+    await createDefaultProvider(config, useWeb3);
 
   await augurSdkLite.makeLiteClient(
     provider,
-    config.addresses,
+    config,
     config.networkId
   );
   AppStatus.actions.setCanHotload(true); // Hotload now!
@@ -289,7 +286,7 @@ export const connectAugur = async (
   // we can re-use it if we already have made the same one. If not
   // we need to make the default provider from the config.
   if (config.ui?.fallbackProvider !== config.ui?.liteProvider) {
-    provider = await createDefaultProvider(config);
+    provider = await createDefaultProvider(config, false);
   }
 
     let Augur = null;
@@ -300,8 +297,7 @@ export const connectAugur = async (
       return callback(`SDK could not be created, see console for more information`, { config });
     }
 
-  const processEnvRef: AugurEnv = process.env;
-  if (processEnvRef.REPORTING_ONLY && !getValueFromlocalStorage(DISCLAIMER_SEEN)) {
+  if (process.env.REPORTING_ONLY && !getValueFromlocalStorage(DISCLAIMER_SEEN)) {
     const { setModal } = AppStatus.actions;
     setModal({
       type: MODAL_REPORTING_ONLY
@@ -324,6 +320,12 @@ export const connectAugur = async (
     universeId = !storedUniverseId ? universeId : storedUniverseId;
   }
   AppStatus.actions.updateUniverse({ id: universeId });
+
+    // If the network disconnected modal is being shown, but we are now
+    // connected -- hide it.
+    if (modal?.type === MODAL_NETWORK_DISCONNECTED) {
+      closeModal();
+    }
 
   if (isInitialConnection) {
     loadAccountIfStored();
@@ -359,11 +361,12 @@ export const initAugur = async (
   }: initAugurParams,
   callback: NodeStyleCallback = logError
 ) => {
-  const processEnvRef: AugurEnv = process.env;
-  const config: SDKConfiguration = processEnvRef.CONFIGURATION;
+  const config: SDKConfiguration = process.env.CONFIGURATION;
 
   if (ethereumNodeHttp) {
     config.ethereum.http = ethereumNodeHttp;
+    config.ui.fallbackProvider = 'jsonrpc';
+    config.ui.primaryProvider = 'jsonrpc';
   }
 
   if (sdkEndpoint) {
@@ -372,6 +375,8 @@ export const initAugur = async (
   // cache fingerprint
   getFingerprint();
   AppStatus.actions.setEnv(config);
+  const paraTokenName = process.env.PARA_DEPLOY_TOKEN_NAME || DEFAULT_PARA_TOKEN;
+  AppStatus.actions.setParaTokenName(paraTokenName);
   tryToPersistStorage();
   connectAugur(config, true, callback);
 

@@ -57,7 +57,9 @@ export const REP = 'REP';
 export const DAI = 'DAI';
 export const USDT = 'USDT';
 export const USDC = 'USDC';
+export const WETH = 'WETH';
 
+export const DEFAULT_PARA_TOKEN = 'USDC';
 export const TRADING_TUTORIAL = 'TRADING_TUTORIAL';
 export const INVALID_BEST_BID_ALERT_VALUE = createBigNumber('.1');
 
@@ -163,6 +165,7 @@ export const NETWORK_IDS = {
   Private2: '102',
   Private3: '103',
   Private4: '104',
+  PrivateGeth: '12346',
 };
 
 export const ARCHIVED_MARKET_LENGTH = 60;
@@ -297,6 +300,7 @@ export const OTHER_ISSUE = 'OTHER_ISSUE';
 
 // # ZeroX Fee
 export const ZEROX_GAS_FEE = 150000;
+export const ACCOUNT_ACTIVATION_GAS_COST = 1935828;
 
 // # Market Max Fees
 export const MAX_FEE_100_PERCENT = '1';
@@ -620,7 +624,7 @@ export const MODAL_GAS_PRICE = 'MODAL_GAS_PRICE';
 export const MODAL_REP_FAUCET = 'MODAL_REP_FAUCET';
 export const MODAL_CREATE_MARKET = 'MODAL_CREATE_MARKET';
 export const MODAL_MARKET_RULES = 'MODAL_MARKET_RULES';
-export const MODAL_DAI_FAUCET = 'MODAL_DAI_FAUCET';
+export const MODAL_TOKEN_FAUCET = 'MODAL_TOKEN_FAUCET';
 export const MODAL_CREATION_HELP = 'MODAL_CREATION_HELP';
 export const MODAL_TRANSFER = 'MODAL_TRANSFER';
 export const MODAL_CASHOUT = 'MODAL_CASHOUT';
@@ -777,6 +781,11 @@ export const ADDLIQUIDITY = 'ADDLIQUIDITY';
 export const ETH_RESERVE_INCREASE = 'ETH_RESERVE_INCREASE';
 export const SETREFERRER = 'SETREFERRER'
 export const SETAPPROVALFORALL = 'SETAPPROVALFORALL'
+export const WRAP_ETH = 'DEPOSIT';
+export const UNWRAP_ETH = 'WITHDRAW';
+export const STAKE = 'STAKE';
+export const FEE_POT_APPROVE = 'FEE_POT_APPROVE';
+export const EXIT = 'EXIT';
 
 // # Orders/Trade Constants
 export const ORDER_BOOK_TABLE = 'ORDER_BOOK_TABLE';
@@ -955,6 +964,7 @@ export const TOTAL_ACCOUNT_VALUE_IN_DAI = 'Total Account Value';
 export const TOTAL_ACCOUNT_VALUE_IN_REP = 'MY AVAILABLE REPv2 BALANCE';
 export const ALL_TIME_PROFIT_AND_LOSS_REP = 'All Time Profit and Loss';
 export const MY_TOTOL_REP_STAKED = 'MY TOTAL REPv2 STAKED';
+export const REPORTING_ONLY_BANNER = 'Reporting only, trading is disabled ';
 
 // Account Summary - Augur Status
 export const AUGUR_STATUS_TITLE = 'Augur Status';

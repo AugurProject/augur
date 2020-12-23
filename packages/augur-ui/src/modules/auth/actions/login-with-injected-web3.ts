@@ -1,7 +1,7 @@
 import { windowRef } from 'utils/window-ref';
 import { updateSdk } from 'modules/auth/actions/update-sdk';
 import { toChecksumAddress } from 'ethereumjs-util';
-import { Web3Provider } from 'ethers/providers';
+import { Web3Provider } from '@ethersproject/providers';
 import {
   ACCOUNT_TYPES,
   MODAL_NETWORK_MISMATCH,

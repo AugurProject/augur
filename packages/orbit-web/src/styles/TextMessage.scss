@@ -8,7 +8,7 @@
   word-wrap: break-word;
   white-space: pre-wrap;
   hyphens: auto;
-  color: var(--orbit-color-primary-text);
+  color: $orbit-color-primary-text;
   font-size: 0.75rem; // 12px
 
   div {

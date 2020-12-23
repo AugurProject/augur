@@ -26,6 +26,7 @@ import {
   SIGNIN_LOADING_TEXT_FORTMATIC,
   SIGNIN_LOADING_TEXT,
   SIGNIN_SIGN_WALLET,
+  MODAL_APPROVALS,
 } from 'modules/common/constants';
 import { loginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-web3';
 import { loginWithTorus } from 'modules/auth/actions/login-with-torus';
@@ -43,7 +44,8 @@ export const SignIn = ({ isLogin }) => {
   const hardwareWalletModal = isLogin =>
     setModal({ type: MODAL_HARDWARE_WALLET, isLogin });
   const signupModal = () => setModal({ type: MODAL_SIGNUP });
-  const accountCreatedModal = () => setModal({ type: MODAL_AUGUR_USES_DAI });
+  // const accountCreatedModal = () => setModal({ type: MODAL_AUGUR_USES_DAI });
+  const approvaldModal = () => setModal({ type: MODAL_APPROVALS });
   const loadingModal = (message, callback, showMetaMaskHelper = false) => {
     setModal({
       type: MODAL_LOADING,
@@ -107,7 +109,7 @@ export const SignIn = ({ isLogin }) => {
     setTimeout(() => {
       if (LOGIN_OR_SIGNUP === 'Signup') {
         // Kicks off onboarding
-        accountCreatedModal();
+        approvaldModal();
       }
     });
   };

@@ -15,6 +15,7 @@ import {
   SCALAR_DOWN_ID,
   SCALAR_UP_ID,
   INVALID_OUTCOME_LABEL,
+  WETH,
 } from 'modules/common/constants';
 import {
   ConsensusFormatted,
@@ -27,6 +28,7 @@ import { getDurationBetween, convertUnixToFormattedDate } from './format-date';
 import {
   formatAttoRep,
   formatDai,
+  formatEther,
   formatNone,
   formatPercent,
 } from './format-number';
@@ -35,7 +37,8 @@ import { keyBy } from './key-by';
 
 export function convertMarketInfoToMarketData(
   marketInfo: MarketInfo,
-  currentTimestamp: number
+  currentTimestamp: number,
+  paraToken: string,
 ) {
   if (!marketInfo) return null;
   const reportingFee = parseInt(marketInfo.reportingFeeRate || '0', 10);
@@ -47,7 +50,7 @@ export function convertMarketInfoToMarketData(
     marketId: marketInfo.id,
     minPriceBigNumber: createBigNumber(marketInfo.minPrice),
     maxPriceBigNumber: createBigNumber(marketInfo.maxPrice),
-    outcomesFormatted: processOutcomes(marketInfo),
+    outcomesFormatted: processOutcomes(marketInfo, paraToken),
     marketStatus: getMarketStatus(marketInfo.reportingState),
     endTimeFormatted: convertUnixToFormattedDate(marketInfo.endTime),
     creationTimeFormatted: convertUnixToFormattedDate(marketInfo.creationTime),
@@ -74,14 +77,18 @@ export function convertMarketInfoToMarketData(
       decimals: 2,
       decimalsRounded: 2,
     }),
-    openInterestFormatted: formatDai(marketInfo.openInterest, {
+    openInterestFormatted: paraToken !== WETH ? formatDai(marketInfo.openInterest, {
+      positiveSign: false,
+    }) : formatEther(marketInfo.openInterest, {
       positiveSign: false,
     }),
-    volumeFormatted: formatDai(marketInfo.volume, {
+    volumeFormatted: paraToken !== WETH ? formatDai(marketInfo.volume, {
+      positiveSign: false,
+    }) : formatEther(marketInfo.volume, {
       positiveSign: false,
     }),
-    unclaimedCreatorFeesFormatted: formatDai('0'), // TODO: figure out where this comes from
-    marketCreatorFeesCollectedFormatted: formatDai('0'), // TODO: figure out where this comes from
+    unclaimedCreatorFeesFormatted: paraToken !== WETH ? formatDai('0') : formatEther('0'), // TODO: figure out where this comes from
+    marketCreatorFeesCollectedFormatted: paraToken !== WETH ? formatDai('0') : formatEther('0'), // TODO: figure out where this comes from
     disputeInfo: processDisputeInfo(
       marketInfo.marketType,
       marketInfo.disputeInfo,
@@ -118,7 +125,8 @@ function getMarketStatus(reportingState: string) {
 }
 
 function processOutcomes(
-  market: MarketInfo
+  market: MarketInfo,
+  paraToken: string,
 ): OutcomeFormatted[] {
   const isScalar = market.marketType === SCALAR;
   const outcomes = deepClone<MarketInfoOutcome[]>(market.outcomes);
@@ -166,11 +174,15 @@ function processOutcomes(
         })
       : formatNone(),
     lastPrice: !!outcome.price
-      ? formatDai(outcome.price || 0, {
+      ? paraToken !== WETH ? formatDai(outcome.price || 0, {
+          positiveSign: false,
+        }) : formatEther(outcome.price || 0, {
           positiveSign: false,
         })
       : formatNone(),
-    volumeFormatted: formatDai(outcome.volume, {
+    volumeFormatted: paraToken !== WETH ? formatDai(outcome.volume, {
+      positiveSign: false,
+    }) : formatEther(outcome.volume, {
       positiveSign: false,
     }),
     isTradeable:

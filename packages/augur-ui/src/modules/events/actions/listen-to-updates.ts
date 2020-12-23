@@ -8,21 +8,20 @@ import {
   handleReportingStateChanged,
   handleSDKReadyEvent,
   handleTradingProceedsClaimedLog,
-  handleTxEvents,
+  handleTxAwaitingSigning,
+  handleTxFailure,
+  handleTxFeeTooLow,
+  handleTxPending,
+  handleTxRelayerDown,
+  handleTxSuccess,
   handleUniverseForkedLog,
-  handleSDKReadyEvent,
-  handleReportingStateChanged,
   handleWarpSyncHashUpdatedLog,
   handleZeroStatusUpdated,
   handleBulkOrdersLog,
   handleLiquidityPoolUpdatedLog,
+  handleMarketInvalidBidsLog,
 } from 'modules/events/actions/log-handlers';
 import { wrapLogHandler } from 'modules/events/actions/wrap-log-handler';
-import type {
-  Augur,
-  Provider,
-} from '@augurproject/sdk';
-import { ZEROX_STATUSES } from 'modules/common/constants';
 
 const START_UP_EVENTS = {
   [SubscriptionEventName.SDKReady]: wrapLogHandler(handleSDKReadyEvent),
@@ -45,9 +44,8 @@ const START_UP_EVENTS = {
     handleZeroStatusUpdated(ZEROX_STATUSES.SYNCED)
   ),
   [SubscriptionEventName.BulkOrderEvent]: wrapLogHandler(handleBulkOrdersLog),
-  [SubscriptionEventName.LiquidityPoolUpdated]: wrapLogHandler(
-    handleLiquidityPoolUpdatedLog
-  ),
+  [SubscriptionEventName.MarketInvalidBids]: wrapLogHandler(handleMarketInvalidBidsLog),
+  [SubscriptionEventName.LiquidityPoolUpdated]: wrapLogHandler(handleLiquidityPoolUpdatedLog),
 };
 
 const EVENTS = {
@@ -67,12 +65,13 @@ const EVENTS = {
   [SubscriptionEventName.WarpSyncHashUpdated]: wrapLogHandler(
     handleWarpSyncHashUpdatedLog
   ),
-  [TXEventName.AwaitingSigning]: wrapLogHandler(handleTxEvents),
-  [TXEventName.Success]: wrapLogHandler(handleTxEvents),
-  [TXEventName.Pending]: wrapLogHandler(handleTxEvents),
-  [TXEventName.Failure]: wrapLogHandler(handleTxEvents),
-  [TXEventName.RelayerDown]: wrapLogHandler(handleTxEvents),
-  [TXEventName.FeeTooLow]: wrapLogHandler(handleTxEvents),
+
+  [TXEventName.AwaitingSigning]: wrapLogHandler(handleTxAwaitingSigning),
+  [TXEventName.Success]: wrapLogHandler(handleTxSuccess),
+  [TXEventName.Pending]: wrapLogHandler(handleTxPending),
+  [TXEventName.Failure]: wrapLogHandler(handleTxFailure),
+  [TXEventName.RelayerDown]: wrapLogHandler(handleTxRelayerDown),
+  [TXEventName.FeeTooLow]: wrapLogHandler(handleTxFeeTooLow),
 };
 
 export const listenToUpdates = (augur: Augur<Provider>) =>

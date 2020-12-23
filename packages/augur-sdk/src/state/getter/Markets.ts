@@ -233,7 +233,8 @@ export class Markets {
               (totalVolume: BigNumber, tradeRow: ParsedOrderEventLog) => {
                 const amount = convertOnChainAmountToDisplayAmount(
                   new BigNumber(tradeRow.amountFilled),
-                  tickSize
+                  tickSize,
+                  augur.precision,
                 );
 
                 const displayPrice = convertOnChainPriceToDisplayPrice(
@@ -258,7 +259,8 @@ export class Markets {
                   totalShareVolume.plus(tradeRow.amountFilled),
                 new BigNumber(0)
               ),
-              tickSize
+              tickSize,
+              augur.precision,
             ).toString(10), // the business definition of shareVolume should be the same as used with markets/outcomes.shareVolume (which currently is just summation of trades.amount)
           };
           return {
@@ -595,10 +597,6 @@ export class Markets {
         return true;
       })
       .toArray();
-
-    if (params.templateFilter === TemplateFilters.sportsBook)  {
-      return await processSportsbookMarketData(augur, db, marketData, reportingFeeDivisor, params);
-    }
 
     const meta = {
       filteredOutCount,
@@ -1303,10 +1301,10 @@ async function getMarketsInfo(
       creationTime: marketData.creationTime,
       categories,
       volume: new BigNumber(marketData.volume || 0)
-        .dividedBy(QUINTILLION)
+        .dividedBy(augur.precision)
         .toString(),
       openInterest: new BigNumber(marketData.marketOI || 0)
-        .dividedBy(QUINTILLION)
+        .dividedBy(augur.precision)
         .toString(),
       reportingState,
       needsMigration,
@@ -1408,75 +1406,6 @@ function formatStakeDetails(
     }
   }
   return formattedStakeDetails;
-}
-
-async function processSportsbookMarketData(
-  augur: Augur,
-  db: DB,
-  marketData: MarketData[],
-  reportingFeeDivisor: BigNumber,
-  params: t.TypeOf<typeof Markets.getMarketsParams>,
-): Promise<MarketList> {
-  const groupHashes = _.uniq(_.map(marketData, 'groupHash'));
-  const liquidityPools = _.uniq(_.map(marketData, 'liquidityPool'));
-  // categories should be for liquidity pools not individual markets
-  const pooledMarkets = await db.Markets.where('liquidityPool').anyOfIgnoreCase(liquidityPools).toArray();
-  const keyedPools = _.groupBy(pooledMarkets, 'liquidityPool');
-  const firstMarketOfPool = _.reduce(_.keys(keyedPools), (agg, key) => [...agg, keyedPools[key][0]], []);
-  const categories = getMarketsCategoriesMeta(firstMarketOfPool);
-
-  const marketsLiquidityPools = params.reportingStates
-    ? await db.Markets.filter(
-        item =>
-          !!item.liquidityPool &&
-          item.reportingState === String(params.reportingStates)
-      ).toArray()
-    : await db.Markets.filter(item => !!item.liquidityPool).distinct().toArray();
-  const keyedLiquidityPoolMarkets = _.keyBy(marketsLiquidityPools, 'liquidityPool');
-  const numPooledMarketDocs = _.keys(keyedLiquidityPoolMarkets).length;
-
-  // removed Invalid filter for sportsbook
-  // TODO: add sorts specifically for sportsbook
-  if (params.sortBy) {
-    const sortBy = params.sortBy;
-    marketData = _.orderBy(
-      marketData,
-      item =>
-        sortBy === 'liquidity'
-          ? item[sortBy][params.maxLiquiditySpread]
-          : item[sortBy],
-      params.isSortDescending ? 'desc' : 'asc'
-    );
-  }
-
-  const allMarketsInGroups  = await db.Markets.where('groupHash')
-    .anyOfIgnoreCase(groupHashes)
-    .toArray();
-
-  // filter based on reportingState
-  const filteredOutCount = numPooledMarketDocs - liquidityPools.length;
-
-  const meta = {
-    filteredOutCount,
-    marketCount: liquidityPools.length,
-  };
-
-  marketData = marketData.slice(params.offset, params.offset + params.limit);
-
-  const marketsInfo: MarketInfo[] = await getMarketsInfo(
-    db,
-    allMarketsInGroups,
-    reportingFeeDivisor,
-    augur
-  );
-
-  return {
-    markets: marketsInfo,
-    meta: {
-      ...meta,
-      categories,
-    },
-  };
 }
 
 function getMarketsCategoriesMeta(

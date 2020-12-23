@@ -7,6 +7,8 @@ import {
   SELL_INDEX,
   YES_NO,
   CANCELORDER,
+  DEFAULT_PARA_TOKEN,
+  WETH,
 } from 'modules/common/constants';
 import { cancelOrder } from 'modules/orders/actions/cancel-order';
 import { createBigNumber } from 'utils/create-big-number';
@@ -14,7 +16,7 @@ import {
   convertSaltToFormattedDate,
   convertUnixToFormattedDate,
 } from 'utils/format-date';
-import { formatDai, formatMarketShares, formatNone } from 'utils/format-number';
+import { formatDai, formatEther, formatMarketShares, formatNone } from 'utils/format-number';
 import getPrecision from 'utils/get-number-precision';
 import { Markets } from 'modules/markets/store/markets';
 import { AppStatus } from 'modules/app/store/app-status';
@@ -32,6 +34,7 @@ export const selectUserOpenOrders = marketId => {
     pendingQueue,
     userOpenOrders: stateUserOpenOrders,
     loginAccount: { address },
+    paraTokenName,
   } = AppStatus.get();
   const { pendingOrders: allMarketsPendingOrders } = PendingOrders.get();
   const userMarketOpenOrders = stateUserOpenOrders[marketId];
@@ -58,7 +61,8 @@ export const selectUserOpenOrders = marketId => {
           market.description,
           outcome.description,
           market.marketType,
-          market.tickSize
+          market.tickSize,
+          paraTokenName
         );
       })
       .filter(collection => collection.length !== 0)
@@ -70,11 +74,14 @@ export const selectUserOpenOrders = marketId => {
     const formatted = pendingOrders.map(o => ({
       ...o,
       unmatchedShares: formatMarketShares(market.marketType, o.amount),
-      avgPrice: formatDai(o.fullPrecisionPrice, {
+      avgPrice: paraTokenName !== WETH ? formatDai(o.fullPrecisionPrice, {
+        decimals,
+        decimalsRounded: decimals,
+      }) : formatEther(o.fullPrecisionPrice, {
         decimals,
         decimalsRounded: decimals,
       }),
-      tokensEscrowed: formatDai(0, { zeroStyled: true }),
+      tokensEscrowed: paraTokenName !== WETH ? formatDai(0, { zeroStyled: true }) : formatEther(0, { zeroStyled: true }),
       sharesEscrowed: formatMarketShares(market.marketType, 0, {
         zeroStyled: true,
       }),
@@ -96,7 +103,8 @@ const userOpenOrders = memoize(
     marketDescription,
     name,
     marketType,
-    tickSize
+    tickSize,
+    paraTokenName
   ) => {
     const userBids =
       orderData == null || orderData[BUY_INDEX] == null
@@ -124,7 +132,8 @@ const userOpenOrders = memoize(
             marketDescription,
             name,
             marketType,
-            tickSize
+            tickSize,
+            paraTokenName
           );
 
     const orders = userAsks.concat(userBids);
@@ -144,7 +153,8 @@ function getUserOpenOrders(
   marketDescription = '',
   name = '',
   marketType = YES_NO,
-  tickSize = '0.01'
+  tickSize = '0.01',
+  paraTokenName,
 ) {
   const typeOrders = orders[orderType];
 
@@ -168,13 +178,16 @@ function getUserOpenOrders(
       status: order.orderState,
       orderCancellationStatus: orderCancellation[order.orderId],
       originalShares: formatNone(),
-      avgPrice: formatDai(order.fullPrecisionPrice, {
+      avgPrice: paraTokenName !== WETH ? formatDai(order.fullPrecisionPrice, {
+        decimals: getPrecision(String(tickSize), 2),
+        decimalsRounded: getPrecision(String(tickSize), 2),
+      }) : formatEther(order.fullPrecisionPrice, {
         decimals: getPrecision(String(tickSize), 2),
         decimalsRounded: getPrecision(String(tickSize), 2),
       }),
       matchedShares: formatNone(),
       unmatchedShares: formatMarketShares(marketType, order.amount),
-      tokensEscrowed: formatDai(order.tokensEscrowed),
+      tokensEscrowed: paraTokenName !== WETH ? formatDai(order.tokensEscrowed) : formatEther(order.tokensEscrowed),
       sharesEscrowed: formatMarketShares(marketType, order.sharesEscrowed),
       marketDescription,
       name,

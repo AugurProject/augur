@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/test",
-  "version": "2.1.10",
+  "version": "2.2.0",
   "description": "Augur Test",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
@@ -29,13 +29,13 @@
   },
   "homepage": "https://github.com/AugurProject/augur#readme",
   "dependencies": {
-    "@augurproject/artifacts": "^2.1.10",
-    "@augurproject/core": "^2.1.10",
-    "@augurproject/sdk": "^2.1.10",
-    "@augurproject/sdk-lite": "^2.1.10",
-    "@augurproject/tools": "^2.1.10",
+    "@augurproject/artifacts": "^2.2.0",
+    "@augurproject/core": "^2.2.0",
+    "@augurproject/sdk": "^2.2.0",
+    "@augurproject/sdk-lite": "^2.2.0",
+    "@augurproject/tools": "^2.2.0",
     "ethereumjs-util": "6.1.0",
-    "ethers": "4.0.47",
+    "ethers": "5.0.17",
     "levelup": "4.2.0",
     "memdown": "4.1.0"
   },
@@ -46,9 +46,9 @@
     "ganache-core": "2.9.1",
     "ipfsd-ctl": "3.0.0",
     "supertest": "4.0.2",
-    "ts-node": "8.4.1",
+    "ts-node": "9.0.0",
     "tsconfig-paths": "3.9.0",
-    "typescript": "3.8.3"
+    "typescript": "3.9.7"
   },
   "resolutions": {
     "**/sha3": "2.0.1",

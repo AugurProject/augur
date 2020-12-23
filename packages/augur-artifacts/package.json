@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/artifacts",
-  "version": "2.1.10",
+  "version": "2.2.0",
   "description": "ABI and Contract Address Artifacts",
   "author": "Augur Team <team@augur.net>",
   "license": "MIT",
@@ -14,12 +14,12 @@
     "build/**"
   ],
   "dependencies": {
-    "@augurproject/utils": "^2.1.10",
+    "@augurproject/utils": "^2.2.0",
     "deepmerge": "4.2.2",
     "require-all": "3.0.0"
   },
   "devDependencies": {
-    "typescript": "3.8.3"
+    "typescript": "3.9.7"
   },
   "publishConfig": {
     "access": "public"

@@ -1,8 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import Highcharts from 'highcharts/highstock';
 import Styles from 'modules/account/components/overview-chart.styles.less';
-import { formatDai } from 'utils/format-number';
+import { formatDai, formatEther } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { DEFAULT_PARA_TOKEN, WETH } from 'modules/common/constants';
 
 const HIGHLIGHTED_LINE_WIDTH = 1;
 
@@ -28,7 +30,7 @@ const getGradientColor = (data: number[][]) => {
   return [[0, positiveColor], [1, 'transparent']];
 };
 
-const getOptions = () => ({
+const getOptions = (paraTokenName) => ({
   title: {
     text: '',
   },
@@ -88,7 +90,7 @@ const getOptions = () => ({
       style: null,
       format: '${value:.2f}',
       formatter: function() {
-        return formatDai(this.value, { removeComma: true }).full;
+        return paraTokenName !== WETH ? formatDai(this.value, { removeComma: true }).full : formatEther(this.value, { removeComma: true }).full;
       },
       align: 'left',
       x: 0,
@@ -150,9 +152,10 @@ const getAreaSpline = (data: number[][]): AxisData => {
 };
 
 const ProfitLossChart = ({ width, data }: ChartProps) => {
+  const { paraTokenName } = useAppStatusStore();
   const container = useRef(null);
   useEffect(() => {
-    const options = getOptions();
+    const options = getOptions(paraTokenName);
     const intervalInfo = calculateTickInterval(data);
     const tickPositions = [data[0][0], data[data.length - 1][0]];
     options.chart = {
@@ -233,12 +236,19 @@ const ProfitLossChart = ({ width, data }: ChartProps) => {
       )
     );
 
-    const max = formatDai(bnMax)
+    const max = paraTokenName !== WETH ? formatDai(bnMax)
+      .formattedValue : formatEther(bnMax)
       .formattedValue;
-    const min = formatDai(bnMin)
+    const min = paraTokenName !== WETH ? formatDai(bnMin)
+      .formattedValue : formatEther(bnMin)
       .formattedValue;
     const intervalDivision = bnMin.eq(0) || bnMax.eq(0) ? 1.99 : 3;
-    const tickInterval = formatDai(
+    const tickInterval = paraTokenName !== WETH ? formatDai(
+      bnMax
+        .abs()
+        .plus(bnMin.abs())
+        .div(intervalDivision)
+    ).formattedValue : formatEther(
       bnMax
         .abs()
         .plus(bnMin.abs())

@@ -58,14 +58,14 @@ $text-color: rgba(228, 228, 228, 0.9);
     font-size: 1.125rem; // 18px
     text-transform: none;
     font-weight: bold;
-    color: var(--orbit-color-primary-text);
+    color: $orbit-color-primary-text;
     z-index: 1;
     margin: 0 0 0.5rem; // 8px
     padding: 0;
   }
 
   p {
-    color: var(--orbit-color-secondary-text);
+    color: $orbit-color-secondary-text;
     font-size: 0.75rem; // 12px
     font-weight: 400;
     line-height: 1rem; // 16px
@@ -73,7 +73,7 @@ $text-color: rgba(228, 228, 228, 0.9);
     text-align: center;
 
     > span {
-      color: var(--orbit-color-primary-text);
+      color: $orbit-color-primary-text;
     }
   }
 
@@ -110,11 +110,11 @@ $text-color: rgba(228, 228, 228, 0.9);
       }
 
       input[type='submit'] {
-        background: var(--orbit-page-background);
-        border: 1px solid var(--color-secondary-action-outline);
+        background: #252429;
+        border: 1px solid #3C3B43;
         border-radius: 0.1875rem; // 3px
-        color: var(--orbit-color-primary-text);
-        font-family: 'Inter', sans-serif;
+        color: #E9E5F2;
+        font-family: 'Roboto Mono', sans-serif;
         font-size: 0.625rem; // 10px
         padding: 0.3125rem 0.375rem; // 5px & 6px
         text-transform: uppercase;
@@ -181,8 +181,8 @@ $text-color: rgba(228, 228, 228, 0.9);
 
     input[type='text'],
     input[type='password'] {
-      background-color: var(--orbit-dark-grey);
-      border-bottom: 0.0625rem solid var(--color-outline); // 1px
+      background-color: #0E0E0F;
+      border-bottom: 1px solid #252429;
       border-radius: 0.1875rem; // 3px
       margin: 0 1.5rem; // 24px
       width: 100%;
@@ -192,12 +192,10 @@ $text-color: rgba(228, 228, 228, 0.9);
       font-style: normal;
       font-size: 0.875rem; // 14px
       box-sizing: border-box;
-      color: var(--orbit-color-primary-text);
-      padding: 0.5rem 0.75rem; // 8px & 12px
     }
 
     input[type='text']::placeholder {
-      color: var(--orbit-color-secondary-text);
+      color: $orbit-color-secondary-text;
       opacity: 1;
       font-weight: normal;
       font-style: normal;
@@ -225,61 +223,4 @@ $text-color: rgba(228, 228, 228, 0.9);
   animation-duration: 0.5s;
   animation-fill-mode: both;
   animation-timing-function: ease-out;
-}
-
-:root[theme='BETTING'],
-:root[theme='SPORTS'] {
-  .LoginView {
-    h1 {
-      margin: 0 0 1rem; // 16px
-      font-size: 1.25rem; // 20px
-    }
-
-    p {
-      margin: 0 1.5rem 1rem; // 24px 16px
-      font-size: 0.875rem; // 14px
-      line-height: 1.25rem; // 20px
-    }
-
-    form {
-      input[type='text'],
-      input[type='password'] {
-        border: 0.125rem solid var(--color-outline); // 2px
-        height: 2.25rem; // 36px
-        font-size: 0.75rem; // 12px
-        text-align: left;
-      }
-
-      .connectButtonRow {
-        margin-top: 1rem; // 16px
-
-        input[type='submit'] {
-          color: var(--orbit-color-secondary-text);
-          padding: 0.5rem 0.53125rem; // 8px & 8.5px
-          margin: 0.06125rem;
-
-          &:not(:disabled):hover {
-            background-color: var(--orbit-color-primary-text);
-            color: var(--orbit-dark-grey);
-            border: 0.125rem solid var(--orbit-color-primary-text); // 2px
-            margin: auto;
-          }
-
-          &:not(:disabled):focus {
-            background-color: var(--orbit-dark-grey);
-            color: var(--orbit-color-secondary-text);
-            border: 0.125rem solid var(--color-focused); // 2px
-            margin: auto;
-          }
-
-          &:not(:disabled):active {
-            background-color: var(--orbit-dark-grey);
-            color: var(--orbit-color-primary-text);
-            border: 0.06125rem solid var(--orbit-color-primary-text); // 1px
-            margin: 0.06125rem;
-          }
-        }
-      }
-    }
-  }
 }

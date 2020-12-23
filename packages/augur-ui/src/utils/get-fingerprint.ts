@@ -1,4 +1,4 @@
-import { formatBytes32String } from 'ethers/utils';
+import { ethers } from 'ethers';
 import Fingerprint2 from 'fingerprintjs2';
 
 let fingerprint = null;
@@ -8,7 +8,7 @@ export const getFingerprint = (): string => {
   calculateFingerprint().then(value => {
     fingerprint = value
   });
-  return formatBytes32String('');
+  return ethers.utils.formatBytes32String('');
 };
 
 async function calculateFingerprint(): Promise<string> {
@@ -22,7 +22,7 @@ async function calculateFingerprint(): Promise<string> {
           1,
           32
         );
-        fingerprint = formatBytes32String(value);
+        fingerprint = ethers.utils.formatBytes32String(value);
         // console.log('fingerprint', fingerprint);
         resolve(fingerprint);
       });

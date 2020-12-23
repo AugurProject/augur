@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { formatDai, formatMarketShares } from 'utils/format-number';
+import { formatDai, formatEther, formatMarketShares } from 'utils/format-number';
 import { MarketData } from 'modules/types';
 import {
   LinearPropertyLabel,
@@ -11,6 +11,8 @@ import {
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
 import Styles from 'modules/portfolio/components/common/filled-orders-table.styles.less';
 import MarketTitle from 'modules/market/components/common/market-title';
+import { AppStatus } from 'modules/app/store/app-status';
+import { DEFAULT_PARA_TOKEN, WETH } from 'modules/common/constants';
 
 export interface FilledOrdersTableProps {
   filledOrder: MarketData;
@@ -18,6 +20,7 @@ export interface FilledOrdersTableProps {
 }
 
 const FilledOrdersTable = (props: FilledOrdersTableProps) => {
+  const { paraTokenName } = AppStatus.get();
   const { filledOrder, showMarketInfo } = props;
   return (
     <div className={Styles.FilledOrders}>
@@ -37,7 +40,7 @@ const FilledOrdersTable = (props: FilledOrdersTableProps) => {
               <ValueLabel value={formatMarketShares(filledOrder.marketType, trade.amount)} />
             </li>
             <li>
-              <ValueLabel value={formatDai(trade.price)} />
+              <ValueLabel value={paraTokenName !== WETH ? formatDai(trade.price) : formatEther(trade.price)} />
             </li>
             <li>{trade.timestamp.formattedLocalShortDateTimeNoTimezone}</li>
             <li>
@@ -64,7 +67,7 @@ const FilledOrdersTable = (props: FilledOrdersTableProps) => {
             <LinearPropertyLabel
               highlightFirst
               label="Price"
-              value={formatDai(trade.price).formatted}
+              value={paraTokenName !== WETH ? formatDai(trade.price).formatted : formatEther(trade.price).formatted}
             />
             <LinearPropertyLabel
               highlightFirst

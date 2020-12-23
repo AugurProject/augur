@@ -1,0 +1,28 @@
+{
+  "name": "@augurproject/subgraph",
+  "version": "2.2.0",
+  "private": true,
+  "scripts": {
+    "prepare:abi:Augur": "node ../augur-tools/build/flash/cli.js abi -c Augur > abis/Augur.json",
+    "prepare:abi:AugurTrading": "node ../augur-tools/build/flash/cli.js abi -c AugurTrading > abis/AugurTrading.json",
+    "prepare:abi:AMMFactory": "node ../augur-tools/build/flash/cli.js abi -c AMMFactory > abis/AMMFactory.json",
+    "prepare:abi:AMMExchange": "node ../augur-tools/build/flash/cli.js abi -c AMMExchange > abis/AMMExchange.json",
+    "prepare:abi:ParaDeployer": "node ../augur-tools/build/flash/cli.js abi -c ParaDeployer > abis/ParaDeployer.json",
+    "prepare:abi:ParaShareToken": "node ../augur-tools/build/flash/cli.js abi -c ParaShareToken > abis/ParaShareToken.json",
+    "prepare:abi": "mkdir abis; yarn prepare:abi:Augur; yarn prepare:abi:AugurTrading; yarn prepare:abi:AMMFactory; yarn prepare:abi:AMMExchange; yarn prepare:abi:ParaDeployer; yarn prepare:abi:ParaShareToken",
+    "prepare:mainnet": "mustache ../augur-artifacts/src/environments/mainnet.json subgraph.template.yaml > subgraph.yaml",
+    "prepare:staging": "mustache ../augur-artifacts/src/environments/v2.json subgraph.template.yaml > subgraph.yaml",
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy:mainnet": "yarn prepare:mainnet && graph deploy --node https://api.thegraph.com/deploy/ --access-token $GRAPH_TOKEN --ipfs https://api.thegraph.com/ipfs/ augurproject/augur-v2",
+    "deploy:staging": "yarn prepare:staging && graph deploy --node https://api.thegraph.com/deploy/ --access-token $GRAPH_TOKEN --ipfs https://api.thegraph.com/ipfs/ augurproject/augur-v2-staging",
+    "create-local": "graph create --node http://localhost:8020/ augurproject/augur-v2",
+    "remove-local": "graph remove --node http://localhost:8020/ augurproject/augur-v2",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 augurproject/augur-v2"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.18.0",
+    "@graphprotocol/graph-ts": "0.18.0",
+    "mustache": "4.0.1"
+  }
+}

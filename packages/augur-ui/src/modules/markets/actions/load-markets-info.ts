@@ -20,8 +20,12 @@ export const loadMarketsInfo = (
   try {
     const augur = augurSdk.get();
     marketInfoArray = await augur.getMarketsInfo({ marketIds });
+
+    console.log('LOADED MARKETS', marketInfoArray);
   } catch (e) {
-    console.log(e);
+    // console.log(e);
+    callback("no markets data received", []);
+    return NO_MARKET_INFOS;
   }
 
   if (marketInfoArray == null || !marketInfoArray.length) {

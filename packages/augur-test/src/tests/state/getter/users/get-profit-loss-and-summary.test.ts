@@ -13,13 +13,13 @@ import {
   TradeData,
   PLResultData,
 } from './common';
-import { formatBytes32String } from 'ethers/utils';
 import { Market } from '@augurproject/core/build/libraries/ContractInterfaces';
 import { repeat } from '@augurproject/utils';
 import {
   MarketInfo,
   MarketList,
 } from '@augurproject/sdk-lite';
+import { ethers } from 'ethers';
 
 const INVALID = 0;
 const NO = 1;
@@ -1063,7 +1063,7 @@ async function createCategoricalMarket(
         categories,
         description,
       }),
-      outcomes: formatOutcomes ? outcomes.map(formatBytes32String) : outcomes,
+      outcomes: formatOutcomes ? outcomes.map(ethers.utils.formatBytes32String) : outcomes,
     },
     faucet
   );

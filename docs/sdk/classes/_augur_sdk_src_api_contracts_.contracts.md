@@ -24,7 +24,6 @@
 * [buyParticipationTokens](_augur_sdk_src_api_contracts_.contracts.md#buyparticipationtokens)
 * [cancelOrder](_augur_sdk_src_api_contracts_.contracts.md#cancelorder)
 * [cash](_augur_sdk_src_api_contracts_.contracts.md#cash)
-* [cashFaucet](_augur_sdk_src_api_contracts_.contracts.md#cashfaucet)
 * [createOrder](_augur_sdk_src_api_contracts_.contracts.md#createorder)
 * [dependencies](_augur_sdk_src_api_contracts_.contracts.md#private-dependencies)
 * [ethExchange](_augur_sdk_src_api_contracts_.contracts.md#ethexchange)
@@ -159,14 +158,6 @@ ___
 • **cash**: *Cash*
 
 *Defined in [packages/augur-sdk/src/api/Contracts.ts:13](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/Contracts.ts#L13)*
-
-___
-
-###  cashFaucet
-
-• **cashFaucet**: *CashFaucet*
-
-*Defined in [packages/augur-sdk/src/api/Contracts.ts:26](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/Contracts.ts#L26)*
 
 ___
 

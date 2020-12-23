@@ -43,8 +43,7 @@ export class Market {
   async createYesNoMarket(
     params: CreateYesNoMarketParams
   ): Promise<ContractInterfaces.Market> {
-    const universe = this.augur.contracts.universe;
-    // TODO
+    const universe = await this.augur.contracts.getOriginUniverse();
     const affiliateValidator = params.affiliateValidator || NULL_ADDRESS;
 
     const events = await universe.createYesNoMarket(
@@ -62,8 +61,7 @@ export class Market {
   async createCategoricalMarket(
     params: CreateCategoricalMarketParams
   ): Promise<ContractInterfaces.Market> {
-    const universe = this.augur.contracts.universe;
-    // TODO
+    const universe = await this.augur.contracts.getOriginUniverse();
     const affiliateValidator = params.affiliateValidator || NULL_ADDRESS;
 
     const events = await universe.createCategoricalMarket(
@@ -82,8 +80,7 @@ export class Market {
   async createScalarMarket(
     params: CreateScalarMarketParams
   ): Promise<ContractInterfaces.Market> {
-    const universe = this.augur.contracts.universe;
-    // TODO
+    const universe = await this.augur.contracts.getOriginUniverse();
     const affiliateValidator = params.affiliateValidator || NULL_ADDRESS;
 
     const events = await universe.createScalarMarket(

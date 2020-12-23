@@ -7,12 +7,13 @@ import { switchUniverse } from 'modules/universe-cards/actions/switch-universe';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { Universe } from 'modules/types';
-import { formatAttoRep, formatDai } from 'utils/format-number';
+import { formatAttoRep, formatDai, formatEther } from 'utils/format-number';
+import { DEFAULT_PARA_TOKEN, WETH } from 'modules/common/constants';
 
 interface UniverseCardProps {
   universe: Universe;
 }
-const useBreakdown = (universe) => [
+const useBreakdown = (universe, paraTokenName) => [
   {
     label: 'Your REPv2',
     value: formatAttoRep(universe.usersRep).formatted,
@@ -23,7 +24,7 @@ const useBreakdown = (universe) => [
   },
   {
     label: 'Total Open Interest',
-    value: formatDai(universe.totalOpenInterest).full,
+    value: paraTokenName !== WETH ? formatDai(universe.totalOpenInterest).full : formatEther(universe.totalOpenInterest).full,
   },
   {
     label: 'Number of Markets',
@@ -34,9 +35,10 @@ const useBreakdown = (universe) => [
 export const UniverseCard = ({ universe }: UniverseCardProps) => {
   const history = useHistory();
   const {
+    paraTokenName,
     universe: { id: currentUniverseId, parentUniverseId },
   } = useAppStatusStore();
-  const breakdown = useBreakdown(universe);
+  const breakdown = useBreakdown(universe, paraTokenName);
   const {
     id: universeId,
     creationTimestamp: rawCreationTime,

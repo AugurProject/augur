@@ -1,16 +1,17 @@
 import { MAX_FILLS_PER_TX } from '@augurproject/sdk-lite';
 import memoize from 'memoizee';
 import * as constants from 'modules/common/constants';
+import { WETH } from 'modules/common/constants';
 import {
   calcOrderProfitLossPercents,
   calcOrderShareProfitLoss,
   calculateTotalOrderValue,
 } from 'modules/trades/helpers/calc-order-profit-loss-percents';
 import { createBigNumber } from 'utils/create-big-number';
-import { formatDai, formatMarketShares } from 'utils/format-number';
+import { formatDai, formatEther, formatMarketShares } from 'utils/format-number';
 
 export const generateTrade = memoize(
-  (market, outcomeTradeInProgress) => {
+  (market, outcomeTradeInProgress, paraToken) => {
     const { settlementFee } = market;
     const side =
       (outcomeTradeInProgress?.side) || constants.BUY;
@@ -92,32 +93,38 @@ export const generateTrade = memoize(
       numFills: outcomeTradeInProgress?.numFills ? outcomeTradeInProgress.numFills.toNumber() : 0,
       loopLimit: outcomeTradeInProgress?.loopLimit ? outcomeTradeInProgress.loopLimit.toNumber() : MAX_FILLS_PER_TX.toNumber(),
       totalOrderValue: totalOrderValue
-        ? formatDaiValue(totalOrderValue)
+        ? paraToken !== WETH ? formatDaiValue(totalOrderValue) : formatEthValue(totalOrderValue)
         : null,
       orderShareProfit: orderShareProfitLoss
-        ? formatDaiValue(orderShareProfitLoss.potentialDaiProfit)
+        ? paraToken !== WETH ? formatDaiValue(orderShareProfitLoss.potentialDaiProfit) : formatEthValue(orderShareProfitLoss.potentialDaiProfit)
         : null,
       orderShareTradingFee: orderShareProfitLoss
-        ? formatDaiValue(orderShareProfitLoss.tradingFees)
+        ? paraToken !== WETH ? formatDaiValue(orderShareProfitLoss.tradingFees) : formatEthValue(orderShareProfitLoss.tradingFees)
         : null,
       potentialDaiProfit: preOrderProfitLoss
-        ? formatDaiValue(preOrderProfitLoss.potentialDaiProfit)
+        ? paraToken !== WETH ? formatDaiValue(preOrderProfitLoss.potentialDaiProfit) : formatEthValue(preOrderProfitLoss.potentialDaiProfit)
         : null,
       potentialDaiLoss: preOrderProfitLoss
-        ? formatDaiValue(preOrderProfitLoss.potentialDaiLoss)
+        ? paraToken !== WETH ? formatDaiValue(preOrderProfitLoss.potentialDaiLoss) : formatEthValue(preOrderProfitLoss.potentialDaiLoss)
         : null,
       tradingFees: preOrderProfitLoss
-        ? formatDaiValue(preOrderProfitLoss.tradingFees)
+        ? paraToken !== WETH ? formatDaiValue(preOrderProfitLoss.tradingFees) : formatEthValue(preOrderProfitLoss.tradingFees)
         : null,
-      totalFee: formatDaiValue(totalFee, { blankZero: true }),
-      totalFeePercent: formatDaiValue(feePercent, { blankZero: true }),
-      totalCost: formatDaiValue(totalCost.abs().toFixed(), {
+      totalFee: paraToken !== WETH ? formatDaiValue(totalFee, { blankZero: true }) : formatEthValue(totalFee, { blankZero: true }),
+      totalFeePercent: paraToken !== WETH ? formatDaiValue(feePercent, { blankZero: true }) : formatEthValue(feePercent, { blankZero: true }),
+      totalCost: paraToken !== WETH ? formatDaiValue(totalCost.abs().toFixed(), {
+        blankZero: false,
+      }) : formatEthValue(totalCost.abs().toFixed(), {
         blankZero: false,
       }),
-      costInDai: formatDaiValue(costInDai.abs().toFixed(), {
+      costInDai: paraToken !== WETH ? formatDaiValue(costInDai.abs().toFixed(), {
+        blankZero: false,
+      }) : formatEthValue(costInDai.abs().toFixed(), {
         blankZero: false,
       }),
-      shareCost: formatDaiValue(shareCost.abs().toFixed(), {
+      shareCost: paraToken !== WETH ? formatDaiValue(shareCost.abs().toFixed(), {
+        blankZero: false,
+      }) : formatEthValue(shareCost.abs().toFixed(), {
         blankZero: false,
       }), // These are actually shares, but they can be formatted like DAI
     };
@@ -127,6 +134,15 @@ export const generateTrade = memoize(
 
 const formatDaiValue = (value, options = {}) =>
   formatDai(
+    value,
+    Object.assign(
+      { decimalsRounded: constants.UPPER_FIXED_PRECISION_BOUND },
+      options,
+    ),
+  );
+
+  const formatEthValue = (value, options = {}) =>
+  formatEther(
     value,
     Object.assign(
       { decimalsRounded: constants.UPPER_FIXED_PRECISION_BOUND },

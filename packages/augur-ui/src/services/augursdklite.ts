@@ -1,19 +1,19 @@
 import { AugurLite } from '@augurproject/sdk-lite';
-import { Addresses } from '@augurproject/sdk-lite/build/AugurLite';
-import { NetworkId } from '@augurproject/utils';
-import { JsonRpcProvider } from 'ethers/providers';
+import { Config, ContractAddresses, NetworkId } from '@augurproject/utils';
+import { ethers } from 'ethers';
+
 
 export class SDKLite {
   client: AugurLite | null = null;
 
   // Async to remain consistent with the sdk 'makeClient' method.
   async makeLiteClient(
-    provider: JsonRpcProvider,
-    addresses: Addresses,
+    provider: ethers.providers.JsonRpcProvider,
+    config: Config,
     networkId: NetworkId,
     ): Promise<AugurLite> {
 
-    this.client = new AugurLite(provider, addresses, networkId);
+    this.client = new AugurLite(provider, config, networkId);
     return this.client;
   }
 
@@ -26,9 +26,9 @@ export class SDKLite {
   }
 
   ready(): boolean {
-    if (this.client) return true;
-    return false;
+    return Boolean(this.client);
   }
 }
 
 export const augurSdkLite = new SDKLite();
+window['augurSdkLite'] = augurSdkLite;

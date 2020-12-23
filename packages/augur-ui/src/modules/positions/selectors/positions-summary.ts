@@ -9,11 +9,12 @@ import {
   REPORTING_STATE,
   CLOSED_LONG,
   CLOSED_SHORT,
+  WETH,
 } from 'modules/common/constants';
-import { formatDai, formatPercent, formatNone, formatMarketShares } from 'utils/format-number';
+import { formatDai, formatPercent, formatNone, formatMarketShares, formatEther } from 'utils/format-number';
 
 export const positionSummary = memoize(
-  (adjustedPosition, outcome, marketType, reportingState, isFullLoss) => {
+  (adjustedPosition, outcome, marketType, reportingState, isFullLoss, paraTokenName) => {
     if (!adjustedPosition) {
       return null;
     }
@@ -63,28 +64,35 @@ export const positionSummary = memoize(
       outcomeId,
       type,
       quantity: formatMarketShares(marketType, quantity),
-      purchasePrice: formatDai(avgPrice, { decimals: 3, decimalsRounded: 3 }),
-      realizedNet: formatDai(realized),
-      unrealizedNet: formatDai(unrealized),
-      unrealized24Hr: formatDai(unrealized24),
+      purchasePrice: paraTokenName !== WETH ? formatDai(avgPrice, {
+        decimals: 3,
+        decimalsRounded: 3
+      }) : formatEther(avgPrice, {
+        decimals: 3,
+        decimalsRounded: 3
+      }),
+      realizedNet: paraTokenName !== WETH ? formatDai(realized) : formatEther(realized),
+      unrealizedNet: paraTokenName !== WETH ? formatDai(unrealized) : formatEther(unrealized),
+      unrealized24Hr: paraTokenName !== WETH ? formatDai(unrealized24) : formatEther(unrealized24),
       realizedPercent: formatPercent(timesHundred(realizedPercent || ZERO), {
         decimalsRounded: 2,
       }),
       unrealizedPercent: formatPercent(
-        timesHundred(unrealizedPercent || ZERO),
-        { decimalsRounded: 2 }
+        timesHundred(unrealizedPercent || ZERO), {
+          decimalsRounded: 2
+        }
       ),
       unrealized24HrPercent: formatPercent(
-        timesHundred(unrealized24HrPercent || ZERO),
-        { decimalsRounded: 2 }
+        timesHundred(unrealized24HrPercent || ZERO), {
+          decimalsRounded: 2
+        }
       ),
-      totalCost: formatDai(totalCost),
-      totalValue: formatDai(currentValue),
-      lastPrice: !!outcome.price ? formatDai(outcome.price) : formatNone(),
-      totalReturns: formatDai(total || ZERO),
+      totalCost: paraTokenName !== WETH ? formatDai(totalCost) : formatEther(totalCost),
+      totalValue: paraTokenName !== WETH ? formatDai(currentValue) : formatEther(currentValue),
+      lastPrice: !!outcome.price ? paraTokenName !== WETH ? formatDai(outcome.price) : formatEther(outcome.price) : formatNone(),
+      totalReturns: paraTokenName !== WETH ? formatDai(total || ZERO) : formatEther(total || ZERO),
       valueChange: formatPercent(
-        timesHundred(unrealizedRevenue24hChangePercent),
-        {
+        timesHundred(unrealizedRevenue24hChangePercent), {
           decimalsRounded: 2,
         }
       ),
@@ -92,10 +100,9 @@ export const positionSummary = memoize(
         decimalsRounded: 2,
       }),
     };
-  },
-  {
-    max: 50,
-  }
+    }, {
+      max: 50,
+    }
 );
 
 const timesHundred = value =>

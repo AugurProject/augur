@@ -38,7 +38,7 @@ export const MigrateRep = () => {
   const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
   const [gasLimit, setGasLimit] = useState(V1_REP_MIGRATE_ESTIMATE);
   const [isApproved, setIsApproved] = useState(false);
-  const ethForGas = balances.signerBalances.eth;
+  const ethForGas = balances.eth;
   const gasCostDai = getGasCost(gasLimit, gasPrice, ethToDaiRate);
   const displayfee = `$${gasCostDai.formattedValue}`;
 
@@ -72,7 +72,7 @@ export const MigrateRep = () => {
       <div>
         <span>V1 REP to migrate</span>
         <span>
-          {formatRep(balances.signerBalances.legacyRep).formattedValue}
+          {formatRep(balances.legacyRep).formattedValue}
         </span>
       </div>
       <div>
@@ -133,7 +133,7 @@ export const MigrateRep = () => {
             queueName={TRANSACTIONS}
             queueId={MIGRATE_FROM_LEG_REP_TOKEN}
             disabled={
-              balances.signerBalances.legacyRep === '0' ||
+              balances.legacyRep === '0' ||
               !hasEnoughEthForGas ||
               !isApproved
             }
