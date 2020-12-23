@@ -156,7 +156,7 @@ export interface MarketInfo {
   fee: string,
   categories: string[],
   outcomes: MarketOutcome[],
-  amms: AmmExchange | null,
+  amm: AmmExchange | null,
   reportingState: string
 }
 

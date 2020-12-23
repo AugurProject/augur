@@ -7,6 +7,7 @@ import classNames from 'classnames';
 import { formatDai, formatPercent } from 'utils/format-number';
 import { Checkbox } from 'modules/common/icons';
 import { SmallRoundedButton } from './buttons';
+import { MarketInfo } from '../types';
 
 const HIGHLIGHTED_LINE_WIDTH = 2;
 const NORMAL_LINE_WIDTH = 2;
@@ -253,7 +254,7 @@ const handleSeries = (
       name: formattedOutcomes[index].label,
       type: isSelected ? 'area' : 'line',
       lineWidth: isSelected ? HIGHLIGHTED_LINE_WIDTH : NORMAL_LINE_WIDTH,
-      states: { 
+      states: {
         hover: {
           lineWidth: isSelected ? HIGHLIGHTED_LINE_WIDTH : NORMAL_LINE_WIDTH,
         }
@@ -348,7 +349,7 @@ const getOptions = ({
     gridLineColor: null,
     labels: false,
   },
-  tooltip: { 
+  tooltip: {
     enabled: true,
     shape: 'square',
     shared: true,
@@ -369,25 +370,13 @@ const getOptions = ({
 });
 
 export const getFormattedOutcomes = ({
-  market: { amms, outcomes },
-}) => {
-  let formattedOutcomes = outcomes.map((outcome, outcomeIdx) => ({
+  market: { amm, outcomes },
+}: { market: MarketInfo }) => {
+  return outcomes.map((outcome, outcomeIdx) => ({
     ...outcome,
     outcomeIdx,
-    label: outcome.value.toLowerCase(),
-    lastPrice: '0.5',
+    label: (outcome?.name || outcome?.value).toLowerCase(),
+    lastPrice: !amm ? '0.5' : outcomeIdx === 1 ? amm.priceNo : amm.priceYes,
   }));
-  amms.forEach(
-    ({ percentageNo, percentageYes, shareToken: { id: shareTokenId } }) => {
-      formattedOutcomes.forEach(fmrOut => {
-        fmrOut.lastPrice =
-          fmrOut.outcomeIdx === 0
-            ? formatPercent('0').formatted
-            : fmrOut.outcomeIdx === 1
-            ? formatPercent(percentageNo / 100).formatted
-            : formatPercent(percentageYes / 100).formatted;
-      });
-    }
-  );
-  return formattedOutcomes;
+
 };
