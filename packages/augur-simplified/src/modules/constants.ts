@@ -19,6 +19,11 @@ export const MARKET = 'market';
 export const MARKETS = 'markets';
 export const PORTFOLIO = 'portfolio';
 
+// QUERY_PARAMS
+export const MARKET_ID_PARAM_NAME = 'id';
+export const AFFILIATE_NAME = 'r';
+export const THEME_NAME = 't';
+
 // Directions
 export const BUY = 'buy';
 export const SELL = 'sell';
@@ -74,8 +79,8 @@ export const FILTERS = 'FILTERS';
 
 export const SIDEBAR_TYPES = {
   [NAVIGATION]: NAVIGATION,
-  [FILTERS]: FILTERS
-}
+  [FILTERS]: FILTERS,
+};
 
 //  transaction types
 export const ALL = 'all';
@@ -85,7 +90,6 @@ export const REMOVE = 'remove';
 
 export const INVALID_OUTCOME_ID = 0;
 export const YES_OUTCOME_ID = 2;
-
 
 export const OPEN = 'Open';
 export const IN_SETTLEMENT = 'In settlement';
