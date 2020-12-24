@@ -345,7 +345,6 @@ export const getUserBalances = async (web3Provider: EthersProvider, account: str
     }
   })
 
-  console.log('userBalances', userBalances)
   return userBalances
 }
 
