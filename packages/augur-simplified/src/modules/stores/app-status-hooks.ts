@@ -139,8 +139,10 @@ export function AppStatusReducer(state, action) {
   return updatedState;
 }
 
+// @ts-ignore
+const paraConfig: ParaDeploys = process.env.CONFIGURATION || {};
+
 export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
-  const paraConfig: ParaDeploys = JSON.parse(process.env.CONFIGURATION) || {};
   const [state, pureDispatch] = useReducer(AppStatusReducer, { ...defaultState, paraConfig });
   const dispatch = dispatchMiddleware(pureDispatch);
   windowRef.appStatus = state;
