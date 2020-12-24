@@ -803,20 +803,18 @@ export interface LoginAccountSettings {
 }
 
 export interface LoginAccount {
-  address?: string;
+  account?: string;
   mixedCaseAddress?: string;
   meta?: LoginAccountMeta;
-  totalFrozenFunds?: string;
-  totalRealizedPL?: string;
-  totalOpenOrdersFrozenFunds?: string;
-  tradingPositionsTotal?: UnrealizedRevenue;
-  timeframeData?: TimeframeData;
-  tradingApproved?: boolean;
-  currentOnboardingStep?: number;
   balances: AccountBalances;
-  reporting: Getters.Accounts.AccountReportingHistory;
   settings?: LoginAccountSettings;
-  affiliate?: string;
+  active: boolean;
+  chainId: number;
+  library?: any; //Web3Provider;
+  activate?: () => {};
+  connector?: any; // AbstractConnector, InjectedConnector for Metamask
+  error?: string;
+  deactivate?: () => {};
 }
 
 export interface Web3 {
@@ -1032,12 +1030,16 @@ export interface ActivityCardProps {
 export interface LPToken {
   [ammId: string]: {
     balance: string;
+    rawBalance: string;
   }
 }
 
 export interface AmmMarketShares {
   [ammId: string]: {
-    [outcomeIdx: number]: string
+    [outcomeIdx: number]: {
+      balance: string;
+      rawBalance: string;
+    }
   }
 }
 export interface UserBalances {

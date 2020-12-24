@@ -41,6 +41,7 @@ export function useCopyClipboard(timeout = 500): [boolean, (toCopy: string) => v
 // TODO: this prob needs to go into context
 let augurClient = null;
 export function useAugurClient() {
+  const activeWeb3 = useActiveWeb3React()
   const { account, library, chainId } = useActiveWeb3React()
   const {
     paraConfig,

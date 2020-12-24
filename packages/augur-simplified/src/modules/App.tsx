@@ -28,10 +28,11 @@ const AppBody = () => {
     sidebarType,
     showTradingForm,
     processed,
+    loginAccount,
     actions: { setIsMobile, updateGraphData, updateProcessed },
   } = useAppStatusStore();
 
-  const { account, library } = useActiveWeb3React()
+  const { library } = useActiveWeb3React()
 
   useEffect(() => {
     // get data immediately, then setup interval
@@ -79,11 +80,12 @@ const AppBody = () => {
   }, [showTradingForm]);
 
   useEffect(() => {
-    if (account && processed) {
+    if (loginAccount?.account) {
       const {markets, ammExchanges, cashes} = processed;
-      const userBalances = getUserBalances(library, account, markets, ammExchanges, cashes);
+      const userBalances = getUserBalances(loginAccount?.library, loginAccount?.account, markets, ammExchanges, cashes);
+
     }
-  }, [account, processed, library])
+  }, [loginAccount?.account, processed, library])
 
   return (
     <div className={Styles.App}>
