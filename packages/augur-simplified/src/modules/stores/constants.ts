@@ -68,7 +68,8 @@ export const APP_STATE_KEYS = {
   GRAPH_DATA: 'graphData',
   PROCESSED: 'processed',
   MARKETS_VIEW_SETTINGS: 'marketsViewSettings',
-  PARACONFIG: 'paraConfig'
+  PARACONFIG: 'paraConfig',
+  USER_BALANCES: 'userBalances',
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -79,6 +80,7 @@ export const APP_STATUS_ACTIONS = {
   UPDATE_PROCESSED: 'UPDATE_PROCESSED',
   SET_LOGIN_ACCOUNT: 'SET_LOGIN_ACCOUNT',
   UPDATE_MARKETS_VIEW_SETTINGS: 'UPDATE_MARKETS_VIEW_SETTINGS',
+  UPDATE_USER_BALANCES: 'UPDATE_USER_BALANCES',
 };
 
 export const fakePositionsData = [

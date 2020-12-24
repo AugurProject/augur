@@ -8,12 +8,10 @@ import {
   Multicall,
   ContractCallResults,
   ContractCallContext,
-} from 'ethereum-multicall';
+} from '@augurproject/ethereum-multicall';
 
-import { EthersProvider } from '@augurproject/contract-dependencies-ethers/build'
+import { EthersProvider } from '@augurproject/contract-dependencies-ethers'
 import Web3 from 'web3';
-import { InjectedConnector } from '@web3-react/injected-connector';
-import { AbstractConnector } from '@web3-react/abstract-connector';
 import { onChainMarketSharesToDisplayFormatter } from './format-number';
 
 // TODO: when scalars get num ticks from market
@@ -255,7 +253,7 @@ export async function doTrade(augurClient, trade: TradeInfo, minAmount: string, 
 }
 
 
-export const getUserBalances = async (web3Provider: EthersProvider, account: string, markets: MarketInfos, ammExchanges: AmmExchanges, cashes: Cashes): Promise<UserBalances> => {
+export const getUserBalances = async (web3Provider: EthersProvider, account: string, ammExchanges: AmmExchanges, cashes: Cashes): Promise<UserBalances> => {
   const userBalances = {
     lpTokens: {},
     marketShares: {}
@@ -344,7 +342,6 @@ export const getUserBalances = async (web3Provider: EthersProvider, account: str
       }
     }
   })
-
   return userBalances
 }
 

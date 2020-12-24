@@ -29,7 +29,7 @@ const AppBody = () => {
     showTradingForm,
     processed,
     loginAccount,
-    actions: { setIsMobile, updateGraphData, updateProcessed },
+    actions: { setIsMobile, updateGraphData, updateProcessed, updateUserBalances },
   } = useAppStatusStore();
 
   const { library } = useActiveWeb3React()
@@ -80,10 +80,10 @@ const AppBody = () => {
   }, [showTradingForm]);
 
   useEffect(() => {
+    const fetchUserBalances = (loginAccount, ammExchanges, cashes) => getUserBalances(loginAccount?.library, loginAccount?.account, ammExchanges, cashes);
     if (loginAccount?.account) {
-      const {markets, ammExchanges, cashes} = processed;
-      const userBalances = getUserBalances(loginAccount?.library, loginAccount?.account, markets, ammExchanges, cashes);
-
+      const { ammExchanges, cashes } = processed;
+      fetchUserBalances(loginAccount, ammExchanges, cashes).then(userBalances => updateUserBalances(userBalances))
     }
   }, [loginAccount?.account, processed, library])
 
