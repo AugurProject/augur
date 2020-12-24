@@ -7,6 +7,7 @@ import {
 } from 'modules/stores/constants';
 import { windowRef } from 'utils/window-ref';
 import { getUserActvity } from 'utils/process-data';
+import { ParaDeploys } from '../types';
 
 const {
   SET_SHOW_TRADING_FORM,
@@ -72,7 +73,6 @@ export const arrayToKeyedObjectByProp = (ArrayOfObj: any[], prop: string) =>
     acc[obj[prop]] = obj;
     return acc;
   }, {});
-
 
 export function AppStatusReducer(state, action) {
   const updatedState = { ...state };
@@ -140,13 +140,14 @@ export function AppStatusReducer(state, action) {
 }
 
 export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
-  const [state, pureDispatch] = useReducer(AppStatusReducer, defaultState);
+  const paraConfig: ParaDeploys = JSON.parse(process.env.CONFIGURATION) || {};
+  const [state, pureDispatch] = useReducer(AppStatusReducer, { ...defaultState, paraConfig });
   const dispatch = dispatchMiddleware(pureDispatch);
   windowRef.appStatus = state;
   return {
     ...state,
     actions: {
-      updateMarketsViewSettings: (marketsViewSettings) => dispatch({type: UPDATE_MARKETS_VIEW_SETTINGS, marketsViewSettings}),
+      updateMarketsViewSettings: (marketsViewSettings) => dispatch({ type: UPDATE_MARKETS_VIEW_SETTINGS, marketsViewSettings }),
       setShowTradingForm: (showTradingForm) =>
         dispatch({ type: SET_SHOW_TRADING_FORM, showTradingForm }),
       setSidebar: (sidebarType) => dispatch({ type: SET_SIDEBAR, sidebarType }),

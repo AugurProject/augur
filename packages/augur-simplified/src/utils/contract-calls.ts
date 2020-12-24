@@ -1,6 +1,15 @@
 import { BigNumber as BN } from 'bignumber.js'
-import { RemoveLiquidityRate, numTicksToTickSizeWithDisplayPrices,convertDisplayAmountToOnChainAmount } from '@augurproject/sdk-lite'
+import { RemoveLiquidityRate, numTicksToTickSizeWithDisplayPrices, convertDisplayAmountToOnChainAmount, ParaShareToken } from '@augurproject/sdk-lite'
 import { TradeInfo, TradingDirection } from 'modules/types'
+import { AmmExchanges, Cashes, MarketInfos, UserBalances } from '../modules/types'
+
+import {
+  Multicall,
+  ContractCallResults,
+  ContractCallContext,
+} from 'ethereum-multicall';
+
+import { EthersProvider } from '@augurproject/contract-dependencies-ethers/build'
 
 // TODO: when scalars get num ticks from market
 export const YES_NO_NUM_TICKS = 1000
@@ -239,3 +248,202 @@ export async function doTrade(augurClient, trade: TradeInfo, minAmount: string, 
   }
   return null
 }
+
+
+export const getUserBalances = async (provider: EthersProvider, account: string, markets: MarketInfos, ammExchanges: AmmExchanges, cashes: Cashes): Promise<UserBalances> => {
+  const userBalances = {
+    lpTokens: {},
+    marketShares: {}
+  }
+  console.log('getUserBalances', account, markets, ammExchanges, cashes)
+  // TODO: use amm factory abi when that's available in sdk-lite
+  //const lpAbi = AMMFactoryAbi;
+  const lpAbi = ERC20ABI;
+
+  // balance of
+  const ammAddresses: string[] = Object.keys(ammExchanges);
+  const exchanges = Object.values(ammExchanges);
+  // share tokens
+  const shareTokens: string[] = Object.keys(cashes).map(id => cashes[id].shareToken)
+  // markets
+  const marketIds: string[] = Object.keys(markets);
+  const multicall = new Multicall({ web3Instance: provider });
+
+  const contractLpBalanceCall: ContractCallContext[] = ammAddresses.map(address =>
+  ({
+    reference: address,
+    contractAddress: address,
+    abi: lpAbi,
+    calls: [{ reference: address, methodName: 'balanceOf', methodParameters: [account] }]
+  })
+  );
+
+  const contractMarketShareBalanceCall: ContractCallContext[] = marketIds.reduce((p, marketId) => {
+    const shareTokenOutcomeShareBalances = shareTokens.reduce((k, shareToken) => {
+      // TODO: might need to change when scalars come in
+      const outcomeShareBalances = [0, 1, 2].map(outcome => ({
+        reference: `${marketId}-${outcome}`,
+        contractAddress: shareToken,
+        abi: ParaShareToken.ABI,
+        calls: [{ reference: `${marketId}-${outcome}`, methodName: 'balanceOfMarketOutcome', methodParameters: [marketId, outcome, account] }]
+      }))
+      return [...k, ...outcomeShareBalances]
+    }, [])
+    return [...p, ...shareTokenOutcomeShareBalances]
+  }, []
+  );
+
+  const balananceCalls = [...contractLpBalanceCall, ...contractMarketShareBalanceCall]
+
+  let balances: string[] = []
+  const balanceResult: ContractCallResults = await multicall.call(balananceCalls);
+  Object.keys(balanceResult.results).map(key => {
+    const value = String(new BN(JSON.parse(JSON.stringify(balanceResult.results[key].callsReturnContext[0].returnValues)).hex))
+    balances.push(value);
+
+    const method = String(balanceResult.results[key].originalContractCallContext.calls[0].methodName)
+    const contractAddress = String(balanceResult.results[key].originalContractCallContext.contractAddress);
+    const params = String(balanceResult.results[key].originalContractCallContext.calls[0].methodParameters)
+    const balance = balanceResult.results[key].callsReturnContext[0].returnValues as any;
+
+    if (method === 'balanceOf') {
+      userBalances.lpTokens[contractAddress] = { balance };
+    } else if (method === 'balanceOfMarketOutcome') {
+
+      const [marketId, outcome] = params;
+      const amm = exchanges.find(e => e.sharetoken === contractAddress && e.marketId === marketId);
+
+      if (amm) {
+        const existingAmm = userBalances.marketShares[amm.id];
+        if (existingAmm) {
+          existingAmm[outcome] = balance;
+        } else {
+          userBalances.marketShares[amm.id] = {}
+          userBalances.marketShares[amm.id][outcome] = balance;
+        }
+      }
+    }
+  })
+
+  return userBalances
+}
+
+
+const ERC20ABI =
+  [
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "name",
+      "outputs": [{ "name": "", "type": "string" }],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        { "name": "_spender", "type": "address" },
+        { "name": "_value", "type": "uint256" }
+      ],
+      "name": "approve",
+      "outputs": [{ "name": "", "type": "bool" }],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "totalSupply",
+      "outputs": [{ "name": "", "type": "uint256" }],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        { "name": "_from", "type": "address" },
+        { "name": "_to", "type": "address" },
+        { "name": "_value", "type": "uint256" }
+      ],
+      "name": "transferFrom",
+      "outputs": [{ "name": "", "type": "bool" }],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "decimals",
+      "outputs": [{ "name": "", "type": "uint8" }],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [{ "name": "_owner", "type": "address" }],
+      "name": "balanceOf",
+      "outputs": [{ "name": "balance", "type": "uint256" }],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "symbol",
+      "outputs": [{ "name": "", "type": "string" }],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        { "name": "_to", "type": "address" },
+        { "name": "_value", "type": "uint256" }
+      ],
+      "name": "transfer",
+      "outputs": [{ "name": "", "type": "bool" }],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        { "name": "_owner", "type": "address" },
+        { "name": "_spender", "type": "address" }
+      ],
+      "name": "allowance",
+      "outputs": [{ "name": "", "type": "uint256" }],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    { "payable": true, "stateMutability": "payable", "type": "fallback" },
+    {
+      "anonymous": false,
+      "inputs": [
+        { "indexed": true, "name": "owner", "type": "address" },
+        { "indexed": true, "name": "spender", "type": "address" },
+        { "indexed": false, "name": "value", "type": "uint256" }
+      ],
+      "name": "Approval",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        { "indexed": true, "name": "from", "type": "address" },
+        { "indexed": true, "name": "to", "type": "address" },
+        { "indexed": false, "name": "value", "type": "uint256" }
+      ],
+      "name": "Transfer",
+      "type": "event"
+    }
+  ]

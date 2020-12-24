@@ -27,10 +27,14 @@ const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const ForkTsCheckerWebpackPlugin = require('react-dev-utils/ForkTsCheckerWebpackPlugin');
 const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const { buildConfig } = require('@augurproject/artifacts');
 
 const postcssNormalize = require('postcss-normalize');
 
 const appPackageJson = require(paths.appPackageJson);
+
+const AUGUR_ENV = process.env.AUGUR_ENV || process.env.ETHEREUM_NETWORK || 'local';
+const config = buildConfig(AUGUR_ENV);
 
 // Source maps are resource heavy and can cause out of memory issue for large source files.
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
@@ -704,6 +708,9 @@ module.exports = function (webpackEnv) {
             }),
           },
         },
+      }),
+      new webpack.EnvironmentPlugin({
+        CONFIGURATION: config
       }),
     ].filter(Boolean),
     // Some libraries import Node modules but don't use them in the browser.

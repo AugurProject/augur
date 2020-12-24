@@ -157,6 +157,7 @@ const jsonConfig = {
     Cashes: [
       {
         address: '0x7290c2b7d5fc91a112d462fe06abbb8948668f56',
+        shareToken: '0x76eCfb6d07DF1A1bD31f485D7160b201C64f878E',
         name: 'ETH',
         symbol: 'ETH',
         asset: 'eth.svg',
@@ -165,6 +166,7 @@ const jsonConfig = {
       },
       {
         address: '0x1997d08b1a9aed5143b995e929707400625d5f6c',
+        shareToken: '0xF291BA9ab165b9A81468D0cfF712ca100E04dEe1',
         name: 'USDT',
         symbol: 'USDT',
         asset: 'usdt.svg',

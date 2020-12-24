@@ -96,6 +96,19 @@ export interface CoreStats {
   realizedPL: ValueLabelPair;
 }
 
+export interface ParaDeploys {
+  addresses: {
+    [contract: string]: string;
+  },
+  paraDeploys: {
+    [cashAddress: string]: {
+      name: string,
+      addresses: {
+        [contract: string]: string;
+      }
+    }
+  }
+}
 export interface AmmTransaction {
   id: string,
   tx_type: string,
@@ -168,12 +181,16 @@ export interface MarketOutcome {
 }
 export interface Cash {
   address: string,
+  shareToken: string,
   name: string,
   symbol: string,
   asset: string,
   decimals: number,
   usdPrice?: string,
   displayDecimals: number,
+}
+export interface AmmExchanges {
+  [id: string]: AmmExchange
 }
 export interface MarketInfos {
   [marketId: string]: MarketInfo;
@@ -1013,3 +1030,18 @@ export interface ActivityCardProps {
   activity: ActivityItem;
 }
 
+export interface LPToken {
+  [ammId: string]: {
+    balance: string;
+  }
+}
+
+export interface AmmMarketShares {
+  [ammId: string]: {
+    [outcomeIdx: number]: string
+  }
+}
+export interface UserBalances {
+  lpTokens: LPToken,
+  marketShares: AmmMarketShares
+}

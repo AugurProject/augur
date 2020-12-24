@@ -11,6 +11,8 @@ import {
 } from 'modules/stores/app-status';
 import { Sidebar } from 'modules/sidebar/sidebar';
 import { processGraphMarkets } from 'utils/process-data';
+import { useActiveWeb3React } from './ConnectAccount/hooks';
+import { getUserBalances } from '../utils/contract-calls';
 
 function checkIsMobile(setIsMobile) {
   const isMobile =
@@ -25,10 +27,11 @@ const AppBody = () => {
   const {
     sidebarType,
     showTradingForm,
-    loginAccount,
     processed,
-    actions: { setIsMobile, updateGraphData, updateProcessed, updateUserActivity },
+    actions: { setIsMobile, updateGraphData, updateProcessed },
   } = useAppStatusStore();
+
+  const { account, library } = useActiveWeb3React()
 
   useEffect(() => {
     // get data immediately, then setup interval
@@ -75,6 +78,12 @@ const AppBody = () => {
     }
   }, [showTradingForm]);
 
+  useEffect(() => {
+    if (account && processed) {
+      const {markets, ammExchanges, cashes} = processed;
+      const userBalances = getUserBalances(library, account, markets, ammExchanges, cashes);
+    }
+  }, [account, processed, library])
 
   return (
     <div className={Styles.App}>

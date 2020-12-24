@@ -58,7 +58,7 @@ export function getSigner(library: Web3Provider, account: string): JsonRpcSigner
 }
 
 // account is optional
-export function getProviderOrSigner(library: Web3Provider, account?: string) {
+export function getProviderOrSigner(library: Web3Provider, account?: string): Web3Provider | JsonRpcSigner {
   return account ? getSigner(library, account) : library
 }
 
@@ -68,4 +68,10 @@ export function getContract(address: string, ABI: any, library: Web3Provider, ac
     throw Error(`Invalid 'address' parameter '${address}'.`)
   }
   return new Contract(address, ABI, getProviderOrSigner(library, account) as any)
+}
+
+export default function getLibrary(provider: any): Web3Provider {
+  const library = new Web3Provider(provider, 'any')
+  library.pollingInterval = 12000
+  return library
 }

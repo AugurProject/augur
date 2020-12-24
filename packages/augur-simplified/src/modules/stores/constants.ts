@@ -67,7 +67,8 @@ export const APP_STATE_KEYS = {
   USER_INFO: 'userInfo',
   GRAPH_DATA: 'graphData',
   PROCESSED: 'processed',
-  MARKETS_VIEW_SETTINGS: 'marketsViewSettings'
+  MARKETS_VIEW_SETTINGS: 'marketsViewSettings',
+  PARACONFIG: 'paraConfig'
 };
 
 export const APP_STATUS_ACTIONS = {
