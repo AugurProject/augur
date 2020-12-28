@@ -12,6 +12,7 @@ import {
 import { Sidebar } from 'modules/sidebar/sidebar';
 import { processGraphMarkets } from 'utils/process-data';
 import { getUserBalances } from '../utils/contract-calls';
+import { augurSdkLite } from '../utils/augurlitesdk';
 
 function checkIsMobile(setIsMobile) {
   const isMobile =
@@ -28,6 +29,7 @@ const AppBody = () => {
     showTradingForm,
     processed,
     loginAccount,
+    paraConfig,
     actions: { setIsMobile, updateGraphData, updateProcessed, updateUserBalances },
   } = useAppStatusStore();
 
@@ -77,8 +79,10 @@ const AppBody = () => {
   }, [showTradingForm]);
 
   useEffect(() => {
+    const createClient = (provider, config) => augurSdkLite.makeLiteClient(provider, config)
     const fetchUserBalances = (loginAccount, ammExchanges, cashes) => getUserBalances(loginAccount?.library, loginAccount?.account, ammExchanges, cashes);
     if (loginAccount?.account && loginAccount?.library) {
+      if (!augurSdkLite.ready()) createClient(loginAccount?.library, paraConfig)
       const { ammExchanges, cashes } = processed;
       fetchUserBalances(loginAccount, ammExchanges, cashes).then(userBalances => updateUserBalances(userBalances))
     }
