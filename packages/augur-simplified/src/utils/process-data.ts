@@ -3,6 +3,7 @@ import { BigNumber as BN } from 'bignumber.js'
 import { getDayFormat, getTimeFormat } from "../utils/date-utils";
 import { convertAttoValueToDisplayValue } from "@augurproject/sdk";
 import { onChainMarketSharesToDisplayFormatter } from "./format-number";
+import { BUY, SELL } from "../modules/constants";
 interface GraphMarket {
   id: string,
   description: string,
@@ -274,7 +275,7 @@ export const getUserActvity = (account: string, markets: { [id: string]: MarketI
     if (userTx.length === 0) return p;
 
     const datedUserTx = userTx.map(t => {
-      const type = t.tx_type === TransactionTypes.ENTER ? 'buy' : 'sell';
+      const type = t.tx_type === TransactionTypes.ENTER ? BUY : SELL;
       const shares = t.yesShares !== "0" ?
         onChainMarketSharesToDisplayFormatter(t.yesShares, exchange.cash.decimals) :
         onChainMarketSharesToDisplayFormatter(t.noShares, exchange.cash.decimals)

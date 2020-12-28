@@ -7,6 +7,7 @@ import {
 } from 'modules/stores/constants';
 import { windowRef } from 'utils/window-ref';
 import { getUserActvity } from 'utils/process-data';
+import { ParaDeploys } from '../types';
 
 const {
   SET_SHOW_TRADING_FORM,
@@ -16,6 +17,7 @@ const {
   UPDATE_PROCESSED,
   SET_LOGIN_ACCOUNT,
   UPDATE_MARKETS_VIEW_SETTINGS,
+  UPDATE_USER_BALANCES,
 } = APP_STATUS_ACTIONS;
 
 const {
@@ -26,6 +28,7 @@ const {
   LOGIN_ACCOUNT,
   MARKETS_VIEW_SETTINGS,
   USER_INFO,
+  USER_BALANCES
 } = APP_STATE_KEYS;
 
 const isAsync = (obj) => {
@@ -72,7 +75,6 @@ export const arrayToKeyedObjectByProp = (ArrayOfObj: any[], prop: string) =>
     acc[obj[prop]] = obj;
     return acc;
   }, {});
-
 
 export function AppStatusReducer(state, action) {
   const updatedState = { ...state };
@@ -132,6 +134,10 @@ export function AppStatusReducer(state, action) {
       };
       break;
     }
+    case UPDATE_USER_BALANCES: {
+      updatedState[USER_BALANCES] = action.userBalances;
+      break;
+    }
     default:
       console.log(`Error: ${action.type} not caught by Markets reducer`);
   }
@@ -139,14 +145,17 @@ export function AppStatusReducer(state, action) {
   return updatedState;
 }
 
+// @ts-ignore
+const paraConfig: ParaDeploys = process.env.CONFIGURATION || {};
+
 export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
-  const [state, pureDispatch] = useReducer(AppStatusReducer, defaultState);
+  const [state, pureDispatch] = useReducer(AppStatusReducer, { ...defaultState, paraConfig });
   const dispatch = dispatchMiddleware(pureDispatch);
   windowRef.appStatus = state;
   return {
     ...state,
     actions: {
-      updateMarketsViewSettings: (marketsViewSettings) => dispatch({type: UPDATE_MARKETS_VIEW_SETTINGS, marketsViewSettings}),
+      updateMarketsViewSettings: (marketsViewSettings) => dispatch({ type: UPDATE_MARKETS_VIEW_SETTINGS, marketsViewSettings }),
       setShowTradingForm: (showTradingForm) =>
         dispatch({ type: SET_SHOW_TRADING_FORM, showTradingForm }),
       setSidebar: (sidebarType) => dispatch({ type: SET_SIDEBAR, sidebarType }),
@@ -157,6 +166,8 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
         dispatch({ type: UPDATE_PROCESSED, processed }),
       updateLoginAccount: (account) =>
         dispatch({ type: SET_LOGIN_ACCOUNT, account }),
+      updateUserBalances: (userBalances) =>
+        dispatch({ type: UPDATE_USER_BALANCES, userBalances })
     },
   };
 };

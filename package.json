@@ -34,6 +34,7 @@
     "tools": "yarn workspace @augurproject/tools --silent",
     "core": "yarn workspace @augurproject/core --silent",
     "ui": "yarn workspace @augurproject/ui --silent",
+    "simpv2": "AUGUR_ENV=v2 yarn workspace @augurproject/simplified --silent",
     "simp": "yarn workspace @augurproject/simplified --silent",
     "amm": "yarn --cwd packages/augur-amm-ui --silent",
     "flash": "yarn workspace @augurproject/tools --silent flash",
@@ -92,7 +93,11 @@
     "**/bignumber.js": "9.0.0",
     "**/puppeteer": "https://github.com/AugurProject/blackhole.git",
     "**/scrypt": "https://github.com/AugurProject/blackhole.git",
-    "lodash": "4.17.15"
+    "lodash": "4.17.15",
+    "ethers": "5.0.15",
+    "@ethersproject/hash": "5.0.9",
+    "@ethersproject/providers": "5.0.10",
+    "web3": "1.3.0"
   },
   "dependencies": {
     "docusaurus-init": "1.12.0"

@@ -11,6 +11,7 @@ import {
 } from 'modules/stores/app-status';
 import { Sidebar } from 'modules/sidebar/sidebar';
 import { processGraphMarkets } from 'utils/process-data';
+import { getUserBalances } from '../utils/contract-calls';
 
 function checkIsMobile(setIsMobile) {
   const isMobile =
@@ -25,7 +26,9 @@ const AppBody = () => {
   const {
     sidebarType,
     showTradingForm,
-    actions: { setIsMobile, updateGraphData, updateProcessed },
+    processed,
+    loginAccount,
+    actions: { setIsMobile, updateGraphData, updateProcessed, updateUserBalances },
   } = useAppStatusStore();
 
   useEffect(() => {
@@ -73,6 +76,13 @@ const AppBody = () => {
     }
   }, [showTradingForm]);
 
+  useEffect(() => {
+    const fetchUserBalances = (loginAccount, ammExchanges, cashes) => getUserBalances(loginAccount?.library, loginAccount?.account, ammExchanges, cashes);
+    if (loginAccount?.account && loginAccount?.library) {
+      const { ammExchanges, cashes } = processed;
+      fetchUserBalances(loginAccount, ammExchanges, cashes).then(userBalances => updateUserBalances(userBalances))
+    }
+  }, [loginAccount?.account, processed, loginAccount?.library])
 
   return (
     <div className={Styles.App}>

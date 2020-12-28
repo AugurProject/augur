@@ -5,8 +5,12 @@
   "dependencies": {
     "@augurproject/sdk": "2.2.0",
     "@augurproject/sdk-lite": "2.2.0",
+    "@augurproject/ethersjs-provider": "^2.2.0",
+    "@augurproject/ethereum-multicall": "^2.2.0",
     "@babel/core": "7.12.3",
     "@ethersproject/solidity": "^5.0.7",
+    "@ethersproject/experimental": "5.0.7",
+    "@ethersproject/units": "5.0.7",
     "@pmmmwh/react-refresh-webpack-plugin": "0.4.2",
     "@svgr/webpack": "5.4.0",
     "@testing-library/jest-dom": "^5.11.4",
