@@ -29,12 +29,14 @@ export function deepCopy<T>(x: T): T {
 }
 
 export interface ParaDeploys {
-  [cashAddress: string]: {
-    uploadBlockNumber?: number,
-    name: string,
-    decimals: number,
-    addresses: ParaAddresses
-  };
+  [cashAddress: string]: ParaDeploy;
+}
+
+export interface ParaDeploy {
+  uploadBlockNumber?: number,
+  name: string,
+  decimals: number,
+  addresses: ParaAddresses
 }
 
 export interface SideChainDeploy {
@@ -121,8 +123,8 @@ export interface SDKConfiguration {
     certificateKeyFile?: string;
   },
   plugins?: {
-    chat?: 'orbit' | '3box',
-    comments?: 'facebook' | '3box',
+    chat?: 'orbit',
+    comments?: 'facebook',
   },
   flash?: {
     syncSDK?: boolean,

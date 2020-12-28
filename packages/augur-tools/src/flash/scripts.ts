@@ -1,4 +1,6 @@
 import { abi, buildConfig, refreshSDKConfig, updateConfig } from '@augurproject/artifacts';
+import { ParaAugurDeployer } from '@augurproject/core/build/libraries/ParaAugurDeployer';
+import { ParaContractDeployer } from '@augurproject/core/build/libraries/ParaContractDeployer';
 import { ContractInterfaces, ContractDeployer } from '@augurproject/core';
 import {
   convertDisplayAmountToOnChainAmount,
@@ -26,10 +28,10 @@ import {
   runWsServer,
   runWssServer,
 } from '@augurproject/sdk/build/state/WebsocketEndpoint';
-import { printConfig, sanitizeConfig } from '@augurproject/utils';
+import { convertAttoValueToDisplayValue, convertDisplayValuetoAttoValue, printConfig, sanitizeConfig } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
 import { spawn, spawnSync } from 'child_process';
-import { ethers } from 'ethers';
+import { Contract, ethers } from 'ethers';
 import * as CIDTool from 'cid-tool';
 
 import * as fs from 'fs';
@@ -86,7 +88,7 @@ import {
   waitForSync,
 } from './util';
 
-import {deploySideChainContracts} from '../libs/blockchain';
+import {deployPara, deployParaContracts, deploySideChainContracts} from '../libs/blockchain';
 
 const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
 
@@ -1427,8 +1429,14 @@ export function addScripts(flash: FlashSession) {
         flag: true,
       },
       {
-        name: 'performanceSetup',
+        name: 'para',
         abbr: 'P',
+        description:
+          'deploy para contracts and paras for WETH and USDT',
+        flag: true,
+      },
+      {
+        name: 'performanceSetup',
         description:
           'setup accounts for performance testing',
         flag: true,
@@ -1444,12 +1452,22 @@ export function addScripts(flash: FlashSession) {
       if (this.noProvider()) return;
       const serial = !Boolean(args.parallel);
       const createMarkets = Boolean(args.createMarkets);
+      const para = Boolean(args.para);
       const performanceSetup = Boolean(args.performanceSetup);
       const traderCount = Number(args.traders || 0);
-
       this.pushConfig({ deploy: { serial, normalTime: false }});
+
       const { addresses } = await deployContracts(this.network, this.provider, this.getAccount(), compilerOutput, this.config);
       this.pushConfig({ addresses });
+
+      if (para) {
+        const { addresses } = await deployParaContracts(this.network, this.provider, this.getAccount(), compilerOutput, this.config);
+        this.pushConfig({ addresses });
+        const { WETH9, USDT } = this.config.addresses;
+        const paraWeth = await deployPara(this.network, this.provider, this.getAccount(), compilerOutput, this.config, WETH9);
+        
+        await deployPara(this.network, this.provider, this.getAccount(), compilerOutput, this.config, USDT);
+      }
 
       if (createMarkets) {
         const user = await this.createUser(this.getAccount(), this.config);
@@ -2924,6 +2942,39 @@ export function addScripts(flash: FlashSession) {
       await updateConfig(this.network, {
         addresses: { AccountLoader: loader }
       });
+    }
+  });
+
+  flash.addScript({
+    name: 'test-amm-estimate',
+    options: [],
+    async call(this: FlashSession) {
+      // omen abi for buy estimate
+      const abi = [{"constant": true,"inputs": [{"name": "returnAmount","type": "uint256"},{"name": "outcomeIndex","type": "uint256"  }],"name": "calcSellAmount","outputs": [  {    "name": "outcomeTokenSellAmount",    "type": "uint256"  }],"payable": false,"stateMutability": "view","type": "function"},{"constant": true,"inputs": [  {    "name": "investmentAmount",    "type": "uint256"  },  {    "name": "outcomeIndex",    "type": "uint256"  }],"name": "calcBuyAmount","outputs":[{"name": "","type": "uint256"  }],"payable": false,"stateMutability": "view","type": "function"},];
+      const market1 = "0x592af74865799e1ed509afef002a6eca26e1caa2";
+      const market2 = "0x00031c96aae99eb00376e273e10c82d0ee77305d";
+      const provider = new ethers.providers.JsonRpcProvider("https://mainnet.infura.io/v3/b939aead2bdf44ad89eecac113a4e143");
+      const marketContract = new Contract(market2, abi, provider);
+
+      const buyShares = async (amount, outcome) => {
+        const buy = convertDisplayValuetoAttoValue(new BigNumber(amount))
+        const returnValue = await marketContract.calcBuyAmount(String(buy), outcome)
+        .catch(e => console.error(e));
+        if (returnValue === undefined) return "0";
+        const shares = convertAttoValueToDisplayValue(new BigNumber(String(returnValue)))
+        return shares.toFixed(2)
+      }
+
+      let i = 1
+      while(i < 100) {
+        try {
+          const amount = await buyShares(String(i), "0");
+          console.log(`${String(i)},`, String(amount));
+        }catch (e) {
+          console.log('error', i)
+        }
+        i += 1;
+      }
     }
   });
 }

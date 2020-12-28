@@ -2,8 +2,10 @@
 
 from pytest import fixture, skip
 
+from tests.reporting_utils import proceedToInitialReporting
+from utils import stringToBytes
 
-FEE = 3 # 3/1000
+FEE = 10 # 10/1000 aka 1%
 ATTO = 10 ** 18
 INVALID = 0
 NO = 1
@@ -17,6 +19,10 @@ def weth(sessionFixture):
 @fixture
 def account0(sessionFixture):
     return sessionFixture.accounts[0]
+
+@fixture
+def account1(sessionFixture):
+    return sessionFixture.accounts[1]
 
 @fixture
 def factory(sessionFixture):
@@ -34,6 +40,13 @@ def weth_amm(sessionFixture, factory, para_weth_share_token):
 def amm(sessionFixture, factory, market, para_weth_share_token):
     ammAddress = factory.addAMM(market.address, para_weth_share_token.address, FEE)
     return sessionFixture.applySignature("AMMExchange", ammAddress)
+
+def test_amm_create_with_initial_liquidity(sessionFixture, market, weth_amm, account0):
+    initialLiquidity = 5 * ATTO
+    numticks = 1000
+    (address, lpTokens) = weth_amm.addAMMWithLiquidity(market.address, FEE, ATTO, False, account0, value=initialLiquidity)
+    assert address != '0x' + ('0' * 40)
+    assert lpTokens == initialLiquidity / numticks
 
 
 def test_amm_weth_wrapper_getAMM(market, weth_amm, amm):
@@ -101,38 +114,40 @@ def test_amm_weth_60_40_liquidity(sessionFixture, market, weth, para_weth_share_
     assert lpTokens > 0
 
 
-def test_amm_weth_yes_position(sessionFixture, market, factory, para_weth_share_token, weth_amm, account0, amm):
+def test_amm_weth_yes_position(sessionFixture, market, para_weth_share_token, weth_amm, account0, amm, weth):
     if not sessionFixture.paraAugur:
         return skip("Test is only for para augur")
 
+    numticks = market.getNumTicks()
     sets = 100 * ATTO
-    liquidityCost = sets * 1000
+    liquidityCost = sets * numticks
     ratio_50_50 = 10 ** 18
 
     weth_amm.addInitialLiquidity(market.address, FEE, ratio_50_50, True, account0, value=liquidityCost)
 
-    assert sessionFixture.ethBalance(account0)
+    yesPositionSets = 10 * ATTO
+    yesPositionCost = yesPositionSets * numticks
 
     # Enter position
-    yesPositionSets = 10 * ATTO
-    yesPositionCost = yesPositionSets * 1000
-    yesSharesReceived = amm.rateEnterPosition(yesPositionCost, True)
-    assert yesPositionCost > 10 * ATTO
-    weth_amm.enterPosition(market.address, FEE, True, yesSharesReceived, value=yesPositionCost)
+    sharesReceived = amm.rateEnterPosition(yesPositionCost, True)
+    assert sharesReceived > yesPositionSets
+    assert sharesReceived < 2 * yesPositionSets
+    weth_amm.enterPosition(market.address, FEE, True, sharesReceived, value=yesPositionCost)
 
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, INVALID, account0) == yesPositionSets
+    assert para_weth_share_token.balanceOfMarketOutcome(market.address, INVALID, account0) == 0
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, account0) == 0
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, account0) == yesSharesReceived
+    assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, account0) == sharesReceived
+
+    assert weth.balanceOf(amm.address) == yesPositionCost
+    assert para_weth_share_token.balanceOfMarketOutcome(market.address, INVALID, amm.address) == sets
+    assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, amm.address) == sets
+    assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, amm.address) == sets - sharesReceived
 
     # Exiting requires you to send shares to the weth-amm wrapper for it to pass along.
     para_weth_share_token.setApprovalForAll(weth_amm.address, True)
 
-    (payoutAll, inv, no, yes) = amm.rateExitAll()
-    assert inv == yesPositionSets
-    assert no == -10135101402160364982
-    assert yes == 19107898597839635018
-    applyFeeForEntryAndExit = (yesPositionCost * (1000 - FEE) // 1000)
-    assert payoutAll == applyFeeForEntryAndExit
+    payoutAll = amm.rateExitAll()
+    assert payoutAll == 9795561209096775126300
 
     weth_amm.exitAll(market.address, FEE, payoutAll)
 
@@ -141,5 +156,38 @@ def test_amm_weth_yes_position(sessionFixture, market, factory, para_weth_share_
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, weth_amm.address) == 0
 
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, INVALID, account0) == 0
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, account0) == -no
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, account0) == yesSharesReceived - yes
+    assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, account0) == 0
+    assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, account0) == 0
+
+def test_amm_weth_yes_position(contractsFixture, sessionFixture, universe, market, para_weth_share_token, weth_amm, account0, account1, amm, weth):
+    if not sessionFixture.paraAugur:
+        return skip("Test is only for para augur")
+
+    numticks = market.getNumTicks()
+    sets = 100 * ATTO
+    liquidityCost = sets * numticks
+    ratio_50_50 = 10 ** 18
+
+    para_weth_share_token.setApprovalForAll(weth_amm.address, True)
+
+    weth_amm.addInitialLiquidity(market.address, FEE, ratio_50_50, True, account1, value=liquidityCost)
+
+    yesPositionSets = 10 * ATTO
+    yesPositionCost = yesPositionSets * numticks
+    sharesReceived = amm.rateEnterPosition(yesPositionCost, True)
+
+    weth_amm.enterPosition(market.address, FEE, False, sharesReceived, value=yesPositionCost)
+
+
+    proceedToInitialReporting(contractsFixture, market)
+
+    market.doInitialReport([0, market.getNumTicks(), 0], "", 0)
+
+    disputeWindow = contractsFixture.applySignature('DisputeWindow', market.getDisputeWindow())
+    contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
+
+    balanceBeforeFinalization = contractsFixture.ethBalance(account0)
+    weth_amm.claimTradingProceeds(market.address, account0, stringToBytes(""))
+
+    # Should have more eth than before because market resolved in account0's favor.
+    assert contractsFixture.ethBalance(account0) > balanceBeforeFinalization

@@ -83,8 +83,8 @@
     "prepare": "tsc -b"
   },
   "dependencies": {
-    "@augurproject/artifacts": "^2.2.0",
-    "@augurproject/contract-dependencies-ethers": "^2.2.0",
+    "@augurproject/artifacts": "^2.1.9",
+    "@augurproject/contract-dependencies-ethers": "^2.1.9",
     "@augurproject/solidity-docgen": "0.2.0-alpha.3",
     "bignumber.js": "9.0.0",
     "ethers": "5.0.17",

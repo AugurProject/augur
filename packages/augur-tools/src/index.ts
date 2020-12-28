@@ -3,6 +3,8 @@ export { ContractAPI } from './libs/contract-api';
 export { TestContractAPI } from './libs/test-contract-api';
 export {
   deployContracts,
+  deployParaContracts,
+  deployPara,
   UsefulContractObjects,
   makeSigner,
   makeDependencies,

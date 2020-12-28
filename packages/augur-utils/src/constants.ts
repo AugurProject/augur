@@ -10,17 +10,7 @@ export const BYTES_32 =  TWO.exponentiatedBy(252);
 export const INT256_MIN_VALUE = TWO.exponentiatedBy(255).negated();
 export const INT256_MAX_VALUE = TWO.exponentiatedBy(255).minus(ONE);
 export const UINT256_MAX_VALUE = TWO.exponentiatedBy(256);
-
-export function getDefaultTradeInterval(token: string): BigNumber {
-  if (token === 'USDT' || token === 'USDC') {
-    return new BigNumber(10**4);
-  } else if (token === 'WETH') {
-    return new BigNumber(10**15);
-  } else {
-    // DAI
-    return new BigNumber(10**16);
-  }
-}
+export const DEFAULT_TRADE_INTERVAL = new BigNumber(10**15);
 
 export enum NetworkId {
   Mainnet = '1',
