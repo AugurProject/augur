@@ -12,6 +12,7 @@ import {
 
 import { Web3Provider } from '@ethersproject/providers'
 import { onChainMarketSharesToDisplayFormatter } from './format-number';
+import { augurSdkLite } from './augurlitesdk';
 
 // TODO: when scalars get num ticks from market
 export const YES_NO_NUM_TICKS = 1000
@@ -43,7 +44,6 @@ export function addAmmLiquidity({
   account,
   ammAddress,
   hasLiquidity,
-  augurClient,
   marketId,
   sharetoken,
   fee,
@@ -52,6 +52,7 @@ export function addAmmLiquidity({
   priceYes,
   useEth,
 }: AddAmmLiquidity) {
+  const augurClient = augurSdkLite.get();
   if (!augurClient || !augurClient.amm) return console.error('augurClient is null')
   console.log(
     'addAmmLiquidity',
@@ -78,7 +79,7 @@ export function addAmmLiquidity({
     hasLiquidity,
     marketId,
     sharetoken,
-    fee,
+    new BN(fee),
     new BN(cashAmount),
     poolYesPercent,
     poolNoPercent,
@@ -89,7 +90,6 @@ export interface GetRemoveLiquidity {
   marketId: string,
   paraShareToken: string,
   fee: string,
-  augurClient,
   lpTokenBalance: string,
 }
 
@@ -97,9 +97,9 @@ export async function getRemoveLiquidity({
   marketId,
   paraShareToken,
   fee,
-  augurClient,
   lpTokenBalance,
 }: GetRemoveLiquidity): Promise<{ noShares: string; yesShares: string; cashShares: string } | null> {
+  const augurClient = augurSdkLite.get();
   if (!augurClient || !marketId || !paraShareToken || !fee) {
     console.error('getRemoveLiquidity: augurClient is null or no amm address')
     return null
@@ -113,14 +113,16 @@ export async function getRemoveLiquidity({
   }
 }
 
-export function doRemoveAmmLiquidity({ marketId, paraShareToken, fee, augurClient, lpTokenBalance }: GetRemoveLiquidity) {
+export function doRemoveAmmLiquidity({ marketId, paraShareToken, fee, lpTokenBalance }: GetRemoveLiquidity) {
+  const augurClient = augurSdkLite.get();
   if (!augurClient || !marketId || !paraShareToken || !fee) return console.error('removeAmmLiquidity: augurClient is null or no amm address')
   const alsoSell = true;
   return augurClient.amm.doRemoveLiquidity(marketId, paraShareToken, new BN(fee), new BN(lpTokenBalance), alsoSell)
 }
 
 
-export async function estimateTrade(augurClient, trade: TradeInfo, includeFee: boolean = true, useEth: boolean = false) {
+export async function estimateTrade(trade: TradeInfo, includeFee: boolean = true, useEth: boolean = false) {
+  const augurClient = augurSdkLite.get();
   if (!augurClient || !trade.amm.id) return console.error('estimateTrade: augurClient is null or amm address')
   const tradeDirection = trade.tradeType;
 
@@ -157,6 +159,7 @@ export async function estimateTrade(augurClient, trade: TradeInfo, includeFee: b
       trade.marketId,
       trade.amm.sharetoken,
       new BN(trade.amm.fee),
+      invalidShares, // TODO: is this needed or a merge issue from para_deploys
       shortShares,
       longShares,
       includeFee
@@ -181,7 +184,8 @@ export async function estimateTrade(augurClient, trade: TradeInfo, includeFee: b
 }
 
 
-export async function doTrade(augurClient, trade: TradeInfo, minAmount: string, useEth: boolean = false) {
+export async function doTrade(trade: TradeInfo, minAmount: string, useEth: boolean = false) {
+  const augurClient = augurSdkLite.get();
   if (!augurClient || !trade.amm.id) return console.error('doTrade: augurClient is null or amm address')
   const tradeDirection = trade.tradeType;
   const outputYesShares = trade.buyYesShares;
@@ -226,6 +230,7 @@ export async function doTrade(augurClient, trade: TradeInfo, minAmount: string, 
       trade.marketId,
       trade.amm.sharetoken,
       new BN(trade.amm.fee),
+      invalidShares, // TODO, is this needed or merge issue with para_deploys
       shortShares,
       longShares,
       new BN(String(minAmount))
