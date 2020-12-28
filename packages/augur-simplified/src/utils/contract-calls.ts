@@ -1,7 +1,7 @@
 import { BigNumber as BN } from 'bignumber.js'
 import { RemoveLiquidityRate, numTicksToTickSizeWithDisplayPrices, convertDisplayAmountToOnChainAmount, ParaShareToken } from '@augurproject/sdk-lite'
 import { TradeInfo, TradingDirection } from 'modules/types'
-import { AmmExchanges, Cashes, MarketInfos, UserBalances } from '../modules/types'
+import { AmmExchanges, Cashes, UserBalances } from '../modules/types'
 import ethers from 'ethers';
 
 import {
@@ -306,6 +306,7 @@ export const getUserBalances = async (web3Provider: EthersProvider, account: str
 
   let balances: string[] = []
   const balanceResult: ContractCallResults = await multicall.call(balananceCalls);
+  // eslint-disable-next-line
   Object.keys(balanceResult.results).map(key => {
     const value = String(new BN(JSON.parse(JSON.stringify(balanceResult.results[key].callsReturnContext[0].returnValues)).hex))
     balances.push(value);

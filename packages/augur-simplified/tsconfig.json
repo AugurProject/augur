@@ -48,9 +48,6 @@
     },
     {
       "path": "../augur-ui"
-    },
-    {
-      "path": "./packages/ethereum-multicall"
-    },
+    }
   ]
 }
