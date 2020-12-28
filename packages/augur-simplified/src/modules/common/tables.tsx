@@ -234,8 +234,8 @@ export const PositionsLiquidityViewSwitcher = ({
   setTables,
 }: PositionsLiquidityViewSwitcherProps) => {
   const [tableView, setTableView] = useState(POSITIONS);
-  const { positions, liquidity } = useAppStatusStore();
-
+  const { positions, liquidity, loginAccount } = useAppStatusStore();
+  const isLogged = loginAccount !== null;
   return (
     <div className={Styles.PositionsLiquidityViewSwitcher}>
       <div>
@@ -272,7 +272,7 @@ export const PositionsLiquidityViewSwitcher = ({
           />
         )}
       </div>
-      {tableView !== null && (
+      {tableView !== null && isLogged && (
         <div>
           {!marketId && (
             <>
@@ -305,6 +305,7 @@ export const PositionsLiquidityViewSwitcher = ({
           )}
         </div>
       )}
+      {!isLogged && <span>No {tableView === LIQUIDITY ? 'liquidity' : 'positions'} to show</span>}
     </div>
   );
 };
@@ -386,22 +387,29 @@ const TransactionRow = ({ transaction }) => {
 };
 
 export const TransactionsTable = () => {
-  const { transactions } = useAppStatusStore();
+  const { transactions, loginAccount } = useAppStatusStore();
+  const isLogged = loginAccount !== null;
   return (
     <div className={Styles.TransactionsTable}>
-      <TransactionsHeader />
-      {transactions[0].transactions.map((transaction) => (
-        <TransactionRow key={transaction.id} transaction={transaction} />
-      ))}
-      <div className={Styles.PaginationFooter}>
-        <Pagination
-          page={1}
-          itemCount={10}
-          itemsPerPage={9}
-          action={() => null}
-          updateLimit={() => null}
-        />
-      </div>
+      {isLogged ? (
+        <>
+          <TransactionsHeader />
+          {transactions[0].transactions.map((transaction) => (
+            <TransactionRow key={transaction.id} transaction={transaction} />
+          ))}
+          <div className={Styles.PaginationFooter}>
+            <Pagination
+              page={1}
+              itemCount={10}
+              itemsPerPage={9}
+              action={() => null}
+              updateLimit={() => null}
+            />
+          </div>
+        </>
+      ) : (
+        <span>No transactions to show</span>
+      )}
     </div>
   );
 };

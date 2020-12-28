@@ -10,15 +10,17 @@ const TABLES = 'TABLES';
 const ACTIVITY = 'ACTIVITY';
 
 export const PortfolioView = () => {
-  const { isMobile } = useAppStatusStore();
+  const { isMobile, loginAccount } = useAppStatusStore();
   const [view, setView] = useState(TABLES);
+  const isLogged = loginAccount !== null;
+
   return (
     <div className={Styles.PortfolioView}>
       {!isMobile && (
         <>
           <section>
             <AppViewStats />
-            <SecondaryButton text="$24.00 in Winnings to claim" />
+            {isLogged && <SecondaryButton text="$24.00 in Winnings to claim" />}
             <PositionsLiquidityViewSwitcher />
           </section>
           <section>
@@ -29,7 +31,7 @@ export const PortfolioView = () => {
       {isMobile &&
       <>
         <AppViewStats />
-        <SecondaryButton text="$24.00 in Winnings to claim" />
+        {isLogged && <SecondaryButton text="$24.00 in Winnings to claim" />}
         <PositionsLiquidityViewSwitcher showActivityButton setTables={() => setView(TABLES)} setActivity={() => setView(ACTIVITY)}/>
         {view === ACTIVITY && <Activity />}
       </>

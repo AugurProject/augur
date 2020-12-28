@@ -1,6 +1,18 @@
 @import (reference) '~assets/styles/shared';
 @import (reference) '~modules/common/buttons.styles.less';
 
+.EmptyMessage {
+  .text-12;
+
+  color: var(--simple-primary-text);
+  padding: @size-20 0;
+  background-color: var(--simple-light-bg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: @size-8;
+}
+
 .MarketTableHeader {
   padding: @size-20 @size-32;
   display: flex;
@@ -156,8 +168,13 @@
   .FooterSharedStyles;
 }
 
-.PositionsLiquidityViewSwitcher {
+div.PositionsLiquidityViewSwitcher {
   flex-direction: column;
+
+  > span:first-of-type {
+    .EmptyMessage;
+    .SimpleBorder;
+  }
 
   > div:nth-of-type(1) {
     margin-bottom: @size-24;
@@ -239,6 +256,10 @@
 
 .TransactionsTable {
   .SharedTable;
+
+  > span {
+    .EmptyMessage;
+  }
 }
 
 .TransactionRow {
