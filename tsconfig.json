@@ -21,6 +21,9 @@
       "path": "./packages/ethersjs-provider"
     },
     {
+      "path": "./packages/ethereum-multicall"
+    },
+    {
       "path": "./packages/augur-artifacts"
     },
     {

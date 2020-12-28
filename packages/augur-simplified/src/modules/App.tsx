@@ -82,6 +82,7 @@ const AppBody = () => {
       const { ammExchanges, cashes } = processed;
       fetchUserBalances(loginAccount, ammExchanges, cashes).then(userBalances => updateUserBalances(userBalances))
     }
+    // eslint-disable-next-line
   }, [loginAccount?.account, processed, loginAccount?.library])
 
   return (
