@@ -51,7 +51,7 @@
 // }, 120000);
 
 test('WebWorkerConnector :: Should route correctly and handle events', async done => {
-  // const universe = john.augur.contracts.universe;
+  // const universe = await john.augur.contracts.getOriginUniverse();
   // const endTime = (await john.getTimestamp()).plus(SECONDS_IN_A_DAY);
   // const lowFeePerCashInAttoCash = new BigNumber(10).pow(18).div(20); // 5% creator fee
   // const affiliateFeeDivisor = new BigNumber(0);
@@ -79,7 +79,7 @@ test('WebWorkerConnector :: Should route correctly and handle events', async don
   //   await (await db).sync(john.augur, mock.constants.chunkSize, 0);
   //   const getMarkets = connector.bindTo(Markets.getMarkets);
   //   const marketList = await getMarkets({
-  //     universe: john.augur.contracts.universe.address,
+  //     universe: await john.augur.contracts.getOriginUniverseAddress(),
   //   });
   //   expect(marketList.markets).toEqual([yesNoMarket1.address]);
 

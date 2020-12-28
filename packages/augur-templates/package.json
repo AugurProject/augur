@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/templates",
-  "version": "2.2.0",
+  "version": "2.3.0-alpha.0",
   "description": "ABI and Contract Address Artifacts",
   "author": "Augur Team <team@augur.net>",
   "license": "MIT",
@@ -13,7 +13,7 @@
     "build/**"
   ],
   "dependencies": {
-    "@augurproject/sdk-lite": "^2.2.0",
+    "@augurproject/sdk-lite": "^2.3.0-alpha.0",
     "ethers": "5.0.17",
     "moment": "2.26.0"
   },

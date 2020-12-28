@@ -254,7 +254,7 @@ export class OnChainTrade {
       if (!account) return null;
       const cashAllowance = await this.augur.contracts.cash.allowance_(
         account,
-        this.augur.contracts.augur.address
+        this.augur.contracts.getAugur().address
       );
       if (cashAllowance.lt(cost))
         return `Cash allowance: ${cashAllowance.toString()} will not cover trade cost: ${cost.toString()}`;

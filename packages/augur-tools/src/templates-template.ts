@@ -228,7 +228,6 @@ export interface TemplateInput {
 export interface RetiredTemplate {
   hash: string;
   autoFail: boolean;
-  validation: Object;
 }
 
 export interface TemplateGroupInfo {
@@ -324,19 +323,8 @@ export let TEMPLATE_VALIDATIONS = {};
 export let RETIRED_TEMPLATES = [];
 export let TEMPLATE_GROUPS = [];
 
-export function getTemplateValidation(hash: string) {
-  let validation = TEMPLATE_VALIDATIONS[hash] as TemplateValidation;
-  if (!validation) {
-    const found: RetiredTemplate = RETIRED_TEMPLATES.find(
-      (t: RetiredTemplate) => t.hash === hash
-    );
-    return found.validation; 
-  } else {
-    return validation;
-  }
-}
 export function hasTemplateTextInputs(hash: string, isCategorical: boolean) {
-  const validation = getTemplateValidation(hash) as TemplateValidation;
+  const validation = TEMPLATE_VALIDATIONS[hash] as TemplateValidation;
   if (isCategorical) {
     if (
       !validation ||
@@ -355,7 +343,7 @@ export function hasTemplateTextInputs(hash: string, isCategorical: boolean) {
 }
 
 export function getTemplatePlaceholderById(hash: string, id: number) {
-  const validation = getTemplateValidation(hash) as TemplateValidation;
+  const validation = TEMPLATE_VALIDATIONS[hash] as TemplateValidation;
   if (!validation || !validation.placeholderValues) return null;
   return validation.placeholderValues[id];
 }
@@ -891,7 +879,9 @@ export const isTemplateMarket = (
       return false;
     }
 
-    const validation = getTemplateValidation(template.hash) as TemplateValidation;
+    const validation = TEMPLATE_VALIDATIONS[
+      template.hash
+    ] as TemplateValidation;
     if (!!!validation) {
       errors.push('no validation found for hash');
       return false;

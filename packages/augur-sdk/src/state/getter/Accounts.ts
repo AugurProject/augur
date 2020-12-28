@@ -447,7 +447,7 @@ export class Accounts<TBigNumber> {
   ): Promise<AccountTransaction[]> {
     if (!params.earliestTransactionTime) params.earliestTransactionTime = 0;
     if (!params.latestTransactionTime) {
-      params.latestTransactionTime = (await augur.contracts.augur.getTimestamp_()).toNumber();
+      params.latestTransactionTime = (await augur.getTimestamp()).toNumber();
     }
     if (!params.coin) params.coin = Coin.ALL;
     if (!params.action) params.action = Action.ALL;

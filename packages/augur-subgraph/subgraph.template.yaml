@@ -165,7 +165,10 @@ dataSources:
       file: ./src/index.ts
       entities:
         - ShareToken
+        - ERC20
       abis:
+        - name: ERC20
+          file: ./abis/ERC20.json
         - name: ParaDeployer
           file: ./abis/ParaDeployer.json
       eventHandlers:
@@ -193,15 +196,15 @@ templates:
         - name: ParaShareToken
           file: ./abis/ParaShareToken.json
       eventHandlers:
-        - event: EnterPosition(address,uint256,uint256,bool)
+        - event: EnterPosition(address,uint256,uint256,bool,uint256)
           handler: handleEnterPosition
-        - event: ExitPosition(address,uint256,uint256,uint256,uint256)
+        - event: ExitPosition(address,uint256,uint256,uint256)
           handler: handleExitPosition
         - event: SwapPosition(address,uint256,uint256,bool)
           handler: handleSwapPosition
         - event: AddLiquidity(address,uint256,uint256,uint256,uint256)
           handler: handleAddLiquidity
-        - event: RemoveLiquidity(address,uint256,uint256,uint256)
+        - event: RemoveLiquidity(address,uint256,uint256,uint256,uint256)
           handler: handleRemoveLiquidity
   - kind: ethereum/contract
     name: Cash

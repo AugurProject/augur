@@ -4,7 +4,7 @@ import {
   JSONValueKind,
   JSONValue
 } from "@graphprotocol/graph-ts";
-import { BigInt } from '@graphprotocol/graph-ts';
+import { BigDecimal } from '@graphprotocol/graph-ts/index';
 import {
   MarketCreated,
   MarketTransferred,
@@ -62,6 +62,7 @@ export function handleMarketCreated(event: MarketCreated): void {
   market.creator = creator.id;
   market.universe = universe.id;
   market.owner = creator.id;
+  market.fee = event.params.feePerCashInAttoCash;
   market.numTicks = event.params.numTicks;
   market.designatedReporter = designatedReporter.id;
   market.endTimestamp = event.params.endTime;
@@ -77,7 +78,6 @@ export function handleMarketCreated(event: MarketCreated): void {
     market.id
   );
   market.extraInfoRaw = event.params.extraInfo;
-  market.volume = BigInt.fromI32(0);
 
   // Parsing the JSON data, safe check of every parsed value before saving.
   let extraInfoParsed = json.try_fromBytes(
@@ -215,7 +215,6 @@ export function handleMarketOIChanged(event: MarketOIChanged): void {
 
 export function handleMarketVolumeChanged(event: MarketVolumeChanged): void {
   let market = getOrCreateMarket(event.params.market.toHexString());
-  market.volume = event.params.volume;
   market.outcomeVolumes = event.params.outcomeVolumes
   market.totalTrades = event.params.totalTrades;
   market.save();

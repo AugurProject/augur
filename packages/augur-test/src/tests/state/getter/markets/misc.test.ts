@@ -36,7 +36,7 @@ describe('State API :: Markets :: ', () => {
   });
 
   test(':getMarkets userPortfolioAddress', async () => {
-    const universe = john.augur.contracts.universe;
+    const universe = await john.augur.contracts.getOriginUniverse();
     const endTime = (await john.getTimestamp()).plus(SECONDS_IN_A_DAY);
     const lowFeePerCashInAttoCash = new BigNumber(10).pow(18).div(20); // 5% creator fee
     const affiliateFeeDivisor = new BigNumber(0);
@@ -145,7 +145,7 @@ describe('State API :: Markets :: ', () => {
     });
 
     test('should tag warp sync markets', async () => {
-      const universe = john.augur.contracts.universe;
+      const universe = await john.augur.contracts.getOriginUniverse();
       const expectedMarketAssertions = expectedMarkets.map((item, i) => expect.objectContaining({
           id: item.address,
           isWarpSync: (i !== 0)
@@ -162,7 +162,7 @@ describe('State API :: Markets :: ', () => {
     });
 
     test('should be able to filter out warp sync markets', async () => {
-      const universe = john.augur.contracts.universe;
+      const universe = await john.augur.contracts.getOriginUniverse();
       // We only care about the warpsync markets, hence the slice.
       const expectedMarketAssertions = expectedMarkets.map((item, i) => expect.objectContaining({
           id: item.address,
@@ -528,7 +528,7 @@ describe('State API :: Markets :: ', () => {
   test(':getCategories : all reporting states', async () => {
     await john.sync();
     const categories = await john.api.route('getCategories', {
-      universe: john.augur.contracts.universe.address,
+      universe: await john.augur.contracts.getOriginUniverseAddress(),
     });
     expect(categories.sort()).toEqual(
       [
@@ -556,7 +556,7 @@ describe('State API :: Markets :: ', () => {
   test(':getCategories : some reporting states', async () => {
     await john.sync();
     const categories = await john.api.route('getCategories', {
-      universe: john.augur.contracts.universe.address,
+      universe: await john.augur.contracts.getOriginUniverseAddress(),
       reportingStates: [
         MarketReportingState.OpenReporting,
         MarketReportingState.PreReporting,
@@ -588,7 +588,7 @@ describe('State API :: Markets :: ', () => {
   test(':getCategories : forking reporting state when no market has ever forked', async () => {
     await john.sync();
     const categories = await john.api.route('getCategories', {
-      universe: john.augur.contracts.universe.address,
+      universe: await john.augur.contracts.getOriginUniverseAddress(),
       reportingStates: [MarketReportingState.Forking],
     });
     expect(categories).toMatchObject([]);

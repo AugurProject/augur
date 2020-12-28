@@ -72,11 +72,6 @@ export const LIST_VALUES = {
     'Defensive Rookie of the year',
     'AP Most Valuable Player',
   ],
-  FOOTBALL_EVENT_UPDATED: [
-    'Super Bowl',
-    'AFC Championship',
-    'NFC Championship',
-  ],
   FOOTBALL_EVENT: [
     'Super Bowl',
     'AFC Championship game',
@@ -254,7 +249,7 @@ export const LIST_VALUES = {
     'Oscar Robertson',
   ],
   MENS_WOMENS: ["Men's", "Women's"],
-  TENNIS_MENS_WOMENS: ["Men's", "Women's", "Mixed"],
+  TENNIS_MENS_WOMENS: ["Men's", "Women's", 'Mixed'],
   BASKETBALL_ACTION: [
     'Points Scored',
     'Rebounds',
@@ -3177,7 +3172,7 @@ export const LIST_VALUES = {
   ],
   SOCCER_LEAGUE_SPAIN: [
     'Barcelona',
-    'Real Madrid',
+    'Real MAdrid',
     'Sevilla',
     'Real Sociedad',
     'Getafe',

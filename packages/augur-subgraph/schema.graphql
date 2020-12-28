@@ -128,6 +128,9 @@ type Market @entity {
   "Market type as a string enum"
   marketType: MarketType!
 
+  "Fee (per cash) in AttoCash"
+  fee: BigInt!
+
   "Possible outcomes of the market"
   outcomes: [Outcome!]! @derivedFrom(field:"market")
 
@@ -145,9 +148,6 @@ type Market @entity {
 
   "The total amount of value which has been traded for this market"
   openInterest: BigInt
-
-  "The the total trading volume for this market"
-  volume: BigInt!
 
   "The total trading volume per outcome of this market"
   outcomeVolumes: [BigInt!]
@@ -714,6 +714,14 @@ type MarketTemplateInput @entity {
 
 type Cash @entity {
   id: ID!
+
+  decimals: BigInt!
+
+  symbol: String!
+
+  ammExchanges: [AMMExchange!]! @derivedFrom(field: "cash")
+
+  paraShareTokens: [ParaShareToken!]! @derivedFrom(field: "cash")
 }
 
 type AMMExchange @entity {
@@ -747,10 +755,10 @@ type AMMExchange @entity {
   liquidityYes: BigDecimal!
 
   "The all time yes volume in the exchange."
-  volumeYes: BigInt!
+  volumeYes: BigDecimal!
 
   "The all time no volume in the exchange."
-  volumeNo: BigInt!
+  volumeNo: BigDecimal!
 
   "Percentage of shares that are no."
   percentageNo: BigDecimal!
@@ -766,6 +774,10 @@ type AMMExchange @entity {
 
   "Swap fee for this AMM (in percent)"
   feePercent: BigDecimal!
+
+  addLiquidity: [AddLiquidity!]! @derivedFrom(field: "ammExchange")
+
+  removeLiquidity: [RemoveLiquidity!]! @derivedFrom(field: "ammExchange")
 
   swaps: [SwapPosition!]! @derivedFrom(field: "ammExchange")
 
@@ -816,6 +828,8 @@ type EnterPosition @entity {
   "Amount of cash user passed to enter the position."
   cash: BigInt!
 
+  price: BigDecimal!
+
   "Number of yes shares the user recieved. User will recieve only yes or no."
   yesShares: BigInt!
 
@@ -847,6 +861,8 @@ type ExitPosition @entity {
 
   "Amount of cash user recieved exiting position."
   cash: BigInt!
+
+  price: BigDecimal!
 }
 
 type AddLiquidity @entity {

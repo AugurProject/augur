@@ -85,7 +85,7 @@ describe('State API :: Users :: ', () => {
       mary,
       trades,
       market,
-      john.augur.contracts.universe.address
+      await john.augur.contracts.getOriginUniverseAddress()
     );
   });
 });

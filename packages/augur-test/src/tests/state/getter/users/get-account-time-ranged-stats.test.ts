@@ -24,7 +24,7 @@ describe('State API :: Users :: ', () => {
 
   test(':getAccountTimeRangedStats', async () => {
     // Create markets with multiple users
-    const universe = john.augur.contracts.universe;
+    const universe = await john.augur.contracts.getOriginUniverse();
     const johnYesNoMarket = await john.createReasonableYesNoMarket();
     const johnCategoricalMarket = await john.createReasonableMarket([
       stringTo32ByteHex('A'),

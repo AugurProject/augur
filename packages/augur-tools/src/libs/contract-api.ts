@@ -42,7 +42,7 @@ export class ContractAPI {
     const signer = await makeSigner(account, provider);
     const augur = await createClient(config, connector, signer, provider, true);
 
-    return new ContractAPI(augur, provider, account);
+    return new ContractAPI(augur, provider, account, signer);
   }
 
   static async wrapUsers(
@@ -90,6 +90,20 @@ export class ContractAPI {
 
     const zeroXTrade = this.augur.config.addresses.ZeroXTrade;
     await this.augur.contracts.cash.approve(zeroXTrade, wei);
+  }
+
+  async approveUSDT(spender: string, allowance = MAX_APPROVAL) {
+    await this.augur.contracts.usdt.approve(spender, allowance);
+  }
+
+  async balanceOfUSDT(who?: string) {
+    who = who || this.account.address;
+    return this.augur.contracts.usdt.balanceOf_(who);
+  }
+
+  async balanceOfWETH(who?: string) {
+    who = who || this.account.address;
+    return this.augur.contracts.weth.balanceOf_(who);
   }
 
   async getOriginCashAllowance(): Promise<BigNumber> {
@@ -140,11 +154,13 @@ export class ContractAPI {
   }
 
   async getRepBond(): Promise<BigNumber> {
-    return this.augur.contracts.universe.getOrCacheMarketRepBond_();
+    const universe = await this.augur.contracts.getOriginUniverse();
+    return universe.getOrCacheMarketRepBond_();
   }
 
   async marketFauceting() {
-    const marketCreationFee = await this.augur.contracts.universe.getOrCacheValidityBond_();
+    const universe = await this.augur.contracts.getOriginUniverse();
+    const marketCreationFee = await universe.getOrCacheValidityBond_();
     const repBond = await this.getRepBond();
     console.log('Cash Faucet for market creation');
     await this.faucetCashUpTo(marketCreationFee);
@@ -684,7 +700,8 @@ export class ContractAPI {
   }
 
   async getDisputeThresholdForDisputePacing(): Promise<BigNumber> {
-    return this.augur.contracts.universe.getDisputeThresholdForDisputePacing_();
+    const universe = await this.augur.contracts.getOriginUniverse();
+    return universe.getDisputeThresholdForDisputePacing_();
   }
 
   async getInitialReportMinValue(): Promise<BigNumber> {
@@ -775,9 +792,9 @@ export class ContractAPI {
   }
 
   async simpleBuyParticipationTokens(attoRep: BigNumber): Promise<void> {
-    const universe = this.augur.contracts.universe.address;
+    const universeAddress = await this.augur.contracts.getOriginUniverseAddress();
     await this.augur.contracts.buyParticipationTokens.buyParticipationTokens(
-      universe,
+      universeAddress,
       attoRep
     );
   }
@@ -824,7 +841,8 @@ export class ContractAPI {
   }
 
   async getTimestamp(): Promise<BigNumber> {
-    return this.augur.contracts.augur.getTimestamp_();
+    const augur = await this.augur.contracts.getAugur();
+    return augur.getTimestamp_();
   }
 
   async printTimestamp() {
@@ -867,14 +885,14 @@ export class ContractAPI {
   }
 
   async getMarkets(): Promise<MarketList> {
-    const universe = this.augur.contracts.universe.address;
-    return this.augur.getMarkets({ universe });
+    const universeAddress = await this.augur.contracts.getOriginUniverseAddress();
+    return this.augur.getMarkets({ universe: universeAddress });
   }
 
   async getBettingMarkets(
     params = {}
   ): Promise<MarketList> {
-    const universe = this.augur.contracts.universe.address;
+    const universe = await this.augur.contracts.getOriginUniverseAddress();
     return this.augur.getMarkets({ universe, templateFilter: TemplateFilters.sportsBook });
   }
 
@@ -952,6 +970,11 @@ export class ContractAPI {
       const totalToFaucet = leftToFaucet.plus(extra);
       await this.faucetCash(totalToFaucet, targetAddress);
     }
+  }
+
+  async faucetUSDT(amount: BigNumber, recipient?: string): Promise<void> {
+    await this.augur.contracts.usdt.faucet(amount);
+    if (recipient) await this.augur.contracts.usdt.transfer(recipient, amount);
   }
 
   async faucetRep(attoRep: BigNumber, useLegacy = false): Promise<void> {
@@ -1094,6 +1117,7 @@ export class ContractAPI {
 
   async getOriginCashBalance(owner?: string): Promise<BigNumber> {
     if (!owner) owner = await this.augur.getAccount();
+
     const cash = await this.augur.contracts.getOriginCash();
     return cash.balanceOf_(owner);
   }
@@ -1116,9 +1140,10 @@ export class ContractAPI {
   }
 
   async getHotLoadingDisputeWindowData(): Promise<DisputeWindow> {
+    const augur = await this.augur.contracts.getAugur();
     return this.augur.hotLoading.getCurrentDisputeWindowData({
-      augur: this.augur.contracts.augur.address,
-      universe: this.augur.contracts.universe.address,
+      augur: augur.address,
+      universe: await this.augur.contracts.getOriginUniverseAddress(),
     });
   }
 
@@ -1158,14 +1183,16 @@ export class ContractAPI {
   }
 
   async initializeUniverseForWarpSync(): Promise<void> {
+    const universeAddress = await this.augur.contracts.getOriginUniverseAddress();
     return this.augur.warpSync.initializeUniverse(
-      this.augur.contracts.universe.address
+      universeAddress
     );
   }
 
   async getWarpSyncMarket(): Promise<ContractInterfaces.Market> {
+    const universeAddress = await this.augur.contracts.getOriginUniverseAddress();
     return this.augur.warpSync.getWarpSyncMarket(
-      this.augur.contracts.universe.address
+      universeAddress
     );
   }
 
@@ -1175,8 +1202,9 @@ export class ContractAPI {
   }
 
   async getLastWarpSyncData(): Promise<WarpSyncData> {
+    const universeAddress = await this.augur.contracts.getOriginUniverseAddress();
     return this.augur.warpSync.getLastWarpSyncData(
-      this.augur.contracts.universe.address
+      universeAddress
     );
   }
 

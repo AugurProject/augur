@@ -597,7 +597,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         bytes memory _noSelectorAssetData = _assetData.slice(4, _assetData.length);
 
         (_amounts, _nestedAssetData) = abi.decode(_noSelectorAssetData, (uint256[], bytes[]));
-        
+
         // Validate storage refs against the decoded values.
         {
             require(_amounts.length == 3);
