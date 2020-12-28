@@ -302,8 +302,8 @@ export const getUserBalances = async (provider: Web3Provider, account: string, a
 
   let balances: string[] = []
   const balanceResult: ContractCallResults = await multicall.call(balananceCalls);
-  // eslint-disable-next-line
-  Object.keys(balanceResult.results).map(key => {
+
+  Object.keys(balanceResult.results).forEach(key => {
     const value = String(new BN(JSON.parse(JSON.stringify(balanceResult.results[key].callsReturnContext[0].returnValues)).hex))
     balances.push(value);
 
