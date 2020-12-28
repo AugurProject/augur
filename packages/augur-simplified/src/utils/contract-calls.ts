@@ -10,7 +10,7 @@ import {
   ContractCallContext,
 } from '@augurproject/ethereum-multicall';
 
-import { EthersProvider } from '@augurproject/contract-dependencies-ethers'
+import { Web3Provider } from '@ethersproject/providers'
 import Web3 from 'web3';
 import { onChainMarketSharesToDisplayFormatter } from './format-number';
 
@@ -253,7 +253,7 @@ export async function doTrade(augurClient, trade: TradeInfo, minAmount: string, 
 }
 
 
-export const getUserBalances = async (web3Provider: EthersProvider, account: string, ammExchanges: AmmExchanges, cashes: Cashes): Promise<UserBalances> => {
+export const getUserBalances = async (provider: Web3Provider, account: string, ammExchanges: AmmExchanges, cashes: Cashes): Promise<UserBalances> => {
   const userBalances = {
     lpTokens: {},
     marketShares: {}
@@ -261,9 +261,6 @@ export const getUserBalances = async (web3Provider: EthersProvider, account: str
 
   const BALANCE_OF = 'balanceOf';
   const MARKET_SHARE_BALANCE = 'balanceOfMarketOutcome';
-
-  // TODO: figure out how to use injected connector from web3 react
-  const provider = new Web3("https://kovan.infura.io/v3/595111ad66e2410784d484708624f7b1");
 
   // TODO: use amm factory abi when that's available in sdk-lite
   //const lpAbi = AMMFactoryAbi;
@@ -276,7 +273,7 @@ export const getUserBalances = async (web3Provider: EthersProvider, account: str
   const shareTokens: string[] = Object.keys(cashes).map(id => cashes[id].shareToken)
   // markets
   const marketIds: string[] = ammAddresses.reduce((p, a) => p.includes(ammExchanges[a].marketId) ? p : [...p, ammExchanges[a].marketId], []);
-  const multicall = new Multicall({ web3Instance: provider });
+  const multicall = new Multicall({ ethersProvider: provider });
 
   const contractLpBalanceCall: ContractCallContext[] = ammAddresses.map(address =>
   ({
