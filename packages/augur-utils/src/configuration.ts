@@ -121,8 +121,8 @@ export interface SDKConfiguration {
     certificateKeyFile?: string;
   },
   plugins?: {
-    chat?: 'orbit' | '3box',
-    comments?: 'facebook' | '3box',
+    chat?: 'orbit',
+    comments?: 'facebook',
   },
   flash?: {
     syncSDK?: boolean,

@@ -372,6 +372,27 @@
   resolved "https://registry.yarnpkg.com/@assemblyscript/loader/-/loader-0.9.4.tgz#a483c54c1253656bb33babd464e3154a173e1577"
   integrity sha512-HazVq9zwTVwGmqdwYzu7WyQ6FQVZ7SwET0KKQuKm55jD0IfUpZgN0OPIiZG3zV1iSrVYcN0bdwLRXI/VNCYsUA==
 
+"@augurproject/artifacts@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@augurproject/artifacts/-/artifacts-2.2.0.tgz#fb65f56ba84107d3bd003f2bd140274ad9474a24"
+  integrity sha512-peLGUtdQ12JvCPe4Jm76KBRhMzcdvTJmMwgDXucMSa8lBAsRfbznWZGbRgbMb+G93Af720N1nnNqQP9nan8+uw==
+  dependencies:
+    "@augurproject/utils" "^2.2.0"
+    deepmerge "4.2.2"
+    require-all "3.0.0"
+
+"@augurproject/core@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@augurproject/core/-/core-2.2.0.tgz#0c8abb848aaac68c81ad51b98a6cdd77033a9d80"
+  integrity sha512-wgyIUBiazIcvPGic7bA8447YiEAtE52cj8IA85gvGAn33XDyi+NvbI+E6AkvEi+VfMhod3F8cdfSLs5WWYxdZQ==
+  dependencies:
+    "@augurproject/artifacts" "^2.2.0"
+    "@augurproject/contract-dependencies-ethers" "^2.2.0"
+    "@augurproject/solidity-docgen" "0.2.0-alpha.3"
+    bignumber.js "9.0.0"
+    ethers "5.0.17"
+    path "0.12.7"
+
 "@augurproject/indexeddbshim@6.1.1":
   version "6.1.1"
   resolved "https://registry.yarnpkg.com/@augurproject/indexeddbshim/-/indexeddbshim-6.1.1.tgz#60f2d5e73a255aaea2fdc4d749e5fdca8bade9d2"
@@ -383,6 +404,62 @@
     typeson "5.18.2"
     typeson-registry "1.0.0-alpha.35"
     websql "https://github.com/brettz9/node-websql.git#configurable-secure2"
+
+"@augurproject/sdk-lite@2.2.0", "@augurproject/sdk-lite@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@augurproject/sdk-lite/-/sdk-lite-2.2.0.tgz#f0534eedb798930a1e1be4cd014e6a9c72779c17"
+  integrity sha512-cMMMnzLn4mNxab28rZEQcbKzDYdJTHTk6uB7/VXCzPWmi0l7oM54+DJ86DLynAhs/LHICDh8i5FxDksnFeksqg==
+  dependencies:
+    "@augurproject/artifacts" "^2.2.0"
+    "@augurproject/utils" "^2.2.0"
+    async "3.1.0"
+    ethers "5.0.17"
+    lz-string "1.4.4"
+
+"@augurproject/sdk@2.2.0", "@augurproject/sdk@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@augurproject/sdk/-/sdk-2.2.0.tgz#527d2097aca0d9207a668970300758e1778d4284"
+  integrity sha512-O5MxElV8FIr2uPB+4VCNsWREhLGg8ZYQfdr1RZdI6+8cNHsv4PatB83zePsrkgL0CEjJRvOYU5YU5kVYodtIuw==
+  dependencies:
+    "@0x/mesh-browser" "10.1.0"
+    "@0x/mesh-browser-lite" "10.1.0"
+    "@0x/mesh-rpc-client" "9.4.2"
+    "@0x/order-utils" "10.3.0"
+    "@0x/types" "3.2.0"
+    "@augurproject/artifacts" "^2.2.0"
+    "@augurproject/contract-dependencies-ethers" "^2.2.0"
+    "@augurproject/core" "^2.2.0"
+    "@augurproject/ethersjs-provider" "^2.2.0"
+    "@augurproject/indexeddbshim" "6.1.1"
+    "@augurproject/sdk-lite" "^2.2.0"
+    "@augurproject/templates" "^2.2.0"
+    "@augurproject/utils" "^2.2.0"
+    abi-decoder "2.3.0"
+    async "3.1.0"
+    axios "0.19.2"
+    bs58 "4.0.1"
+    cid-tool "0.4.0"
+    comlink "^4.3.0"
+    cors "2.8.5"
+    cross-fetch "3.0.4"
+    dexie "3.0.0-rc.4"
+    ethereum-types "2.1.6"
+    ethereumjs-blockstream "7.0.0"
+    ethereumjs-tx "2.1.2"
+    ethereumjs-util "6.1.0"
+    ethers "5.0.17"
+    express "4.17.1"
+    flexsearch "0.6.32"
+    helmet "3.23.3"
+    io-ts "1.10.4"
+    ipfs "0.40.0"
+    ipld-dag-pb "0.18.1"
+    isomorphic-ws "4.0.1"
+    lodash "4.17.19"
+    lz-string "1.4.4"
+    moment "2.26.0"
+    websocket-as-promised "1.0.1"
+    ws "7.1.2"
 
 "@augurproject/solidity-docgen@0.2.0-alpha.3":
   version "0.2.0-alpha.3"
@@ -404,6 +481,49 @@
   integrity sha512-/enWUlPe2F93+TG7lKIJDjK2Oj9j2wr1u3tXj/5nJNPrOs+RCgK6E6NdIQ5JMR9XGzkoC/H3/mxzO++zfcCcvw==
   dependencies:
     js-sha3 "0.8.0"
+
+"@augurproject/tools@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@augurproject/tools/-/tools-2.2.0.tgz#89709a8d27f6bfa34fbae0d8e215aae6411f56c8"
+  integrity sha512-kilVSozDuhDr9B821HYpDp4PtHLLrEJk2Sm8axsB6f2E6t1yl7pvjeRARDkbRoFyCVOYBldBuZvFfcuFmK4eug==
+  dependencies:
+    "@augurproject/artifacts" "^2.2.0"
+    "@augurproject/core" "^2.2.0"
+    "@augurproject/sdk" "^2.2.0"
+    "@augurproject/sdk-lite" "^2.2.0"
+    "@augurproject/utils" "^2.2.0"
+    "@openzeppelin/gsn-helpers" "0.2.3"
+    cid-tool "0.4.0"
+    commander "4.1.0"
+    deepmerge "4.2.2"
+    ethereum-keyfile-recognizer "1.0.2"
+    ethereumjs-blockstream "7.0.0"
+    ethers "5.0.17"
+    ethjs-abi "0.2.1"
+    ethjs-account "0.1.4"
+    ethjs-provider-http "0.1.6"
+    ethjs-query "0.3.8"
+    ethjs-signer "0.1.1"
+    ganache-core "2.9.1"
+    ipfs "0.40.0"
+    lodash "4.17.19"
+    options-parser "0.4.0"
+    readline-sync "^1.4.10"
+    tsyringe "3.2.0"
+
+"@augurproject/types@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@augurproject/types/-/types-2.2.0.tgz#a0e4506c3cf83dbf24fcf6dde749c5c2c733f1c1"
+  integrity sha512-dJiiQ5GvKBPqBfd/LasOGYEA5V+AxXcjbM59hxy5wSKXULyqZQb/JAfE/0xM3RLESEa9ihL2kmI0iw03uV3Ecw==
+
+"@augurproject/utils@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@augurproject/utils/-/utils-2.2.0.tgz#d129676fad03f23793b1a3e9051627449dfa9f43"
+  integrity sha512-nrClTlpKH9DMfzOxq3Jo/ulx99KthaTVwImLDPz0zOSlVWkCyVfG0erzWhDYkhRuKgHrEvCgQh+NkiYQ+NSFXQ==
+  dependencies:
+    axios "0.19.2"
+    bignumber.js "9.0.0"
+    ethereumjs-abi "0.6.8"
 
 "@babel/code-frame@7.10.4", "@babel/code-frame@^7.10.4":
   version "7.10.4"
@@ -2001,6 +2121,9 @@
   version "7.12.1"
   resolved "https://registry.yarnpkg.com/@babel/plugin-transform-spread/-/plugin-transform-spread-7.12.1.tgz#527f9f311be4ec7fdc2b79bb89f7bf884b3e1e1e"
   integrity sha512-vuLp8CP0BE18zVYjsEBZ5xoCecMK6LBMMxYzJnh01rxQRvhNhH1csMMmBfNo5tGpGO+NhdSNW2mzIvBu3K1fng==
+  dependencies:
+    "@babel/helper-plugin-utils" "^7.10.4"
+    "@babel/helper-skip-transparent-expression-wrappers" "^7.12.1"
 
 "@babel/plugin-transform-spread@^7.2.0", "@babel/plugin-transform-spread@^7.8.3":
   version "7.10.1"

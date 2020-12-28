@@ -30,8 +30,8 @@ export function getOrCreateAMMExchange(
     amm.percentageNo = BigDecimal.fromString('0');
     amm.percentageYes = BigDecimal.fromString('0');
     amm.totalSupply =  BigInt.fromI32(0);
-    amm.volumeNo = BigInt.fromI32(0);
-    amm.volumeYes = BigInt.fromI32(0);
+    amm.volumeNo = BigDecimal.fromString('0');
+    amm.volumeYes = BigDecimal.fromString('0');
     amm.fee = BigInt.fromI32(0);
     amm.feePercent = BigDecimal.fromString('0');
     AMMExchangeTemplate.create(Address.fromString(id));
@@ -84,8 +84,6 @@ export function updateAMM(id: string):AMMExchange {
 
   let totalShares = amm.liquidityNo.plus(amm.liquidityYes);
 
-  amm.liquidity = totalShares;
-
   let ZERO = BigDecimal.fromString('0');
   if(totalShares.gt(ZERO)) {
     amm.percentageNo = amm.liquidityNo.times(BigDecimal.fromString('100')).div(totalShares);
@@ -95,6 +93,7 @@ export function updateAMM(id: string):AMMExchange {
     amm.percentageYes = ZERO;
   }
 
+  amm.liquidity = amm.liquidityNo.times(amm.percentageYes.div(BigDecimal.fromString('100'))).plus(amm.liquidityYes.times(amm.percentageNo.div(BigDecimal.fromString('100')))).plus(amm.liquidityCash);
   amm.totalSupply = ammExchangeInstance.totalSupply();
 
   amm.save();

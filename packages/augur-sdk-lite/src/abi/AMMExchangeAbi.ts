@@ -17,13 +17,13 @@ export const AMMExchangeAbi = [
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "noShares",
+        "name": "shortShares",
         "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "yesShares",
+        "name": "longShares",
         "type": "uint256"
       },
       {
@@ -85,8 +85,14 @@ export const AMMExchangeAbi = [
       {
         "indexed": false,
         "internalType": "bool",
-        "name": "buyYes",
+        "name": "buyLong",
         "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "priorShares",
+        "type": "uint256"
       }
     ],
     "name": "EnterPosition",
@@ -104,19 +110,13 @@ export const AMMExchangeAbi = [
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "invalidShares",
+        "name": "shortShares",
         "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "noShares",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "yesShares",
+        "name": "longShares",
         "type": "uint256"
       },
       {
@@ -147,13 +147,13 @@ export const AMMExchangeAbi = [
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "noShares",
+        "name": "shortShares",
         "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "yesShares",
+        "name": "longShares",
         "type": "uint256"
       }
     ],
@@ -184,7 +184,7 @@ export const AMMExchangeAbi = [
       {
         "indexed": false,
         "internalType": "bool",
-        "name": "inputYes",
+        "name": "inputLong",
         "type": "bool"
       }
     ],
@@ -276,7 +276,7 @@ export const AMMExchangeAbi = [
       },
       {
         "internalType": "bool",
-        "name": "_keepYes",
+        "name": "_keepLong",
         "type": "bool"
       },
       {
@@ -524,7 +524,7 @@ export const AMMExchangeAbi = [
       },
       {
         "internalType": "bool",
-        "name": "_buyYes",
+        "name": "_buyLong",
         "type": "bool"
       },
       {
@@ -571,17 +571,12 @@ export const AMMExchangeAbi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_invalidShares",
+        "name": "_shortShares",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "_noShares",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_yesShares",
+        "name": "_longShares",
         "type": "uint256"
       },
       {
@@ -703,38 +698,12 @@ export const AMMExchangeAbi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_poolYes",
+        "name": "_longs",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "_poolNo",
-        "type": "uint256"
-      }
-    ],
-    "name": "poolConstant",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_yesses",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_nos",
+        "name": "_shorts",
         "type": "uint256"
       }
     ],
@@ -760,7 +729,7 @@ export const AMMExchangeAbi = [
       },
       {
         "internalType": "bool",
-        "name": "_buyYes",
+        "name": "_buyLong",
         "type": "bool"
       }
     ],
@@ -783,23 +752,8 @@ export const AMMExchangeAbi = [
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "_cashPayout",
+        "name": "",
         "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_invalidFromUser",
-        "type": "uint256"
-      },
-      {
-        "internalType": "int256",
-        "name": "_noFromUser",
-        "type": "int256"
-      },
-      {
-        "internalType": "int256",
-        "name": "_yesFromUser",
-        "type": "int256"
       }
     ],
     "payable": false,
@@ -811,17 +765,12 @@ export const AMMExchangeAbi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_invalidShares",
+        "name": "_shortSharesToSell",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "_noSharesToSell",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_yesSharesToSell",
+        "name": "_longSharesToSell",
         "type": "uint256"
       }
     ],
@@ -829,23 +778,8 @@ export const AMMExchangeAbi = [
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "_cashPayout",
+        "name": "",
         "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_invalidFromUser",
-        "type": "uint256"
-      },
-      {
-        "internalType": "int256",
-        "name": "_noFromUser",
-        "type": "int256"
-      },
-      {
-        "internalType": "int256",
-        "name": "_yesFromUser",
-        "type": "int256"
       }
     ],
     "payable": false,
@@ -870,17 +804,12 @@ export const AMMExchangeAbi = [
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "_invalidShare",
+        "name": "_shortShare",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "_noShare",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_yesShare",
+        "name": "_longShare",
         "type": "uint256"
       },
       {
@@ -908,7 +837,7 @@ export const AMMExchangeAbi = [
       },
       {
         "internalType": "bool",
-        "name": "_inputYes",
+        "name": "_inputLong",
         "type": "bool"
       }
     ],
@@ -942,22 +871,22 @@ export const AMMExchangeAbi = [
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "_invalidShare",
+        "name": "_shortShare",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "_noShare",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_yesShare",
+        "name": "_longShare",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
         "name": "_cashShare",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_setsSold",
         "type": "uint256"
       }
     ],
@@ -1021,7 +950,7 @@ export const AMMExchangeAbi = [
       },
       {
         "internalType": "bool",
-        "name": "_inputYes",
+        "name": "_inputLong",
         "type": "bool"
       },
       {
