@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { ApolloProvider } from 'react-apollo'
-import { client, getMarketsData } from 'modules/apollo/client'
+import { ApolloProvider } from 'react-apollo';
+import { client, getMarketsData } from 'modules/apollo/client';
 import Styles from 'modules/App.styles.less';
 import Routes from 'modules/routes/routes';
 import TopNav from 'modules/common/top-nav';
@@ -13,6 +13,7 @@ import { Sidebar } from 'modules/sidebar/sidebar';
 import { processGraphMarkets } from 'utils/process-data';
 import { getUserBalances } from '../utils/contract-calls';
 import { augurSdkLite } from '../utils/augurlitesdk';
+import { ConnectAccountProvider } from 'modules/ConnectAccount/connect-account-provider';
 
 function checkIsMobile(setIsMobile) {
   const isMobile =
@@ -30,7 +31,12 @@ const AppBody = () => {
     processed,
     loginAccount,
     paraConfig,
-    actions: { setIsMobile, updateGraphData, updateProcessed, updateUserBalances },
+    actions: {
+      setIsMobile,
+      updateGraphData,
+      updateProcessed,
+      updateUserBalances,
+    },
   } = useAppStatusStore();
 
   useEffect(() => {
@@ -48,10 +54,10 @@ const AppBody = () => {
         }
       });
     }, 15000);
-    return (() => {
+    return () => {
       isMounted = false;
       clearInterval(intervalId);
-    })
+    };
     // eslint-disable-next-line
   }, []);
 
@@ -68,9 +74,7 @@ const AppBody = () => {
   }, []);
 
   useEffect(() => {
-    if (
-      showTradingForm
-    ) {
+    if (showTradingForm) {
       document.body.classList.add('App--noScroll');
       window.scrollTo(0, 0);
     } else {
@@ -79,15 +83,27 @@ const AppBody = () => {
   }, [showTradingForm]);
 
   useEffect(() => {
-    const createClient = (provider, config) => augurSdkLite.makeLiteClient(provider, config)
-    const fetchUserBalances = (loginAccount, ammExchanges, cashes) => getUserBalances(loginAccount?.library, loginAccount?.account, ammExchanges, cashes);
+    const createClient = (provider, config) =>
+      augurSdkLite.makeLiteClient(provider, config);
+    const fetchUserBalances = (loginAccount, ammExchanges, cashes) =>
+      getUserBalances(
+        loginAccount?.library,
+        loginAccount?.account,
+        ammExchanges,
+        cashes
+      );
     if (loginAccount?.account && loginAccount?.library) {
-      if (!augurSdkLite.ready()) createClient(loginAccount?.library, paraConfig)
+      if (!augurSdkLite.ready())
+        createClient(loginAccount?.library, paraConfig);
       const { ammExchanges, cashes } = processed;
-      fetchUserBalances(loginAccount, ammExchanges, cashes).then(userBalances => updateUserBalances(userBalances))
+      fetchUserBalances(
+        loginAccount,
+        ammExchanges,
+        cashes
+      ).then((userBalances) => updateUserBalances(userBalances));
     }
     // eslint-disable-next-line
-  }, [loginAccount?.account, processed, loginAccount?.library])
+  }, [loginAccount?.account, processed, loginAccount?.library]);
 
   return (
     <div className={Styles.App}>
@@ -100,11 +116,13 @@ const AppBody = () => {
 
 function App() {
   return (
-    <ApolloProvider client={client}>
-      <AppStatusProvider>
-        <AppBody />
-      </AppStatusProvider>
-    </ApolloProvider>
+    <ConnectAccountProvider>
+      <ApolloProvider client={client}>
+        <AppStatusProvider>
+          <AppBody />
+        </AppStatusProvider>
+      </ApolloProvider>
+    </ConnectAccountProvider>
   );
 }
 
