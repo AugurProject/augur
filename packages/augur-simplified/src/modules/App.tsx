@@ -14,6 +14,7 @@ import { processGraphMarkets } from 'utils/process-data';
 import { getUserBalances } from '../utils/contract-calls';
 import { augurSdkLite } from '../utils/augurlitesdk';
 import { ConnectAccountProvider } from 'modules/ConnectAccount/connect-account-provider';
+import { useActiveWeb3React } from 'modules/ConnectAccount/hooks';
 
 function checkIsMobile(setIsMobile) {
   const isMobile =
@@ -29,7 +30,6 @@ const AppBody = () => {
     sidebarType,
     showTradingForm,
     processed,
-    loginAccount,
     paraConfig,
     actions: {
       setIsMobile,
@@ -38,6 +38,7 @@ const AppBody = () => {
       updateUserBalances,
     },
   } = useAppStatusStore();
+  const activeWeb3 = useActiveWeb3React();
 
   useEffect(() => {
     // get data immediately, then setup interval
@@ -85,25 +86,22 @@ const AppBody = () => {
   useEffect(() => {
     const createClient = (provider, config) =>
       augurSdkLite.makeLiteClient(provider, config);
-    const fetchUserBalances = (loginAccount, ammExchanges, cashes) =>
+    const fetchUserBalances = (activeWeb3, ammExchanges, cashes) =>
       getUserBalances(
-        loginAccount?.library,
-        loginAccount?.account,
+        activeWeb3?.library,
+        activeWeb3?.account,
         ammExchanges,
         cashes
       );
-    if (loginAccount?.account && loginAccount?.library) {
-      if (!augurSdkLite.ready())
-        createClient(loginAccount?.library, paraConfig);
+    if (activeWeb3?.account && activeWeb3?.library) {
+      if (!augurSdkLite.ready()) createClient(activeWeb3?.library, paraConfig);
       const { ammExchanges, cashes } = processed;
-      fetchUserBalances(
-        loginAccount,
-        ammExchanges,
-        cashes
-      ).then((userBalances) => updateUserBalances(userBalances));
+      fetchUserBalances(activeWeb3, ammExchanges, cashes).then((userBalances) =>
+        updateUserBalances(userBalances)
+      );
     }
     // eslint-disable-next-line
-  }, [loginAccount?.account, processed, loginAccount?.library]);
+  }, [activeWeb3, processed, paraConfig]);
 
   return (
     <div className={Styles.App}>

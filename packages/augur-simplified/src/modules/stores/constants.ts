@@ -40,6 +40,7 @@ export const DEFAULT_APP_STATUS_STATE = {
     sortBy: TOTAL_VOLUME,
     currency: ALL
   },
+  paraConfig: {},
   processed: {
     markets: {},
     cashes: {},
@@ -69,7 +70,6 @@ export const APP_STATE_KEYS = {
   PROCESSED: 'processed',
   MARKETS_VIEW_SETTINGS: 'marketsViewSettings',
   PARACONFIG: 'paraConfig',
-  USER_BALANCES: 'userBalances',
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -332,6 +332,7 @@ export const MOCK_APP_STATUS_STATE = {
     },
   },
   userInfo: {
+    balances: {},
     activity: [
       {
         date: '04/12',
