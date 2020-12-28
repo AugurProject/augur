@@ -20,30 +20,39 @@ const ActivityCard = ({ activity }: ActivityCardProps) => (
 export const Activity = () => {
   const {
     userInfo: { activity },
+    loginAccount,
   } = useAppStatusStore();
+  const isLogged = loginAccount !== null;
 
   return (
     <div className={Styles.Activity}>
       <span>your activity</span>
-      <div>
-        {activity.map((activityGroup) => (
-          <div key={activityGroup.date}>
-            <span>{activityGroup.date}</span>
-            <div>
-              {activityGroup.activity.map((activityItem) => (
-                <ActivityCard key={activityItem.id} activity={activityItem} />
-              ))}
-            </div>
+      {isLogged ? (
+        <>
+          <div>
+            {activity.map((activityGroup) => (
+              <div key={activityGroup.date}>
+                <span>{activityGroup.date}</span>
+                <div>
+                  {activityGroup.activity.map((activityItem) => (
+                    <ActivityCard
+                      key={activityItem.id}
+                      activity={activityItem}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      <Pagination
-        page={1}
-        itemCount={10}
-        itemsPerPage={9}
-        action={() => null}
-        updateLimit={() => null}
-      />
+          <Pagination
+            page={1}
+            itemCount={10}
+            itemsPerPage={9}
+            action={() => null}
+            updateLimit={() => null}
+          />
+        </>
+      ) : <span>No activity to show</span>}
     </div>
   );
 };

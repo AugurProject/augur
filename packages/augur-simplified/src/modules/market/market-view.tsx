@@ -121,7 +121,7 @@ const MarketView = ({ defaultMarket = null }) => {
           />
         )}
         <SimpleChartSection {...{ market }} />
-        <PositionsLiquidityViewSwitcher marketId={market.id} />
+        <PositionsLiquidityViewSwitcher marketId={marketId} />
         <div
           className={classNames(Styles.Details, {
             [Styles.isClosed]: !showMoreDetails,

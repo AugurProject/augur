@@ -16,6 +16,7 @@ interface ValueLabelProps {
   label?: string;
   sublabel?: string;
   value: string | number;
+  light?: boolean;
 }
 
 export const ValueLabel = ({
@@ -23,12 +24,14 @@ export const ValueLabel = ({
   label,
   sublabel,
   value,
+  light
 }: ValueLabelProps) => {
   return (
     <div
       className={classNames(Styles.ValueLabel, {
         [Styles.large]: large,
         [Styles.Sublabel]: sublabel,
+        [Styles.light]: light
       })}
     >
       <span>{label}</span>
@@ -95,7 +98,8 @@ interface AppViewStatsProps {
 }
 
 export const AppViewStats = ({ showCashAmounts }: AppViewStatsProps) => {
-  const { isMobile } = useAppStatusStore();
+  const { isMobile, loginAccount } = useAppStatusStore();
+  const isLogged = loginAccount !== null;
   return (
     <div
       className={classNames(Styles.AppStats, {
@@ -105,20 +109,23 @@ export const AppViewStats = ({ showCashAmounts }: AppViewStatsProps) => {
       <ValueLabel
         large
         label={isMobile ? 'total acc. value' : 'total account value'}
-        value={formatDai(fakeMarketViewStats.totalAccountValue).full}
+        light={!isLogged}
+        value={formatDai(isLogged ? fakeMarketViewStats.totalAccountValue : 0).full}
       />
       <ValueLabel
         large
         label={'positions'}
-        sublabel={`${
+        light={!isLogged}
+        sublabel={isLogged ? `${
           formatDai(fakeMarketViewStats.positions.hourChange).full
-        } (24hr)`}
-        value={formatDai(fakeMarketViewStats.positions.value).full}
+        } (24hr)` : null}
+        value={formatDai(isLogged ? fakeMarketViewStats.positions.value : 0).full}
       />
       <ValueLabel
         large
+        light={!isLogged}
         label={'available funds'}
-        value={formatDai(fakeMarketViewStats.availableFunds).full}
+        value={formatDai(isLogged ? fakeMarketViewStats.availableFunds : 0).full}
       />
       {showCashAmounts && (
         <>

@@ -4,11 +4,18 @@
     display: flex;
     flex-direction: column;
 
-    > span {
+    > span:first-of-type {
         .text-20-bold;
 
         color: var(--simple-primary-text);
         text-transform: capitalize;
+    }
+
+    > span:nth-of-type(2) {
+        .text-14-semi-bold;
+
+        color: var(--simple-secondary-text);
+        margin-top: @size-32;
     }
 
     > div {
