@@ -153,13 +153,17 @@ const WalletAction = ({ onClick, darkMode, children }) => (
   <div
     onClick={onClick}
     style={{
-      width: 'fit-content',
-      fontWeight: 400,
-      marginLeft: '8px',
-      fontSize: '0.825rem',
-      padding: '4px 6px',
-      color: `${darkMode ? '#2172E5' : '#2172E5'}`,
+      display: 'flex',
+      justifyContent: 'center',
       cursor: 'pointer',
+      margin: '6px 0 0 0',
+      fontWeight: 600,
+      fontSize: '12px',
+      color: `${darkMode ? '#2172E5' : '#15171A'}`,
+      padding: '4px 8px',
+      background: '#EDEFF1',
+      border: '1px solid #8B959E',
+      borderRadius: '8px',
   }}>
     {children}
   </div>
@@ -265,11 +269,11 @@ export default function AccountDetails({
                       openOptions()
                     }}
                   >
-                    Change
+                    Switch Wallet
                   </WalletAction>
                 </div>
               </AccountGroupingRow>
-              <AccountGroupingRow id="web3-account-identifier-row" darkMode={darkMode}>
+              <AccountGroupingRow darkMode={darkMode}>
                 <AccountControl>
                   <>
                     {getStatusIcon()}

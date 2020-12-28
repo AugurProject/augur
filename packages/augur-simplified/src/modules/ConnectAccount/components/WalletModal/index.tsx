@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
@@ -141,10 +142,12 @@ export default function WalletModal({
   showModal,
   toggleWalletModal,
   darkMode,
+  autoLogin,
 }: {
   showModal: boolean
   toggleWalletModal: Function
   darkMode: boolean
+  autoLogin: boolean
 }) {
   // important that these are destructed from the account-specific web3-react context
   const { active, account, connector, activate, error } = useWeb3React()
@@ -159,12 +162,53 @@ export default function WalletModal({
 
   const previousAccount = usePrevious(account)
 
+
+  const tryActivation = useCallback((connector: AbstractConnector | undefined) => {
+    let name = ''
+    Object.keys(SUPPORTED_WALLETS).map(key => {
+      if (connector === SUPPORTED_WALLETS[key].connector) {
+        name = SUPPORTED_WALLETS[key].name
+        return (name)
+      }
+      return true
+    })
+    setPendingWallet(connector) // set wallet for pending view
+    setWalletView(WALLET_VIEWS.PENDING)
+
+    // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
+    if (connector instanceof WalletConnectConnector && connector.walletConnectProvider?.wc?.uri) {
+      connector.walletConnectProvider = undefined
+    }
+
+    setTimeout(() => {
+      connector &&
+        activate(connector, undefined, true).catch(error => {
+          if (error instanceof UnsupportedChainIdError) {
+            activate(connector) // a little janky...can't use setError because the connector isn't set
+          } else {
+            setPendingError(true)
+          }
+        }).then(() => {
+          activate(connector)
+          setWalletView(WALLET_VIEWS.ACCOUNT)
+        })
+    });
+
+  }, [activate])
+
   // close on connection, when logged out before
   useEffect(() => {
     if (account && !previousAccount && walletModalOpen) {
       toggleWalletModal()
     }
-  }, [account, previousAccount, walletModalOpen, toggleWalletModal])
+
+    if (autoLogin && !account) {
+      const option = SUPPORTED_WALLETS['METAMASK']
+      tryActivation(option.connector)
+      setWalletView(WALLET_VIEWS.ACCOUNT)
+    }
+  }, [autoLogin, tryActivation, account, previousAccount, walletModalOpen, toggleWalletModal])
+
 
   // always reset to account view
   useEffect(() => {
@@ -184,32 +228,6 @@ export default function WalletModal({
     }
   }, [setWalletView, active, error, connector, walletModalOpen, activePrevious, connectorPrevious])
 
-  const tryActivation = async (connector: AbstractConnector | undefined) => {
-    let name = ''
-    Object.keys(SUPPORTED_WALLETS).map(key => {
-      if (connector === SUPPORTED_WALLETS[key].connector) {
-        name = SUPPORTED_WALLETS[key].name
-        return (name)
-      }
-      return true
-    })
-    setPendingWallet(connector) // set wallet for pending view
-    setWalletView(WALLET_VIEWS.PENDING)
-
-    // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
-    if (connector instanceof WalletConnectConnector && connector.walletConnectProvider?.wc?.uri) {
-      connector.walletConnectProvider = undefined
-    }
-
-    connector &&
-      activate(connector, undefined, true).catch(error => {
-        if (error instanceof UnsupportedChainIdError) {
-          activate(connector) // a little janky...can't use setError because the connector isn't set
-        } else {
-          setPendingError(true)
-        }
-      })
-  }
 
   // close wallet modal if fortmatic modal is active
   useEffect(() => {

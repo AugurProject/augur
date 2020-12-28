@@ -28,7 +28,7 @@ const Content = ({ children, darkMode }) => (
       backgroundColor: `${darkMode ? '#212429' : '#FAFAFA'}`,
       boxShadow: `0 4px 8px 0 ${transparentize(0.95, darkMode ? '#000' : '#2F80ED')}`,
       padding: '0px',
-      width: '50vw',
+      width: window.innerWidth < 650 ? '100%' : '50vw',
       maxWidth: '420px',
       maxHeight: '90vh',
       display: 'flex',
@@ -65,7 +65,6 @@ export default function Modal({
   children,
   darkMode
 }: ModalProps) {
-
   return (
     <>
       {isOpen &&

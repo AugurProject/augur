@@ -75,7 +75,10 @@ const HeaderText = ({ color, darkMode, children }) => (
   <div style={{
     color: `${color === 'blue' ? darkMode ? '#2172E5' : '#2172E5' : darkMode ? '#FAFAFA' : '#1F1F1F'}`,
     fontSize: '1rem',
-    fontWeight: 500
+    fontWeight: 500,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   }}>
     {children}
   </div>

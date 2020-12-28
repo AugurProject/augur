@@ -2,9 +2,12 @@ import React from 'react'
 import { CheckCircle, Copy } from 'react-feather'
 import { useCopyClipboard } from '../../hooks'
 
+import Styles from 'modules/ConnectAccount/components/AccountDetails/index.less';
+
 const CopyIcon = ({ darkMode, onClick, children }) => (
-  <button onClick={onClick} className="LinkStyledButton" style={{
-    color: `${darkMode ? '#C3C5CB' : '#565A69'}`
+  <button onClick={onClick} className={Styles.LinkStyledButton} style={{
+    color: `${darkMode ? '#C3C5CB' : '#565A69'}`,
+    alignItems: 'center',
   }}>
     {children}
   </button>
@@ -14,7 +17,6 @@ const TransactionStatusText = ({ children }) => (
   <span style={{
     marginLeft: '0.25rem',
     fontSize: '0.825rem',
-    alignItems: 'center',
   }}>
     {children}
   </span>
