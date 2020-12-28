@@ -4,9 +4,6 @@ import { Web3Provider } from '@ethersproject/providers'
 import { useWeb3React as useWeb3ReactCore } from '@web3-react/core'
 import copy from 'copy-to-clipboard'
 import { useState, useCallback, useEffect } from 'react'
-import { AugurLite, NetworkId } from "@augurproject/sdk-lite";
-import BigNumber from 'bignumber.js'
-import { useAppStatusStore } from '../../stores/app-status'
 
 export function useActiveWeb3React(): Web3ReactContextInterface<Web3Provider> & { chainId?: ChainId } {
   const context = useWeb3ReactCore<Web3Provider>()
@@ -36,27 +33,4 @@ export function useCopyClipboard(timeout = 500): [boolean, (toCopy: string) => v
   }, [isCopied, setIsCopied, timeout])
 
   return [isCopied, staticCopy]
-}
-
-// TODO: this prob needs to go into context
-let augurClient = null;
-export function useAugurClient() {
-  const { account, library, chainId } = useActiveWeb3React();
-  const {
-    paraConfig,
-  } = useAppStatusStore();
-
-  useEffect(() => {
-    async function createAugurClient() {
-      if (!library || !chainId || !account) return
-      console.info('building/getting augur client', paraConfig.addresses)
-      const networkId = String(chainId) as NetworkId;
-      augurClient = new AugurLite(library, paraConfig, networkId, new BigNumber(18));
-    }
-    if (!augurClient) {
-      createAugurClient()
-    }
-  }, [library, chainId, paraConfig, account])
-
-  return augurClient
 }
