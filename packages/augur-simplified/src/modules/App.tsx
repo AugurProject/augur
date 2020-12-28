@@ -32,8 +32,6 @@ const AppBody = () => {
     actions: { setIsMobile, updateGraphData, updateProcessed, updateUserBalances },
   } = useAppStatusStore();
 
-  const { library } = useActiveWeb3React()
-
   useEffect(() => {
     // get data immediately, then setup interval
     getMarketsData((data) => {
@@ -81,11 +79,11 @@ const AppBody = () => {
 
   useEffect(() => {
     const fetchUserBalances = (loginAccount, ammExchanges, cashes) => getUserBalances(loginAccount?.library, loginAccount?.account, ammExchanges, cashes);
-    if (loginAccount?.account) {
+    if (loginAccount?.account && loginAccount?.library) {
       const { ammExchanges, cashes } = processed;
       fetchUserBalances(loginAccount, ammExchanges, cashes).then(userBalances => updateUserBalances(userBalances))
     }
-  }, [loginAccount?.account, processed, library])
+  }, [loginAccount?.account, processed, loginAccount?.library])
 
   return (
     <div className={Styles.App}>
