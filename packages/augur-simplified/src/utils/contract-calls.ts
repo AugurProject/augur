@@ -11,7 +11,6 @@ import {
 } from '@augurproject/ethereum-multicall';
 
 import { Web3Provider } from '@ethersproject/providers'
-import Web3 from 'web3';
 import { onChainMarketSharesToDisplayFormatter } from './format-number';
 
 // TODO: when scalars get num ticks from market

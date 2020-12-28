@@ -8,7 +8,7 @@ export class SDKLite {
 
   // Async to remain consistent with the sdk 'makeClient' method.
   async makeLiteClient(
-    provider: ethers.providers.JsonRpcProvider,
+    provider: ethers.providers.Provider,
     config: any,
     ): Promise<AugurLite> {
     const networkId = config.networkId;
