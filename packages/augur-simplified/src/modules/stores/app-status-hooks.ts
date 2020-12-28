@@ -28,7 +28,6 @@ const {
   LOGIN_ACCOUNT,
   MARKETS_VIEW_SETTINGS,
   USER_INFO,
-  USER_BALANCES
 } = APP_STATE_KEYS;
 
 const isAsync = (obj) => {
@@ -135,7 +134,7 @@ export function AppStatusReducer(state, action) {
       break;
     }
     case UPDATE_USER_BALANCES: {
-      updatedState[USER_BALANCES] = action.userBalances;
+      updatedState[USER_INFO].balances = action.userBalances;
       break;
     }
     default:
