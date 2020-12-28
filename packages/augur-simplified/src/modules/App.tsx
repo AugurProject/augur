@@ -11,7 +11,6 @@ import {
 } from 'modules/stores/app-status';
 import { Sidebar } from 'modules/sidebar/sidebar';
 import { processGraphMarkets } from 'utils/process-data';
-import { useActiveWeb3React } from './ConnectAccount/hooks';
 import { getUserBalances } from '../utils/contract-calls';
 
 function checkIsMobile(setIsMobile) {
