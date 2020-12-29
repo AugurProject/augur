@@ -26,6 +26,8 @@ import {
 } from 'modules/constants';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import { USDC } from '../constants';
+import { AmmExchange, MarketInfo } from '../types';
+import { formatDai } from '../../utils/format-number';
 
 const getDetails = (market) => {
   const rawInfo = market?.extraInfoRaw || '{}';
@@ -73,7 +75,8 @@ const MarketView = ({ defaultMarket = null }) => {
     actions: { setShowTradingForm },
     processed: { markets },
   } = useAppStatusStore();
-  const market = !!defaultMarket ? defaultMarket : markets[marketId];
+  const market: MarketInfo = !!defaultMarket ? defaultMarket : markets[marketId];
+  const amm: AmmExchange = market?.amm;
   // console.log("in market view", market, marketId, markets);
   if (!market) return <div className={Styles.MarketView} />;
   const details = getDetails(market);
@@ -89,20 +92,20 @@ const MarketView = ({ defaultMarket = null }) => {
         <ul className={Styles.StatsRow}>
           <li>
             <span>24hr Volume</span>
-            <span>{market.twentyFourHourVolume?.full || '$0.00'}</span>
+            <span>{formatDai(amm?.volume24hrTotalUSD || '0.00').full}</span>
           </li>
           <li>
             <span>Total Volume</span>
-            <span>{market.totalVolume?.full || '$0.00'}</span>
+            <span>{formatDai(amm.volumeTotalUSD || '0.00').full}</span>
           </li>
           <li>
             <span>Liquidity</span>
-            <span>{market.totalLiquidity?.full || '$0.00'}</span>
+            <span>{formatDai(amm.liquidityUSD || '0.00').full}</span>
           </li>
           <li>
             <span>Expires</span>
             <span>
-              {new Date(Number(market?.endTimestamp * 1000)).toDateString() ||
+              {new Date(Number(market.endTimestamp) * 1000).toDateString() ||
                 'missing'}
             </span>
           </li>
