@@ -91,7 +91,6 @@ export const AppViewStats = ({ showCashAmounts }: AppViewStatsProps) => {
   const { isMobile, userInfo } = useAppStatusStore();
   const { account } = useActiveWeb3React();
   const isLogged = Boolean(account);
-  console.log('isLogged', isLogged)
   return (
     <div
       className={classNames(Styles.AppStats, {
