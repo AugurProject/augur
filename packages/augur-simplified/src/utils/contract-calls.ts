@@ -535,8 +535,8 @@ export const getUserBalances = async (
     }
   })
   const userPositions = getTotalPositions(userBalances.marketShares);
-  const totalAccountValue = String(new BN(userBalances.ETH.usdValue).plus(new BN(userPositions.totalPositionUsd)));
   const availableFundsUsd = String(new BN(userBalances.ETH.usdValue).plus(new BN(userBalances.USDC.usdValue)));
+  const totalAccountValue = String(new BN(availableFundsUsd).plus(new BN(userPositions.totalPositionUsd)));
   return { ...userBalances, ...userPositions, totalAccountValue, availableFundsUsd }
 }
 
