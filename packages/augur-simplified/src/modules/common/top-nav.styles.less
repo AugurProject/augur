@@ -71,6 +71,8 @@
       max-width: @size-528;
       padding-right: @size-88;
       grid-gap: @size-8;
+      align-items: center;
+      justify-content: flex-end;
 
       > button:first-of-type {
         &:first-of-type {
@@ -86,6 +88,7 @@
         .text-16-bold;
 
         background: var(--light-background-color);
+        border: @size-1 solid var(--simple-border);
         min-height: @size-48;
         max-height: @size-48;
         height: @size-48;
@@ -111,6 +114,82 @@
 
     &.TwoTone > section:last-of-type {
       background: transparent;
+    }
+  }
+}
+
+
+.SettingsButton {
+  .RoundedButton;
+  .text-16-bold;
+
+  background: var(--light-background-color);
+  border: @size-1 solid var(--simple-border);
+  min-height: @size-48;
+  max-height: @size-48;
+  height: @size-48;
+  padding: 0 @size-14;
+  color: var(--simple-primary-text);
+
+  &:hover,
+  &:active,
+  &:hover:active {
+    background: var(--simple-alternate-background);
+    border: @size-1 solid var(--simple-border);
+  }
+
+  &:focus {
+    background: var(--light-background-color);
+    outline: auto;
+    outline-color: var(--simple-outline-color);
+  }
+}
+
+.SettingsMenu {
+  .SimpleBorder;
+  .FixedBoxShadow;
+
+  background: white;
+  position: absolute;
+  top: 81px;
+  display: grid;
+  padding: @size-24;
+  grid-gap: @size-24;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto;
+  max-width: 261px;
+  min-width: 261px;
+  max-height: 300px;
+
+  @media @breakpoint-mobile-tablet {
+    top: auto;
+    bottom: 73px;
+  }
+
+  > li {
+    > h2 {
+      .text-16-bold;
+
+      color: var(--simple-primary-text);
+      margin: 0;
+    }
+
+    > label {
+      .text-14;
+
+      color: var(--simple-primary-text);
+      margin-bottom: @size-12;
+    }
+
+    > ul {
+      display: flex;
+      flex-flow: row nowrap;
+      grid-gap: @size-4;
+      align-self: flex-end;
+    
+      > li > button {
+        .RoundedButton;
+      }
     }
   }
 }

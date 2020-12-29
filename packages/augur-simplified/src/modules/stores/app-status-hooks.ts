@@ -18,6 +18,7 @@ const {
   SET_LOGIN_ACCOUNT,
   UPDATE_MARKETS_VIEW_SETTINGS,
   UPDATE_USER_BALANCES,
+  UPDATE_SETTINGS,
 } = APP_STATUS_ACTIONS;
 
 const {
@@ -28,6 +29,7 @@ const {
   LOGIN_ACCOUNT,
   MARKETS_VIEW_SETTINGS,
   USER_INFO,
+  SETTINGS,
 } = APP_STATE_KEYS;
 
 const isAsync = (obj) => {
@@ -133,6 +135,13 @@ export function AppStatusReducer(state, action) {
       };
       break;
     }
+    case UPDATE_SETTINGS: {
+      updatedState[SETTINGS] = {
+        ...state[SETTINGS],
+        ...action[SETTINGS],
+      };
+      break;
+    }
     case UPDATE_USER_BALANCES: {
       updatedState[USER_INFO].balances = action.userBalances;
       break;
@@ -166,7 +175,8 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
       updateLoginAccount: (account) =>
         dispatch({ type: SET_LOGIN_ACCOUNT, account }),
       updateUserBalances: (userBalances) =>
-        dispatch({ type: UPDATE_USER_BALANCES, userBalances })
+        dispatch({ type: UPDATE_USER_BALANCES, userBalances }),
+      updateSettings: settings => dispatch({ type: UPDATE_SETTINGS, settings })
     },
   };
 };

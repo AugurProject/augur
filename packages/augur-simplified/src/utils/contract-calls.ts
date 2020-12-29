@@ -1,7 +1,6 @@
 import { BigNumber as BN } from 'bignumber.js'
 import { RemoveLiquidityRate, numTicksToTickSizeWithDisplayPrices, convertDisplayAmountToOnChainAmount, ParaShareToken } from '@augurproject/sdk-lite'
-import { TradeInfo, TradingDirection } from 'modules/types'
-import { AmmExchange, AmmExchanges, AmmMarketShares, Cashes, CurrencyBalance, PositionBalance, UserBalances } from '../modules/types'
+import { TradeInfo, TradingDirection, AmmExchange, AmmExchanges, AmmMarketShares, Cashes, CurrencyBalance, PositionBalance, UserBalances } from 'modules/types';
 import ethers from 'ethers';
 
 import {
@@ -16,29 +15,42 @@ import { augurSdkLite } from './augurlitesdk';
 import { ETH, NO_OUTCOME_ID, USDC, YES_OUTCOME_ID } from '../modules/constants';
 
 // TODO: when scalars get num ticks from market
-export const YES_NO_NUM_TICKS = 1000
+export const YES_NO_NUM_TICKS = 1000;
 
 // TODO: pass in precision to converting helper
-export const formatToOnChainShares = (num = "0", decimals = "18"): BN => {
+export const formatToOnChainShares = (num = '0', decimals = '18'): BN => {
   // TODO: get max min price from market when scalars markets
-  const numTicks = numTicksToTickSizeWithDisplayPrices(new BN(YES_NO_NUM_TICKS), new BN(0), new BN(1))
-  const onChain = convertDisplayAmountToOnChainAmount(new BN(num), numTicks, new BN(decimals))
-  console.log('to onChain shares value decimals:', num, decimals, String(onChain))
+  const numTicks = numTicksToTickSizeWithDisplayPrices(
+    new BN(YES_NO_NUM_TICKS),
+    new BN(0),
+    new BN(1)
+  );
+  const onChain = convertDisplayAmountToOnChainAmount(
+    new BN(num),
+    numTicks,
+    new BN(decimals)
+  );
+  console.log(
+    'to onChain shares value decimals:',
+    num,
+    decimals,
+    String(onChain)
+  );
   return onChain;
-}
+};
 
 export interface AddAmmLiquidity {
-  account: string,
-  ammAddress: string,
-  hasLiquidity: boolean,
-  augurClient,
-  marketId: string,
-  sharetoken: string,
-  fee: string,
-  cashAmount: string,
-  priceNo: number,
-  priceYes: number,
-  useEth: boolean,
+  account: string;
+  ammAddress: string;
+  hasLiquidity: boolean;
+  augurClient;
+  marketId: string;
+  sharetoken: string;
+  fee: string;
+  cashAmount: string;
+  priceNo: number;
+  priceYes: number;
+  useEth: boolean;
 }
 
 export function addAmmLiquidity({
@@ -54,7 +66,8 @@ export function addAmmLiquidity({
   useEth,
 }: AddAmmLiquidity) {
   const augurClient = augurSdkLite.get();
-  if (!augurClient || !augurClient.amm) return console.error('augurClient is null')
+  if (!augurClient || !augurClient.amm)
+    return console.error('augurClient is null');
   console.log(
     'addAmmLiquidity',
     account,
@@ -64,15 +77,17 @@ export function addAmmLiquidity({
     sharetoken,
     fee,
     String(cashAmount),
-    'No', String(priceNo),
-    'Yes', String(priceYes),
+    'No',
+    String(priceNo),
+    'Yes',
+    String(priceYes),
     `use ETH: ${useEth}`
-  )
+  );
 
   // converting odds to pool percentage. odds is the opposit of pool percentage
   // same when converting pool percentage to price
-  const poolYesPercent = new BN(priceNo)
-  const poolNoPercent = new BN(priceYes)
+  const poolYesPercent = new BN(priceNo);
+  const poolNoPercent = new BN(priceYes);
 
   return augurClient.amm.doAddLiquidity(
     account,
@@ -83,15 +98,15 @@ export function addAmmLiquidity({
     new BN(fee),
     new BN(cashAmount),
     poolYesPercent,
-    poolNoPercent,
-  )
+    poolNoPercent
+  );
 }
 
 export interface GetRemoveLiquidity {
-  marketId: string,
-  paraShareToken: string,
-  fee: string,
-  lpTokenBalance: string,
+  marketId: string;
+  paraShareToken: string;
+  fee: string;
+  lpTokenBalance: string;
 }
 
 export async function getRemoveLiquidity({
@@ -99,40 +114,82 @@ export async function getRemoveLiquidity({
   paraShareToken,
   fee,
   lpTokenBalance,
-}: GetRemoveLiquidity): Promise<{ noShares: string; yesShares: string; cashShares: string } | null> {
+}: GetRemoveLiquidity): Promise<{
+  noShares: string;
+  yesShares: string;
+  cashShares: string;
+} | null> {
   const augurClient = augurSdkLite.get();
   if (!augurClient || !marketId || !paraShareToken || !fee) {
-    console.error('getRemoveLiquidity: augurClient is null or no amm address')
-    return null
+    console.error('getRemoveLiquidity: augurClient is null or no amm address');
+    return null;
   }
   const alsoSell = true;
-  const results: RemoveLiquidityRate = await augurClient.amm.getRemoveLiquidity(marketId, paraShareToken, new BN(String(fee)), new BN(String(lpTokenBalance)), alsoSell);
+  const results: RemoveLiquidityRate = await augurClient.amm.getRemoveLiquidity(
+    marketId,
+    paraShareToken,
+    new BN(String(fee)),
+    new BN(String(lpTokenBalance)),
+    alsoSell
+  );
   return {
     noShares: results.short.toFixed(),
     yesShares: results.long.toFixed(),
-    cashShares: results.cash.toFixed()
-  }
+    cashShares: results.cash.toFixed(),
+  };
 }
 
-export function doRemoveAmmLiquidity({ marketId, paraShareToken, fee, lpTokenBalance }: GetRemoveLiquidity) {
+export function doRemoveAmmLiquidity({
+  marketId,
+  paraShareToken,
+  fee,
+  lpTokenBalance,
+}: GetRemoveLiquidity) {
   const augurClient = augurSdkLite.get();
-  if (!augurClient || !marketId || !paraShareToken || !fee) return console.error('removeAmmLiquidity: augurClient is null or no amm address')
+  if (!augurClient || !marketId || !paraShareToken || !fee)
+    return console.error(
+      'removeAmmLiquidity: augurClient is null or no amm address'
+    );
   const alsoSell = true;
-  return augurClient.amm.doRemoveLiquidity(marketId, paraShareToken, new BN(fee), new BN(lpTokenBalance), alsoSell)
+  return augurClient.amm.doRemoveLiquidity(
+    marketId,
+    paraShareToken,
+    new BN(fee),
+    new BN(lpTokenBalance),
+    alsoSell
+  );
 }
 
-
-export async function estimateTrade(trade: TradeInfo, includeFee: boolean = true, useEth: boolean = false) {
+export async function estimateTrade(
+  trade: TradeInfo,
+  includeFee: boolean = true,
+  useEth: boolean = false
+) {
   const augurClient = augurSdkLite.get();
-  if (!augurClient || !trade.amm.id) return console.error('estimateTrade: augurClient is null or amm address')
+  if (!augurClient || !trade.amm.id)
+    return console.error('estimateTrade: augurClient is null or amm address');
   const tradeDirection = trade.tradeType;
 
   let outputYesShares = trade.buyYesShares;
-  let breakdown = null
+  let breakdown = null;
 
   if (tradeDirection === TradingDirection.ENTRY) {
-    const cash = new BN(String(trade.inputAmount.raw))
-    console.log(tradeDirection, 'marketId', trade.marketId, 'shareToken', trade.amm.sharetoken, 'fee', trade.amm.fee, 'cash', String(cash), 'output yes:', outputYesShares, 'includeFee:', includeFee)
+    const cash = new BN(String(trade.inputAmount.raw));
+    console.log(
+      tradeDirection,
+      'marketId',
+      trade.marketId,
+      'shareToken',
+      trade.amm.sharetoken,
+      'fee',
+      trade.amm.fee,
+      'cash',
+      String(cash),
+      'output yes:',
+      outputYesShares,
+      'includeFee:',
+      includeFee
+    );
     breakdown = await augurClient.amm.getEnterPosition(
       trade.marketId,
       trade.amm.sharetoken,
@@ -140,22 +197,28 @@ export async function estimateTrade(trade: TradeInfo, includeFee: boolean = true
       cash,
       outputYesShares,
       includeFee
-    )
-    console.log('breakdown', JSON.stringify(breakdown))
-    return String(breakdown)
+    );
+    console.log('breakdown', JSON.stringify(breakdown));
+    return String(breakdown);
   }
   if (tradeDirection === TradingDirection.EXIT) {
-    let longShares = new BN('0')
-    let shortShares = new BN('0')
-    let invalidShares = new BN(trade.balance.outcomes[0])
+    let longShares = new BN('0');
+    let shortShares = new BN('0');
+    let invalidShares = new BN(trade.balance.outcomes[0]);
     if (!outputYesShares) {
-      shortShares = new BN(String(trade.inputAmount.raw))
-      shortShares = BN.minimum(invalidShares, shortShares)
+      shortShares = new BN(String(trade.inputAmount.raw));
+      shortShares = BN.minimum(invalidShares, shortShares);
     } else {
-      longShares = new BN(String(trade.inputAmount.raw))
+      longShares = new BN(String(trade.inputAmount.raw));
     }
 
-    console.log(tradeDirection, 'no:', String(shortShares), 'yes:', String(longShares))
+    console.log(
+      tradeDirection,
+      'no:',
+      String(shortShares),
+      'yes:',
+      String(longShares)
+    );
     breakdown = await augurClient.amm.getExitPosition(
       trade.marketId,
       trade.amm.sharetoken,
@@ -164,12 +227,12 @@ export async function estimateTrade(trade: TradeInfo, includeFee: boolean = true
       shortShares,
       longShares,
       includeFee
-    )
-    return String(breakdown['cash'])
+    );
+    return String(breakdown['cash']);
   }
   if (tradeDirection === TradingDirection.SWAP) {
-    const inputAmmount = new BN(String(trade.inputAmount.raw))
-    console.log(tradeDirection, String(inputAmmount), outputYesShares)
+    const inputAmmount = new BN(String(trade.inputAmount.raw));
+    console.log(tradeDirection, String(inputAmmount), outputYesShares);
     breakdown = await augurClient.amm.getSwap(
       trade.marketId,
       trade.amm.sharetoken,
@@ -177,27 +240,34 @@ export async function estimateTrade(trade: TradeInfo, includeFee: boolean = true
       inputAmmount,
       !outputYesShares,
       includeFee
-    )
-    console.log('get swap rate', String(breakdown))
-    return String(breakdown)
+    );
+    console.log('get swap rate', String(breakdown));
+    return String(breakdown);
   }
-  return null
+  return null;
 }
 
-
-export async function doTrade(trade: TradeInfo, minAmount: string, useEth: boolean = false) {
+export async function doTrade(
+  trade: TradeInfo,
+  minAmount: string,
+  useEth: boolean = false
+) {
   const augurClient = augurSdkLite.get();
-  if (!augurClient || !trade.amm.id) return console.error('doTrade: augurClient is null or amm address')
+  if (!augurClient || !trade.amm.id)
+    return console.error('doTrade: augurClient is null or amm address');
   const tradeDirection = trade.tradeType;
   const outputYesShares = trade.buyYesShares;
 
   if (tradeDirection === TradingDirection.ENTRY) {
-    console.log('doEnterPosition:', trade.marketId,
+    console.log(
+      'doEnterPosition:',
+      trade.marketId,
       trade.amm.sharetoken,
       trade.amm.fee,
       String(trade.inputAmount.raw),
       outputYesShares,
-      String(minAmount))
+      String(minAmount)
+    );
 
     return augurClient.amm.doEnterPosition(
       trade.marketId,
@@ -206,26 +276,29 @@ export async function doTrade(trade: TradeInfo, minAmount: string, useEth: boole
       new BN(String(trade.inputAmount.raw)),
       outputYesShares,
       new BN(String(minAmount))
-    )
+    );
   }
 
   if (tradeDirection === TradingDirection.EXIT) {
-    let longShares = new BN('0')
-    let shortShares = new BN('0')
-    let invalidShares = new BN(trade.balance.outcomes[0])
+    let longShares = new BN('0');
+    let shortShares = new BN('0');
+    let invalidShares = new BN(trade.balance.outcomes[0]);
     if (!outputYesShares) {
-      shortShares = new BN(String(trade.inputAmount.raw))
-      shortShares = BN.minimum(invalidShares, shortShares)
+      shortShares = new BN(String(trade.inputAmount.raw));
+      shortShares = BN.minimum(invalidShares, shortShares);
     } else {
-      longShares = new BN(String(trade.inputAmount.raw))
+      longShares = new BN(String(trade.inputAmount.raw));
     }
 
-    console.log('doExitPosition:', trade.marketId,
+    console.log(
+      'doExitPosition:',
+      trade.marketId,
       trade.amm.sharetoken,
       trade.amm.fee,
       String(shortShares),
       String(longShares),
-      String(minAmount))
+      String(minAmount)
+    );
 
     return augurClient.amm.doExitPosition(
       trade.marketId,
@@ -235,16 +308,19 @@ export async function doTrade(trade: TradeInfo, minAmount: string, useEth: boole
       shortShares,
       longShares,
       new BN(String(minAmount))
-    )
+    );
   }
 
   if (tradeDirection === TradingDirection.SWAP) {
-    console.log('doSwap:', trade.marketId,
+    console.log(
+      'doSwap:',
+      trade.marketId,
       trade.amm.sharetoken,
       new BN(trade.amm.fee),
       new BN(String(trade.inputAmount.raw)),
       outputYesShares,
-      new BN(minAmount))
+      new BN(minAmount)
+    );
     return augurClient.amm.doSwap(
       trade.marketId,
       trade.amm.sharetoken,
@@ -252,30 +328,34 @@ export async function doTrade(trade: TradeInfo, minAmount: string, useEth: boole
       new BN(String(trade.inputAmount.raw)),
       outputYesShares,
       new BN(minAmount)
-    )
+    );
   }
-  return null
+  return null;
 }
 
-
-export const getUserBalances = async (provider: Web3Provider, account: string, ammExchanges: AmmExchanges, cashes: Cashes): Promise<UserBalances> => {
+export const getUserBalances = async (
+  provider: Web3Provider,
+  account: string,
+  ammExchanges: AmmExchanges,
+  cashes: Cashes
+): Promise<UserBalances> => {
   const userBalances = {
     ETH: {
-      balance: "0",
-      rawBalance: "0",
-      usdValue: "0"
+      balance: '0',
+      rawBalance: '0',
+      usdValue: '0',
     },
     USDC: {
-      balance: "0",
-      rawBalance: "0",
-      usdValue: "0"
+      balance: '0',
+      rawBalance: '0',
+      usdValue: '0',
     },
     totalPositionUsd: "0",
     total24hrPositionUsd: "0",
     change24hrPositionUsd: "0",
     lpTokens: {},
-    marketShares: {}
-  }
+    marketShares: {},
+  };
 
   if (!account || !provider) return userBalances;
 
@@ -290,40 +370,65 @@ export const getUserBalances = async (provider: Web3Provider, account: string, a
   const ammAddresses: string[] = Object.keys(ammExchanges);
   const exchanges = Object.values(ammExchanges);
   // share tokens
-  const shareTokens: string[] = Object.keys(cashes).map(id => cashes[id].shareToken)
+  const shareTokens: string[] = Object.keys(cashes).map(
+    (id) => cashes[id].shareToken
+  );
   // markets
-  const marketIds: string[] = ammAddresses.reduce((p, a) => p.includes(ammExchanges[a].marketId) ? p : [...p, ammExchanges[a].marketId], []);
+  const marketIds: string[] = ammAddresses.reduce(
+    (p, a) =>
+      p.includes(ammExchanges[a].marketId)
+        ? p
+        : [...p, ammExchanges[a].marketId],
+    []
+  );
 
   userBalances.ETH = await getEthBalance(provider, cashes, account);
 
   const multicall = new Multicall({ ethersProvider: provider });
 
-  const contractLpBalanceCall: ContractCallContext[] = ammAddresses.map(address =>
-  ({
-    reference: address,
-    contractAddress: address,
-    abi: lpAbi,
-    calls: [{ reference: address, methodName: BALANCE_OF, methodParameters: [account] }]
-  })
+  const contractLpBalanceCall: ContractCallContext[] = ammAddresses.map(
+    (address) => ({
+      reference: address,
+      contractAddress: address,
+      abi: lpAbi,
+      calls: [
+        {
+          reference: address,
+          methodName: BALANCE_OF,
+          methodParameters: [account],
+        },
+      ],
+    })
   );
 
-  const contractMarketShareBalanceCall: ContractCallContext[] = marketIds.reduce((p, marketId) => {
-    const shareTokenOutcomeShareBalances = shareTokens.reduce((k, shareToken) => {
-      // TODO: might need to change when scalars come in
-      const outcomeShareBalances = [0, 1, 2].map(outcome => ({
-        reference: `${marketId}-${outcome}`,
-        contractAddress: shareToken,
-        abi: ParaShareToken.ABI,
-        calls: [{ reference: `${marketId}-${outcome}`, methodName: MARKET_SHARE_BALANCE, methodParameters: [marketId, outcome, account] }]
-      }))
-      return [...k, ...outcomeShareBalances]
-    }, [])
-    return [...p, ...shareTokenOutcomeShareBalances]
-  }, []
+  const contractMarketShareBalanceCall: ContractCallContext[] = marketIds.reduce(
+    (p, marketId) => {
+      const shareTokenOutcomeShareBalances = shareTokens.reduce(
+        (k, shareToken) => {
+          // TODO: might need to change when scalars come in
+          const outcomeShareBalances = [0, 1, 2].map((outcome) => ({
+            reference: `${marketId}-${outcome}`,
+            contractAddress: shareToken,
+            abi: ParaShareToken.ABI,
+            calls: [
+              {
+                reference: `${marketId}-${outcome}`,
+                methodName: MARKET_SHARE_BALANCE,
+                methodParameters: [marketId, outcome, account],
+              },
+            ],
+          }));
+          return [...k, ...outcomeShareBalances];
+        },
+        []
+      );
+      return [...p, ...shareTokenOutcomeShareBalances];
+    },
+    []
   );
 
-  let basicBalanceCalls: ContractCallContext[] = []
-  const usdc = Object.values(cashes).find(c => c.name === USDC);
+  let basicBalanceCalls: ContractCallContext[] = [];
+  const usdc = Object.values(cashes).find((c) => c.name === USDC);
   if (usdc) {
     basicBalanceCalls = [
       {
@@ -335,42 +440,79 @@ export const getUserBalances = async (provider: Web3Provider, account: string, a
     ]
   }
 
-  const balananceCalls = [...contractLpBalanceCall, ...contractMarketShareBalanceCall, ...basicBalanceCalls]
+  const balananceCalls = [
+    ...contractLpBalanceCall,
+    ...contractMarketShareBalanceCall,
+    ...basicBalanceCalls,
+  ];
 
-  let balances: string[] = []
-  const balanceResult: ContractCallResults = await multicall.call(balananceCalls);
+  let balances: string[] = [];
+  const balanceResult: ContractCallResults = await multicall.call(
+    balananceCalls
+  );
 
-  Object.keys(balanceResult.results).forEach(key => {
-    const value = String(new BN(JSON.parse(JSON.stringify(balanceResult.results[key].callsReturnContext[0].returnValues)).hex))
+  Object.keys(balanceResult.results).forEach((key) => {
+    const value = String(
+      new BN(
+        JSON.parse(
+          JSON.stringify(
+            balanceResult.results[key].callsReturnContext[0].returnValues
+          )
+        ).hex
+      )
+    );
     balances.push(value);
 
-    const method = String(balanceResult.results[key].originalContractCallContext.calls[0].methodName)
-    const contractAddress = String(balanceResult.results[key].originalContractCallContext.contractAddress);
-    const params = String(balanceResult.results[key].originalContractCallContext.calls[0].methodParameters)
-    const balanceValue = balanceResult.results[key].callsReturnContext[0].returnValues as ethers.utils.Result;
+    const method = String(
+      balanceResult.results[key].originalContractCallContext.calls[0].methodName
+    );
+    const contractAddress = String(
+      balanceResult.results[key].originalContractCallContext.contractAddress
+    );
+    const params = String(
+      balanceResult.results[key].originalContractCallContext.calls[0]
+        .methodParameters
+    );
+    const balanceValue = balanceResult.results[key].callsReturnContext[0]
+      .returnValues as ethers.utils.Result;
     const rawBalance = String(new BN(balanceValue.hex));
 
     if (method === BALANCE_OF) {
       if (usdc && contractAddress === usdc.address) {
-        const usdcValue = convertOnChainToDisplayAmount(new BN(rawBalance), new BN(usdc.decimals));
+        const usdcValue = convertOnChainToDisplayAmount(
+          new BN(rawBalance),
+          new BN(usdc.decimals)
+        );
         userBalances.USDC = {
           balance: String(usdcValue),
           rawBalance: rawBalance,
-          usdValue: String(usdcValue)
-        }
+          usdValue: String(usdcValue),
+        };
       } else {
-        const cash = cashes[ammExchanges[contractAddress]?.cash.address]
-        const balance = onChainMarketSharesToDisplayFormatter(rawBalance, cash.decimals)
-        if (balance !== "0") {
+        const cash = cashes[ammExchanges[contractAddress]?.cash.address];
+        const balance = onChainMarketSharesToDisplayFormatter(
+          rawBalance,
+          cash.decimals
+        );
+        if (balance !== '0') {
           userBalances.lpTokens[contractAddress] = { balance, rawBalance };
         }
       }
     } else if (method === MARKET_SHARE_BALANCE) {
-      const cash = Object.values(cashes).find(c => c.shareToken.toLowerCase() === contractAddress.toLowerCase());
-      const balance = onChainMarketSharesToDisplayFormatter(rawBalance, cash.decimals)
+      const cash = Object.values(cashes).find(
+        (c) => c.shareToken.toLowerCase() === contractAddress.toLowerCase()
+      );
+      const balance = onChainMarketSharesToDisplayFormatter(
+        rawBalance,
+        cash.decimals
+      );
 
       const [marketId, outcome] = params.split(',');
-      const amm = exchanges.find(e => e.sharetoken.toLowerCase() === contractAddress.toLowerCase() && e.marketId === marketId);
+      const amm = exchanges.find(
+        (e) =>
+          e.sharetoken.toLowerCase() === contractAddress.toLowerCase() &&
+          e.marketId === marketId
+      );
 
       if (amm) {
         const existingAmm = userBalances.marketShares[amm.id];
@@ -431,130 +573,134 @@ const getPositionUsdValues = (rawBalance: string, balance: string, outcome: stri
 const getEthBalance = async (provider: Web3Provider, cashes: Cashes, account: string): Promise<CurrencyBalance> => {
   const ethCash = Object.values(cashes).find(c => c.name === ETH);
   const ethbalance = await provider.getBalance(account);
-  const ethValue = convertOnChainToDisplayAmount(new BN(String(ethbalance)), 18)
+  const ethValue = convertOnChainToDisplayAmount(
+    new BN(String(ethbalance)),
+    18
+  );
 
   return {
     balance: String(ethValue),
     rawBalance: String(ethbalance),
-    usdValue: ethCash ? String(ethValue.times(new BN(ethCash.usdPrice))) : String(ethValue)
-  }
-}
+    usdValue: ethCash
+      ? String(ethValue.times(new BN(ethCash.usdPrice)))
+      : String(ethValue),
+  };
+};
 
-const ERC20ABI =
-  [
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "name",
-      "outputs": [{ "name": "", "type": "string" }],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        { "name": "_spender", "type": "address" },
-        { "name": "_value", "type": "uint256" }
-      ],
-      "name": "approve",
-      "outputs": [{ "name": "", "type": "bool" }],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "totalSupply",
-      "outputs": [{ "name": "", "type": "uint256" }],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        { "name": "_from", "type": "address" },
-        { "name": "_to", "type": "address" },
-        { "name": "_value", "type": "uint256" }
-      ],
-      "name": "transferFrom",
-      "outputs": [{ "name": "", "type": "bool" }],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "decimals",
-      "outputs": [{ "name": "", "type": "uint8" }],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [{ "name": "_owner", "type": "address" }],
-      "name": "balanceOf",
-      "outputs": [{ "name": "balance", "type": "uint256" }],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "symbol",
-      "outputs": [{ "name": "", "type": "string" }],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        { "name": "_to", "type": "address" },
-        { "name": "_value", "type": "uint256" }
-      ],
-      "name": "transfer",
-      "outputs": [{ "name": "", "type": "bool" }],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        { "name": "_owner", "type": "address" },
-        { "name": "_spender", "type": "address" }
-      ],
-      "name": "allowance",
-      "outputs": [{ "name": "", "type": "uint256" }],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    { "payable": true, "stateMutability": "payable", "type": "fallback" },
-    {
-      "anonymous": false,
-      "inputs": [
-        { "indexed": true, "name": "owner", "type": "address" },
-        { "indexed": true, "name": "spender", "type": "address" },
-        { "indexed": false, "name": "value", "type": "uint256" }
-      ],
-      "name": "Approval",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        { "indexed": true, "name": "from", "type": "address" },
-        { "indexed": true, "name": "to", "type": "address" },
-        { "indexed": false, "name": "value", "type": "uint256" }
-      ],
-      "name": "Transfer",
-      "type": "event"
-    }
-  ]
+const ERC20ABI = [
+  {
+    constant: true,
+    inputs: [],
+    name: 'name',
+    outputs: [{ name: '', type: 'string' }],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: false,
+    inputs: [
+      { name: '_spender', type: 'address' },
+      { name: '_value', type: 'uint256' },
+    ],
+    name: 'approve',
+    outputs: [{ name: '', type: 'bool' }],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'totalSupply',
+    outputs: [{ name: '', type: 'uint256' }],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: false,
+    inputs: [
+      { name: '_from', type: 'address' },
+      { name: '_to', type: 'address' },
+      { name: '_value', type: 'uint256' },
+    ],
+    name: 'transferFrom',
+    outputs: [{ name: '', type: 'bool' }],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'decimals',
+    outputs: [{ name: '', type: 'uint8' }],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [{ name: '_owner', type: 'address' }],
+    name: 'balanceOf',
+    outputs: [{ name: 'balance', type: 'uint256' }],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'symbol',
+    outputs: [{ name: '', type: 'string' }],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: false,
+    inputs: [
+      { name: '_to', type: 'address' },
+      { name: '_value', type: 'uint256' },
+    ],
+    name: 'transfer',
+    outputs: [{ name: '', type: 'bool' }],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [
+      { name: '_owner', type: 'address' },
+      { name: '_spender', type: 'address' },
+    ],
+    name: 'allowance',
+    outputs: [{ name: '', type: 'uint256' }],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  { payable: true, stateMutability: 'payable', type: 'fallback' },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, name: 'owner', type: 'address' },
+      { indexed: true, name: 'spender', type: 'address' },
+      { indexed: false, name: 'value', type: 'uint256' },
+    ],
+    name: 'Approval',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, name: 'from', type: 'address' },
+      { indexed: true, name: 'to', type: 'address' },
+      { indexed: false, name: 'value', type: 'uint256' },
+    ],
+    name: 'Transfer',
+    type: 'event',
+  },
+];

@@ -15,6 +15,7 @@ import { getUserBalances } from '../utils/contract-calls';
 import { augurSdkLite } from '../utils/augurlitesdk';
 import { ConnectAccountProvider } from 'modules/ConnectAccount/connect-account-provider';
 import { useActiveWeb3React } from 'modules/ConnectAccount/hooks';
+import classNames from 'classnames';
 
 function checkIsMobile(setIsMobile) {
   const isMobile =
@@ -31,6 +32,7 @@ const AppBody = () => {
     showTradingForm,
     processed,
     paraConfig,
+    isMobile,
     actions: {
       setIsMobile,
       updateGraphData,
@@ -102,10 +104,12 @@ const AppBody = () => {
     }
     // eslint-disable-next-line
   }, [activeWeb3, processed, paraConfig]);
-
+  const sidebarOut = sidebarType && isMobile;
   return (
-    <div className={Styles.App}>
-      {sidebarType && <Sidebar />}
+    <div className={classNames(Styles.App, {
+      [Styles.SidebarOut]: sidebarOut,
+    })}>
+      {sidebarOut && <Sidebar />}
       <TopNav />
       <Routes />
     </div>
