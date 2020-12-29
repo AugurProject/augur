@@ -187,9 +187,56 @@
       grid-gap: @size-4;
       align-self: flex-end;
     
-      > li > button {
-        .RoundedButton;
+      > li > button[class*="selected"] {
+        background: var(--simple-alternate-background);
+      }
+
+      > li > div {
+        .SimpleBorder;
+
+        box-sizing: border-box;
+        display: flex;
+        flex-flow: row nowrap;
+        padding: @size-5 @size-8;
+        max-height: @size-25;
+        min-height: @size-25;
+        align-items: center;
+        justify-content: center;
+
+        > input[type='number'] {
+          -moz-appearance: textfield;
+          .text-12-semi-bold;
+  
+          background: transparent;
+          color: var(--simple-secondary-text);
+          padding: 0;
+          text-align: right;
+          outline-style: none;
+          border: none;
+  
+          &::-webkit-outer-spin-button,
+          &::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+          }
+
+          &:focus {
+            color: var(--simple-primary-text);
+            outline-style: none;
+            border: none;
+          }
+        }
+
+        > span {
+          .text-12-semi-bold;
+
+          color: var(--simple-primary-text);
+          margin-left: @size-4;
+        }
       }
     }
   }
+}
+
+.Selected {
+  background: var(--simple-alternate-background);
 }

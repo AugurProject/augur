@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useLocation } from 'react-router';
 import Styles from 'modules/common/top-nav.styles.less';
 import { Link } from 'react-router-dom';
@@ -12,12 +12,38 @@ import { useAppStatusStore } from 'modules/stores/app-status';
 import { useLocalStorage } from 'modules/stores/local-storage';
 import ConnectAccount from 'modules/ConnectAccount/index';
 import { useActiveWeb3React } from 'modules/ConnectAccount/hooks';
+import { SmallRoundedButton } from 'modules/common/buttons';
 
 export const SettingsButton = () => {
   const {
+    settings: { slippage },
     actions: { updateSettings },
   } = useAppStatusStore();
   const [open, setOpened] = useState(false);
+  const [customVal, setCustomVal] = useState('');
+  const isSelectedArray = useMemo(() => {
+    let output = [false, false, false, false];
+    switch (slippage) {
+      case ('0.1'): {
+        output[0] = true;
+        break;
+      }
+      case ('0.5'): {
+        output[1] = true;
+        break;
+      }
+      case ('1'): {
+        output[2] = true;
+        break;
+      }
+      default: {
+        output[3] = true;
+        break;
+      }
+    }
+    return output;
+  }, [slippage]);
+  
   return (
     <React.Fragment key="settingsButton">
       <button
@@ -36,19 +62,51 @@ export const SettingsButton = () => {
             <label>Slippage Tolerance</label>
             <ul>
               <li>
-                <button onClick={() => updateSettings({ slippage: '0.1' })}>
-                  0.1%
-                </button>
+                <SmallRoundedButton
+                  text="0.1%"
+                  action={() => updateSettings({ slippage: '0.1' })}
+                  selected={isSelectedArray[0]}
+                />
               </li>
               <li>
-                <button onClick={() => updateSettings({ slippage: '0.5' })}>
-                  0.5%
-                </button>
+                <SmallRoundedButton
+                  text="0.5%"
+                  action={() => updateSettings({ slippage: '0.5' })}
+                  selected={isSelectedArray[1]}
+                />
               </li>
               <li>
-                <button onClick={() => updateSettings({ slippage: '1' })}>
-                  1%
-                </button>
+                <SmallRoundedButton
+                  text="1%"
+                  action={() => updateSettings({ slippage: '1' })}
+                  selected={isSelectedArray[2]}
+                />
+              </li>
+              <li>
+                <div>
+                  <input
+                    className={classNames({ [Styles.Selected]: isSelectedArray[3] })}
+                    type="number"
+                    step="0.1"
+                    value={customVal}
+                    onChange={(v) => {
+                      setCustomVal(v.target.value);
+                    }}
+                    onBlur={() => {
+                      if (customVal !== slippage) {
+                        if (customVal === '' || isNaN(Number(customVal)) || Number(customVal) > 100 || Number(customVal) <= 0) {
+                          setCustomVal(slippage);
+                        } else {
+                          updateSettings({ slippage: customVal });
+                        }
+                      }
+                    }}
+                    placeholder={slippage}
+                    max="100"
+                    min="0.1"
+                  />
+                  <span>%</span>
+                </div>
               </li>
             </ul>
           </li>
