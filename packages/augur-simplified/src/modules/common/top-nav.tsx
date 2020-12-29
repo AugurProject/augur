@@ -15,11 +15,9 @@ import { useActiveWeb3React } from 'modules/ConnectAccount/hooks';
 
 export const SettingsButton = () => {
   const {
-    settings,
     actions: { updateSettings },
   } = useAppStatusStore();
   const [open, setOpened] = useState(false);
-  console.log(settings);
   return (
     <React.Fragment key="settingsButton">
       <button
