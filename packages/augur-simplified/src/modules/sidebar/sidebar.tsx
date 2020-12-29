@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Styles from 'modules/sidebar/sidebar.styles.less';
-import { CloseIcon, GearIcon } from 'modules/common/icons';
+import { CloseIcon } from 'modules/common/icons';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { RadioBarGroup } from 'modules/common/selection';
@@ -11,7 +11,7 @@ import makePath from 'modules/routes/helpers/make-path';
 import parsePath from 'modules/routes/helpers/parse-path';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router';
-
+import { SettingsButton } from 'modules/common/top-nav';
 import {
   categoryItems,
   currencyItems,
@@ -132,7 +132,7 @@ const NavigationSideBar = () => {
           </li>
         </ol>
       </div>
-      <div className={Styles.NavigationFooter}>{GearIcon}</div>
+      <div className={Styles.NavigationFooter}><SettingsButton /></div>
     </>
   );
 };

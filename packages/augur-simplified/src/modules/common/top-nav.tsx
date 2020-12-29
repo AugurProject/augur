@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 import Styles from 'modules/common/top-nav.styles.less';
 import { Link } from 'react-router-dom';
@@ -12,6 +12,32 @@ import { useAppStatusStore } from 'modules/stores/app-status';
 import { useLocalStorage } from 'modules/stores/local-storage';
 import ConnectAccount from 'modules/ConnectAccount/index';
 import { useActiveWeb3React } from 'modules/ConnectAccount/hooks';
+
+export const SettingsButton = () => {
+  const {
+    settings
+  } = useAppStatusStore();
+  const [open, setOpened] = useState(false);
+  console.log(settings);
+  return (
+    <React.Fragment key='settingsButton'>
+    <button
+      className={Styles.SettingsButton}
+      title="Augur Settings"
+      onClick={() => setOpened(!open)}
+    >
+      {GearIcon}
+    </button>
+    {open && (
+      <ul className={Styles.SettingsMenu}>
+        <li><h2>Settings</h2></li>
+        <li></li>
+        <li></li>
+      </ul>
+    )}
+    </React.Fragment>
+  );
+};
 
 export const TopNav = () => {
   const location = useLocation();
@@ -55,16 +81,11 @@ export const TopNav = () => {
       <section>
         <ConnectAccount autoLogin={autoLogin} darkMode={false} />
         {!isMobile && (
-          <button
-            title="This doesn't do anything yet!"
-            onClick={() => alert('TODO: Make this work.')}
-          >
-            {GearIcon}
-          </button>
+          <SettingsButton />
         )}
         {isMobile && (
           <button
-            title="This doesn't do anything yet!"
+            title="Augur Menu"
             onClick={() => setSidebar(SIDEBAR_TYPES.NAVIGATION)}
           >
             {ThreeLinesIcon}
