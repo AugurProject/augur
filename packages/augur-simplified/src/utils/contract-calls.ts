@@ -13,6 +13,7 @@ import {
 import { Web3Provider } from '@ethersproject/providers'
 import { convertOnChainToDisplayAmount, formatEther, onChainMarketSharesToDisplayFormatter } from './format-number';
 import { augurSdkLite } from './augurlitesdk';
+import { USDC } from '../modules/constants';
 
 // TODO: when scalars get num ticks from market
 export const YES_NO_NUM_TICKS = 1000
@@ -321,14 +322,14 @@ export const getUserBalances = async (provider: Web3Provider, account: string, a
   );
 
   let basicBalanceCalls: ContractCallContext[] = []
-  const usdc = Object.values(cashes).find(c => c.name === "USDC");
+  const usdc = Object.values(cashes).find(c => c.name === USDC);
   if (usdc) {
     basicBalanceCalls = [
       {
         reference: 'usdc-balance',
         contractAddress: usdc.address,
         abi: ERC20ABI,
-        calls: [{ reference: 'usdcBalance', methodName: 'balanceOf', methodParameters: [account] }]
+        calls: [{ reference: 'usdcBalance', methodName: BALANCE_OF, methodParameters: [account] }]
       }
     ]
 
