@@ -4,7 +4,7 @@ import { UsdIcon } from './icons';
 import {
   PrimaryButton,
   SecondaryButton,
-  SmallRoundedButton,
+  TinyButton,
 } from 'modules/common/buttons';
 import classNames from 'classnames';
 import {
@@ -262,7 +262,7 @@ export const PositionsLiquidityViewSwitcher = ({
           {LIQUIDITY}
         </span>
         {showActivityButton && (
-          <SmallRoundedButton
+          <TinyButton
             action={() => {
               setTableView(null);
               setActivity();

@@ -6,7 +6,7 @@ import Styles from 'modules/common/charts.styles.less';
 import classNames from 'classnames';
 import { formatDai } from 'utils/format-number';
 import { Checkbox } from 'modules/common/icons';
-import { SmallRoundedButton } from './buttons';
+import { TinyButton } from './buttons';
 import { MarketInfo } from '../types';
 
 const HIGHLIGHTED_LINE_WIDTH = 2;
@@ -202,7 +202,7 @@ export const SimpleChartSection = ({ market }) => {
       <ul className={Styles.RangeSelection}>
         {RANGE_OPTIONS.map(({ id, label }) => (
           <li key={`range-option-${id}`}>
-            <SmallRoundedButton
+            <TinyButton
               text={label}
               selected={rangeSelection === id}
               action={() => rangeSelection !== id && setRangeSelection(id)}

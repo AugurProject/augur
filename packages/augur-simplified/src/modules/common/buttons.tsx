@@ -1,15 +1,14 @@
-import React from 'react';
+import React, {ReactNode} from 'react';
 import Styles from 'modules/common/buttons.styles.less';
 import classNames from 'classnames';
 import { Arrow } from './icons';
-// import classNames from 'classnames';
 
 interface ButtonProps {
   text?: string;
   className?: string;
   disabled?: boolean;
   action?: Function;
-  icon?: any;
+  icon?: ReactNode;
   selected?: boolean;
 }
 
@@ -23,10 +22,11 @@ const Button = ({
 }: ButtonProps) => {
   return (
     <button
-      className={classNames(className, {
-        [Styles.disabled]: disabled,
-        [Styles.selected]: selected,
-      })}
+      className={classNames({
+        [Styles.TextAndIcon]: text && icon,
+        [Styles.Disabled]: disabled,
+        [Styles.Selected]: selected,
+      }, className)}
       onClick={(e) => action && action(e)}
     >
       {text}
@@ -35,13 +35,9 @@ const Button = ({
   );
 };
 
-export const PrimaryButton = (props: ButtonProps) => {
-  return <Button className={Styles.PrimaryButton} {...props} />;
-};
-
-export const SecondaryButton = (props: ButtonProps) => {
-  return <Button className={Styles.SecondaryButton} {...props} />;
-};
+export const PrimaryButton = (props: ButtonProps) => <Button className={Styles.PrimaryButton} {...props} />;
+export const SecondaryButton = (props: ButtonProps) => <Button className={Styles.SecondaryButton} {...props} />;
+export const TinyButton = (props: ButtonProps) => <Button className={Styles.TinyButton} {...props} />;
 
 export interface DirectionButtonProps {
   action: Function;
@@ -50,19 +46,20 @@ export interface DirectionButtonProps {
   left?: boolean;
 }
 
-export const DirectionButton = (props: DirectionButtonProps) => (
+export const DirectionButton = ({
+  action,
+  disabled,
+  title,
+  left,
+}: DirectionButtonProps) => (
   <button
-    onClick={(e) => props.action(e)}
+    onClick={(e) => action(e)}
     className={classNames(Styles.DirectionButton, {
-      [Styles.left]: props.left,
+      [Styles.Left]: left,
     })}
-    disabled={props.disabled}
-    title={props.title}
+    disabled={disabled}
+    title={title}
   >
     {Arrow}
   </button>
 );
-
-export const SmallRoundedButton = (props: ButtonProps) => {
-  return <Button className={Styles.SmallRoundedButton} {...props} />;
-};
