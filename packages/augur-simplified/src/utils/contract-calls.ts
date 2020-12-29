@@ -1,7 +1,7 @@
 import { BigNumber as BN } from 'bignumber.js'
 import { RemoveLiquidityRate, numTicksToTickSizeWithDisplayPrices, convertDisplayAmountToOnChainAmount, ParaShareToken } from '@augurproject/sdk-lite'
 import { TradeInfo, TradingDirection } from 'modules/types'
-import { AmmExchanges, Cashes, CurrencyBalance, UserBalances } from '../modules/types'
+import { AmmExchange, AmmExchanges, AmmMarketShares, Cashes, CurrencyBalance, PositionBalance, UserBalances } from '../modules/types'
 import ethers from 'ethers';
 
 import {
@@ -11,9 +11,9 @@ import {
 } from '@augurproject/ethereum-multicall';
 
 import { Web3Provider } from '@ethersproject/providers'
-import { convertOnChainToDisplayAmount, formatEther, onChainMarketSharesToDisplayFormatter } from './format-number';
+import { convertOnChainToDisplayAmount, onChainMarketSharesToDisplayFormatter } from './format-number';
 import { augurSdkLite } from './augurlitesdk';
-import { ETH, USDC } from '../modules/constants';
+import { ETH, NO_OUTCOME_ID, USDC, YES_OUTCOME_ID } from '../modules/constants';
 
 // TODO: when scalars get num ticks from market
 export const YES_NO_NUM_TICKS = 1000
@@ -270,6 +270,9 @@ export const getUserBalances = async (provider: Web3Provider, account: string, a
       rawBalance: "0",
       usdValue: "0"
     },
+    totalPositionUsd: "0",
+    total24hrPositionUsd: "0",
+    change24hrPositionUsd: "0",
     lpTokens: {},
     marketShares: {}
   }
@@ -330,7 +333,6 @@ export const getUserBalances = async (provider: Web3Provider, account: string, a
         calls: [{ reference: 'usdcBalance', methodName: BALANCE_OF, methodParameters: [account] }]
       }
     ]
-
   }
 
   const balananceCalls = [...contractLpBalanceCall, ...contractMarketShareBalanceCall, ...basicBalanceCalls]
@@ -373,18 +375,57 @@ export const getUserBalances = async (provider: Web3Provider, account: string, a
       if (amm) {
         const existingAmm = userBalances.marketShares[amm.id];
         if (existingAmm) {
-          existingAmm[outcome] = {
-            balance,
-            rawBalance
-          };
+          existingAmm[outcome] = getPositionUsdValues(rawBalance, balance, outcome, amm);
         } else if (balance !== "0") {
           userBalances.marketShares[amm.id] = {}
-          userBalances.marketShares[amm.id][outcome] = { balance, rawBalance };
+          userBalances.marketShares[amm.id][outcome] = getPositionUsdValues(rawBalance, balance, outcome, amm);
         }
       }
     }
   })
-  return userBalances
+
+  return { ...userBalances, ...getTotalPositions(userBalances.marketShares) }
+}
+
+const getTotalPositions = (ammMarketShares: AmmMarketShares): { change24hrPositionUsd: string, totalPositionUsd: string, total24hrPositionUsd: string } => {
+  const result = Object.keys(ammMarketShares).reduce((p, ammId) => {
+    const outcomes = ammMarketShares[ammId];
+    Object.keys(outcomes).forEach(id => {
+      const balances = outcomes[id];
+      p.total = p.total.plus(new BN(balances.usdValue))
+      if (balances.past24hrUsdValue) {
+        p.total24 = p.total24.plus(new BN(balances.past24hrUsdValue))
+      }
+    })
+    return p;
+  }, { total: new BN("0"), total24: new BN("0") })
+
+  const change24hrPositionUsd = String(result.total.minus(result.total24));
+  return { change24hrPositionUsd, total24hrPositionUsd: String(result.total24), totalPositionUsd: String(result.total) }
+}
+
+const getPositionUsdValues = (rawBalance: string, balance: string, outcome: string, amm: AmmExchange): PositionBalance => {
+  const { priceNo, priceYes, past24hrPriceNo, past24hrPriceYes } = amm;
+  let usdValue = "0";
+  let past24hrUsdValue = null;
+  let change24hrPositionUsd = null;
+  if (outcome === String(NO_OUTCOME_ID)) {
+    usdValue = String(new BN(balance).times(new BN(priceNo)));
+    past24hrUsdValue = past24hrPriceNo ? String(new BN(balance).times(new BN(past24hrPriceNo))) : null;
+    change24hrPositionUsd = past24hrPriceNo ? String(new BN(usdValue).times(new BN(past24hrUsdValue))) : null;
+  } else if (outcome === String(YES_OUTCOME_ID)) {
+    usdValue = String(new BN(balance).times(new BN(priceYes)));
+    past24hrUsdValue = past24hrPriceYes ? String(new BN(balance).times(new BN(past24hrPriceYes))) : null;
+    change24hrPositionUsd = past24hrPriceYes ? String(new BN(usdValue).times(new BN(past24hrUsdValue))) : null;
+  }
+
+  return {
+    balance,
+    rawBalance,
+    usdValue,
+    past24hrUsdValue,
+    change24hrPositionUsd
+  }
 }
 
 const getEthBalance = async (provider: Web3Provider, cashes: Cashes, account: string): Promise<CurrencyBalance> => {

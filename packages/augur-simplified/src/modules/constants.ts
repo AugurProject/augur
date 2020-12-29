@@ -89,6 +89,7 @@ export const ADD = 'add';
 export const REMOVE = 'remove';
 
 export const INVALID_OUTCOME_ID = 0;
+export const NO_OUTCOME_ID = 1;
 export const YES_OUTCOME_ID = 2;
 
 export const OPEN = 'Open';
