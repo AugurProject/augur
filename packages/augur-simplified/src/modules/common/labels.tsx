@@ -88,7 +88,7 @@ interface AppViewStatsProps {
 }
 
 export const AppViewStats = ({ showCashAmounts }: AppViewStatsProps) => {
-  const { isMobile, userInfo } = useAppStatusStore();
+  const { isMobile, userInfo: { balances } } = useAppStatusStore();
   const { account } = useActiveWeb3React();
   const isLogged = Boolean(account);
   return (
@@ -101,32 +101,32 @@ export const AppViewStats = ({ showCashAmounts }: AppViewStatsProps) => {
         large
         label={isMobile ? 'total acc. value' : 'total account value'}
         light={!isLogged}
-        value={formatDai(isLogged ? userInfo?.balances?.totalAccountValue : 0).full}
+        value={formatDai(isLogged ? balances?.totalAccountValue : 0).full}
       />
       <ValueLabel
         large
         label={'positions'}
         light={!isLogged}
         sublabel={isLogged ? `${
-          formatDai(userInfo?.balances?.total24hrPositionUsd).full
+          formatDai(balances?.total24hrPositionUsd).full
         } (24hr)` : null}
-        value={formatDai(isLogged ? userInfo?.balances?.change24hrPositionUsd : 0).full}
+        value={formatDai(isLogged ? balances?.change24hrPositionUsd : 0).full}
       />
       <ValueLabel
         large
         light={!isLogged}
         label={'available funds'}
-        value={formatDai(isLogged ? userInfo?.balances?.availableFundsUsd : 0).full}
+        value={formatDai(isLogged ? balances?.availableFundsUsd : 0).full}
       />
       {showCashAmounts && (
         <>
           <IconLabel
             icon={EthIcon}
-            value={formatDai(userInfo?.balances?.ETH?.usdValue).full}
+            value={formatDai(balances?.ETH?.usdValue).full}
           />
           <IconLabel
             icon={UsdIcon}
-            value={formatDai(userInfo?.balances?.USDC?.usdValue).full}
+            value={formatDai(balances?.USDC?.usdValue).full}
           />
         </>
       )}
