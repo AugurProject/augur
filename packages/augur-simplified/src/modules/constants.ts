@@ -171,7 +171,7 @@ export const currencyItems = [
     value: ETH,
   },
   {
-    label: USDT,
-    value: USDT,
+    label: USDC,
+    value: USDC,
   },
 ];

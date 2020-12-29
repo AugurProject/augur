@@ -1034,15 +1034,19 @@ export interface LPToken {
   }
 }
 
+export interface SimpleBalance {
+  balance: string;
+  rawBalance: string;
+}
 export interface AmmMarketShares {
   [ammId: string]: {
-    [outcomeIdx: number]: {
-      balance: string;
-      rawBalance: string;
-    }
+    [outcomeIdx: number]: SimpleBalance
   }
 }
+
 export interface UserBalances {
+  ETH: SimpleBalance,
+  USDC: SimpleBalance,
   lpTokens: LPToken,
   marketShares: AmmMarketShares
 }

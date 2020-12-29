@@ -18,7 +18,7 @@ import {
 import { Utils } from './utils';
 
 export class Multicall {
-  private readonly ABI = [
+  public static readonly ABI = [
     {
       constant: false,
       inputs: [
@@ -39,6 +39,25 @@ export class Multicall {
       payable: false,
       stateMutability: 'nonpayable',
       type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: "addr",
+          type: "address"
+        }
+      ],
+      name: "getEthBalance",
+      outputs: [
+        {
+          name: "balance",
+          type: "uint256"
+        }
+      ],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
     },
   ];
 
@@ -243,7 +262,7 @@ export class Multicall {
     const web3 = this.getTypedOptions<MulticallOptionsWeb3>().web3Instance;
     const networkId = await web3.eth.net.getId();
     const contract = new web3.eth.Contract(
-      this.ABI,
+      Multicall.ABI,
       this.getContractBasedOnNetwork(networkId)
     );
 
@@ -281,7 +300,7 @@ export class Multicall {
 
     const contract = new ethers.Contract(
       this.getContractBasedOnNetwork(network.chainId),
-      this.ABI,
+      Multicall.ABI,
       ethersProvider
     );
 
@@ -361,7 +380,7 @@ export class Multicall {
    * Get the contract based on the network
    * @param network The network
    */
-  private getContractBasedOnNetwork(network: Networks): string {
+  public getContractBasedOnNetwork(network: Networks): string {
     // if they have overriden the multicall custom contract address then use that
     if (this._options.multicallCustomContractAddress) {
       return this._options.multicallCustomContractAddress;
