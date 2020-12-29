@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/core",
-  "version": "2.1.9",
+  "version": "2.2.0",
   "description": "Core augur contracts and deployment process",
   "author": "The Augur Developers <team@augur.net>",
   "repository": "http://github.com/AugurProject/augur-core",

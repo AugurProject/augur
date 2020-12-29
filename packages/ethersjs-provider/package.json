@@ -26,9 +26,9 @@
   },
   "homepage": "https://github.com/AugurProject/augur#readme",
   "dependencies": {
-    "@augurproject/artifacts": "^2.2.0",
-    "@augurproject/contract-dependencies-ethers": "^2.2.0",
-    "@augurproject/types": "^2.2.0",
+    "@augurproject/artifacts": "^2.1.9",
+    "@augurproject/contract-dependencies-ethers": "^2.1.9",
+    "@augurproject/types": "^2.1.1",
     "ethereum-types": "2.1.6",
     "ethers": "5.0.17"
   },
