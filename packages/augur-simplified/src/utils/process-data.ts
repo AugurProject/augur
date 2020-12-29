@@ -1,4 +1,4 @@
-import { AmmTransaction, Trades, AmmExchange, Cash, Cashes, MarketOutcome, TransactionTypes, MarketInfo, ActivityData } from "../modules/types";
+import { AmmTransaction, Trades, AmmExchange, Cash, Cashes, MarketOutcome, TransactionTypes, MarketInfo, ActivityData, ProcessedData } from "../modules/types";
 import { BigNumber as BN } from 'bignumber.js'
 import { getDayFormat, getTimeFormat } from "../utils/date-utils";
 import { convertAttoValueToDisplayValue } from "@augurproject/sdk";
@@ -77,18 +77,6 @@ interface GraphData {
   past: GraphMarket[],
   paraShareTokens: {}
   cashes: { [address: string]: Cash }
-}
-
-interface ProcessedData {
-  markets: {
-    [marketIdKey: string]: MarketInfo
-  },
-  cashes: {
-    [address: string]: Cash
-  },
-  ammExchanges: {
-    [id: string]: AmmExchange
-  }
 }
 
 export const processGraphMarkets = (graphData: GraphData): ProcessedData => {

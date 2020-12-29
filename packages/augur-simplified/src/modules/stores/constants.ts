@@ -13,6 +13,7 @@ import {
 import { createBigNumber } from 'utils/create-big-number';
 import { formatDai } from 'utils/format-number';
 import { ALL, ALL_MARKETS, OPEN, TOTAL_VOLUME } from 'modules/constants';
+import { AppStatusState } from '../types';
 
 export const STUBBED_APP_STATUS_ACTIONS = {
   setIsMobile: isMobile => {},
@@ -25,7 +26,7 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   updateSettings: settings => {},
 };
 
-export const DEFAULT_APP_STATUS_STATE = {
+export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
   isMobile: false,
   sidebarType: null,
   loginAccount: null,

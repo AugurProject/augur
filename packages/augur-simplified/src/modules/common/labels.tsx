@@ -10,6 +10,7 @@ import {
 } from 'modules/common/icons';
 import { POPULAR_CATEGORIES_ICONS } from 'modules/constants';
 import { useAppStatusStore } from 'modules/stores/app-status';
+import { useActiveWeb3React } from 'modules/ConnectAccount/hooks';
 
 interface ValueLabelProps {
   large?: boolean;
@@ -82,24 +83,15 @@ export const CategoryIcon = ({ category }: CategoryProps) => {
   );
 };
 
-export const fakeMarketViewStats = {
-  totalAccountValue: 15571.58,
-  positions: {
-    hourChange: 56.29,
-    value: 5045,
-  },
-  availableFunds: 1526.58,
-  daiAmount: 526.58,
-  cashAmount: 5000,
-};
-
 interface AppViewStatsProps {
   showCashAmounts?: boolean;
 }
 
 export const AppViewStats = ({ showCashAmounts }: AppViewStatsProps) => {
-  const { isMobile, loginAccount } = useAppStatusStore();
-  const isLogged = loginAccount !== null;
+  const { isMobile, userInfo } = useAppStatusStore();
+  const { account } = useActiveWeb3React();
+  const isLogged = Boolean(account);
+  console.log('isLogged', isLogged)
   return (
     <div
       className={classNames(Styles.AppStats, {
@@ -110,32 +102,32 @@ export const AppViewStats = ({ showCashAmounts }: AppViewStatsProps) => {
         large
         label={isMobile ? 'total acc. value' : 'total account value'}
         light={!isLogged}
-        value={formatDai(isLogged ? fakeMarketViewStats.totalAccountValue : 0).full}
+        value={formatDai(isLogged ? userInfo?.balances?.totalAccountValue : 0).full}
       />
       <ValueLabel
         large
         label={'positions'}
         light={!isLogged}
         sublabel={isLogged ? `${
-          formatDai(fakeMarketViewStats.positions.hourChange).full
+          formatDai(userInfo?.balances?.total24hrPositionUsd).full
         } (24hr)` : null}
-        value={formatDai(isLogged ? fakeMarketViewStats.positions.value : 0).full}
+        value={formatDai(isLogged ? userInfo?.balances?.change24hrPositionUsd : 0).full}
       />
       <ValueLabel
         large
         light={!isLogged}
         label={'available funds'}
-        value={formatDai(isLogged ? fakeMarketViewStats.availableFunds : 0).full}
+        value={formatDai(isLogged ? userInfo?.balances?.availableFundsUsd : 0).full}
       />
       {showCashAmounts && (
         <>
           <IconLabel
             icon={EthIcon}
-            value={formatDai(fakeMarketViewStats.daiAmount).full}
+            value={formatDai(userInfo?.balances?.ETH?.usdValue).full}
           />
           <IconLabel
             icon={UsdIcon}
-            value={formatDai(fakeMarketViewStats.cashAmount).full}
+            value={formatDai(userInfo?.balances?.USDC?.usdValue).full}
           />
         </>
       )}

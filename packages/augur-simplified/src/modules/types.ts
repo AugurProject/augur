@@ -1058,9 +1058,31 @@ export interface AmmMarketShares {
 export interface UserBalances {
   ETH: CurrencyBalance,
   USDC: CurrencyBalance,
+  totalAccountValue: string,
   totalPositionUsd: string,
   total24hrPositionUsd: string,
   change24hrPositionUsd: string,
+  availableFundsUsd: string,
   lpTokens: LPToken,
   marketShares: AmmMarketShares
+}
+
+export interface ProcessedData {
+  markets: {
+    [marketIdKey: string]: MarketInfo
+  },
+  cashes: {
+    [address: string]: Cash
+  },
+  ammExchanges: {
+    [id: string]: AmmExchange
+  }
+}
+
+export interface AppStatusState {
+  processed: ProcessedData,
+  userInfo: {
+    activity: ActivityCardProps;
+    balances: UserBalances;
+  },
 }
