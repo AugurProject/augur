@@ -22,6 +22,7 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   updateProcessed: processed => {},
   updateLoginAccount: updateLoginAccount => {},
   updateMarketsViewSettings: settings => {},
+  updateSettings: settings => {},
 };
 
 export const DEFAULT_APP_STATUS_STATE = {
@@ -55,6 +56,10 @@ export const DEFAULT_APP_STATUS_STATE = {
     past: {},
     paraShareTokens: {},
   },
+  settings: {
+    slippage: "0.5",
+    showInvalidMarkets: false,
+  }
 };
 
 export const APP_STATE_KEYS = {
@@ -69,7 +74,8 @@ export const APP_STATE_KEYS = {
   GRAPH_DATA: 'graphData',
   PROCESSED: 'processed',
   MARKETS_VIEW_SETTINGS: 'marketsViewSettings',
-  PARACONFIG: 'paraConfig',
+  PARA_CONFIG: 'paraConfig',
+  SETTINGS: 'settings',
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -81,6 +87,7 @@ export const APP_STATUS_ACTIONS = {
   SET_LOGIN_ACCOUNT: 'SET_LOGIN_ACCOUNT',
   UPDATE_MARKETS_VIEW_SETTINGS: 'UPDATE_MARKETS_VIEW_SETTINGS',
   UPDATE_USER_BALANCES: 'UPDATE_USER_BALANCES',
+  UPDATE_SETTINGS: 'UPDATE_SETTINGS',
 };
 
 export const fakePositionsData = [
