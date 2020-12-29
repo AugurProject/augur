@@ -359,7 +359,9 @@ export const getUserBalances = async (provider: Web3Provider, account: string, a
       } else {
         const cash = cashes[ammExchanges[contractAddress]?.cash.address]
         const balance = onChainMarketSharesToDisplayFormatter(rawBalance, cash.decimals)
-        userBalances.lpTokens[contractAddress] = { balance, rawBalance };
+        if (balance !== "0") {
+          userBalances.lpTokens[contractAddress] = { balance, rawBalance };
+        }
       }
     } else if (method === MARKET_SHARE_BALANCE) {
       const cash = Object.values(cashes).find(c => c.shareToken.toLowerCase() === contractAddress.toLowerCase());
@@ -375,7 +377,7 @@ export const getUserBalances = async (provider: Web3Provider, account: string, a
             balance,
             rawBalance
           };
-        } else {
+        } else if (balance !== "0") {
           userBalances.marketShares[amm.id] = {}
           userBalances.marketShares[amm.id][outcome] = { balance, rawBalance };
         }

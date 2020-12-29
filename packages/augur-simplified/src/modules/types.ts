@@ -154,6 +154,8 @@ export interface AmmExchange {
   sharetoken: string,
   transactions: AmmTransaction[],
   trades: Trades,
+  past24hrPriceNo: string,
+  past24hrPriceYes: string,
 }
 
 export interface Cashes {
