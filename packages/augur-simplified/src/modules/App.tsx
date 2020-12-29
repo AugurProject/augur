@@ -10,7 +10,7 @@ import {
   useAppStatusStore,
 } from 'modules/stores/app-status';
 import { Sidebar } from 'modules/sidebar/sidebar';
-import { processGraphMarkets } from 'utils/process-data';
+import { processGraphMarkets } from '../utils/process-data';
 import { getUserBalances } from '../utils/contract-calls';
 import { augurSdkLite } from '../utils/augurlitesdk';
 import { ConnectAccountProvider } from 'modules/ConnectAccount/connect-account-provider';

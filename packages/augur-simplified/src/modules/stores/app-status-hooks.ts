@@ -3,7 +3,6 @@ import {
   APP_STATUS_ACTIONS,
   MOCK_APP_STATUS_STATE,
   APP_STATE_KEYS,
-  // DEFAULT_APP_STATUS_STATE,
 } from 'modules/stores/constants';
 import { windowRef } from 'utils/window-ref';
 import { getUserActvity } from 'utils/process-data';

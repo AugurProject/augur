@@ -359,6 +359,8 @@ export const getUserBalances = async (
     totalPositionUsd: "0",
     total24hrPositionUsd: "0",
     change24hrPositionUsd: "0",
+    totalAccountValue: "0",
+    availableFundsUsd: "0",
     lpTokens: {},
     marketShares: {},
   };
@@ -532,8 +534,10 @@ export const getUserBalances = async (
       }
     }
   })
-
-  return { ...userBalances, ...getTotalPositions(userBalances.marketShares) }
+  const userPositions = getTotalPositions(userBalances.marketShares);
+  const availableFundsUsd = String(new BN(userBalances.ETH.usdValue).plus(new BN(userBalances.USDC.usdValue)));
+  const totalAccountValue = String(new BN(availableFundsUsd).plus(new BN(userPositions.totalPositionUsd)));
+  return { ...userBalances, ...userPositions, totalAccountValue, availableFundsUsd }
 }
 
 const getTotalPositions = (ammMarketShares: AmmMarketShares): { change24hrPositionUsd: string, totalPositionUsd: string, total24hrPositionUsd: string } => {
