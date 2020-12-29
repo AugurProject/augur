@@ -1045,6 +1045,8 @@ export interface PositionBalance extends SimpleBalance {
   usdValue: string;
   past24hrUsdValue?: string;
   change24hrPositionUsd: string;
+  avgPrice: string;
+  initCostUsd: string;
 }
 
 export interface AmmMarketShares {

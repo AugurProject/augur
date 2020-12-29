@@ -1,7 +1,7 @@
-import { BigNumber as BN } from 'bignumber.js'
+import BigNumber, { BigNumber as BN } from 'bignumber.js'
 import { RemoveLiquidityRate, numTicksToTickSizeWithDisplayPrices, convertDisplayAmountToOnChainAmount, ParaShareToken } from '@augurproject/sdk-lite'
 import { TradeInfo, TradingDirection } from 'modules/types'
-import { AmmExchange, AmmExchanges, AmmMarketShares, Cashes, CurrencyBalance, PositionBalance, UserBalances } from '../modules/types'
+import { AmmExchange, AmmExchanges, AmmMarketShares, AmmTransaction, Cashes, CurrencyBalance, PositionBalance, TransactionTypes, UserBalances } from '../modules/types'
 import ethers from 'ethers';
 
 import {
@@ -257,6 +257,10 @@ export async function doTrade(trade: TradeInfo, minAmount: string, useEth: boole
   return null
 }
 
+interface UserTrades {
+  enters: AmmTransaction[],
+  exits: AmmTransaction[]
+}
 
 export const getUserBalances = async (provider: Web3Provider, account: string, ammExchanges: AmmExchanges, cashes: Cashes): Promise<UserBalances> => {
   const userBalances = {
@@ -374,11 +378,12 @@ export const getUserBalances = async (provider: Web3Provider, account: string, a
 
       if (amm) {
         const existingAmm = userBalances.marketShares[amm.id];
+        const trades = getUserTrades(account, amm.transactions);
         if (existingAmm) {
-          existingAmm[outcome] = getPositionUsdValues(rawBalance, balance, outcome, amm);
+          existingAmm[outcome] = getPositionUsdValues(trades, rawBalance, balance, outcome, amm);
         } else if (balance !== "0") {
           userBalances.marketShares[amm.id] = {}
-          userBalances.marketShares[amm.id][outcome] = getPositionUsdValues(rawBalance, balance, outcome, amm);
+          userBalances.marketShares[amm.id][outcome] = getPositionUsdValues(trades, rawBalance, balance, outcome, amm);
         }
       }
     }
@@ -404,19 +409,28 @@ const getTotalPositions = (ammMarketShares: AmmMarketShares): { change24hrPositi
   return { change24hrPositionUsd, total24hrPositionUsd: String(result.total24), totalPositionUsd: String(result.total) }
 }
 
-const getPositionUsdValues = (rawBalance: string, balance: string, outcome: string, amm: AmmExchange): PositionBalance => {
+
+const getPositionUsdValues = (trades: UserTrades, rawBalance: string, balance: string, outcome: string, amm: AmmExchange): PositionBalance => {
   const { priceNo, priceYes, past24hrPriceNo, past24hrPriceYes } = amm;
   let usdValue = "0";
   let past24hrUsdValue = null;
   let change24hrPositionUsd = null;
+  let avgPrice = "0";
+  let initCostUsd = "0";
   if (outcome === String(NO_OUTCOME_ID)) {
     usdValue = String(new BN(balance).times(new BN(priceNo)));
     past24hrUsdValue = past24hrPriceNo ? String(new BN(balance).times(new BN(past24hrPriceNo))) : null;
     change24hrPositionUsd = past24hrPriceNo ? String(new BN(usdValue).times(new BN(past24hrUsdValue))) : null;
+    const result = getInitPositionValues(trades, amm, false);
+    avgPrice = result.avgPrice;
+    initCostUsd = result.initCostUsd;
   } else if (outcome === String(YES_OUTCOME_ID)) {
     usdValue = String(new BN(balance).times(new BN(priceYes)));
     past24hrUsdValue = past24hrPriceYes ? String(new BN(balance).times(new BN(past24hrPriceYes))) : null;
     change24hrPositionUsd = past24hrPriceYes ? String(new BN(usdValue).times(new BN(past24hrUsdValue))) : null;
+    const result = getInitPositionValues(trades, amm, true);
+    avgPrice = result.avgPrice;
+    initCostUsd = result.initCostUsd;
   }
 
   return {
@@ -424,8 +438,36 @@ const getPositionUsdValues = (rawBalance: string, balance: string, outcome: stri
     rawBalance,
     usdValue,
     past24hrUsdValue,
-    change24hrPositionUsd
+    change24hrPositionUsd,
+    avgPrice,
+    initCostUsd,
   }
+}
+
+// TODO: isYesOutcome is for convenience, down the road, outcome index will be used.
+const getInitPositionValues = (trades: UserTrades, amm: AmmExchange, isYesOutcome: boolean): { avgPrice: string, initCostUsd: string } => {
+  // if cash price not available show zero for costs
+  const cashPrice = amm.cash?.usdPrice ? amm.cash?.usdPrice : "0";
+
+  // sum up enters shares
+  const sharesEntered = accumSharesPrice(trades.enters, isYesOutcome);
+  const sharesExited = accumSharesPrice(trades.exits, isYesOutcome);
+
+  const totalShares = sharesEntered.shares.minus(sharesExited.shares);
+  const avgPrice = totalShares.gt(0) ? sharesEntered.price.minus(sharesExited.price).div(sharesEntered.count.minus(sharesExited.count)) : new BN(0);
+  const cost = totalShares.gt(0) ? totalShares.times(avgPrice).times(new BN(cashPrice)) : new BN(0);
+
+  return { avgPrice: String(avgPrice), initCostUsd: String(cost) }
+}
+
+const accumSharesPrice = (trades: AmmTransaction[], isYesOutcome: boolean): { shares: BigNumber, price: BigNumber, count: BigNumber } => {
+  const result = trades.reduce((p, t) =>
+    isYesOutcome ?
+      { shares: p.shares.plus(new BN(t.yesShares)), price: p.price.plus(new BN(t.price)), count: p.count.plus(1) } :
+      { shares: p.shares.plus(new BN(t.noShares)), price: p.price.plus(new BN(t.price)), count: p.count.plus(1) },
+    { shares: new BN(0), price: new BN(0), count: new BN(0) });
+
+  return { shares: result.shares, price: result.price, count: result.count };
 }
 
 const getEthBalance = async (provider: Web3Provider, cashes: Cashes, account: string): Promise<CurrencyBalance> => {
@@ -438,6 +480,13 @@ const getEthBalance = async (provider: Web3Provider, cashes: Cashes, account: st
     rawBalance: String(ethbalance),
     usdValue: ethCash ? String(ethValue.times(new BN(ethCash.usdPrice))) : String(ethValue)
   }
+}
+
+const getUserTrades = (account: string, transactions: AmmTransaction[]): { enters: AmmTransaction[], exits: AmmTransaction[] } => {
+  if (!transactions || transactions.length === 0) return { enters: [], exits: [] }
+  const enterTrades = transactions.filter(t => t.sender.toLowerCase() === account.toLowerCase() && t.tx_type === TransactionTypes.ENTER)
+  const exitTrades = transactions.filter(t => t.sender.toLowerCase() === account.toLowerCase() && t.tx_type === TransactionTypes.EXIT)
+  return { enters: enterTrades, exits: exitTrades }
 }
 
 const ERC20ABI =
