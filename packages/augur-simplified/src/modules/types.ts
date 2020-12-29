@@ -1029,16 +1029,13 @@ export interface ActivityCardProps {
   activity: ActivityItem;
 }
 
-export interface LPToken {
-  [ammId: string]: {
-    balance: string;
-    rawBalance: string;
-  }
-}
-
 export interface SimpleBalance {
   balance: string;
   rawBalance: string;
+}
+
+export interface LPToken {
+  [ammId: string]: SimpleBalance
 }
 export interface CurrencyBalance extends SimpleBalance {
   usdValue: string;
