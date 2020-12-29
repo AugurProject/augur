@@ -1038,6 +1038,10 @@ export interface SimpleBalance {
   balance: string;
   rawBalance: string;
 }
+export interface CurrencyBalance extends SimpleBalance {
+  usdValue: string;
+}
+
 export interface AmmMarketShares {
   [ammId: string]: {
     [outcomeIdx: number]: SimpleBalance
@@ -1045,8 +1049,8 @@ export interface AmmMarketShares {
 }
 
 export interface UserBalances {
-  ETH: SimpleBalance,
-  USDC: SimpleBalance,
+  ETH: CurrencyBalance,
+  USDC: CurrencyBalance,
   lpTokens: LPToken,
   marketShares: AmmMarketShares
 }

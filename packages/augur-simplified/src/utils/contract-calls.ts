@@ -1,7 +1,7 @@
 import { BigNumber as BN } from 'bignumber.js'
 import { RemoveLiquidityRate, numTicksToTickSizeWithDisplayPrices, convertDisplayAmountToOnChainAmount, ParaShareToken } from '@augurproject/sdk-lite'
 import { TradeInfo, TradingDirection } from 'modules/types'
-import { AmmExchanges, Cashes, UserBalances } from '../modules/types'
+import { AmmExchanges, Cashes, CurrencyBalance, UserBalances } from '../modules/types'
 import ethers from 'ethers';
 
 import {
@@ -13,7 +13,7 @@ import {
 import { Web3Provider } from '@ethersproject/providers'
 import { convertOnChainToDisplayAmount, formatEther, onChainMarketSharesToDisplayFormatter } from './format-number';
 import { augurSdkLite } from './augurlitesdk';
-import { USDC } from '../modules/constants';
+import { ETH, USDC } from '../modules/constants';
 
 // TODO: when scalars get num ticks from market
 export const YES_NO_NUM_TICKS = 1000
@@ -262,11 +262,13 @@ export const getUserBalances = async (provider: Web3Provider, account: string, a
   const userBalances = {
     ETH: {
       balance: "0",
-      rawBalance: "0"
+      rawBalance: "0",
+      usdValue: "0"
     },
     USDC: {
       balance: "0",
-      rawBalance: "0"
+      rawBalance: "0",
+      usdValue: "0"
     },
     lpTokens: {},
     marketShares: {}
@@ -288,12 +290,8 @@ export const getUserBalances = async (provider: Web3Provider, account: string, a
   const shareTokens: string[] = Object.keys(cashes).map(id => cashes[id].shareToken)
   // markets
   const marketIds: string[] = ammAddresses.reduce((p, a) => p.includes(ammExchanges[a].marketId) ? p : [...p, ammExchanges[a].marketId], []);
-  const ethbalance = await provider.getBalance(account);
 
-  userBalances.ETH = {
-    balance: String(convertOnChainToDisplayAmount(new BN(String(ethbalance)), 18)),
-    rawBalance: String(ethbalance)
-  }
+  userBalances.ETH = await getEthBalance(provider, cashes, account);
 
   const multicall = new Multicall({ ethersProvider: provider });
 
@@ -352,9 +350,11 @@ export const getUserBalances = async (provider: Web3Provider, account: string, a
 
     if (method === BALANCE_OF) {
       if (usdc && contractAddress === usdc.address) {
+        const usdcValue = convertOnChainToDisplayAmount(new BN(rawBalance), new BN(usdc.decimals));
         userBalances.USDC = {
-          balance: String(convertOnChainToDisplayAmount(new BN(rawBalance), new BN(usdc.decimals))),
-          rawBalance: rawBalance
+          balance: String(usdcValue),
+          rawBalance: rawBalance,
+          usdValue: String(usdcValue)
         }
       } else {
         const cash = cashes[ammExchanges[contractAddress]?.cash.address]
@@ -385,6 +385,17 @@ export const getUserBalances = async (provider: Web3Provider, account: string, a
   return userBalances
 }
 
+const getEthBalance = async (provider: Web3Provider, cashes: Cashes, account: string): Promise<CurrencyBalance> => {
+  const ethCash = Object.values(cashes).find(c => c.name === ETH);
+  const ethbalance = await provider.getBalance(account);
+  const ethValue = convertOnChainToDisplayAmount(new BN(String(ethbalance)), 18)
+
+  return {
+    balance: String(ethValue),
+    rawBalance: String(ethbalance),
+    usdValue: ethCash ? String(ethValue.times(new BN(ethCash.usdPrice))) : String(ethValue)
+  }
+}
 
 const ERC20ABI =
   [
