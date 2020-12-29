@@ -146,6 +146,32 @@
   grid-template-rows: auto;
   max-width: 261px;
   min-width: 261px;
-  min-height: 200px;
   max-height: 300px;
+
+  > li {
+    > h2 {
+      .text-16-bold;
+
+      color: var(--simple-primary-text);
+      margin: 0;
+    }
+
+    > label {
+      .text-14;
+
+      color: var(--simple-primary-text);
+      margin-bottom: @size-12;
+    }
+
+    > ul {
+      display: flex;
+      flex-flow: row nowrap;
+      grid-gap: @size-4;
+      align-self: flex-end;
+    
+      > li > button {
+        .RoundedButton;
+      }
+    }
+  }
 }

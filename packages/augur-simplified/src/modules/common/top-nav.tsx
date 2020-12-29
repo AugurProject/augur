@@ -15,26 +15,47 @@ import { useActiveWeb3React } from 'modules/ConnectAccount/hooks';
 
 export const SettingsButton = () => {
   const {
-    settings
+    settings,
+    actions: { updateSettings },
   } = useAppStatusStore();
   const [open, setOpened] = useState(false);
   console.log(settings);
   return (
-    <React.Fragment key='settingsButton'>
-    <button
-      className={Styles.SettingsButton}
-      title="Augur Settings"
-      onClick={() => setOpened(!open)}
-    >
-      {GearIcon}
-    </button>
-    {open && (
-      <ul className={Styles.SettingsMenu}>
-        <li><h2>Settings</h2></li>
-        <li></li>
-        <li></li>
-      </ul>
-    )}
+    <React.Fragment key="settingsButton">
+      <button
+        className={Styles.SettingsButton}
+        title="Augur Settings"
+        onClick={() => setOpened(!open)}
+      >
+        {GearIcon}
+      </button>
+      {open && (
+        <ul className={Styles.SettingsMenu}>
+          <li>
+            <h2>Settings</h2>
+          </li>
+          <li>
+            <label>Slippage Tolerance</label>
+            <ul>
+              <li>
+                <button onClick={() => updateSettings({ slippage: '0.1' })}>
+                  0.1%
+                </button>
+              </li>
+              <li>
+                <button onClick={() => updateSettings({ slippage: '0.5' })}>
+                  0.5%
+                </button>
+              </li>
+              <li>
+                <button onClick={() => updateSettings({ slippage: '1' })}>
+                  1%
+                </button>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      )}
     </React.Fragment>
   );
 };
@@ -50,12 +71,16 @@ export const TopNav = () => {
   const [user, setUser] = useLocalStorage('user', null);
 
   useEffect(() => {
-    if (activeWeb3?.library?.provider?.isMetaMask && user?.account !== activeWeb3?.account && activeWeb3?.account) { 
+    if (
+      activeWeb3?.library?.provider?.isMetaMask &&
+      user?.account !== activeWeb3?.account &&
+      activeWeb3?.account
+    ) {
       setUser({ account: activeWeb3.account });
     } else if (!activeWeb3.active && !!user?.account) {
       setUser({});
     }
-  }, [activeWeb3, user, setUser])
+  }, [activeWeb3, user, setUser]);
 
   const autoLogin = user?.account || null;
 
@@ -80,9 +105,7 @@ export const TopNav = () => {
       </section>
       <section>
         <ConnectAccount autoLogin={autoLogin} darkMode={false} />
-        {!isMobile && (
-          <SettingsButton />
-        )}
+        {!isMobile && <SettingsButton />}
         {isMobile && (
           <button
             title="Augur Menu"
