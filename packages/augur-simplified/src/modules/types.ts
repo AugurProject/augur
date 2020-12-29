@@ -154,6 +154,8 @@ export interface AmmExchange {
   sharetoken: string,
   transactions: AmmTransaction[],
   trades: Trades,
+  past24hrPriceNo: string,
+  past24hrPriceYes: string,
 }
 
 export interface Cashes {
@@ -1034,15 +1036,23 @@ export interface LPToken {
   }
 }
 
+export interface SimpleBalance {
+  balance: string;
+  rawBalance: string;
+}
+export interface CurrencyBalance extends SimpleBalance {
+  usdValue: string;
+}
+
 export interface AmmMarketShares {
   [ammId: string]: {
-    [outcomeIdx: number]: {
-      balance: string;
-      rawBalance: string;
-    }
+    [outcomeIdx: number]: SimpleBalance
   }
 }
+
 export interface UserBalances {
+  ETH: CurrencyBalance,
+  USDC: CurrencyBalance,
   lpTokens: LPToken,
   marketShares: AmmMarketShares
 }

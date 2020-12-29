@@ -1,7 +1,7 @@
 import { BigNumber as BN } from 'bignumber.js'
 import { RemoveLiquidityRate, numTicksToTickSizeWithDisplayPrices, convertDisplayAmountToOnChainAmount, ParaShareToken } from '@augurproject/sdk-lite'
 import { TradeInfo, TradingDirection } from 'modules/types'
-import { AmmExchanges, Cashes, UserBalances } from '../modules/types'
+import { AmmExchanges, Cashes, CurrencyBalance, UserBalances } from '../modules/types'
 import ethers from 'ethers';
 
 import {
@@ -11,8 +11,9 @@ import {
 } from '@augurproject/ethereum-multicall';
 
 import { Web3Provider } from '@ethersproject/providers'
-import { onChainMarketSharesToDisplayFormatter } from './format-number';
+import { convertOnChainToDisplayAmount, formatEther, onChainMarketSharesToDisplayFormatter } from './format-number';
 import { augurSdkLite } from './augurlitesdk';
+import { ETH, USDC } from '../modules/constants';
 
 // TODO: when scalars get num ticks from market
 export const YES_NO_NUM_TICKS = 1000
@@ -21,7 +22,7 @@ export const YES_NO_NUM_TICKS = 1000
 export const formatToOnChainShares = (num = "0", decimals = "18"): BN => {
   // TODO: get max min price from market when scalars markets
   const numTicks = numTicksToTickSizeWithDisplayPrices(new BN(YES_NO_NUM_TICKS), new BN(0), new BN(1))
-  const onChain = convertDisplayAmountToOnChainAmount(new BN(num), numTicks) // todo when merge comes in, new BN(10).pow(new BN(decimals)))
+  const onChain = convertDisplayAmountToOnChainAmount(new BN(num), numTicks, new BN(decimals))
   console.log('to onChain shares value decimals:', num, decimals, String(onChain))
   return onChain;
 }
@@ -259,9 +260,21 @@ export async function doTrade(trade: TradeInfo, minAmount: string, useEth: boole
 
 export const getUserBalances = async (provider: Web3Provider, account: string, ammExchanges: AmmExchanges, cashes: Cashes): Promise<UserBalances> => {
   const userBalances = {
+    ETH: {
+      balance: "0",
+      rawBalance: "0",
+      usdValue: "0"
+    },
+    USDC: {
+      balance: "0",
+      rawBalance: "0",
+      usdValue: "0"
+    },
     lpTokens: {},
     marketShares: {}
   }
+
+  if (!account || !provider) return userBalances;
 
   const BALANCE_OF = 'balanceOf';
   const MARKET_SHARE_BALANCE = 'balanceOfMarketOutcome';
@@ -277,6 +290,9 @@ export const getUserBalances = async (provider: Web3Provider, account: string, a
   const shareTokens: string[] = Object.keys(cashes).map(id => cashes[id].shareToken)
   // markets
   const marketIds: string[] = ammAddresses.reduce((p, a) => p.includes(ammExchanges[a].marketId) ? p : [...p, ammExchanges[a].marketId], []);
+
+  userBalances.ETH = await getEthBalance(provider, cashes, account);
+
   const multicall = new Multicall({ ethersProvider: provider });
 
   const contractLpBalanceCall: ContractCallContext[] = ammAddresses.map(address =>
@@ -303,7 +319,21 @@ export const getUserBalances = async (provider: Web3Provider, account: string, a
   }, []
   );
 
-  const balananceCalls = [...contractLpBalanceCall, ...contractMarketShareBalanceCall]
+  let basicBalanceCalls: ContractCallContext[] = []
+  const usdc = Object.values(cashes).find(c => c.name === USDC);
+  if (usdc) {
+    basicBalanceCalls = [
+      {
+        reference: 'usdc-balance',
+        contractAddress: usdc.address,
+        abi: ERC20ABI,
+        calls: [{ reference: 'usdcBalance', methodName: BALANCE_OF, methodParameters: [account] }]
+      }
+    ]
+
+  }
+
+  const balananceCalls = [...contractLpBalanceCall, ...contractMarketShareBalanceCall, ...basicBalanceCalls]
 
   let balances: string[] = []
   const balanceResult: ContractCallResults = await multicall.call(balananceCalls);
@@ -319,10 +349,20 @@ export const getUserBalances = async (provider: Web3Provider, account: string, a
     const rawBalance = String(new BN(balanceValue.hex));
 
     if (method === BALANCE_OF) {
-      const cash = cashes[ammExchanges[contractAddress]?.cash.address]
-      const balance = onChainMarketSharesToDisplayFormatter(rawBalance, cash.decimals)
-      userBalances.lpTokens[contractAddress] = { balance, rawBalance };
-
+      if (usdc && contractAddress === usdc.address) {
+        const usdcValue = convertOnChainToDisplayAmount(new BN(rawBalance), new BN(usdc.decimals));
+        userBalances.USDC = {
+          balance: String(usdcValue),
+          rawBalance: rawBalance,
+          usdValue: String(usdcValue)
+        }
+      } else {
+        const cash = cashes[ammExchanges[contractAddress]?.cash.address]
+        const balance = onChainMarketSharesToDisplayFormatter(rawBalance, cash.decimals)
+        if (balance !== "0") {
+          userBalances.lpTokens[contractAddress] = { balance, rawBalance };
+        }
+      }
     } else if (method === MARKET_SHARE_BALANCE) {
       const cash = Object.values(cashes).find(c => c.shareToken.toLowerCase() === contractAddress.toLowerCase());
       const balance = onChainMarketSharesToDisplayFormatter(rawBalance, cash.decimals)
@@ -337,7 +377,7 @@ export const getUserBalances = async (provider: Web3Provider, account: string, a
             balance,
             rawBalance
           };
-        } else {
+        } else if (balance !== "0") {
           userBalances.marketShares[amm.id] = {}
           userBalances.marketShares[amm.id][outcome] = { balance, rawBalance };
         }
@@ -347,6 +387,17 @@ export const getUserBalances = async (provider: Web3Provider, account: string, a
   return userBalances
 }
 
+const getEthBalance = async (provider: Web3Provider, cashes: Cashes, account: string): Promise<CurrencyBalance> => {
+  const ethCash = Object.values(cashes).find(c => c.name === ETH);
+  const ethbalance = await provider.getBalance(account);
+  const ethValue = convertOnChainToDisplayAmount(new BN(String(ethbalance)), 18)
+
+  return {
+    balance: String(ethValue),
+    rawBalance: String(ethbalance),
+    usdValue: ethCash ? String(ethValue.times(new BN(ethCash.usdPrice))) : String(ethValue)
+  }
+}
 
 const ERC20ABI =
   [

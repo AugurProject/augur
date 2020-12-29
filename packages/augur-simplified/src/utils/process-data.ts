@@ -173,7 +173,10 @@ const shapeAmmExchange = (amm: GraphAmmExchange, past: GraphAmmExchange, cashes:
   const priceNo = (Number(amm.percentageYes) / 100);
 
   const { volumeNo, volumeYes, liquidity } = amm;
-  const { volumeNo: pastVolumeNo, volumeYes: pastVolumeYes, liquidity: pastLiquidity } = (past || {});
+  const { volumeNo: pastVolumeNo, volumeYes: pastVolumeYes, liquidity: pastLiquidity, percentageNo: pastPctNo, percentageYes: pastPctYes } = (past || {});
+  const past24hrPriceYes = (Number(pastPctNo) / 100);
+  const past24hrPriceNo = (Number(pastPctYes) / 100);
+
 
   const volumeNoUSD = calculateVolumeInUsd(volumeNo, priceNo, cash.usdPrice);
   const volumeYesUSD = calculateVolumeInUsd(volumeYes, priceYes, cash.usdPrice);
@@ -212,6 +215,8 @@ const shapeAmmExchange = (amm: GraphAmmExchange, past: GraphAmmExchange, cashes:
     volumeTotalUSD,
     transactions,
     trades,
+    past24hrPriceNo: past24hrPriceNo.toFixed(2),
+    past24hrPriceYes: past24hrPriceYes.toFixed(2)
   }
 }
 

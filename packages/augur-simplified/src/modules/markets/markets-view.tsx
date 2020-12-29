@@ -14,7 +14,6 @@ import {
   POPULAR_CATEGORIES_ICONS,
   sortByItems,
   TOTAL_VOLUME,
-  USDT,
   YES_OUTCOME_ID,
 } from 'modules/constants';
 import { MarketLink } from 'modules/routes/helpers/market-link';
@@ -31,6 +30,7 @@ import { PrimaryButton } from 'modules/common/buttons';
 import { SquareDropdown } from 'modules/common/selection';
 import { Pagination } from 'modules/common/pagination';
 import { useAppStatusStore } from 'modules/stores/app-status';
+import { USDC } from '../constants';
 
 const PAGE_LIMIT = 20;
 
@@ -96,7 +96,7 @@ const MarketCard = ({ market }) => {
           <CategoryLabel category={categories[1]} />
           <div>
             {amm?.cash?.name === ETH && EthIcon}
-            {amm?.cash?.name === USDT && UsdIcon}
+            {amm?.cash?.name === USDC && UsdIcon}
           </div>
           <span>{description}</span>
           {!amm ? (

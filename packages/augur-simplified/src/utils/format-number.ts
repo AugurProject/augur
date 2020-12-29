@@ -629,7 +629,7 @@ const YES_NO_NUM_TICKS = 1000
 export const onChainMarketSharesToDisplayFormatter = (num, precision) => {
   // TODO: get max/min price from market
   const numTicks = numTicksToTickSizeWithDisplayPrices(createBigNumber(YES_NO_NUM_TICKS), createBigNumber(0), createBigNumber(1))
-  const displayValue = String(convertOnChainAmountToDisplayAmount(createBigNumber(num), numTicks, createBigNumber(10).pow(createBigNumber(createBigNumber(precision)))))
+  const displayValue = String(convertOnChainAmountToDisplayAmount(createBigNumber(num), numTicks, createBigNumber(precision)))
   if (isNaN(Number(displayValue))) {
     console.log('num issue', num, precision)
     return "0"
@@ -642,5 +642,12 @@ export function convertOnChainAmountToDisplayAmount(
   tickSize: BigNumber,
   precision: BigNumber,
 ) {
-  return onChainAmount.dividedBy(tickSize).dividedBy(precision);
+  return onChainAmount.dividedBy(tickSize).dividedBy(createBigNumber(10).pow(createBigNumber(precision)));
+}
+
+export function convertOnChainToDisplayAmount(
+  onChainAmount: BigNumber,
+  precision: BigNumber | Number,
+) {
+  return onChainAmount.dividedBy(new BigNumber(10).pow(createBigNumber(precision)));
 }

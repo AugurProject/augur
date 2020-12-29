@@ -167,8 +167,8 @@ const jsonConfig = {
       {
         address: '0x1997d08b1a9aed5143b995e929707400625d5f6c',
         shareToken: '0xF291BA9ab165b9A81468D0cfF712ca100E04dEe1',
-        name: 'USDT',
-        symbol: 'USDT',
+        name: 'USDC',
+        symbol: 'USDC',
         asset: 'usdt.svg',
         decimals: 6,
         displayDecimals: 2,

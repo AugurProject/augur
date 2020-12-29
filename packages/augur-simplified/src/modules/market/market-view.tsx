@@ -23,9 +23,9 @@ import {
   BUY,
   MARKET_ID_PARAM_NAME,
   ETH,
-  USDT,
 } from 'modules/constants';
 import parseQuery from 'modules/routes/helpers/parse-query';
+import { USDC } from '../constants';
 
 const getDetails = (market) => {
   const rawInfo = market?.extraInfoRaw || '{}';
@@ -53,8 +53,8 @@ const CurrencyLabel = ({ name }) => {
       content = <>{EthIcon} ETH Market</>;
       break;
     }
-    case USDT: {
-      content = <>{UsdIcon} USDT Market</>;
+    case USDC: {
+      content = <>{UsdIcon} USDC Market</>;
       break;
     }
     default:
