@@ -626,7 +626,7 @@ export function calcPercentageFromPrice(
 }
 
 const YES_NO_NUM_TICKS = 1000
-export const onChainMarketSharesToDisplayFormatter = (num, precision) => {
+export const onChainMarketSharesToDisplayFormatter = (num: NumStrBigNumber, precision: NumStrBigNumber) => {
   // TODO: get max/min price from market
   const numTicks = numTicksToTickSizeWithDisplayPrices(createBigNumber(YES_NO_NUM_TICKS), createBigNumber(0), createBigNumber(1))
   const displayValue = String(convertOnChainAmountToDisplayAmount(createBigNumber(num), numTicks, createBigNumber(precision)))

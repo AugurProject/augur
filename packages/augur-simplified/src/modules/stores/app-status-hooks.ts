@@ -18,6 +18,7 @@ const {
   UPDATE_MARKETS_VIEW_SETTINGS,
   UPDATE_USER_BALANCES,
   UPDATE_SETTINGS,
+  ADD_TRANSACTION,
 } = APP_STATUS_ACTIONS;
 
 const {
@@ -29,6 +30,7 @@ const {
   MARKETS_VIEW_SETTINGS,
   USER_INFO,
   SETTINGS,
+  TRANSACTIONS,
 } = APP_STATE_KEYS;
 
 const isAsync = (obj) => {
@@ -145,6 +147,13 @@ export function AppStatusReducer(state, action) {
       updatedState[USER_INFO].balances = action.userBalances;
       break;
     }
+    case ADD_TRANSACTION: {
+      updatedState[TRANSACTIONS] = [
+        ...updatedState[TRANSACTIONS],
+        action.transaction
+      ]
+      break;
+    }
     default:
       console.log(`Error: ${action.type} not caught by Markets reducer`);
   }
@@ -175,7 +184,8 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
         dispatch({ type: SET_LOGIN_ACCOUNT, account }),
       updateUserBalances: (userBalances) =>
         dispatch({ type: UPDATE_USER_BALANCES, userBalances }),
-      updateSettings: settings => dispatch({ type: UPDATE_SETTINGS, settings })
+      updateSettings: settings => dispatch({ type: UPDATE_SETTINGS, settings }),
+      addTransaction: transaction => dispatch({ type: ADD_TRANSACTION, transaction })
     },
   };
 };

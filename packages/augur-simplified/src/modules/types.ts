@@ -118,6 +118,14 @@ export interface AmmTransaction {
   timestamp: string,
   tx_hash: string,
   price: string | null,
+
+  value: string,
+  subheader: string,
+  date: string,
+  time: string,
+  currency: string,
+  shareAmount: string,
+  tokenAmount: string,
 }
 
 export interface Trade {
@@ -1085,4 +1093,17 @@ export interface AppStatusState {
     activity: ActivityCardProps;
     balances: UserBalances;
   },
+  transactions: Transaction[];
+}
+
+export interface Transaction {
+  chainId: string;
+  hash: string;
+  from: string;
+  approval?: { tokenAddress: string; spender: string }
+  claim?: { recipient: string }
+  receipt?: any;
+  lastCheckedBlockNumber?: number
+  addedTime: number
+  confirmedTime?: number
 }

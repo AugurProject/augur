@@ -34,7 +34,7 @@ export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
   marketInfos: {},
   positions: [],
   liquidity: [],
-  transactions: {},
+  transactions: [],
   activity: {}, // new place for user activity
   marketsViewSettings: {
     categories: ALL_MARKETS,
@@ -89,6 +89,7 @@ export const APP_STATUS_ACTIONS = {
   UPDATE_MARKETS_VIEW_SETTINGS: 'UPDATE_MARKETS_VIEW_SETTINGS',
   UPDATE_USER_BALANCES: 'UPDATE_USER_BALANCES',
   UPDATE_SETTINGS: 'UPDATE_SETTINGS',
+  ADD_TRANSACTION: 'ADD_TRANSACTION',
 };
 
 export const fakePositionsData = [
