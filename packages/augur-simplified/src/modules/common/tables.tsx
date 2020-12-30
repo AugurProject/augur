@@ -18,6 +18,8 @@ import {
 import { Pagination } from 'modules/common/pagination';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import { SmallDropdown } from './selection';
+import { AmmExchange, AmmTransaction } from '../types';
+import { formatDai } from '../../utils/format-number';
 
 interface Position {
   id: string;
@@ -373,28 +375,41 @@ const TransactionsHeader = () => {
   );
 };
 
-const TransactionRow = ({ transaction }) => {
+const AccountLink = ({ account }) => {
+  // TODO: make this a etherscan link
+  return (
+    <span>{account && account.slice(0, 6) + '...' + account.slice(38, 42)}</span>
+  )
+}
+
+interface TransactionProps {
+  transaction: AmmTransaction;
+}
+
+const TransactionRow = ({ transaction }: TransactionProps) => {
   return (
     <ul className={Styles.TransactionRow}>
-      <li>{transaction.title}</li>
-      <li>{transaction.totalValue}</li>
+      <li>{transaction.subheader}</li>
+      <li>{formatDai(transaction.value).full}</li>
       <li>{transaction.tokenAmount}</li>
       <li>{transaction.shareAmount}</li>
-      <li>{transaction.account}</li>
+      <li><AccountLink account={transaction.sender} /></li>
       <li>{transaction.time}</li>
     </ul>
   );
 };
 
-export const TransactionsTable = () => {
-  const { transactions, loginAccount } = useAppStatusStore();
-  const isLogged = loginAccount !== null;
+interface TransactionsProps {
+  transactions: AmmTransaction[];
+}
+
+export const TransactionsTable = ({ transactions }: TransactionsProps) => {
   return (
     <div className={Styles.TransactionsTable}>
-      {isLogged ? (
+      {transactions?.length > 0 ? (
         <>
           <TransactionsHeader />
-          {transactions[0].transactions.map((transaction) => (
+          {transactions.map((transaction) => (
             <TransactionRow key={transaction.id} transaction={transaction} />
           ))}
           <div className={Styles.PaginationFooter}>

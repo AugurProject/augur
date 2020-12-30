@@ -24,6 +24,7 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   updateLoginAccount: updateLoginAccount => {},
   updateMarketsViewSettings: settings => {},
   updateSettings: settings => {},
+  addTransaction: transaction => {}
 };
 
 export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
@@ -35,14 +36,13 @@ export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
   positions: [],
   liquidity: [],
   transactions: {},
-  activity: {}, // new place for user activity
   marketsViewSettings: {
     categories: ALL_MARKETS,
     reportingState: OPEN,
     sortBy: TOTAL_VOLUME,
     currency: ALL
   },
-  paraConfig: {},
+  paraConfig: { addresses: {}, paraDeploys: {}},
   processed: {
     markets: {},
     cashes: {},
@@ -89,6 +89,7 @@ export const APP_STATUS_ACTIONS = {
   UPDATE_MARKETS_VIEW_SETTINGS: 'UPDATE_MARKETS_VIEW_SETTINGS',
   UPDATE_USER_BALANCES: 'UPDATE_USER_BALANCES',
   UPDATE_SETTINGS: 'UPDATE_SETTINGS',
+  ADD_TRANSACTION: 'ADD_TRANSACTION',
 };
 
 export const fakePositionsData = [
@@ -167,45 +168,11 @@ export const fakeLiquidityData = [
   },
 ];
 
-export const fakeTransactionsData = {
-  0: {
-    transactions: [
-      {
-        id: 0,
-        title: 'Swap USDC for Yes Shares',
-        totalValue: '$150',
-        tokenAmount: '150 USDC',
-        shareAmount: '50 shares',
-        account: '0x3058...d369',
-        time: '30 mins ago',
-      },
-      {
-        id: 1,
-        title: 'Swap USDC for Yes Shares',
-        totalValue: '$150',
-        tokenAmount: '150 USDC',
-        shareAmount: '50 shares',
-        account: '0x3058...d369',
-        time: '30 mins ago',
-      },
-      {
-        id: 2,
-        title: 'Swap USDC for Yes Shares',
-        totalValue: '$150',
-        tokenAmount: '150 USDC',
-        shareAmount: '50 shares',
-        account: '0x3058...d369',
-        time: '30 mins ago',
-      },
-    ],
-  },
-};
-
 export const MOCK_APP_STATUS_STATE = {
   ...DEFAULT_APP_STATUS_STATE,
   positions: fakePositionsData,
   liquidity: fakeLiquidityData,
-  transactions: fakeTransactionsData,
+  transactions: {},
   marketInfos: {
     '0xdeadbeef': {
       id: '0xdeadbeef',

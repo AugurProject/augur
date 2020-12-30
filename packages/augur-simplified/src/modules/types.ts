@@ -118,6 +118,14 @@ export interface AmmTransaction {
   timestamp: string,
   tx_hash: string,
   price: string | null,
+
+  value: string,
+  subheader: string,
+  date: string,
+  time: string,
+  currency: string,
+  shareAmount: string,
+  tokenAmount: string,
 }
 
 export interface Trade {
@@ -277,11 +285,11 @@ export interface Universe extends Getters.Universe.UniverseDetails {
   parentUniverseId: null | string;
   id: null | string;
   disputeWindow: {
-      address: Address;
-      startTime: number;
-      endTime: number;
-      purchased: string;
-      fees: string;
+    address: Address;
+    startTime: number;
+    endTime: number;
+    purchased: string;
+    fees: string;
   };
   forkingInfo?: ForkingInfo;
   forkEndTime?: string;
@@ -573,8 +581,8 @@ export interface Draft {
   updated: number;
   isValid: boolean;
   validations:
-    | NewMarketPropertiesValidations[]
-    | NewMarketPropertyValidations[];
+  | NewMarketPropertiesValidations[]
+  | NewMarketPropertyValidations[];
   currentStep: number;
   type: string;
   outcomes: string[];
@@ -1085,4 +1093,22 @@ export interface AppStatusState {
     activity: ActivityCardProps;
     balances: UserBalances;
   },
+  transactions: TransactionState;
+  paraConfig: ParaDeploys;
+}
+
+export interface TransactionDetails {
+  chainId: string;
+  hash: string;
+  from: string;
+  approval?: { tokenAddress: string; spender: string }
+  claim?: { recipient: string }
+  receipt?: any;
+  lastCheckedBlockNumber?: number
+  addedTime: number
+  confirmedTime?: number
+}
+
+export interface TransactionState {
+  [txHash: string]: TransactionDetails
 }

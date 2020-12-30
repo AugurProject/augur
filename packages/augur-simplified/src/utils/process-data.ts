@@ -2,7 +2,7 @@ import { AmmTransaction, Trades, AmmExchange, Cash, Cashes, MarketOutcome, Trans
 import { BigNumber as BN } from 'bignumber.js'
 import { getDayFormat, getTimeFormat } from "../utils/date-utils";
 import { convertAttoValueToDisplayValue } from "@augurproject/sdk";
-import { onChainMarketSharesToDisplayFormatter } from "./format-number";
+import { convertOnChainToDisplayAmount, formatShares, onChainMarketSharesToDisplayFormatter } from "./format-number";
 import { BUY, SELL } from "../modules/constants";
 interface GraphMarket {
   id: string,
@@ -149,10 +149,10 @@ const shapeAmmExchange = (amm: GraphAmmExchange, past: GraphAmmExchange, cashes:
   const outcomes = shapeOutcomes(market.outcomes);
   const cash: Cash = cashes[amm.shareToken.cash.id]
   let transactions = [];
-  transactions = transactions.concat(amm.enters.map(e => ({ ...e, tx_type: TransactionTypes.ENTER, sender: e.sender.id })));
-  transactions = transactions.concat(amm.exits.map(e => ({ ...e, tx_type: TransactionTypes.EXIT, sender: e.sender.id })));
-  transactions = transactions.concat(amm.addLiquidity.map(e => ({ ...e, tx_type: TransactionTypes.ADD_LIQUIDITY, sender: e.sender.id })));
-  transactions = transactions.concat(amm.removeLiquidity.map(e => ({ ...e, tx_type: TransactionTypes.REMOVE_LIQUIDITY, sender: e.sender.id })));
+  transactions = transactions.concat(shapeEnterTransactions(amm.enters, cash));
+  transactions = transactions.concat(shapeExitTransactions(amm.exits, cash));
+  transactions = transactions.concat(shapeAddLiquidityTransactions(amm.addLiquidity, cash));
+  transactions = transactions.concat(shapeRemoveLiquidityTransactions(amm.removeLiquidity, cash));
 
   let outcomeTrades = outcomes.reduce((p, o) => ({ ...p, [o.id]: [] }), {});
 
@@ -206,6 +206,54 @@ const shapeAmmExchange = (amm: GraphAmmExchange, past: GraphAmmExchange, cashes:
     past24hrPriceNo: past24hrPriceNo ? past24hrPriceNo.toFixed(2) : null,
     past24hrPriceYes: past24hrPriceYes ? past24hrPriceYes.toFixed(2) : null,
   }
+}
+
+const shapeEnterTransactions = (transactions: GraphEnter[], cash: Cash): AmmTransaction[] => {
+  return transactions.map(e => {
+    const properties = formatTransaction(e, cash);
+    const subheader = `Swap ${cash.name} for ${e.noShares !== "0" ? 'No Shares' : 'Yes Shares'}`
+    return { ...e, tx_type: TransactionTypes.ENTER, sender: e.sender.id, subheader, ...properties }
+  });
+}
+
+const shapeExitTransactions = (transactions: GraphExit[], cash: Cash): AmmTransaction[] => {
+  return transactions.map(e => {
+    const properties = formatTransaction(e, cash);
+    const subheader = `Swap ${e.noShares !== "0" ? 'No Shares' : 'Yes Shares'} for ${cash.name}`
+    return { ...e, tx_type: TransactionTypes.EXIT, sender: e.sender.id, subheader, ...properties }
+  });
+}
+
+const shapeAddLiquidityTransactions = (transactions: GraphAddLiquidity[], cash: Cash): AmmTransaction[] => {
+  return transactions.map(e => {
+    const properties = formatTransaction(e, cash);
+    const subheader = `Add ${cash.name} Liquidity`
+    return { ...e, tx_type: TransactionTypes.ADD_LIQUIDITY, sender: e.sender.id, subheader, ...properties, price: null }
+  });
+}
+
+const shapeRemoveLiquidityTransactions = (transactions: GraphAddLiquidity[], cash: Cash): AmmTransaction[] => {
+  return transactions.map(e => {
+    const properties = formatTransaction(e, cash);
+    const subheader = `Remove ${cash.name} Liquidity`
+    return { ...e, tx_type: TransactionTypes.REMOVE_LIQUIDITY, sender: e.sender.id, subheader, ...properties, price: null }
+  });
+}
+
+const formatTransaction = (tx: GraphEnter | GraphExit | GraphAddLiquidity | GraphRemoveLiquidity, cash: Cash) => {
+  const tokenAmount = convertOnChainToDisplayAmount(new BN(tx.cash), new BN(cash.decimals));
+  const value = String(tokenAmount.times(cash.usdPrice));
+
+  const date = getDayFormat(tx.timestamp);
+  // TODO: need helper to get time ellpased format
+  const time = getTimeFormat(tx.timestamp);
+  const currency = cash.symbol;
+  const shares = tx.noShares !== "0" ? tx.noShares : tx.yesShares;
+  const shareAmount = formatShares(onChainMarketSharesToDisplayFormatter(new BN(shares), new BN(cash.decimals)), {
+    decimals: 4,
+    decimalsRounded: 4,
+  }).formatted
+  return { shareAmount, currency, time, date, tokenAmount: String(tokenAmount), value }
 }
 
 const calculateTotalShareVolumeInUsd = (volumeNo: string, volumeYes: string, priceNo: number, priceYes: number, priceUsd: string): string => {

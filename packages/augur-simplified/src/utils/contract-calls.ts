@@ -2,7 +2,7 @@ import BigNumber, { BigNumber as BN } from 'bignumber.js'
 import { RemoveLiquidityRate, numTicksToTickSizeWithDisplayPrices, convertDisplayAmountToOnChainAmount, ParaShareToken } from '@augurproject/sdk-lite'
 import { TradeInfo, TradingDirection, AmmExchange, AmmExchanges, AmmMarketShares, AmmTransaction, Cashes, CurrencyBalance, PositionBalance, TransactionTypes, UserBalances } from '../modules/types'
 import ethers from 'ethers';
-
+import { Contract } from '@ethersproject/contracts'
 import {
   Multicall,
   ContractCallResults,
@@ -12,7 +12,8 @@ import {
 import { Web3Provider } from '@ethersproject/providers'
 import { convertOnChainToDisplayAmount, onChainMarketSharesToDisplayFormatter } from './format-number';
 import { augurSdkLite } from './augurlitesdk';
-import { ETH, NO_OUTCOME_ID, USDC, YES_OUTCOME_ID } from '../modules/constants';
+import { ETH, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_OUTCOME_ID } from '../modules/constants';
+import { getProviderOrSigner } from '../modules/ConnectAccount/utils';
 
 // TODO: when scalars get num ticks from market
 export const YES_NO_NUM_TICKS = 1000;
@@ -642,6 +643,101 @@ const getUserTrades = (account: string, transactions: AmmTransaction[]): { enter
   return { enters: enterTrades, exits: exitTrades }
 }
 
+export const isAddress = value => {
+  try {
+    return ethers.utils.getAddress(value.toLowerCase())
+  } catch {
+    return false
+  }
+}
+
+export const getContract = (tokenAddress: string, ABI: any, library: Web3Provider, account?: string): Contract => {
+  if (!isAddress(tokenAddress) || tokenAddress === NULL_ADDRESS) {
+    throw Error(`Invalid 'address' parameter '${tokenAddress}'.`)
+  }
+  return new Contract(tokenAddress, ABI, getProviderOrSigner(library, account) as any)
+}
+
+// returns null on errors
+export const getErc20Contract = (tokenAddress: string, library: Web3Provider, account: string): Contract | null => {
+  if (!tokenAddress || !library) return null
+  try {
+    return getContract(tokenAddress, ERC20ABI, library, account)
+  } catch (error) {
+    console.error('Failed to get contract', error)
+    return null
+  }
+}
+
+export const getErc1155Contract = (tokenAddress: string, library: Web3Provider, account: string): Contract | null => {
+  if (!tokenAddress || !library) return null
+  try {
+    return getContract(tokenAddress, ParaShareToken.ABI, library, account)
+  } catch (error) {
+    console.error('Failed to get contract', error)
+    return null
+  }
+}
+
+export const getERC20Allowance = async (tokenAddress: string, provider: Web3Provider, account: string, spender: string): Promise<string> => {
+  const multicall = new Multicall({ ethersProvider: provider });
+
+  const contractAllowanceCall: ContractCallContext[] = [{
+    reference: tokenAddress,
+    contractAddress: tokenAddress,
+    abi: ERC20ABI,
+    calls: [
+      {
+        reference: tokenAddress,
+        methodName: 'allowance',
+        methodParameters: [account, spender],
+      },
+    ],
+  }];
+
+  const allowance: ContractCallResults = await multicall.call(
+    contractAllowanceCall
+  );
+
+  console.log('allowance', String(allowance))
+  let allowanceAmount = "0";
+  Object.keys(allowance.results).forEach((key) => {
+    const value = allowance.results[key].callsReturnContext[0].returnValues as ethers.utils.Result;
+    allowanceAmount = String(new BN(value.hex));
+  })
+
+  return allowanceAmount;
+}
+
+export const getERC1155ApprovedForAll = async (tokenAddress: string, provider: Web3Provider, account: string, spender: string): Promise<boolean> => {
+  const multicall = new Multicall({ ethersProvider: provider });
+
+  const contractAllowanceCall: ContractCallContext[] = [{
+    reference: tokenAddress,
+    contractAddress: tokenAddress,
+    abi: ParaShareToken.ABI,
+    calls: [
+      {
+        reference: tokenAddress,
+        methodName: 'isApprovedForAll',
+        methodParameters: [account, spender],
+      },
+    ],
+  }];
+
+  const isApprovedResult: ContractCallResults = await multicall.call(
+    contractAllowanceCall
+  );
+
+  console.log('isApproved result', String(isApprovedResult))
+  let isApproved = false;
+  Object.keys(isApprovedResult.results).forEach((key) => {
+    const value = isApprovedResult.results[key].callsReturnContext[0].returnValues as ethers.utils.Result;
+    isApproved = Boolean(value)
+  })
+
+  return isApproved;
+}
 
 const ERC20ABI = [
   {

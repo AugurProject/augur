@@ -176,3 +176,14 @@ export const currencyItems = [
     value: USDC,
   },
 ];
+
+// approvals
+
+export enum ApprovalState {
+  UNKNOWN,
+  NOT_APPROVED,
+  PENDING,
+  APPROVED
+}
+
+export const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";

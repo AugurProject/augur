@@ -77,7 +77,7 @@ const MarketView = ({ defaultMarket = null }) => {
   } = useAppStatusStore();
   const market: MarketInfo = !!defaultMarket ? defaultMarket : markets[marketId];
   const amm: AmmExchange = market?.amm;
-  // console.log("in market view", market, marketId, markets);
+
   if (!market) return <div className={Styles.MarketView} />;
   const details = getDetails(market);
   return (
@@ -145,7 +145,7 @@ const MarketView = ({ defaultMarket = null }) => {
         </div>
         <div className={Styles.TransactionsTable}>
           <span>Transactions</span>
-          <TransactionsTable />
+          <TransactionsTable transactions={amm?.transactions}/>
         </div>
       </section>
       {(!isMobile || showTradingForm) && (
