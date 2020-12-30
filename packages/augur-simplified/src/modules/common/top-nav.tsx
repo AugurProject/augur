@@ -12,7 +12,7 @@ import { useAppStatusStore } from 'modules/stores/app-status';
 import { useLocalStorage } from 'modules/stores/local-storage';
 import ConnectAccount from 'modules/ConnectAccount/index';
 import { useActiveWeb3React } from 'modules/ConnectAccount/hooks';
-import { SmallRoundedButton } from 'modules/common/buttons';
+import { TinyButton } from 'modules/common/buttons';
 
 export const SettingsButton = () => {
   const {
@@ -62,21 +62,21 @@ export const SettingsButton = () => {
             <label>Slippage Tolerance</label>
             <ul>
               <li>
-                <SmallRoundedButton
+                <TinyButton
                   text="0.1%"
                   action={() => updateSettings({ slippage: '0.1' })}
                   selected={isSelectedArray[0]}
                 />
               </li>
               <li>
-                <SmallRoundedButton
+                <TinyButton
                   text="0.5%"
                   action={() => updateSettings({ slippage: '0.5' })}
                   selected={isSelectedArray[1]}
                 />
               </li>
               <li>
-                <SmallRoundedButton
+                <TinyButton
                   text="1%"
                   action={() => updateSettings({ slippage: '1' })}
                   selected={isSelectedArray[2]}
