@@ -29,6 +29,8 @@ const getDuration = (seconds: number) => {
   };
 };
 
+export const timeSinceTimestamp = (timestamp: number) => timeSince(timestamp * 1000);
+
 export const timeSince = (timestamp: number) => {
   const now = new Date().getTime();
   const ts = new Date(timestamp).getTime();
