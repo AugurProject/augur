@@ -178,7 +178,6 @@ export const currencyItems = [
 ];
 
 // approvals
-export const REMOVE_NEEDS_APPROVAL = [ETH]
 
 export enum ApprovalState {
   UNKNOWN,

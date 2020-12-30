@@ -707,7 +707,36 @@ export const getERC20Allowance = async (tokenAddress: string, provider: Web3Prov
   })
 
   return allowanceAmount;
+}
 
+export const getERC1155ApprovedForAll = async (tokenAddress: string, provider: Web3Provider, account: string, spender: string): Promise<boolean> => {
+  const multicall = new Multicall({ ethersProvider: provider });
+
+  const contractAllowanceCall: ContractCallContext[] = [{
+    reference: tokenAddress,
+    contractAddress: tokenAddress,
+    abi: ParaShareToken.ABI,
+    calls: [
+      {
+        reference: tokenAddress,
+        methodName: 'isApprovedForAll',
+        methodParameters: [account, spender],
+      },
+    ],
+  }];
+
+  const isApprovedResult: ContractCallResults = await multicall.call(
+    contractAllowanceCall
+  );
+
+  console.log('isApproved result', String(isApprovedResult))
+  let isApproved = false;
+  Object.keys(isApprovedResult.results).forEach((key) => {
+    const value = isApprovedResult.results[key].callsReturnContext[0].returnValues as ethers.utils.Result;
+    isApproved = Boolean(value)
+  })
+
+  return isApproved;
 }
 
 const ERC20ABI = [

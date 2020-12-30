@@ -1094,6 +1094,7 @@ export interface AppStatusState {
     balances: UserBalances;
   },
   transactions: TransactionState;
+  paraConfig: ParaDeploys;
 }
 
 export interface TransactionDetails {

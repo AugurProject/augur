@@ -35,15 +35,14 @@ export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
   marketInfos: {},
   positions: [],
   liquidity: [],
-  transactions: [],
-  activity: {}, // new place for user activity
+  transactions: {},
   marketsViewSettings: {
     categories: ALL_MARKETS,
     reportingState: OPEN,
     sortBy: TOTAL_VOLUME,
     currency: ALL
   },
-  paraConfig: {},
+  paraConfig: { addresses: {}, paraDeploys: {}},
   processed: {
     markets: {},
     cashes: {},
