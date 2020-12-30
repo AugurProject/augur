@@ -6,7 +6,7 @@ import { BigNumber as BN } from 'bignumber.js'
 import { useAppStatusStore } from "../stores/app-status";
 import { TransactionResponse } from '@ethersproject/providers'
 
-const APPROVAL_AMOUNT = String(new BN(2**255).minus(1));
+const APPROVAL_AMOUNT = String(new BN(2 ** 255).minus(1));
 
 export const useIsTokenApproved = (tokenAddress: string, spender: string): Promise<boolean> => {
   const { account, library } = useActiveWeb3React();
@@ -27,7 +27,10 @@ const useHasPendingTransaction = (account: string, tokenAddress: string, spender
 
   return useMemo(() => {
     if (!account || !tokenAddress || !spender) return false;
-    const tx = transactions.find(tx => tx.approval && !tx.receipt && tx?.approval?.spender === spender && tx?.approval?.tokenAddress === tokenAddress)
+    const tx = Object.values(transactions).find(tx => tx.approval
+      && !tx.receipt
+      && tx?.approval?.spender === spender
+      && tx?.approval?.tokenAddress === tokenAddress)
     return Boolean(tx);
   }, [account, tokenAddress, spender, transactions])
 
@@ -80,7 +83,8 @@ export function useApproveCallback(
         addTransaction({
           hash,
           chainId,
-          summary: `Approve ${approvingName || 'for process'}` ,
+          from: account,
+          summary: `Approve ${approvingName || 'for process'}`,
           approval: { tokenAddress: tokenAddress, spender: spender }
         })
       })
