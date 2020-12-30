@@ -4,6 +4,7 @@ import { getDayFormat, getTimeFormat } from "../utils/date-utils";
 import { convertAttoValueToDisplayValue } from "@augurproject/sdk";
 import { convertOnChainToDisplayAmount, formatShares, onChainMarketSharesToDisplayFormatter } from "./format-number";
 import { BUY, SELL } from "../modules/constants";
+import { timeSinceTimestamp } from "./time-since";
 interface GraphMarket {
   id: string,
   description: string,
@@ -245,15 +246,18 @@ const formatTransaction = (tx: GraphEnter | GraphExit | GraphAddLiquidity | Grap
   const value = String(tokenAmount.times(cash.usdPrice));
 
   const date = getDayFormat(tx.timestamp);
-  // TODO: need helper to get time ellpased format
-  const time = getTimeFormat(tx.timestamp);
+  const time = timeSinceTimestamp(Number(tx.timestamp));
   const currency = cash.symbol;
   const shares = tx.noShares !== "0" ? tx.noShares : tx.yesShares;
   const shareAmount = formatShares(onChainMarketSharesToDisplayFormatter(new BN(shares), new BN(cash.decimals)), {
     decimals: 4,
     decimalsRounded: 4,
   }).formatted
-  return { shareAmount, currency, time, date, tokenAmount: String(tokenAmount), value }
+  const tAmount = formatShares(tokenAmount, {
+    decimals: 4,
+    decimalsRounded: 4,
+  }).formatted;
+  return { shareAmount, currency, time, date, tokenAmount: tAmount, value }
 }
 
 const calculateTotalShareVolumeInUsd = (volumeNo: string, volumeYes: string, priceNo: number, priceYes: number, priceUsd: string): string => {
