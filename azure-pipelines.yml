@@ -1,14 +1,25 @@
 variables:
-  DOCKER_CI_BUILD_TAG: monorepo.$(Build.BuildID)
-  CORE_IMAGE_BUILD: augurproject/augur-core:$(DOCKER_CI_BUILD_TAG)
-  CORE_IMAGE_LATEST: augurproject/augur-core:monorepo
-  PRIMARY_NODE_VERSION: 10.16.x
-  GETH_VERSION: v1.9.9
-  SOLC_VERSION: v0.5.15
-  SOLC_MD5: 884dbc8c8ed01cc34799a6ffab11bc3a
-  VM_IMAGE: 'ubuntu-18.04'
-  YARN_REGISTRY: https://pkgs.dev.azure.com/augurproject/_packaging/npmPackages/npm/registry/
-  System.debug: true
+  - group: thegraph-credentials
+  - name: DOCKER_CI_BUILD_TAG
+    value: monorepo.$(Build.BuildID)
+  - name: CORE_IMAGE_BUILD
+    value: augurproject/augur-core:$(DOCKER_CI_BUILD_TAG)
+  - name: CORE_IMAGE_LATEST
+    value: augurproject/augur-core:monorepo
+  - name: PRIMARY_NODE_VERSION
+    value: 12.18.x
+  - name: GETH_VERSION
+    value: v1.9.19
+  - name: SOLC_VERSION
+    value: v0.5.15
+  - name: SOLC_MD5
+    value: 884dbc8c8ed01cc34799a6ffab11bc3a
+  - name: VM_IMAGE
+    value: 'ubuntu-18.04'
+  - name: YARN_REGISTRY
+    value: https://pkgs.dev.azure.com/augurproject/_packaging/npmPackages/npm/registry/
+  - name: System.debug
+    value: true
 
 trigger:
   batch: false
@@ -34,7 +45,7 @@ jobs:
           if [[ "$(Build.SourceBranchName)" == "dev" || "$(Build.SourceBranchName)" == "v2" ]]; then
             GIT_COMMAND='git log -m -1 --name-only --pretty="format:" $(Build.SourceVersion)'
           else
-            GIT_COMMAND='git diff --name-only origin/dev..HEAD'
+z            GIT_COMMAND='git diff --name-only origin/$(System.PullRequest.TargetBranch)..$(System.SourceVersion)'
           fi
           echo "running git command: $GIT_COMMAND"
           for f in $(eval "$GIT_COMMAND");
@@ -451,7 +462,16 @@ jobs:
       deployBucketName: dev.augur.net
       triggerBranch: refs/heads/dev
       cloudfrontDistributionId: E2K6239JF3WYG6
+- template: .azure-templates/ui-build-to-s3.yml
+  parameters:
+    name: deploy_para_deploys_to_para
+    environment: v2
+    deployBucketName: para.augur.net
+    triggerBranch: refs/heads/para_deploys
+    paraDeployTokenName: 'WETH'
+    cloudfrontDistributionId: E2XU7PSKOBRVV4
 
+- template: .azure-templates/amm-build-to-s3.yml
   - template: .azure-templates/simplified-ui-build-to-s3.yml
     parameters:
       name: deploy_simplified_to_dev
@@ -460,6 +480,28 @@ jobs:
       triggerBranch: refs/heads/dev
       cloudfrontDistributionId: E2O15YTS7NLFRA
 
+  - job: deploy_thegraph
+    displayName: deploy thegraph
+    condition: |
+      and
+      (
+          succeeded(),
+          eq(variables['Build.SourceBranch'], 'refs/heads/dev')
+      )
+    pool:
+      vmImage: $(VM_IMAGE)
+
+    steps:
+      - template: .azure-templates/node-setup.yml
+      - bash: |
+          cd ./packages/augur-subgraph
+          yarn prepare:abi
+          yarn prepare:staging
+          yarn codegen
+          yarn build
+          yarn deploy:staging
+        env:
+          GRAPH_TOKEN: $(GRAPH_TOKEN)
   - job: github_release
     displayName: github release
     dependsOn: PreFlightCheck
