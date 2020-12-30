@@ -107,7 +107,7 @@ const AppBody = () => {
         updateUserBalances(userBalances)
       );
     }
-    // eslint-disable-next-line
+  // eslint-disable-next-line
   }, [account, library, processed, paraConfig]);
 
   useEffect(() => {
@@ -120,9 +120,8 @@ const AppBody = () => {
               if (receipt) finalizeTransaction(t.hash)
             })
         })
-
     }
-    // eslint-disable-next-line
+  // eslint-disable-next-line
   }, [account, blocknumber, transactions]);
 
   const sidebarOut = sidebarType && isMobile;
