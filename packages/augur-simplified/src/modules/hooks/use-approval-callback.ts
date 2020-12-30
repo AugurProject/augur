@@ -1,9 +1,12 @@
 import { ApprovalState } from "../constants"
 import { useActiveWeb3React } from '../ConnectAccount/hooks';
-import { useMemo } from "react";
-import { getERC20Allowance } from "../../utils/contract-calls";
+import { useCallback, useMemo } from "react";
+import { getERC20Allowance, getErc20Contract } from "../../utils/contract-calls";
 import { BigNumber as BN } from 'bignumber.js'
 import { useAppStatusStore } from "../stores/app-status";
+import { TransactionResponse } from '@ethersproject/providers'
+
+const APPROVAL_AMOUNT = String(new BN(2**255).minus(1));
 
 export const useIsTokenApproved = (tokenAddress: string, spender: string): Promise<boolean> => {
   const { account, library } = useActiveWeb3React();
@@ -19,53 +22,41 @@ export const useIsTokenApproved = (tokenAddress: string, spender: string): Promi
   ])
 }
 
-const useHasPendingTransaction = (tokenAddress: string, spender: string): boolean => {
+const useHasPendingTransaction = (account: string, tokenAddress: string, spender: string): boolean => {
   const { transactions } = useAppStatusStore()
-  if (!transactions || transactions.length === 0) return false;
-  if (!tokenAddress || !spender) return false;
 
   return useMemo(() => {
-    const tx = transactions.find(tx => tx.)
-  }, [tokenAddress, spender, transactions])
+    if (!account || !tokenAddress || !spender) return false;
+    const tx = transactions.find(tx => tx.approval && !tx.receipt && tx?.approval?.spender === spender && tx?.approval?.tokenAddress === tokenAddress)
+    return Boolean(tx);
+  }, [account, tokenAddress, spender, transactions])
 
 }
 
 export function useApproveCallback(
   tokenAddress: string,
+  approvingName: string,
   spender: string,
 ): [ApprovalState, () => Promise<void>] {
   const isApproved = useIsTokenApproved(tokenAddress, spender)
-  const { transactions, actions: { addTransaction } } = useAppStatusStore()
+  const { chainId, account, library } = useActiveWeb3React()
+  const pendingApproval = useHasPendingTransaction(account, tokenAddress, spender);
+  const { actions: { addTransaction } } = useAppStatusStore()
   // check the current approval status
   const approvalState: ApprovalState = useMemo(() => {
     if (!tokenAddress || !spender) return ApprovalState.UNKNOWN
+
 
     return isApproved
       ? pendingApproval
         ? ApprovalState.PENDING
         : ApprovalState.NOT_APPROVED
       : ApprovalState.APPROVED
-  }, [isApproved, pendingApproval, spender])
+  }, [isApproved, pendingApproval, spender, tokenAddress])
 
-  const tokenContract = useTokenContract(token?.address)
-  const addTransaction = useTransactionAdder()
   const approve = useCallback(async (): Promise<void> => {
     if (approvalState !== ApprovalState.NOT_APPROVED) {
       console.error('approve was called unnecessarily')
-      return
-    }
-    if (!token) {
-      console.error('no token')
-      return
-    }
-
-    if (!tokenContract) {
-      console.error('tokenContract is null')
-      return
-    }
-
-    if (!amountToApprove) {
-      console.error('missing amount to approve')
       return
     }
 
@@ -74,28 +65,30 @@ export function useApproveCallback(
       return
     }
 
-    let useExact = false
-    const estimatedGas = await tokenContract.estimateGas.approve(spender, MaxUint256).catch(() => {
+    const tokenContract = getErc20Contract(tokenAddress, library, account);
+    const estimatedGas = await tokenContract.estimateGas.approve(spender, APPROVAL_AMOUNT).catch(() => {
       // general fallback for tokens who restrict approval amounts
-      useExact = true
-      return tokenContract.estimateGas.approve(spender, amountToApprove.raw.toString())
+      return tokenContract.estimateGas.approve(spender, APPROVAL_AMOUNT)
     })
 
     return tokenContract
-      .approve(spender, useExact ? amountToApprove.raw.toString() : MaxUint256, {
-        gasLimit: calculateGasMargin(estimatedGas)
+      .approve(spender, APPROVAL_AMOUNT, {
+        gasLimit: estimatedGas
       })
       .then((response: TransactionResponse) => {
-        addTransaction(response, {
-          summary: 'Approve ' + amountToApprove.currency?.symbol || amountToApprove.currency?.name || 'for process',
-          approval: { tokenAddress: token.address, spender: spender }
+        const { hash } = response;
+        addTransaction({
+          hash,
+          chainId,
+          summary: `Approve ${approvingName || 'for process'}` ,
+          approval: { tokenAddress: tokenAddress, spender: spender }
         })
       })
       .catch((error: Error) => {
         console.debug('Failed to approve token', error)
         throw error
       })
-  }, [approvalState, token, tokenContract, amountToApprove, spender, addTransaction])
+  }, [approvalState, tokenAddress, spender, approvingName, account, library, addTransaction, chainId])
 
   return [approvalState, approve]
 }

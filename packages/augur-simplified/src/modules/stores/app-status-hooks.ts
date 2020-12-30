@@ -3,10 +3,10 @@ import {
   APP_STATUS_ACTIONS,
   MOCK_APP_STATUS_STATE,
   APP_STATE_KEYS,
-} from 'modules/stores/constants';
+} from './constants';
 import { windowRef } from 'utils/window-ref';
 import { getUserActvity } from 'utils/process-data';
-import { ParaDeploys } from '../types';
+import { ParaDeploys, TransactionState } from '../types';
 
 const {
   SET_SHOW_TRADING_FORM,
@@ -185,7 +185,7 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
       updateUserBalances: (userBalances) =>
         dispatch({ type: UPDATE_USER_BALANCES, userBalances }),
       updateSettings: settings => dispatch({ type: UPDATE_SETTINGS, settings }),
-      addTransaction: transaction => dispatch({ type: ADD_TRANSACTION, transaction })
+      addTransaction: (transaction: TransactionState) => dispatch({ type: ADD_TRANSACTION, transaction })
     },
   };
 };

@@ -1,6 +1,6 @@
 import React from 'react';
-import { DEFAULT_APP_STATUS_STATE, STUBBED_APP_STATUS_ACTIONS } from 'modules/stores/constants';
-import { useAppStatus } from 'modules/stores/app-status-hooks';
+import { DEFAULT_APP_STATUS_STATE, STUBBED_APP_STATUS_ACTIONS } from '../stores/constants';
+import { useAppStatus } from '../stores/app-status-hooks';
 
 export const AppStatusContext = React.createContext({
   ...DEFAULT_APP_STATUS_STATE,

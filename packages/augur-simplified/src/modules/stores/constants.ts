@@ -24,6 +24,7 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   updateLoginAccount: updateLoginAccount => {},
   updateMarketsViewSettings: settings => {},
   updateSettings: settings => {},
+  addTransaction: transaction => {}
 };
 
 export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
@@ -206,7 +207,7 @@ export const MOCK_APP_STATUS_STATE = {
   ...DEFAULT_APP_STATUS_STATE,
   positions: fakePositionsData,
   liquidity: fakeLiquidityData,
-  transactions: fakeTransactionsData,
+  transactions: [],
   marketInfos: {
     '0xdeadbeef': {
       id: '0xdeadbeef',

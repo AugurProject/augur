@@ -285,11 +285,11 @@ export interface Universe extends Getters.Universe.UniverseDetails {
   parentUniverseId: null | string;
   id: null | string;
   disputeWindow: {
-      address: Address;
-      startTime: number;
-      endTime: number;
-      purchased: string;
-      fees: string;
+    address: Address;
+    startTime: number;
+    endTime: number;
+    purchased: string;
+    fees: string;
   };
   forkingInfo?: ForkingInfo;
   forkEndTime?: string;
@@ -581,8 +581,8 @@ export interface Draft {
   updated: number;
   isValid: boolean;
   validations:
-    | NewMarketPropertiesValidations[]
-    | NewMarketPropertyValidations[];
+  | NewMarketPropertiesValidations[]
+  | NewMarketPropertyValidations[];
   currentStep: number;
   type: string;
   outcomes: string[];
@@ -1093,10 +1093,10 @@ export interface AppStatusState {
     activity: ActivityCardProps;
     balances: UserBalances;
   },
-  transactions: Transaction[];
+  transactions: TransactionState;
 }
 
-export interface Transaction {
+export interface TransactionDetails {
   chainId: string;
   hash: string;
   from: string;
@@ -1106,4 +1106,8 @@ export interface Transaction {
   lastCheckedBlockNumber?: number
   addedTime: number
   confirmedTime?: number
+}
+
+export interface TransactionState {
+  [txHash: string]: TransactionDetails
 }
