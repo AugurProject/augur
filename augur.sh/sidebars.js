@@ -25,7 +25,7 @@ module.exports = {
       label: 'Architecture',
       items: [
         'contracts/overview',
-        'architecture/layer'
+        'architecture/layer2'
       ],
     },
     {
