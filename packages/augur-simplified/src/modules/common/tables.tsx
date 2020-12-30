@@ -406,7 +406,7 @@ interface TransactionsProps {
 export const TransactionsTable = ({ transactions }: TransactionsProps) => {
   return (
     <div className={Styles.TransactionsTable}>
-      {transactions && transactions.length > 0 ? (
+      {transactions?.length > 0 ? (
         <>
           <TransactionsHeader />
           {transactions.map((transaction) => (
