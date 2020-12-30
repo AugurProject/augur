@@ -6,7 +6,7 @@ import {
 } from './constants';
 import { windowRef } from 'utils/window-ref';
 import { getUserActvity } from 'utils/process-data';
-import { ParaDeploys, TransactionState } from '../types';
+import { ParaDeploys, TransactionDetails } from '../types';
 
 const {
   SET_SHOW_TRADING_FORM,
@@ -19,6 +19,8 @@ const {
   UPDATE_USER_BALANCES,
   UPDATE_SETTINGS,
   ADD_TRANSACTION,
+  UPDATE_BLOCKNUMBER,
+  FINALIZE_TRANSACTION,
 } = APP_STATUS_ACTIONS;
 
 const {
@@ -31,6 +33,7 @@ const {
   USER_INFO,
   SETTINGS,
   TRANSACTIONS,
+  BLOCKNUMBER
 } = APP_STATE_KEYS;
 
 const isAsync = (obj) => {
@@ -80,6 +83,7 @@ export const arrayToKeyedObjectByProp = (ArrayOfObj: any[], prop: string) =>
 
 export function AppStatusReducer(state, action) {
   const updatedState = { ...state };
+  const now = new Date().getTime();
   switch (action.type) {
     case SET_IS_MOBILE: {
       updatedState[IS_MOBILE] = action[IS_MOBILE];
@@ -150,8 +154,21 @@ export function AppStatusReducer(state, action) {
     case ADD_TRANSACTION: {
       updatedState[TRANSACTIONS] = [
         ...updatedState[TRANSACTIONS],
-        action.transaction
+        { ...action.transaction, timestamp: now }
       ]
+      break;
+    }
+    case UPDATE_BLOCKNUMBER: {
+      updatedState[BLOCKNUMBER] = action.blocknumber;
+      break;
+    }
+    case FINALIZE_TRANSACTION: {
+      updatedState[TRANSACTIONS]
+        .forEach(tx => {
+          if (tx.hash === action.hash) {
+            tx.confirmedTime = now;
+          }
+        });
       break;
     }
     default:
@@ -185,7 +202,9 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
       updateUserBalances: (userBalances) =>
         dispatch({ type: UPDATE_USER_BALANCES, userBalances }),
       updateSettings: settings => dispatch({ type: UPDATE_SETTINGS, settings }),
-      addTransaction: (transaction: TransactionState) => dispatch({ type: ADD_TRANSACTION, transaction })
+      addTransaction: (transaction: TransactionDetails) => dispatch({ type: ADD_TRANSACTION, transaction }),
+      updateBlocknumber: blocknumber => dispatch({ type: UPDATE_BLOCKNUMBER, blocknumber }),
+      finalizeTransaction: hash => dispatch({ type: FINALIZE_TRANSACTION, hash })
     },
   };
 };

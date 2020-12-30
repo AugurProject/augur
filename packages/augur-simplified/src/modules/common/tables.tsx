@@ -18,7 +18,7 @@ import {
 import { Pagination } from 'modules/common/pagination';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import { SmallDropdown } from './selection';
-import { AmmExchange, AmmTransaction } from '../types';
+import { AmmTransaction } from '../types';
 import { formatDai } from '../../utils/format-number';
 
 interface Position {
