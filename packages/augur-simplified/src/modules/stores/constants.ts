@@ -206,7 +206,7 @@ export const MOCK_APP_STATUS_STATE = {
   ...DEFAULT_APP_STATUS_STATE,
   positions: fakePositionsData,
   liquidity: fakeLiquidityData,
-  transactions: [],
+  transactions: {},
   marketInfos: {
     '0xdeadbeef': {
       id: '0xdeadbeef',
