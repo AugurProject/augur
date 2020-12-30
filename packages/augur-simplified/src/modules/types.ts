@@ -1093,22 +1093,23 @@ export interface AppStatusState {
     activity: ActivityCardProps;
     balances: UserBalances;
   },
-  transactions: TransactionState;
+  transactions: TransactionDetails[];
   paraConfig: ParaDeploys;
+  blocknumber: number;
+  isMobile: boolean;
+  showTradingForm: boolean;
+  sidebarType: string;
 }
 
 export interface TransactionDetails {
   chainId: string;
   hash: string;
   from: string;
-  approval?: { tokenAddress: string; spender: string }
-  claim?: { recipient: string }
+  approval?: { tokenAddress: string; spender: string };
+  claim?: { recipient: string };
   receipt?: any;
-  lastCheckedBlockNumber?: number
-  addedTime: number
-  confirmedTime?: number
-}
-
-export interface TransactionState {
-  [txHash: string]: TransactionDetails
+  lastCheckedBlockNumber?: number;
+  addedTime: number;
+  confirmedTime?: number;
+  timestamp?: number;
 }

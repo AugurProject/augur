@@ -23,8 +23,11 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   updateProcessed: processed => {},
   updateLoginAccount: updateLoginAccount => {},
   updateMarketsViewSettings: settings => {},
+  updateUserBalances: balances => {},
   updateSettings: settings => {},
-  addTransaction: transaction => {}
+  addTransaction: transaction => {},
+  updateBlocknumber: blocknumber => {},
+  finalizeTransaction: hash => {}
 };
 
 export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
@@ -35,7 +38,7 @@ export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
   marketInfos: {},
   positions: [],
   liquidity: [],
-  transactions: {},
+  transactions: [],
   marketsViewSettings: {
     categories: ALL_MARKETS,
     reportingState: OPEN,
@@ -77,6 +80,7 @@ export const APP_STATE_KEYS = {
   MARKETS_VIEW_SETTINGS: 'marketsViewSettings',
   PARA_CONFIG: 'paraConfig',
   SETTINGS: 'settings',
+  BLOCKNUMBER: 'blocknumber',
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -90,6 +94,8 @@ export const APP_STATUS_ACTIONS = {
   UPDATE_USER_BALANCES: 'UPDATE_USER_BALANCES',
   UPDATE_SETTINGS: 'UPDATE_SETTINGS',
   ADD_TRANSACTION: 'ADD_TRANSACTION',
+  UPDATE_BLOCKNUMBER: 'UPDATE_BLOCKNUMBER',
+  FINALIZE_TRANSACTION: 'FINALIZE_TRANSACTION'
 };
 
 export const fakePositionsData = [
@@ -172,7 +178,8 @@ export const MOCK_APP_STATUS_STATE = {
   ...DEFAULT_APP_STATUS_STATE,
   positions: fakePositionsData,
   liquidity: fakeLiquidityData,
-  transactions: {},
+  blocknumber: 0,
+  transactions: [],
   marketInfos: {
     '0xdeadbeef': {
       id: '0xdeadbeef',

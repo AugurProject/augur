@@ -5,7 +5,7 @@ import { getERC1155ApprovedForAll, getErc1155Contract, getERC20Allowance, getErc
 import { BigNumber as BN } from 'bignumber.js'
 import { useAppStatusStore } from "../stores/app-status";
 import { TransactionResponse } from '@ethersproject/providers'
-import { AmmExchange, TradingDirection } from "../types";
+import { AmmExchange } from "../types";
 
 const APPROVAL_AMOUNT = String(new BN(2 ** 255).minus(1));
 
@@ -81,13 +81,12 @@ export function useApproveCallback(
       .then((response: TransactionResponse) => {
         const { hash } = response;
         addTransaction({
-          hash: {
-            hash,
-            chainId,
-            from: account,
-            summary: `Approve ${approvingName || 'for use'}`,
-            approval: { tokenAddress: tokenAddress, spender: spender }
-          },
+          hash,
+          chainId,
+          addedTime: new Date().getTime(),
+          from: account,
+          summary: `Approve ${approvingName || 'for use'}`,
+          approval: { tokenAddress: tokenAddress, spender: spender }
         })
       })
       .catch((error: Error) => {
@@ -118,7 +117,7 @@ export function useApproveERC1155Callback(
   approvingName?: string,
   spender?: string,
 ): [ApprovalState, () => Promise<void>] {
-  const { account, library } = useActiveWeb3React();
+  const { chainId, account, library } = useActiveWeb3React();
   const { actions: { addTransaction } } = useAppStatusStore()
   const pendingApproval = useIsTokenApproved(erc1155Address, spender)
   const isApproved = useIsTokenApprovedForAll(erc1155Address, spender)
@@ -158,19 +157,19 @@ export function useApproveERC1155Callback(
       .then((response: TransactionResponse) => {
         const { hash } = response;
         addTransaction({
-          [hash]: {
-            hash,
-            from: account,
-            summary: `Approve ${approvingName || 'for use'}`,
-            approval: { tokenAddress: erc1155Address, spender }
-          },
+          hash,
+          chainId,
+          from: account,
+          addedTime: new Date().getTime(),
+          summary: `Approve ${approvingName || 'for use'}`,
+          approval: { tokenAddress: erc1155Address, spender }
         })
       })
       .catch((error: Error) => {
         console.debug('Failed to approve token', error)
         throw error
       })
-  }, [approvalState, erc1155Address, account, spender, addTransaction, approvingName, library])
+  }, [approvalState, erc1155Address, account, spender, addTransaction, approvingName, library, chainId])
 
   return [approvalState, approve]
 }

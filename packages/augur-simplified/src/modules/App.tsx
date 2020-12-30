@@ -8,7 +8,7 @@ import 'assets/styles/shared.less';
 import {
   AppStatusProvider,
   useAppStatusStore,
-} from 'modules/stores/app-status';
+} from './stores/app-status';
 import { Sidebar } from 'modules/sidebar/sidebar';
 import { processGraphMarkets } from '../utils/process-data';
 import { getUserBalances } from '../utils/contract-calls';
@@ -16,6 +16,7 @@ import { augurSdkLite } from '../utils/augurlitesdk';
 import { ConnectAccountProvider } from 'modules/ConnectAccount/connect-account-provider';
 import { useActiveWeb3React } from 'modules/ConnectAccount/hooks';
 import classNames from 'classnames';
+import { TransactionDetails } from './types';
 
 function checkIsMobile(setIsMobile) {
   const isMobile =
@@ -33,24 +34,28 @@ const AppBody = () => {
     processed,
     paraConfig,
     isMobile,
+    blocknumber,
+    transactions,
     actions: {
       setIsMobile,
       updateGraphData,
       updateProcessed,
       updateUserBalances,
+      updateBlocknumber,
+      finalizeTransaction,
     },
   } = useAppStatusStore();
-  const activeWeb3 = useActiveWeb3React();
+  const { account, library } = useActiveWeb3React();
 
   useEffect(() => {
     // get data immediately, then setup interval
-    getMarketsData((data) => {
+    getMarketsData(paraConfig, updateBlocknumber, (data) => {
       updateGraphData(data);
       updateProcessed(processGraphMarkets(data));
     });
     let isMounted = true;
     const intervalId = setInterval(() => {
-      getMarketsData((data) => {
+      getMarketsData(paraConfig, updateBlocknumber, (data) => {
         if (isMounted) {
           updateGraphData(data);
           updateProcessed(processGraphMarkets(data));
@@ -88,22 +93,37 @@ const AppBody = () => {
   useEffect(() => {
     const createClient = (provider, config) =>
       augurSdkLite.makeLiteClient(provider, config);
-    const fetchUserBalances = (activeWeb3, ammExchanges, cashes) =>
+    const fetchUserBalances = (library, account, ammExchanges, cashes) =>
       getUserBalances(
-        activeWeb3?.library,
-        activeWeb3?.account,
+        library,
+        account,
         ammExchanges,
         cashes
       );
-    if (activeWeb3?.account && activeWeb3?.library) {
-      if (!augurSdkLite.ready()) createClient(activeWeb3?.library, paraConfig);
+    if (account && library) {
+      if (!augurSdkLite.ready()) createClient(library, paraConfig);
       const { ammExchanges, cashes } = processed;
-      fetchUserBalances(activeWeb3, ammExchanges, cashes).then((userBalances) =>
+      fetchUserBalances(library, account, ammExchanges, cashes).then((userBalances) =>
         updateUserBalances(userBalances)
       );
     }
-    // eslint-disable-next-line
-  }, [activeWeb3, processed, paraConfig]);
+  // eslint-disable-next-line
+  }, [account, library, processed, paraConfig]);
+
+  useEffect(() => {
+    if (account && blocknumber && transactions?.length > 0) {
+      transactions.filter(t => !t.confirmedTime)
+        .forEach((t: TransactionDetails) => {
+          library
+            .getTransactionReceipt(t.hash)
+            .then(receipt => {
+              if (receipt) finalizeTransaction(t.hash)
+            })
+        })
+    }
+  // eslint-disable-next-line
+  }, [account, blocknumber, transactions]);
+
   const sidebarOut = sidebarType && isMobile;
   return (
     <div className={classNames(Styles.App, {
