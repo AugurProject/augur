@@ -5,47 +5,97 @@
   .SimpleBorder;
 
   color: var(--simple-primary-text);
-  padding: @size-13 @size-16;
-  background: var(--light-background-color);
+  padding: 0 @size-16;
+  height: @size-48;
+  background-color: var(--light-background-color);
   display: flex;
   justify-content: center;
   align-items: center;
   text-transform: capitalize;
+  cursor: pointer;
 
-  > svg {
+  &.TextAndIcon > svg {
     margin-left: @size-8;
   }
 
-  &.disabled {
-    color: var(--simple-secondary-text);
+  &:disabled,
+  &.Disabled {
+    opacity: .5;
   }
+}
+
+.Focused {
+  outline: 0;
+  border: @size-3 solid var(--color-focused);
 }
 
 .PrimaryButton {
   .Button;
-}
 
-.SmallRoundedButton {
-  .RoundedButton;
+  background-color: var(--simple-yes-15);
+  border: @size-1 solid var(--simple-yes);
 
-  color: var(--simple-secondary-text);
-  height: @size-25;
-  min-height: @size-25;
-  max-height: @size-25;
-  padding: @size-4 @size-8;
-  text-transform: capitalize;
+  &:not(:disabled):not(.Disabled):hover {
+    background-color: var(--simple-yes-30);
+  }
 
-  &.selected {
-    color: var(--simple-primary-text);
-    border: @size-1 solid var(--simple-secondary-text);
+  &:not(:disabled):not(.Disabled):focus {
+    .Focused;
+
+    background-color: var(--simple-yes-15);
+  }
+
+  &:not(:disabled):not(.Disabled):active {
+    background-color: var(--simple-yes-30);
   }
 }
 
 .SecondaryButton {
   .Button;
 
-  background: var(--simple-yes-15);
-  border: @size-1 solid var(--simple-yes);
+  background-color: var(--light-background-color);
+  border: @size-1 solid var(--simple-border);
+
+  &:not(:disabled):not(.Disabled):hover {
+    background-color: var(--simple-alternate-background);
+  }
+
+  &:not(:disabled):not(.Disabled):focus {
+    .Focused;
+
+    background-color: var(--light-background-color);
+  }
+
+  &:not(:disabled):not(.Disabled):active {
+    background-color: var(--simple-alternate-background);
+  }
+}
+
+.TinyButton {
+  .SecondaryButton;
+  .text-12-semi-bold;
+
+  color: var(--simple-secondary-text);
+  height: @size-25;
+  padding: 0 @size-8;
+  flex-direction: row-reverse;
+  grid-gap: 0;
+
+  > svg {
+    max-width: @size-16;
+    max-height: @size-16;
+  }
+
+  &.TextAndIcon > svg {
+    margin-left: 0;
+    margin-right: @size-4;
+  }
+
+  &:not(:disabled):not(.Disabled):active,
+  &.Selected {
+    color: var(--simple-primary-text);
+    border: @size-1 solid var(--simple-secondary-text);
+  }
 }
 
 .DirectionButton {
@@ -54,7 +104,7 @@
   display: flex;
   justify-content: center;
 
-  &.left {
+  &.Left {
     > svg {
       transform: rotate(180deg);
     }
