@@ -103,7 +103,8 @@
     "autoprefixer": "9.6.1",
     "cssnano": "4.1.10",
     "less": "3.10.3",
-    "less-loader": "5.0.0"
+    "less-loader": "5.0.0",
+    "ts-node": "9.0.0"
   },
   "scripts": {
     "start": "node scripts/start.js",

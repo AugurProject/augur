@@ -3,9 +3,10 @@ import Styles from 'modules/portfolio/activity.styles.less';
 import { UsdIcon } from 'modules/common/icons';
 import { Pagination } from 'modules/common/pagination';
 import { useAppStatusStore } from 'modules/stores/app-status';
-import { ActivityCardProps } from 'modules/types';
+import { ActivityItem } from '../types';
 
-const ActivityCard = ({ activity }: ActivityCardProps) => (
+
+const ActivityCard = ({ activity }: { activity: ActivityItem }) => (
   <div className={Styles.ActivityCard}>
     <div>{activity.type}</div>
     <div>{activity.value}</div>

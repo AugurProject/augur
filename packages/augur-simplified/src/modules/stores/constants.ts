@@ -36,8 +36,6 @@ export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
   loginAccount: null,
   showTradingForm: false,
   marketInfos: {},
-  positions: [],
-  liquidity: [],
   transactions: [],
   marketsViewSettings: {
     categories: ALL_MARKETS,
@@ -52,8 +50,27 @@ export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
     ammExchanges: {}
   },
   userInfo: {
-    activity: {},
-    balances: {},
+    activity: [],
+    balances: {
+      ETH: {
+        balance: "0",
+        rawBalance: "0",
+        usdValue: "0",
+      },
+      USDC: {
+        balance: "0",
+        rawBalance: "0",
+        usdValue: "0",
+      },
+      totalAccountValue: "0",
+      totalPositionUsd: "0",
+      total24hrPositionUsd: "0",
+      change24hrPositionUsd: "0",
+      availableFundsUsd: "0",
+      lpTokens: {},
+      marketShares: {},
+      claimableWinnings: {}
+    },
   },
   graphData: {
     markets: {},

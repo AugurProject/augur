@@ -6,7 +6,7 @@ import {
 } from './constants';
 import { windowRef } from 'utils/window-ref';
 import { getUserActvity } from 'utils/process-data';
-import { ParaDeploys, TransactionDetails } from '../types';
+import { ParaDeploys, TransactionDetails, UserBalances } from '../types';
 
 const {
   SET_SHOW_TRADING_FORM,
@@ -199,7 +199,7 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
         dispatch({ type: UPDATE_PROCESSED, processed }),
       updateLoginAccount: (account) =>
         dispatch({ type: SET_LOGIN_ACCOUNT, account }),
-      updateUserBalances: (userBalances) =>
+      updateUserBalances: (userBalances: UserBalances) =>
         dispatch({ type: UPDATE_USER_BALANCES, userBalances }),
       updateSettings: settings => dispatch({ type: UPDATE_SETTINGS, settings }),
       addTransaction: (transaction: TransactionDetails) => dispatch({ type: ADD_TRANSACTION, transaction }),

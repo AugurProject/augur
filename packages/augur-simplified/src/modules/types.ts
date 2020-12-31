@@ -139,6 +139,7 @@ export interface Trades {
 export interface AmmExchange {
   id: string,
   marketId: string,
+  market: MarketInfo,
   liquidity: string,
   liquidityUSD: string,
   liquidity24hrUSD: string,
@@ -1014,16 +1015,12 @@ export interface ActivityItem {
   txHash: string;
 }
 
-export interface ActivityCardProps {
-  activity: ActivityItem;
-}
-
 export interface SimpleBalance {
   balance: string;
   rawBalance: string;
 }
 
-export interface LPToken {
+export interface LPTokens {
   [ammId: string]: SimpleBalance
 }
 export interface CurrencyBalance extends SimpleBalance {
@@ -1031,8 +1028,6 @@ export interface CurrencyBalance extends SimpleBalance {
 }
 
 export interface Winnings {
-  marketId: string;
-  ammId: string;
   sharetoken: string;
   claimableBalance: string;
   userBalances: string[]
@@ -1047,12 +1042,18 @@ export interface PositionBalance extends SimpleBalance {
   avgPrice: string;
   initCostUsd: string;
   outcomeName: string;
+  outcomeId: number;
   maxUsdValue: string;
+  totalChangeUsd: string;
+  quantity: string;
+  visible: boolean;
 }
 
 export interface AmmMarketShares {
   [ammId: string]: {
-    [outcomeIdx: number]: PositionBalance
+    ammExchange: AmmExchange;
+    positions: PositionBalance[];
+    claimableWinnings?: Winnings;
   }
 }
 
@@ -1064,9 +1065,8 @@ export interface UserBalances {
   total24hrPositionUsd: string,
   change24hrPositionUsd: string,
   availableFundsUsd: string,
-  lpTokens: LPToken,
+  lpTokens: LPTokens,
   marketShares: AmmMarketShares,
-  claimableWinnings: PositionWinnings,
 }
 
 export interface ProcessedData {
@@ -1084,7 +1084,7 @@ export interface ProcessedData {
 export interface AppStatusState {
   processed: ProcessedData,
   userInfo: {
-    activity: ActivityCardProps;
+    activity: ActivityData[];
     balances: UserBalances;
   },
   transactions: TransactionDetails[];

@@ -96,9 +96,13 @@ export const processGraphMarkets = (graphData: GraphData): ProcessedData => {
     if (amms.length === 0) {
       markets[marketId] = shapeMarketInfo(market, null);
     } else if (amms.length === 1) {
+
       const ammExchange = shapeAmmExchange(market.amms[0], past?.amms[0], cashes, market)
-      markets[`${marketId}-${ammExchange.id}`] = shapeMarketInfo(market, ammExchange);
+      const ammMarket = shapeMarketInfo(market, ammExchange);
+      markets[`${marketId}-${ammExchange.id}`] = ammMarket;
+      ammExchange.market = ammMarket;
       ammExchanges[ammExchange.id] = ammExchange;
+
     } else {
 
       const marketAmms: { [marketId: string]: GraphAmmExchange } = market.amms.reduce((group, a) => ({ ...group, [a.id]: a }), {});
@@ -108,8 +112,10 @@ export const processGraphMarkets = (graphData: GraphData): ProcessedData => {
         const amm = marketAmms[ammId];
         const pastAmm = pastMarketAmms[ammId];
         const newAmmExchange = shapeAmmExchange(amm, pastAmm, cashes, market);
-        markets[`${marketId}-${ammId}`] = shapeMarketInfo(market, newAmmExchange);
+        const ammMarket = shapeMarketInfo(market, newAmmExchange);
+        markets[`${marketId}-${ammId}`] = ammMarket;
         ammExchanges[newAmmExchange.id] = newAmmExchange;
+        newAmmExchange.market = ammMarket;
       })
     }
   });
@@ -180,6 +186,7 @@ const shapeAmmExchange = (amm: GraphAmmExchange, past: GraphAmmExchange, cashes:
   return {
     id: amm.id,
     marketId,
+    market: null, // gets filled in later
     liquidity: amm.liquidity,
     liquidity24hrUSD,
     liquidityInvalid: amm.liquidityInvalid,
