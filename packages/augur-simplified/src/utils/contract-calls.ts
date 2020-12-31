@@ -1,6 +1,6 @@
 import BigNumber, { BigNumber as BN } from 'bignumber.js'
 import { RemoveLiquidityRate, numTicksToTickSizeWithDisplayPrices, convertDisplayAmountToOnChainAmount, ParaShareToken } from '@augurproject/sdk-lite'
-import { TradeInfo, TradingDirection, AmmExchange, AmmExchanges, AmmMarketShares, AmmTransaction, Cashes, CurrencyBalance, PositionBalance, TransactionTypes, UserBalances } from '../modules/types'
+import { TradeInfo, TradingDirection, AmmExchange, AmmExchanges, AmmMarketShares, AmmTransaction, Cashes, CurrencyBalance, PositionBalance, TransactionTypes, UserBalances, MarketInfos } from '../modules/types'
 import ethers from 'ethers';
 import { Contract } from '@ethersproject/contracts'
 import {
@@ -10,9 +10,9 @@ import {
 } from '@augurproject/ethereum-multicall';
 
 import { Web3Provider } from '@ethersproject/providers'
-import { convertOnChainToDisplayAmount, onChainMarketSharesToDisplayFormatter } from './format-number';
+import { convertOnChainToDisplayAmount, formatDai, formatEther, onChainMarketSharesToDisplayFormatter } from './format-number';
 import { augurSdkLite } from './augurlitesdk';
-import { ETH, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_OUTCOME_ID } from '../modules/constants';
+import { ETH, FINALIZED, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_NO_OUTCOMES_NAMES, YES_OUTCOME_ID } from '../modules/constants';
 import { getProviderOrSigner } from '../modules/ConnectAccount/utils';
 
 // TODO: when scalars get num ticks from market
@@ -343,7 +343,8 @@ export const getUserBalances = async (
   provider: Web3Provider,
   account: string,
   ammExchanges: AmmExchanges,
-  cashes: Cashes
+  cashes: Cashes,
+  markets: MarketInfos,
 ): Promise<UserBalances> => {
 
   const userBalances = {
@@ -364,6 +365,7 @@ export const getUserBalances = async (
     availableFundsUsd: "0",
     lpTokens: {},
     marketShares: {},
+    claimableWinnings: {},
   };
 
   if (!account || !provider) return userBalances;
@@ -374,6 +376,10 @@ export const getUserBalances = async (
   // TODO: use amm factory abi when that's available in sdk-lite
   //const lpAbi = AMMFactoryAbi;
   const lpAbi = ERC20ABI;
+  // finalized markets
+  const finalizedMarkets = Object.values(markets).filter(m => m.reportingState === FINALIZED);
+  const finalizedMarketIds = finalizedMarkets.map(f => f.marketId);
+  const finalizedAmmExchanges = Object.values(ammExchanges).filter(a => finalizedMarketIds.includes(a.marketId));
 
   // balance of
   const ammAddresses: string[] = Object.keys(ammExchanges);
@@ -508,6 +514,7 @@ export const getUserBalances = async (
         }
       }
     } else if (method === MARKET_SHARE_BALANCE) {
+
       const cash = Object.values(cashes).find(
         (c) => c.shareToken.toLowerCase() === contractAddress.toLowerCase()
       );
@@ -524,31 +531,66 @@ export const getUserBalances = async (
       );
 
       if (amm) {
-        const existingAmm = userBalances.marketShares[amm.id];
+        const existingMarketShares = userBalances.marketShares[amm.id];
         const trades = getUserTrades(account, amm.transactions);
-        if (existingAmm) {
-          existingAmm[outcome] = getPositionUsdValues(trades, rawBalance, balance, outcome, amm);
+        if (existingMarketShares) {
+          existingMarketShares.positions.push(getPositionUsdValues(trades, rawBalance, balance, outcome, amm));
         } else if (balance !== "0") {
-          userBalances.marketShares[amm.id] = {}
-          userBalances.marketShares[amm.id][outcome] = getPositionUsdValues(trades, rawBalance, balance, outcome, amm);
+          userBalances.marketShares[amm.id] = {
+            ammExchange: amm,
+            positions: [],
+          }
+          userBalances.marketShares[amm.id].positions.push(getPositionUsdValues(trades, rawBalance, balance, outcome, amm));
         }
       }
     }
   })
+
+  if (finalizedMarkets.length > 0) {
+    const keyedFinalizedMarkets = finalizedMarkets.reduce((p, f) => ({ ...p, [f.marketId]: f }), {})
+    populateClaimableWinnings(keyedFinalizedMarkets, finalizedAmmExchanges, userBalances.marketShares);
+  }
+
   const userPositions = getTotalPositions(userBalances.marketShares);
   const availableFundsUsd = String(new BN(userBalances.ETH.usdValue).plus(new BN(userBalances.USDC.usdValue)));
   const totalAccountValue = String(new BN(availableFundsUsd).plus(new BN(userPositions.totalPositionUsd)));
+
   return { ...userBalances, ...userPositions, totalAccountValue, availableFundsUsd }
+}
+
+const populateClaimableWinnings = (finalizedMarkets: MarketInfos, finalizedAmmExchanges: AmmExchange[], marketShares: AmmMarketShares): void => {
+  finalizedAmmExchanges.reduce((p, amm) => {
+    const market = finalizedMarkets[amm.marketId];
+    const winningOutcome = market.outcomes.find(o => o.payoutNumerator !== "0");
+    if (winningOutcome) {
+      const outcomeBalances = marketShares[amm.id];
+      const userShares = outcomeBalances[Number(winningOutcome.id)]
+      if (userShares && new BN(userShares.rawBalance).gt(0)) {
+        // for yesNo and categoricals user would get 1 cash for each share
+        // TODO: figure out scalars when the time comes
+        const claimableBalance = String(new BN(userShares.maxUsdValue).minus(new BN(userShares.initCostUsd)));
+        const userBalances = Object.keys(outcomeBalances).reduce((p, id) => {
+          p[Number(id)] = outcomeBalances[Number(id)].rawBalance;
+          return p;
+        }, [])
+        marketShares[amm.id].claimableWinnings = {
+          claimableBalance,
+          sharetoken: amm.cash.shareToken,
+          userBalances,
+        }
+      }
+    }
+    return p;
+  }, {})
 }
 
 const getTotalPositions = (ammMarketShares: AmmMarketShares): { change24hrPositionUsd: string, totalPositionUsd: string, total24hrPositionUsd: string } => {
   const result = Object.keys(ammMarketShares).reduce((p, ammId) => {
     const outcomes = ammMarketShares[ammId];
-    Object.keys(outcomes).forEach(id => {
-      const balances = outcomes[id];
-      p.total = p.total.plus(new BN(balances.usdValue))
-      if (balances.past24hrUsdValue) {
-        p.total24 = p.total24.plus(new BN(balances.past24hrUsdValue))
+    outcomes.positions.forEach(position => {
+      p.total = p.total.plus(new BN(position.usdValue));
+      if (position.past24hrUsdValue) {
+        p.total24 = p.total24.plus(new BN(position.past24hrUsdValue))
       }
     })
     return p;
@@ -566,30 +608,49 @@ const getPositionUsdValues = (trades: UserTrades, rawBalance: string, balance: s
   let change24hrPositionUsd = null;
   let avgPrice = "0";
   let initCostUsd = "0";
-  if (outcome === String(NO_OUTCOME_ID)) {
-    usdValue = String(new BN(balance).times(new BN(priceNo)));
-    past24hrUsdValue = past24hrPriceNo ? String(new BN(balance).times(new BN(past24hrPriceNo))) : null;
-    change24hrPositionUsd = past24hrPriceNo ? String(new BN(usdValue).times(new BN(past24hrUsdValue))) : null;
-    const result = getInitPositionValues(trades, amm, false);
-    avgPrice = result.avgPrice;
-    initCostUsd = result.initCostUsd;
-  } else if (outcome === String(YES_OUTCOME_ID)) {
-    usdValue = String(new BN(balance).times(new BN(priceYes)));
-    past24hrUsdValue = past24hrPriceYes ? String(new BN(balance).times(new BN(past24hrPriceYes))) : null;
-    change24hrPositionUsd = past24hrPriceYes ? String(new BN(usdValue).times(new BN(past24hrUsdValue))) : null;
-    const result = getInitPositionValues(trades, amm, true);
-    avgPrice = result.avgPrice;
-    initCostUsd = result.initCostUsd;
+  let totalChangeUsd = "0";
+  let quantity = formatEther(balance).formatted;
+  const outcomeId = Number(outcome);
+  let visible = false;
+  // need to get this from outcome
+  const outcomeName = YES_NO_OUTCOMES_NAMES[Number(outcome)];
+  const maxUsdValue = String(new BN(balance).times(new BN(amm.cash.usdPrice)));
+  if (balance !== "0") {
+    if (outcome === String(NO_OUTCOME_ID)) {
+      usdValue = String(new BN(balance).times(new BN(priceNo)));
+      past24hrUsdValue = past24hrPriceNo ? String(new BN(balance).times(new BN(past24hrPriceNo))) : null;
+      change24hrPositionUsd = past24hrPriceNo ? String(new BN(usdValue).times(new BN(past24hrUsdValue))) : null;
+      const result = getInitPositionValues(trades, amm, false);
+      avgPrice = formatDai(result.avgPrice).formatted;
+      initCostUsd = result.initCostUsd;
+      totalChangeUsd = formatDai(new BN(usdValue).minus(new BN(initCostUsd))).full;
+      visible = true;
+    } else if (outcome === String(YES_OUTCOME_ID)) {
+      usdValue = String(new BN(balance).times(new BN(priceYes)));
+      past24hrUsdValue = past24hrPriceYes ? String(new BN(balance).times(new BN(past24hrPriceYes))) : null;
+      change24hrPositionUsd = past24hrPriceYes ? String(new BN(usdValue).times(new BN(past24hrUsdValue))) : null;
+      const result = getInitPositionValues(trades, amm, true);
+      avgPrice = formatDai(result.avgPrice).formatted;
+      initCostUsd = result.initCostUsd;
+      totalChangeUsd = formatDai(new BN(usdValue).minus(new BN(initCostUsd))).full;
+      visible = true;
+    }
   }
 
   return {
     balance,
+    quantity,
     rawBalance,
     usdValue,
     past24hrUsdValue,
     change24hrPositionUsd,
+    totalChangeUsd,
     avgPrice,
     initCostUsd,
+    outcomeName,
+    outcomeId,
+    maxUsdValue,
+    visible,
   }
 }
 

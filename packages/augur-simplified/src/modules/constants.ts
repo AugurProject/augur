@@ -19,6 +19,7 @@ export const MARKET = 'market';
 export const MARKETS = 'markets';
 export const PORTFOLIO = 'portfolio';
 
+export const YES_NO_OUTCOMES_NAMES = ['Invalid', 'No', 'Yes'];
 // QUERY_PARAMS
 export const MARKET_ID_PARAM_NAME = 'id';
 export const AFFILIATE_NAME = 'r';
@@ -95,6 +96,15 @@ export const YES_OUTCOME_ID = 2;
 export const OPEN = 'Open';
 export const IN_SETTLEMENT = 'In settlement';
 export const FINALIZED = 'Finalized';
+
+// graph market status
+export const MARKET_STATUS = {
+  TRADING: 'TRADING',
+  REPORTING: 'REPORTING',
+  DISPUTING: 'DISPUTING',
+  FINALIZED: 'FINALIZED',
+  SETTLED: 'SETTLED',
+}
 
 export const categoryItems = [
   {

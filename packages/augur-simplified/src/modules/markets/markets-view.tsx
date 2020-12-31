@@ -31,6 +31,7 @@ import { SquareDropdown } from 'modules/common/selection';
 import { Pagination } from 'modules/common/pagination';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import { USDC } from '../constants';
+import { MarketInfo } from '../types';
 
 const PAGE_LIMIT = 20;
 
@@ -134,7 +135,7 @@ const applyFiltersAndSort = (
   { categories, sortBy, currency, reportingState }
 ) => {
   let updatedFilteredMarkets = passedInMarkets;
-  updatedFilteredMarkets = updatedFilteredMarkets.filter((market) => {
+  updatedFilteredMarkets = updatedFilteredMarkets.filter((market: MarketInfo) => {
     if (
       categories !== ALL_MARKETS &&
       categories !== OTHER &&
@@ -149,9 +150,9 @@ const applyFiltersAndSort = (
       return false;
     }
     if (currency !== ALL) {
-      if (!market.ammExchange) {
+      if (!market.amm) {
         return false;
-      } else if (market?.ammExchange?.cash?.name !== currency) {
+      } else if (market?.amm?.cash?.name !== currency) {
         return false;
       }
     }

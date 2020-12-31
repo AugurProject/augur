@@ -12,7 +12,7 @@ import {
 import {
   PositionsLiquidityViewSwitcher,
   TransactionsTable,
-} from 'modules/common/tables';
+} from '../common/tables';
 import TradingForm, {
   fakeYesNoOutcomes,
   OutcomesGrid,
@@ -124,7 +124,7 @@ const MarketView = ({ defaultMarket = null }) => {
           />
         )}
         <SimpleChartSection {...{ market }} />
-        <PositionsLiquidityViewSwitcher marketId={marketId} />
+        <PositionsLiquidityViewSwitcher ammExchange={amm} />
         <div
           className={classNames(Styles.Details, {
             [Styles.isClosed]: !showMoreDetails,

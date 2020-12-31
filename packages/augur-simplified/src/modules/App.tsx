@@ -93,17 +93,18 @@ const AppBody = () => {
   useEffect(() => {
     const createClient = (provider, config) =>
       augurSdkLite.makeLiteClient(provider, config);
-    const fetchUserBalances = (library, account, ammExchanges, cashes) =>
+    const fetchUserBalances = (library, account, ammExchanges, cashes, markets) =>
       getUserBalances(
         library,
         account,
         ammExchanges,
-        cashes
+        cashes,
+        markets
       );
     if (account && library) {
       if (!augurSdkLite.ready()) createClient(library, paraConfig);
-      const { ammExchanges, cashes } = processed;
-      fetchUserBalances(library, account, ammExchanges, cashes).then((userBalances) =>
+      const { ammExchanges, cashes, markets } = processed;
+      fetchUserBalances(library, account, ammExchanges, cashes, markets).then((userBalances) =>
         updateUserBalances(userBalances)
       );
     }
