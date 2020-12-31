@@ -1,0 +1,138 @@
+{
+  "networkId": "1337",
+  "uploadBlockNumber": 0,
+  "logLevel": 3,
+  "averageBlocktime": 2000,
+  "ethereum": {
+    "network": "private",
+    "http": "https://kovan2.arbitrum.io/rpc",
+    "ws": "ws://localhost:8546",
+    "rpcRetryCount": 5,
+    "rpcRetryInterval": 0,
+    "rpcConcurrency": 40
+  },
+  "gas": {
+    "override": false,
+    "price": 0,
+    "limit": 21000000
+  },
+  "deploy": {
+    "isProduction": false,
+    "enableFaucets": true,
+    "normalTime": true,
+    "writeArtifacts": true,
+    "serial": true,
+    "externalAddresses": {},
+    "arbitrum": true
+  },
+  "warpSync": {
+    "createCheckpoints": false,
+    "autoReport": false,
+    "ipfsEndpoint": {
+      "version": 1,
+      "url": "https://cloudflare-ipfs.com/"
+    }
+  },
+  "uniswap": {
+    "exchangeRateBufferMultiplier": 1.075
+  },
+  "zeroX": {
+    "rpc": {
+      "enabled": false,
+      "ws": "ws://localhost:60557"
+    },
+    "mesh": {
+      "enabled": true,
+      "useBootstrapList": true,
+      "bootstrapList": [
+        "/dns4/localhost/tcp/60558/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y",
+        "/dns4/localhost/tcp/60559/ws/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y"
+      ]
+    }
+  },
+  "syncing": {
+    "enabled": true
+  },
+  "sdk": {
+    "enabled": false,
+    "ws": "ws://localhost:60557"
+  },
+  "server": {
+    "httpPort": 9003,
+    "startHTTP": true,
+    "httpsPort": 9004,
+    "startHTTPS": true,
+    "wsPort": 9001,
+    "startWS": true,
+    "wssPort": 9002,
+    "startWSS": true
+  },
+  "ui": {
+    "showReloadModal": true,
+    "trackBestOffer": false,
+    "trackMarketInvalidBids": true,
+    "fallbackProvider": "torus",
+    "liteProvider": "jsonrpc",
+    "primaryProvider": "wallet",
+    "marketCreationEnabled": true,
+    "reportingEnabled": true
+  },
+  "addresses": {
+    "Augur": "0xd50475cC7Ae9dd46a09D8415A57F0DF59E89b0f9",
+    "Universe": "0x48CB0042B1c0AE139Fd6b83481613a10Af4a32A8",
+    "LegacyReputationToken": "0x4Ba541244C005129ab4E74DC5B782950Debef704",
+    "Cash": "0x5bc0ceB4d813282C4468288C8AB42Af5e7a43B27",
+    "ProxyFactory": "0x929CF3F7f8bC73c17Ca6238F8408379A91Ee1f6F",
+    "GnosisSafe": "0x321fd7D3097190492CFf384F48d6d9f3B862c67F",
+    "BuyParticipationTokens": "0x655f4D0484817CF05e117A8515fa4fcbce98AE12",
+    "RedeemStake": "0x620146B5d5F762Fecb1300cE46e1656Fbd8Ca16D",
+    "GnosisSafeRegistry": "0xca3C2C3246902222C5f770729AE1A63C01f2d57A",
+    "WarpSync": "0xA839fC471b24F666c32a33EB5f55477919F779C7",
+    "ShareToken": "0xfB4B6fc159E2eB3Ab7e2E08f0056238488c6D5AB",
+    "HotLoading": "0xb8E3699f13ca0A9c09BD4025f09B4327A565aC59",
+    "EthExchange": "0xA867A0291D23AC82bB9eA83DD52ee8B71922Fb42",
+    "Affiliates": "0xDdE552CD1655399722b163f6Ca830BC49a7E5ba0",
+    "AffiliateValidator": "0x0037172e64EE289F5D45088a39B738677B7879E4",
+    "Exchange": "0x4eacd0aF335451709e1e7B570B8Ea68EdEC8bc97",
+    "Time": "0xAe28B2CBbA587949cd3808E9dBF014875eB169a0",
+    "AugurTrading": "0x9307C37077fd428f18f2a4E94BaeeeA7Cc5681dd",
+    "CancelOrder": "0xF9280BBC10Fb857B85CdFEeEB531af58d8765F82",
+    "CreateOrder": "0x8a4335054cDc61234aDB4435F5b445721fbA0Be2",
+    "FillOrder": "0x58f1a6a327dC8A4c73F72B37B75802EB24670A94",
+    "Orders": "0xBD5DCAeE15e67A6Dd4Cf8426FED753C19815DC59",
+    "ProfitLoss": "0x5B659733415f9919D5d4FA8e7723D7b0e6434E4F",
+    "SimulateTrade": "0x3b9a46Da8D60FeCA32d321f9650b91D8a2825B72",
+    "Trade": "0xfb1e622774d32626cf4001121971Edc37F6fAf38",
+    "ZeroXTrade": "0x5673627689E6435D3Bea15A7B94cf6E5D2d450E3",
+    "OICash": "0xbb5999bCD565C0393268bD1eD25F0CC088df9DAA",
+    "AugurWalletRegistry": "0x29fD93b1Ebb775306b018BdDd107e2F5c889e70c",
+    "UniswapV2Factory": "0xfA27F87c3B26B2dd882273054Ee5F5D994723E5d",
+    "WETH9": "0xf68B100D9Acd8421F7f04E4548a604Ff3f0254E4",
+    "UniswapV2Router02": "0x549B9609a0C0D5328351B9DF38693867d1Ec503d",
+    "AuditFunds": "0x107694aCf8525c326a45984cba92c17e8aa981Ea",
+    "AugurWalletRegistryV2": "0xe59A5988E6C73e392F37Bb8aEdAD078A8b96f394",
+    "RelayHubV2": "0x6EFF7F7154347B4b2611cb9aeee5dE6a679FF41C",
+    "USDC": "0x03722982dBb5b038348feF5a1Bc7f6e0f3d4C34E",
+    "USDT": "0x1997d08B1a9aeD5143b995e929707400625D5f6C",
+    "AccountLoader": "0x679FA27db29b84BE82C2b6d1fBdEb583D8f89d40",
+    "AugurPushBridge": "0x5890C2FEE9c995eA3f4AaeCC8bcc4a90FFbA3A6e",
+    "ArbitrumBridge": "0x5890C2FEE9c995eA3f4AaeCC8bcc4a90FFbA3A6e"
+  },
+  "sideChain": {
+    "uploadBlockNumber": 22428064,
+    "addresses": {
+      "Augur": "0x1069D7A1efe70473e47FD490253EA84ddbEb26aa",
+      "Universe": "0x48CB0042B1c0AE139Fd6b83481613a10Af4a32A8",
+      "ShareToken": "0x61d2A938201BeF4B19efa5CE3BBD5cAc140Ebc31",
+      "Cash": "0x63F726c426dcFe35d4Fb63584B23EB224Df8C47e",
+      "Affiliates": "0x4A706aFd07413935309a4527c4192Ac54FD4e346",
+      "AugurTrading": "0xedED96bc60DBe341bcd532ef3502C550b414e033",
+      "FillOrder": "0xFC64CBfcC751C0999d9002d744e57c18f1def34c",
+      "SimulateTrade": "0x3c53f7E8D07e689205b4758d7f32c11B1Ed0b382",
+      "ZeroXTrade": "0xFAA1C9E7dd9F4EbC61745Fc62D02E54735cDE210",
+      "ProfitLoss": "0x90b1045ea7A5EE03F680293a1485794f51575793",
+      "MarketGetter": "0x6a3aef47eFCA6bD539B0C703909d86B1B863e87b",
+      "RepFeeTarget": "0x6a3aef47eFCA6bD539B0C703909d86B1B863e87b"
+    }
+  }
+}

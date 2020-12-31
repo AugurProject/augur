@@ -85,7 +85,10 @@ export const INTERNAL_CONTRACTS = [
     'SideChainFillOrder',
     'SideChainProfitLoss',
     'SideChainZeroXTrade',
-    'SideChainSimulateTrade'
+    'SideChainSimulateTrade',
+    // Arbitrum sidechain
+    'ArbitrumMarketGetter',
+    'ArbitrumBridge',
 ];
 
 export const TRADING_CONTRACTS = [

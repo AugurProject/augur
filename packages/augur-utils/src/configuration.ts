@@ -40,8 +40,10 @@ export interface ParaDeploy {
 }
 
 export interface SideChainDeploy {
-    uploadBlockNumber?: number,
-    addresses: SideChainAddresses
+  uploadBlockNumber?: number,
+  name?: string,
+  bridge?: string,
+  addresses: SideChainAddresses
 }
 
 export interface SDKConfiguration {
