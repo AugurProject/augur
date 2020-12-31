@@ -1,6 +1,6 @@
 import { CompilerOutput } from 'solc';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { EthersFastSubmitWallet, SideChainDeployer } from '@augurproject/core';
+import { EthersFastSubmitWallet, Contracts, deploySideChain, ParaContractDeployer, ParaAugurDeployer } from '@augurproject/core';
 import { ContractAddresses } from '@augurproject/utils';
 import { ContractDependenciesEthers } from '@augurproject/contract-dependencies-ethers';
 import { ContractDeployer } from '@augurproject/core';
@@ -8,9 +8,7 @@ import { HDNode } from '@ethersproject/hdnode';
 import { Wallet } from 'ethers';
 
 import { Account } from '../constants';
-import { SDKConfiguration, SideChainDeploy, ParaDeploy } from '@augurproject/utils';
-import {ParaContractDeployer} from '@augurproject/core/build/libraries/ParaContractDeployer';
-import {ParaAugurDeployer} from '@augurproject/core/build/libraries/ParaAugurDeployer';
+import { SDKConfiguration, ParaDeploy } from '@augurproject/utils';
 
 
 export interface UsefulContractObjects {
@@ -61,7 +59,7 @@ export async function deployWethAMMContract(
   const ammFactory = config.addresses.AMMFactory;
   const weth = config.addresses.WETH9;
   const wethParaShareToken = config.paraDeploys[weth].addresses.ShareToken;
-  if (!wethParaShareToken) throw Error(`Cannot deploy wethAMMContract if WETH para is not deployed.`)
+  if (!wethParaShareToken) throw Error('Cannot deploy wethAMMContract if WETH para is not deployed.')
   return contractDeployer.uploadWethAMMContract(ammFactory, wethParaShareToken)
 }
 
@@ -108,21 +106,11 @@ export async function deployPara(
 
 export async function deploySideChainContracts(
   env: string,
-  provider: EthersProvider,
   account: Account,
   compiledContracts: CompilerOutput,
   config: SDKConfiguration
-): Promise<SideChainDeploy> {
-  const signer = await makeSigner(account, provider);
-  const dependencies = makeDependencies(account, provider, signer);
-  const deployer = new SideChainDeployer(
-    config,
-    dependencies,
-    provider,
-    signer,
-    compiledContracts
-  );
-  return deployer.deploy(env);
+): Promise<SDKConfiguration> {
+  return deploySideChain(env, config, account, new Contracts(compiledContracts));
 }
 
 export async function makeSigner(account: Account, provider: EthersProvider) {

@@ -1,5 +1,6 @@
-import {deployWethAMMContract} from '../libs/blockchain';
+import {deploySideChainContracts, deployWethAMMContract} from '../libs/blockchain';
 
+// tslint:disable-next-line:import-blacklist
 const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { SDKConfiguration } from '@augurproject/utils';
@@ -13,9 +14,7 @@ import {
   deployParaContracts,
   deployPara,
   hashContracts,
-  loadSeed,
   makeGanacheProvider,
-  Seed,
   startGanacheServer,
   writeSeeds, loadSeedContractsHash,
 } from '..';
@@ -23,6 +22,7 @@ import { FlashArguments, FlashSession } from './flash';
 import { LogReplayer } from './replay-logs';
 import { LogReplayerV1 } from './replay-logs-v1';
 import { sleep } from './util';
+import {mergeConfig, validConfigOrDie} from '@augurproject/utils/build';
 
 export const defaultSeedPath = '/tmp/augur/seed.json';
 
@@ -39,6 +39,7 @@ export function addGanacheScripts(flash: FlashSession) {
     async call(this: FlashSession, args: FlashArguments) {
       const port = Number(args.port) || 8545;
       await startGanacheServer(this.accounts, port);
+      // noinspection InfiniteLoopJS
       while (true) await sleep(1000 * 60 * 60); // keep alive
     },
   });
@@ -118,63 +119,33 @@ export function addGanacheScripts(flash: FlashSession) {
 
       const parasSeed = await createSeed(provider, db, config.addresses, config.uploadBlockNumber, config.paraDeploys);
 
+      console.log('Deploying test sidechain but on-chain for ease of testing');
+      config = validConfigOrDie(mergeConfig(config, {
+        deploy: {
+          sideChain: {
+            name: 'test',
+            specific: {}
+          }
+        }
+      }));
+      config = await deploySideChainContracts(this.network, this.getAccount(), compilerOutput, config);
+
+      const sidechainSeed = await createSeed(
+        provider,
+        db,
+        config.addresses,
+        config.uploadBlockNumber,
+        config.paraDeploys,
+        config.sideChain
+      );
+
       const seeds = {
         'default': baseSeed,
         'paras': parasSeed,
+        'side': sidechainSeed,
       };
 
       await writeSeeds(seeds, filepath);
-    },
-  });
-
-  flash.addScript({
-    name: 'create-seed-from-logs',
-    ignoreNetwork: true,
-    options: [
-      {
-        name: 'logs',
-        description: 'Filepath for logs',
-        required: true,
-      },
-      {
-        name: 'seed',
-        description: 'Filepath for seed',
-        required: true,
-      },
-      {
-        name: 'v1',
-        description: 'Use this flag if the logs come from a V1 contract.',
-        flag: true,
-      },
-    ],
-    async call(this: FlashSession, args: FlashArguments): Promise<void> {
-      const logsFilePath = args.logs as string;
-      const seedFilePath = args.seed as string;
-      const v1 = Boolean(args.v1);
-
-      const logs = JSON.parse(await fs.readFile(logsFilePath));
-
-      // Build a local environment to replay to.
-      const { provider, db } = await startGanacheServer(this.accounts);
-      const config = this.deriveConfig({
-        deploy: { normalTime: false, writeArtifacts: false },
-      });
-      await deployContracts(
-        this.network,
-        provider,
-        this.getAccount(),
-        compilerOutput,
-        config
-      );
-
-      // Replay the logs.
-      const replayer = v1
-        ? new LogReplayerV1(this.accounts, provider, this.config)
-        : new LogReplayer(this.accounts, provider, this.config);
-      await replayer.Replay(logs);
-
-      // Save the replayed state to a seed for later use.
-      await makeSeed(provider, db, this.config, name, seedFilePath);
     },
   });
 

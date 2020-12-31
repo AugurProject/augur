@@ -1,0 +1,271 @@
+[
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "augur",
+		"outputs": [
+			{
+				"internalType": "contract ISideChainAugur",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "augurTrading",
+		"outputs": [
+			{
+				"internalType": "contract ISideChainAugurTrading",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getInitialized",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"internalType": "enum Order.TradeDirections",
+				"name": "_direction",
+				"type": "uint8"
+			},
+			{
+				"internalType": "address",
+				"name": "_market",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_outcome",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "_sender",
+				"type": "address"
+			}
+		],
+		"name": "getNumberOfAvaialableShares",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"internalType": "contract ISideChainAugur",
+				"name": "_augur",
+				"type": "address"
+			},
+			{
+				"internalType": "contract ISideChainAugurTrading",
+				"name": "_augurTrading",
+				"type": "address"
+			}
+		],
+		"name": "initialize",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "marketGetter",
+		"outputs": [
+			{
+				"internalType": "contract IMarketGetter",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "shareToken",
+		"outputs": [
+			{
+				"internalType": "contract ISideChainShareToken",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"components": [
+					{
+						"internalType": "address",
+						"name": "makerAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "takerAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "feeRecipientAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "senderAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "makerAssetAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "takerAssetAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "makerFee",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "takerFee",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "expirationTimeSeconds",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "salt",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "makerAssetData",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bytes",
+						"name": "takerAssetData",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bytes",
+						"name": "makerFeeAssetData",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bytes",
+						"name": "takerFeeAssetData",
+						"type": "bytes"
+					}
+				],
+				"internalType": "struct IExchange.Order[]",
+				"name": "_orders",
+				"type": "tuple[]"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_amount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bool",
+				"name": "_fillOnly",
+				"type": "bool"
+			}
+		],
+		"name": "simulateZeroXTrade",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "_sharesFilled",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_tokensDepleted",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_sharesDepleted",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_settlementFees",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_numFills",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "zeroXTrade",
+		"outputs": [
+			{
+				"internalType": "contract ISideChainZeroXTrade",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+]

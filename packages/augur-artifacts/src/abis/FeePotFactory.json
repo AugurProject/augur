@@ -1,0 +1,23 @@
+[
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"internalType": "contract IParaAugur",
+				"name": "_paraAugur",
+				"type": "address"
+			}
+		],
+		"name": "createFeePot",
+		"outputs": [
+			{
+				"internalType": "contract IFeePot",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]

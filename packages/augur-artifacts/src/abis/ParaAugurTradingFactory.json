@@ -1,0 +1,23 @@
+[
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"internalType": "contract IAugur",
+				"name": "_augur",
+				"type": "address"
+			}
+		],
+		"name": "createParaAugurTrading",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]

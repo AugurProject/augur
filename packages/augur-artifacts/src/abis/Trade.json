@@ -1,0 +1,249 @@
+[
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "augur",
+		"outputs": [
+			{
+				"internalType": "contract IAugur",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "augurTrading",
+		"outputs": [
+			{
+				"internalType": "contract IAugurTrading",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "cash",
+		"outputs": [
+			{
+				"internalType": "contract ICash",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "createOrder",
+		"outputs": [
+			{
+				"internalType": "contract ICreateOrder",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "fillOrder",
+		"outputs": [
+			{
+				"internalType": "contract IFillOrder",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getInitialized",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"internalType": "contract IAugur",
+				"name": "_augur",
+				"type": "address"
+			},
+			{
+				"internalType": "contract IAugurTrading",
+				"name": "_augurTrading",
+				"type": "address"
+			}
+		],
+		"name": "initialize",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "orders",
+		"outputs": [
+			{
+				"internalType": "contract IOrders",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"internalType": "enum Order.TradeDirections",
+				"name": "_direction",
+				"type": "uint8"
+			},
+			{
+				"internalType": "contract IMarket",
+				"name": "_market",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_outcome",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_amount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_price",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "_tradeGroupId",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_loopLimit",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "_fingerprint",
+				"type": "bytes32"
+			}
+		],
+		"name": "publicFillBestOrder",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"internalType": "enum Order.TradeDirections",
+				"name": "_direction",
+				"type": "uint8"
+			},
+			{
+				"internalType": "contract IMarket",
+				"name": "_market",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_outcome",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_amount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_price",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "_betterOrderId",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "_worseOrderId",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "_tradeGroupId",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_loopLimit",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "_fingerprint",
+				"type": "bytes32"
+			}
+		],
+		"name": "publicTrade",
+		"outputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]

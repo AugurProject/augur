@@ -1,4 +1,4 @@
-{
+  {
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
     "outDir": "build",
@@ -13,6 +13,9 @@
     },
     {
       "path": "../augur-contract-dependencies-ethers"
+    },
+    {
+      "path": "../ethersjs-provider"
     }
   ]
 }

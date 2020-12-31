@@ -1,0 +1,28 @@
+[
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"internalType": "contract IAugur",
+				"name": "_augur",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_designatedReporter",
+				"type": "address"
+			}
+		],
+		"name": "createInitialReporter",
+		"outputs": [
+			{
+				"internalType": "contract IInitialReporter",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]

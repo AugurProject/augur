@@ -171,13 +171,14 @@ export class ContractAPI {
   async createReasonableYesNoMarket(
     description = 'YesNo market description',
     faucet = true,
-    feePercentage = 1
+    feePercentage = 1,
+    durationMinutes = 30 * 24 * 60 * 60,
   ): Promise<ContractInterfaces.Market> {
     const currentTimestamp = (await this.getTimestamp()).toNumber();
 
     return this.createYesNoMarket(
       {
-        endTime: new BigNumber(currentTimestamp + 30 * 24 * 60 * 60),
+        endTime: new BigNumber(currentTimestamp + durationMinutes),
         feePerCashInAttoCash: new BigNumber(feePercentage * 10).pow(16),
         affiliateFeeDivisor: new BigNumber(25),
         designatedReporter: this.account.address,

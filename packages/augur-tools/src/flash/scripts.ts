@@ -1,6 +1,4 @@
 import { abi, buildConfig, refreshSDKConfig, updateConfig } from '@augurproject/artifacts';
-import { ParaAugurDeployer } from '@augurproject/core/build/libraries/ParaAugurDeployer';
-import { ParaContractDeployer } from '@augurproject/core/build/libraries/ParaContractDeployer';
 import { ContractInterfaces, ContractDeployer } from '@augurproject/core';
 import {
   convertDisplayAmountToOnChainAmount,
@@ -89,7 +87,19 @@ import {
 } from './util';
 
 import {deployPara, deployParaContracts, deploySideChainContracts} from '../libs/blockchain';
+import {ArbitrumDeploy, isSideChainName} from '@augurproject/utils';
+import {
+  bridgeMarketToArbitrum,
+  bridgeOICashToArbitrum,
+  bridgeCashToArbitrum,
+  isMarketBridged,
+  registerArbitrumChain,
+  mintSets,
+  claimWinnings,
+  erc20Balance, erc20Approve,
+} from '@augurproject/core/build/libraries/SideChainDeployer';
 
+// tslint:disable-next-line:import-blacklist
 const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
 
 const MILLION = QUINTILLION.multipliedBy(1e7);
@@ -171,10 +181,19 @@ export function addScripts(flash: FlashSession) {
       'Upload contracts to sidechain and register them.',
     options: [
       {
-        name: 'parallel',
-        abbr: 'p',
-        description: 'deploy contracts non-serially',
-        flag: true,
+        name: 'name',
+        abbr: 'n',
+        description: 'Which sidechain. Once of: test, arbitrum, matic',
+      },
+      {
+        name: 'http',
+        abbr: 'h',
+        description: 'Sidechain http(s) node to use for sidechain-side contracts.',
+      },
+      {
+        name: 'chainAddress',
+        abbr: 'a',
+        description: 'Used for Arbitrum.',
       },
       {
         name: 'cash',
@@ -196,43 +215,254 @@ export function addScripts(flash: FlashSession) {
         abbr: 'Z',
         description: 'ZeroXExchange address for sidechain. Can specify in config under deploy.sideChainExternalAddresses',
       },
+      {
+        name: 'globalInbox',
+        abbr: 'G',
+        description: 'GlobalInbox address for Arbitrum. Can specify in config under deploy.specific.globalInbox',
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      const serial = !Boolean(args.parallel);
+      const name = args.name as string || this.config?.deploy?.sideChain?.name;
+      const http = args.http as string || this.config?.sideChain?.http;
       const cash = args.cash as string;
       const marketGetter = args.marketGetter as string;
       const repFeeTarget = args.repFeeTarget as string;
       const zeroXExchange = args.zeroXExchange as string;
 
+      if (!isSideChainName(name)) {
+        return console.error(`Must specify valid sidechain name in flash call or config, not: ${name}`);
+      }
+
+      if (!http && name !== 'test') return console.error('Must specify sidechain http node (-h).');
+
+      if (name === 'arbitrum') {
+        const specific = this.config?.deploy?.sideChain?.specific as ArbitrumDeploy;
+        const globalInbox = args.globalInbox as string || specific?.globalInbox;
+        const chainAddress = args.chainAddress as string || specific?.arbChain;
+
+        if (!globalInbox) {
+          return console.error('Must specify sidechain globalInbox in flash call or config, if using arbitrum.')
+        }
+        if (!chainAddress) {
+          return console.error('Must specify sidechain chainAddress in flash call or config, if using arbitrum.')
+        }
+
+        this.pushConfig({
+          deploy: {
+            sideChain: {
+                specific: {
+                    arbChain: chainAddress,
+                    globalInbox,
+                  },
+              },
+          },
+        });
+      }
+
       if (this.noProvider()) return;
 
-      this.pushConfig({ deploy: { serial }});
+      this.pushConfig({
+        deploy: { sideChain: { name }},
+        sideChain: { http },
+      });
 
       if (cash && marketGetter && repFeeTarget && zeroXExchange) {
         this.pushConfig({
           deploy: {
-            sideChainExternalAddresses: {
-              Cash: cash,
-              MarketGetter: marketGetter,
-              RepFeeTarget: repFeeTarget,
-              ZeroXExchange: zeroXExchange,
-            }
-          }
-        })
+            sideChain: {
+              sideChainExternalAddresses: {
+                Cash: cash,
+                MarketGetter: marketGetter,
+                RepFeeTarget: repFeeTarget,
+                ZeroXExchange: zeroXExchange
+        }}}});
       } else if (cash || marketGetter || repFeeTarget || zeroXExchange) {
-        throw Error(`Must specify all of or none of the sidechain external addresses, not some.`);
+        throw Error('Must specify all of or none of the sidechain external addresses, not some.');
       }
 
       console.log('Deploying: ', sanitizeConfig(this.config).deploy);
 
       await deploySideChainContracts(
         this.network,
-        this.provider,
         this.accounts[0],
         compilerOutput,
         this.config
       );
     },
+  });
+
+  flash.addScript({
+    name: 'register-arbchain',
+    description:
+      'Reflect a market onto a sidechain.',
+    async call(this: FlashSession) {
+      await registerArbitrumChain(this.config, this.accounts[0])
+    }
+  });
+
+  flash.addScript({
+    name: 'bridge-market',
+    description:
+      'Reflect a market onto a sidechain.',
+    options: [
+      {
+        name: 'name',
+        abbr: 'n',
+        description: 'Which sidechain. Once of: test, arbitrum, matic.',
+      },
+      {
+        name: 'market',
+        abbr: 'm',
+        description: 'Sidechain http(s) node to use for sidechain-side contracts.',
+        required: true
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const name = args.name as string || this.config?.deploy?.sideChain?.name;
+      const market = args.market as string;
+
+      if (!isSideChainName(name)) {
+        return console.error(`Must specify valid sidechain name in flash call or config, not: ${name}`);
+      }
+
+      await bridgeMarketToArbitrum(this.config, this.accounts[0], market)
+    }
+  });
+
+  flash.addScript({
+    name: 'is-market-bridged',
+    description:
+      'Reflect a market onto a sidechain.',
+    options: [
+      {
+        name: 'name',
+        abbr: 'n',
+        description: 'Which sidechain. Once of: test, arbitrum, matic.',
+      },
+      {
+        name: 'market',
+        abbr: 'm',
+        description: 'Market id/address.',
+        required: true
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const name = args.name as string || this.config?.deploy?.sideChain?.name;
+      const address = args.market as string;
+
+      if (!isSideChainName(name)) {
+        return console.error(`Must specify valid sidechain name in flash call or config, not: ${name}`);
+      }
+      const valid = await isMarketBridged(this.config, this.accounts[0], address);
+      console.log(valid);
+    }
+  });
+
+  flash.addScript({
+    name: 'bridge-oicash',
+    description:
+      'Send collateral to sidechain as OICash.',
+    options: [
+      {
+        name: 'name',
+        abbr: 'n',
+        description: 'Which sidechain. Once of: test, arbitrum, matic.',
+      },
+      {
+        name: 'to',
+        abbr: 't',
+        description: 'Where to send the collateral on arbitrum. Defaults to self.',
+      },
+      {
+        name: 'amount',
+        abbr: 'a',
+        description: 'How much to send. Denominated in atto/wei so to send 1 USDC, send 1000000 USDC.',
+        required: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const name = args.name as string || this.config?.deploy?.sideChain?.name;
+      const to = args.to as string || this.accounts[0].address;
+      const amount = new BigNumber(args.amount as string);
+
+      if (!isSideChainName(name)) {
+        return console.error(`Must specify valid sidechain name in flash call or config, not: ${name}`);
+      }
+
+      await bridgeOICashToArbitrum(this.config, this.accounts[0], to, amount);
+    }
+  });
+
+  flash.addScript({
+    name: 'bridge-usdc',
+    description:
+      'Send collateral to sidechain as OICash.',
+    options: [
+      {
+        name: 'name',
+        abbr: 'n',
+        description: 'Which sidechain. Once of: test, arbitrum, matic.',
+      },
+      {
+        name: 'to',
+        abbr: 't',
+        description: 'Where to send the collateral on arbitrum. Defaults to self.',
+      },
+      {
+        name: 'amount',
+        abbr: 'a',
+        description: 'How much to send. Denominated in atto/wei so to send 1 USDC, send 1000000 USDC.',
+        required: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const name = args.name as string || this.config?.deploy?.sideChain?.name;
+      const to = args.to as string || this.accounts[0].address;
+      const amount = new BigNumber(args.amount as string);
+
+      if (!isSideChainName(name)) {
+        return console.error(`Must specify valid sidechain name in flash call or config, not: ${name}`);
+      }
+
+      await bridgeCashToArbitrum(this.config, this.accounts[0], to, amount);
+    }
+  });
+
+  flash.addScript({
+    name: 'mint-sets',
+    description:
+      'Mints sets on sidechain.',
+    options: [
+      {
+        name: 'name',
+        abbr: 'n',
+        description: 'Which sidechain. Once of: test, arbitrum, matic.',
+      },
+      {
+        name: 'amount',
+        abbr: 'a',
+        description: 'How many sets to mint',
+        required: true
+      },
+      {
+        name: 'market',
+        abbr: 'm',
+        description: 'Which market to mint sets for',
+        required: true
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const name = args.name as string || this.config?.deploy?.sideChain?.name;
+      const amount = new BigNumber(args.amount as string);
+      const market = String(args.market);
+
+      if (!isSideChainName(name)) {
+        return console.error(`Must specify valid sidechain name in flash call or config, not: ${name}`);
+      }
+
+      const r = await mintSets(this.config, this.accounts[0], market, amount);
+      console.log(r);
+    }
   });
 
   flash.addScript({
@@ -292,7 +522,7 @@ export function addScripts(flash: FlashSession) {
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
       const amount = Number(args.amount);
-      const atto = new BigNumber(amount).times(_1_ETH);
+      const atto = new BigNumber(amount).times(1e6); // 6 decimals
       const user = await this.createUser(this.getAccount(), this.config);
       const target = args.target as string;
 
@@ -302,6 +532,88 @@ export function addScripts(flash: FlashSession) {
         await user.augur.contracts.usdt.transfer(target, atto);
       }
     },
+  });
+
+  flash.addScript({
+    name: 'faucet-usdc',
+    description: 'Mints USDC tokens for user.',
+    options: [
+      {
+        name: 'amount',
+        abbr: 'a',
+        description: 'Quantity of Cash.',
+        required: true,
+      },
+      {
+        name: 'target',
+        abbr: 't',
+        description: 'Account to send funds (defaults to current user)',
+        required: false
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      if (this.noProvider()) return;
+      const amount = Number(args.amount);
+      const atto = new BigNumber(amount).times(1e6); // 6 decimals
+      const user = await this.createUser(this.getAccount(), this.config);
+      const target = args.target as string;
+
+      await user.augur.contracts.usdc.faucet(atto);
+
+      if (target) {
+        await user.augur.contracts.usdc.transfer(target, atto);
+      }
+    },
+  });
+
+  flash.addScript({
+    name: 'usdc-approve',
+    options: [
+      {
+        name: 'target',
+        abbr: 't',
+        description: 'Which contract to approve.',
+        required: true,
+      },
+      {
+        name: 'amount',
+        abbr: 'a',
+        description: 'How many atto to approve for. Defaults to 1e48 (1e6 atto = 1 USDC, so that\'s a lot)',
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const user = await this.createUser(this.getAccount(), this.config);
+      const target = args.target as string;
+      const amount = new BigNumber(args.amount as string || 1e48);
+
+      const usdc = user.augur.contracts.usdc;
+      await usdc.approve(target, amount);
+    }
+  });
+
+  flash.addScript({
+    name: 'arbitrum-usdc-approve',
+    options: [
+      {
+        name: 'spender',
+        abbr: 's',
+        description: 'Which contract to approve.',
+        required: true,
+      },
+      {
+        name: 'amount',
+        abbr: 'a',
+        description: 'How many atto to approve for. Defaults to 1e48 (1e6 atto = 1 USDC, so that\'s a lot)',
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const spender = args.spender as string;
+      const amount = new BigNumber(args.amount as string || 1e48);
+
+      const usdc = this.config.addresses.USDC;
+      const r = await erc20Approve(this.config, this.accounts[0], usdc, spender, amount);
+      console.log(r);
+    }
   });
 
   flash.addScript({
@@ -537,15 +849,35 @@ export function addScripts(flash: FlashSession) {
     options: [
       {
         name: 'title',
-        abbr: 'd',
+        abbr: 't',
         description: 'market title',
-      }
+      },
+      {
+        name: 'duration',
+        abbr: 'd',
+        description: 'market duration in minutes; default to 30 days',
+      },
+      {
+        name: 'noFaucet',
+        abbr: 'F',
+        description: 'skip fauceting needed for market creation',
+        flag: true
+      },
+      {
+        name: 'feePercentage',
+        abbr: 'f',
+        description: 'market fee percentage; default is 1',
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const title = args.title as string || 'YesNo market description';
+      const duration = Number(args.duration as string || 30 * 24 * 60 * 60);
+      let fee = Number.parseInt(args.feePercentage as string);
+      fee = Number.isNaN(fee) ? 1 : fee;
+      const faucet = !Boolean(args.noFaucet);
       if (this.noProvider()) return;
       const user = await this.createUser(this.getAccount(), this.config);
-      const market = await user.createReasonableYesNoMarket(title);
+      const market = await user.createReasonableYesNoMarket(title, faucet, fee, duration);
       console.log(`Created YesNo market "${market.address}".`);
     },
   });
@@ -1798,6 +2130,113 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
+    name: 'get-designated-reporter',
+    options: [
+      {
+        name: 'marketId',
+        abbr: 'm',
+        description: 'market of which to get initial reporter',
+        required: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      if (this.noProvider()) return;
+      const user = await this.createUser(this.getAccount(), this.config);
+      const marketId = args.marketId as string;
+
+      const market: ContractInterfaces.Market = await user.getMarketContract(
+        marketId
+      );
+
+      const initialReporter = await user.getInitialReporter(
+        market,
+      );
+
+      const designatedReporter = await initialReporter.getDesignatedReporter_();
+
+      console.log(`Designated Reporter: ${designatedReporter}`);
+    },
+  });
+
+  flash.addScript({
+    name: 'get-rep-bond-owner',
+    options: [
+      {
+        name: 'marketId',
+        abbr: 'm',
+        description: 'market of which to get rep bond owner',
+        required: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      if (this.noProvider()) return;
+      const user = await this.createUser(this.getAccount(), this.config);
+      const marketId = args.marketId as string;
+
+      const market: ContractInterfaces.Market = await user.getMarketContract(
+        marketId
+      );
+
+      const bondOwner = await market.repBondOwner_();
+
+      console.log(`Bond Owner: ${bondOwner}`);
+    },
+  });
+
+  flash.addScript({
+    name: 'is-market-finalized',
+    options: [
+      {
+        name: 'marketId',
+        abbr: 'm',
+        description: 'market of which to get rep bond owner',
+        required: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      if (this.noProvider()) return;
+      const user = await this.createUser(this.getAccount(), this.config);
+      const marketId = args.marketId as string;
+
+      const market: ContractInterfaces.Market = await user.getMarketContract(
+        marketId
+      );
+
+      const isFinalized = await market.isFinalized_();
+
+      console.log(`Finalized?: ${isFinalized}`);
+    },
+  });
+
+  flash.addScript({
+    name: 'get-market-endtime',
+    options: [
+      {
+        name: 'marketId',
+        abbr: 'm',
+        description: 'market of which to get initial reporter',
+        required: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      if (this.noProvider()) return;
+      const user = await this.createUser(this.getAccount(), this.config);
+      const marketId = args.marketId as string;
+
+      const market: ContractInterfaces.Market = await user.getMarketContract(
+        marketId
+      );
+
+      const endTime = await market.getEndTime_();
+      const designatedReportingEndTime = await market.getDesignatedReportingEndTime_();
+
+      console.log(`End Time: ${endTime}`);
+      console.log(`Designated Reporting End Time: ${designatedReportingEndTime}`);
+    },
+  });
+
+
+  flash.addScript({
     name: 'dispute',
     options: [
       {
@@ -2048,6 +2487,31 @@ export function addScripts(flash: FlashSession) {
       } else {
         console.log(JSON.stringify(markets.markets, null, 2));
       }
+    },
+  });
+
+  flash.addScript({
+    name: 'get-market-info',
+    options: [
+      {
+        name: 'market',
+        abbr: 'm',
+        description: 'market for which to get info',
+        required: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const marketAddress = String(args.market);
+
+      if (this.noProvider()) return;
+
+      const user = await this.createUser(this.getAccount(), this.deriveConfig({ flash: { syncSDK: true }}));
+
+      await waitForSync(user);
+      const markets: MarketList = await user.getMarkets();
+      const market = markets.markets.filter(m => m.id == marketAddress);
+      if (market.length === 0) return console.warn(`No such market "${marketAddress}"`);
+      console.log(JSON.stringify(market[0], null, 2));
     },
   });
 
@@ -2485,6 +2949,31 @@ export function addScripts(flash: FlashSession) {
       const target = args.target as string;
       const user = await this.createUser(this.getAccount(), this.config);
       const balance = await user.getCashBalance(target || this.getAccount().address);
+      console.log(balance.toFixed());
+    },
+  });
+
+  flash.addScript({
+    name: 'usdc-balance',
+    options: [
+      {
+        name: 'target',
+        abbr: 't',
+        description: 'which account to check. defaults to current account',
+      },
+      {
+        name: 'arbitrum',
+        abbr: 'a',
+        description: 'use arbitrum sidechain. defaults to using ethereum',
+        flag: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const user = await this.createUser(this.getAccount(), this.config);
+      const target = args.target as string || user.account.address;
+      const arbitrum = Boolean(args.arbitrum);
+
+      const balance = await erc20Balance(this.config, user.account, this.config.addresses.USDC, target, arbitrum);
       console.log(balance.toFixed());
     },
   });

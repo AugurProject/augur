@@ -1,0 +1,180 @@
+{
+  "networkId": "1337",
+  "uploadBlockNumber": 0,
+  "logLevel": 3,
+  "averageBlocktime": 2000,
+  "ethereum": {
+    "network": "private",
+    "http": "https://kovan.infura.io/v3/595111ad66e2410784d484708624f7b1",
+    "ws": "ws://localhost:8546",
+    "rpcRetryCount": 5,
+    "rpcRetryInterval": 0,
+    "rpcConcurrency": 40
+  },
+  "gas": {
+    "override": false,
+    "price": 0,
+    "limit": 21000000
+  },
+  "deploy": {
+    "isProduction": false,
+    "enableFaucets": true,
+    "normalTime": true,
+    "writeArtifacts": true,
+    "serial": true,
+    "externalAddresses": {},
+    "sideChain": {
+      "delayMS": 10000,
+      "name": "arbitrum",
+      "specific": {
+        "arbChain": "0x2e8aF9f74046D3E55202Fcfb893348316B142230",
+        "globalInbox": "0xE681857DEfE8b454244e701BA63EfAa078d7eA85"
+      },
+      "sideChainExternalAddresses": {
+        "Cash": "0x03722982dBb5b038348feF5a1Bc7f6e0f3d4C34E",
+        "ZeroXExchange": "0x4eacd0aF335451709e1e7B570B8Ea68EdEC8bc97"
+      }
+    }
+  },
+  "warpSync": {
+    "createCheckpoints": false,
+    "autoReport": false,
+    "ipfsEndpoint": {
+      "version": 1,
+      "url": "https://cloudflare-ipfs.com/"
+    }
+  },
+  "uniswap": {
+    "exchangeRateBufferMultiplier": 1.075
+  },
+  "zeroX": {
+    "rpc": {
+      "enabled": false,
+      "ws": "ws://localhost:60557"
+    },
+    "mesh": {
+      "enabled": true,
+      "useBootstrapList": true,
+      "bootstrapList": [
+        "/dns4/localhost/tcp/60558/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y",
+        "/dns4/localhost/tcp/60559/ws/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y"
+      ]
+    }
+  },
+  "syncing": {
+    "enabled": true
+  },
+  "sdk": {
+    "enabled": false,
+    "ws": "ws://localhost:60557"
+  },
+  "server": {
+    "httpPort": 9003,
+    "startHTTP": true,
+    "httpsPort": 9004,
+    "startHTTPS": true,
+    "wsPort": 9001,
+    "startWS": true,
+    "wssPort": 9002,
+    "startWSS": true
+  },
+  "ui": {
+    "showReloadModal": true,
+    "trackBestOffer": false,
+    "trackMarketInvalidBids": true,
+    "fallbackProvider": "torus",
+    "liteProvider": "jsonrpc",
+    "primaryProvider": "wallet",
+    "marketCreationEnabled": true,
+    "reportingEnabled": true
+  },
+  "addresses": {
+    "Augur": "0xd50475cC7Ae9dd46a09D8415A57F0DF59E89b0f9",
+    "Universe": "0x48CB0042B1c0AE139Fd6b83481613a10Af4a32A8",
+    "LegacyReputationToken": "0x4Ba541244C005129ab4E74DC5B782950Debef704",
+    "Cash": "0x5bc0ceB4d813282C4468288C8AB42Af5e7a43B27",
+    "ProxyFactory": "0x929CF3F7f8bC73c17Ca6238F8408379A91Ee1f6F",
+    "GnosisSafe": "0x321fd7D3097190492CFf384F48d6d9f3B862c67F",
+    "BuyParticipationTokens": "0x655f4D0484817CF05e117A8515fa4fcbce98AE12",
+    "RedeemStake": "0x620146B5d5F762Fecb1300cE46e1656Fbd8Ca16D",
+    "GnosisSafeRegistry": "0xca3C2C3246902222C5f770729AE1A63C01f2d57A",
+    "WarpSync": "0xA839fC471b24F666c32a33EB5f55477919F779C7",
+    "ShareToken": "0xfB4B6fc159E2eB3Ab7e2E08f0056238488c6D5AB",
+    "HotLoading": "0xb8E3699f13ca0A9c09BD4025f09B4327A565aC59",
+    "EthExchange": "0xA867A0291D23AC82bB9eA83DD52ee8B71922Fb42",
+    "Affiliates": "0xDdE552CD1655399722b163f6Ca830BC49a7E5ba0",
+    "AffiliateValidator": "0x0037172e64EE289F5D45088a39B738677B7879E4",
+    "Exchange": "0x4eacd0aF335451709e1e7B570B8Ea68EdEC8bc97",
+    "Time": "0xAe28B2CBbA587949cd3808E9dBF014875eB169a0",
+    "AugurTrading": "0x9307C37077fd428f18f2a4E94BaeeeA7Cc5681dd",
+    "CancelOrder": "0xF9280BBC10Fb857B85CdFEeEB531af58d8765F82",
+    "CreateOrder": "0x8a4335054cDc61234aDB4435F5b445721fbA0Be2",
+    "FillOrder": "0x58f1a6a327dC8A4c73F72B37B75802EB24670A94",
+    "Orders": "0xBD5DCAeE15e67A6Dd4Cf8426FED753C19815DC59",
+    "ProfitLoss": "0x5B659733415f9919D5d4FA8e7723D7b0e6434E4F",
+    "SimulateTrade": "0x3b9a46Da8D60FeCA32d321f9650b91D8a2825B72",
+    "Trade": "0xfb1e622774d32626cf4001121971Edc37F6fAf38",
+    "ZeroXTrade": "0x5673627689E6435D3Bea15A7B94cf6E5D2d450E3",
+    "OICash": "0xbb5999bCD565C0393268bD1eD25F0CC088df9DAA",
+    "AugurWalletRegistry": "0x29fD93b1Ebb775306b018BdDd107e2F5c889e70c",
+    "UniswapV2Factory": "0xfA27F87c3B26B2dd882273054Ee5F5D994723E5d",
+    "WETH9": "0xf68B100D9Acd8421F7f04E4548a604Ff3f0254E4",
+    "UniswapV2Router02": "0x549B9609a0C0D5328351B9DF38693867d1Ec503d",
+    "AuditFunds": "0x107694aCf8525c326a45984cba92c17e8aa981Ea",
+    "AugurWalletRegistryV2": "0xe59A5988E6C73e392F37Bb8aEdAD078A8b96f394",
+    "RelayHubV2": "0x6EFF7F7154347B4b2611cb9aeee5dE6a679FF41C",
+    "USDC": "0x03722982dBb5b038348feF5a1Bc7f6e0f3d4C34E",
+    "USDT": "0x1997d08B1a9aeD5143b995e929707400625D5f6C",
+    "AccountLoader": "0x679FA27db29b84BE82C2b6d1fBdEb583D8f89d40",
+    "ParaDeployer": "0xB10BF4DF57dc55B8607470Eb61017E44de337c96",
+    "OINexus": "0x89231BCe98df7F79ACE1983D40BA3C8a4808D1F9"
+  },
+  "sideChain": {
+    "name": "arbitrum",
+    "uploadBlockNumber": 23826649,
+    "addresses": {
+      "Augur": "0xb2e1c0301dd703B9a55797D215294Be7e2B1122F",
+      "Universe": "0x48CB0042B1c0AE139Fd6b83481613a10Af4a32A8",
+      "ShareToken": "0x1454a7f8CDF6A907697E2cBC2788B4b8CCCd1b05",
+      "Cash": "0x03722982dBb5b038348feF5a1Bc7f6e0f3d4C34E",
+      "Affiliates": "0x7eeD619f48A0DC463b030c274a0A6ea46521554e",
+      "AugurTrading": "0x5158cC99D41EfbfA21eA5839a46174f005413fa9",
+      "FillOrder": "0x057d2ecd4a44Fc6e89F2e27Fb817BA6F39A32849",
+      "SimulateTrade": "0x7177794f08527B5e419Af66a9bAa9bda88b8Cbe6",
+      "ZeroXTrade": "0x6b2b18AAFC340222b025A4882a85562c7e706DaD",
+      "ProfitLoss": "0xA6F50591FA134333E63deBdA1D1D095426C2EDe0",
+      "ZeroXExchange": "0x4eacd0aF335451709e1e7B570B8Ea68EdEC8bc97",
+      "MarketGetter": "0xb0dE64b40973ffF9f4b82ceCF7bE2754329d3c07",
+      "RepFeeTarget": "0xb0dE64b40973ffF9f4b82ceCF7bE2754329d3c07",
+      "Bridge": "0x6c1026031bdB31587D7D6790ED0eda79D5F80E40"
+    },
+    "http": "https://kovan3.arbitrum.io/rpc",
+    "specific": {
+      "arbChain": "0x2e8aF9f74046D3E55202Fcfb893348316B142230",
+      "globalInbox": "0xE681857DEfE8b454244e701BA63EfAa078d7eA85"
+    }
+  },
+  "paraDeploys": {
+    "0x03722982dBb5b038348feF5a1Bc7f6e0f3d4C34E": {
+      "name": "USDC",
+      "decimals": 6,
+      "uploadBlockNumber": 23426340,
+      "addresses": {
+        "Augur": "0x79d6c26ca450CEF7A01Fa6B9ab68f29bf90dCD96",
+        "AugurTrading": "0xDe555F150944808C7B08C9194df0383a39f7AC95",
+        "Universe": "0xf819147De62db51995b4b8506502B2aDee135C47",
+        "Cash": "0x03722982dBb5b038348feF5a1Bc7f6e0f3d4C34E",
+        "ShareToken": "0xa9450c41357A695544CF79C902836B99fA232a05",
+        "OICash": "0x026dAe10759312bE431246254Ad16141d5AfD59b",
+        "CancelOrder": "0x1244253734656A849Bf3fF830B42B01225D40f0b",
+        "CreateOrder": "0x97be0636A94dBDd00bFe5Ef7c7567e5D1103BbAF",
+        "FillOrder": "0xAe5a42748b777A71d84495a1f8cd27A51C800a0D",
+        "Orders": "0xA4cC0026CC5b142366F87D9c30ebc9Bc929FB441",
+        "Trade": "0x2c2f08b91F2193EB6e3CE8Be120E6f5b83876743",
+        "SimulateTrade": "0xcA7a126D580CCe97849C6f1B48783Dc140b6772D",
+        "ZeroXTrade": "0xB524E389F0B5117bb2198D90292C80257D61E17A",
+        "ProfitLoss": "0x48c641F9D953f6cEBEc044c5A5329618a0B04b39"
+      }
+    }
+  }
+}

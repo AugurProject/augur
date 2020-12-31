@@ -179,6 +179,10 @@ export class SideChainZeroXTrade extends c.SideChainZeroXTrade<BigNumber> {
 }
 export class TestBridgeContract extends c.TestBridgeContract<BigNumber> {
 }
+export class ArbitrumBridge extends c.ArbitrumBridge<BigNumber> {
+}
+export class ArbitrumMarketGetter extends c.ArbitrumMarketGetter<BigNumber> {
+}
 export class AugurTrading extends c.AugurTrading<BigNumber> {
 }
 export class CancelOrder extends c.CancelOrder<BigNumber> {

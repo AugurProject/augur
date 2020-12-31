@@ -17,9 +17,10 @@ export class ContractInterfaceGenerator {
     }
 
     public async generateContractInterfaces(): Promise<void> {
-        const {contracts}: CompilerOutput = await this.compiler.compileContracts();
+        const compilerOutput = await this.compiler.compileContracts();
+        await this.compiler.writeABIFile(compilerOutput);
         const genericFileContents: string = generateContractInterfaces({
-            contracts
+            contracts: compilerOutput.contracts
         });
 
         const g = new GenerateReplacementTypesForGenerics();

@@ -1,0 +1,17 @@
+[
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "createOrders",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]

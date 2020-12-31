@@ -5,7 +5,9 @@ require('source-map-support').install();
 async function doWork(): Promise<void> {
     const configuration = CompilerConfiguration.create();
     const compiler = new ContractCompiler(configuration);
-    await compiler.compileContracts();
+    const compilerOutput = await compiler.compileContracts();
+    await compiler.writeABIFile(compilerOutput);
+    await compiler.writeManyABIFiles(compilerOutput);
 }
 
 doWork().then(() => {

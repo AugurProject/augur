@@ -265,6 +265,8 @@ export class EthersProvider extends ethers.providers.BaseProvider
     transaction: ethers.providers.TransactionRequest
   ): Promise<ethers.BigNumber> {
     transaction.gasPrice = await this.getGasPrice();
+    if (!transaction.gasLimit && this.gasLimit) transaction.gasLimit = this.gasLimit;
+
     let gasEstimate = new BigNumber(
       (await super.estimateGas(transaction)).toString()
     );

@@ -28,29 +28,13 @@ export function deepCopy<T>(x: T): T {
   return JSON.parse(JSON.stringify(x));
 }
 
-export interface ParaDeploys {
-  [cashAddress: string]: ParaDeploy;
-}
-
-export interface ParaDeploy {
-  uploadBlockNumber?: number,
-  name: string,
-  decimals: number,
-  addresses: ParaAddresses
-}
-
-export interface SideChainDeploy {
-    uploadBlockNumber?: number,
-    addresses: SideChainAddresses
-}
-
 export interface SDKConfiguration {
   networkId: NetworkId,
   uploadBlockNumber?: number,
   addresses?: ContractAddresses,
   paraDeploys?: ParaDeploys
   paraDeploy?: string; // cashAddress of paraDeploy to use instead of base augur deploy
-  sideChain?: SideChainDeploy,
+  sideChain?: SideChain,
   governance?: {
     uploadBlockNumber?: number,
     addresses: GovernanceAddresses
@@ -80,7 +64,7 @@ export interface SDKConfiguration {
     serial?: boolean,
     writeArtifacts?: boolean,
     externalAddresses?: ExternalAddresses,
-    sideChainExternalAddresses?: SideChainExternalAddresses,
+    sideChain?: SideChainDeploy,
   },
   warpSync?: {
     createCheckpoints?: boolean,
@@ -141,6 +125,59 @@ export interface SDKConfiguration {
     reportingEnabled?: boolean
   },
   concurrentDBOperationsLimit?: number
+}
+
+export interface ParaDeploys {
+  [cashAddress: string]: ParaDeploy;
+}
+
+export interface ParaDeploy {
+  uploadBlockNumber?: number,
+  name: string,
+  decimals: number,
+  addresses: ParaAddresses
+}
+
+export interface SideChain {
+  name: string,
+  http: string, // the sidechain-specific http(s) endpoint, for contracts deployed to sidechain
+  uploadBlockNumber?: number,
+  addresses?: SideChainAddresses,
+  specific?: SpecificTest|SpecificArbitrum|SpecificMatic;
+}
+
+export interface SpecificTest {}
+export interface SpecificArbitrum {
+  arbChain?: string
+  globalInbox?: string
+}
+export interface SpecificMatic {}
+
+
+export type SideChainName = 'test'|'arbitrum'|'matic';
+export function isSideChainName(n: string): n is SideChainName {
+  return ['test', 'arbitrum', 'matic'].includes(n);
+}
+
+export interface SideChainDeploy {
+  name: SideChainName,
+  specific: TestDeploy|ArbitrumDeploy|MaticDeploy,
+  sideChainExternalAddresses?: SideChainExternalAddresses,
+  delayMS?: number, // delay between L2 calls; nonce desync protection
+}
+
+export interface ArbitrumDeploy {
+  arbChain?: string; // not a contract
+  bridge?: string; // lives on ethereum
+  pushBridge?: string; // lives on ethereum
+  globalInbox?: string; // lives on ethereum
+}
+
+export interface MaticDeploy {
+}
+
+export interface TestDeploy {
+  pushBridge?: string;
 }
 
 export interface TradingAddresses {
@@ -239,6 +276,9 @@ export interface SideChainAddresses {
   ProfitLoss?: string;
   MarketGetter?: string;
   RepFeeTarget?: string;
+  ZeroXExchange?: string;
+  Bridge?: string; // on ethereum
+  ArbChain?: string; // not a contract
 }
 
 export interface GovernanceAddresses {
@@ -297,7 +337,7 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
   logLevel: LoggerLevels.warn,
   averageBlocktime: 2000,
   ethereum: {
-    network: "private",
+    network: 'private',
     http: 'http://localhost:8545',
     ws: 'ws://localhost:8546',
     rpcRetryCount: 5,

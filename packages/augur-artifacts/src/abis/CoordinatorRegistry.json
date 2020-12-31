@@ -1,0 +1,63 @@
+[
+	{
+		"inputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "coordinatorOperator",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "coordinatorEndpoint",
+				"type": "string"
+			}
+		],
+		"name": "CoordinatorEndpointSet",
+		"type": "event"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "coordinatorOperator",
+				"type": "address"
+			}
+		],
+		"name": "getCoordinatorEndpoint",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "coordinatorEndpoint",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "coordinatorEndpoint",
+				"type": "string"
+			}
+		],
+		"name": "setCoordinatorEndpoint",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]

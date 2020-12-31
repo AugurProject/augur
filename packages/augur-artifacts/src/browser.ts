@@ -1,5 +1,5 @@
 import * as abi from './abi.json';
-import  * as abiV1 from './abi.json';
+import  * as abiV1 from './abi.v1.json';
 export { abi, abiV1 };
 
 export { ContractEvents } from './events';

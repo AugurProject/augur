@@ -1,0 +1,33 @@
+[
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"internalType": "contract IUniverse",
+				"name": "_parentUniverse",
+				"type": "address"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "_parentPayoutDistributionHash",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "_payoutNumerators",
+				"type": "uint256[]"
+			}
+		],
+		"name": "createUniverse",
+		"outputs": [
+			{
+				"internalType": "contract IUniverse",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]

@@ -1,0 +1,28 @@
+[
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"internalType": "contract IParaAugur",
+				"name": "_paraAugur",
+				"type": "address"
+			},
+			{
+				"internalType": "contract IUniverse",
+				"name": "_originUniverse",
+				"type": "address"
+			}
+		],
+		"name": "createParaUniverse",
+		"outputs": [
+			{
+				"internalType": "contract IParaUniverse",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]

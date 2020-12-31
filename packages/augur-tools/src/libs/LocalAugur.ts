@@ -34,7 +34,8 @@ export async function makeProvider(
     accounts,
     seed.addresses,
     seed.uploadBlockNumber,
-    seed.paras
+    seed.paras,
+    seed.side,
   );
 }
 

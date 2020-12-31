@@ -419,9 +419,9 @@ export abstract class BaseContracts {
 
   abstract getOriginCash(): Promise<ContractInterfaces.Cash>;
 
-  abstract async getOriginUniverse(): Promise<ContractInterfaces.Universe>;
+  abstract getOriginUniverse(): Promise<ContractInterfaces.Universe>;
 
-  abstract async getOriginUniverseAddress(): Promise<string>;
+  abstract getOriginUniverseAddress(): Promise<string>;
 
   async getTimestamp(): Promise<BigNumber> {
     return this.getAugur().getTimestamp_();

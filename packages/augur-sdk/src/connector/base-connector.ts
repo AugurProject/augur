@@ -18,22 +18,22 @@ export abstract class BaseConnector {
   subscriptions: { [event: string]: { id: string; callback: Callback } } = {};
 
   // Lifecyle of the connector
-  abstract async connect(
+  abstract connect(
     config: SDKConfiguration,
     account?: string
   ): Promise<void>;
-  abstract async disconnect(): Promise<void>;
+  abstract disconnect(): Promise<void>;
 
   // bind API calls
   abstract bindTo<R, P>(
     f: (db: any, augur: any, params: P) => Promise<R>
   ): (params: P) => Promise<R>;
 
-  abstract async on(
+  abstract on(
     eventName: SubscriptionEventName | string,
     callback: Callback
   ): Promise<void>;
-  abstract async off(eventName: SubscriptionEventName | string): Promise<void>;
+  abstract off(eventName: SubscriptionEventName | string): Promise<void>;
 
   protected callbackWrapper<T extends SubscriptionType>(
     eventName: string,

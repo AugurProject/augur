@@ -110,16 +110,16 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
         ? ethers.BigNumber.from(transaction.value.toString())
         : ethers.BigNumber.from(0),
     };
-    if (transaction.from) {
-      transactionObj.from = transaction.from;
-    }
+    if (transaction.from) transactionObj.from = transaction.from;
+    if (transaction.gasPrice) transactionObj.gasPrice = ethers.BigNumber.from(transaction.gasPrice);
+    if (transaction.gasLimit) transactionObj.gasLimit = ethers.BigNumber.from(transaction.gasLimit);
     return transactionObj;
   }
 
   ethersTransactionToTransaction(
     transaction: Transaction<ethers.BigNumber>
   ): Transaction<BigNumber> {
-    return {
+    const tx: Transaction<BigNumber> = {
       to: transaction.to,
       from: transaction.from,
       data: transaction.data,
@@ -127,6 +127,9 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
         ? new BigNumber(transaction.value.toString())
         : new BigNumber(0),
     };
+    if (transaction.gasPrice) tx.gasPrice = new BigNumber(transaction.gasPrice.toString());
+    if (transaction.gasLimit) tx.gasLimit = new BigNumber(transaction.gasLimit.toString());
+    return tx;
   }
 
   keccak256(utf8String: string): string {
@@ -246,7 +249,7 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
       txMetadata,
       TransactionStatus.AWAITING_SIGNING
     );
-    let hash = undefined;
+    let hash: string;
     try {
       const receipt = await this.sendTransaction(tx, txMetadata);
       hash = receipt.transactionHash;

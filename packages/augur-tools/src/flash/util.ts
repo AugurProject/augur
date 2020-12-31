@@ -53,7 +53,7 @@ export function waitForSync(user: ContractAPI, count = 90, intervalMS = 1000): P
 }
 
 export async function waitFor(fn: () => Promise<boolean>, count: number, intervalMS: number) {
-  await new Promise(async (resolve, reject) => {
+  await new Promise<void>(async (resolve, reject) => {
     for (let i = 0; i < count; i++) {
       if (await fn()) return resolve();
       await sleep(intervalMS);

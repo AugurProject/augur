@@ -1,4 +1,4 @@
-import { ContractAddresses, SDKConfiguration, RecursivePartial, ParaDeploys } from '@augurproject/utils';
+import { ContractAddresses, SDKConfiguration, RecursivePartial, ParaDeploys, SideChain } from '@augurproject/utils';
 import { MemDown } from 'memdown';
 import { ethers } from 'ethers';
 import { createSeed } from './ganache';
@@ -15,6 +15,7 @@ export class TestEthersProvider extends EthersProvider {
     private contractAddresses: ContractAddresses,
     private uploadBlockNumber: number,
     private paraDeploys?: ParaDeploys,
+    private sideChain?: SideChain,
   ) {
     super(provider, 5, 0, 40);
   }
@@ -34,6 +35,7 @@ export class TestEthersProvider extends EthersProvider {
       uploadBlockNumber: this.uploadBlockNumber,
     };
     if (this.paraDeploys) config.paraDeploys = this.paraDeploys;
+    if (this.sideChain) config.sideChain = this.sideChain;
     if (overwrites) config = { ...config, ...overwrites };
 
     return buildConfig('test', config);

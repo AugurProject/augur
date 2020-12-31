@@ -1,33 +1,14 @@
 #!/usr/bin/env node
 
-import { ethers } from 'ethers';
-import { ContractDependenciesEthers } from '@augurproject/contract-dependencies-ethers';
-import { SideChainDeployer } from '../libraries/SideChainDeployer';
-import { EthersFastSubmitWallet } from '../libraries/EthersFastSubmitWallet';
+const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
+import {Account, accountFromPrivateKey, deploySideChain} from '../libraries/SideChainDeployer';
 import { buildConfig } from '@augurproject/artifacts';
+import { Contracts } from '..';
 
 export async function deployToNetwork(networkName: string) {
     const config = buildConfig(networkName);
-    const provider = new ethers.providers.JsonRpcProvider(config.ethereum.http);
-    const privateKey =
-        config.deploy.privateKey || process.env.ETHEREUM_PRIVATE_KEY;
-
-    const signer = await EthersFastSubmitWallet.create(
-        privateKey as string,
-        provider
-    );
-    const dependencies = new ContractDependenciesEthers(
-        provider,
-        signer,
-        signer.address
-    );
-    await SideChainDeployer.deployToNetwork(
-        networkName,
-        config,
-        dependencies,
-        provider,
-        signer,
-    );
+    const account = accountFromPrivateKey(config.deploy.privateKey || process.env.ETHEREUM_PRIVATE_KEY);
+    await deploySideChain(networkName, config, account, new Contracts(compilerOutput))
 }
 
 if (require.main === module) {

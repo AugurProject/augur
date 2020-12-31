@@ -19,6 +19,11 @@ export class ParaContracts extends BaseContracts {
     dependencies: ContractDependenciesEthers
   ) {
     super(addresses, dependencies);
+
+    this.universe = new ContractInterfaces.ParaUniverse(
+      dependencies,
+      addresses.Universe
+    );
   }
 
   getAugur(): AugurInterface {

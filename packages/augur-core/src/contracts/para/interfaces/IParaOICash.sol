@@ -8,4 +8,5 @@ import 'ROOT/libraries/token/IERC20.sol';
 contract IParaOICash is IERC20 {
     function initialize(IParaAugur _augur, IParaUniverse _universe) external;
     function approveFeePot() external;
+    function deposit(uint256 _amount) external returns (bool);
 }

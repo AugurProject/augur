@@ -1,0 +1,23 @@
+[
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"internalType": "contract IParaAugur",
+				"name": "_augur",
+				"type": "address"
+			}
+		],
+		"name": "createParaOICash",
+		"outputs": [
+			{
+				"internalType": "contract IParaOICash",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]

@@ -1,0 +1,43 @@
+[
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"internalType": "contract IAugur",
+				"name": "_augur",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_disputeWindowId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_windowDuration",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_startTime",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bool",
+				"name": "_participationTokensEnabled",
+				"type": "bool"
+			}
+		],
+		"name": "createDisputeWindow",
+		"outputs": [
+			{
+				"internalType": "contract IDisputeWindow",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]

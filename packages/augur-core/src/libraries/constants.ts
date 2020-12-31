@@ -85,7 +85,7 @@ export const INTERNAL_CONTRACTS = [
     'SideChainFillOrder',
     'SideChainProfitLoss',
     'SideChainZeroXTrade',
-    'SideChainSimulateTrade'
+    'SideChainSimulateTrade',
 ];
 
 export const TRADING_CONTRACTS = [
@@ -153,7 +153,10 @@ export const EXTERNAL_CONTRACTS = [
     'WrappedShareToken',
     // Balancer
     'BFactory',
-    'BPool'
+    'BPool',
+    // Arbitrum sidechain
+    'ArbitrumMarketGetter',
+    'ArbitrumBridge',
 ];
 
 export const REGISTERED_EXTERNAL_CONTRACTS = [
@@ -164,9 +167,9 @@ export const REGISTERED_EXTERNAL_CONTRACTS = [
     // Maker
     'Cash',
     // Uniswap
-    "UniswapV2Factory",
+    'UniswapV2Factory',
     // GSN
-    "RelayHubV2"
+    'RelayHubV2'
 ];
 
 export const REGISTERED_INTERNAL_CONTRACTS = [

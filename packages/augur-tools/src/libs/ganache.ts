@@ -1,8 +1,9 @@
-import {ParaDeploys} from '@augurproject/utils/build';
+// tslint:disable-next-line:import-blacklist
+import {SideChain} from '@augurproject/utils/build';
 
 const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { ContractAddresses } from '@augurproject/utils';
+import { ContractAddresses, ParaDeploys } from '@augurproject/utils';
 import * as fs from 'async-file';
 import crypto from 'crypto';
 import { ethers } from 'ethers';
@@ -20,6 +21,7 @@ interface Metadata {
 export interface Seed {
   addresses: ContractAddresses;
   paras?: ParaDeploys;
+  side?: SideChain;
   data: LevelDBRow[];
   metadata: Metadata;
   uploadBlockNumber: number;
@@ -85,7 +87,7 @@ export function createDb(): MemDown {
 export async function createDbFromSeed(seed: Seed): Promise<MemDown> {
   const db = createDb();
 
-  await new Promise((resolve, reject) => {
+  await new Promise<void>((resolve, reject) => {
     db.batch(seed.data, (err: Error) => {
       if (err) reject(err);
       resolve();
@@ -205,6 +207,7 @@ export async function createSeed(
   addresses: ContractAddresses,
   uploadBlockNumber: number,
   paras?: ParaDeploys,
+  side?: SideChain,
   metadata: Metadata = {},
 ): Promise<Seed> {
   const seed: Seed = {
@@ -214,6 +217,7 @@ export async function createSeed(
     uploadBlockNumber,
   };
   if (paras) seed.paras = paras;
+  if (side) seed.side = side;
   return seed;
 }
 

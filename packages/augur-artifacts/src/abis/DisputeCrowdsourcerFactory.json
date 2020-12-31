@@ -1,0 +1,43 @@
+[
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"internalType": "contract IAugur",
+				"name": "_augur",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_size",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "_payoutDistributionHash",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "_payoutNumerators",
+				"type": "uint256[]"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_crowdsourcerGeneration",
+				"type": "uint256"
+			}
+		],
+		"name": "createDisputeCrowdsourcer",
+		"outputs": [
+			{
+				"internalType": "contract IDisputeCrowdsourcer",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]

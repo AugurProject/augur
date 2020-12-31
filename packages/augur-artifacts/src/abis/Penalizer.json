@@ -1,0 +1,77 @@
+[
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"internalType": "bytes",
+				"name": "unsignedTx",
+				"type": "bytes"
+			},
+			{
+				"internalType": "bytes",
+				"name": "signature",
+				"type": "bytes"
+			},
+			{
+				"internalType": "contract IRelayHub",
+				"name": "hub",
+				"type": "address"
+			}
+		],
+		"name": "penalizeIllegalTransaction",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"internalType": "bytes",
+				"name": "unsignedTx1",
+				"type": "bytes"
+			},
+			{
+				"internalType": "bytes",
+				"name": "signature1",
+				"type": "bytes"
+			},
+			{
+				"internalType": "bytes",
+				"name": "unsignedTx2",
+				"type": "bytes"
+			},
+			{
+				"internalType": "bytes",
+				"name": "signature2",
+				"type": "bytes"
+			},
+			{
+				"internalType": "contract IRelayHub",
+				"name": "hub",
+				"type": "address"
+			}
+		],
+		"name": "penalizeRepeatedNonce",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "versionPenalizer",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+]

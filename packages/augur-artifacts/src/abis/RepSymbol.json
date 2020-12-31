@@ -1,0 +1,28 @@
+[
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_augurAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_universeAddress",
+				"type": "address"
+			}
+		],
+		"name": "getRepSymbol",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+]

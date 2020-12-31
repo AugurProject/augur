@@ -1,0 +1,63 @@
+[
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"internalType": "contract IAugur",
+				"name": "_augur",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_endTime",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_feePerCashInAttoCash",
+				"type": "uint256"
+			},
+			{
+				"internalType": "contract IAffiliateValidator",
+				"name": "_affiliateValidator",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_affiliateFeeDivisor",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "_designatedReporterAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_sender",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_numOutcomes",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_numTicks",
+				"type": "uint256"
+			}
+		],
+		"name": "createMarket",
+		"outputs": [
+			{
+				"internalType": "contract IMarket",
+				"name": "_market",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]

@@ -126,11 +126,23 @@ export class ContractCompiler {
           ...filteredCompilerOutput,
         }, null, '\t'));
 
-        // Output abi data to a single file
-        const abiOutput = this.generateAbiOutput(filteredCompilerOutput);
-        await fs.writeFile(this.configuration.abiOutputPath, JSON.stringify(abiOutput, null, '\t'));
-
         return filteredCompilerOutput;
+    }
+
+    async writeABIFile(compilerOutput: CompilerOutput) {
+        const abiOutput = this.generateAbiOutput(compilerOutput);
+        await fs.writeFile(this.configuration.abiOutputPath, JSON.stringify(abiOutput, null, '\t'));
+    }
+
+    async writeManyABIFiles(compilerOutput: CompilerOutput) {
+        const abiOutput = this.generateAbiOutput(compilerOutput);
+        const dir = `${this.configuration.outputRoot}abis`
+        if (!await fs.exists(dir)) await fs.mkdir(dir);
+        for (const contractName in abiOutput) {
+            const abi = abiOutput[contractName];
+            const filename = `${dir}/${contractName}.json`;
+            await fs.writeFile(filename, JSON.stringify(abi, null, '\t'));
+        }
     }
 
     async generateFlattenedSolidity(filePath: string): Promise<string> {
