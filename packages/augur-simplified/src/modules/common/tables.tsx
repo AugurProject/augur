@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Styles from 'modules/common/tables.styles.less';
-import { UsdIcon } from './icons';
+import { EthIcon, UsdIcon } from './icons';
 import {
   PrimaryButton,
   SecondaryButton,
@@ -18,8 +18,10 @@ import {
 import { Pagination } from 'modules/common/pagination';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import { SmallDropdown } from './selection';
-import { AmmTransaction } from '../types';
+import { AmmExchange, AmmTransaction, LPToken, MarketInfo, PositionBalance, SimpleBalance } from '../types';
 import { formatDai } from '../../utils/format-number';
+import { useActiveWeb3React } from '../ConnectAccount/hooks';
+import { USDC } from '../constants';
 
 interface Position {
   id: string;
@@ -32,41 +34,24 @@ interface Position {
 }
 
 interface PositionsTableProps {
-  market: MarketPosition;
+  market: MarketInfo;
+  ammExchange: AmmExchange;
+  positions: PositionBalance[];
   singleMarket?: boolean;
-}
-
-interface Liquidity {
-  id: string;
-  liquiditySharesOwned: number;
-  feesEarned: string;
-  currentValue: string;
-}
-
-interface MarketLiquidity {
-  id: string;
-  description: string;
-  asset: string;
-  liquidity: Liquidity[];
-}
-
-interface MarketPosition {
-  description: string;
-  asset: string;
-  positions: Position[];
-  claimableWinnings?: string;
 }
 
 interface LiquidityTableProps {
-  market: MarketLiquidity;
+  market: MarketInfo;
+  ammExchange: AmmExchange;
+  lpTokens: SimpleBalance[];
   singleMarket?: boolean;
 }
 
-const MarketTableHeader = ({ market }) => {
+const MarketTableHeader = ({ market, ammExchange }: { market: MarketInfo, ammExchange: AmmExchange}) => {
   return (
     <div className={Styles.MarketTableHeader}>
       <span>{market.description}</span>
-      {UsdIcon}
+      {ammExchange.cash.symbol === USDC ? UsdIcon : EthIcon}
     </div>
   );
 };
@@ -136,14 +121,17 @@ export const PositionFooter = ({ claimableWinnings }: PositionFooterProps) => {
 
 export const PositionTable = ({
   market,
+  ammExchange,
+  positions,
   singleMarket,
 }: PositionsTableProps) => {
+
   return (
     <div className={Styles.PositionTable}>
-      {!singleMarket && <MarketTableHeader market={market} />}
+      {!singleMarket && <MarketTableHeader market={market} ammExchange={ammExchange} />}
       <PositionHeader />
-      {market.positions.map((position) => (
-        <PositionRow key={position.id} position={position} />
+      {positions.map((position, id) => (
+        <PositionRow key={id} position={position} />
       ))}
       {!singleMarket && (
         <PositionFooter claimableWinnings={market.claimableWinnings} />
@@ -178,10 +166,10 @@ const LiquidityHeader = () => {
 const LiquidityRow = ({ liquidity }) => {
   return (
     <ul className={Styles.LiquidityRow}>
-      <li>{liquidity.liquiditySharesOwned}</li>
-      <li>{liquidity.initialValue}</li>
-      <li>{liquidity.currentValue}</li>
-      <li>{liquidity.feesEarned}</li>
+      <li>{liquidity.balance}</li>
+      <li>{'-'}</li>
+      <li>{'-'}</li>
+      <li>{'-'}</li>
     </ul>
   );
 };
@@ -197,14 +185,16 @@ export const LiquidityFooter = () => {
 
 export const LiquidityTable = ({
   market,
+  ammExchange,
+  lpTokens,
   singleMarket,
 }: LiquidityTableProps) => {
   return (
     <div className={Styles.LiquidityTable}>
-      {!singleMarket && <MarketTableHeader market={market} />}
+      {!singleMarket && <MarketTableHeader market={market} ammExchange={ammExchange} />}
       <LiquidityHeader />
-      {market.liquidity.map((liquidity) => (
-        <LiquidityRow key={liquidity.id} liquidity={liquidity} />
+      {lpTokens.map((liquidity, id) => (
+        <LiquidityRow key={id} liquidity={liquidity} />
       ))}
       {!singleMarket && <LiquidityFooter />}
       {singleMarket && (
@@ -223,21 +213,27 @@ export const LiquidityTable = ({
 };
 
 interface PositionsLiquidityViewSwitcherProps {
-  marketId?: string;
+  market?: MarketInfo;
+  ammExchange?: AmmExchange;
   showActivityButton?: boolean;
   setActivity?: Function;
   setTables?: Function;
 }
 
 export const PositionsLiquidityViewSwitcher = ({
-  marketId,
+  market,
+  ammExchange,
   showActivityButton,
   setActivity,
   setTables,
 }: PositionsLiquidityViewSwitcherProps) => {
   const [tableView, setTableView] = useState(POSITIONS);
-  const { positions, liquidity, loginAccount } = useAppStatusStore();
-  const isLogged = loginAccount !== null;
+  const { account } = useActiveWeb3React();
+  const { userInfo: { lpTokens, marketShares } } = useAppStatusStore();
+  const ammId = ammExchange?.id;
+  const positions = ammId ? marketShares[ammId] : Object.values(marketShares);
+  const liquidity = ammId ? lpTokens[ammId] : Object.values(lpTokens);
+  const isLogged = account !== null;
   return (
     <div className={Styles.PositionsLiquidityViewSwitcher}>
       <div>
@@ -276,7 +272,7 @@ export const PositionsLiquidityViewSwitcher = ({
       </div>
       {tableView !== null && isLogged && (
         <div>
-          {!marketId && (
+          {!ammId && (
             <>
               {tableView === POSITIONS &&
                 positions.map((market) => (
@@ -295,13 +291,13 @@ export const PositionsLiquidityViewSwitcher = ({
               />
             </>
           )}
-          {marketId && (
+          {ammId && (
             <>
               {tableView === POSITIONS && (
-                <PositionTable singleMarket market={positions[0]} />
+                <PositionTable singleMarket market={market} ammExchange={ammExchange} />
               )}
               {tableView === LIQUIDITY && (
-                <LiquidityTable singleMarket market={liquidity[0]} />
+                <LiquidityTable singleMarket market={market} ammExchange={ammExchange} />
               )}
             </>
           )}

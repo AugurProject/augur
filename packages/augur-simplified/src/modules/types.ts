@@ -766,24 +766,6 @@ export interface TimeframeData {
   successfulDisputes: number;
   redeemedPositions: number;
 }
-export interface AccountBalances {
-  eth: string;
-  rep: string;
-  dai: string;
-  usdt: string;
-  usdc: string;
-  legacyRep: string;
-  attoRep: string;
-  legacyAttoRep?: string;
-  signerBalances: {
-    eth: string;
-    rep: string;
-    dai: string;
-    usdc: string;
-    usdt: string
-    legacyRep: string;
-  }
-}
 
 export interface LoginAccountMeta {
   accountType: string;
@@ -816,7 +798,6 @@ export interface LoginAccount {
   account?: string;
   mixedCaseAddress?: string;
   meta?: LoginAccountMeta;
-  balances: AccountBalances;
   settings?: LoginAccountSettings;
   active: boolean;
   chainId: number;
@@ -1049,12 +1030,24 @@ export interface CurrencyBalance extends SimpleBalance {
   usdValue: string;
 }
 
+export interface Winnings {
+  marketId: string;
+  ammId: string;
+  sharetoken: string;
+  claimableBalance: string;
+  userBalances: string[]
+}
+export interface PositionWinnings {
+  [ammId: string]: Winnings;
+}
 export interface PositionBalance extends SimpleBalance {
   usdValue: string;
   past24hrUsdValue?: string;
   change24hrPositionUsd: string;
   avgPrice: string;
   initCostUsd: string;
+  outcomeName: string;
+  maxUsdValue: string;
 }
 
 export interface AmmMarketShares {
@@ -1072,7 +1065,8 @@ export interface UserBalances {
   change24hrPositionUsd: string,
   availableFundsUsd: string,
   lpTokens: LPToken,
-  marketShares: AmmMarketShares
+  marketShares: AmmMarketShares,
+  claimableWinnings: PositionWinnings,
 }
 
 export interface ProcessedData {
