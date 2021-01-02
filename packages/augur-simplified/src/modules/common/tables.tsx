@@ -17,7 +17,7 @@ import {
 } from 'modules/constants';
 import { Pagination } from 'modules/common/pagination';
 import { SmallDropdown } from './selection';
-import { AmmExchange, AmmTransaction, MarketInfo, PositionBalance, SimpleBalance, Winnings } from '../types';
+import { AmmExchange, AmmTransaction, LPTokenBalance, MarketInfo, PositionBalance, SimpleBalance, Winnings } from '../types';
 import { formatDai } from '../../utils/format-number';
 import { useActiveWeb3React } from '../ConnectAccount/hooks';
 import { USDC } from '../constants';
@@ -169,13 +169,13 @@ const LiquidityHeader = () => {
   );
 };
 
-const LiquidityRow = ({ liquidity }) => {
+const LiquidityRow = ({ liquidity }: { liquidity: LPTokenBalance }) => {
   return (
     <ul className={Styles.LiquidityRow}>
       <li>{liquidity.balance}</li>
-      <li>{'-'}</li>
-      <li>{'-'}</li>
-      <li>{'-'}</li>
+      <li>{formatDai(liquidity.initCostUsd).full}</li>
+      <li>{liquidity.usdValue ? formatDai(liquidity.usdValue).full : '-'}</li>
+      <li>{liquidity.feesEarned ? liquidity.feesEarned : '-'}</li>
     </ul>
   );
 };

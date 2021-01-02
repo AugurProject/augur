@@ -1,6 +1,6 @@
 import BigNumber, { BigNumber as BN } from 'bignumber.js'
 import { RemoveLiquidityRate, numTicksToTickSizeWithDisplayPrices, convertDisplayAmountToOnChainAmount, ParaShareToken } from '@augurproject/sdk-lite'
-import { TradeInfo, TradingDirection, AmmExchange, AmmExchanges, AmmMarketShares, AmmTransaction, Cashes, CurrencyBalance, PositionBalance, TransactionTypes, UserBalances, MarketInfos } from '../modules/types'
+import { TradeInfo, TradingDirection, AmmExchange, AmmExchanges, AmmMarketShares, AmmTransaction, Cashes, CurrencyBalance, PositionBalance, TransactionTypes, UserBalances, MarketInfos, LPTokens } from '../modules/types'
 import ethers from 'ethers';
 import { Contract } from '@ethersproject/contracts'
 import {
@@ -554,6 +554,7 @@ export const getUserBalances = async (
   const userPositions = getTotalPositions(userBalances.marketShares);
   const availableFundsUsd = String(new BN(userBalances.ETH.usdValue).plus(new BN(userBalances.USDC.usdValue)));
   const totalAccountValue = String(new BN(availableFundsUsd).plus(new BN(userPositions.totalPositionUsd)));
+  populateInitLPValues(userBalances.lpTokens, ammExchanges, account);
 
   return { ...userBalances, ...userPositions, totalAccountValue, availableFundsUsd }
 }
@@ -653,6 +654,30 @@ const getPositionUsdValues = (trades: UserTrades, rawBalance: string, balance: s
     visible,
   }
 }
+
+const populateInitLPValues = (lptokens: LPTokens, ammExchanges: AmmExchanges, account: string): LPTokens => {
+  Object.keys(lptokens).forEach(ammId => {
+    const lptoken = lptokens[ammId];
+    const amm = ammExchanges[ammId];
+    const cashPrice = amm.cash?.usdPrice ? amm.cash?.usdPrice : "0";
+    // sum up enters shares
+    const accum = accumLpSharesAmounts(amm.transactions, account);
+    const initialCashValue = convertOnChainToDisplayAmount(new BN(accum), new BN(amm.cash.decimals));
+    lptoken.initCostUsd = String(new BN(initialCashValue).times(new BN(cashPrice)))
+  });
+
+  return lptokens;
+}
+
+const accumLpSharesAmounts = (transactions: AmmTransaction[], account: string): string => {
+  const adds = transactions.filter(t => t.sender.toLowerCase() === account.toLowerCase() && t.tx_type === TransactionTypes.ADD_LIQUIDITY)
+  .reduce((p, t) => p.plus(new BN(t.cash)), new BN("0"))
+  const removed = transactions.filter(t => t.sender.toLowerCase() === account.toLowerCase() && t.tx_type === TransactionTypes.REMOVE_LIQUIDITY)
+  .reduce((p, t) => p.plus(new BN(t.cash)), new BN("0"))
+
+  return String(adds.minus(removed));
+}
+
 
 // TODO: isYesOutcome is for convenience, down the road, outcome index will be used.
 const getInitPositionValues = (trades: UserTrades, amm: AmmExchange, isYesOutcome: boolean): { avgPrice: string, initCostUsd: string } => {

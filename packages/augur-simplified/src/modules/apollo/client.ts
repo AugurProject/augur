@@ -59,7 +59,7 @@ export async function getMarketsData(paraConfig, updateBlocknumber, updateMarket
   }
 
   if (response) {
-    console.log('response', JSON.stringify(response));
+    //console.log('response', JSON.stringify(response));
     if (response.errors) {
       console.error(JSON.stringify(response.errors, null, 1));
     }
