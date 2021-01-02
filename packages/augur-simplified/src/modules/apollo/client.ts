@@ -49,8 +49,7 @@ export async function getMarketsData(paraConfig, updateBlocknumber, updateMarket
   try {
     const block = await getPastDayBlockNumber(config);
     updateBlocknumber(block);
-    // block number
-    console.log('block', block)
+
     const query = GET_MARKETS(block);
     response = await augurV2Client(config.augurClient).query({ query });
     responseUsd = await getCashTokenData(cashes);
