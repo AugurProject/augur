@@ -110,7 +110,7 @@ export const AppViewStats = ({ showCashAmounts }: AppViewStatsProps) => {
         sublabel={isLogged ? `${
           formatDai(balances?.total24hrPositionUsd).full
         } (24hr)` : null}
-        value={formatDai(isLogged ? balances?.change24hrPositionUsd : 0).full}
+        value={formatDai(isLogged ? balances?.totalPositionUsd : 0).full}
       />
       <ValueLabel
         large
