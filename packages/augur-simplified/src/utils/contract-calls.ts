@@ -665,7 +665,8 @@ const getInitPositionValues = (trades: UserTrades, amm: AmmExchange, isYesOutcom
 
   const totalShares = sharesEntered.shares.minus(sharesExited.shares);
   const avgPrice = totalShares.gt(0) ? sharesEntered.price.minus(sharesExited.price).div(sharesEntered.count.minus(sharesExited.count)) : new BN(0);
-  const cost = totalShares.gt(0) ? totalShares.times(avgPrice).times(new BN(cashPrice)) : new BN(0);
+  const formattedShares = new BN(onChainMarketSharesToDisplayFormatter(totalShares, amm.cash.decimals));
+  const cost = formattedShares.gt(0) ? formattedShares.times(avgPrice).times(new BN(cashPrice)) : new BN(0);
 
   return { avgPrice: String(avgPrice), initCostUsd: String(cost) }
 }
