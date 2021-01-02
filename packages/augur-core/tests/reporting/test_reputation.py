@@ -1,5 +1,5 @@
 from eth_tester.exceptions import TransactionFailed
-from pytest import raises, mark
+from pytest import raises
 from utils import AssertLog
 from reporting_utils import proceedToFork, finalize
 
@@ -73,39 +73,39 @@ def test_reputation_token_logging(contractsFixture, universe):
     with AssertLog(contractsFixture, 'TokensTransferred', tokensTransferredLog):
         assert reputationToken.transferFrom(contractsFixture.accounts[0], contractsFixture.accounts[1], 12, sender=contractsFixture.accounts[2])
 
-@mark.skip('breaks due to fixture refactor: code unchanged')
-def test_legacy_migration(augurInitializedFixture):
+def test_legacy_migration(augurPartiallyInitializedFixture):
+    fixture = augurPartiallyInitializedFixture
     # Initialize the legacy REP contract with some balances
-    legacyReputationToken = augurInitializedFixture.contracts['LegacyReputationToken']
+    legacyReputationToken = fixture.contracts['LegacyReputationToken']
     legacyReputationToken.faucet(11 * 10**6 * 10**18)
-    legacyReputationToken.transfer(augurInitializedFixture.accounts[1], 100)
-    legacyReputationToken.transfer(augurInitializedFixture.accounts[2], 100)
-    legacyReputationToken.approve(augurInitializedFixture.accounts[1], 1000)
-    legacyReputationToken.approve(augurInitializedFixture.accounts[2], 2000)
+    legacyReputationToken.transfer(fixture.accounts[1], 100)
+    legacyReputationToken.transfer(fixture.accounts[2], 100)
+    legacyReputationToken.approve(fixture.accounts[1], 1000)
+    legacyReputationToken.approve(fixture.accounts[2], 2000)
 
     # When we create a genesis universe we'll need to migrate the legacy REP before the contract can be used
-    universe = augurInitializedFixture.createUniverse()
-    reputationToken = augurInitializedFixture.applySignature("ReputationToken", universe.getReputationToken())
+    universe = fixture.createUniverse()
+    reputationToken = fixture.applySignature("ReputationToken", universe.getReputationToken())
 
     # We'll only partially migrate right now
-    legacyReputationToken.approve(reputationToken.address, 100, sender=augurInitializedFixture.accounts[1])
-    reputationToken.migrateFromLegacyReputationToken(sender=augurInitializedFixture.accounts[1])
-    assert reputationToken.balanceOf(augurInitializedFixture.accounts[1]) == 100
+    legacyReputationToken.approve(reputationToken.address, 100, sender=fixture.accounts[1])
+    reputationToken.migrateFromLegacyReputationToken(sender=fixture.accounts[1])
+    assert reputationToken.balanceOf(fixture.accounts[1]) == 100
 
     # Doing again is a noop
-    reputationToken.migrateFromLegacyReputationToken(sender=augurInitializedFixture.accounts[1])
-    assert reputationToken.balanceOf(augurInitializedFixture.accounts[1]) == 100
+    reputationToken.migrateFromLegacyReputationToken(sender=fixture.accounts[1])
+    assert reputationToken.balanceOf(fixture.accounts[1]) == 100
 
     # Doing with an account which has no legacy REP is a noop
     legacyReputationToken.approve(reputationToken.address, 100)
-    reputationToken.migrateFromLegacyReputationToken(sender=augurInitializedFixture.accounts[6])
-    assert reputationToken.balanceOf(augurInitializedFixture.accounts[6]) == 0
+    reputationToken.migrateFromLegacyReputationToken(sender=fixture.accounts[6])
+    assert reputationToken.balanceOf(fixture.accounts[6]) == 0
 
     # We'll finish the migration now
-    legacyReputationToken.approve(reputationToken.address, 11 * 10**6 * 10**18, sender=augurInitializedFixture.accounts[0])
-    reputationToken.migrateFromLegacyReputationToken(sender=augurInitializedFixture.accounts[0])
-    assert reputationToken.balanceOf(augurInitializedFixture.accounts[0]) == 11 * 10**6 * 10**18 - 200
+    legacyReputationToken.approve(reputationToken.address, 11 * 10**6 * 10**18, sender=fixture.accounts[0])
+    reputationToken.migrateFromLegacyReputationToken(sender=fixture.accounts[0])
+    assert reputationToken.balanceOf(fixture.accounts[0]) == 11 * 10**6 * 10**18 - 200
 
-    legacyReputationToken.approve(reputationToken.address, 100, sender=augurInitializedFixture.accounts[2])
-    reputationToken.migrateFromLegacyReputationToken(sender=augurInitializedFixture.accounts[2])
-    assert reputationToken.balanceOf(augurInitializedFixture.accounts[2]) == 100
+    legacyReputationToken.approve(reputationToken.address, 100, sender=fixture.accounts[2])
+    reputationToken.migrateFromLegacyReputationToken(sender=fixture.accounts[2])
+    assert reputationToken.balanceOf(fixture.accounts[2]) == 100
