@@ -23,6 +23,7 @@ export function handleApprovalForAllEvent(event: ApprovalForAllEvent): void {
   entity.logIndex = event.logIndex.toI32();
   entity.name = "ApprovalForAll";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.owner = toChecksumAddress(event.params.owner);
   entity.operator = toChecksumAddress(event.params.operator);
@@ -40,6 +41,7 @@ export function handleTransferBatchEvent(event: TransferBatchEvent): void {
   entity.logIndex = event.logIndex.toI32();
   entity.name = "TransferBatch";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.operator = toChecksumAddress(event.params.operator);
   entity.from = toChecksumAddress(event.params.from);
@@ -59,6 +61,7 @@ export function handleTransferSingleEvent(event: TransferSingleEvent): void {
   entity.logIndex = event.logIndex.toI32();
   entity.name = "TransferSingle";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.operator = toChecksumAddress(event.params.operator);
   entity.from = toChecksumAddress(event.params.from);
@@ -78,6 +81,7 @@ export function handleURIEvent(event: URIEvent): void {
   entity.logIndex = event.logIndex.toI32();
   entity.name = "URI";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.value = event.params.value;
   entity.id = bigIntToHexString(event.params.id);

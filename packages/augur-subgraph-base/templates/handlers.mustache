@@ -21,6 +21,7 @@ export function handle{{name}}Event(event: {{name}}Event): void {
   entity.logIndex = event.logIndex.toI32();
   entity.name = "{{name}}";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   {{#inputs}}
   entity.{{name}} = {{#GetTemplateForType}}{{name}}{{/GetTemplateForType}};
