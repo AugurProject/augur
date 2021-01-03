@@ -1020,8 +1020,13 @@ export interface SimpleBalance {
   rawBalance: string;
 }
 
+export interface LPTokenBalance extends SimpleBalance {
+  initCostUsd?: string;
+  usdValue?: string;
+  feesEarned?: string;
+}
 export interface LPTokens {
-  [ammId: string]: SimpleBalance
+  [ammId: string]: LPTokenBalance
 }
 export interface CurrencyBalance extends SimpleBalance {
   usdValue: string;

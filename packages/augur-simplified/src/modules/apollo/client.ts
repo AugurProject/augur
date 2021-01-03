@@ -41,15 +41,15 @@ export function augurV2Client(uri: string) {
 }
 
 export async function getMarketsData(paraConfig, updateBlocknumber, updateMarkets) {
-  const config = getConfig();
   const { networkId } = paraConfig;
   const cashes = jsonConfig[Number(networkId)].Cashes;
-
+  const config = getConfig(networkId);
   let response = null;
   let responseUsd = null;
   try {
     const block = await getPastDayBlockNumber(config);
     updateBlocknumber(block);
+
     const query = GET_MARKETS(block);
     response = await augurV2Client(config.augurClient).query({ query });
     responseUsd = await getCashTokenData(cashes);
@@ -58,6 +58,7 @@ export async function getMarketsData(paraConfig, updateBlocknumber, updateMarket
   }
 
   if (response) {
+    //console.log('response', JSON.stringify(response));
     if (response.errors) {
       console.error(JSON.stringify(response.errors, null, 1));
     }
@@ -80,8 +81,8 @@ async function getPastDayBlockNumber(config) {
 }
 const DEFAULT_NETWORK = '1';
 
-function getConfig() {
-  const network = process.env.network || DEFAULT_NETWORK;
+function getConfig(networkId) {
+  const network = networkId || DEFAULT_NETWORK;
   return jsonConfig[String(network)];
 }
 

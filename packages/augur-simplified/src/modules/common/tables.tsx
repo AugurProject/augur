@@ -17,7 +17,7 @@ import {
 } from 'modules/constants';
 import { Pagination } from 'modules/common/pagination';
 import { SmallDropdown } from './selection';
-import { AmmExchange, AmmTransaction, MarketInfo, PositionBalance, SimpleBalance, Winnings } from '../types';
+import { AmmExchange, AmmTransaction, LPTokenBalance, MarketInfo, PositionBalance, SimpleBalance, Winnings } from '../types';
 import { formatDai } from '../../utils/format-number';
 import { useActiveWeb3React } from '../ConnectAccount/hooks';
 import { USDC } from '../constants';
@@ -161,21 +161,21 @@ const LiquidityHeader = () => {
   const { isMobile } = useAppStatusStore();
   return (
     <ul className={Styles.LiquidityHeader}>
-      <li>liquidity shares{isMobile ? <br /> : ''}owned</li>
-      <li>init.{isMobile ? <br /> : ''}value</li>
-      <li>cur.{isMobile ? <br /> : ''}value</li>
-      <li>fees{isMobile ? <br /> : ''}earned</li>
+      <li>liquidity shares{isMobile ? <br /> : ' '}owned</li>
+      <li>init.{isMobile ? <br /> : ' '}value</li>
+      <li>cur.{isMobile ? <br /> : ' '}value</li>
+      <li>fees{isMobile ? <br /> : ' '}earned</li>
     </ul>
   );
 };
 
-const LiquidityRow = ({ liquidity }) => {
+const LiquidityRow = ({ liquidity }: { liquidity: LPTokenBalance }) => {
   return (
     <ul className={Styles.LiquidityRow}>
       <li>{liquidity.balance}</li>
-      <li>{'-'}</li>
-      <li>{'-'}</li>
-      <li>{'-'}</li>
+      <li>{formatDai(liquidity.initCostUsd).full}</li>
+      <li>{liquidity.usdValue ? formatDai(liquidity.usdValue).full : '-'}</li>
+      <li>{liquidity.feesEarned ? liquidity.feesEarned : '-'}</li>
     </ul>
   );
 };
