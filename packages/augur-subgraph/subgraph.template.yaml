@@ -174,7 +174,32 @@ dataSources:
       eventHandlers:
         - event: ParaAugurDeployFinished(address,address,address,address)
           handler: handleParaAugurDeployFinished
-
+  - kind: ethereum/contract
+    name: WethWrapperForAMMExchange
+    network: {{ ethereum.network }}
+    source:
+      address: '{{ addresses.WethWrapperForAMMExchange }}'
+      abi: WethWrapperForAMMExchange
+      startBlock: {{ uploadBlockNumber }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/index.ts
+      entities:
+        - AMMEchange
+      abis:
+        - name: WethWrapperForAMMExchange
+          file: ./abis/WethWrapperForAMMExchange.json
+      eventHandlers:
+        - event: AddLiquidity(address,address)
+          handler: wethWrapperHandleAddLiquidity
+        - event: EnterPosition(address,address)
+          handler: wethWrapperHandleEnterPosition
+        - event: ExitPosition(address,address)
+          handler: wethWrapperHandleExitPosition
+        - event: RemoveLiquidity(address,address)
+          handler: wethWrapperHandleRemoveLiquidity
 templates:
   - kind: ethereum/contract
     name: AMMExchange
