@@ -17,7 +17,15 @@ import {
 } from 'modules/constants';
 import { Pagination } from 'modules/common/pagination';
 import { SmallDropdown } from './selection';
-import { AmmExchange, AmmTransaction, LPTokenBalance, MarketInfo, PositionBalance, SimpleBalance, Winnings } from '../types';
+import {
+  AmmExchange,
+  AmmTransaction,
+  LPTokenBalance,
+  MarketInfo,
+  PositionBalance,
+  SimpleBalance,
+  Winnings,
+} from '../types';
 import { formatDai } from '../../utils/format-number';
 import { useActiveWeb3React } from '../ConnectAccount/hooks';
 import { USDC } from '../constants';
@@ -38,7 +46,13 @@ interface LiquidityTableProps {
   singleMarket?: boolean;
 }
 
-const MarketTableHeader = ({ market, ammExchange }: { market: MarketInfo, ammExchange: AmmExchange }) => {
+const MarketTableHeader = ({
+  market,
+  ammExchange,
+}: {
+  market: MarketInfo;
+  ammExchange: AmmExchange;
+}) => {
   return (
     <div className={Styles.MarketTableHeader}>
       <span>{market.description}</span>
@@ -60,8 +74,8 @@ const PositionHeader = () => {
             owned
           </>
         ) : (
-            'quantity owned'
-          )}
+          'quantity owned'
+        )}
       </li>
       <li>
         {isMobile ? (
@@ -71,8 +85,8 @@ const PositionHeader = () => {
             price
           </>
         ) : (
-            'avg. price paid'
-          )}
+          'avg. price paid'
+        )}
       </li>
       <li>init. value</li>
       <li>cur.{isMobile ? <br /> : ' '}value</li>
@@ -103,7 +117,9 @@ export const PositionFooter = ({ claimableWinnings }: PositionFooterProps) => {
   return (
     <div className={Styles.PositionFooter}>
       {claimableWinnings && (
-        <SecondaryButton text={`${claimableWinnings.claimableBalance} in Winnings to claim`} />
+        <SecondaryButton
+          text={`${claimableWinnings.claimableBalance} in Winnings to claim`}
+        />
       )}
       {!isMobile && <PrimaryButton text="trade" />}
     </div>
@@ -111,25 +127,31 @@ export const PositionFooter = ({ claimableWinnings }: PositionFooterProps) => {
 };
 
 export const AllPositionTable = () => {
-  const { userInfo: { balances: { marketShares } } } = useAppStatusStore();
-  const positions = marketShares ?
-    Object.values(marketShares) as unknown[] as { ammExchange: AmmExchange, positions: PositionBalance[], claimableWinnings: Winnings }[]
+  const {
+    userInfo: {
+      balances: { marketShares },
+    },
+  } = useAppStatusStore();
+  const positions = marketShares
+    ? ((Object.values(marketShares) as unknown[]) as {
+        ammExchange: AmmExchange;
+        positions: PositionBalance[];
+        claimableWinnings: Winnings;
+      }[])
     : [];
 
-  const positionVis = positions.map(position => {
-    return <PositionTable
-      market={position.ammExchange.market}
-      ammExchange={position.ammExchange}
-      positions={position.positions}
-      claimableWinnings={position.claimableWinnings}
-    />
+  const positionVis = positions.map((position) => {
+    return (
+      <PositionTable
+        market={position.ammExchange.market}
+        ammExchange={position.ammExchange}
+        positions={position.positions}
+        claimableWinnings={position.claimableWinnings}
+      />
+    );
   });
 
-  return (
-    <>
-      {positionVis}
-    </>
-  );
+  return <>{positionVis}</>;
 };
 
 export const PositionTable = ({
@@ -139,20 +161,20 @@ export const PositionTable = ({
   claimableWinnings,
   singleMarket,
 }: PositionsTableProps) => {
-
   return (
     <div className={Styles.PositionTable}>
-      {!singleMarket && <MarketTableHeader market={market} ammExchange={ammExchange} />}
+      {!singleMarket && (
+        <MarketTableHeader market={market} ammExchange={ammExchange} />
+      )}
       <PositionHeader />
-      {positions && positions.filter(p => p.visible).map((position, id) => (
-        <PositionRow key={id} position={position} />
-      ))}
+      {positions &&
+        positions
+          .filter((p) => p.visible)
+          .map((position, id) => <PositionRow key={id} position={position} />)}
       {!singleMarket && (
         <PositionFooter claimableWinnings={claimableWinnings} />
       )}
-      {singleMarket && (
-        <div className={Styles.PaginationFooter} />
-      )}
+      {singleMarket && <div className={Styles.PaginationFooter} />}
     </div>
   );
 };
@@ -190,24 +212,31 @@ export const LiquidityFooter = () => {
 };
 
 export const AllLiquidityTable = () => {
-  const { processed, userInfo: { balances: { lpTokens } } } = useAppStatusStore();
+  const {
+    processed,
+    userInfo: {
+      balances: { lpTokens },
+    },
+  } = useAppStatusStore();
   const { ammExchanges } = processed;
-  const liquidities = lpTokens ?
-    Object.keys(lpTokens).map(ammId => ({
-      ammExchange: ammExchanges[ammId],
-      market: ammExchanges[ammId].market,
-      lpTokens: lpTokens[ammId],
-    }))
-    : []
-  const liquiditiesViz = liquidities.map(liquidity => {
-    return <LiquidityTable market={liquidity.market} ammExchange={liquidity.ammExchange} lpTokens={liquidity.lpTokens} />
+  const liquidities = lpTokens
+    ? Object.keys(lpTokens).map((ammId) => ({
+        ammExchange: ammExchanges[ammId],
+        market: ammExchanges[ammId].market,
+        lpTokens: lpTokens[ammId],
+      }))
+    : [];
+  const liquiditiesViz = liquidities.map((liquidity) => {
+    return (
+      <LiquidityTable
+        market={liquidity.market}
+        ammExchange={liquidity.ammExchange}
+        lpTokens={liquidity.lpTokens}
+      />
+    );
   });
 
-  return (
-    <>
-      {liquiditiesViz}
-    </>
-  )
+  return <>{liquiditiesViz}</>;
 };
 
 export const LiquidityTable = ({
@@ -219,9 +248,7 @@ export const LiquidityTable = ({
     <div className={Styles.LiquidityTable}>
       <MarketTableHeader market={market} ammExchange={ammExchange} />
       <LiquidityHeader />
-      {lpTokens && (
-        <LiquidityRow liquidity={lpTokens} />
-      )}
+      {lpTokens && <LiquidityRow liquidity={lpTokens} />}
       <LiquidityFooter />
     </div>
   );
@@ -241,8 +268,14 @@ export const PositionsLiquidityViewSwitcher = ({
   setTables,
 }: PositionsLiquidityViewSwitcherProps) => {
   const [tableView, setTableView] = useState(POSITIONS);
-  const { account } = useActiveWeb3React();
-  const { userInfo: { balances: { lpTokens, marketShares } } } = useAppStatusStore();
+  const {
+    processed,
+    userInfo: {
+      balances: { lpTokens, marketShares },
+    },
+  } = useAppStatusStore();
+  const { ammExchanges } = processed;
+
   const ammId = ammExchange?.id;
   let userPositions = [];
   let liquidity = null;
@@ -250,11 +283,26 @@ export const PositionsLiquidityViewSwitcher = ({
   if (ammId && marketShares) {
     userPositions = marketShares[ammId] ? marketShares[ammId].positions : [];
     liquidity = lpTokens[ammId] ? lpTokens[ammId] : null;
-    winnings = marketShares[ammId] ? marketShares[ammId]?.claimableWinnings : null;
+    winnings = marketShares[ammId]
+      ? marketShares[ammId]?.claimableWinnings
+      : null;
   }
   const market = ammExchange?.market;
 
-  const isLogged = account !== null;
+  const positions = marketShares
+    ? ((Object.values(marketShares) as unknown[]) as {
+        ammExchange: AmmExchange;
+        positions: PositionBalance[];
+        claimableWinnings: Winnings;
+      }[])
+    : [];
+  const liquidities = lpTokens
+    ? Object.keys(lpTokens).map((ammId) => ({
+        ammExchange: ammExchanges[ammId],
+        market: ammExchanges[ammId].market,
+        lpTokens: lpTokens[ammId],
+      }))
+    : [];
   return (
     <div className={Styles.PositionsLiquidityViewSwitcher}>
       <div>
@@ -291,16 +339,12 @@ export const PositionsLiquidityViewSwitcher = ({
           />
         )}
       </div>
-      {tableView !== null && isLogged && (
+      {tableView !== null && (positions.length > 0 || liquidities.length > 0) && (
         <div>
           {!ammId && (
             <>
-              {tableView === POSITIONS &&
-                <AllPositionTable />
-              }
-              {tableView === LIQUIDITY &&
-                <AllLiquidityTable />
-              }
+              {tableView === POSITIONS && <AllPositionTable />}
+              {tableView === LIQUIDITY && <AllLiquidityTable />}
               <Pagination
                 page={1}
                 itemCount={10}
@@ -312,17 +356,31 @@ export const PositionsLiquidityViewSwitcher = ({
           )}
           {ammId && (
             <>
-              {tableView === POSITIONS && (
-                <PositionTable singleMarket market={market} ammExchange={ammExchange} positions={userPositions} claimableWinnings={winnings} />
+              {tableView === POSITIONS && userPositions.length > 0 && (
+                <PositionTable
+                  singleMarket
+                  market={market}
+                  ammExchange={ammExchange}
+                  positions={userPositions}
+                  claimableWinnings={winnings}
+                />
               )}
-              {tableView === LIQUIDITY && (
-                <LiquidityTable singleMarket market={market} ammExchange={ammExchange} lpTokens={liquidity} />
+              {tableView === LIQUIDITY && liquidity.length > 0 && (
+                <LiquidityTable
+                  singleMarket
+                  market={market}
+                  ammExchange={ammExchange}
+                  lpTokens={liquidity}
+                />
               )}
             </>
           )}
         </div>
       )}
-      {!isLogged && <span>No {tableView === LIQUIDITY ? 'liquidity' : 'positions'} to show</span>}
+      {(positions.length === 0 || (ammId && userPositions.length === 0)) &&
+        tableView === POSITIONS && <span>No positions to show</span>}
+      {(liquidities.length === 0 || (ammId && liquidity.length === 0)) &&
+        tableView === LIQUIDITY && <span>No liquidity to show</span>}
     </div>
   );
 };
@@ -345,41 +403,41 @@ const TransactionsHeader = () => {
             defaultValue={ALL}
           />
         ) : (
-            <>
-              <span
-                className={classNames({
-                  [Styles.Selected]: selectedType === ALL,
-                })}
-                onClick={() => setSelectedType(ALL)}
-              >
-                all
+          <>
+            <span
+              className={classNames({
+                [Styles.Selected]: selectedType === ALL,
+              })}
+              onClick={() => setSelectedType(ALL)}
+            >
+              all
             </span>
-              <span
-                className={classNames({
-                  [Styles.Selected]: selectedType === SWAP,
-                })}
-                onClick={() => setSelectedType(SWAP)}
-              >
-                swaps
+            <span
+              className={classNames({
+                [Styles.Selected]: selectedType === SWAP,
+              })}
+              onClick={() => setSelectedType(SWAP)}
+            >
+              swaps
             </span>
-              <span
-                className={classNames({
-                  [Styles.Selected]: selectedType === ADD,
-                })}
-                onClick={() => setSelectedType(ADD)}
-              >
-                adds
+            <span
+              className={classNames({
+                [Styles.Selected]: selectedType === ADD,
+              })}
+              onClick={() => setSelectedType(ADD)}
+            >
+              adds
             </span>
-              <span
-                className={classNames({
-                  [Styles.Selected]: selectedType === REMOVE,
-                })}
-                onClick={() => setSelectedType(REMOVE)}
-              >
-                removes
+            <span
+              className={classNames({
+                [Styles.Selected]: selectedType === REMOVE,
+              })}
+              onClick={() => setSelectedType(REMOVE)}
+            >
+              removes
             </span>
-            </>
-          )}
+          </>
+        )}
       </li>
       <li>total value</li>
       <li>token amount</li>
@@ -393,9 +451,11 @@ const TransactionsHeader = () => {
 const AccountLink = ({ account }) => {
   // TODO: make this a etherscan link
   return (
-    <span>{account && account.slice(0, 6) + '...' + account.slice(38, 42)}</span>
-  )
-}
+    <span>
+      {account && account.slice(0, 6) + '...' + account.slice(38, 42)}
+    </span>
+  );
+};
 
 interface TransactionProps {
   transaction: AmmTransaction;
@@ -408,7 +468,9 @@ const TransactionRow = ({ transaction }: TransactionProps) => {
       <li>{formatDai(transaction.value).full}</li>
       <li>{transaction.tokenAmount}</li>
       <li>{transaction.shareAmount}</li>
-      <li><AccountLink account={transaction.sender} /></li>
+      <li>
+        <AccountLink account={transaction.sender} />
+      </li>
       <li>{transaction.time}</li>
     </ul>
   );
@@ -438,8 +500,8 @@ export const TransactionsTable = ({ transactions }: TransactionsProps) => {
           </div>
         </>
       ) : (
-          <span>No transactions to show</span>
-        )}
+        <span>No transactions to show</span>
+      )}
     </div>
   );
 };
