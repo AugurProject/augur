@@ -39,19 +39,33 @@ export const MarketLink = ({ id, ammId, children }: MarketLinkProps) => {
   );
 };
 
-export const ExternalLink = ({ URL, label }) => (
+interface ExternalLinkProps {
+  URL: string;
+  label: string;
+};
+
+export const ExternalLink = ({ URL, label }: ExternalLinkProps) => (
   <a key={`${URL}-${label}`} href={URL} target="_blank" rel="noopener noreferrer">
     {label}
   </a>
 );
 
-export const RecieptLink = ({ txId, label = 'Receipt' }) => {
+interface ReceiptLinkProps {
+  txId: string;
+  label?: string;
+};
+
+export const ReceiptLink = ({ txId, label = 'Receipt' }: ReceiptLinkProps) => {
   const { paraConfig: { networkId } } = useAppStatusStore();
   const URL = `${RECEIPT_LINKS[networkId] || RECEIPT_LINKS[1]}${txId}`;
   return <ExternalLink {...{ URL, label }} />;
 };
 
-export const AddressLink = ({ account }) => {
+interface AccountLinkProps {
+  account: string;
+};
+
+export const AddressLink = ({ account }: AccountLinkProps) => {
   const { paraConfig: { networkId } } = useAppStatusStore();
   const URL = `${ADDRESS_LINKS[networkId] || ADDRESS_LINKS[1]}${account}`;
   return <ExternalLink {...{ URL, label: account }} />;
