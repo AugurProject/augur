@@ -289,52 +289,83 @@
 
     color: var(--simple-primary-text);
   }
+
+  &:hover {
+    > span {
+      border: @size-2 solid var(--simple-border-dk);
+      background: transparent;
+
+      > svg {
+        height: .75rem;
+        width: .75rem;
+        margin: auto;
+        background: var(--simple-secondary-text);
+        border-radius: 0;
+
+        > path {
+          fill: var(--simple-secondary-text);
+        }
+      }
+    }
+  }
+
+  &[class*="isSelected_"]:not(:hover) > span {
+    border: @size-2 solid transparent;
+  }
 }
 
 .isSelected_0 {
   > span {
+    border: @size-2 solid var(--simple-border-dk);
     background: var(--simple-invalid);
   }
 }
 
 .isSelected_1 {
   > span {
+    border: @size-2 solid var(--simple-border-dk);
     background: var(--simple-no);
   }
 }
 
 .isSelected_2 {
   > span {
+    border: @size-2 solid var(--simple-border-dk);
     background: var(--simple-yes);
   }
 }
 
 .isSelected_3 {
   > span {
+    border: @size-2 solid var(--simple-border-dk);
     background: var(--medical-color);
   }
 }
 
 .isSelected_4 {
   > span {
+    border: @size-2 solid var(--simple-border-dk);
     background: var(--entertainment-color);
   }
 }
 
 .isSelected_5 {
   > span {
+    border: @size-2 solid var(--simple-border-dk);
     background: var(--crypto-color);
   }
 }
 
 .isSelected_6 {
   > span {
+    border: @size-2 solid var(--simple-border-dk);
     background: var(--sports-color);
   }
 }
 
 .isSelected_7 {
   > span {
+    border: @size-2 solid var(--simple-border-dk);
     background: var(--politics-color);
   }
 }
