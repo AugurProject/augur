@@ -199,6 +199,12 @@ const MarketsView = () => {
     });
   }, [sortBy, categories, reportingState, currency, markets]);
 
+  useEffect(() => {
+    // initial render only.
+    document.getElementById("mainContent")?.scrollTo(0, 0);
+    window.scrollTo(0, 1);
+  }, []);
+
   return (
     <div className={Styles.MarketsView}>
       <AppViewStats showCashAmounts />

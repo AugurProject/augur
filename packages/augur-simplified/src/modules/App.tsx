@@ -131,7 +131,7 @@ const AppBody = () => {
 
   const sidebarOut = sidebarType && isMobile;
   return (
-    <div className={classNames(Styles.App, {
+    <div id="mainContent" className={classNames(Styles.App, {
       [Styles.SidebarOut]: sidebarOut,
     })}>
       {modalShowing && <ModalView />}

@@ -27,7 +27,6 @@ import {
   Winnings,
 } from '../types';
 import { formatDai } from '../../utils/format-number';
-import { useActiveWeb3React } from '../ConnectAccount/hooks';
 import { USDC } from '../constants';
 import { useAppStatusStore } from '../stores/app-status';
 
