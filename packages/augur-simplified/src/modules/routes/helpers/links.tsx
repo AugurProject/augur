@@ -13,8 +13,13 @@ interface MarketLinkProps {
 }
 
 const RECEIPT_LINKS = {
-  [42]: 'kovan.etherscan.com?t=',
-  [1]: 'www.etherscan.com?t=',
+  42: 'https://kovan.etherscan.io/tx/',
+  1: 'https://etherscan.io/tx/',
+};
+
+const ADDRESS_LINKS = {
+  42: 'https://kovan.etherscan.io/address/',
+  1: 'https://etherscan.io/address/',
 };
 
 export const MarketLink = ({ id, ammId, children }: MarketLinkProps) => {
@@ -35,7 +40,7 @@ export const MarketLink = ({ id, ammId, children }: MarketLinkProps) => {
 };
 
 export const ExternalLink = ({ URL, label }) => (
-  <a href={URL} target="_blank" rel="noopener noreferrer">
+  <a key={`${URL}-${label}`} href={URL} target="_blank" rel="noopener noreferrer">
     {label}
   </a>
 );
@@ -44,4 +49,10 @@ export const RecieptLink = ({ txId, label = 'Receipt' }) => {
   const { paraConfig: { networkId } } = useAppStatusStore();
   const URL = `${RECEIPT_LINKS[networkId] || RECEIPT_LINKS[1]}${txId}`;
   return <ExternalLink {...{ URL, label }} />;
+};
+
+export const AddressLink = ({ account }) => {
+  const { paraConfig: { networkId } } = useAppStatusStore();
+  const URL = `${ADDRESS_LINKS[networkId] || ADDRESS_LINKS[1]}${account}`;
+  return <ExternalLink {...{ URL, label: account }} />;
 };
