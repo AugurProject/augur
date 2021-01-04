@@ -27,7 +27,6 @@ import {
   Winnings,
 } from '../types';
 import { formatDai } from '../../utils/format-number';
-import { useActiveWeb3React } from '../ConnectAccount/hooks';
 import { USDC } from '../constants';
 import { useAppStatusStore } from '../stores/app-status';
 
@@ -339,7 +338,7 @@ export const PositionsLiquidityViewSwitcher = ({
           />
         )}
       </div>
-      {tableView !== null && (positions.length > 0 || liquidities.length > 0) && (
+      {tableView !== null && (positions?.length > 0 || liquidities?.length > 0) && (
         <div>
           {!ammId && (
             <>
@@ -356,7 +355,7 @@ export const PositionsLiquidityViewSwitcher = ({
           )}
           {ammId && (
             <>
-              {tableView === POSITIONS && userPositions.length > 0 && (
+              {tableView === POSITIONS && userPositions?.length > 0 && (
                 <PositionTable
                   singleMarket
                   market={market}
@@ -365,7 +364,7 @@ export const PositionsLiquidityViewSwitcher = ({
                   claimableWinnings={winnings}
                 />
               )}
-              {tableView === LIQUIDITY && liquidity.length > 0 && (
+              {tableView === LIQUIDITY && liquidity?.length > 0 && (
                 <LiquidityTable
                   singleMarket
                   market={market}
@@ -377,9 +376,9 @@ export const PositionsLiquidityViewSwitcher = ({
           )}
         </div>
       )}
-      {(positions.length === 0 || (ammId && userPositions.length === 0)) &&
+      {(positions?.length === 0 || (ammId && userPositions?.length === 0)) &&
         tableView === POSITIONS && <span>No positions to show</span>}
-      {(liquidities.length === 0 || (ammId && liquidity.length === 0)) &&
+      {(liquidities?.length === 0 || (ammId && liquidity?.length === 0)) &&
         tableView === LIQUIDITY && <span>No liquidity to show</span>}
     </div>
   );
