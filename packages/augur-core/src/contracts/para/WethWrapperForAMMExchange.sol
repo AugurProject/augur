@@ -14,6 +14,11 @@ contract WethWrapperForAMMExchange {
 
     uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
 
+    event AddLiquidity(address amm, address sender);
+    event EnterPosition(address amm, address sender);
+    event ExitPosition(address amm, address sender);
+    event RemoveLiquidity(address amm, address sender);
+
     // For WETH integration, since weth.withdraw() causes ETH to be sent here.
     function() external payable {}
 
@@ -54,13 +59,23 @@ contract WethWrapperForAMMExchange {
     function addInitialLiquidity(IMarket _market, uint256 _fee, uint256 _ratioFactor, bool _keepLong, address _recipient) external payable returns (uint256) {
         weth.deposit.value(msg.value)();
         IAMMExchange _amm = getAMM(_market, _fee);
-        return _amm.addInitialLiquidity(msg.value, _ratioFactor, _keepLong, _recipient);
+        uint256 liquidity = _amm.addInitialLiquidity(msg.value, _ratioFactor, _keepLong, _recipient);
+
+        // The graph mappings assume this event is emitted immediately after the corresponding amm event.
+        emit AddLiquidity(address(_amm), msg.sender);
+
+        return liquidity;
     }
 
     function addLiquidity(IMarket _market, uint256 _fee, address _recipient) public payable returns (uint256) {
         weth.deposit.value(msg.value)();
         IAMMExchange _amm = getAMM(_market, _fee);
-        return _amm.addLiquidity(msg.value, _recipient);
+        uint256 liquidity = _amm.addLiquidity(msg.value, _recipient);
+
+        // The graph mappings assume this event is emitted immediately after the corresponding amm event.
+        emit AddLiquidity(address(_amm), msg.sender);
+
+        return liquidity;
     }
 
     function removeLiquidity(IMarket _market, uint256 _fee, uint256 _poolTokensToSell, uint256 _minSetsSold) external returns (uint256 _shortShare, uint256 _longShare, uint256 _cashShare, uint256 _setsSold) {
@@ -68,6 +83,10 @@ contract WethWrapperForAMMExchange {
         _amm.transferFrom(msg.sender, address(this), _poolTokensToSell);
 
         (_shortShare, _longShare, _cashShare, _setsSold) = _amm.removeLiquidity(_poolTokensToSell, _minSetsSold);
+
+        // The graph mappings assume this event is emitted immediately after the corresponding amm event.
+        emit RemoveLiquidity(address(_amm), msg.sender);
+
         shareTransfer(_market, address(this), msg.sender, _shortShare, _shortShare, _longShare);
 
         if (_cashShare > 0) {
@@ -81,7 +100,12 @@ contract WethWrapperForAMMExchange {
         uint256 _numTicks = _market.getNumTicks();
         weth.deposit.value(msg.value)();
 
+        (uint256 _priorNo, uint _priorYes) = _amm.yesNoShareBalances(msg.sender);
         uint256 shares = _amm.enterPosition(msg.value, _buyLong, _minShares);
+
+        // The graph mappings assume this event is emitted immediately after the corresponding amm event.
+        emit EnterPosition(address(_amm), msg.sender);
+
         if (_buyLong) {
             shareTransfer(_market, address(this), msg.sender, 0, 0, shares);
         } else {
@@ -94,11 +118,14 @@ contract WethWrapperForAMMExchange {
         IAMMExchange _amm = getAMM(_market, _fee);
         shareTransfer(_market, msg.sender, address(this), _shortShares, _shortShares, _longShares);
         uint256 _cashPayout = _amm.exitPosition(_shortShares, _longShares, _minCashPayout);
+        // The graph mappings assume this event is emitted immediately after the corresponding amm event.
+        emit ExitPosition(address(_amm), msg.sender);
 
         if (_cashPayout > 0) {
             weth.withdraw(_cashPayout);
             msg.sender.transfer(_cashPayout);
         }
+
         return _cashPayout;
     }
 
