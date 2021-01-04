@@ -1,10 +1,5 @@
 @import (reference) '~assets/styles/shared';
 
-.DefaultModalBorder {
-  border: @size-1 solid var(--simple-border);
-  border-radius: var(--border-radius-extra-rounded);
-}
-
 .ModalView {
   background-color: var(--simple-primary-text-40);
   height: 100vh;
@@ -14,8 +9,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  
+
   > div {
+    .SimpleBorder;
+
     align-items: center;
     display: flex;
     flex-direction: column;
@@ -24,11 +21,6 @@
     width: fit-content;
     padding: @size-16;
     background: var(--simple-light-bg);
-
-    & > section {
-      align-items: center;
-      display: flex;
-    }
   }
 }
 
@@ -37,5 +29,24 @@
   flex: 1;
   padding: @size-16;
   flex-direction: row;
-  max-height: @size-512;
+  width: 597px;
+}
+
+.Header {
+    display: flex;
+    flex: 1;
+
+    > span {
+        .text-20-bold;
+
+        color: var(--simple-primary-text);
+        text-transform: capitalize;
+        flex: 1;
+    }
+
+    > button {
+        background: transparent;
+        outline: 0;
+        border: 0;
+    }
 }
