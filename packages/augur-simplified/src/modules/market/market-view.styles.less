@@ -11,7 +11,7 @@
       margin-bottom: @size-32;
 
       > h1 {
-        .text-36-bold;
+        .text-30-bold;
 
         color: var(--simple-primary-text);
         margin: 0;
@@ -63,7 +63,12 @@
 .CurrencyLabel {
   .RoundedLabel;
 
+  cursor: default;
   margin-left: auto;
+
+  &:hover {    
+    border: @size-1 solid var(--simple-border);
+  }
 }
 
 

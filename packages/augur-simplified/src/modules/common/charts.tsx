@@ -319,7 +319,7 @@ const getOptions = ({
     animation: false,
     reflow: true,
     marginTop: 11,
-    spacing: [22, 0, 22, 0],
+    spacing: [22, 0, 8, 0],
   },
   credits: {
     enabled: false,
