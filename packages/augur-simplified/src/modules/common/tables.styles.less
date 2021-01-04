@@ -10,7 +10,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: @size-8;
+  border-bottom-right-radius: @size-8;
+  border-bottom-left-radius: @size-8;
 }
 
 .MarketTableHeader {
@@ -46,6 +47,12 @@
   display: flex;
   background: var(--simple-light-bg);
   flex-direction: column;
+
+  > span {
+    .EmptyMessage;
+
+    border-top: @size-1 solid var(--simple-border);
+  }
 }
 
 .RowHeaderSharedStyles {
@@ -141,6 +148,11 @@
 
 .LiquidityTable {
   .SharedTable;
+
+  > span {
+    justify-content: space-between;
+    padding: @size-20 @size-32;
+  }
 }
 
 .FooterSharedStyles {

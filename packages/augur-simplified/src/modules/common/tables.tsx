@@ -28,7 +28,7 @@ import {
 } from '../types';
 import { formatDai } from '../../utils/format-number';
 import { useActiveWeb3React } from '../ConnectAccount/hooks';
-import { USDC } from '../constants';
+import { MODAL_ADD_LIQUIDITY, USDC } from '../constants';
 import { useAppStatusStore } from '../stores/app-status';
 
 interface PositionsTableProps {
@@ -167,6 +167,7 @@ export const PositionTable = ({
         <MarketTableHeader market={market} ammExchange={ammExchange} />
       )}
       <PositionHeader />
+      {positions.length === 0 && <span>No positions to show</span>}
       {positions &&
         positions
           .filter((p) => p.visible)
@@ -174,7 +175,7 @@ export const PositionTable = ({
       {!singleMarket && (
         <PositionFooter claimableWinnings={claimableWinnings} />
       )}
-      {singleMarket && <div className={Styles.PaginationFooter} />}
+      {singleMarket && positions.length !== 0 && <div className={Styles.PaginationFooter} />}
     </div>
   );
 };
@@ -241,15 +242,27 @@ export const AllLiquidityTable = () => {
 
 export const LiquidityTable = ({
   market,
+  singleMarket,
   ammExchange,
   lpTokens,
 }: LiquidityTableProps) => {
+  const {
+    actions: { setModal }
+  } = useAppStatusStore();
   return (
     <div className={Styles.LiquidityTable}>
-      <MarketTableHeader market={market} ammExchange={ammExchange} />
+      {!singleMarket && (
+        <MarketTableHeader market={market} ammExchange={ammExchange} />
+      )}
       <LiquidityHeader />
+      {!lpTokens && (
+        <span>
+          No liquidity to show
+          <PrimaryButton action={() => setModal({type: MODAL_ADD_LIQUIDITY})} text="Earn fees as a liquidity provider" />
+        </span>
+      )}
       {lpTokens && <LiquidityRow liquidity={lpTokens} />}
-      <LiquidityFooter />
+      {lpTokens && <LiquidityFooter />}
     </div>
   );
 };
@@ -339,9 +352,9 @@ export const PositionsLiquidityViewSwitcher = ({
           />
         )}
       </div>
-      {tableView !== null && (positions.length > 0 || liquidities.length > 0) && (
+      {tableView !== null && (
         <div>
-          {!ammId && (
+          {!ammId && (positions.length > 0 || liquidities.length > 0) && (
             <>
               {tableView === POSITIONS && <AllPositionTable />}
               {tableView === LIQUIDITY && <AllLiquidityTable />}
@@ -356,7 +369,7 @@ export const PositionsLiquidityViewSwitcher = ({
           )}
           {ammId && (
             <>
-              {tableView === POSITIONS && userPositions.length > 0 && (
+              {tableView === POSITIONS && (
                 <PositionTable
                   singleMarket
                   market={market}
@@ -365,7 +378,7 @@ export const PositionsLiquidityViewSwitcher = ({
                   claimableWinnings={winnings}
                 />
               )}
-              {tableView === LIQUIDITY && liquidity.length > 0 && (
+              {tableView === LIQUIDITY && (
                 <LiquidityTable
                   singleMarket
                   market={market}
@@ -377,10 +390,12 @@ export const PositionsLiquidityViewSwitcher = ({
           )}
         </div>
       )}
-      {(positions.length === 0 || (ammId && userPositions.length === 0)) &&
-        tableView === POSITIONS && <span>No positions to show</span>}
-      {(liquidities.length === 0 || (ammId && liquidity.length === 0)) &&
-        tableView === LIQUIDITY && <span>No liquidity to show</span>}
+      {positions.length === 0 && !ammId && tableView === POSITIONS && (
+        <span>No positions to show</span>
+      )}
+      {liquidities.length === 0 && !ammId && tableView === LIQUIDITY && (
+        <span>No liquidity to show</span>
+      )}
     </div>
   );
 };

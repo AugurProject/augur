@@ -3,12 +3,12 @@ import React from 'react';
 import Styles from 'modules/modal/modal.styles.less';
 import { Header } from './common';
 
-const ModalInvalid = () => {
+const ModalAddLiquidity = () => {
   return (
-    <section className={Styles.ModalInvalid}>
+    <section className={Styles.ModalAddLiquidity}>
       <Header title='invalid' />
     </section>
   );
 };
 
-export default ModalInvalid;
+export default ModalAddLiquidity;
