@@ -197,3 +197,6 @@ export enum ApprovalState {
 }
 
 export const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
+
+// Modals
+export const MODAL_INVALID = 'MODAL_INVALID';

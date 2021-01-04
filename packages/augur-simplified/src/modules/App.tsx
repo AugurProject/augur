@@ -17,6 +17,7 @@ import { ConnectAccountProvider } from 'modules/ConnectAccount/connect-account-p
 import { useActiveWeb3React } from 'modules/ConnectAccount/hooks';
 import classNames from 'classnames';
 import { TransactionDetails } from './types';
+import ModalView from 'modules/modal/modal-view';
 
 function checkIsMobile(setIsMobile) {
   const isMobile =
@@ -36,6 +37,7 @@ const AppBody = () => {
     isMobile,
     blocknumber,
     transactions,
+    modal,
     actions: {
       setIsMobile,
       updateGraphData,
@@ -46,6 +48,7 @@ const AppBody = () => {
     },
   } = useAppStatusStore();
   const { account, library } = useActiveWeb3React();
+  const modalShowing = Object.keys(modal).length !== 0;
 
   useEffect(() => {
     // get data immediately, then setup interval
@@ -130,6 +133,7 @@ const AppBody = () => {
     <div className={classNames(Styles.App, {
       [Styles.SidebarOut]: sidebarOut,
     })}>
+      {modalShowing && <ModalView />}
       {sidebarOut && <Sidebar />}
       <TopNav />
       <Routes />
