@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Styles from 'modules/portfolio/portfolio-view.styles.less';
 import { AppViewStats } from 'modules/common/labels';
 import Activity from './activity';
@@ -15,6 +15,12 @@ export const PortfolioView = () => {
   const { isMobile } = useAppStatusStore();
   const [view, setView] = useState(TABLES);
   const isLogged = account !== null;
+
+  useEffect(() => {
+    // initial render only.
+    document.getElementById("mainContent")?.scrollTo(0, 0);
+    window.scrollTo(0, 1);
+  }, []);
 
   return (
     <div className={Styles.PortfolioView}>

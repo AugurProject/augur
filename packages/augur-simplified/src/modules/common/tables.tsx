@@ -27,7 +27,6 @@ import {
   Winnings,
 } from '../types';
 import { formatDai } from '../../utils/format-number';
-import { useActiveWeb3React } from '../ConnectAccount/hooks';
 import { MODAL_ADD_LIQUIDITY, USDC } from '../constants';
 import { useAppStatusStore } from '../stores/app-status';
 
@@ -390,10 +389,10 @@ export const PositionsLiquidityViewSwitcher = ({
           )}
         </div>
       )}
-      {positions.length === 0 && !ammId && tableView === POSITIONS && (
+      {positions?.length === 0 && !ammId && tableView === POSITIONS && (
         <span>No positions to show</span>
       )}
-      {liquidities.length === 0 && !ammId && tableView === LIQUIDITY && (
+      {liquidities?.length === 0 && !ammId && tableView === LIQUIDITY && (
         <span>No liquidity to show</span>
       )}
     </div>

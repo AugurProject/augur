@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import Styles from 'modules/market/market-view.styles.less';
 import classNames from 'classnames';
@@ -75,6 +75,13 @@ const MarketView = ({ defaultMarket = null }) => {
     actions: { setShowTradingForm },
     processed: { markets },
   } = useAppStatusStore();
+
+  useEffect(() => {
+    // initial render only.
+    document.getElementById("mainContent")?.scrollTo(0, 0);
+    window.scrollTo(0, 1);
+  }, []);
+
   const market: MarketInfo = !!defaultMarket ? defaultMarket : markets[marketId];
   const amm: AmmExchange = market?.amm;
 
@@ -86,7 +93,7 @@ const MarketView = ({ defaultMarket = null }) => {
         <div className={Styles.topRow}>
           <CategoryIcon category={market.categories[0]} />
           <CategoryLabel category={market.categories[1]} />
-          <CurrencyLabel name={market.amm?.cash?.name} />
+          <CurrencyLabel name={amm?.cash?.name} />
         </div>
         <h1>{market.description}</h1>
         <ul className={Styles.StatsRow}>
@@ -96,11 +103,11 @@ const MarketView = ({ defaultMarket = null }) => {
           </li>
           <li>
             <span>Total Volume</span>
-            <span>{formatDai(amm.volumeTotalUSD || '0.00').full}</span>
+            <span>{formatDai(amm?.volumeTotalUSD || '0.00').full}</span>
           </li>
           <li>
             <span>Liquidity</span>
-            <span>{formatDai(amm.liquidityUSD || '0.00').full}</span>
+            <span>{formatDai(amm?.liquidityUSD || '0.00').full}</span>
           </li>
           <li>
             <span>Expires</span>
