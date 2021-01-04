@@ -159,7 +159,7 @@ export const InfoNumbers = ({ infoNumbers }: InfoNumbersProps) => {
   return (
     <div className={Styles.OrderInfo}>
       {infoNumbers.map((infoNumber) => (
-        <div>
+        <div key={infoNumber.label}>
           <span>{infoNumber.label}</span>
           <span>{infoNumber.value}</span>
         </div>
