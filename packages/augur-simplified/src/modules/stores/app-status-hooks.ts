@@ -215,7 +215,9 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
       updateSettings: settings => dispatch({ type: UPDATE_SETTINGS, settings }),
       addTransaction: (transaction: TransactionDetails) => dispatch({ type: ADD_TRANSACTION, transaction }),
       updateBlocknumber: blocknumber => dispatch({ type: UPDATE_BLOCKNUMBER, blocknumber }),
-      finalizeTransaction: hash => dispatch({ type: FINALIZE_TRANSACTION, hash })
+      finalizeTransaction: hash => dispatch({ type: FINALIZE_TRANSACTION, hash }),
+      setModal: modal => dispatch({ type: SET_MODAL, modal }),
+      closeModal: () => dispatch({ type: CLOSE_MODAL }),
     },
   };
 };
