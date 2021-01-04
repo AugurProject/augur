@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/core",
-  "version": "2.2.0",
+  "version": "2.3.0-alpha.0",
   "description": "Core augur contracts and deployment process",
   "author": "The Augur Developers <team@augur.net>",
   "repository": "http://github.com/AugurProject/augur-core",
@@ -83,8 +83,8 @@
     "prepare": "tsc -b"
   },
   "dependencies": {
-    "@augurproject/artifacts": "^2.2.0",
-    "@augurproject/contract-dependencies-ethers": "^2.2.0",
+    "@augurproject/artifacts": "^2.3.0-alpha.0",
+    "@augurproject/contract-dependencies-ethers": "^2.3.0-alpha.0",
     "@augurproject/solidity-docgen": "0.2.0-alpha.3",
     "bignumber.js": "9.0.0",
     "ethers": "5.0.17",

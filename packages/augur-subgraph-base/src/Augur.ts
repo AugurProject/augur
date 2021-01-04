@@ -85,6 +85,7 @@ export function handleCompleteSetsPurchasedEvent(event: CompleteSetsPurchasedEve
   entity.logIndex = event.logIndex.toI32();
   entity.name = "CompleteSetsPurchased";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.market = toChecksumAddress(event.params.market);
@@ -104,6 +105,7 @@ export function handleCompleteSetsSoldEvent(event: CompleteSetsSoldEvent): void 
   entity.logIndex = event.logIndex.toI32();
   entity.name = "CompleteSetsSold";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.market = toChecksumAddress(event.params.market);
@@ -124,6 +126,7 @@ export function handleDesignatedReportStakeChangedEvent(event: DesignatedReportS
   entity.logIndex = event.logIndex.toI32();
   entity.name = "DesignatedReportStakeChanged";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.designatedReportStake = bigIntToHexString(event.params.designatedReportStake);
@@ -140,6 +143,7 @@ export function handleDisputeCrowdsourcerCompletedEvent(event: DisputeCrowdsourc
   entity.logIndex = event.logIndex.toI32();
   entity.name = "DisputeCrowdsourcerCompleted";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.market = toChecksumAddress(event.params.market);
@@ -165,6 +169,7 @@ export function handleDisputeCrowdsourcerContributionEvent(event: DisputeCrowdso
   entity.logIndex = event.logIndex.toI32();
   entity.name = "DisputeCrowdsourcerContribution";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.reporter = toChecksumAddress(event.params.reporter);
@@ -190,6 +195,7 @@ export function handleDisputeCrowdsourcerCreatedEvent(event: DisputeCrowdsourcer
   entity.logIndex = event.logIndex.toI32();
   entity.name = "DisputeCrowdsourcerCreated";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.market = toChecksumAddress(event.params.market);
@@ -210,6 +216,7 @@ export function handleDisputeCrowdsourcerRedeemedEvent(event: DisputeCrowdsource
   entity.logIndex = event.logIndex.toI32();
   entity.name = "DisputeCrowdsourcerRedeemed";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.reporter = toChecksumAddress(event.params.reporter);
@@ -232,6 +239,7 @@ export function handleDisputeWindowCreatedEvent(event: DisputeWindowCreatedEvent
   entity.logIndex = event.logIndex.toI32();
   entity.name = "DisputeWindowCreated";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.disputeWindow = toChecksumAddress(event.params.disputeWindow);
@@ -252,6 +260,7 @@ export function handleFinishDeploymentEvent(event: FinishDeploymentEvent): void 
   entity.logIndex = event.logIndex.toI32();
   entity.name = "FinishDeployment";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
 
   entity.save();
@@ -266,6 +275,7 @@ export function handleInitialReportSubmittedEvent(event: InitialReportSubmittedE
   entity.logIndex = event.logIndex.toI32();
   entity.name = "InitialReportSubmitted";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.reporter = toChecksumAddress(event.params.reporter);
@@ -291,6 +301,7 @@ export function handleInitialReporterRedeemedEvent(event: InitialReporterRedeeme
   entity.logIndex = event.logIndex.toI32();
   entity.name = "InitialReporterRedeemed";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.reporter = toChecksumAddress(event.params.reporter);
@@ -313,6 +324,7 @@ export function handleInitialReporterTransferredEvent(event: InitialReporterTran
   entity.logIndex = event.logIndex.toI32();
   entity.name = "InitialReporterTransferred";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.market = toChecksumAddress(event.params.market);
@@ -331,6 +343,7 @@ export function handleMarketCreatedEvent(event: MarketCreatedEvent): void {
   entity.logIndex = event.logIndex.toI32();
   entity.name = "MarketCreated";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.endTime = bigIntToHexString(event.params.endTime);
@@ -358,6 +371,7 @@ export function handleMarketFinalizedEvent(event: MarketFinalizedEvent): void {
   entity.logIndex = event.logIndex.toI32();
   entity.name = "MarketFinalized";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.market = toChecksumAddress(event.params.market);
@@ -376,6 +390,7 @@ export function handleMarketMigratedEvent(event: MarketMigratedEvent): void {
   entity.logIndex = event.logIndex.toI32();
   entity.name = "MarketMigrated";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.market = toChecksumAddress(event.params.market);
   entity.originalUniverse = toChecksumAddress(event.params.originalUniverse);
@@ -399,6 +414,7 @@ export function handleMarketOIChangedEvent(event: MarketOIChangedEvent): void {
   entity.logIndex = event.logIndex.toI32();
   entity.name = "MarketOIChanged";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.market = toChecksumAddress(event.params.market);
@@ -416,6 +432,7 @@ export function handleMarketParticipantsDisavowedEvent(event: MarketParticipants
   entity.logIndex = event.logIndex.toI32();
   entity.name = "MarketParticipantsDisavowed";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.market = toChecksumAddress(event.params.market);
@@ -432,6 +449,7 @@ export function handleMarketRepBondTransferredEvent(event: MarketRepBondTransfer
   entity.logIndex = event.logIndex.toI32();
   entity.name = "MarketRepBondTransferred";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.market = toChecksumAddress(event.params.market);
@@ -450,6 +468,7 @@ export function handleMarketTransferredEvent(event: MarketTransferredEvent): voi
   entity.logIndex = event.logIndex.toI32();
   entity.name = "MarketTransferred";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.market = toChecksumAddress(event.params.market);
@@ -468,6 +487,7 @@ export function handleNoShowBondChangedEvent(event: NoShowBondChangedEvent): voi
   entity.logIndex = event.logIndex.toI32();
   entity.name = "NoShowBondChanged";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.noShowBond = bigIntToHexString(event.params.noShowBond);
@@ -484,6 +504,7 @@ export function handleParticipationTokensRedeemedEvent(event: ParticipationToken
   entity.logIndex = event.logIndex.toI32();
   entity.name = "ParticipationTokensRedeemed";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.disputeWindow = toChecksumAddress(event.params.disputeWindow);
@@ -504,6 +525,7 @@ export function handleRegisterContractEvent(event: RegisterContractEvent): void 
   entity.logIndex = event.logIndex.toI32();
   entity.name = "RegisterContract";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.contractAddress = toChecksumAddress(event.params.contractAddress);
   entity.key = event.params.key;
@@ -520,6 +542,7 @@ export function handleReportingFeeChangedEvent(event: ReportingFeeChangedEvent):
   entity.logIndex = event.logIndex.toI32();
   entity.name = "ReportingFeeChanged";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.reportingFee = bigIntToHexString(event.params.reportingFee);
@@ -536,6 +559,7 @@ export function handleReportingParticipantDisavowedEvent(event: ReportingPartici
   entity.logIndex = event.logIndex.toI32();
   entity.name = "ReportingParticipantDisavowed";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.market = toChecksumAddress(event.params.market);
@@ -561,6 +585,7 @@ export function handleShareTokenBalanceChangedEvent(event: ShareTokenBalanceChan
   entity.logIndex = event.logIndex.toI32();
   entity.name = "ShareTokenBalanceChanged";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.account = toChecksumAddress(event.params.account);
@@ -580,6 +605,7 @@ export function handleTimestampSetEvent(event: TimestampSetEvent): void {
   entity.logIndex = event.logIndex.toI32();
   entity.name = "TimestampSet";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.newTimestamp = bigIntToHexString(event.params.newTimestamp);
 
@@ -602,6 +628,7 @@ export function handleTokenBalanceChangedEvent(event: TokenBalanceChangedEvent):
   entity.logIndex = event.logIndex.toI32();
   entity.name = "TokenBalanceChanged";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.owner = toChecksumAddress(event.params.owner);
@@ -623,6 +650,7 @@ export function handleTokensBurnedEvent(event: TokensBurnedEvent): void {
   entity.logIndex = event.logIndex.toI32();
   entity.name = "TokensBurned";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.token = toChecksumAddress(event.params.token);
@@ -644,6 +672,7 @@ export function handleTokensMintedEvent(event: TokensMintedEvent): void {
   entity.logIndex = event.logIndex.toI32();
   entity.name = "TokensMinted";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.token = toChecksumAddress(event.params.token);
@@ -665,6 +694,7 @@ export function handleTokensTransferredEvent(event: TokensTransferredEvent): voi
   entity.logIndex = event.logIndex.toI32();
   entity.name = "TokensTransferred";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.token = toChecksumAddress(event.params.token);
@@ -686,6 +716,7 @@ export function handleTradingProceedsClaimedEvent(event: TradingProceedsClaimedE
   entity.logIndex = event.logIndex.toI32();
   entity.name = "TradingProceedsClaimed";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.sender = toChecksumAddress(event.params.sender);
@@ -708,6 +739,7 @@ export function handleUniverseCreatedEvent(event: UniverseCreatedEvent): void {
   entity.logIndex = event.logIndex.toI32();
   entity.name = "UniverseCreated";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.parentUniverse = toChecksumAddress(event.params.parentUniverse);
   entity.childUniverse = toChecksumAddress(event.params.childUniverse);
@@ -726,6 +758,7 @@ export function handleUniverseForkedEvent(event: UniverseForkedEvent): void {
   entity.logIndex = event.logIndex.toI32();
   entity.name = "UniverseForked";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.forkingMarket = toChecksumAddress(event.params.forkingMarket);
@@ -742,6 +775,7 @@ export function handleValidityBondChangedEvent(event: ValidityBondChangedEvent):
   entity.logIndex = event.logIndex.toI32();
   entity.name = "ValidityBondChanged";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.validityBond = bigIntToHexString(event.params.validityBond);
@@ -758,6 +792,7 @@ export function handleWarpSyncDataUpdatedEvent(event: WarpSyncDataUpdatedEvent):
   entity.logIndex = event.logIndex.toI32();
   entity.name = "WarpSyncDataUpdated";
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.origin = event.transaction.from.toHexString();
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.warpSyncHash = bigIntToHexString(event.params.warpSyncHash);

@@ -11,6 +11,9 @@ type CompleteSetsPurchasedEvent @entity {
 
   transactionHash: String!
 
+  origin: String!
+
+
   universe: String
 
   market: String
@@ -34,6 +37,9 @@ type CompleteSetsSoldEvent @entity {
   name: String!
 
   transactionHash: String!
+
+  origin: String!
+
 
   universe: String
 
@@ -61,6 +67,9 @@ type DesignatedReportStakeChangedEvent @entity {
 
   transactionHash: String!
 
+  origin: String!
+
+
   universe: String
 
   designatedReportStake: String!
@@ -78,6 +87,9 @@ type DisputeCrowdsourcerCompletedEvent @entity {
   name: String!
 
   transactionHash: String!
+
+  origin: String!
+
 
   universe: String
 
@@ -115,6 +127,9 @@ type DisputeCrowdsourcerContributionEvent @entity {
 
   transactionHash: String!
 
+  origin: String!
+
+
   universe: String
 
   reporter: String
@@ -151,6 +166,9 @@ type DisputeCrowdsourcerCreatedEvent @entity {
 
   transactionHash: String!
 
+  origin: String!
+
+
   universe: String
 
   market: String
@@ -176,6 +194,9 @@ type DisputeCrowdsourcerRedeemedEvent @entity {
   name: String!
 
   transactionHash: String!
+
+  origin: String!
+
 
   universe: String
 
@@ -207,6 +228,9 @@ type DisputeWindowCreatedEvent @entity {
 
   transactionHash: String!
 
+  origin: String!
+
+
   universe: String
 
   disputeWindow: String
@@ -230,6 +254,9 @@ type FinishDeploymentEvent @entity {
   name: String!
 
   transactionHash: String!
+
+  origin: String!
+
 }
 
 type InitialReportSubmittedEvent @entity {
@@ -244,6 +271,9 @@ type InitialReportSubmittedEvent @entity {
   name: String!
 
   transactionHash: String!
+
+  origin: String!
+
 
   universe: String
 
@@ -281,6 +311,9 @@ type InitialReporterRedeemedEvent @entity {
 
   transactionHash: String!
 
+  origin: String!
+
+
   universe: String
 
   reporter: String
@@ -311,6 +344,9 @@ type InitialReporterTransferredEvent @entity {
 
   transactionHash: String!
 
+  origin: String!
+
+
   universe: String
 
   market: String
@@ -332,6 +368,9 @@ type MarketCreatedEvent @entity {
   name: String!
 
   transactionHash: String!
+
+  origin: String!
+
 
   universe: String
 
@@ -373,6 +412,9 @@ type MarketFinalizedEvent @entity {
 
   transactionHash: String!
 
+  origin: String!
+
+
   universe: String
 
   market: String
@@ -395,6 +437,9 @@ type MarketMigratedEvent @entity {
 
   transactionHash: String!
 
+  origin: String!
+
+
   market: String
 
   originalUniverse: String
@@ -414,6 +459,9 @@ type MarketOIChangedEvent @entity {
   name: String!
 
   transactionHash: String!
+
+  origin: String!
+
 
   universe: String
 
@@ -435,6 +483,9 @@ type MarketParticipantsDisavowedEvent @entity {
 
   transactionHash: String!
 
+  origin: String!
+
+
   universe: String
 
   market: String
@@ -452,6 +503,9 @@ type MarketRepBondTransferredEvent @entity {
   name: String!
 
   transactionHash: String!
+
+  origin: String!
+
 
   universe: String
 
@@ -475,6 +529,9 @@ type MarketTransferredEvent @entity {
 
   transactionHash: String!
 
+  origin: String!
+
+
   universe: String
 
   market: String
@@ -497,6 +554,9 @@ type NoShowBondChangedEvent @entity {
 
   transactionHash: String!
 
+  origin: String!
+
+
   universe: String
 
   noShowBond: String!
@@ -514,6 +574,9 @@ type ParticipationTokensRedeemedEvent @entity {
   name: String!
 
   transactionHash: String!
+
+  origin: String!
+
 
   universe: String
 
@@ -541,6 +604,9 @@ type RegisterContractEvent @entity {
 
   transactionHash: String!
 
+  origin: String!
+
+
   contractAddress: String
 
   key: Bytes
@@ -559,6 +625,9 @@ type ReportingFeeChangedEvent @entity {
 
   transactionHash: String!
 
+  origin: String!
+
+
   universe: String
 
   reportingFee: String!
@@ -576,6 +645,9 @@ type ReportingParticipantDisavowedEvent @entity {
   name: String!
 
   transactionHash: String!
+
+  origin: String!
+
 
   universe: String
 
@@ -596,6 +668,9 @@ type ShareTokenBalanceChangedEvent @entity {
   name: String!
 
   transactionHash: String!
+
+  origin: String!
+
 
   universe: String
 
@@ -621,6 +696,9 @@ type TimestampSetEvent @entity {
 
   transactionHash: String!
 
+  origin: String!
+
+
   newTimestamp: String!
 }
 
@@ -636,6 +714,9 @@ type TokenBalanceChangedEvent @entity {
   name: String!
 
   transactionHash: String!
+
+  origin: String!
+
 
   universe: String
 
@@ -665,6 +746,9 @@ type TokensBurnedEvent @entity {
 
   transactionHash: String!
 
+  origin: String!
+
+
   universe: String
 
   token: String
@@ -692,6 +776,9 @@ type TokensMintedEvent @entity {
   name: String!
 
   transactionHash: String!
+
+  origin: String!
+
 
   universe: String
 
@@ -721,6 +808,9 @@ type TokensTransferredEvent @entity {
 
   transactionHash: String!
 
+  origin: String!
+
+
   universe: String
 
   token: String
@@ -748,6 +838,9 @@ type TradingProceedsClaimedEvent @entity {
   name: String!
 
   transactionHash: String!
+
+  origin: String!
+
 
   universe: String
 
@@ -779,6 +872,9 @@ type UniverseCreatedEvent @entity {
 
   transactionHash: String!
 
+  origin: String!
+
+
   parentUniverse: String
 
   childUniverse: String
@@ -801,6 +897,9 @@ type UniverseForkedEvent @entity {
 
   transactionHash: String!
 
+  origin: String!
+
+
   universe: String
 
   forkingMarket: String
@@ -819,6 +918,9 @@ type ValidityBondChangedEvent @entity {
 
   transactionHash: String!
 
+  origin: String!
+
+
   universe: String
 
   validityBond: String!
@@ -836,6 +938,9 @@ type WarpSyncDataUpdatedEvent @entity {
   name: String!
 
   transactionHash: String!
+
+  origin: String!
+
 
   universe: String
 
@@ -856,6 +961,9 @@ type CancelZeroXOrderEvent @entity {
   name: String!
 
   transactionHash: String!
+
+  origin: String!
+
 
   universe: String
 
@@ -887,6 +995,9 @@ type MarketVolumeChangedEvent @entity {
 
   transactionHash: String!
 
+  origin: String!
+
+
   universe: String
 
   market: String
@@ -912,6 +1023,9 @@ type OrderEventEvent @entity {
   name: String!
 
   transactionHash: String!
+
+  origin: String!
+
 
   universe: String
 
@@ -942,6 +1056,9 @@ type ProfitLossChangedEvent @entity {
   name: String!
 
   transactionHash: String!
+
+  origin: String!
+
 
   universe: String
 
@@ -977,6 +1094,9 @@ type ApprovalForAllEvent @entity {
 
   transactionHash: String!
 
+  origin: String!
+
+
   owner: String
 
   operator: String
@@ -996,6 +1116,9 @@ type TransferBatchEvent @entity {
   name: String!
 
   transactionHash: String!
+
+  origin: String!
+
 
   operator: String
 
@@ -1021,6 +1144,9 @@ type TransferSingleEvent @entity {
 
   transactionHash: String!
 
+  origin: String!
+
+
   operator: String
 
   from: String
@@ -1042,6 +1168,9 @@ type URIEvent @entity {
   name: String!
 
   transactionHash: String!
+
+  origin: String!
+
 
   value: String!
 }

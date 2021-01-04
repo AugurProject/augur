@@ -60,11 +60,11 @@ describe('State API :: Universe :: ', () => {
 
   // TODO Fix the 0x error occurring when multiple fork getter tests run in one file.
   test('getForkMigrationTotals : YesNo', async () => {
-    const universe = john.augur.contracts.universe;
+    const universeAddress = await john.augur.contracts.getOriginUniverseAddress();
 
     await john.sync();
     let migrationTotals = await john.api.route('getForkMigrationTotals', {
-      universe: universe.address,
+      universe: universeAddress,
     });
 
     expect(migrationTotals).toEqual({});
@@ -77,7 +77,9 @@ describe('State API :: Universe :: ', () => {
 
     await fork(john, market);
 
-    const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
+    const universe = await john.augur.contracts.getOriginUniverse();
+
+    const repTokenAddress = await universe.getReputationToken_();
     const repToken = john.augur.contracts.reputationTokenFromAddress(
       repTokenAddress,
       john.augur.config.networkId
@@ -120,11 +122,11 @@ describe('State API :: Universe :: ', () => {
   });
 
   test('getForkMigrationTotals : Categorical', async () => {
-    const universe = john.augur.contracts.universe;
+    const universeAddress = await john.augur.contracts.getOriginUniverseAddress();
 
     await john.sync();
     let migrationTotals = await john.api.route('getForkMigrationTotals', {
-      universe: universe.address,
+      universe: universeAddress,
     });
 
     expect(migrationTotals).toEqual({});
@@ -138,8 +140,8 @@ describe('State API :: Universe :: ', () => {
     }))[0];
 
     await fork(john, market);
-
-    const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
+    const universe = await john.augur.contracts.getOriginUniverse();
+    const repTokenAddress = await universe.getReputationToken_();
     const repToken = john.augur.contracts.reputationTokenFromAddress(
       repTokenAddress,
       john.augur.config.networkId
@@ -182,7 +184,7 @@ describe('State API :: Universe :: ', () => {
   });
 
   test('getForkMigrationTotals : Scalar', async () => {
-    const universe = john.augur.contracts.universe;
+    const universe = await john.augur.contracts.getOriginUniverse();
 
     await john.sync();
     let migrationTotals = await john.api.route('getForkMigrationTotals', {
@@ -203,7 +205,8 @@ describe('State API :: Universe :: ', () => {
 
     await fork(john, market);
 
-    const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
+    const universeContract = await john.augur.contracts.getOriginUniverse();
+    const repTokenAddress = await universeContract.getReputationToken_();
     const repToken = john.augur.contracts.reputationTokenFromAddress(
       repTokenAddress,
       john.augur.config.networkId
@@ -218,7 +221,7 @@ describe('State API :: Universe :: ', () => {
     await repToken.migrateOutByPayout(fooNumerators, new BigNumber(1e21));
     await john.sync();
     migrationTotals = await john.api.route('getForkMigrationTotals', {
-      universe: universe.address,
+      universe: universeContract.address,
     });
 
     expect(migrationTotals).toMatchObject({
@@ -242,7 +245,7 @@ describe('State API :: Universe :: ', () => {
   });
 
   test('getUniverseChildren : Genesis', async () => {
-    const genesisUniverse = john.augur.contracts.universe;
+    const genesisUniverse = await john.augur.contracts.getOriginUniverse();
 
     const legacyRep = new BigNumber(11000000).multipliedBy(10 ** 18);
     let johnRep = await john.augur.contracts.reputationToken.balanceOf_(john.account.address);
@@ -334,7 +337,9 @@ describe('State API :: Universe :: ', () => {
       marketIds: [market.address],
     }))[0];
     await fork(john, market);
-    const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
+
+    const universeContract = await john.augur.contracts.getOriginUniverse();
+    const repTokenAddress = await universeContract.getReputationToken_();
     const repToken = john.augur.contracts.reputationTokenFromAddress(
       repTokenAddress,
       john.augur.config.networkId

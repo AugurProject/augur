@@ -30,7 +30,7 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         uint256 _fee,
         uint256 _cash,
         uint256 _ratioFactor,
-        bool _keepYes,
+        bool _keepLong,
         address _recipient
     ) external returns (address _ammAddress, uint256 _lpTokens) {
         _ammAddress = createClone2(address(proxyToClone), salt(_market, _para, _fee));
@@ -40,7 +40,7 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
 
         // User sends cash to factory, which turns cash into LP tokens and shares which it gives to the user.
         _para.cash().transferFrom(msg.sender, address(this), _cash);
-        _lpTokens = _amm.addInitialLiquidity(_cash, _ratioFactor, _keepYes, _recipient);
+        _lpTokens = _amm.addInitialLiquidity(_cash, _ratioFactor, _keepLong, _recipient);
     }
 
     function transferCash(

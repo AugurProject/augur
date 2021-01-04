@@ -79,7 +79,7 @@ describe('State API :: Markets :: Categories', () => {
 
     await john.sync();
     const stats = await john.api.route('getCategoryStats', {
-      universe: john.augur.contracts.universe.address,
+      universe: await john.augur.contracts.getOriginUniverseAddress(),
       categories: [
         'yesno 2 primary', // we ignore case
         'Common', // we ignore case

@@ -1,3 +1,5 @@
+import {ParaDeploys} from '@augurproject/utils/build';
+
 const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { ContractAddresses } from '@augurproject/utils';
@@ -17,13 +19,13 @@ interface Metadata {
 
 export interface Seed {
   addresses: ContractAddresses;
-  contractsHash: string;
+  paras?: ParaDeploys;
   data: LevelDBRow[];
   metadata: Metadata;
+  uploadBlockNumber: number;
 }
 
 export interface SeedFile {
-  addresses: ContractAddresses;
   contractsHash: string;
   seeds: {
     [seedName: string]: Seed;
@@ -186,15 +188,12 @@ export function addSeedToSeedFile(
 }
 
 export function seedFromSeedFile(seedFile: SeedFile, seedName: string): Seed {
-  const { contractsHash, addresses, seeds } = seedFile;
-  const { data, metadata } = seeds[seedName];
-  return { contractsHash, addresses, data, metadata };
+  const { seeds } = seedFile;
+  return seeds[seedName];
 }
 
-export function seedFileFromSeed(seed: Seed): SeedFile {
-  const { addresses, contractsHash } = seed;
+export function newSeedFile(contractsHash: string): SeedFile {
   return {
-    addresses,
     contractsHash,
     seeds: {},
   };
@@ -204,14 +203,18 @@ export async function createSeed(
   provider: EthersProvider,
   db: MemDown,
   addresses: ContractAddresses,
-  metadata: Metadata = {}
+  uploadBlockNumber: number,
+  paras?: ParaDeploys,
+  metadata: Metadata = {},
 ): Promise<Seed> {
-  return {
+  const seed: Seed = {
     addresses,
-    contractsHash: hashContracts(),
     data: await extractSeed(db),
     metadata,
+    uploadBlockNumber,
   };
+  if (paras) seed.paras = paras;
+  return seed;
 }
 
 export async function loadSeed(
@@ -221,6 +224,11 @@ export async function loadSeed(
   return seedFromSeedFile(await loadSeedFile(seedFilePath), seedToLoad);
 }
 
+export async function loadSeedContractsHash(seedFilePath: string): Promise<string> {
+  const seedFile = await loadSeedFile(seedFilePath);
+  return seedFile.contractsHash;
+}
+
 export async function writeSeeds(
   seeds: { [name: string]: Seed },
   filePath: string
@@ -228,26 +236,14 @@ export async function writeSeeds(
   if (Object.keys(seeds).length === 0)
     throw Error("writeSeed's first argument must contain at least one seed");
 
-  const someSeed = Object.values(seeds)[0] as Seed;
   let seedFile = (await fs.exists(filePath))
     ? await loadSeedFile(filePath)
-    : seedFileFromSeed(someSeed);
+    : newSeedFile(hashContracts())
+
   for (const name of Object.keys(seeds)) {
     const seed = seeds[name];
     seedFile = addSeedToSeedFile(name, seed, seedFile);
   }
-  await writeSeedFile(seedFile, filePath);
-}
-
-export async function writeSeed(
-  seedName: string,
-  seed: Seed,
-  filePath: string
-): Promise<void> {
-  let seedFile = fs.exists(filePath)
-    ? await loadSeedFile(filePath)
-    : seedFileFromSeed(seed);
-  seedFile = addSeedToSeedFile(seedName, seed, seedFile);
   await writeSeedFile(seedFile, filePath);
 }
 

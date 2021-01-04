@@ -14,7 +14,7 @@ abstract class Persona {
   async trade(): Promise<void> {
     // Identify markets we want to trade.
     const markets = await this.marketsToTrade();
-    const universe = this.augur.contracts.universe.address;
+    const universe = await this.augur.contracts.getOriginUniverseAddress();
 
     const positions = await this.augur.getUserTradingPositions({
       account: this.user.account.address,
@@ -57,10 +57,10 @@ class FirehosePersona extends Persona {
   }
 
   async marketsToTrade() {
-    const universe = this.augur.contracts.universe.address;
+    const universeAddress = await this.augur.contracts.getOriginUniverseAddress();
 
     const {markets = [] } = await this.augur.getMarkets({
-      universe,
+      universe: universeAddress,
     });
 
     return markets.filter(randomBoolean);
@@ -86,9 +86,9 @@ class ChaosMonkey {
 export const runChaosMonkey = async (augur: Augur, users:ContractAPI[] = []) => {
   const chaosMonkey = new ChaosMonkey(augur, users);
   augur.events.on(SubscriptionEventName.NewBlock, async () => {
-    const universe = augur.contracts.universe.address;
+    const universeAddress = await augur.contracts.getOriginUniverseAddress();
     const {markets = [] } = await augur.getMarkets({
-      universe,
+      universe: universeAddress,
     });
 
     chaosMonkey.run();

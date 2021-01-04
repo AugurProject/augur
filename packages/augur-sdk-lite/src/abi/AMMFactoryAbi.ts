@@ -72,7 +72,7 @@ export const AMMFactoryAbi = [
       },
       {
         "internalType": "bool",
-        "name": "_keepYes",
+        "name": "_keepLong",
         "type": "bool"
       },
       {

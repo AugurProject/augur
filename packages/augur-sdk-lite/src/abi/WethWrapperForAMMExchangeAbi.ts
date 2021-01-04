@@ -41,7 +41,7 @@ export const WethWrapperForAMMExchangeAbi = [
       },
       {
         "internalType": "bool",
-        "name": "_keepYes",
+        "name": "_keepLong",
         "type": "bool"
       },
       {
@@ -87,7 +87,7 @@ export const WethWrapperForAMMExchangeAbi = [
       },
       {
         "internalType": "bool",
-        "name": "_keepYes",
+        "name": "_keepLong",
         "type": "bool"
       },
       {
@@ -154,7 +154,7 @@ export const WethWrapperForAMMExchangeAbi = [
       },
       {
         "internalType": "bool",
-        "name": "_buyYes",
+        "name": "_buyLong",
         "type": "bool"
       },
       {
@@ -221,17 +221,12 @@ export const WethWrapperForAMMExchangeAbi = [
       },
       {
         "internalType": "uint256",
-        "name": "_invalidShares",
+        "name": "_shortShares",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "_noShares",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_yesShares",
+        "name": "_longShares",
         "type": "uint256"
       },
       {
@@ -321,22 +316,22 @@ export const WethWrapperForAMMExchangeAbi = [
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "_invalidShare",
+        "name": "_shortShare",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "_noShare",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_yesShare",
+        "name": "_longShare",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
         "name": "_cashShare",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_setsSold",
         "type": "uint256"
       }
     ],

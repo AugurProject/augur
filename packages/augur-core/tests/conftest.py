@@ -854,6 +854,20 @@ def augurInitializedSnapshot(fixture, baseSnapshot):
     return fixture.createSnapshot()
 
 @pytest.fixture(scope="session")
+def augurPartiallyInitializedSnapshot(fixture, baseSnapshot):
+    fixture.resetToSnapshot(baseSnapshot)
+    fixture.uploadAugur()
+    fixture.uploadAugurTrading()
+    fixture.deployRelayHub()
+    fixture.deployRelayHubV2()
+    fixture.uploadAllContracts()
+    fixture.uploadTestDaiContracts()
+    fixture.upload0xContracts()
+    fixture.uploadUniswapContracts()
+    fixture.initializeAllContracts()
+    return fixture.createSnapshot()
+
+@pytest.fixture(scope="session")
 def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
     fixture.resetToSnapshot(augurInitializedSnapshot)
     legacyReputationToken = fixture.contracts['LegacyReputationToken']
@@ -965,4 +979,9 @@ def contractsFixture(fixture, kitchenSinkSnapshot):
 @pytest.fixture
 def augurInitializedFixture(fixture, augurInitializedSnapshot):
     fixture.resetToSnapshot(augurInitializedSnapshot)
+    return fixture
+
+@pytest.fixture
+def augurPartiallyInitializedFixture(fixture, augurPartiallyInitializedSnapshot):
+    fixture.resetToSnapshot(augurPartiallyInitializedSnapshot)
     return fixture

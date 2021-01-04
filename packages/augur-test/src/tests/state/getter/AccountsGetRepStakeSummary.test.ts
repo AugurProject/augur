@@ -56,7 +56,7 @@ describe('State API :: Accounts :: ', () => {
     let accountRepStakeSummary = await john.api.route(
       'getAccountRepStakeSummary',
       {
-        universe: john.augur.contracts.universe.address,
+        universe: await john.augur.contracts.getOriginUniverseAddress(),
         account: ACCOUNTS[0].address,
       }
     );
@@ -113,7 +113,7 @@ describe('State API :: Accounts :: ', () => {
     await john.sync();
 
     accountRepStakeSummary = await john.api.route('getAccountRepStakeSummary', {
-      universe: john.augur.contracts.universe.address,
+      universe: await john.augur.contracts.getOriginUniverseAddress(),
       account: ACCOUNTS[0].address,
     });
     expect(accountRepStakeSummary.repWinnings).toEqual('0');
@@ -133,7 +133,7 @@ describe('State API :: Accounts :: ', () => {
     ).toEqual(false);
 
     accountRepStakeSummary = await john.api.route('getAccountRepStakeSummary', {
-      universe: john.augur.contracts.universe.address,
+      universe: await john.augur.contracts.getOriginUniverseAddress(),
       account: ACCOUNTS[1].address,
     });
     expect(accountRepStakeSummary.repWinnings).toEqual('0');
@@ -179,7 +179,7 @@ describe('State API :: Accounts :: ', () => {
     await john.sync();
 
     accountRepStakeSummary = await john.api.route('getAccountRepStakeSummary', {
-      universe: john.augur.contracts.universe.address,
+      universe: await john.augur.contracts.getOriginUniverseAddress(),
       account: ACCOUNTS[0].address,
     });
     expect(accountRepStakeSummary.repWinnings).toEqual('0');
@@ -190,7 +190,7 @@ describe('State API :: Accounts :: ', () => {
     );
 
     accountRepStakeSummary = await john.api.route('getAccountRepStakeSummary', {
-      universe: john.augur.contracts.universe.address,
+      universe: await john.augur.contracts.getOriginUniverseAddress(),
       account: ACCOUNTS[1].address,
     });
     expect(accountRepStakeSummary.repWinnings).toEqual('839233398437500002');

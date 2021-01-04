@@ -71,6 +71,7 @@ export class DB {
   private isParaDeploy: boolean;
   private syncableDatabases: { [dbName: string]: BaseSyncableDB } = {};
   private disputeDatabase: DisputeDatabase;
+  private currentOrdersDatabase: ParsedOrderEventDB;
   private _marketDatabase: MarketDB;
   private parsedOrderEventDatabase: ParsedOrderEventDB;
   private zeroXOrders: ZeroXOrders;
@@ -302,6 +303,13 @@ export class DB {
       this.augur
     );
     await this.disputeDatabase.reset();
+    this.currentOrdersDatabase = new ParsedOrderEventDB(
+      this,
+      this.networkId,
+      'CurrentOrders',
+      ['OrderEvent'],
+      this.augur
+    );
 
     this._marketDatabase = new MarketDB(this, this.networkId, this.augur);
     console.log('initializeDB-checkpoint-1');
@@ -353,6 +361,7 @@ export class DB {
     this.syncableDatabases = {};
 
     this.disputeDatabase = undefined;
+    this.currentOrdersDatabase = undefined;
     this._marketDatabase = undefined;
     this.parsedOrderEventDatabase = undefined;
     this.getterCache = undefined;
@@ -466,6 +475,7 @@ export class DB {
     console.log('Syncing derived DBs');
 
     await this.disputeDatabase.sync(highestAvailableBlockNumber);
+    await this.currentOrdersDatabase.sync(highestAvailableBlockNumber);
     await this.parsedOrderEventDatabase.sync(highestAvailableBlockNumber);
 
     // The Market DB syncs after the derived DBs, as it depends on a derived DB
@@ -530,6 +540,9 @@ export class DB {
 
     // Market and Dispute dbs are cleared on load.
     // Perform rollback on derived DBs
+    dbRollbackPromises.push(this.disputeDatabase.rollback(blockNumber));
+    dbRollbackPromises.push(this.currentOrdersDatabase.rollback(blockNumber));
+    dbRollbackPromises.push(this.marketDatabase.rollback(blockNumber));
     dbRollbackPromises.push(
       this.parsedOrderEventDatabase.rollback(blockNumber)
     );
