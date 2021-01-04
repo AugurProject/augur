@@ -6,19 +6,24 @@
 }
 
 .ModalView {
-  background-color: var(--simple-shadow-10);
+  background-color: var(--simple-primary-text-40);
   height: 100vh;
   position: fixed;
   width: 100vw;
   z-index: @mask-modal;
-
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
   > div {
     align-items: center;
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: fit-content;
     justify-content: center;
-    width: 100%;
+    width: fit-content;
+    padding: @size-16;
+    background: var(--simple-light-bg);
 
     & > section {
       align-items: center;

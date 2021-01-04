@@ -1086,6 +1086,10 @@ export interface ProcessedData {
   }
 }
 
+interface Modal {
+  type: string;
+}
+
 export interface AppStatusState {
   processed: ProcessedData,
   userInfo: {
@@ -1098,6 +1102,7 @@ export interface AppStatusState {
   isMobile: boolean;
   showTradingForm: boolean;
   sidebarType: string;
+  modal: Modal;
 }
 
 export interface TransactionDetails {

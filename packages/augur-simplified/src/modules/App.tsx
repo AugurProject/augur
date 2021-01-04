@@ -50,6 +50,7 @@ const AppBody = () => {
   const { account, library } = useActiveWeb3React();
   const modalShowing = Object.keys(modal).length !== 0;
 
+
   useEffect(() => {
     // get data immediately, then setup interval
     getMarketsData(paraConfig, updateBlocknumber, (data) => {
@@ -85,13 +86,13 @@ const AppBody = () => {
   }, []);
 
   useEffect(() => {
-    if (showTradingForm) {
+    if (showTradingForm || modalShowing) {
       document.body.classList.add('App--noScroll');
       window.scrollTo(0, 0);
     } else {
       document.body.classList.remove('App--noScroll');
     }
-  }, [showTradingForm]);
+  }, [showTradingForm, modalShowing]);
 
   useEffect(() => {
     const createClient = (provider, config) =>
