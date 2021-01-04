@@ -16,7 +16,7 @@ import {
   TOTAL_VOLUME,
   YES_OUTCOME_ID,
 } from 'modules/constants';
-import { MarketLink } from 'modules/routes/helpers/market-link';
+import { MarketLink } from 'modules/routes/helpers/links';
 import {
   ValueLabel,
   AppViewStats,
