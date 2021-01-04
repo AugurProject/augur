@@ -380,7 +380,7 @@ export const getFormattedOutcomes = ({
   return outcomes.map((outcome, outcomeIdx) => ({
     ...outcome,
     outcomeIdx,
-    label: (outcome?.name || outcome?.value).toLowerCase(),
+    label: (outcome?.name).toLowerCase(),
     lastPrice: !amm ? '0.5' : outcomeIdx === 1 ? amm.priceNo : amm.priceYes,
   }));
 
