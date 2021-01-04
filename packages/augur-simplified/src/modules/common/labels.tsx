@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Styles from 'modules/common/labels.styles.less';
 import classNames from 'classnames';
 import { formatDai } from 'utils/format-number';
+import { createBigNumber } from 'utils/create-big-number';
 import {
   AugurBlankIcon,
   EthIcon,
@@ -25,14 +26,14 @@ export const ValueLabel = ({
   label,
   sublabel,
   value,
-  light
+  light,
 }: ValueLabelProps) => {
   return (
     <div
       className={classNames(Styles.ValueLabel, {
         [Styles.large]: large,
         [Styles.Sublabel]: sublabel,
-        [Styles.light]: light
+        [Styles.light]: light,
       })}
     >
       <span>{label}</span>
@@ -83,14 +84,44 @@ export const CategoryIcon = ({ category }: CategoryProps) => {
   );
 };
 
+const ONE_HUNDRED_K = '100000.00';
+
+const handleValue = (value) =>
+  formatDai(value, {
+    bigUnitPostfix: createBigNumber(value).gte(ONE_HUNDRED_K),
+  }).full;
+
 interface AppViewStatsProps {
   showCashAmounts?: boolean;
 }
 
 export const AppViewStats = ({ showCashAmounts }: AppViewStatsProps) => {
-  const { isMobile, userInfo: { balances } } = useAppStatusStore();
+  const {
+    isMobile,
+    userInfo: { balances },
+  } = useAppStatusStore();
   const { account } = useActiveWeb3React();
   const isLogged = Boolean(account);
+  const totalAccountValue = useMemo(
+    () => handleValue(isLogged ? balances?.totalAccountValue : 0),
+    [isLogged, balances.totalAccountValue]
+  );
+  const positionsValue = useMemo(
+    () => handleValue(isLogged ? balances?.totalPositionUsd : 0),
+    [isLogged, balances.totalPositionUsd]
+  );
+  const availableFunds = useMemo(
+    () => handleValue(isLogged ? balances?.availableFundsUsd : 0),
+    [isLogged, balances.availableFundsUsd]
+  );
+  const usdValueETH = useMemo(
+    () => handleValue(balances?.USDC?.usdValue || 0),
+    [balances?.USDC?.usdValue]
+  );
+  const usdValueUSDC = useMemo(
+    () => handleValue(balances?.ETH?.usdValue || 0),
+    [balances?.ETH?.usdValue]
+  );
   return (
     <div
       className={classNames(Styles.AppStats, {
@@ -101,33 +132,24 @@ export const AppViewStats = ({ showCashAmounts }: AppViewStatsProps) => {
         large
         label={isMobile ? 'total acc. value' : 'total account value'}
         light={!isLogged}
-        value={formatDai(isLogged ? balances?.totalAccountValue : 0).full}
+        value={totalAccountValue}
       />
       <ValueLabel
         large
-        label={'positions'}
+        label="positions"
         light={!isLogged}
-        sublabel={isLogged ? `${
-          formatDai(balances?.change24hrPositionUsd).full
-        } (24hr)` : null}
-        value={formatDai(isLogged ? balances?.totalPositionUsd : 0).full}
+        value={positionsValue}
       />
       <ValueLabel
         large
         light={!isLogged}
-        label={'available funds'}
-        value={formatDai(isLogged ? balances?.availableFundsUsd : 0).full}
+        label="available funds"
+        value={availableFunds}
       />
       {showCashAmounts && (
         <>
-          <IconLabel
-            icon={EthIcon}
-            value={formatDai(balances?.ETH?.usdValue).full}
-          />
-          <IconLabel
-            icon={UsdIcon}
-            value={formatDai(balances?.USDC?.usdValue).full}
-          />
+          <IconLabel icon={EthIcon} value={usdValueETH} />
+          <IconLabel icon={UsdIcon} value={usdValueUSDC} />
         </>
       )}
     </div>
