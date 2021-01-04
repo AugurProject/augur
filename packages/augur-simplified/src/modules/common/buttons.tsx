@@ -38,6 +38,7 @@ const Button = ({
 export const PrimaryButton = (props: ButtonProps) => <Button className={Styles.PrimaryButton} {...props} />;
 export const SecondaryButton = (props: ButtonProps) => <Button className={Styles.SecondaryButton} {...props} />;
 export const TinyButton = (props: ButtonProps) => <Button className={Styles.TinyButton} {...props} />;
+export const BuySellButton = (props: ButtonProps) => <Button className={Styles.BuySellButton} {...props} />;
 
 export interface DirectionButtonProps {
   action: Function;

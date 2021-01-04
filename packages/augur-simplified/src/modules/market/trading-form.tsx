@@ -69,7 +69,7 @@ const Outcome = ({
   selected,
   onClick,
   invalidSelected,
-  showAllHighlighted
+  showAllHighlighted,
 }) => {
   return (
     <div
@@ -89,7 +89,7 @@ const Outcome = ({
   );
 };
 
-const AmountInput = () => {
+export const AmountInput = () => {
   const [amount, updateAmount] = useState('');
   return (
     <div className={Styles.AmountInput}>
@@ -146,13 +146,41 @@ export const OutcomesGrid = ({
   );
 };
 
-const TradingForm = ({ outcomes = fakeYesNoOutcomes, initialSelectedOutcome, marketType = YES_NO }) => {
+interface InfoNumber {
+  label: string;
+  value: string;
+}
+
+interface InfoNumbersProps {
+  infoNumbers: InfoNumber[];
+}
+
+export const InfoNumbers = ({ infoNumbers }: InfoNumbersProps) => {
+  return (
+    <div className={Styles.OrderInfo}>
+      {infoNumbers.map((infoNumber) => (
+        <div key={infoNumber.label}>
+          <span>{infoNumber.label}</span>
+          <span>{infoNumber.value}</span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const TradingForm = ({
+  outcomes = fakeYesNoOutcomes,
+  initialSelectedOutcome,
+  marketType = YES_NO,
+}) => {
   const {
     isMobile,
     actions: { setShowTradingForm },
   } = useAppStatusStore();
   const [orderType, setOrderType] = useState(BUY);
-  const [selectedOutcome, setSelectedOutcome] = useState(initialSelectedOutcome);
+  const [selectedOutcome, setSelectedOutcome] = useState(
+    initialSelectedOutcome
+  );
   return (
     <div className={Styles.TradingForm}>
       <div>
@@ -172,7 +200,9 @@ const TradingForm = ({ outcomes = fakeYesNoOutcomes, initialSelectedOutcome, mar
           <span>fee</span>
           <span>0.1%</span>
         </div>
-        {isMobile && <div onClick={() => setShowTradingForm(false)}>{CloseIcon}</div>}
+        {isMobile && (
+          <div onClick={() => setShowTradingForm(false)}>{CloseIcon}</div>
+        )}
       </div>
       <div>
         <OutcomesGrid
@@ -183,20 +213,22 @@ const TradingForm = ({ outcomes = fakeYesNoOutcomes, initialSelectedOutcome, mar
           orderType={orderType}
         />
         <AmountInput />
-        <div className={Styles.OrderInfo}>
-          <div>
-            <span>average price</span>
-            <span>$0.00</span>
-          </div>
-          <div>
-            <span>shares bought</span>
-            <span>0.00</span>
-          </div>
-          <div>
-            <span>max winnings</span>
-            <span>$0.00</span>
-          </div>
-        </div>
+        <InfoNumbers
+          infoNumbers={[
+            {
+              label: 'average price',
+              value: '$0.00',
+            },
+            {
+              label: 'shares bought',
+              value: '0.00',
+            },
+            {
+              label: 'max winnings',
+              value: '$0.00',
+            },
+          ]}
+        />
         <PrimaryButton disabled text={orderType} />
       </div>
     </div>

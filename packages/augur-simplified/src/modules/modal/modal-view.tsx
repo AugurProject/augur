@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 
-import ModalInvalid from 'modules/modal/modal-invalid';
+import ModalAddLiquidity from 'modules/modal/modal-add-liquidity';
 import { useHistory } from 'react-router';
 
 import Styles from 'modules/modal/modal.styles.less';
 import { useAppStatusStore } from 'modules/stores/app-status';
-import { MODAL_INVALID } from 'modules/constants';
+import { MODAL_ADD_LIQUIDITY } from 'modules/constants';
 
 function selectModal(type, modal) {
   switch (type) {
-    case MODAL_INVALID:
-      return <ModalInvalid {...modal} />;
+    case MODAL_ADD_LIQUIDITY:
+      return <ModalAddLiquidity {...modal} />;
     default:
       return <div />;
   }
