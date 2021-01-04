@@ -289,6 +289,29 @@
 
     color: var(--simple-primary-text);
   }
+
+  &:hover {
+    > span {
+      border: @size-2 solid var(--simple-border-dk);
+      background: transparent;
+
+      > svg {
+        height: .75rem;
+        width: .75rem;
+        margin: auto;
+        background: var(--simple-secondary-text);
+        border-radius: 0;
+
+        > path {
+          fill: var(--simple-secondary-text);
+        }
+      }
+    }
+  }
+
+  &[class*="isSelected_"]:not(:hover) > span {
+    border: @size-2 solid transparent;
+  }
 }
 
 .isSelected_0 {

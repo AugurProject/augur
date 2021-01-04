@@ -221,7 +221,7 @@ export const SimpleChartSection = ({ market }) => {
       <div>
         {formattedOutcomes.map(outcome => (
           <SelectOutcomeButton
-            key={`${outcome.id}_${outcome.value}`}
+            key={`${outcome.id}_${outcome.name}`}
             outcome={outcome}
             toggleSelected={toggleOutcome}
             isSelected={selectedOutcomes[outcome.outcomeIdx]}
