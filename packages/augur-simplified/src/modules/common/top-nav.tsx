@@ -13,6 +13,7 @@ import { useLocalStorage } from 'modules/stores/local-storage';
 import ConnectAccount from 'modules/ConnectAccount/index';
 import { useActiveWeb3React } from 'modules/ConnectAccount/hooks';
 import { TinyButton } from 'modules/common/buttons';
+import { Toasts } from '../toasts/toasts';
 
 export const SettingsButton = () => {
   const {
@@ -170,6 +171,7 @@ export const TopNav = () => {
             {ThreeLinesIcon}
           </button>
         )}
+        <Toasts />
       </section>
     </nav>
   );
