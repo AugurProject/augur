@@ -194,7 +194,7 @@ const LiquidityHeader = () => {
 const LiquidityRow = ({ liquidity }: { liquidity: LPTokenBalance }) => {
   return (
     <ul className={Styles.LiquidityRow}>
-      <li>{liquidity.balance}</li>
+      <li>{formatDai(liquidity.balance).formatted}</li>
       <li>{formatDai(liquidity.initCostUsd).full}</li>
       <li>{liquidity.usdValue ? formatDai(liquidity.usdValue).full : '-'}</li>
       <li>{liquidity.feesEarned ? liquidity.feesEarned : '-'}</li>

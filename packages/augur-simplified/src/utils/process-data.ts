@@ -2,7 +2,7 @@ import { AmmTransaction, Trades, AmmExchange, Cash, Cashes, MarketOutcome, Trans
 import { BigNumber as BN } from 'bignumber.js'
 import { getDayFormat, getTimeFormat } from "../utils/date-utils";
 import { convertAttoValueToDisplayValue } from "@augurproject/sdk";
-import { convertOnChainToDisplayAmount, formatShares, onChainMarketSharesToDisplayFormatter } from "./format-number";
+import { convertOnChainCashAmountToDisplayCashAmount, formatShares, onChainMarketSharesToDisplayShares } from "./format-number";
 import { BUY, SELL } from "../modules/constants";
 import { timeSinceTimestamp } from "./time-since";
 interface GraphMarket {
@@ -249,14 +249,14 @@ const shapeRemoveLiquidityTransactions = (transactions: GraphAddLiquidity[], cas
 }
 
 const formatTransaction = (tx: GraphEnter | GraphExit | GraphAddLiquidity | GraphRemoveLiquidity, cash: Cash) => {
-  const tokenAmount = convertOnChainToDisplayAmount(new BN(tx.cash), new BN(cash.decimals));
+  const tokenAmount = convertOnChainCashAmountToDisplayCashAmount(new BN(tx.cash), new BN(cash.decimals));
   const value = String(tokenAmount.times(cash.usdPrice));
 
   const date = getDayFormat(tx.timestamp);
   const time = timeSinceTimestamp(Number(tx.timestamp));
   const currency = cash.symbol;
   const shares = tx.noShares !== "0" ? tx.noShares : tx.yesShares;
-  const shareAmount = formatShares(onChainMarketSharesToDisplayFormatter(new BN(shares), new BN(cash.decimals)), {
+  const shareAmount = formatShares(onChainMarketSharesToDisplayShares(new BN(shares), new BN(cash.decimals)), {
     decimals: 4,
     decimalsRounded: 4,
   }).formatted
@@ -329,8 +329,8 @@ export const getUserActvity = (account: string, markets: { [id: string]: MarketI
     const datedUserTx = userTx.map(t => {
       const type = t.tx_type === TransactionTypes.ENTER ? BUY : SELL;
       const shares = t.yesShares !== "0" ?
-        onChainMarketSharesToDisplayFormatter(t.yesShares, exchange.cash.decimals) :
-        onChainMarketSharesToDisplayFormatter(t.noShares, exchange.cash.decimals)
+        onChainMarketSharesToDisplayShares(t.yesShares, exchange.cash.decimals) :
+        onChainMarketSharesToDisplayShares(t.noShares, exchange.cash.decimals)
       const price = Number(t.price).toFixed(2)
       const subheader = `${shares} yes @ ${price}`
       const value = String(new BN(price).times(new BN(shares)).times(new BN(exchange.cash.usdPrice)))
