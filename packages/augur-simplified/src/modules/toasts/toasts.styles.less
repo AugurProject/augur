@@ -21,8 +21,16 @@
   animation-delay: 1ms;
   animation-timing-function: east-out;
   animation-duration: 300ms;
+  transition: all;
   position: fixed;
   top: @size-96;
+
+  @media @breakpoint-mobile {
+    min-width: unset;
+    width: 100%;
+    max-width: 98vw;
+    right: @size-4;
+  }
 
   > span {
     .text-10-semi-bold;
