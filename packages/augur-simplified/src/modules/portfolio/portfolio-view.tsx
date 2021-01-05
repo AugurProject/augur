@@ -5,16 +5,14 @@ import Activity from './activity';
 import { SecondaryButton } from 'modules/common/buttons';
 import { PositionsLiquidityViewSwitcher } from 'modules/common/tables';
 import { useAppStatusStore } from 'modules/stores/app-status';
-import { useActiveWeb3React } from '../ConnectAccount/hooks';
 
 const TABLES = 'TABLES';
 const ACTIVITY = 'ACTIVITY';
 
 export const PortfolioView = () => {
-  const { account } = useActiveWeb3React();
-  const { isMobile } = useAppStatusStore();
+  const { loginAccount, isMobile } = useAppStatusStore();
   const [view, setView] = useState(TABLES);
-  const isLogged = account !== null;
+  const isLogged = loginAccount?.account !== null;
 
   useEffect(() => {
     // initial render only.

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
 import { lighten } from 'polished'
@@ -11,6 +11,7 @@ import FortmaticIcon from './assets/fortmaticIcon.png'
 import PortisIcon from './assets/portisIcon.png'
 import WalletConnectIcon from './assets/walletConnectIcon.svg'
 import { fortmatic, injected, portis, walletconnect, walletlink } from './connectors'
+import { useActiveWeb3React } from './hooks'
 
 const IconWrapper = ({ children }) => (
   <div style={{
@@ -174,11 +175,18 @@ function StatusIcon({ connector, darkMode, account }: { connector: AbstractConne
   return null
 }
 
-function ConnectAccountButton({ autoLogin, darkMode }) {
+function ConnectAccountButton({ autoLogin, updateLoginAccount, darkMode }) {
   const { account, connector, error } = useWeb3React()
   const [showModal, setShowModal] = useState<boolean>()
 
+  const activeWeb3 = useActiveWeb3React()
   let innerStatusContent = null
+
+  useEffect(() => {
+    if (account) {
+      updateLoginAccount(activeWeb3);
+    }
+  }, [account, activeWeb3, updateLoginAccount])
 
   if (account) {
     innerStatusContent = (
@@ -217,9 +225,9 @@ function ConnectAccountButton({ autoLogin, darkMode }) {
   )
 }
 
-export default function ConnectAccount({ autoLogin, darkMode }) {
+export default function ConnectAccount({ autoLogin, updateLoginAccount, darkMode }) {
   return (
-    <ConnectAccountButton autoLogin={autoLogin} darkMode={darkMode} />
+    <ConnectAccountButton autoLogin={autoLogin} updateLoginAccount={updateLoginAccount} darkMode={darkMode} />
   );
 }
 
