@@ -21,14 +21,41 @@
   animation-delay: 1ms;
   animation-timing-function: east-out;
   animation-duration: 300ms;
+  position: fixed;
+  top: @size-96;
 
   > span {
     .text-10-semi-bold;
 
+    align-items: center;
+    display: flex;
+    flex-flow: row nowrap;
     grid-column: 1;
     grid-row: 1;
     white-space: nowrap;
     text-transform: uppercase;
+
+    > svg {
+      height: @size-16;
+      width: @size-16;
+      margin-right: @size-6;
+    }
+  }
+
+  &.Confirmed {
+    border: @size-1 solid var(--simple-confirmed);
+
+    > span {
+      color: var(--simple-confirmed);
+    }
+  }
+
+  &.Failed {
+    border: @size-1 solid var(--simple-failed);
+
+    > span {
+      color: var(--simple-failed);
+    }
   }
 
   > p {
@@ -44,6 +71,7 @@
   > button {
     background: none;
     border: none;
+    cursor: pointer;
     display: flex;
     flex-flow: row nowrap;
     height: @size-12;
@@ -51,6 +79,7 @@
     width: @size-12;
     grid-column: 3;
     grid-row: 1;
+    outline-style: none;
 
     > svg {
       height: @size-12;

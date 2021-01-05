@@ -18,7 +18,6 @@ import { useActiveWeb3React } from 'modules/ConnectAccount/hooks';
 import classNames from 'classnames';
 import { TransactionDetails } from './types';
 import ModalView from 'modules/modal/modal-view';
-import { Toasts } from './toasts/toasts';
 
 function checkIsMobile(setIsMobile) {
   const isMobile =
@@ -138,7 +137,6 @@ const AppBody = () => {
       {modalShowing && <ModalView />}
       {sidebarOut && <Sidebar />}
       <TopNav />
-      <Toasts />
       <Routes />
     </div>
   );
