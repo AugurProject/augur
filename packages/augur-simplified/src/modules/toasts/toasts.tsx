@@ -9,6 +9,7 @@ const MockToasts = [
   {
     txId: '0xdeadbeef',
     status: 'CONFIRMED',
+    marketDescription: "Extra long COVID-19 related market that has a very long name that requires us to cut it off because it's way to big to show on one line cuz it's a massive run on sentance with some bad grammar.",
     message: 'Claimed $24.32 in winnings.',
     lastUpdated: new Date().getTime(),
     seen: false,
@@ -16,6 +17,7 @@ const MockToasts = [
   {
     txId: '0xdeadbeef2',
     status: 'FAILED',
+    marketDescription: "short market name that won't need to wrap.",
     message: 'Claimed $85.90 in winnings.',
     lastUpdated: new Date().getTime(),
     seen: false,
@@ -25,7 +27,6 @@ const MockToasts = [
 export const Toasts = () => {
   const [toasts, updateToasts] = useState(MockToasts.sort((a, b) => a.lastUpdated - b.lastUpdated).filter(t => !t.seen));
   const numToastsToSee = toasts.length;
-  console.log("rendering toasts", numToastsToSee, toasts);
   return (
     <>
       {numToastsToSee > 0 && (
@@ -53,7 +54,7 @@ const Toast = ({ toast, markAsSeen }) => {
     if (!curToast.seen) {
       const hide = setTimeout(() => {
         markAsSeen(curToast);
-      }, 3000);
+      }, 4000);
 
       return () => {
         clearTimeout(hide);
@@ -75,6 +76,7 @@ const Toast = ({ toast, markAsSeen }) => {
         {confirmed ? 'Confirmed' : 'Failed'}
       </span>
       <p>{toast.message}</p>
+      <h4>{toast.marketDescription}</h4>
       <button onClick={() => markAsSeen(toast)}>{CloseIcon}</button>
       <ReceiptLink txId={toast.txId} />
     </article>
