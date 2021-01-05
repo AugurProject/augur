@@ -101,6 +101,7 @@ export async function getRemoveLiquidity({
     console.error('getRemoveLiquidity: augurClient is null or no amm address');
     return null;
   }
+  console.log('marketId', marketId, 'paraSharetoken', paraShareToken, 'fee', fee, 'lp tokens', lpTokenBalance);
   const alsoSell = true;
   const results: RemoveLiquidityRate = await augurClient.amm.getRemoveLiquidity(
     marketId,
@@ -498,7 +499,7 @@ export const getUserBalances = async (
   const userPositions = getTotalPositions(userBalances.marketShares);
   const availableFundsUsd = String(new BN(userBalances.ETH.usdValue).plus(new BN(userBalances.USDC.usdValue)));
   const totalAccountValue = String(new BN(availableFundsUsd).plus(new BN(userPositions.totalPositionUsd)));
-  populateInitLPValues(userBalances.lpTokens, ammExchanges, account);
+  await populateInitLPValues(userBalances.lpTokens, ammExchanges, account);
 
   return { ...userBalances, ...userPositions, totalAccountValue, availableFundsUsd }
 }
@@ -599,25 +600,47 @@ const getPositionUsdValues = (trades: UserTrades, rawBalance: string, balance: s
   }
 }
 
-const populateInitLPValues = (lptokens: LPTokens, ammExchanges: AmmExchanges, account: string): LPTokens => {
-  Object.keys(lptokens).forEach(ammId => {
+const populateInitLPValues = async (lptokens: LPTokens, ammExchanges: AmmExchanges, account: string): Promise<LPTokens> => {
+  const ammIds = Object.keys(lptokens);
+  for (let i = 0; i < ammIds.length; i++) {
+    const ammId = ammIds[i];
     const lptoken = lptokens[ammId];
     const amm = ammExchanges[ammId];
     const cashPrice = amm.cash?.usdPrice ? amm.cash?.usdPrice : "0";
     // sum up enters shares
     const accum = accumLpSharesAmounts(amm.transactions, account);
     const initialCashValue = convertOnChainCashAmountToDisplayCashAmount(new BN(accum), new BN(amm.cash.decimals));
-    lptoken.initCostUsd = String(new BN(initialCashValue).times(new BN(cashPrice)))
-  });
+    lptoken.initCostUsd = String(new BN(initialCashValue).times(new BN(cashPrice)));
+
+    // TOOD: middleware issue, needs approval to do estimate
+    //lptoken.usdValue = await getLPCurrentValue(lptoken.rawBalance, amm);
+  }
 
   return lptokens;
 }
 
+// TODO: figure out how to get current LP token value, middleware needs an approval to do estimate
+const getLPCurrentValue = async (rawBalance: string, amm: AmmExchange): Promise<string> => {
+  // middleware call to get current value of LP tokens
+  const { marketId, cash, feePercent, priceNo, priceYes } = amm;
+  const usdPrice = amm.cash?.usdPrice ? amm.cash?.usdPrice : "0";
+  const estimate = await getRemoveLiquidity({ marketId, paraShareToken: cash.shareToken, fee: feePercent, lpTokenBalance: rawBalance })
+  .catch(error=> console.error('estimation error', error));
+  if (estimate) {
+    const displayCashValue = convertOnChainCashAmountToDisplayCashAmount(estimate.cashShares, cash.decimals).times(usdPrice);
+    const displayNoValue = new BN(onChainMarketSharesToDisplayShares(estimate.noShares, cash.decimals)).times(new BN(priceNo)).times(usdPrice);
+    const displayYesValue = new BN(onChainMarketSharesToDisplayShares(estimate.yesShares, cash.decimals)).times(new BN(priceYes)).times(usdPrice);
+    const totalValue = displayCashValue.plus(displayNoValue).plus(displayYesValue)
+    return String(totalValue);
+  }
+  return null;
+}
+
 const accumLpSharesAmounts = (transactions: AmmTransaction[], account: string): string => {
   const adds = transactions.filter(t => t.sender.toLowerCase() === account.toLowerCase() && t.tx_type === TransactionTypes.ADD_LIQUIDITY)
-  .reduce((p, t) => p.plus(new BN(t.cash)), new BN("0"))
+    .reduce((p, t) => p.plus(new BN(t.cash)), new BN("0"))
   const removed = transactions.filter(t => t.sender.toLowerCase() === account.toLowerCase() && t.tx_type === TransactionTypes.REMOVE_LIQUIDITY)
-  .reduce((p, t) => p.plus(new BN(t.cash)), new BN("0"))
+    .reduce((p, t) => p.plus(new BN(t.cash)), new BN("0"))
 
   return String(adds.minus(removed));
 }
