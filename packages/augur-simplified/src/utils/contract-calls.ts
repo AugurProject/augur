@@ -620,6 +620,7 @@ const populateInitLPValues = async (lptokens: LPTokens, ammExchanges: AmmExchang
 }
 
 // TODO: figure out how to get current LP token value, middleware needs an approval to do estimate
+// eslint-disable-next-line
 const getLPCurrentValue = async (rawBalance: string, amm: AmmExchange): Promise<string> => {
   // middleware call to get current value of LP tokens
   const { marketId, cash, feePercent, priceNo, priceYes } = amm;

@@ -1,0 +1,71 @@
+@import (reference) '~assets/styles/shared';
+
+.Toast {
+  .SimpleBorder;
+  .FixedBoxShadow;
+
+  align-items: baseline;
+  background: var(--simple-light-bg);
+  display: grid;
+  grid-gap: @size-8;
+  grid-template-columns: 0fr 1fr 0fr;
+  grid-template-rows: 1fr 1fr;
+  height: @size-70;
+  max-height: @size-70;
+  min-height: @size-70;
+  z-index: @mask-above;
+  width: @size-400;
+  max-width: @size-400;
+  min-width: @size-400;
+  padding: @size-12;
+  animation-delay: 1ms;
+  animation-timing-function: east-out;
+  animation-duration: 300ms;
+
+  > span {
+    .text-10-semi-bold;
+
+    grid-column: 1;
+    grid-row: 1;
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+
+  > p {
+    .text-12-semi-bold;
+
+    color: var(--simple-primary-text);
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    margin: 0;
+    padding: 0;
+  }
+
+  > button {
+    background: none;
+    border: none;
+    display: flex;
+    flex-flow: row nowrap;
+    height: @size-12;
+    padding: 0;
+    width: @size-12;
+    grid-column: 3;
+    grid-row: 1;
+
+    > svg {
+      height: @size-12;
+      width: @size-12;
+    }
+  }
+
+  > a {
+    .text-12-semi-bold;
+
+    align-self: flex-end;
+    color: var(--simple-secondary-text);
+    grid-column: 1;
+    grid-row: 2;
+    text-transform: capitalize;
+    text-decoration: none;
+  }
+}
