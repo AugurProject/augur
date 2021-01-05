@@ -1092,6 +1092,7 @@ interface Modal {
 
 export interface AppStatusState {
   processed: ProcessedData,
+  loginAccount: LoginAccount,
   userInfo: {
     activity: ActivityData[];
     balances: UserBalances;
