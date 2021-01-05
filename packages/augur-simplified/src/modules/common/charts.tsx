@@ -247,8 +247,9 @@ const handleSeries = (
     ]);
     const baseSeriesOptions = {
       name: formattedOutcomes[index].label,
-      type: isSelected ? 'area' : 'line',
+      type: 'area',
       lineWidth: isSelected ? HIGHLIGHTED_LINE_WIDTH : NORMAL_LINE_WIDTH,
+      animation: false,
       states: {
         hover: {
           lineWidth: isSelected ? HIGHLIGHTED_LINE_WIDTH : NORMAL_LINE_WIDTH,
@@ -303,13 +304,13 @@ const getOptions = ({
     text: '',
   },
   chart: {
+    alignTicks: false,
     backgroundColor: 'transparent',
-    type: 'line',
+    type: 'area',
     styledMode: false,
     animation: false,
     reflow: true,
-    marginTop: 11,
-    spacing: [22, 0, 8, 0],
+    spacing: [8, 0, 8, 0],
   },
   credits: {
     enabled: false,
@@ -317,12 +318,7 @@ const getOptions = ({
   plotOptions: {
     area: {
       threshold: null,
-    },
-    line: {
-      dataGrouping: {
-        forced: true,
-        // units: [['minute', [1]]],
-      },
+      animation: false,
     },
   },
   scrollbar: { enabled: false },
