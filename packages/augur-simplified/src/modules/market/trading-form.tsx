@@ -34,34 +34,7 @@ export const fakeYesNoOutcomes = [
   },
 ];
 
-// const fakeScalarOutcomes = [
-//   {
-//     id: 0,
-//     name: '293 of fewer',
-//     price: '$0.75',
-//   },
-//   {
-//     id: 1,
-//     name: '294 to 296',
-//     price: '$0.15',
-//   },
-//   {
-//     id: 2,
-//     name: '297 to 299',
-//     price: '$0.05',
-//   },
-//   {
-//     id: 3,
-//     name: '300 to 302',
-//     price: '$0.03',
-//   },
-//   {
-//     id: 4,
-//     name: 'Invalid',
-//     price: '$0.00',
-//     isInvalid: true,
-//   },
-// ];
+const PLACEHOLDER = '0';
 
 const Outcome = ({
   outcome,
@@ -70,7 +43,11 @@ const Outcome = ({
   onClick,
   invalidSelected,
   showAllHighlighted,
+  nonSelectable,
+  editable,
+  setEditableValue
 }) => {
+  const [customVal, setCustomVal] = useState('');
   return (
     <div
       onClick={onClick}
@@ -81,10 +58,25 @@ const Outcome = ({
         [Styles.Yes]: outcome.name === 'yes',
         [Styles.ShowAllHighlighted]: showAllHighlighted,
         [Styles.InvalidSelected]: invalidSelected,
+        [Styles.nonSelectable]: nonSelectable,
       })}
     >
       <span>{outcome.name}</span>
-      <span>{outcome.price}</span>
+      {editable ? (
+        <div className={classNames({[Styles.edited]: customVal !== ''})}>
+          <span>$</span>
+          <input
+            value={customVal}
+            onChange={(v) => {
+              setCustomVal(v.target.value);
+              setEditableValue(v.target.value);
+            }}
+            placeholder={PLACEHOLDER}
+          />
+        </div>
+      ) : (
+        <span>{outcome.price}</span>
+      )}
     </div>
   );
 };
@@ -109,11 +101,14 @@ export const AmountInput = () => {
 
 interface OutcomesGridProps {
   outcomes: OutcomeType[];
-  selectedOutcome: OutcomeType;
+  selectedOutcome?: OutcomeType;
   setSelectedOutcome: Function;
   marketType: string;
   orderType?: string;
   showAllHighlighted?: boolean;
+  nonSelectable?: boolean;
+  editable?: boolean;
+  setEditableValue?: Function;
 }
 export const OutcomesGrid = ({
   outcomes,
@@ -121,27 +116,37 @@ export const OutcomesGrid = ({
   setSelectedOutcome,
   marketType,
   showAllHighlighted,
+  nonSelectable,
+  editable,
+  setEditableValue
 }: OutcomesGridProps) => {
   return (
     <div
       className={classNames(Styles.Outcomes, {
         [Styles.YesNo]: marketType === YES_NO,
+        [Styles.nonSelectable]: nonSelectable,
       })}
     >
-      {outcomes.map((outcome) => (
-        <Outcome
-          key={outcome.id}
-          selected={
-            outcome.id === selectedOutcome.id ||
-            (showAllHighlighted && !outcome.isInvalid)
-          }
-          showAllHighlighted={showAllHighlighted}
-          outcome={outcome}
-          onClick={() => setSelectedOutcome(outcome)}
-          marketType={marketType}
-          invalidSelected={selectedOutcome.isInvalid}
-        />
-      ))}
+      {outcomes
+        .filter((outcome) => !outcome.isInvalid)
+        .map((outcome, index) => (
+          <Outcome
+            key={outcome.id}
+            selected={
+              selectedOutcome &&
+              (outcome.id === selectedOutcome.id ||
+                (showAllHighlighted && !outcome.isInvalid))
+            }
+            nonSelectable={nonSelectable}
+            showAllHighlighted={showAllHighlighted}
+            outcome={outcome}
+            onClick={() => setSelectedOutcome(outcome)}
+            marketType={marketType}
+            invalidSelected={nonSelectable || selectedOutcome?.isInvalid}
+            editable={editable}
+            setEditableValue={(price) => setEditableValue(price, index)}
+          />
+        ))}
     </div>
   );
 };

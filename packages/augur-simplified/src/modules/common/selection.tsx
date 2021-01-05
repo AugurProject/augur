@@ -10,6 +10,7 @@ import {
   UsdIcon,
 } from './icons';
 import { USDC } from 'modules/constants';
+import { TinyButton } from './buttons';
 
 export interface NameValuePair {
   label: string;
@@ -352,5 +353,21 @@ export const RadioBarGroup = ({ title, items, selected, update }) => {
         ))}
       </div>
     </div>
+  );
+};
+
+export const MultiButtonSelection = ({options, selection, setSelection}) => {
+  return (
+    <ul className={Styles.MultiButtonSelection}>
+      {options.map(({ id, label }) => (
+        <li key={`option-${id}`}>
+          <TinyButton
+            text={label}
+            selected={selection === id}
+            action={() => selection !== id && setSelection(id)}
+          />
+        </li>
+      ))}
+    </ul>
   );
 };

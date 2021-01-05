@@ -257,7 +257,7 @@ export const LiquidityTable = ({
       {!lpTokens && (
         <span>
           No liquidity to show
-          <PrimaryButton action={() => setModal({type: MODAL_ADD_LIQUIDITY})} text="Earn fees as a liquidity provider" />
+          <PrimaryButton action={() => setModal({type: MODAL_ADD_LIQUIDITY, market})} text="Earn fees as a liquidity provider" />
         </span>
       )}
       {lpTokens && <LiquidityRow liquidity={lpTokens} />}
