@@ -888,12 +888,12 @@ export enum TradingDirection {
 }
 export interface TradeInfo {
   marketId: string;
+  amm: AmmExchange;
   tradeType: TradingDirection;
   buyYesShares: boolean;
-  inputAmount?: string;
-  minAmountOut?: number;
-  minAmount?: string;
-  fee?: string;
+  inputDisplayAmount?: string;
+  minDisplayAmount?: string;
+  estimatedAmount?: string;
   userBalances?: string[]
 }
 
