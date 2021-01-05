@@ -12,18 +12,15 @@ import {
 import { BuySellButton, SecondaryButton } from '../common/buttons';
 import { ErrorBlock } from '../common/labels';
 
-const ModalAddLiquidity = ({modal}) => {
-  const { 
-    market 
-  } = modal;
+const ModalAddLiquidity = ({market}) => {
   const [selectedOutcome, setSelectedOutcome] = useState(fakeYesNoOutcomes[0]);
-  const createLiquidity = !!market.amm;
+  const createLiquidity = !market.amm;
   return (
     <section className={Styles.ModalAddLiquidity}>
       <Header title={"Add liquidity"} />
-      {createLiquidity && <ErrorBlock text='Initial liquidity providers are required to set the odds before creating market liquidity.'/>}
       <AmountInput />
-      <span className={Styles.SmallLabel}>current odds</span>
+      {createLiquidity && <ErrorBlock text='Initial liquidity providers are required to set the odds before creating market liquidity.'/>}
+      <span className={Styles.SmallLabel}>{createLiquidity ? 'Set the odds' : 'Current Odds'}</span>
       <OutcomesGrid
         outcomes={fakeYesNoOutcomes}
         selectedOutcome={selectedOutcome}
@@ -31,7 +28,7 @@ const ModalAddLiquidity = ({modal}) => {
         marketType={YES_NO}
         orderType={BUY}
       />
-      <span className={Styles.SmallLabel}>you'll receive</span>
+      <span className={Styles.SmallLabel}>You'll receive</span>
       <InfoNumbers
         infoNumbers={[
           {

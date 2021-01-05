@@ -128,7 +128,7 @@ export const OutcomesGrid = ({
         [Styles.YesNo]: marketType === YES_NO,
       })}
     >
-      {outcomes.map((outcome) => (
+      {outcomes.filter(outcome => !outcome.isInvalid).map((outcome) => (
         <Outcome
           key={outcome.id}
           selected={

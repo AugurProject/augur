@@ -44,6 +44,8 @@
   flex: 1;
   flex-direction: column;
   width: 395px;
+  max-height: calc(100vh - 100px);
+  overflow-y: scroll;
 
   > button:first-of-type {
     margin-bottom: @size-8;
@@ -58,13 +60,16 @@
     margin-bottom: @size-12;
     margin-top: @size-24;
   }
+
+  > div[class*="ErrorBlock"] {
+    margin-top: @size-16;
+  }
 }
 
 .SmallLabel {
   .text-16-semi-bold;
 
   color: var(--simple-primary-text);
-  text-transform: capitalize;
 }
 
 .Header {
