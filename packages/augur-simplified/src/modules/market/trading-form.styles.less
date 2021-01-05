@@ -98,7 +98,7 @@
         margin-top: 0;
       }
 
-      &:last-of-type {
+      &:nth-of-type(3) {
         margin-top: @size-8;
       }
     }
@@ -183,6 +183,48 @@
       }
     }
 
+    > div {
+      .text-30-bold;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: @size-8;
+
+      > span {
+        color: var(--simple-secondary-text-50);
+      }
+
+      &.edited {
+        > span {
+          color: var(--simple-primary-text);
+        }
+      }
+
+      > input {
+        .text-30-bold;
+
+        justify-content: flex-start;
+        display: flex;
+        background: transparent;
+        outline: 0;
+        padding: 0;
+        border: 0;
+        color: var(--simple-primary-text);
+        margin-left: @size-1;
+
+        &:active,
+        &:focus {
+          outline: 0;
+          border: 0;
+        }
+  
+        &::placeholder {
+         color: var(--color-secondary-text-50);
+        }
+      }
+    }
+
     &.Selected {
       .SelectedBorders;
 
@@ -202,6 +244,14 @@
 
     > span:first-of-type {
       .text-16;
+    }
+  }
+
+  &.nonSelectable {
+    > span:last-of-type {
+      .text-20-bold;
+
+      margin-top: @size-8;
     }
   }
 }

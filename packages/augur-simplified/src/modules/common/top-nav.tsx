@@ -12,6 +12,7 @@ import { useAppStatusStore } from 'modules/stores/app-status';
 import { useLocalStorage } from 'modules/stores/local-storage';
 import ConnectAccount from 'modules/ConnectAccount/index';
 import { TinyButton } from 'modules/common/buttons';
+import { Toasts } from '../toasts/toasts';
 
 export const SettingsButton = () => {
   const {
@@ -182,6 +183,7 @@ export const TopNav = () => {
             {ThreeLinesIcon}
           </button>
         )}
+        <Toasts />
       </section>
     </nav>
   );
