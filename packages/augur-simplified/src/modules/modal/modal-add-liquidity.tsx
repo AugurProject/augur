@@ -9,7 +9,8 @@ import { ErrorBlock } from '../common/labels';
 import { formatPercent } from '../../utils/format-number';
 import { MultiButtonSelection } from '../common/selection';
 import classNames from 'classnames';
-import { MarketInfo } from '../types';
+import { AmmExchange, Cash, MarketInfo } from '../types';
+import { useActiveWeb3React } from '../ConnectAccount/hooks';
 
 const TRADING_FEE_OPTIONS = [
   {
@@ -236,6 +237,7 @@ interface ModalAddLiquidityProps {
 }
 
 const ModalAddLiquidity = ({ market, liquidityModalType }: ModalAddLiquidityProps) => {
+  const { account } = useActiveWeb3React();
   const [outcomes, setOutcomes] = useState(fakeYesNoOutcomes);
   const [showBackView, setShowBackView] = useState(false);
   const [amount, updateAmount] = useState('');
@@ -283,7 +285,7 @@ const ModalAddLiquidity = ({ market, liquidityModalType }: ModalAddLiquidityProp
               />
             </>
           )}
-          {LIQUIDITY_STRINGS[modalType].setOdds && (
+          {createLiquidity && (
             <>
               <span className={Styles.SmallLabel}>
                 {LIQUIDITY_STRINGS[modalType].setOddsTitle}
@@ -295,7 +297,7 @@ const ModalAddLiquidity = ({ market, liquidityModalType }: ModalAddLiquidityProp
                 marketType={YES_NO}
                 orderType={BUY}
                 nonSelectable
-                editable={LIQUIDITY_STRINGS[modalType].editableOutcomes}
+                editable={createLiquidity}
                 setEditableValue={(price, index) => {
                   const newOutcomes = outcomes;
                   newOutcomes[index].price = price;
