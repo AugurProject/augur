@@ -283,7 +283,7 @@
     color: var(--simple-primary-text);
   }
 
-  &:hover {
+  &:hover:not([class*="isSelected_"]) {
     > span {
       border: @size-2 solid var(--simple-border-dk);
       background: transparent;
