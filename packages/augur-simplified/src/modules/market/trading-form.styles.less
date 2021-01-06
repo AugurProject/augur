@@ -146,7 +146,8 @@
     }
   }
 
-  &.Selected {
+  &.Selected,
+  &:not(.Selected):hover {
     .SelectedBorders;
 
     background: var(--simple-no-15);
@@ -225,10 +226,19 @@
       }
     }
 
-    &.Selected {
+    &.Selected,
+    &:not(.Selected):hover {
       .SelectedBorders;
 
       color: var(--simple-primary-text);
+    }
+
+    &.Yes:not(.Selected):hover {
+      border-right: @size-1 solid transparent;
+    }
+
+    &:not(.Yes):not(.Selected):hover {
+      border-left: @size-1 solid transparent;
     }
 
     &.InvalidSelected {
