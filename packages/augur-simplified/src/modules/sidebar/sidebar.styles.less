@@ -1,4 +1,5 @@
 @import (reference) '~assets/styles/shared';
+@import (reference) '~modules/common/buttons.styles.less';
 
 div.Sidebar {
   @media @breakpoint-mobile-tablet {
@@ -14,17 +15,13 @@ div.Sidebar {
   }
 }
 
-.Icon {
-  .SimpleBorder;
-
-  padding: @size-12 @size-16;
-  display: flex;
-}
-
 .Header {
-  padding: @size-10 @size-12;
+  padding: 0 @size-16;
   border-bottom: @size-1 solid var(--simple-border);
   display: flex;
+  height: @simple-top-bar-height;
+  min-height: @simple-top-bar-height;
+  max-height: @simple-top-bar-height;
   align-content: center;
   justify-content: center;
   align-items: center;
@@ -40,7 +37,12 @@ div.Sidebar {
   }
 
   > span:last-of-type {
-    .Icon;
+    .Button;
+
+    width: @size-56;
+    max-width: @size-56;
+    min-width: @size-56;
+    padding: 0;
   }
 }
 
@@ -87,8 +89,4 @@ div.Sidebar {
   .Footer;
 
   justify-content: flex-end;
-
-  > svg {
-    .Icon;
-  }
 }
