@@ -44,5 +44,16 @@ export const getMarketEndtimeFull = (timestamp: string | number) => {
   // use existing to make sure to be consistent
   const monthDayYear = getMarketEndtimeDate(timestamp);
   const timeHour = getTimeFormat(timestamp);
-  return `${monthDayYear} ${timeHour}`
+  const offset = getTimestampTimezoneOffSet(timestamp);
+  return `${monthDayYear} ${timeHour} ${offset}`
+}
+
+const getTimestampTimezoneOffSet = (timestamp: string | number) => {
+  const inMilli = Number(timestamp) * 1000;
+  const date = new Date(inMilli);
+  // timezone offset comes in minutes
+  const timezone = date.getTimezoneOffset() / 60;
+  const direction = timezone > 0 ? "+" : "-"
+  return `(UTC${direction}${Math.abs(timezone)})`
+
 }
