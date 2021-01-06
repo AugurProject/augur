@@ -560,12 +560,12 @@ function addBigUnitPostfix(value, formattedValue, removeComma = false) {
     postfixed = '> 1T';
   } else if (value.gt(createBigNumber('10000000000', 10))) {
     postfixed =
-      value.dividedBy(createBigNumber('1000000000', 10)).toFixed(0) + 'B';
+      value.dividedBy(createBigNumber('1000000000', 10)).toFixed(2) + 'B';
   } else if (value.gt(createBigNumber('10000000', 10))) {
     postfixed =
-      value.dividedBy(createBigNumber('1000000', 10)).toFixed(0) + 'M';
+      value.dividedBy(createBigNumber('1000000', 10)).toFixed(2) + 'M';
   } else if (value.gt(createBigNumber('10000', 10))) {
-    postfixed = value.dividedBy(createBigNumber('1000', 10)).toFixed(0) + 'K';
+    postfixed = value.dividedBy(createBigNumber('1000', 10)).toFixed(2) + 'K';
   } else {
     postfixed = addCommas(formattedValue, removeComma);
   }
