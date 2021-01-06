@@ -3,7 +3,7 @@ import { BigNumber as BN } from 'bignumber.js'
 import { getDayFormat, getTimeFormat } from "../utils/date-utils";
 import { convertAttoValueToDisplayValue } from "@augurproject/sdk";
 import { convertOnChainCashAmountToDisplayCashAmount, formatShares, onChainMarketSharesToDisplayShares } from "./format-number";
-import { BUY, SELL } from "../modules/constants";
+import { BUY, SEC_IN_YEAR, SELL } from "../modules/constants";
 import { timeSinceTimestamp } from "./time-since";
 interface GraphMarket {
   id: string,
@@ -168,7 +168,7 @@ const shapeAmmExchange = (amm: GraphAmmExchange, past: GraphAmmExchange, cashes:
   const priceYes = (Number(amm.percentageNo) / 100);
   const priceNo = (Number(amm.percentageYes) / 100);
 
-  const { volumeNo, volumeYes, liquidity } = amm;
+  const { volumeNo, volumeYes, liquidity, addLiquidity, removeLiquidity } = amm;
   const { volumeNo: pastVolumeNo, volumeYes: pastVolumeYes, liquidity: pastLiquidity, percentageNo: pastPctNo, percentageYes: pastPctYes } = (past || {});
   const past24hrPriceYes = pastPctNo ? (Number(pastPctNo) / 100) : null;
   const past24hrPriceNo = pastPctYes ? (Number(pastPctYes) / 100) : null;
@@ -184,6 +184,7 @@ const shapeAmmExchange = (amm: GraphAmmExchange, past: GraphAmmExchange, cashes:
   const volume24hrYesUSD = calculatePastVolumeInUsd(volumeYes, pastVolumeYes, priceYes, cash.usdPrice);
   const volume24hrTotalUSD = String(new BN(volume24hrNoUSD).plus(new BN(volume24hrYesUSD)))
   const liquidity24hrUSD = calculatePastLiquidityInUsd(liquidity, pastLiquidity, cash.usdPrice)
+  const apy = calculateAmmApy(volumeTotalUSD, amm, cash.usdPrice, addLiquidity, removeLiquidity);
 
   return {
     id: amm.id,
@@ -215,7 +216,30 @@ const shapeAmmExchange = (amm: GraphAmmExchange, past: GraphAmmExchange, cashes:
     past24hrPriceNo: past24hrPriceNo ? past24hrPriceNo.toFixed(2) : null,
     past24hrPriceYes: past24hrPriceYes ? past24hrPriceYes.toFixed(2) : null,
     totalSupply: amm.totalSupply,
+    apy,
   }
+}
+
+
+const calculateAmmApy = (volumeTotalUSD: string, amm: GraphAmmExchange, cashUsd: string, addLiquidity: GraphAddLiquidity[] = [], removeLiquidity: GraphRemoveLiquidity[] = []): string => {
+  const initValue = addLiquidity.length > 0 ? Number(addLiquidity[0].timestamp) : 0;
+  const startTimestamp = addLiquidity.reduce((p, t) => Number(t.timestamp) < p ? Number(t.timestamp) : p, initValue);
+  const fee = amm.feePercent;
+  if (startTimestamp === 0 || fee === "0") return "0";
+
+  const totalFeeUsd = new BN(volumeTotalUSD).times(new BN(fee));
+
+  const addCollateral = addLiquidity.reduce((p, t) => p.plus(new BN(t.cash)), new BN("0"))
+  // going to assume cash is taken out, ignoring shares values
+  const removedCollateral = removeLiquidity.reduce((p, t) => p.plus(new BN(t.cash)), new BN("0"))
+  const totalLiquidityAdded = addCollateral.minus(removedCollateral);
+  const initialLiquidityUsd = totalLiquidityAdded.times(cashUsd);
+  const currTimestamp = Math.floor(new Date().getTime() / 1000); // current time in unix timestamp
+  const secondsPast = currTimestamp - startTimestamp;
+  const percentFeeLiquidity = (totalFeeUsd.minus(initialLiquidityUsd)).div(initialLiquidityUsd);
+  const percentPerSecondForYear = percentFeeLiquidity.div(new BN(secondsPast)).times(SEC_IN_YEAR).abs();
+
+  return String(percentPerSecondForYear);
 }
 
 const shapeEnterTransactions = (transactions: GraphEnter[], cash: Cash): AmmTransaction[] => {

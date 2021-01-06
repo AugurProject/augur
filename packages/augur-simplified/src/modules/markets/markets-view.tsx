@@ -32,6 +32,7 @@ import { Pagination } from 'modules/common/pagination';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import { USDC } from '../constants';
 import { AmmExchange, MarketInfo, MarketOutcome } from '../types';
+import { formatPercent } from '../../utils/format-number';
 
 const PAGE_LIMIT = 20;
 
@@ -57,7 +58,7 @@ const LoadingMarketCard = () => {
   );
 };
 
-const OutcomesTable = ({ outcomes, amm }: { outcomes: MarketOutcome[], amm: AmmExchange}) => {
+const OutcomesTable = ({ outcomes, amm }: { outcomes: MarketOutcome[], amm: AmmExchange }) => {
   return (
     <div className={Styles.OutcomesTable}>
       {outcomes
@@ -66,10 +67,10 @@ const OutcomesTable = ({ outcomes, amm }: { outcomes: MarketOutcome[], amm: AmmE
           <div key={`${outcome.name}-${amm?.marketId}-${outcome.id}`}>
             <span>{outcome.name.toLowerCase()}</span>
             <span>
-              { amm.liquidity !== "0" ?
+              {amm.liquidity !== "0" ?
                 formatDai(outcome.name === YES_OUTCOME_ID ? amm?.priceYes : amm?.priceNo)
                   .full
-                  : "-"
+                : "-"
               }
             </span>
           </div>
@@ -78,7 +79,7 @@ const OutcomesTable = ({ outcomes, amm }: { outcomes: MarketOutcome[], amm: AmmE
   );
 };
 
-const MarketCard = ({ market }) => {
+const MarketCard = ({ market }: { market: MarketInfo }) => {
   const {
     categories,
     description,
@@ -107,17 +108,17 @@ const MarketCard = ({ market }) => {
               <PrimaryButton text="Earn fees as a liquidity provider" />
             </div>
           ) : (
-            <>
-              <ValueLabel
-                label="total volume"
-                value={formatDai(market.amm?.volumeTotalUSD).full}
-              />
-              <OutcomesTable
-                amm={amm}
-                outcomes={outcomes}
-              />
-            </>
-          )}
+              <>
+                <ValueLabel
+                  label="total volume"
+                  value={formatDai(market.amm?.volumeTotalUSD).full}
+                />
+                <OutcomesTable
+                  amm={amm}
+                  outcomes={outcomes}
+                />
+              </>
+            )}
         </div>
       </MarketLink>
     </article>
