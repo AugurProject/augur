@@ -220,7 +220,8 @@ describe('AMM Middleware for ERC20', () => {
       expect(alsoSell).toEqual({
         short: bn(7),
         long: bn(0),
-        cash: bn(330044793),
+        cash: bn(333386580),
+        // cash: bn(330044793), // includes augur core fees
         sets: bn(330870)
       });
       expect(dontSell).toEqual({
@@ -241,7 +242,8 @@ describe('AMM Middleware for ERC20', () => {
       expect(postInvalid.toNumber()).toEqual(alsoSell.short.toNumber());
       expect(postNo.toNumber()).toEqual(alsoSell.short.toNumber());
       expect(postYes.toNumber()).toEqual(alsoSell.long.toNumber());
-      expect(postCash.toNumber()).toEqual(alsoSell.cash.toNumber());
+      expect(postCash.toNumber()).toEqual(330044793);
+      // expect(postCash.toNumber()).toEqual(alsoSell.cash.toNumber()); // excludes augur core fees
     });
 
     test('remove all liquidity without selling shares', async () => {
