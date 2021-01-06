@@ -414,8 +414,7 @@ jobs:
     condition: |
       and
       (
-        # skip this job.
-        neq('false', 'false'),
+        eq('true', 'false'),
         eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_POP_GETH'], 'true'),
         in(dependencies.PreFlightCheck.result, 'Succeeded'),
         in(dependencies.TestAugurCore.result, 'Succeeded', 'Skipped'),
