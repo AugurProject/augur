@@ -1,8 +1,9 @@
 import { tickSizeToNumTickWithDisplayPrices } from '@augurproject/sdk';
 import {
+  convertDisplayAmountToOnChainAmount,
+  convertOnChainAmountToDisplayAmount,
   encodeNumberAsBase10String,
   encodeNumberAsJSNumber,
-  numTicksToTickSizeWithDisplayPrices,
   unfix,
 } from '@augurproject/utils';
 import {
@@ -14,8 +15,8 @@ import {
 } from 'modules/constants';
 import { FormattedNumber, FormattedNumberOptions } from 'modules/types';
 import addCommas from 'utils/add-commas-to-number';
-import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import getPrecision from 'utils/get-number-precision';
+import { BigNumber, createBigNumber } from './create-big-number';
 
 type NumStrBigNumber = number | BigNumber | string;
 
@@ -25,6 +26,7 @@ export const SHARES_NUMBER_OF_DECIMALS = 0;
 
 const SMALLEST_NUMBER_DECIMAL_PLACES = 8;
 const USUAL_NUMBER_DECIMAL_PLACES = 4;
+const YES_NO_TICK_SIZE = createBigNumber("0.001");
 
 export function formatEther(
   num: NumStrBigNumber,
@@ -139,7 +141,7 @@ export function formatBestPrice(
   opts: FormattedNumberOptions = {}
 ): FormattedNumber {
   let decimals = 0;
-  if(String(tickSize).indexOf('.') >= 0) {
+  if (String(tickSize).indexOf('.') >= 0) {
     decimals = String(tickSize).split(".")[1].length;
   }
   return formatNumber(num, {
@@ -149,8 +151,8 @@ export function formatBestPrice(
       const isNegative = Number(v) < 0;
       const val = isNegative
         ? createBigNumber(v)
-            .abs()
-            .toFixed(2)
+          .abs()
+          .toFixed(2)
         : v;
       return `${isNegative ? '-' : ''}${val}`;
     },
@@ -184,8 +186,8 @@ export function formatDai(
       const isNegative = Number(v) < 0;
       const val = isNegative
         ? createBigNumber(v)
-            .abs()
-            .toFixed(2)
+          .abs()
+          .toFixed(2)
         : v;
       return `${isNegative ? '-' : ''}$${val}`;
     },
@@ -329,8 +331,8 @@ export function formatAttoDai(num: NumStrBigNumber, optsInc: FormattedNumberOpti
       const isNegative = Number(v) < 0;
       const val = isNegative
         ? createBigNumber(v)
-            .abs()
-            .toFixed(2)
+          .abs()
+          .toFixed(2)
         : v;
       return `${isNegative ? '-' : ''}$${val}`;
     },
@@ -625,11 +627,9 @@ export function calcPercentageFromPrice(
   return Number(percentage.toFixed(2));
 }
 
-const YES_NO_NUM_TICKS = 1000
-export const onChainMarketSharesToDisplayFormatter = (num: NumStrBigNumber, precision: NumStrBigNumber) => {
-  // TODO: get max/min price from market
-  const numTicks = numTicksToTickSizeWithDisplayPrices(createBigNumber(YES_NO_NUM_TICKS), createBigNumber(0), createBigNumber(1))
-  const displayValue = String(convertOnChainAmountToDisplayAmount(createBigNumber(num), numTicks, createBigNumber(precision)))
+export const onChainMarketSharesToDisplayShares = (num: NumStrBigNumber, precision: NumStrBigNumber) => {
+  // TODO: get numTicks using max/min price from market
+  const displayValue = String(convertOnChainSharesToDisplayShareAmount(createBigNumber(num), createBigNumber(precision)))
   if (isNaN(Number(displayValue))) {
     console.log('num issue', num, precision)
     return "0"
@@ -637,17 +637,27 @@ export const onChainMarketSharesToDisplayFormatter = (num: NumStrBigNumber, prec
   return displayValue;
 }
 
-export function convertOnChainAmountToDisplayAmount(
-  onChainAmount: BigNumber,
-  tickSize: BigNumber,
-  precision: BigNumber,
-) {
-  return onChainAmount.dividedBy(tickSize).dividedBy(createBigNumber(10).pow(createBigNumber(precision)));
+function convertOnChainSharesToDisplayShareAmount(
+  onChainAmount: NumStrBigNumber,
+  precision: NumStrBigNumber,
+): BigNumber {
+  return convertOnChainAmountToDisplayAmount(createBigNumber(onChainAmount), YES_NO_TICK_SIZE, createBigNumber(10).pow(createBigNumber(precision)));
 }
 
-export function convertOnChainToDisplayAmount(
-  onChainAmount: BigNumber,
-  precision: BigNumber | Number,
+export function convertDisplayShareAmountToOnChainShareAmount(displayAmount: NumStrBigNumber, precision: NumStrBigNumber): BigNumber {
+  return convertDisplayAmountToOnChainAmount(createBigNumber(displayAmount), YES_NO_TICK_SIZE, createBigNumber(10).pow(createBigNumber(precision)));
+}
+
+export function convertOnChainCashAmountToDisplayCashAmount(
+  onChainAmount: NumStrBigNumber,
+  precision: NumStrBigNumber,
 ) {
-  return onChainAmount.dividedBy(new BigNumber(10).pow(createBigNumber(precision)));
+  return createBigNumber(onChainAmount).dividedBy(createBigNumber(10).pow(createBigNumber(precision)));
+}
+
+export function convertDisplayCashAmountToOnChainCashAmount(
+  onChainAmount: NumStrBigNumber,
+  precision: NumStrBigNumber,
+): BigNumber {
+  return createBigNumber(onChainAmount).times(createBigNumber(10).pow(createBigNumber(precision)));
 }

@@ -34,34 +34,7 @@ export const fakeYesNoOutcomes = [
   },
 ];
 
-// const fakeScalarOutcomes = [
-//   {
-//     id: 0,
-//     name: '293 of fewer',
-//     price: '$0.75',
-//   },
-//   {
-//     id: 1,
-//     name: '294 to 296',
-//     price: '$0.15',
-//   },
-//   {
-//     id: 2,
-//     name: '297 to 299',
-//     price: '$0.05',
-//   },
-//   {
-//     id: 3,
-//     name: '300 to 302',
-//     price: '$0.03',
-//   },
-//   {
-//     id: 4,
-//     name: 'Invalid',
-//     price: '$0.00',
-//     isInvalid: true,
-//   },
-// ];
+const PLACEHOLDER = '0';
 
 const Outcome = ({
   outcome,
@@ -69,8 +42,12 @@ const Outcome = ({
   selected,
   onClick,
   invalidSelected,
-  showAllHighlighted
+  showAllHighlighted,
+  nonSelectable,
+  editable,
+  setEditableValue
 }) => {
+  const [customVal, setCustomVal] = useState('');
   return (
     <div
       onClick={onClick}
@@ -81,15 +58,30 @@ const Outcome = ({
         [Styles.Yes]: outcome.name === 'yes',
         [Styles.ShowAllHighlighted]: showAllHighlighted,
         [Styles.InvalidSelected]: invalidSelected,
+        [Styles.nonSelectable]: nonSelectable,
       })}
     >
       <span>{outcome.name}</span>
-      <span>{outcome.price}</span>
+      {editable ? (
+        <div className={classNames({[Styles.edited]: customVal !== ''})}>
+          <span>$</span>
+          <input
+            value={customVal}
+            onChange={(v) => {
+              setCustomVal(v.target.value);
+              setEditableValue(v.target.value);
+            }}
+            placeholder={PLACEHOLDER}
+          />
+        </div>
+      ) : (
+        <span>{outcome.price}</span>
+      )}
     </div>
   );
 };
 
-const AmountInput = () => {
+export const AmountInput = () => {
   const [amount, updateAmount] = useState('');
   return (
     <div className={Styles.AmountInput}>
@@ -109,11 +101,14 @@ const AmountInput = () => {
 
 interface OutcomesGridProps {
   outcomes: OutcomeType[];
-  selectedOutcome: OutcomeType;
+  selectedOutcome?: OutcomeType;
   setSelectedOutcome: Function;
   marketType: string;
   orderType?: string;
   showAllHighlighted?: boolean;
+  nonSelectable?: boolean;
+  editable?: boolean;
+  setEditableValue?: Function;
 }
 export const OutcomesGrid = ({
   outcomes,
@@ -121,38 +116,76 @@ export const OutcomesGrid = ({
   setSelectedOutcome,
   marketType,
   showAllHighlighted,
+  nonSelectable,
+  editable,
+  setEditableValue
 }: OutcomesGridProps) => {
   return (
     <div
       className={classNames(Styles.Outcomes, {
         [Styles.YesNo]: marketType === YES_NO,
+        [Styles.nonSelectable]: nonSelectable,
       })}
     >
-      {outcomes.map((outcome) => (
-        <Outcome
-          key={outcome.id}
-          selected={
-            outcome.id === selectedOutcome.id ||
-            (showAllHighlighted && !outcome.isInvalid)
-          }
-          showAllHighlighted={showAllHighlighted}
-          outcome={outcome}
-          onClick={() => setSelectedOutcome(outcome)}
-          marketType={marketType}
-          invalidSelected={selectedOutcome.isInvalid}
-        />
+      {outcomes
+        .filter((outcome) => !outcome.isInvalid)
+        .map((outcome, index) => (
+          <Outcome
+            key={outcome.id}
+            selected={
+              selectedOutcome &&
+              (outcome.id === selectedOutcome.id ||
+                (showAllHighlighted && !outcome.isInvalid))
+            }
+            nonSelectable={nonSelectable}
+            showAllHighlighted={showAllHighlighted}
+            outcome={outcome}
+            onClick={() => setSelectedOutcome(outcome)}
+            marketType={marketType}
+            invalidSelected={nonSelectable || selectedOutcome?.isInvalid}
+            editable={editable}
+            setEditableValue={(price) => setEditableValue(price, index)}
+          />
+        ))}
+    </div>
+  );
+};
+
+interface InfoNumber {
+  label: string;
+  value: string;
+}
+
+interface InfoNumbersProps {
+  infoNumbers: InfoNumber[];
+}
+
+export const InfoNumbers = ({ infoNumbers }: InfoNumbersProps) => {
+  return (
+    <div className={Styles.OrderInfo}>
+      {infoNumbers.map((infoNumber) => (
+        <div key={infoNumber.label}>
+          <span>{infoNumber.label}</span>
+          <span>{infoNumber.value}</span>
+        </div>
       ))}
     </div>
   );
 };
 
-const TradingForm = ({ outcomes = fakeYesNoOutcomes, initialSelectedOutcome, marketType = YES_NO }) => {
+const TradingForm = ({
+  outcomes = fakeYesNoOutcomes,
+  initialSelectedOutcome,
+  marketType = YES_NO,
+}) => {
   const {
     isMobile,
     actions: { setShowTradingForm },
   } = useAppStatusStore();
   const [orderType, setOrderType] = useState(BUY);
-  const [selectedOutcome, setSelectedOutcome] = useState(initialSelectedOutcome);
+  const [selectedOutcome, setSelectedOutcome] = useState(
+    initialSelectedOutcome
+  );
   return (
     <div className={Styles.TradingForm}>
       <div>
@@ -172,7 +205,9 @@ const TradingForm = ({ outcomes = fakeYesNoOutcomes, initialSelectedOutcome, mar
           <span>fee</span>
           <span>0.1%</span>
         </div>
-        {isMobile && <div onClick={() => setShowTradingForm(false)}>{CloseIcon}</div>}
+        {isMobile && (
+          <div onClick={() => setShowTradingForm(false)}>{CloseIcon}</div>
+        )}
       </div>
       <div>
         <OutcomesGrid
@@ -183,20 +218,22 @@ const TradingForm = ({ outcomes = fakeYesNoOutcomes, initialSelectedOutcome, mar
           orderType={orderType}
         />
         <AmountInput />
-        <div className={Styles.OrderInfo}>
-          <div>
-            <span>average price</span>
-            <span>$0.00</span>
-          </div>
-          <div>
-            <span>shares bought</span>
-            <span>0.00</span>
-          </div>
-          <div>
-            <span>max winnings</span>
-            <span>$0.00</span>
-          </div>
-        </div>
+        <InfoNumbers
+          infoNumbers={[
+            {
+              label: 'average price',
+              value: '$0.00',
+            },
+            {
+              label: 'shares bought',
+              value: '0.00',
+            },
+            {
+              label: 'max winnings',
+              value: '$0.00',
+            },
+          ]}
+        />
         <PrimaryButton disabled text={orderType} />
       </div>
     </div>

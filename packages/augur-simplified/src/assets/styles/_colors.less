@@ -146,6 +146,9 @@
   --simple-alternate-background: #EDEFF1;
   --simple-secondary-text: #8B959E;
   --simple-primary-text: #15171A;
+  --simple-primary-text-40: fade(#15171A, 40%);
+  --simple-secondary-text-50: fade(#8B959E, 50%);
+
   --simple-border: #DBE1E7;
   --simple-border-dk: #D1D1D9;
   --simple-light-bg: #FFFFFF;
@@ -168,9 +171,8 @@
   --simple-invalid: #58586B; // outcome 0 / invalid / augur color for icons
   --simple-invalid-15: fade(#58586B, 15%);
   --simple-chart-color: #c4c4c4;
-
-  // transactions
-  --color-failed: #FF3E13;
+  --simple-confirmed: @color-brand;
+  --simple-failed: #FF3E13;
 }
 
 :root[theme="BETTING"],

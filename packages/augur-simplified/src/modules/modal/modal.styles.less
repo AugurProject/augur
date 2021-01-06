@@ -1,0 +1,126 @@
+@import (reference) '~assets/styles/shared';
+
+.ModalView {
+  background-color: var(--simple-primary-text-40);
+  height: 100vh;
+  position: fixed;
+  width: 100vw;
+  z-index: @mask-modal;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  > div {
+    .SimpleBorder;
+
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    justify-content: center;
+    width: fit-content;
+    background: var(--simple-light-bg);
+
+    > section {
+      > * {
+        margin-left: @size-24;
+        margin-right: @size-24;
+      }
+
+      > div[class*="Header"] {
+        margin: 0;
+        padding: @size-24;
+      }
+
+      > div[class*="FooterText"] {
+        margin: 0;
+      }
+    }
+  }
+}
+
+.ModalAddLiquidity {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 395px;
+  max-height: calc(100vh - 100px);
+  overflow-y: scroll;
+
+  > button:first-of-type {
+    margin-bottom: @size-8;
+    margin-top: @size-24;
+  }
+
+  > button:last-of-type {
+    margin-bottom: @size-24;
+  }
+
+  > span {
+    margin-bottom: @size-12;
+    margin-top: @size-24;
+  }
+
+  > div[class*="ErrorBlock"] {
+    margin-top: @size-8;
+  }
+}
+
+.SmallLabel {
+  .text-16-semi-bold;
+
+  color: var(--simple-primary-text);
+}
+
+.Header {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    border-bottom: @size-1 solid var(--simple-border);
+
+    > span {
+        .text-20-bold;
+
+        color: var(--simple-primary-text);
+        text-transform: capitalize;
+        flex: 1;
+    }
+
+    > div {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      margin-right: @size-32;
+      
+      > span:first-of-type {
+        .text-16;
+
+        text-transform: capitalize;
+        color: var(--simple-secondary-text);
+      }
+      > span:last-of-type {
+        .text-20-semi-bold;
+        
+        color: var(--simple-primary-text);
+        margin-top: @size-4;
+      }
+    }
+
+    > button {
+        background: transparent;
+        outline: 0;
+        border: 0;
+    }
+}
+
+.FooterText {
+  .text-14;
+
+  color: var(--simple-primary-text);
+  padding: @size-24;
+  background-color: var(--light-background-color);
+  border-top: @size-1 solid var(--simple-border);
+  border-bottom-left-radius: @size-8;
+  border-bottom-right-radius: @size-8;
+  line-height: @size-22;
+}

@@ -59,3 +59,9 @@ export {
 export {
   handleParaAugurDeployFinished
 } from "./mappings/paraDeployer";
+
+export {
+  wethWrapperHandleEnterPosition,
+  wethWrapperHandleExitPosition
+} from './mappings/wethWrapperForAMMExchange';
+

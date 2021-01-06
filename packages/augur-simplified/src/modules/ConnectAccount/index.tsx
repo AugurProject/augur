@@ -54,6 +54,12 @@ const ConnectAccountButton = ({ autoLogin, darkMode }) => {
     text: 'Connect Account',
   };
 
+  useEffect(() => {
+    if (account) {
+      updateLoginAccount(activeWeb3);
+    }
+  }, [account, activeWeb3, updateLoginAccount])
+
   if (account) {
     buttonProps = {
       ...buttonProps,
@@ -88,9 +94,9 @@ const ConnectAccountButton = ({ autoLogin, darkMode }) => {
   )
 }
 
-export default function ConnectAccount({ autoLogin, darkMode }) {
+export default function ConnectAccount({ autoLogin, updateLoginAccount, darkMode }) {
   return (
-    <ConnectAccountButton autoLogin={autoLogin} darkMode={darkMode} />
+    <ConnectAccountButton autoLogin={autoLogin} updateLoginAccount={updateLoginAccount} darkMode={darkMode} />
   );
 }
 

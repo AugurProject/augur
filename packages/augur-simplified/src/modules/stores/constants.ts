@@ -27,13 +27,16 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   updateSettings: settings => {},
   addTransaction: transaction => {},
   updateBlocknumber: blocknumber => {},
-  finalizeTransaction: hash => {}
+  finalizeTransaction: hash => {},
+  setModal: modal => {},
+  closeModal: () => {},
 };
 
 export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
   isMobile: false,
   sidebarType: null,
   loginAccount: null,
+  modal: {},
   showTradingForm: false,
   marketInfos: {},
   transactions: [],
@@ -98,6 +101,7 @@ export const APP_STATE_KEYS = {
   PARA_CONFIG: 'paraConfig',
   SETTINGS: 'settings',
   BLOCKNUMBER: 'blocknumber',
+  MODAL: 'modal'
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -112,7 +116,9 @@ export const APP_STATUS_ACTIONS = {
   UPDATE_SETTINGS: 'UPDATE_SETTINGS',
   ADD_TRANSACTION: 'ADD_TRANSACTION',
   UPDATE_BLOCKNUMBER: 'UPDATE_BLOCKNUMBER',
-  FINALIZE_TRANSACTION: 'FINALIZE_TRANSACTION'
+  FINALIZE_TRANSACTION: 'FINALIZE_TRANSACTION',
+  SET_MODAL: 'SET_MODAL',
+  CLOSE_MODAL: 'CLOSE_MODAL',
 };
 
 export const fakePositionsData = [

@@ -17,6 +17,7 @@ import { ConnectAccountProvider } from 'modules/ConnectAccount/connect-account-p
 import { useActiveWeb3React } from 'modules/ConnectAccount/hooks';
 import classNames from 'classnames';
 import { TransactionDetails } from './types';
+import ModalView from 'modules/modal/modal-view';
 
 function checkIsMobile(setIsMobile) {
   const isMobile =
@@ -36,6 +37,7 @@ const AppBody = () => {
     isMobile,
     blocknumber,
     transactions,
+    modal,
     actions: {
       setIsMobile,
       updateGraphData,
@@ -46,6 +48,8 @@ const AppBody = () => {
     },
   } = useAppStatusStore();
   const { account, library } = useActiveWeb3React();
+  const modalShowing = Object.keys(modal).length !== 0;
+
 
   useEffect(() => {
     // get data immediately, then setup interval
@@ -82,13 +86,13 @@ const AppBody = () => {
   }, []);
 
   useEffect(() => {
-    if (showTradingForm) {
+    if (showTradingForm || modalShowing) {
       document.body.classList.add('App--noScroll');
       window.scrollTo(0, 0);
     } else {
       document.body.classList.remove('App--noScroll');
     }
-  }, [showTradingForm]);
+  }, [showTradingForm, modalShowing]);
 
   useEffect(() => {
     const createClient = (provider, config) =>
@@ -127,9 +131,10 @@ const AppBody = () => {
 
   const sidebarOut = sidebarType && isMobile;
   return (
-    <div className={classNames(Styles.App, {
+    <div id="mainContent" className={classNames(Styles.App, {
       [Styles.SidebarOut]: sidebarOut,
     })}>
+      {modalShowing && <ModalView />}
       {sidebarOut && <Sidebar />}
       <TopNav />
       <Routes />

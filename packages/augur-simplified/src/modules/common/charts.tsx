@@ -6,8 +6,8 @@ import Styles from 'modules/common/charts.styles.less';
 import classNames from 'classnames';
 import { formatDai } from 'utils/format-number';
 import { Checkbox } from 'modules/common/icons';
-import { TinyButton } from './buttons';
 import { MarketInfo } from '../types';
+import { MultiButtonSelection } from './selection';
 
 const HIGHLIGHTED_LINE_WIDTH = 2;
 const NORMAL_LINE_WIDTH = 2;
@@ -204,17 +204,7 @@ export const SimpleChartSection = ({ market }) => {
 
   return (
     <section className={Styles.SimpleChartSection}>
-      <ul className={Styles.RangeSelection}>
-        {RANGE_OPTIONS.map(({ id, label }) => (
-          <li key={`range-option-${id}`}>
-            <TinyButton
-              text={label}
-              selected={rangeSelection === id}
-              action={() => rangeSelection !== id && setRangeSelection(id)}
-            />
-          </li>
-        ))}
-      </ul>
+      <MultiButtonSelection options={RANGE_OPTIONS} selection={rangeSelection} setSelection={(id) => setRangeSelection(id)}/>
       <PriceHistoryChart
         {...{ market, formattedOutcomes, selectedOutcomes, rangeSelection }}
       />
@@ -257,8 +247,9 @@ const handleSeries = (
     ]);
     const baseSeriesOptions = {
       name: formattedOutcomes[index].label,
-      type: isSelected ? 'area' : 'line',
+      type: 'area',
       lineWidth: isSelected ? HIGHLIGHTED_LINE_WIDTH : NORMAL_LINE_WIDTH,
+      animation: false,
       states: {
         hover: {
           lineWidth: isSelected ? HIGHLIGHTED_LINE_WIDTH : NORMAL_LINE_WIDTH,
@@ -313,13 +304,13 @@ const getOptions = ({
     text: '',
   },
   chart: {
+    alignTicks: false,
     backgroundColor: 'transparent',
-    type: 'line',
+    type: 'area',
     styledMode: false,
     animation: false,
     reflow: true,
-    marginTop: 11,
-    spacing: [22, 0, 8, 0],
+    spacing: [8, 0, 8, 0],
   },
   credits: {
     enabled: false,
@@ -327,12 +318,7 @@ const getOptions = ({
   plotOptions: {
     area: {
       threshold: null,
-    },
-    line: {
-      dataGrouping: {
-        forced: true,
-        // units: [['minute', [1]]],
-      },
+      animation: false,
     },
   },
   scrollbar: { enabled: false },

@@ -21,6 +21,8 @@ const {
   ADD_TRANSACTION,
   UPDATE_BLOCKNUMBER,
   FINALIZE_TRANSACTION,
+  SET_MODAL,
+  CLOSE_MODAL,
 } = APP_STATUS_ACTIONS;
 
 const {
@@ -33,7 +35,8 @@ const {
   USER_INFO,
   SETTINGS,
   TRANSACTIONS,
-  BLOCKNUMBER
+  BLOCKNUMBER,
+  MODAL
 } = APP_STATE_KEYS;
 
 const isAsync = (obj) => {
@@ -91,6 +94,14 @@ export function AppStatusReducer(state, action) {
     }
     case SET_SIDEBAR: {
       updatedState[SIDEBAR_TYPE] = action.sidebarType;
+      break;
+    }
+    case SET_MODAL: {
+      updatedState[MODAL] = action.modal;
+      break;
+    }
+    case CLOSE_MODAL: {
+      updatedState[MODAL] = {};
       break;
     }
     case SET_LOGIN_ACCOUNT: {
@@ -204,7 +215,9 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
       updateSettings: settings => dispatch({ type: UPDATE_SETTINGS, settings }),
       addTransaction: (transaction: TransactionDetails) => dispatch({ type: ADD_TRANSACTION, transaction }),
       updateBlocknumber: blocknumber => dispatch({ type: UPDATE_BLOCKNUMBER, blocknumber }),
-      finalizeTransaction: hash => dispatch({ type: FINALIZE_TRANSACTION, hash })
+      finalizeTransaction: hash => dispatch({ type: FINALIZE_TRANSACTION, hash }),
+      setModal: modal => dispatch({ type: SET_MODAL, modal }),
+      closeModal: () => dispatch({ type: CLOSE_MODAL }),
     },
   };
 };

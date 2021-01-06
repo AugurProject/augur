@@ -888,12 +888,12 @@ export enum TradingDirection {
 }
 export interface TradeInfo {
   marketId: string;
+  amm: AmmExchange;
   tradeType: TradingDirection;
   buyYesShares: boolean;
-  inputAmount?: string;
-  minAmountOut?: number;
-  minAmount?: string;
-  fee?: string;
+  inputDisplayAmount?: string;
+  minDisplayAmount?: string;
+  estimatedAmount?: string;
   userBalances?: string[]
 }
 
@@ -1086,8 +1086,13 @@ export interface ProcessedData {
   }
 }
 
+interface Modal {
+  type: string;
+}
+
 export interface AppStatusState {
   processed: ProcessedData,
+  loginAccount: LoginAccount,
   userInfo: {
     activity: ActivityData[];
     balances: UserBalances;
@@ -1098,6 +1103,7 @@ export interface AppStatusState {
   isMobile: boolean;
   showTradingForm: boolean;
   sidebarType: string;
+  modal: Modal;
 }
 
 export interface TransactionDetails {

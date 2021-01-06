@@ -12,7 +12,8 @@ import { useAppStatusStore } from 'modules/stores/app-status';
 import { useLocalStorage } from 'modules/stores/local-storage';
 import ConnectAccount from 'modules/ConnectAccount/index';
 import { useActiveWeb3React } from 'modules/ConnectAccount/hooks';
-import {SecondaryButton, TinyButton} from 'modules/common/buttons';
+import { SecondaryButton, TinyButton } from 'modules/common/buttons';
+import { Toasts } from '../toasts/toasts';
 
 export const SettingsButton = () => {
   const {
@@ -117,25 +118,38 @@ export const TopNav = () => {
   const location = useLocation();
   const path = parsePath(location.pathname)[0];
   const {
+    loginAccount,
     isMobile,
-    actions: { setSidebar },
+    actions: { setSidebar, updateLoginAccount },
   } = useAppStatusStore();
-  const activeWeb3 = useActiveWeb3React();
   const [user, setUser] = useLocalStorage('user', null);
 
   useEffect(() => {
     if (
-      activeWeb3?.library?.provider?.isMetaMask &&
-      user?.account !== activeWeb3?.account &&
-      activeWeb3?.account
+      loginAccount?.library?.provider?.isMetaMask &&
+      user?.account !== loginAccount?.account &&
+      loginAccount?.account
     ) {
-      setUser({ account: activeWeb3.account });
-    } else if (!activeWeb3.active && !!user?.account) {
+      setUser({ account: loginAccount.account });
+    } else if (!loginAccount?.active && !!user?.account) {
       setUser({});
     }
-  }, [activeWeb3, user, setUser]);
+  }, [loginAccount, user, setUser]);
+
 
   const autoLogin = user?.account || null;
+
+  const handleAccountUpdate = (activeWeb3) => {
+    if (activeWeb3) {
+      if (loginAccount && loginAccount.account) {
+        if (loginAccount.account !== activeWeb3.account) {
+          updateLoginAccount(activeWeb3);
+        }
+      } else {
+        updateLoginAccount(activeWeb3);
+      }
+    }
+  }
 
   return (
     <nav
@@ -157,7 +171,7 @@ export const TopNav = () => {
         )}
       </section>
       <section>
-        <ConnectAccount autoLogin={autoLogin} darkMode={false} />
+        <ConnectAccount updateLoginAccount={handleAccountUpdate} autoLogin={autoLogin} darkMode={false} />
         {!isMobile && <SettingsButton />}
         {isMobile && (
           <button
@@ -167,6 +181,7 @@ export const TopNav = () => {
             {ThreeLinesIcon}
           </button>
         )}
+        <Toasts />
       </section>
     </nav>
   );

@@ -6143,7 +6143,7 @@ Decode ERC-1155 asset data from the format described in the AssetProxy contract 
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#WethWrapperForAMMExchange.fallback()"><code class="function-signature">fallback()</code></a></li><li><a href="#WethWrapperForAMMExchange.constructor(contract IAMMFactory,contract ParaShareToken)"><code class="function-signature">constructor(contract IAMMFactory _factory, contract ParaShareToken _shareToken)</code></a></li><li><a href="#WethWrapperForAMMExchange.addAMMWithLiquidity(contract IMarket,uint256,uint256,bool,address)"><code class="function-signature">addAMMWithLiquidity(contract IMarket _market, uint256 _fee, uint256 _ratioFactor, bool _keepLong, address _recipient)</code></a></li><li><a href="#WethWrapperForAMMExchange.getAMM(contract IMarket,uint256)"><code class="function-signature">getAMM(contract IMarket _market, uint256 _fee)</code></a></li><li><a href="#WethWrapperForAMMExchange.addInitialLiquidity(contract IMarket,uint256,uint256,bool,address)"><code class="function-signature">addInitialLiquidity(contract IMarket _market, uint256 _fee, uint256 _ratioFactor, bool _keepLong, address _recipient)</code></a></li><li><a href="#WethWrapperForAMMExchange.addLiquidity(contract IMarket,uint256,address)"><code class="function-signature">addLiquidity(contract IMarket _market, uint256 _fee, address _recipient)</code></a></li><li><a href="#WethWrapperForAMMExchange.removeLiquidity(contract IMarket,uint256,uint256,uint256)"><code class="function-signature">removeLiquidity(contract IMarket _market, uint256 _fee, uint256 _poolTokensToSell, uint256 _minSetsSold)</code></a></li><li><a href="#WethWrapperForAMMExchange.enterPosition(contract IMarket,uint256,bool,uint256)"><code class="function-signature">enterPosition(contract IMarket _market, uint256 _fee, bool _buyLong, uint256 _minShares)</code></a></li><li><a href="#WethWrapperForAMMExchange.exitPosition(contract IMarket,uint256,uint256,uint256,uint256)"><code class="function-signature">exitPosition(contract IMarket _market, uint256 _fee, uint256 _shortShares, uint256 _longShares, uint256 _minCashPayout)</code></a></li><li><a href="#WethWrapperForAMMExchange.exitAll(contract IMarket,uint256,uint256)"><code class="function-signature">exitAll(contract IMarket _market, uint256 _fee, uint256 _minCashPayout)</code></a></li><li><a href="#WethWrapperForAMMExchange.claimTradingProceeds(contract IMarket,address payable,bytes32)"><code class="function-signature">claimTradingProceeds(contract IMarket _market, address payable _shareHolder, bytes32 _fingerprint)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#WethWrapperForAMMExchange.fallback()"><code class="function-signature">fallback()</code></a></li><li><a href="#WethWrapperForAMMExchange.constructor(contract IAMMFactory,contract ParaShareToken)"><code class="function-signature">constructor(contract IAMMFactory _factory, contract ParaShareToken _shareToken)</code></a></li><li><a href="#WethWrapperForAMMExchange.addAMMWithLiquidity(contract IMarket,uint256,uint256,bool,address)"><code class="function-signature">addAMMWithLiquidity(contract IMarket _market, uint256 _fee, uint256 _ratioFactor, bool _keepLong, address _recipient)</code></a></li><li><a href="#WethWrapperForAMMExchange.getAMM(contract IMarket,uint256)"><code class="function-signature">getAMM(contract IMarket _market, uint256 _fee)</code></a></li><li><a href="#WethWrapperForAMMExchange.addInitialLiquidity(contract IMarket,uint256,uint256,bool,address)"><code class="function-signature">addInitialLiquidity(contract IMarket _market, uint256 _fee, uint256 _ratioFactor, bool _keepLong, address _recipient)</code></a></li><li><a href="#WethWrapperForAMMExchange.addLiquidity(contract IMarket,uint256,address)"><code class="function-signature">addLiquidity(contract IMarket _market, uint256 _fee, address _recipient)</code></a></li><li><a href="#WethWrapperForAMMExchange.removeLiquidity(contract IMarket,uint256,uint256,uint256)"><code class="function-signature">removeLiquidity(contract IMarket _market, uint256 _fee, uint256 _poolTokensToSell, uint256 _minSetsSold)</code></a></li><li><a href="#WethWrapperForAMMExchange.enterPosition(contract IMarket,uint256,bool,uint256)"><code class="function-signature">enterPosition(contract IMarket _market, uint256 _fee, bool _buyLong, uint256 _minShares)</code></a></li><li><a href="#WethWrapperForAMMExchange.exitPosition(contract IMarket,uint256,uint256,uint256,uint256)"><code class="function-signature">exitPosition(contract IMarket _market, uint256 _fee, uint256 _shortShares, uint256 _longShares, uint256 _minCashPayout)</code></a></li><li><a href="#WethWrapperForAMMExchange.exitAll(contract IMarket,uint256,uint256)"><code class="function-signature">exitAll(contract IMarket _market, uint256 _fee, uint256 _minCashPayout)</code></a></li><li><a href="#WethWrapperForAMMExchange.claimTradingProceeds(contract IMarket,address payable,bytes32)"><code class="function-signature">claimTradingProceeds(contract IMarket _market, address payable _shareHolder, bytes32 _fingerprint)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#WethWrapperForAMMExchange.AddLiquidity(address,address)"><code class="function-signature">AddLiquidity(address amm, address sender)</code></a></li><li><a href="#WethWrapperForAMMExchange.EnterPosition(address,address)"><code class="function-signature">EnterPosition(address amm, address sender)</code></a></li><li><a href="#WethWrapperForAMMExchange.ExitPosition(address,address)"><code class="function-signature">ExitPosition(address amm, address sender)</code></a></li><li><a href="#WethWrapperForAMMExchange.RemoveLiquidity(address,address)"><code class="function-signature">RemoveLiquidity(address amm, address sender)</code></a></li></ul></div>
 
 
 
@@ -6210,6 +6210,30 @@ Decode ERC-1155 asset data from the format described in the AssetProxy contract 
 <h4><a class="anchor" aria-hidden="true" id="WethWrapperForAMMExchange.claimTradingProceeds(contract IMarket,address payable,bytes32)"></a><code class="function-signature">claimTradingProceeds(contract IMarket _market, address payable _shareHolder, bytes32 _fingerprint)</code><span class="function-visibility">external</span></h4>
 
 
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="WethWrapperForAMMExchange.AddLiquidity(address,address)"></a><code class="function-signature">AddLiquidity(address amm, address sender)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="WethWrapperForAMMExchange.EnterPosition(address,address)"></a><code class="function-signature">EnterPosition(address amm, address sender)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="WethWrapperForAMMExchange.ExitPosition(address,address)"></a><code class="function-signature">ExitPosition(address amm, address sender)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="WethWrapperForAMMExchange.RemoveLiquidity(address,address)"></a><code class="function-signature">RemoveLiquidity(address amm, address sender)</code><span class="function-visibility"></span></h4>
 
 
 
