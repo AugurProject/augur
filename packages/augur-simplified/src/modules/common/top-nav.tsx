@@ -11,7 +11,6 @@ import { GearIcon, ThreeLinesIcon } from 'modules/common/icons';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import { useLocalStorage } from 'modules/stores/local-storage';
 import ConnectAccount from 'modules/ConnectAccount/index';
-import { useActiveWeb3React } from 'modules/ConnectAccount/hooks';
 import { SecondaryButton, TinyButton } from 'modules/common/buttons';
 import { Toasts } from '../toasts/toasts';
 

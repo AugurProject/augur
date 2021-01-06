@@ -196,6 +196,12 @@ export enum ApprovalState {
   APPROVED
 }
 
+export enum ApprovalAction {
+  TRADE,
+  ADD_LIQUIDITY,
+  REMOVE_LIQUIDITY,
+}
+
 export const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 // Modals

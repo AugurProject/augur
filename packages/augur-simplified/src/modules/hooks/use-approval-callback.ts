@@ -9,7 +9,22 @@ import { AmmExchange } from "../types";
 
 const APPROVAL_AMOUNT = String(new BN(2 ** 255).minus(1));
 
-export const useIsTokenApproved = (tokenAddress: string, spender: string): Promise<boolean> => {
+export const useIsTokenApproved = (tokenAddress: string): Promise<boolean> => {
+  const { loginAccount }  = useAppStatusStore()
+
+  return useMemo(async () => {
+    if (loginAccount) {
+      const allowance = await getERC20Allowance(tokenAddress, loginAccount.library, loginAccount.account, loginAccount.account);
+      return allowance && new BN(allowance).gt(0) ? true : false
+    }
+    return false
+  }, [
+    loginAccount, tokenAddress
+  ])
+}
+
+
+export const useIsTokenApprovedSpender = (tokenAddress: string, spender: string): Promise<boolean> => {
   const { account, library } = useActiveWeb3React();
 
   return useMemo(async () => {
@@ -42,7 +57,7 @@ export function useApproveCallback(
   approvingName: string,
   spender: string,
 ): [ApprovalState, () => Promise<void>] {
-  const isApproved = useIsTokenApproved(tokenAddress, spender)
+  const isApproved = useIsTokenApprovedSpender(tokenAddress, spender)
   const { chainId, account, library } = useActiveWeb3React()
   const pendingApproval = useHasPendingTransaction(account, tokenAddress, spender);
   const { actions: { addTransaction } } = useAppStatusStore()
@@ -119,7 +134,7 @@ export function useApproveERC1155Callback(
 ): [ApprovalState, () => Promise<void>] {
   const { chainId, account, library } = useActiveWeb3React();
   const { actions: { addTransaction } } = useAppStatusStore()
-  const pendingApproval = useIsTokenApproved(erc1155Address, spender)
+  const pendingApproval = useIsTokenApprovedSpender(erc1155Address, spender)
   const isApproved = useIsTokenApprovedForAll(erc1155Address, spender)
   // check the current approval status
   const approvalState: ApprovalState = useMemo(() => {

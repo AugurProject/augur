@@ -17,6 +17,7 @@ import { AppStatusState } from '../types';
 
 export const STUBBED_APP_STATUS_ACTIONS = {
   setIsMobile: isMobile => {},
+  setApprovals: approvals => {},
   setSidebar: (sidebarType) => {},
   updateGraphData: graphData => {},
   setShowTradingForm: showTradingForm => {},
@@ -34,6 +35,12 @@ export const STUBBED_APP_STATUS_ACTIONS = {
 
 export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
   isMobile: false,
+  approvals: {
+    trade: {
+      USDC: false,
+      ETH: false,
+    },
+  },
   sidebarType: null,
   loginAccount: null,
   modal: {},
@@ -87,6 +94,7 @@ export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
 };
 
 export const APP_STATE_KEYS = {
+  APPROVALS: 'approvals',
   IS_MOBILE: 'isMobile',
   SIDEBAR_TYPE: 'sidebarType',
   LOGIN_ACCOUNT: 'loginAccount',
@@ -105,6 +113,7 @@ export const APP_STATE_KEYS = {
 };
 
 export const APP_STATUS_ACTIONS = {
+  SET_APPROVALS: 'SET_APPROVALS',
   SET_IS_MOBILE: 'SET_IS_MOBILE',
   SET_SIDEBAR: 'SET_SIDEBAR',
   UPDATE_GRAPH_DATA: 'UPDATE_GRAPH_DATA',
