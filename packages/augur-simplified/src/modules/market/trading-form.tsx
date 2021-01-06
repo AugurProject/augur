@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import Styles from 'modules/market/trading-form.styles.less';
 import classNames from 'classnames';
-import { BUY, SELL, YES_NO } from 'modules/constants';
+import { BUY, SELL, YES_NO, USDC, ETH } from 'modules/constants';
 import { PrimaryButton } from 'modules/common/buttons';
-import { CurrencyDropdown } from 'modules/common/selection';
 import { useAppStatusStore } from 'modules/stores/app-status';
-import { CloseIcon } from 'modules/common/icons';
+import { CloseIcon, UsdIcon, EthIcon } from 'modules/common/icons';
 import { ApprovalButton } from '../common/buttons';
 import { ApprovalAction } from '../constants';
 
@@ -83,8 +82,10 @@ const Outcome = ({
   );
 };
 
-export const AmountInput = () => {
+export const AmountInput = ({ currencyName }) => {
   const [amount, updateAmount] = useState('');
+  const icon = currencyName === USDC ? UsdIcon : EthIcon;
+  const label = currencyName === USDC ? USDC : ETH;
   return (
     <div className={Styles.AmountInput}>
       <span>amount</span>
@@ -93,9 +94,9 @@ export const AmountInput = () => {
         <input
           onChange={(e) => updateAmount(e.target.value)}
           value={amount}
-          placeholder={'$0'}
+          placeholder='$0'
         />
-        <CurrencyDropdown onChange={() => null} />
+        {!!currencyName && <span className={Styles.CurrencyLabel}>{icon} {label}</span>}
       </div>
     </div>
   );
@@ -223,7 +224,7 @@ const TradingForm = ({
           marketType={marketType}
           orderType={orderType}
         />
-        <AmountInput />
+        <AmountInput currencyName={marketCashType} />
         <InfoNumbers
           infoNumbers={[
             {

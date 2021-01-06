@@ -146,7 +146,8 @@
     }
   }
 
-  &.Selected {
+  &.Selected,
+  &:not(.Selected):hover {
     .SelectedBorders;
 
     background: var(--simple-no-15);
@@ -225,10 +226,19 @@
       }
     }
 
-    &.Selected {
+    &.Selected,
+    &:not(.Selected):hover {
       .SelectedBorders;
 
       color: var(--simple-primary-text);
+    }
+
+    &.Yes:not(.Selected):hover {
+      border-right: @size-1 solid transparent;
+    }
+
+    &:not(.Yes):not(.Selected):hover {
+      border-left: @size-1 solid transparent;
     }
 
     &.InvalidSelected {
@@ -283,6 +293,25 @@
   }
 }
 
+.CurrencyLabel {
+  .text-16-semi-bold;
+
+  align-items: center;
+  color: var(--simple-primary-text);
+  flex: 0 0 auto;
+  display: flex;
+  flex-flow: row nowrap;
+  white-space: nowrap;
+  justify-content: center;
+  margin-right: @size-16;
+
+  > svg {
+    height: @size-24;
+    width: @size-24;
+    margin-right: @size-4;
+  }
+}
+
 .AmountInputDropdown {
   grid-column: 1 / span 2;
   margin-top: @size-14;
@@ -302,7 +331,7 @@
   > input {
     .text-20-bold;
 
-    width: unset;
+    width: 100%;
     color: var(--simple-primary-text);
     background-color: var(--simple-light-bg);
     border-radius: @size-8;

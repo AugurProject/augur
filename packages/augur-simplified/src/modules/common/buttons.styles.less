@@ -12,6 +12,14 @@
   align-items: center;
   text-transform: capitalize;
   cursor: pointer;
+  min-height: @size-48;
+  height: @size-48;
+  max-height: @size-48;
+  outline: none;
+
+  &:focus {
+    outline: none;
+  }
 
   > div > img {
     max-height: @size-16;
@@ -31,6 +39,10 @@
   &:disabled,
   &.Disabled {
     opacity: .5;
+  }
+
+  &:focus:not(:active):not(:hover):not(:disabled):not(:visited) {
+    .Focused;
   }
 }
 
@@ -52,8 +64,6 @@
     }
 
     &:focus {
-      .Focused;
-
       background-color: var(--simple-yes-15);
     }
 
@@ -77,8 +87,6 @@
     }
 
     &:focus {
-      .Focused;
-
       background-color: var(--light-background-color);
     }
 
@@ -113,7 +121,9 @@
   .text-12-semi-bold;
 
   color: var(--simple-secondary-text);
+  min-height: @size-25;
   height: @size-25;
+  max-height: @size-25;
   padding: 0 @size-8;
   flex-direction: row-reverse;
   grid-gap: 0;

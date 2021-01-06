@@ -158,7 +158,7 @@ const MarketView = ({ defaultMarket = null }) => {
       </section>
       {(!isMobile || showTradingForm) && (
         <section>
-          <TradingForm initialSelectedOutcome={selectedOutcome} marketCashType={marketCashType} amm={amm} />
+          <TradingForm initialSelectedOutcome={selectedOutcome} market={market} marketCashType={marketCashType} amm={amm} />
           {!isMobile && <AddLiquidity market={market} />}
         </section>
       )}
