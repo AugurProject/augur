@@ -230,7 +230,8 @@ describe('AMM Middleware for ETH', () => {
       expect(alsoSell).toEqual({
         short: bn('6480561909441'), // leftover
         long: bn(0),
-        cash: bn('330045714820151092617'),
+        cash: bn('333387508974317759280'),
+        // cash: bn('330045714820151092617'), // includes augur core fees
         sets: bn('330870708333333333')
       });
       expect(dontSell).toEqual({
