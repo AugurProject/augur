@@ -263,6 +263,27 @@
 
       margin-top: @size-8;
     }
+
+    &.Selected,
+    &:not(.Selected):hover {
+      .SimpleBorder;
+  
+      background: transparent;
+      border-top-left-radius: 0; 
+      border-bottom-left-radius: 0; 
+
+      &.Yes {
+        .SimpleBorder;
+
+        background: transparent;
+        border-top-right-radius: 0; 
+        border-bottom-right-radius: 0;
+      }
+
+      > span:first-of-type {
+        color: var(--simple-secondary-text);
+      }
+    }
   }
 }
 

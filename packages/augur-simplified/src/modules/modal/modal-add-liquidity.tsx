@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import Styles from 'modules/modal/modal.styles.less';
 import { Header } from './common';
-import { YES_NO, BUY } from '../constants';
+import { YES_NO, BUY, USDC } from '../constants';
 import { OutcomesGrid, AmountInput, InfoNumbers } from '../market/trading-form';
 import { BuySellButton, SecondaryButton } from '../common/buttons';
 import { ErrorBlock } from '../common/labels';
@@ -46,7 +46,42 @@ const fakeYesNoOutcomes = [
   },
 ];
 
-const ModalAddLiquidity = ({ market }) => {
+export const REMOVE = 'REMOVE';
+export const ADD = 'ADD';
+export const CREATE = 'CREATE';
+
+const LIQUIDITY_STRINGS = {
+  [REMOVE]: {
+    header: 'remove liquidity',
+    showTradingFee: false,
+    amountSubtitle: 'How much do you want to remove?',
+    footerText: () => {
+      return 'Need some copy here explaining why the user may recieve some shares when they remove their liquidity and they would need to sell these if possible.';
+    }
+  },
+  [ADD]: {
+    header: 'add liquidity',
+    showTradingFee: true,
+    setOdds: true,
+    setOddsTitle: 'Current Odds',
+    footerText: (percentFormatted) => {
+      return `By adding liquidity you'll earn ${percentFormatted} of all trades on this this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.`;
+    },
+  },
+  [CREATE]: {
+    header: 'add liquidity',
+    showTradingFee: false,
+    setTradingFee: true,
+    setOdds: true,
+    setOddsTitle: 'Set the odds',
+    editableOutcomes: true,
+    footerText: () => {
+      return "By adding initial liquidity you'll earn your set trading fee percentage of all trades on this this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.";  
+    }
+  },
+};
+
+const ModalAddLiquidity = ({ market, liquidityModalType }) => {
   const [outcomes, setOutcomes] = useState(fakeYesNoOutcomes);
   const [showBackView, setShowBackView] = useState(false);
 
@@ -56,6 +91,8 @@ const ModalAddLiquidity = ({ market }) => {
   const { amm } = market;
   const createLiquidity = !amm;
   const percentFormatted = formatPercent(amm?.feePercent).full;
+  let modalType = createLiquidity ? CREATE : ADD;
+  if (liquidityModalType) modalType = REMOVE;
   return (
     <section
       className={classNames(Styles.ModalAddLiquidity, {
@@ -65,18 +102,23 @@ const ModalAddLiquidity = ({ market }) => {
       {!showBackView ? (
         <>
           <Header
-            title={'Add liquidity'}
+            title={LIQUIDITY_STRINGS[modalType].header}
             subtitle={{
               label: 'trading fee',
-              value: amm?.feePercent ? percentFormatted : null,
+              value: LIQUIDITY_STRINGS[modalType].showTradingFee
+                ? percentFormatted
+                : null,
             }}
           />
-          <AmountInput />
-          {createLiquidity && (
-            <ErrorBlock text="Initial liquidity providers are required to set the odds before creating market liquidity." />
+          {LIQUIDITY_STRINGS[modalType].amountSubtitle && (
+            <span className={Styles.SmallLabel}>
+              {LIQUIDITY_STRINGS[modalType].amountSubtitle}
+            </span>
           )}
-          {createLiquidity && (
+          <AmountInput currencyName={USDC} />
+          {LIQUIDITY_STRINGS[modalType].setTradingFee && (
             <>
+              <ErrorBlock text="Initial liquidity providers are required to set the odds before creating market liquidity." />
               <span className={Styles.SmallLabel}>Set trading fee</span>
               <MultiButtonSelection
                 options={TRADING_FEE_OPTIONS}
@@ -85,23 +127,28 @@ const ModalAddLiquidity = ({ market }) => {
               />
             </>
           )}
-          <span className={Styles.SmallLabel}>
-            {createLiquidity ? 'Set the odds' : 'Current Odds'}
-          </span>
-          <OutcomesGrid
-            outcomes={outcomes}
-            selectedOutcome={null}
-            setSelectedOutcome={() => null}
-            marketType={YES_NO}
-            orderType={BUY}
-            nonSelectable
-            editable={createLiquidity}
-            setEditableValue={(price, index) => {
-              const newOutcomes = outcomes;
-              newOutcomes[index].price = price;
-              setOutcomes(newOutcomes);
-            }}
-          />
+          {LIQUIDITY_STRINGS[modalType].setOdds && (
+            <>
+              <span className={Styles.SmallLabel}>
+                {LIQUIDITY_STRINGS[modalType].setOddsTitle}
+              </span>
+              <OutcomesGrid
+                outcomes={outcomes}
+                selectedOutcome={null}
+                setSelectedOutcome={() => null}
+                marketType={YES_NO}
+                orderType={BUY}
+                nonSelectable
+                editable={LIQUIDITY_STRINGS[modalType].editableOutcomes}
+                setEditableValue={(price, index) => {
+                  const newOutcomes = outcomes;
+                  newOutcomes[index].price = price;
+                  setOutcomes(newOutcomes);
+                }}
+              />
+            </>
+          )}
+
           <span className={Styles.SmallLabel}>You'll receive</span>
           <InfoNumbers
             infoNumbers={[
@@ -125,9 +172,7 @@ const ModalAddLiquidity = ({ market }) => {
             text={createLiquidity ? 'Enter amount' : 'Add'}
           />
           <div className={Styles.FooterText}>
-            {createLiquidity
-              ? "By adding initial liquidity you'll earn your set trading fee percentage of all trades on this this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity."
-              : `By adding liquidity you'll earn ${percentFormatted} of all trades on this this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.`}
+            {LIQUIDITY_STRINGS[modalType].footerText(percentFormatted)}
           </div>
         </>
       ) : (
