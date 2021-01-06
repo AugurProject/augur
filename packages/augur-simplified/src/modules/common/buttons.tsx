@@ -10,6 +10,9 @@ interface ButtonProps {
   action?: Function;
   icon?: ReactNode;
   selected?: boolean;
+  href?: string;
+  target?: string;
+  rel?: string;
 }
 
 const Button = ({
@@ -19,10 +22,28 @@ const Button = ({
   action,
   icon,
   selected,
+  href,
+  target = '_blank',
+  rel = 'noopener noreferrer'
 }: ButtonProps) => {
-  return (
+  return href ? (
+    <a
+      href={href}
+      className={classNames(Styles.Button, {
+        [Styles.TextAndIcon]: text && icon,
+        [Styles.Disabled]: disabled,
+        [Styles.Selected]: selected,
+      }, className)}
+      onClick={(e) => action && action(e)}
+      target={target}
+      rel={rel}
+    >
+      {text}
+      {icon && icon}
+    </a>
+  ) : (
     <button
-      className={classNames({
+      className={classNames(Styles.Button, {
         [Styles.TextAndIcon]: text && icon,
         [Styles.Disabled]: disabled,
         [Styles.Selected]: selected,
@@ -35,10 +56,10 @@ const Button = ({
   );
 };
 
-export const PrimaryButton = (props: ButtonProps) => <Button className={Styles.PrimaryButton} {...props} />;
-export const SecondaryButton = (props: ButtonProps) => <Button className={Styles.SecondaryButton} {...props} />;
-export const TinyButton = (props: ButtonProps) => <Button className={Styles.TinyButton} {...props} />;
-export const BuySellButton = (props: ButtonProps) => <Button className={Styles.BuySellButton} {...props} />;
+export const PrimaryButton = (props: ButtonProps) => <Button {...props} className={classNames(Styles.PrimaryButton, props.className)} />;
+export const SecondaryButton = (props: ButtonProps) => <Button {...props} className={classNames(Styles.SecondaryButton, props.className)} />;
+export const TinyButton = (props: ButtonProps) => <Button {...props} className={classNames(Styles.TinyButton, props.className)} />;
+export const BuySellButton = (props: ButtonProps) => <Button className={classNames(Styles.BuySellButton, props.className)} {...props} />;
 
 export interface DirectionButtonProps {
   action: Function;

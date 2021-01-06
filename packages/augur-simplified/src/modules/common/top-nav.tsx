@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, Fragment } from 'react';
 import { useLocation } from 'react-router';
 import Styles from 'modules/common/top-nav.styles.less';
 import { Link } from 'react-router-dom';
@@ -11,7 +11,8 @@ import { GearIcon, ThreeLinesIcon } from 'modules/common/icons';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import { useLocalStorage } from 'modules/stores/local-storage';
 import ConnectAccount from 'modules/ConnectAccount/index';
-import { TinyButton } from 'modules/common/buttons';
+import { useActiveWeb3React } from 'modules/ConnectAccount/hooks';
+import { SecondaryButton, TinyButton } from 'modules/common/buttons';
 import { Toasts } from '../toasts/toasts';
 
 export const SettingsButton = () => {
@@ -45,14 +46,11 @@ export const SettingsButton = () => {
   }, [slippage]);
 
   return (
-    <React.Fragment key="settingsButton">
-      <button
-        className={Styles.SettingsButton}
-        title="Augur Settings"
-        onClick={() => setOpened(!open)}
-      >
-        {GearIcon}
-      </button>
+    <Fragment key="settingsButton">
+      <SecondaryButton
+        action={() => setOpened(!open)}
+        icon={GearIcon}
+      />
       {open && (
         <ul className={Styles.SettingsMenu}>
           <li>
@@ -112,7 +110,7 @@ export const SettingsButton = () => {
           </li>
         </ul>
       )}
-    </React.Fragment>
+    </Fragment>
   );
 };
 
