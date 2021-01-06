@@ -15,6 +15,11 @@
   min-height: @size-48;
   height: @size-48;
   max-height: @size-48;
+  outline: none;
+
+  &:focus {
+    outline: none;
+  }
 
   > div > img {
     max-height: @size-16;
@@ -34,6 +39,10 @@
   &:disabled,
   &.Disabled {
     opacity: .5;
+  }
+
+  &:focus:not(:active):not(:hover):not(:disabled):not(:visited) {
+    .Focused;
   }
 }
 
@@ -55,8 +64,6 @@
     }
 
     &:focus {
-      .Focused;
-
       background-color: var(--simple-yes-15);
     }
 
@@ -80,8 +87,6 @@
     }
 
     &:focus {
-      .Focused;
-
       background-color: var(--light-background-color);
     }
 
