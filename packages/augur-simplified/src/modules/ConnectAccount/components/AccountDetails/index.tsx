@@ -145,7 +145,7 @@ const AccountDetails = ({
   useEffect(() => {
     setConnectorName(formatConnectorName(connector));
   }, [account, connector]);
-  
+
   const mockTransactions = [{
     label: 'Work in progress @ 0.40',
     link: '',
