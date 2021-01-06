@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import Styles from 'modules/market/market-view.styles.less';
 import classNames from 'classnames';
@@ -28,6 +28,7 @@ import parseQuery from 'modules/routes/helpers/parse-query';
 import { USDC } from '../constants';
 import { AmmExchange, MarketInfo } from '../types';
 import { formatDai } from '../../utils/format-number';
+import { getMarketEndtimeFull, getMarketEndtimeDate } from '../../utils/date-utils';
 
 const getDetails = (market) => {
   const rawInfo = market?.extraInfoRaw || '{}';
@@ -81,12 +82,17 @@ const MarketView = ({ defaultMarket = null }) => {
     document.getElementById("mainContent")?.scrollTo(0, 0);
     window.scrollTo(0, 1);
   }, []);
+
   const market: MarketInfo = !!defaultMarket ? defaultMarket : markets[marketId];
+  const endTimeDate = useMemo(() => getMarketEndtimeDate(market?.endTimestamp), [market?.endTimestamp])
+  // add end time data full to market details when design is ready
+  const endTimeDateFull = useMemo(() => getMarketEndtimeFull(market?.endTimestamp), [market?.endTimestamp])
   const amm: AmmExchange = market?.amm;
 
   if (!market) return <div className={Styles.MarketView} />;
   const details = getDetails(market);
   const marketCashType = market.amm?.cash?.name;
+
 
   return (
     <div className={Styles.MarketView}>
@@ -113,8 +119,7 @@ const MarketView = ({ defaultMarket = null }) => {
           <li>
             <span>Expires</span>
             <span>
-              {new Date(Number(market.endTimestamp) * 1000).toDateString() ||
-                'missing'}
+              {endTimeDate}
             </span>
           </li>
         </ul>
