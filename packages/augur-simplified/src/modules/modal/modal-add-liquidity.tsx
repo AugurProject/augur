@@ -9,6 +9,7 @@ import { ErrorBlock } from '../common/labels';
 import { formatPercent } from '../../utils/format-number';
 import { MultiButtonSelection } from '../common/selection';
 import classNames from 'classnames';
+import { MarketInfo } from '../types';
 
 const TRADING_FEE_OPTIONS = [
   {
