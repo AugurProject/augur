@@ -51,20 +51,22 @@ export const REMOVE = 'REMOVE';
 export const ADD = 'ADD';
 export const CREATE = 'CREATE';
 
-const RECEIVE_BREAKDOWN_FAKE_DATA = [
-  {
-    label: 'yes shares',
-    value: '0',
-  },
-  {
-    label: 'no shares',
-    value: '0',
-  },
-  {
-    label: 'liquidity shares',
-    value: '0',
-  },
-];
+const RECEIVE_BREAKDOWN_FAKE_DATA = (input) => {
+  return [
+    {
+      label: 'yes shares',
+      value: `${input === '' ? 0 : input}`,
+    },
+    {
+      label: 'no shares',
+      value: '0',
+    },
+    {
+      label: 'liquidity shares',
+      value: '0',
+    },
+  ];
+}
 
 const LIQUIDITY_STRINGS = {
   [REMOVE]: {
@@ -75,7 +77,7 @@ const LIQUIDITY_STRINGS = {
       return 'Need some copy here explaining why the user may recieve some shares when they remove their liquidity and they would need to sell these if possible.';
     },
     receiveTitle: 'What you will recieve',
-    receiveBreakdown: [
+    receiveBreakdown: () => [
       {
         label: 'yes shares',
         value: '0.00',
@@ -124,7 +126,7 @@ const LIQUIDITY_STRINGS = {
     },
     confirmReceiveOverview: {
       title: 'What you will recieve',
-      breakdown: [
+      breakdown: () => [
         {
           label: 'yes shares',
           value: '0.00',
@@ -236,6 +238,7 @@ interface ModalAddLiquidityProps {
 const ModalAddLiquidity = ({ market, liquidityModalType }: ModalAddLiquidityProps) => {
   const [outcomes, setOutcomes] = useState(fakeYesNoOutcomes);
   const [showBackView, setShowBackView] = useState(false);
+  const [amount, updateAmount] = useState('');
 
   const [tradingFeeSelection, setTradingFeeSelection] = useState(
     TRADING_FEE_OPTIONS[0].id
@@ -268,7 +271,7 @@ const ModalAddLiquidity = ({ market, liquidityModalType }: ModalAddLiquidityProp
               {LIQUIDITY_STRINGS[modalType].amountSubtitle}
             </span>
           )}
-          <AmountInput currencyName={USDC} />
+          <AmountInput currencyName={USDC} updateInitialAmount={(amount) => updateAmount(amount)} initialAmount={amount}/>
           {LIQUIDITY_STRINGS[modalType].setTradingFee && (
             <>
               <ErrorBlock text="Initial liquidity providers are required to set the odds before creating market liquidity." />
@@ -306,7 +309,7 @@ const ModalAddLiquidity = ({ market, liquidityModalType }: ModalAddLiquidityProp
             {LIQUIDITY_STRINGS[modalType].receiveTitle}
           </span>
           <InfoNumbers
-            infoNumbers={LIQUIDITY_STRINGS[modalType].receiveBreakdown}
+            infoNumbers={LIQUIDITY_STRINGS[modalType].receiveBreakdown(amount)}
           />
           <BuySellButton
             text={LIQUIDITY_STRINGS[modalType].approvalButtonText}
@@ -357,7 +360,7 @@ const ModalAddLiquidity = ({ market, liquidityModalType }: ModalAddLiquidityProp
             </span>
             <InfoNumbers
               infoNumbers={
-                LIQUIDITY_STRINGS[modalType].confirmReceiveOverview.breakdown
+                LIQUIDITY_STRINGS[modalType].confirmReceiveOverview.breakdown(amount)
               }
             />
           </section>

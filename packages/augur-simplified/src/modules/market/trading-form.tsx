@@ -46,7 +46,7 @@ const Outcome = ({
   showAllHighlighted,
   nonSelectable,
   editable,
-  setEditableValue
+  setEditableValue,
 }) => {
   const [customVal, setCustomVal] = useState('');
   return (
@@ -64,7 +64,7 @@ const Outcome = ({
     >
       <span>{outcome.name}</span>
       {editable ? (
-        <div className={classNames({[Styles.edited]: customVal !== ''})}>
+        <div className={classNames({ [Styles.edited]: customVal !== '' })}>
           <span>$</span>
           <input
             value={customVal}
@@ -82,8 +82,12 @@ const Outcome = ({
   );
 };
 
-export const AmountInput = ({ currencyName }) => {
-  const [amount, updateAmount] = useState('');
+export const AmountInput = ({
+  currencyName,
+  updateInitialAmount,
+  initialAmount,
+}) => {
+  const [amount, updateAmount] = useState(initialAmount);
   const icon = currencyName === USDC ? UsdIcon : EthIcon;
   const label = currencyName === USDC ? USDC : ETH;
   return (
@@ -92,11 +96,18 @@ export const AmountInput = ({ currencyName }) => {
       <span>balance: $1000</span>
       <div className={Styles.AmountInputDropdown}>
         <input
-          onChange={(e) => updateAmount(e.target.value)}
+          onChange={(e) => {
+            updateAmount(e.target.value);
+            updateInitialAmount(e.target.value);
+          }}
           value={amount}
-          placeholder='$0'
+          placeholder="$0"
         />
-        {!!currencyName && <span className={Styles.CurrencyLabel}>{icon} {label}</span>}
+        {!!currencyName && (
+          <span className={Styles.CurrencyLabel}>
+            {icon} {label}
+          </span>
+        )}
       </div>
     </div>
   );
@@ -121,7 +132,7 @@ export const OutcomesGrid = ({
   showAllHighlighted,
   nonSelectable,
   editable,
-  setEditableValue
+  setEditableValue,
 }: OutcomesGridProps) => {
   return (
     <div
@@ -224,7 +235,11 @@ const TradingForm = ({
           marketType={marketType}
           orderType={orderType}
         />
-        <AmountInput currencyName={marketCashType} />
+        <AmountInput
+          currencyName={marketCashType}
+          updateInitialAmount={() => null}
+          initialAmount={''}
+        />
         <InfoNumbers
           infoNumbers={[
             {
@@ -241,13 +256,13 @@ const TradingForm = ({
             },
           ]}
         />
-        {loginAccount &&
-          <ApprovalButton
-            amm={amm}
-            actionType={ApprovalAction.TRADE}
-          />
-        }
-        <PrimaryButton disabled={!approvals?.trade[marketCashType]} text={orderType} />
+        {loginAccount && (
+          <ApprovalButton amm={amm} actionType={ApprovalAction.TRADE} />
+        )}
+        <PrimaryButton
+          disabled={!approvals?.trade[marketCashType]}
+          text={orderType}
+        />
       </div>
     </div>
   );
