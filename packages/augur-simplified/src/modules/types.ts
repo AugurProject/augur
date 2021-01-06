@@ -165,6 +165,7 @@ export interface AmmExchange {
   trades: Trades,
   past24hrPriceNo?: string,
   past24hrPriceYes?: string,
+  totalSupply?: string,
 }
 
 export interface Cashes {

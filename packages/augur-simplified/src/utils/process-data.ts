@@ -70,7 +70,8 @@ interface GraphAmmExchange {
   enters: GraphEnter[],
   exits: GraphExit[],
   addLiquidity: GraphAddLiquidity[],
-  removeLiquidity: GraphRemoveLiquidity[]
+  removeLiquidity: GraphRemoveLiquidity[],
+  totalSupply: string,
 }
 
 interface GraphData {
@@ -213,6 +214,7 @@ const shapeAmmExchange = (amm: GraphAmmExchange, past: GraphAmmExchange, cashes:
     trades,
     past24hrPriceNo: past24hrPriceNo ? past24hrPriceNo.toFixed(2) : null,
     past24hrPriceYes: past24hrPriceYes ? past24hrPriceYes.toFixed(2) : null,
+    totalSupply: amm.totalSupply,
   }
 }
 
