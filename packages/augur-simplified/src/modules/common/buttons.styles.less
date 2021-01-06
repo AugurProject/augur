@@ -14,8 +14,19 @@
   text-transform: capitalize;
   cursor: pointer;
 
-  &.TextAndIcon > svg {
-    margin-left: @size-8;
+  > div > img {
+    max-height: @size-16;
+  }
+
+  &.TextAndIcon {
+    > svg,
+    > div {
+      margin-left: @size-8;
+    }
+
+    > div {
+      display: flex;
+    }
   }
 
   &:disabled,
@@ -26,7 +37,8 @@
 
 .Focused {
   outline: 0;
-  border: @size-3 solid var(--color-focused);
+  border: @size-1 solid var(--color-focused);
+  box-shadow: inset 0 0 0 @size-2 var(--color-focused);
 }
 
 .PrimaryButton {
@@ -35,19 +47,23 @@
   background-color: var(--simple-yes-15);
   border: @size-1 solid var(--simple-yes);
 
-  &:not(:disabled):not(.Disabled):hover {
-    background-color: var(--simple-yes-30);
+  &:not(:disabled):not(.Disabled) {
+    &:hover {
+      background-color: var(--simple-yes-30);
+    }
+
+    &:focus {
+      .Focused;
+
+      background-color: var(--simple-yes-15);
+    }
+
+    &:active {
+      background-color: var(--simple-yes-30);
+    }
   }
 
-  &:not(:disabled):not(.Disabled):focus {
-    .Focused;
 
-    background-color: var(--simple-yes-15);
-  }
-
-  &:not(:disabled):not(.Disabled):active {
-    background-color: var(--simple-yes-30);
-  }
 }
 
 .SecondaryButton {
@@ -56,18 +72,40 @@
   background-color: var(--light-background-color);
   border: @size-1 solid var(--simple-border);
 
-  &:not(:disabled):not(.Disabled):hover {
-    background-color: var(--simple-alternate-background);
+  &:not(:disabled):not(.Disabled) {
+    &:hover {
+      background-color: var(--simple-alternate-background);
+    }
+
+    &:focus {
+      .Focused;
+
+      background-color: var(--light-background-color);
+    }
+
+    &:active {
+      background-color: var(--simple-alternate-background);
+    }
   }
 
-  &:not(:disabled):not(.Disabled):focus {
-    .Focused;
+  &.Error {
+    background-color: var(--color-error);
+    border: @size-1 solid var(--color-error);
+    color: var(--color-brand-secondary);
 
-    background-color: var(--light-background-color);
-  }
+    &:not(:disabled):not(.Disabled) {
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: var(--color-error);
+        border: @size-1 solid var(--color-error);
+        color: var(--color-brand-secondary);
+      }
 
-  &:not(:disabled):not(.Disabled):active {
-    background-color: var(--simple-alternate-background);
+      &:focus {
+        border: @size-1 solid var(--color-focused);
+      }
+    }
   }
 }
 

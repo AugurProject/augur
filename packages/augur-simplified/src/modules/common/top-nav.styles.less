@@ -75,26 +75,8 @@
       align-items: center;
       justify-content: flex-end;
 
-      > button:first-of-type {
-        &:first-of-type {
-          margin-left: auto;
-          min-height: @size-48;
-          width: @size-21;
-          max-width: 175px;
-        }
-      }
-
-      > button:last-of-type {
-        .RoundedButton;
-        .text-16-bold;
-
-        background: var(--light-background-color);
-        border: @size-1 solid var(--simple-border);
-        min-height: @size-48;
-        max-height: @size-48;
-        height: @size-48;
-        padding: 0 @size-14;
-        color: var(--simple-primary-text);
+      > button:first-of-type:first-of-type {
+        margin-left: auto;
       }
     }
   }
@@ -187,7 +169,7 @@
       flex-flow: row nowrap;
       grid-gap: @size-4;
       align-self: flex-end;
-    
+
       > li > button[class*="selected"] {
         background: var(--simple-alternate-background);
       }
@@ -207,14 +189,14 @@
         > input[type='number'] {
           -moz-appearance: textfield;
           .text-12-semi-bold;
-  
+
           background: transparent;
           color: var(--simple-secondary-text);
           padding: 0;
           text-align: right;
           outline-style: none;
           border: none;
-  
+
           &::-webkit-outer-spin-button,
           &::-webkit-inner-spin-button {
             -webkit-appearance: none;
