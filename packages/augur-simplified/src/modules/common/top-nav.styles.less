@@ -1,4 +1,5 @@
 @import (reference) '~assets/styles/shared';
+@import (reference) '~modules/common/buttons.styles.less';
 
 .TopNav {
   align-items: center;
@@ -222,4 +223,13 @@
 
 .Selected {
   background: var(--simple-alternate-background);
+}
+
+.MobileMenuButton {
+  .Button;
+
+  max-width: @size-56;
+  min-width: @size-56;
+  width: @size-56;
+  padding: none;
 }
