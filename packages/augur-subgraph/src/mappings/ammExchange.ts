@@ -19,7 +19,7 @@ import { getOrCreateUser } from '../utils/helpers';
 import { updateAMM } from '../utils/helpers/amm';
 import { ERC20 } from '../../generated/templates/Cash/ERC20';
 
-function updateVolumeValues(address: Address, cash: BigInt, noShares: BigInt, yesShares: BigInt): void {
+export function updateVolumeValues(address: Address, cash: BigInt, noShares: BigInt, yesShares: BigInt): void {
   let ammExchange = AMMExchange.load(
     address.toHexString()
   );

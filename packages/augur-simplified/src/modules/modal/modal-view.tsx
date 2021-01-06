@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import ModalAddLiquidity from 'modules/modal/modal-add-liquidity';
+import ModalAddLiquidity from '../modal/modal-add-liquidity';
 import { useHistory } from 'react-router';
 
 import Styles from 'modules/modal/modal.styles.less';

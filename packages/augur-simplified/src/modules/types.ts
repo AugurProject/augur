@@ -165,6 +165,7 @@ export interface AmmExchange {
   trades: Trades,
   past24hrPriceNo?: string,
   past24hrPriceYes?: string,
+  totalSupply?: string,
 }
 
 export interface Cashes {
@@ -1092,6 +1093,7 @@ interface Modal {
 
 export interface AppStatusState {
   processed: ProcessedData,
+  loginAccount: LoginAccount,
   userInfo: {
     activity: ActivityData[];
     balances: UserBalances;

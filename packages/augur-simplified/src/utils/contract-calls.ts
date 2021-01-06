@@ -611,9 +611,8 @@ const populateInitLPValues = async (lptokens: LPTokens, ammExchanges: AmmExchang
     const accum = accumLpSharesAmounts(amm.transactions, account);
     const initialCashValue = convertOnChainCashAmountToDisplayCashAmount(new BN(accum), new BN(amm.cash.decimals));
     lptoken.initCostUsd = String(new BN(initialCashValue).times(new BN(cashPrice)));
-
-    // TOOD: middleware issue, needs approval to do estimate
-    //lptoken.usdValue = await getLPCurrentValue(lptoken.rawBalance, amm);
+    lptoken.usdValue = await getLPCurrentValue(lptoken.rawBalance, amm);
+    lptoken.feesEarned = String(new BN(lptoken.usdValue).minus(new BN(lptoken.initCostUsd)));
   }
 
   return lptokens;
@@ -623,8 +622,15 @@ const populateInitLPValues = async (lptokens: LPTokens, ammExchanges: AmmExchang
 // eslint-disable-next-line
 const getLPCurrentValue = async (rawBalance: string, amm: AmmExchange): Promise<string> => {
   // middleware call to get current value of LP tokens
-  const { marketId, cash, feePercent, priceNo, priceYes } = amm;
+  const { totalSupply } = amm;
   const usdPrice = amm.cash?.usdPrice ? amm.cash?.usdPrice : "0";
+  const userPercentage = totalSupply !== "0" ? new BN(rawBalance).div(totalSupply) : "0";
+  const userPercentLiquidity = new BN(amm.liquidity).times(new BN(userPercentage));
+  const userPercentLIquidityUsd = userPercentLiquidity.times(new BN(usdPrice));
+  return String(userPercentLIquidityUsd);
+
+  /* TODO: might need this after get remove liquidity in middleware is available
+  const { marketId, cash, feePercent, priceNo, priceYes, totalSupply } = amm;
   const estimate = await getRemoveLiquidity({ marketId, paraShareToken: cash.shareToken, fee: feePercent, lpTokenBalance: rawBalance })
   .catch(error=> console.error('estimation error', error));
   if (estimate) {
@@ -635,6 +641,7 @@ const getLPCurrentValue = async (rawBalance: string, amm: AmmExchange): Promise<
     return String(totalValue);
   }
   return null;
+  */
 }
 
 const accumLpSharesAmounts = (transactions: AmmTransaction[], account: string): string => {

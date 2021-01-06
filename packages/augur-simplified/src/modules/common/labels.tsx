@@ -11,8 +11,8 @@ import {
 } from 'modules/common/icons';
 import { POPULAR_CATEGORIES_ICONS } from 'modules/constants';
 import { useAppStatusStore } from 'modules/stores/app-status';
-import { useActiveWeb3React } from 'modules/ConnectAccount/hooks';
 import { MODAL_ADD_LIQUIDITY } from '../constants';
+
 
 interface ValueLabelProps {
   large?: boolean;
@@ -99,10 +99,10 @@ interface AppViewStatsProps {
 export const AppViewStats = ({ showCashAmounts }: AppViewStatsProps) => {
   const {
     isMobile,
+    loginAccount,
     userInfo: { balances },
   } = useAppStatusStore();
-  const { account } = useActiveWeb3React();
-  const isLogged = Boolean(account);
+  const isLogged = Boolean(loginAccount?.account);
   const totalAccountValue = useMemo(
     () => handleValue(isLogged ? balances?.totalAccountValue : 0),
     [isLogged, balances.totalAccountValue]

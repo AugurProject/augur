@@ -1,133 +1,34 @@
-import React, { useState } from 'react'
-import { AbstractConnector } from '@web3-react/abstract-connector'
-import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
-import { lighten } from 'polished'
-import { Activity } from 'react-feather'
-import { ethers } from 'ethers'
-import WalletModal from './components/WalletModal'
-import Identicon from './components/Identicon'
-import CoinbaseWalletIcon from './assets/coinbaseWalletIcon.svg'
-import FortmaticIcon from './assets/fortmaticIcon.png'
-import PortisIcon from './assets/portisIcon.png'
-import WalletConnectIcon from './assets/walletConnectIcon.svg'
-import { fortmatic, injected, portis, walletconnect, walletlink } from './connectors'
+import React, {ReactElement, useEffect, useState} from 'react';
+import {UnsupportedChainIdError, useWeb3React} from '@web3-react/core';
+import {Activity as NetworkIcon} from 'react-feather';
+import {ethers} from 'ethers';
+import WalletModal from './components/WalletModal';
+import {SecondaryButton} from '../common/buttons';
+import classNames from 'classnames';
+import ButtonStyles from 'modules/common/buttons.styles.less';
+import {GetWalletIcon} from 'modules/common/get-wallet-icon';
+import {useActiveWeb3React} from 'modules/ConnectAccount/hooks';
 
-const IconWrapper = ({ children }) => (
-  <div style={{
-    alignItems: 'center',
-    justifyContent: 'center',
-  }}>
-    {children}
-  </div>
-)
+interface LoginButtonProps {
+  action: Function;
+  text: string;
+  icon: ReactElement;
+  darkMode: boolean;
+  className: string;
+}
 
-const Web3StatusConnect = ({ children, darkMode, onClick }) => (
-  <button
-    onClick={onClick}
-    style={{
-      width: '100%',
-      fontWeight: 500,
-      textAlign: 'center',
-      borderRadius: '12px',
-      outline: 'none',
-      textDecoration: 'none',
-      display: 'flex',
-      justifyContent: 'center',
-      flexWrap: 'nowrap',
-      alignItems: 'center',
-      cursor: 'pointer',
-      position: 'relative',
-      zIndex: 1,
-      padding: '0.5rem',
-      backgroundColor: `${darkMode ? '#2C2F36' : '#FFFFFF'}`,
-      border: `1px solid ${lighten(0.75, darkMode ? '#000000' : '#000000')}`,
-      color: `${darkMode ? '#FAFAFA' : '#1F1F1F'}`,
-    }}
-  >
-      {children}
-  </button>
-)
+const LoginButton = ({ action, text, icon, darkMode, className }: LoginButtonProps) => (
+  <SecondaryButton
+    action={action}
+    text={text}
+    icon={icon}
+    className={classNames({
+      'dark-mode': darkMode,
+    }, className)}
+  />
+);
 
-const Web3StatusConnected = ({ children, darkMode, onClick }) => (
-  <button
-    onClick={onClick}
-    style={{
-      width: '100%',
-      fontWeight: 500,
-      textAlign: 'center',
-      borderRadius: '12px',
-      outline: 'none',
-      textDecoration: 'none',
-      display: 'flex',
-      justifyContent: 'center',
-      flexWrap: 'nowrap',
-      alignItems: 'center',
-      cursor: 'pointer',
-      position: 'relative',
-      zIndex: 1,
-      padding: '0.5rem',
-      backgroundColor: `${darkMode ? '#2C2F36' : '#F7F8FA'}`,
-      border: `1px solid ${lighten(0.75, darkMode ? '#000000' : '#000000')}`,
-      color: `${darkMode ? '#FAFAFA' : '#1F1F1F'}`,
-    }}
-  >
-      {children}
-  </button>
-)
-
-const Web3StatusError = ({ children, onClick }) => (
-  <button
-    onClick={onClick}
-    style={{
-      width: '100%',
-      fontWeight: 500,
-      textAlign: 'center',
-      borderRadius: '12px',
-      outline: 'none',
-      textDecoration: 'none',
-      display: 'flex',
-      justifyContent: 'center',
-      flexWrap: 'nowrap',
-      alignItems: 'center',
-      cursor: 'pointer',
-      position: 'relative',
-      zIndex: 1,
-      padding: '0.5rem',
-      backgroundColor: '#FF6871',
-      border: '1px solid #FF6871',
-      color: '#FFFFFF',
-    }}
-  >
-      {children}
-  </button>
-)
-
-const Text = ({ children }) => (
-  <p style={{
-    flex: '1 1 auto',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-    margin: '0 0.5rem 0 0.25rem',
-    fontSize: '1rem',
-    width: 'fit-content',
-    fontWeight: 800,
-  }}>
-    {children}
-  </p>
-)
-
-
-const NetworkIcon = () => (
-  <Activity style={{
-    marginLeft: '0.25rem',
-    marginRight: '0.5rem',
-    width: '16px',
-    height: '16px',
-  }} />
-)
-
-function shortenAddress(address: string, chars = 4): string {
+const shortenAddress = (address: string, chars = 4): string => {
   const isAddress = value => {
     try {
       return ethers.utils.getAddress(value.toLowerCase())
@@ -142,71 +43,49 @@ function shortenAddress(address: string, chars = 4): string {
   return `${parsed.substring(0, chars + 2)}...${parsed.substring(42 - chars)}`
 }
 
-// eslint-disable-next-line react/prop-types
-function StatusIcon({ connector, darkMode, account }: { connector: AbstractConnector, darkMode: boolean, account: string }) {
-  if (connector === injected) {
-    return <Identicon account={account} />
-  } else if (connector === walletconnect) {
-    return (
-      <IconWrapper>
-        <img height={'16px'} src={WalletConnectIcon} alt={''} />
-      </IconWrapper>
-    )
-  } else if (connector === walletlink) {
-    return (
-      <IconWrapper>
-        <img height={'16px'} src={CoinbaseWalletIcon} alt={''} />
-      </IconWrapper>
-    )
-  } else if (connector === fortmatic) {
-    return (
-      <IconWrapper>
-        <img height={'16px'} src={FortmaticIcon} alt={''} />
-      </IconWrapper>
-    )
-  } else if (connector === portis) {
-    return (
-      <IconWrapper>
-        <img height={'16px'} src={PortisIcon} alt={''} />
-      </IconWrapper>
-    )
-  }
-  return null
-}
+const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode }) => {
+  const { account, connector, error } = useWeb3React();
+  const [showModal, setShowModal] = useState<boolean>();
+  const activeWeb3 = useActiveWeb3React();
 
-function ConnectAccountButton({ autoLogin, darkMode }) {
-  const { account, connector, error } = useWeb3React()
-  const [showModal, setShowModal] = useState<boolean>()
+  useEffect(() => {
+    if (account) {
+      updateLoginAccount(activeWeb3);
+    }
+  }, [account, activeWeb3, updateLoginAccount]);
 
-  let innerStatusContent = null
+  let buttonProps = {
+    action: () => setShowModal(!showModal),
+    className: null,
+    darkMode,
+    icon: null,
+    text: 'Connect Account',
+  };
 
   if (account) {
-    innerStatusContent = (
-      <Web3StatusConnected onClick={() => setShowModal(!showModal)} darkMode={darkMode}>
-        <>
-          <Text>{shortenAddress(account)}</Text>
-        </>
-        {connector && <StatusIcon account={account} darkMode={darkMode} connector={connector} />}
-      </Web3StatusConnected>
-    )
+    buttonProps = {
+      ...buttonProps,
+      text: shortenAddress(account),
+      icon: connector && (
+        <GetWalletIcon
+          connector={connector}
+          account={account}
+          showPortisButton={true}
+        />
+      ),
+    }
   } else if (error) {
-    innerStatusContent = (
-      <Web3StatusError onClick={() => setShowModal(!showModal)}>
-        <NetworkIcon />
-        <Text>{error instanceof UnsupportedChainIdError ? 'Wrong Network' : 'Error'}</Text>
-      </Web3StatusError>
-    )
-  } else {
-    innerStatusContent = (
-      <Web3StatusConnect onClick={() => setShowModal(!showModal)} darkMode={darkMode}>
-        <Text>Connect Account</Text>
-      </Web3StatusConnect>
-    )
+    buttonProps = {
+      ...buttonProps,
+      className: ButtonStyles.Error,
+      text: error instanceof UnsupportedChainIdError ? 'Wrong Network' : 'Error',
+      icon: <NetworkIcon />,
+    }
   }
 
   return (
     <>
-      {innerStatusContent}
+      <LoginButton {...buttonProps} />
       <WalletModal
         toggleWalletModal={() => setShowModal(!showModal)}
         showModal={showModal}
@@ -217,9 +96,9 @@ function ConnectAccountButton({ autoLogin, darkMode }) {
   )
 }
 
-export default function ConnectAccount({ autoLogin, darkMode }) {
+export default function ConnectAccount({ autoLogin, updateLoginAccount, darkMode }) {
   return (
-    <ConnectAccountButton autoLogin={autoLogin} darkMode={darkMode} />
+    <ConnectAccountButton autoLogin={autoLogin} updateLoginAccount={updateLoginAccount} darkMode={darkMode} />
   );
 }
 

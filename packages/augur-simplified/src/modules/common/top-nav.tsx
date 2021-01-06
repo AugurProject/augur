@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, Fragment } from 'react';
 import { useLocation } from 'react-router';
 import Styles from 'modules/common/top-nav.styles.less';
 import { Link } from 'react-router-dom';
@@ -12,7 +12,7 @@ import { useAppStatusStore } from 'modules/stores/app-status';
 import { useLocalStorage } from 'modules/stores/local-storage';
 import ConnectAccount from 'modules/ConnectAccount/index';
 import { useActiveWeb3React } from 'modules/ConnectAccount/hooks';
-import { TinyButton } from 'modules/common/buttons';
+import { SecondaryButton, TinyButton } from 'modules/common/buttons';
 import { Toasts } from '../toasts/toasts';
 
 export const SettingsButton = () => {
@@ -44,16 +44,13 @@ export const SettingsButton = () => {
     }
     return output;
   }, [slippage]);
-  
+
   return (
-    <React.Fragment key="settingsButton">
-      <button
-        className={Styles.SettingsButton}
-        title="Augur Settings"
-        onClick={() => setOpened(!open)}
-      >
-        {GearIcon}
-      </button>
+    <Fragment key="settingsButton">
+      <SecondaryButton
+        action={() => setOpened(!open)}
+        icon={GearIcon}
+      />
       {open && (
         <ul className={Styles.SettingsMenu}>
           <li>
@@ -113,7 +110,7 @@ export const SettingsButton = () => {
           </li>
         </ul>
       )}
-    </React.Fragment>
+    </Fragment>
   );
 };
 
@@ -121,25 +118,38 @@ export const TopNav = () => {
   const location = useLocation();
   const path = parsePath(location.pathname)[0];
   const {
+    loginAccount,
     isMobile,
-    actions: { setSidebar },
+    actions: { setSidebar, updateLoginAccount },
   } = useAppStatusStore();
-  const activeWeb3 = useActiveWeb3React();
   const [user, setUser] = useLocalStorage('user', null);
 
   useEffect(() => {
     if (
-      activeWeb3?.library?.provider?.isMetaMask &&
-      user?.account !== activeWeb3?.account &&
-      activeWeb3?.account
+      loginAccount?.library?.provider?.isMetaMask &&
+      user?.account !== loginAccount?.account &&
+      loginAccount?.account
     ) {
-      setUser({ account: activeWeb3.account });
-    } else if (!activeWeb3.active && !!user?.account) {
+      setUser({ account: loginAccount.account });
+    } else if (!loginAccount?.active && !!user?.account) {
       setUser({});
     }
-  }, [activeWeb3, user, setUser]);
+  }, [loginAccount, user, setUser]);
+
 
   const autoLogin = user?.account || null;
+
+  const handleAccountUpdate = (activeWeb3) => {
+    if (activeWeb3) {
+      if (loginAccount && loginAccount.account) {
+        if (loginAccount.account !== activeWeb3.account) {
+          updateLoginAccount(activeWeb3);
+        }
+      } else {
+        updateLoginAccount(activeWeb3);
+      }
+    }
+  }
 
   return (
     <nav
@@ -161,7 +171,7 @@ export const TopNav = () => {
         )}
       </section>
       <section>
-        <ConnectAccount autoLogin={autoLogin} darkMode={false} />
+        <ConnectAccount updateLoginAccount={handleAccountUpdate} autoLogin={autoLogin} darkMode={false} />
         {!isMobile && <SettingsButton />}
         {isMobile && (
           <button
