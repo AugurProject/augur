@@ -46,7 +46,13 @@ const shortenAddress = (address: string, chars = 4): string => {
 const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode }) => {
   const { account, connector, error } = useWeb3React();
   const [showModal, setShowModal] = useState<boolean>();
-  const activeWeb3 = useActiveWeb3React()
+  const activeWeb3 = useActiveWeb3React();
+
+  useEffect(() => {
+    if (account) {
+      updateLoginAccount(activeWeb3);
+    }
+  }, [account, activeWeb3, updateLoginAccount]);
 
   let buttonProps = {
     action: () => setShowModal(!showModal),
@@ -55,12 +61,6 @@ const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode }) => {
     icon: null,
     text: 'Connect Account',
   };
-
-  useEffect(() => {
-    if (account) {
-      updateLoginAccount(activeWeb3);
-    }
-  }, [account, activeWeb3, updateLoginAccount])
 
   if (account) {
     buttonProps = {
