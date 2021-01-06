@@ -28,7 +28,7 @@ import parseQuery from 'modules/routes/helpers/parse-query';
 import { USDC } from '../constants';
 import { AmmExchange, MarketInfo } from '../types';
 import { formatDai } from '../../utils/format-number';
-import { fullMarketEndtime, getMarketEndtimeDate } from '../../utils/date-utils';
+import { getMarketEndtimeFull, getMarketEndtimeDate } from '../../utils/date-utils';
 
 const getDetails = (market) => {
   const rawInfo = market?.extraInfoRaw || '{}';
@@ -86,7 +86,7 @@ const MarketView = ({ defaultMarket = null }) => {
   const market: MarketInfo = !!defaultMarket ? defaultMarket : markets[marketId];
   const endTimeDate = useMemo(() => getMarketEndtimeDate(market?.endTimestamp), [market?.endTimestamp])
   // add end time data full to market details when design is ready
-  const endTimeDateFull = useMemo(() => fullMarketEndtime(market?.endTimestamp), [market?.endTimestamp])
+  const endTimeDateFull = useMemo(() => getMarketEndtimeFull(market?.endTimestamp), [market?.endTimestamp])
   const amm: AmmExchange = market?.amm;
 
   if (!market) return <div className={Styles.MarketView} />;
