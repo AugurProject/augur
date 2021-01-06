@@ -373,8 +373,6 @@ export const PositionsLiquidityViewSwitcher = ({
           )}
           {ammId && (
             <>
-                      <LiquidityFooter market={market}/>
-
               {tableView === POSITIONS && (
                 <PositionTable
                   singleMarket
