@@ -42,7 +42,7 @@ export const getMarketEndtimeDate = (timestamp: string | number) => {
 export const getMarketEndtimeFull = (timestamp: string | number) => {
   if (!timestamp) return 'Missing';
   // use existing to make sure to be consistent
-  const monthDay = getMarketEndtimeDate(timestamp);
+  const monthDayYear = getMarketEndtimeDate(timestamp);
   const timeHour = getTimeFormat(timestamp);
-  return `${monthDay} ${timeHour}`
+  return `${monthDayYear} ${timeHour}`
 }
