@@ -202,10 +202,15 @@ const LiquidityRow = ({ liquidity }: { liquidity: LPTokenBalance }) => {
   );
 };
 
-export const LiquidityFooter = () => {
+export const LiquidityFooter = ({market}) => {
+  const {
+    actions: { setModal },
+  } = useAppStatusStore();
   return (
     <div className={Styles.LiquidityFooter}>
-      <PrimaryButton text="remove liquidity" />
+      <PrimaryButton text="remove liquidity" action={() => 
+        setModal({ type: MODAL_ADD_LIQUIDITY, market, liquidityModalType: REMOVE })
+      }/>
       <SecondaryButton text="add liquidity" />
     </div>
   );
@@ -261,7 +266,7 @@ export const LiquidityTable = ({
         </span>
       )}
       {lpTokens && <LiquidityRow liquidity={lpTokens} />}
-      {lpTokens && <LiquidityFooter />}
+      {lpTokens && <LiquidityFooter market={market}/>}
     </div>
   );
 };
