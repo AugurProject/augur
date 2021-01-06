@@ -109,6 +109,39 @@ const LIQUIDITY_STRINGS = {
         },
       ],
     },
+    approvalButtonText: 'approve shares spend',
+    actionButtonText: 'enter amount',
+    confirmButtonText: 'confirm remove',
+    confirmOverview: {
+      title: 'What you are Removing',
+      breakdown: [
+        {
+          label: 'liquidity shares',
+          value: '10.06',
+        },
+      ],
+    },
+    confirmReceiveOverview: {
+      title: 'What you will recieve',
+      breakdown: [
+        {
+          label: 'yes shares',
+          value: '0.00',
+        },
+        {
+          label: 'no shares',
+          value: '1.72 ($0.94)',
+        },
+        {
+          label: 'USDC',
+          value: '$9.06 USDC',
+        },
+        {
+          label: 'Fees Earned',
+          value: '$0.50 USDC',
+        },
+      ],
+    },
   },
   [ADD]: {
     header: 'add liquidity',
@@ -120,6 +153,35 @@ const LIQUIDITY_STRINGS = {
     },
     receiveTitle: "You'll receive",
     receiveBreakdown: RECEIVE_BREAKDOWN_FAKE_DATA,
+    approvalButtonText: 'approve USDC',
+    actionButtonText: 'add',
+    confirmButtonText: 'confirm add',
+    confirmOverview: {
+      title: 'What you are depositing',
+      breakdown: [
+        {
+          label: 'amount',
+          value: '10.00 USDC',
+        },
+      ],
+    },
+    confirmReceiveOverview: {
+      title: 'What you will receive',
+      breakdown: RECEIVE_BREAKDOWN_FAKE_DATA,
+    },
+    marketLiquidityDetails: {
+      title: 'Market liquidity details',
+      breakdown: [
+        {
+          label: 'trading fee',
+          value: '1.0%',
+        },
+        {
+          label: 'your share of the pool',
+          value: '100%',
+        },
+      ],
+    },
   },
   [CREATE]: {
     header: 'add liquidity',
@@ -133,6 +195,35 @@ const LIQUIDITY_STRINGS = {
     },
     receiveTitle: "You'll receive",
     receiveBreakdown: RECEIVE_BREAKDOWN_FAKE_DATA,
+    approvalButtonText: 'approve USDC',
+    actionButtonText: 'enter amount',
+    confirmButtonText: 'confirm market liquidity',
+    confirmOverview: {
+      title: 'What you are depositing',
+      breakdown: [
+        {
+          label: 'amount',
+          value: '10.00 USDC',
+        },
+      ],
+    },
+    confirmReceiveOverview: {
+      title: 'What you will receive',
+      breakdown: RECEIVE_BREAKDOWN_FAKE_DATA,
+    },
+    marketLiquidityDetails: {
+      title: 'market liquidity details',
+      breakdown: [
+        {
+          label: 'trading fee',
+          value: '1.0%',
+        },
+        {
+          label: 'your share of the pool',
+          value: '100%',
+        },
+      ],
+    },
   },
 };
 
@@ -152,6 +243,7 @@ const ModalAddLiquidity = ({ market, liquidityModalType }) => {
     <section
       className={classNames(Styles.ModalAddLiquidity, {
         [Styles.showBackView]: showBackView,
+        [Styles.Remove]: modalType === REMOVE,
       })}
     >
       {!showBackView ? (
@@ -210,10 +302,12 @@ const ModalAddLiquidity = ({ market, liquidityModalType }) => {
           <InfoNumbers
             infoNumbers={LIQUIDITY_STRINGS[modalType].receiveBreakdown}
           />
-          <BuySellButton text="approve USDC" />
+          <BuySellButton
+            text={LIQUIDITY_STRINGS[modalType].approvalButtonText}
+          />
           <SecondaryButton
             action={() => setShowBackView(true)}
-            text={createLiquidity ? 'Enter amount' : 'Add'}
+            text={LIQUIDITY_STRINGS[modalType].actionButtonText}
           />
           {LIQUIDITY_STRINGS[modalType].liquidityDetailsFooter && (
             <div className={Styles.FooterText}>
@@ -241,56 +335,41 @@ const ModalAddLiquidity = ({ market, liquidityModalType }) => {
             <span>{market.description}</span>
           </div>
           <section>
-            <span className={Styles.SmallLabel}>What you are depositing</span>
+            <span className={Styles.SmallLabel}>
+              {LIQUIDITY_STRINGS[modalType].confirmOverview.title}
+            </span>
             <InfoNumbers
-              infoNumbers={[
-                {
-                  label: 'amount',
-                  value: '10.00 USDC',
-                },
-              ]}
+              infoNumbers={
+                LIQUIDITY_STRINGS[modalType].confirmOverview.breakdown
+              }
             />
           </section>
 
           <section>
-            <span className={Styles.SmallLabel}>What you will receive</span>
+            <span className={Styles.SmallLabel}>
+              {LIQUIDITY_STRINGS[modalType].confirmReceiveOverview.title}
+            </span>
             <InfoNumbers
-              infoNumbers={[
-                {
-                  label: 'yes shares',
-                  value: '0',
-                },
-                {
-                  label: 'no shares',
-                  value: '1.72 ($0.94)',
-                },
-                {
-                  label: 'liquidity shares',
-                  value: '10.06 ($9.06)',
-                },
-              ]}
+              infoNumbers={
+                LIQUIDITY_STRINGS[modalType].confirmReceiveOverview.breakdown
+              }
             />
           </section>
-          <section>
-            <span className={Styles.SmallLabel}>Market Liquidity Details</span>
-            <InfoNumbers
-              infoNumbers={[
-                {
-                  label: 'trading fee',
-                  value: createLiquidity
-                    ? `${TRADING_FEE_OPTIONS[tradingFeeSelection].value}%`
-                    : percentFormatted,
-                },
-                {
-                  label: 'your share of the pool',
-                  value: '100%',
-                },
-              ]}
-            />
-          </section>
+          {LIQUIDITY_STRINGS[modalType].marketLiquidityDetails && (
+            <section>
+              <span className={Styles.SmallLabel}>
+                {LIQUIDITY_STRINGS[modalType].marketLiquidityDetails.title}
+              </span>
+              <InfoNumbers
+                infoNumbers={
+                  LIQUIDITY_STRINGS[modalType].marketLiquidityDetails.breakdown
+                }
+              />
+            </section>
+          )}
 
           <BuySellButton
-            text={createLiquidity ? 'confirm market liquidity' : 'confirm add'}
+            text={LIQUIDITY_STRINGS[modalType].confirmButtonText}
           />
           <div className={Styles.FooterText}>
             Need some copy here explaining why the user will get shares and that

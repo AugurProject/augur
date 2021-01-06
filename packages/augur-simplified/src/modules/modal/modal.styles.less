@@ -46,10 +46,21 @@
   width: 395px;
   max-height: calc(100vh - 100px);
   overflow-y: scroll;
+  border-radius: @size-8;
 
   > button:first-of-type {
     margin-bottom: @size-8;
     margin-top: @size-24;
+  }
+
+  > div:nth-of-type(2) {
+    margin-top: @size-24;
+  }
+
+  &.Remove {
+    > div:nth-of-type(2) {
+      margin-top: 0;
+    }
   }
 
   > button:last-of-type {
@@ -91,6 +102,7 @@
       &:last-of-type {
         border-bottom: 0;
         padding-bottom: 0;
+        margin-bottom: 0;
       }
     }
 
@@ -154,9 +166,10 @@
   padding: @size-24;
   background-color: var(--light-background-color);
   border-top: @size-1 solid var(--simple-border);
-  border-bottom-left-radius: @size-8;
-  border-bottom-right-radius: @size-8;
   line-height: @size-22;
+  border-radius: @size-8;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 
   > span:first-of-type {
     margin-bottom: @size-12;
