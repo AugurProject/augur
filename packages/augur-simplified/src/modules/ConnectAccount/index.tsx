@@ -1,4 +1,4 @@
-import React, {ReactElement, useState} from 'react';
+import React, {ReactElement, useEffect, useState} from 'react';
 import {UnsupportedChainIdError, useWeb3React} from '@web3-react/core';
 import {Activity as NetworkIcon} from 'react-feather';
 import {ethers} from 'ethers';
@@ -7,6 +7,7 @@ import {SecondaryButton} from '../common/buttons';
 import classNames from 'classnames';
 import ButtonStyles from 'modules/common/buttons.styles.less';
 import {GetWalletIcon} from 'modules/common/get-wallet-icon';
+import {useActiveWeb3React} from 'modules/ConnectAccount/hooks';
 
 interface LoginButtonProps {
   action: Function;
@@ -42,9 +43,10 @@ const shortenAddress = (address: string, chars = 4): string => {
   return `${parsed.substring(0, chars + 2)}...${parsed.substring(42 - chars)}`
 }
 
-const ConnectAccountButton = ({ autoLogin, darkMode }) => {
+const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode }) => {
   const { account, connector, error } = useWeb3React();
   const [showModal, setShowModal] = useState<boolean>();
+  const activeWeb3 = useActiveWeb3React()
 
   let buttonProps = {
     action: () => setShowModal(!showModal),

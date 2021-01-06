@@ -104,8 +104,9 @@ const Transactions = ({transactions}) => {
       </div>
       <div className={Styles.TransactionList}>
         {
-          transactions.map(({label, link, status}) => (
+          transactions.map(({label, link, status}, index) => (
             <Transaction
+              key={index}
               label={label}
               link={link}
               status={status}
