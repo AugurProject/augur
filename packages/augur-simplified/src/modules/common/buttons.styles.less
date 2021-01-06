@@ -164,3 +164,26 @@
   background: var(--simple-primary-text);
   color: var(--simple-light-bg)
 }
+
+.ApproveButton {
+  .Button;
+
+  color: var(--color-primary-text);
+  background-color: var(--simple-primary-text);
+  border: @size-1 solid var(--simple-border);
+
+  &:not(:disabled):not(.Disabled):focus {
+    .Focused;
+
+    background-color: var(--simple-primary-text);
+  }
+
+  &:not(:disabled):not(.Disabled):active {
+    background-color: var(--simple-alternate-background);
+  }
+}
+
+.Approval button {
+  margin-top: @size-16;
+  width: 100%;
+}

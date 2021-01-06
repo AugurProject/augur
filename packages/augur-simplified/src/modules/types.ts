@@ -1092,6 +1092,12 @@ interface Modal {
 }
 
 export interface AppStatusState {
+  approvals: {
+    trade: {
+      USDC: boolean,
+      ETH: boolean,
+    },
+  },
   processed: ProcessedData,
   loginAccount: LoginAccount,
   userInfo: {

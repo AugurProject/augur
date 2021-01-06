@@ -14,7 +14,6 @@ import { processGraphMarkets } from '../utils/process-data';
 import { getUserBalances } from '../utils/contract-calls';
 import { augurSdkLite } from '../utils/augurlitesdk';
 import { ConnectAccountProvider } from 'modules/ConnectAccount/connect-account-provider';
-import { useActiveWeb3React } from 'modules/ConnectAccount/hooks';
 import classNames from 'classnames';
 import { TransactionDetails } from './types';
 import ModalView from 'modules/modal/modal-view';
@@ -30,6 +29,7 @@ function checkIsMobile(setIsMobile) {
 
 const AppBody = () => {
   const {
+    loginAccount,
     sidebarType,
     showTradingForm,
     processed,
@@ -47,9 +47,7 @@ const AppBody = () => {
       finalizeTransaction,
     },
   } = useAppStatusStore();
-  const { account, library } = useActiveWeb3React();
   const modalShowing = Object.keys(modal).length !== 0;
-
 
   useEffect(() => {
     // get data immediately, then setup interval
@@ -105,21 +103,21 @@ const AppBody = () => {
         cashes,
         markets
       );
-    if (account && library) {
-      if (!augurSdkLite.ready()) createClient(library, paraConfig);
+    if (loginAccount) {
+      if (!augurSdkLite.ready()) createClient(loginAccount.library, paraConfig);
       const { ammExchanges, cashes, markets } = processed;
-      fetchUserBalances(library, account, ammExchanges, cashes, markets).then((userBalances) =>
+      fetchUserBalances(loginAccount.library, loginAccount.account, ammExchanges, cashes, markets).then((userBalances) =>
         updateUserBalances(userBalances)
       );
     }
   // eslint-disable-next-line
-  }, [account, library, processed, paraConfig]);
+  }, [loginAccount, processed, paraConfig]);
 
   useEffect(() => {
-    if (account && blocknumber && transactions?.length > 0) {
+    if (loginAccount?.account && blocknumber && transactions?.length > 0) {
       transactions.filter(t => !t.confirmedTime)
         .forEach((t: TransactionDetails) => {
-          library
+          loginAccount.library
             .getTransactionReceipt(t.hash)
             .then(receipt => {
               if (receipt) finalizeTransaction(t.hash)
@@ -127,7 +125,7 @@ const AppBody = () => {
         })
     }
   // eslint-disable-next-line
-  }, [account, blocknumber, transactions]);
+  }, [loginAccount, blocknumber, transactions]);
 
   const sidebarOut = sidebarType && isMobile;
   return (

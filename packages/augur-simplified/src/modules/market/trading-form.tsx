@@ -5,6 +5,8 @@ import { BUY, SELL, YES_NO, USDC, ETH } from 'modules/constants';
 import { PrimaryButton } from 'modules/common/buttons';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import { CloseIcon, UsdIcon, EthIcon } from 'modules/common/icons';
+import { ApprovalButton } from '../common/buttons';
+import { ApprovalAction } from '../constants';
 
 interface OutcomeType {
   id: number;
@@ -178,10 +180,13 @@ const TradingForm = ({
   outcomes = fakeYesNoOutcomes,
   initialSelectedOutcome,
   marketType = YES_NO,
-  market,
+  marketCashType,
+  amm,
 }) => {
   const {
     isMobile,
+    loginAccount,
+    approvals,
     actions: { setShowTradingForm },
   } = useAppStatusStore();
   const [orderType, setOrderType] = useState(BUY);
@@ -219,7 +224,7 @@ const TradingForm = ({
           marketType={marketType}
           orderType={orderType}
         />
-        <AmountInput currencyName={market?.amm?.cash?.name} />
+        <AmountInput currencyName={marketCashType} />
         <InfoNumbers
           infoNumbers={[
             {
@@ -236,7 +241,13 @@ const TradingForm = ({
             },
           ]}
         />
-        <PrimaryButton disabled text={orderType} />
+        {loginAccount &&
+          <ApprovalButton
+            amm={amm}
+            actionType={ApprovalAction.TRADE}
+          />
+        }
+        <PrimaryButton disabled={!approvals?.trade[marketCashType]} text={orderType} />
       </div>
     </div>
   );

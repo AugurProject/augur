@@ -600,23 +600,6 @@ const getPositionUsdValues = (trades: UserTrades, rawBalance: string, balance: s
   }
 }
 
-const populateInitLPValues = async (lptokens: LPTokens, ammExchanges: AmmExchanges, account: string): Promise<LPTokens> => {
-  const ammIds = Object.keys(lptokens);
-  for (let i = 0; i < ammIds.length; i++) {
-    const ammId = ammIds[i];
-    const lptoken = lptokens[ammId];
-    const amm = ammExchanges[ammId];
-    const cashPrice = amm.cash?.usdPrice ? amm.cash?.usdPrice : "0";
-    // sum up enters shares
-    const accum = accumLpSharesAmounts(amm.transactions, account);
-    const initialCashValue = convertOnChainCashAmountToDisplayCashAmount(new BN(accum), new BN(amm.cash.decimals));
-    lptoken.initCostUsd = String(new BN(initialCashValue).times(new BN(cashPrice)));
-    lptoken.usdValue = await getLPCurrentValue(lptoken.rawBalance, amm);
-    lptoken.feesEarned = String(new BN(lptoken.usdValue).minus(new BN(lptoken.initCostUsd)));
-  }
-
-  return lptokens;
-}
 
 // TODO: figure out how to get current LP token value, middleware needs an approval to do estimate
 // eslint-disable-next-line
@@ -643,6 +626,25 @@ const getLPCurrentValue = async (rawBalance: string, amm: AmmExchange): Promise<
   return null;
   */
 }
+
+const populateInitLPValues = async (lptokens: LPTokens, ammExchanges: AmmExchanges, account: string): Promise<LPTokens> => {
+  const ammIds = Object.keys(lptokens);
+  for (let i = 0; i < ammIds.length; i++) {
+    const ammId = ammIds[i];
+    const lptoken = lptokens[ammId];
+    const amm = ammExchanges[ammId];
+    const cashPrice = amm.cash?.usdPrice ? amm.cash?.usdPrice : "0";
+    // sum up enters shares
+    const accum = accumLpSharesAmounts(amm.transactions, account);
+    const initialCashValue = convertOnChainCashAmountToDisplayCashAmount(new BN(accum), new BN(amm.cash.decimals));
+    lptoken.initCostUsd = String(new BN(initialCashValue).times(new BN(cashPrice)));
+    lptoken.usdValue = await getLPCurrentValue(lptoken.rawBalance, amm);
+    lptoken.feesEarned = String(new BN(lptoken.usdValue).minus(new BN(lptoken.initCostUsd)));
+  }
+
+  return lptokens;
+}
+
 
 const accumLpSharesAmounts = (transactions: AmmTransaction[], account: string): string => {
   const adds = transactions.filter(t => t.sender.toLowerCase() === account.toLowerCase() && t.tx_type === TransactionTypes.ADD_LIQUIDITY)
@@ -761,7 +763,7 @@ export const getERC20Allowance = async (tokenAddress: string, provider: Web3Prov
     contractAllowanceCall
   );
 
-  console.log('allowance', String(allowance))
+  // console.log('allowance', String(allowance))
   let allowanceAmount = "0";
   Object.keys(allowance.results).forEach((key) => {
     const value = allowance.results[key].callsReturnContext[0].returnValues as ethers.utils.Result;

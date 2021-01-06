@@ -81,12 +81,13 @@ const MarketView = ({ defaultMarket = null }) => {
     document.getElementById("mainContent")?.scrollTo(0, 0);
     window.scrollTo(0, 1);
   }, []);
-
   const market: MarketInfo = !!defaultMarket ? defaultMarket : markets[marketId];
   const amm: AmmExchange = market?.amm;
 
   if (!market) return <div className={Styles.MarketView} />;
   const details = getDetails(market);
+  const marketCashType = market.amm?.cash?.name;
+
   return (
     <div className={Styles.MarketView}>
       <section>
@@ -157,7 +158,7 @@ const MarketView = ({ defaultMarket = null }) => {
       </section>
       {(!isMobile || showTradingForm) && (
         <section>
-          <TradingForm initialSelectedOutcome={selectedOutcome} market={market} />
+          <TradingForm initialSelectedOutcome={selectedOutcome} market={market} marketCashType={marketCashType} amm={amm} />
           {!isMobile && <AddLiquidity market={market} />}
         </section>
       )}

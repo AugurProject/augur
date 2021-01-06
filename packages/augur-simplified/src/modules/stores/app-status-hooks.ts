@@ -10,6 +10,7 @@ import { ParaDeploys, TransactionDetails, UserBalances } from '../types';
 
 const {
   SET_SHOW_TRADING_FORM,
+  SET_APPROVALS,
   SET_IS_MOBILE,
   SET_SIDEBAR,
   UPDATE_GRAPH_DATA,
@@ -26,6 +27,7 @@ const {
 } = APP_STATUS_ACTIONS;
 
 const {
+  APPROVALS,
   IS_MOBILE,
   SIDEBAR_TYPE,
   GRAPH_DATA,
@@ -88,6 +90,10 @@ export function AppStatusReducer(state, action) {
   const updatedState = { ...state };
   const now = new Date().getTime();
   switch (action.type) {
+    case SET_APPROVALS: {
+      updatedState[APPROVALS] = action.approvals;
+      break;
+    }
     case SET_IS_MOBILE: {
       updatedState[IS_MOBILE] = action[IS_MOBILE];
       break;
@@ -204,6 +210,7 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
         dispatch({ type: SET_SHOW_TRADING_FORM, showTradingForm }),
       setSidebar: (sidebarType) => dispatch({ type: SET_SIDEBAR, sidebarType }),
       setIsMobile: (isMobile) => dispatch({ type: SET_IS_MOBILE, isMobile }),
+      setApprovals: (approvals) => dispatch({ type: SET_APPROVALS, approvals }),
       updateGraphData: (graphData) =>
         dispatch({ type: UPDATE_GRAPH_DATA, graphData }),
       updateProcessed: (processed) =>
