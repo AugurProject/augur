@@ -31,7 +31,7 @@ import { SquareDropdown } from 'modules/common/selection';
 import { Pagination } from 'modules/common/pagination';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import { USDC } from '../constants';
-import { MarketInfo } from '../types';
+import { AmmExchange, MarketInfo, MarketOutcome } from '../types';
 
 const PAGE_LIMIT = 20;
 
@@ -57,18 +57,19 @@ const LoadingMarketCard = () => {
   );
 };
 
-const OutcomesTable = ({ outcomes, marketId, priceNo, priceYes }) => {
+const OutcomesTable = ({ outcomes, amm }: { outcomes: MarketOutcome[], amm: AmmExchange}) => {
   return (
     <div className={Styles.OutcomesTable}>
       {outcomes
         .filter((outcome) => outcome.id !== INVALID_OUTCOME_ID)
         .map((outcome) => (
-          <div key={`${outcome.name}-${marketId}-${outcome.id}`}>
+          <div key={`${outcome.name}-${amm?.marketId}-${outcome.id}`}>
             <span>{outcome.name.toLowerCase()}</span>
             <span>
-              {
-                formatDai(outcome.name === YES_OUTCOME_ID ? priceYes : priceNo)
+              { amm.liquidity !== "0" ?
+                formatDai(outcome.name === YES_OUTCOME_ID ? amm?.priceYes : amm?.priceNo)
                   .full
+                  : "-"
               }
             </span>
           </div>
@@ -112,9 +113,7 @@ const MarketCard = ({ market }) => {
                 value={formatDai(market.amm?.volumeTotalUSD).full}
               />
               <OutcomesTable
-                marketId={marketId}
-                priceNo={amm?.priceNo}
-                priceYes={amm?.priceYes}
+                amm={amm}
                 outcomes={outcomes}
               />
             </>
