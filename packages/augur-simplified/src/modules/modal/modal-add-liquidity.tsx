@@ -50,6 +50,21 @@ export const REMOVE = 'REMOVE';
 export const ADD = 'ADD';
 export const CREATE = 'CREATE';
 
+const RECEIVE_BREAKDOWN_FAKE_DATA = [
+  {
+    label: 'yes shares',
+    value: '0',
+  },
+  {
+    label: 'no shares',
+    value: '0',
+  },
+  {
+    label: 'liquidity shares',
+    value: '0',
+  },
+];
+
 const LIQUIDITY_STRINGS = {
   [REMOVE]: {
     header: 'remove liquidity',
@@ -57,7 +72,43 @@ const LIQUIDITY_STRINGS = {
     amountSubtitle: 'How much do you want to remove?',
     footerText: () => {
       return 'Need some copy here explaining why the user may recieve some shares when they remove their liquidity and they would need to sell these if possible.';
-    }
+    },
+    receiveTitle: 'What you will recieve',
+    receiveBreakdown: [
+      {
+        label: 'yes shares',
+        value: '0.00',
+      },
+      {
+        label: 'no shares',
+        value: '0.00',
+      },
+      {
+        label: 'USDC',
+        value: '$0.00',
+      },
+      {
+        label: 'Fees Earned',
+        value: '$0.00 USDC',
+      },
+    ],
+    liquidityDetailsFooter: {
+      title: 'Market Liquidity Details',
+      breakdown: [
+        {
+          label: 'Trading fee',
+          value: '1.0%',
+        },
+        {
+          label: 'your share of the liquidity pool',
+          value: '0.05%',
+        },
+        {
+          label: 'your total fees earned',
+          value: '$0.50 USDC',
+        },
+      ],
+    },
   },
   [ADD]: {
     header: 'add liquidity',
@@ -67,6 +118,8 @@ const LIQUIDITY_STRINGS = {
     footerText: (percentFormatted) => {
       return `By adding liquidity you'll earn ${percentFormatted} of all trades on this this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.`;
     },
+    receiveTitle: "You'll receive",
+    receiveBreakdown: RECEIVE_BREAKDOWN_FAKE_DATA,
   },
   [CREATE]: {
     header: 'add liquidity',
@@ -76,8 +129,10 @@ const LIQUIDITY_STRINGS = {
     setOddsTitle: 'Set the odds',
     editableOutcomes: true,
     footerText: () => {
-      return "By adding initial liquidity you'll earn your set trading fee percentage of all trades on this this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.";  
-    }
+      return "By adding initial liquidity you'll earn your set trading fee percentage of all trades on this this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.";
+    },
+    receiveTitle: "You'll receive",
+    receiveBreakdown: RECEIVE_BREAKDOWN_FAKE_DATA,
   },
 };
 
@@ -149,28 +204,29 @@ const ModalAddLiquidity = ({ market, liquidityModalType }) => {
             </>
           )}
 
-          <span className={Styles.SmallLabel}>You'll receive</span>
+          <span className={Styles.SmallLabel}>
+            {LIQUIDITY_STRINGS[modalType].receiveTitle}
+          </span>
           <InfoNumbers
-            infoNumbers={[
-              {
-                label: 'yes shares',
-                value: '0',
-              },
-              {
-                label: 'no shares',
-                value: '0',
-              },
-              {
-                label: 'liquidity shares',
-                value: '0',
-              },
-            ]}
+            infoNumbers={LIQUIDITY_STRINGS[modalType].receiveBreakdown}
           />
           <BuySellButton text="approve USDC" />
           <SecondaryButton
             action={() => setShowBackView(true)}
             text={createLiquidity ? 'Enter amount' : 'Add'}
           />
+          {LIQUIDITY_STRINGS[modalType].liquidityDetailsFooter && (
+            <div className={Styles.FooterText}>
+              <span className={Styles.SmallLabel}>
+                {LIQUIDITY_STRINGS[modalType].liquidityDetailsFooter.title}
+              </span>
+              <InfoNumbers
+                infoNumbers={
+                  LIQUIDITY_STRINGS[modalType].liquidityDetailsFooter.breakdown
+                }
+              />
+            </div>
+          )}
           <div className={Styles.FooterText}>
             {LIQUIDITY_STRINGS[modalType].footerText(percentFormatted)}
           </div>
