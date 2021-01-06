@@ -11,7 +11,6 @@ import { GearIcon, ThreeLinesIcon } from 'modules/common/icons';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import { useLocalStorage } from 'modules/stores/local-storage';
 import ConnectAccount from 'modules/ConnectAccount/index';
-import { useActiveWeb3React } from 'modules/ConnectAccount/hooks';
 import { SecondaryButton, TinyButton } from 'modules/common/buttons';
 import { Toasts } from '../toasts/toasts';
 
@@ -25,15 +24,15 @@ export const SettingsButton = () => {
   const isSelectedArray = useMemo(() => {
     let output = [false, false, false, false];
     switch (slippage) {
-      case ('0.1'): {
+      case '0.1': {
         output[0] = true;
         break;
       }
-      case ('0.5'): {
+      case '0.5': {
         output[1] = true;
         break;
       }
-      case ('1'): {
+      case '1': {
         output[2] = true;
         break;
       }
@@ -47,10 +46,7 @@ export const SettingsButton = () => {
 
   return (
     <Fragment key="settingsButton">
-      <SecondaryButton
-        action={() => setOpened(!open)}
-        icon={GearIcon}
-      />
+      <SecondaryButton action={() => setOpened(!open)} icon={GearIcon} />
       {open && (
         <ul className={Styles.SettingsMenu}>
           <li>
@@ -83,7 +79,9 @@ export const SettingsButton = () => {
               <li>
                 <div>
                   <input
-                    className={classNames({ [Styles.Selected]: isSelectedArray[3] })}
+                    className={classNames({
+                      [Styles.Selected]: isSelectedArray[3],
+                    })}
                     type="number"
                     step="0.1"
                     value={customVal}
@@ -92,7 +90,12 @@ export const SettingsButton = () => {
                     }}
                     onBlur={() => {
                       if (customVal !== slippage) {
-                        if (customVal === '' || isNaN(Number(customVal)) || Number(customVal) > 100 || Number(customVal) <= 0) {
+                        if (
+                          customVal === '' ||
+                          isNaN(Number(customVal)) ||
+                          Number(customVal) > 100 ||
+                          Number(customVal) <= 0
+                        ) {
                           setCustomVal(slippage);
                         } else {
                           updateSettings({ slippage: customVal });
@@ -136,7 +139,6 @@ export const TopNav = () => {
     }
   }, [loginAccount, user, setUser]);
 
-
   const autoLogin = user?.account || null;
 
   const handleAccountUpdate = (activeWeb3) => {
@@ -149,7 +151,7 @@ export const TopNav = () => {
         updateLoginAccount(activeWeb3);
       }
     }
-  }
+  };
 
   return (
     <nav
@@ -171,15 +173,20 @@ export const TopNav = () => {
         )}
       </section>
       <section>
-        <ConnectAccount updateLoginAccount={handleAccountUpdate} autoLogin={autoLogin} darkMode={false} />
-        {!isMobile && <SettingsButton />}
-        {isMobile && (
+        <ConnectAccount
+          updateLoginAccount={handleAccountUpdate}
+          autoLogin={autoLogin}
+        />
+        {isMobile ? (
           <button
+            className={Styles.MobileMenuButton}
             title="Augur Menu"
             onClick={() => setSidebar(SIDEBAR_TYPES.NAVIGATION)}
           >
             {ThreeLinesIcon}
           </button>
+        ) : (
+          <SettingsButton />
         )}
         <Toasts />
       </section>
