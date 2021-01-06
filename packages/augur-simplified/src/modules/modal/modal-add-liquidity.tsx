@@ -227,7 +227,12 @@ const LIQUIDITY_STRINGS = {
   },
 };
 
-const ModalAddLiquidity = ({ market, liquidityModalType }) => {
+interface ModalAddLiquidityProps {
+  market: MarketInfo;
+  liquidityModalType?: string;
+}
+
+const ModalAddLiquidity = ({ market, liquidityModalType }: ModalAddLiquidityProps) => {
   const [outcomes, setOutcomes] = useState(fakeYesNoOutcomes);
   const [showBackView, setShowBackView] = useState(false);
 
@@ -238,7 +243,7 @@ const ModalAddLiquidity = ({ market, liquidityModalType }) => {
   const createLiquidity = !amm;
   const percentFormatted = formatPercent(amm?.feePercent).full;
   let modalType = createLiquidity ? CREATE : ADD;
-  if (liquidityModalType) modalType = REMOVE;
+  if (liquidityModalType) modalType = liquidityModalType;
   return (
     <section
       className={classNames(Styles.ModalAddLiquidity, {
