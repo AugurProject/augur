@@ -142,6 +142,10 @@ const AccountDetails = ({
   const { chainId, account, connector } = useActiveWeb3React();
   const [connectorName, setConnectorName] = useState(formatConnectorName(connector));
 
+  useEffect(() => {
+    setConnectorName(formatConnectorName(connector));
+  }, [account, connector]);
+  
   const mockTransactions = [{
     label: 'Work in progress @ 0.40',
     link: '',
@@ -155,10 +159,6 @@ const AccountDetails = ({
     link: '',
     status: 'pending',
   }];
-
-  useEffect(() => {
-    setConnectorName(formatConnectorName(connector));
-  }, [account, connector]);
 
   return (
     <div className={classNames(Styles.AccountDetails, {
