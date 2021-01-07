@@ -294,9 +294,18 @@
   margin-bottom: @size-16;
   margin-top: -@size-24;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     .text-14-bold;
 
     margin-top: 0;
+  }
+
+  &.Market {
+    margin-bottom: -@size-24;
+
+    @media @breakpoint-mobile-tablet {
+      margin-bottom: @size-16;
+      margin-top: -@size-8;
+    }
   }
 }

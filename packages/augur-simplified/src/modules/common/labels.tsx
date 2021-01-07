@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import Styles from 'modules/common/labels.styles.less';
+import { useLocation } from 'react-router';
 import classNames from 'classnames';
 import { formatDai } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
@@ -9,9 +10,13 @@ import {
   PlusIcon,
   UsdIcon,
 } from 'modules/common/icons';
-import { POPULAR_CATEGORIES_ICONS } from 'modules/constants';
+import {
+  POPULAR_CATEGORIES_ICONS,
+  MODAL_ADD_LIQUIDITY,
+  MARKET,
+} from 'modules/constants';
 import { useAppStatusStore } from 'modules/stores/app-status';
-import { MODAL_ADD_LIQUIDITY } from '../constants';
+import parsePath from '../routes/helpers/parse-path';
 
 interface ValueLabelProps {
   large?: boolean;
@@ -183,6 +188,8 @@ export const NetworkMismatchBanner = () => {
     paraConfig: { networkId },
     loginAccount,
   } = useAppStatusStore();
+  const location = useLocation();
+  const path = parsePath(location.pathname)[0];
   const { chainId } = loginAccount || {};
   const isNetworkMismatch = useMemo(
     () => !!chainId && String(networkId) !== String(chainId),
@@ -191,7 +198,9 @@ export const NetworkMismatchBanner = () => {
   return (
     <>
       {isNetworkMismatch && (
-        <article className={Styles.NetworkMismatch}>
+        <article className={classNames(Styles.NetworkMismatch, {
+          [Styles.Market]: path === MARKET,
+        })}>
           You're connected to an unsupported network
         </article>
       )}

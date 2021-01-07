@@ -8,6 +8,7 @@ import {
   AddLiquidity,
   CategoryIcon,
   CategoryLabel,
+  NetworkMismatchBanner
 } from 'modules/common/labels';
 import {
   PositionsLiquidityViewSwitcher,
@@ -97,6 +98,7 @@ const MarketView = ({ defaultMarket = null }) => {
   return (
     <div className={Styles.MarketView}>
       <section>
+        <NetworkMismatchBanner />
         <div className={Styles.topRow}>
           <CategoryIcon category={market.categories[0]} />
           <CategoryLabel category={market.categories[1]} />
