@@ -59,7 +59,7 @@ const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode }) => {
     className: null,
     darkMode,
     icon: null,
-    text: 'Connect Account',
+    text: 'Connect Wallet',
   };
 
   if (account) {
