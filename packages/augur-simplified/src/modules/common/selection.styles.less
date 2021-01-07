@@ -19,15 +19,14 @@
   > button {
     align-items: center;
     border-radius: @border-radius-default;
-
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-between;
     white-space: nowrap;
     width: 100%;
-
     background: var(--color-secondary-action);
     color: var(--color-primary-text);
+    cursor: pointer;
 
     > b {
       margin-right: auto;
@@ -43,6 +42,23 @@
         fill: var(--color-secondary-text);
       }
     }
+
+    &:hover {
+      border: @size-1 solid var(--simple-secondary-text);
+    }
+
+    &:focus {
+      outline: 0;
+    }
+
+    &:focus-visible {
+      border: @size-1 solid var(--color-focused);
+      box-shadow: inset 0 0 0 @size-2 var(--color-focused);
+    }
+
+    &:active {
+      border: @size-1 solid var(--simple-secondary-text);
+    }
   }
 
   // div wrapper for hover state when margin-top is not zero.
@@ -56,7 +72,6 @@
     top: 106%;
     z-index: @default-above;
     border-radius: @size-8;
-    cursor: pointer;
 
     > div:first-of-type {
       background-color: var(--simple-light-bg);
@@ -79,9 +94,13 @@
         white-space: nowrap;
         width: 100%;
         border: 0;
-        margin: @size-16 @size-24;
-        padding: 0;
+        padding: @size-16 @size-24;
+        cursor: pointer;
         text-transform: capitalize;
+
+        &:hover {
+          color: var(--simple-primary-text);
+        }
 
         &:focus {
           outline: 0;
@@ -194,10 +213,6 @@
       width: @size-15;
       height: @size-9;
     }
-
-    &:hover {
-      border: @size-1 solid var(--simple-secondary-text);
-    }
   }
 
   > div {
@@ -218,7 +233,7 @@
       transform: rotate(180deg);
 
       > path {
-        fill: var(--color-primary-text);
+        //fill: var(--color-primary-text);
       }
     }
   }

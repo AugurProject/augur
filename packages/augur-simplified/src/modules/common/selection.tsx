@@ -78,11 +78,11 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
 
   componentDidMount() {
     this.measure();
-    //    window.addEventListener('click', this.handleWindowOnClick);
+    window.addEventListener('click', this.handleWindowOnClick);
   }
 
   componentWillUnmount() {
-    //    window.removeEventListener('click', this.handleWindowOnClick);
+    window.removeEventListener('click', this.handleWindowOnClick);
   }
 
   componentDidUpdate(prevProps: DropdownProps, prevState: DropdownState) {
