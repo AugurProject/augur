@@ -5,8 +5,9 @@ import { BUY, SELL, YES_NO, USDC, ETH } from 'modules/constants';
 import { PrimaryButton } from 'modules/common/buttons';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import { CloseIcon, UsdIcon, EthIcon } from 'modules/common/icons';
-import { ApprovalButton } from '../common/buttons';
-import { ApprovalAction } from '../constants';
+import { ApprovalButton, TinyButton } from '../common/buttons';
+import { ApprovalAction, SHARES } from '../constants';
+import { CurrencyDropdown } from '../common/selection';
 
 interface OutcomeType {
   id: number;
@@ -86,29 +87,51 @@ export const AmountInput = ({
   currencyName,
   updateInitialAmount,
   initialAmount,
+  showCurrencyDropdown,
+  updateCash,
+  chosenCash,
 }) => {
   const [amount, updateAmount] = useState(initialAmount);
   const icon = currencyName === USDC ? UsdIcon : EthIcon;
   const label = currencyName === USDC ? USDC : ETH;
+  const showRate = currencyName !== SHARES;
   return (
-    <div className={Styles.AmountInput}>
+    <div className={classNames(Styles.AmountInput, {[Styles.Rate]: showRate})}>
       <span>amount</span>
       <span>balance: $1000</span>
-      <div className={Styles.AmountInputDropdown}>
+      <div className={classNames(Styles.AmountInputDropdown, {[Styles.Edited]: amount !== ''})}>
+        <span>$</span>
         <input
           onChange={(e) => {
             updateAmount(e.target.value);
             updateInitialAmount(e.target.value);
           }}
           value={amount}
-          placeholder="$0"
+          placeholder="0"
         />
-        {!!currencyName && (
+        {!!currencyName && currencyName !== SHARES && !showCurrencyDropdown && (
           <span className={Styles.CurrencyLabel}>
             {icon} {label}
           </span>
         )}
+        {currencyName === SHARES && !showCurrencyDropdown && (
+          <span className={Styles.SharesLabel}>
+            Shares
+            <TinyButton text="Max" />
+          </span>
+        )}
+        {showCurrencyDropdown && (
+          <CurrencyDropdown
+            defaultValue={chosenCash}
+            onChange={(cash) => updateCash(cash)}
+          />
+        )}
       </div>
+      {showRate && (
+        <span className={Styles.RateLabel}>
+          <span>Rate</span>1 USDC = 1 Share
+        </span>
+      )}
     </div>
   );
 };
