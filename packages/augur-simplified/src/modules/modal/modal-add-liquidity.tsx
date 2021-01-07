@@ -283,7 +283,7 @@ const ModalAddLiquidity = ({
             initialAmount={amount}
             showCurrencyDropdown={LIQUIDITY_STRINGS[modalType].showCurrencyDropdown}
             chosenCash={chosenCash}
-            updateCash={useAppStatusStore}
+            updateCash={updateCash}
           />
           {LIQUIDITY_STRINGS[modalType].setTradingFee && (
             <>
