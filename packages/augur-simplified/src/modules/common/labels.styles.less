@@ -273,3 +273,30 @@
   border: @size-1 solid var(--simple-no);
   border-radius: @size-8;
 }
+
+.NetworkMismatch {
+  .SimpleBorder;
+  .text-16-bold;
+
+  border: none;
+  background: var(--simple-no-15);
+  color: var(--simple-failed);
+  text-align: center;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  max-height: @size-48;
+  min-height: @size-48;
+  height: @size-48;
+  margin-bottom: @size-16;
+  margin-top: -@size-24;
+
+  @media @breakpoint-mobile {
+    .text-14-bold;
+
+    margin-top: 0;
+  }
+}

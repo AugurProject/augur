@@ -13,7 +13,6 @@ import { POPULAR_CATEGORIES_ICONS } from 'modules/constants';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import { MODAL_ADD_LIQUIDITY } from '../constants';
 
-
 interface ValueLabelProps {
   large?: boolean;
   label?: string;
@@ -164,9 +163,7 @@ export const AddLiquidity = ({ market }) => {
   return (
     <div
       className={classNames(Styles.AddLiquidity)}
-      onClick={() => 
-        setModal({ type: MODAL_ADD_LIQUIDITY, market })
-      }
+      onClick={() => setModal({ type: MODAL_ADD_LIQUIDITY, market })}
     >
       <span>
         {PlusIcon}
@@ -177,10 +174,24 @@ export const AddLiquidity = ({ market }) => {
   );
 };
 
-export const ErrorBlock = ({text}) => {
+export const ErrorBlock = ({ text }) => {
+  return <div className={Styles.ErrorBlock}>{text}</div>;
+};
+
+export const NetworkMismatchBanner = () => {
+  const {
+    paraConfig: { networkId },
+    loginAccount,
+  } = useAppStatusStore();
+  const { chainId } = loginAccount || {};
+  const isNetworkMismatch = !!chainId && String(networkId) !== String(chainId);
   return (
-    <div className={Styles.ErrorBlock}>
-      {text}
-    </div>
+    <>
+      {isNetworkMismatch && (
+        <article className={Styles.NetworkMismatch}>
+          You're connected to an unsupported network
+        </article>
+      )}
+    </>
   );
-}
+};
