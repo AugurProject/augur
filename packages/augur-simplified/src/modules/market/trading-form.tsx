@@ -5,8 +5,9 @@ import { BUY, SELL, YES_NO, USDC, ETH } from 'modules/constants';
 import { PrimaryButton } from 'modules/common/buttons';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import { CloseIcon, UsdIcon, EthIcon } from 'modules/common/icons';
-import { ApprovalButton } from '../common/buttons';
-import { ApprovalAction } from '../constants';
+import { ApprovalButton, TinyButton } from '../common/buttons';
+import { ApprovalAction, SHARES } from '../constants';
+import { CurrencyDropdown } from '../common/selection';
 
 interface OutcomeType {
   id: number;
@@ -86,6 +87,9 @@ export const AmountInput = ({
   currencyName,
   updateInitialAmount,
   initialAmount,
+  showCurrencyDropdown,
+  updateCash,
+  chosenCash,
 }) => {
   const [amount, updateAmount] = useState(initialAmount);
   const icon = currencyName === USDC ? UsdIcon : EthIcon;
@@ -103,10 +107,22 @@ export const AmountInput = ({
           value={amount}
           placeholder="$0"
         />
-        {!!currencyName && (
+        {!!currencyName && currencyName !== SHARES && !showCurrencyDropdown && (
           <span className={Styles.CurrencyLabel}>
             {icon} {label}
           </span>
+        )}
+        {currencyName === SHARES && !showCurrencyDropdown && (
+          <span className={Styles.SharesLabel}>
+            Shares
+            <TinyButton text="Max" />
+          </span>
+        )}
+        {showCurrencyDropdown && (
+          <CurrencyDropdown
+            defaultValue={chosenCash}
+            onChange={(cash) => updateCash(cash)}
+          />
         )}
       </div>
     </div>
