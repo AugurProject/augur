@@ -103,7 +103,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
         }
         _mint(_recipient, _lpTokens);
 
-        emit AddLiquidity(_user, _cash, _shortShares, _longShares, _lpTokens);
+        emit AddLiquidity(_recipient, _cash, _shortShares, _longShares, _lpTokens);
 
         return _lpTokens;
     }

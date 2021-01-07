@@ -191,3 +191,7 @@ def test_amm_weth_yes_position(contractsFixture, sessionFixture, universe, marke
 
     # Should have more eth than before because market resolved in account0's favor.
     assert contractsFixture.ethBalance(account0) > balanceBeforeFinalization
+
+
+def test_amm_weth_claim_from_multiple_markets():
+

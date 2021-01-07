@@ -45,6 +45,11 @@ def test_amm_add_with_liquidity(contractsFixture, market, cash, shareToken, fact
     cash.approve(factory.address, 10 ** 48)
 
     ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, cost, ratioFactor, keepYes, account0)
+    amm = contractsFixture.applySignature("AMMExchange", ammAddress[0])
+
+    addLiquidityEvent = amm.getLogs('AddLiquidity')
+    assert addLiquidityEvent[0].args.sender == account0
+
     assert ammAddress != nullAddress
 
 def test_amm_add_with_liquidity2(contractsFixture, market, cash, shareToken, factory, account0):
@@ -72,6 +77,9 @@ def test_amm_initial_liquidity(contractsFixture, market, cash, shareToken, facto
     cash.approve(factory.address, 10 ** 48)
 
     amm.addInitialLiquidity(cost, 10**18, True, account0)
+
+    addLiquidityEvent = amm.getLogs('AddLiquidity')
+    assert addLiquidityEvent[0].args.sender == account0
 
     # all cash was used to buy complete sets
     assert cash.balanceOf(account0) == 0
@@ -548,7 +556,6 @@ def test_amm_lp_fee_lp_withdraw(contractsFixture, market, shareToken, cash, fact
     assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == 0
     assert cash.balanceOf(amm.address) == 0
-
 
 # TODO tests
 # 1. Two users add and remove liquidity, without trading occuring.
