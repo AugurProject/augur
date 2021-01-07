@@ -320,6 +320,10 @@
     text-transform: capitalize;
     color: var(--simple-secondary-text);
   }
+
+  &.Rate {
+    padding-bottom: @size-12
+  }
 }
 
 .CurrencyLabel,
@@ -338,6 +342,21 @@
   > svg {
     height: @size-24;
     width: @size-24;
+    margin-right: @size-4;
+  }
+}
+
+.RateLabel {
+  .text-14;
+  
+  color: var(--simple-secondary-text);
+  margin-top: @size-12;
+  margin-left: auto;
+  grid-column: 1 / span 2;
+
+  > span {
+    .text-14-semi-bold;
+
     margin-right: @size-4;
   }
 }

@@ -94,8 +94,9 @@ export const AmountInput = ({
   const [amount, updateAmount] = useState(initialAmount);
   const icon = currencyName === USDC ? UsdIcon : EthIcon;
   const label = currencyName === USDC ? USDC : ETH;
+  const showRate = currencyName !== SHARES;
   return (
-    <div className={Styles.AmountInput}>
+    <div className={classNames(Styles.AmountInput, {[Styles.Rate]: showRate})}>
       <span>amount</span>
       <span>balance: $1000</span>
       <div className={Styles.AmountInputDropdown}>
@@ -125,6 +126,11 @@ export const AmountInput = ({
           />
         )}
       </div>
+      {showRate && (
+        <span className={Styles.RateLabel}>
+          <span>Rate</span>1 USDC = 1 Share
+        </span>
+      )}
     </div>
   );
 };
