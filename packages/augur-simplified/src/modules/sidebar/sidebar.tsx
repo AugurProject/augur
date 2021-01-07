@@ -4,7 +4,7 @@ import { CloseIcon } from 'modules/common/icons';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { RadioBarGroup } from 'modules/common/selection';
-import { MARKETS, PORTFOLIO, SIDEBAR_TYPES } from 'modules/constants';
+import {MARKETS, PORTFOLIO, SIDEBAR_TYPES, DEFAULT_MARKET_VIEW_SETTINGS} from 'modules/constants';
 import Logo from 'modules/common/logo';
 import classNames from 'classnames';
 import makePath from 'modules/routes/helpers/make-path';
@@ -40,15 +40,9 @@ const SideBarHeader = ({ header, showLogo }: SideBarHeaderProps) => {
 const FilterSideBar = () => {
   const {
     marketsViewSettings,
-    actions: { updateMarketsViewSettings },
+    actions: { updateMarketsViewSettings, setSidebar },
   } = useAppStatusStore();
-  const { categories, sortBy, reportingState, currency } = marketsViewSettings;
-  const [localSettings, setLocalSettings] = useState({
-    categories,
-    sortBy,
-    reportingState,
-    currency,
-  });
+  const [localSettings, setLocalSettings] = useState(marketsViewSettings);
   return (
     <>
       <SideBarHeader header={'filters'} />
@@ -87,13 +81,13 @@ const FilterSideBar = () => {
         />
       </div>
       <div className={Styles.Footer}>
-        <PrimaryButton
+        <SecondaryButton
           text="reset all"
           action={() => {
-            setLocalSettings({ categories, sortBy, reportingState, currency });
+            setLocalSettings(DEFAULT_MARKET_VIEW_SETTINGS);
           }}
         />
-        <SecondaryButton
+        <PrimaryButton
           text="apply filters"
           action={() => {
             updateMarketsViewSettings({
@@ -102,6 +96,7 @@ const FilterSideBar = () => {
               reportingState: localSettings.reportingState,
               currency: localSettings.currency,
             });
+            setSidebar(null);
           }}
         />
       </div>
