@@ -184,7 +184,7 @@ const ModalAddLiquidity = ({
       showTradingFee: true,
       setOdds: true,
       setOddsTitle: 'Current Odds',
-      footerText: `By adding liquidity you'll earn ${percentFormatted} of all trades on this this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.`,
+      footerText: `By adding liquidity you'll earn ${percentFormatted} of all trades on this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.`,
       receiveTitle: "You'll receive",
       receiveBreakdown: async () => {
         if (!account || !market.marketId || !amount || !priceNo || !priceYes) return defaultAddLiquidityBreakdown;
@@ -253,7 +253,7 @@ const ModalAddLiquidity = ({
       setOddsTitle: 'Set the odds',
       editableOutcomes: true,
       footerText:
-        "By adding initial liquidity you'll earn your set trading fee percentage of all trades on this this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.",
+        "By adding initial liquidity you'll earn your set trading fee percentage of all trades on this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.",
       receiveTitle: "You'll receive",
       receiveBreakdown: async () => {
         if (!account || !market.marketId || !amount || !priceNo || !priceYes) return defaultAddLiquidityBreakdown;
