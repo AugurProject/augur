@@ -17,6 +17,9 @@ import {
 } from 'modules/constants';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import parsePath from '../routes/helpers/parse-path';
+import ReactTooltip from 'react-tooltip';
+import TooltipStyles from 'modules/common/tooltip.styles.less';
+import { HelpIcon } from './icons';
 
 interface ValueLabelProps {
   large?: boolean;
@@ -205,5 +208,34 @@ export const NetworkMismatchBanner = () => {
         </article>
       )}
     </>
+  );
+};
+
+
+export const generateTooltip = (tipText: string, key: string) => {
+  return (
+    <span className={TooltipStyles.Container}>
+      <label
+        className={classNames(
+          TooltipStyles.TooltipHint,
+        )}
+        data-tip
+        data-for={key}
+        data-iscapture={true}
+      >
+        {HelpIcon}
+      </label>
+      <ReactTooltip
+        id={key}
+        className={TooltipStyles.Tooltip}
+        effect="solid"
+        place="top"
+        type="light"
+        event="mouseover mouseenter"
+        eventOff="mouseleave mouseout scroll mousewheel blur"
+      >
+        <p>{tipText}</p>
+      </ReactTooltip>
+    </span>
   );
 };
