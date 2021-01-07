@@ -26,7 +26,7 @@ import {
 import { formatDai } from 'utils/format-number';
 import { EthIcon, FilterIcon, UsdIcon } from 'modules/common/icons';
 import classNames from 'classnames';
-import { PrimaryButton } from 'modules/common/buttons';
+import {PrimaryButton, SecondaryButton} from 'modules/common/buttons';
 import { SquareDropdown } from 'modules/common/selection';
 import { Pagination } from 'modules/common/pagination';
 import { useAppStatusStore } from 'modules/stores/app-status';
@@ -209,7 +209,7 @@ const MarketsView = () => {
     <div className={Styles.MarketsView}>
       <AppViewStats showCashAmounts />
       {isMobile && (
-        <PrimaryButton
+        <SecondaryButton
           text="filters"
           icon={FilterIcon}
           action={() => setSidebar(SIDEBAR_TYPES.FILTERS)}
