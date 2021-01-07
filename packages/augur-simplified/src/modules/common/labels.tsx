@@ -184,7 +184,10 @@ export const NetworkMismatchBanner = () => {
     loginAccount,
   } = useAppStatusStore();
   const { chainId } = loginAccount || {};
-  const isNetworkMismatch = !!chainId && String(networkId) !== String(chainId);
+  const isNetworkMismatch = useMemo(
+    () => !!chainId && String(networkId) !== String(chainId),
+    [chainId, networkId]
+  );
   return (
     <>
       {isNetworkMismatch && (
