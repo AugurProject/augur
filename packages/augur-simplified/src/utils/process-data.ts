@@ -5,6 +5,7 @@ import { convertAttoValueToDisplayValue } from "@augurproject/sdk";
 import { convertOnChainCashAmountToDisplayCashAmount, formatShares, onChainMarketSharesToDisplayShares } from "./format-number";
 import { BUY, SEC_IN_YEAR, SELL } from "../modules/constants";
 import { timeSinceTimestamp } from "./time-since";
+
 interface GraphMarket {
   id: string,
   description: string,
@@ -186,6 +187,23 @@ const shapeAmmExchange = (amm: GraphAmmExchange, past: GraphAmmExchange, cashes:
   const liquidity24hrUSD = calculatePastLiquidityInUsd(liquidity, pastLiquidity, cash.usdPrice)
   const apy = calculateAmmApy(volumeTotalUSD, amm, cash.usdPrice, addLiquidity, removeLiquidity);
 
+  const ammOutcomes = [{
+    id: 0,
+    price: "0",
+    name: market.outcomes[0].value,
+    isInvalid: true,
+  },
+  {
+    id: 1,
+    price: priceNo.toFixed(2),
+    name: market.outcomes[1].value,
+  },
+  {
+    id: 2,
+    price: priceYes.toFixed(2),
+    name: market.outcomes[2].value,
+  }]
+
   return {
     id: amm.id,
     marketId,
@@ -217,6 +235,7 @@ const shapeAmmExchange = (amm: GraphAmmExchange, past: GraphAmmExchange, cashes:
     past24hrPriceYes: past24hrPriceYes ? past24hrPriceYes.toFixed(2) : null,
     totalSupply: amm.totalSupply,
     apy,
+    outcomes: ammOutcomes,
   }
 }
 

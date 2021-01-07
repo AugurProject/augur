@@ -7,13 +7,7 @@ import { useAppStatusStore } from 'modules/stores/app-status';
 import { CloseIcon, UsdIcon, EthIcon } from 'modules/common/icons';
 import { ApprovalButton } from '../common/buttons';
 import { ApprovalAction } from '../constants';
-
-interface OutcomeType {
-  id: number;
-  name: string;
-  price: string;
-  isInvalid?: boolean;
-}
+import { AmmOutcome, MarketOutcome } from '../types';
 
 export const fakeYesNoOutcomes = [
   {
@@ -114,8 +108,8 @@ export const AmountInput = ({
 };
 
 interface OutcomesGridProps {
-  outcomes: OutcomeType[];
-  selectedOutcome?: OutcomeType;
+  outcomes: AmmOutcome[];
+  selectedOutcome?: AmmOutcome;
   setSelectedOutcome: Function;
   marketType: string;
   orderType?: string;

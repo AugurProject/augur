@@ -15,43 +15,82 @@ import { augurSdkLite } from './augurlitesdk';
 import { ETH, FINALIZED, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_NO_OUTCOMES_NAMES, YES_OUTCOME_ID } from '../modules/constants';
 import { getProviderOrSigner } from '../modules/ConnectAccount/utils';
 
-
-export interface AddAmmLiquidity {
-  account: string;
-  amm: AmmExchange;
-  marketId: string;
-  cash: Cash;
-  fee: string;
-  cashAmount: string;
-  priceNo: number;
-  priceYes: number;
-}
-
-export function getAmmLiquidity({
-  account,
-  amm,
-  marketId,
-  cash,
-  fee,
-  cashAmount,
-  priceNo,
-  priceYes,
-}: AddAmmLiquidity) {
+export function getAmmLiquidity(
+  account: string,
+  amm: AmmExchange,
+  marketId: string,
+  cash: Cash,
+  fee: string,
+  cashAmount: string,
+  priceNo: string,
+  priceYes: string,
+) {
   const augurClient = augurSdkLite.get();
   if (!augurClient || !augurClient.amm)
     return console.error('augurClient is null');
   const hasLiquidity = Boolean(amm?.id);
   const sharetoken = cash?.shareToken;
   const ammAddress = amm?.id;
+  const amount = convertDisplayCashAmountToOnChainCashAmount(cashAmount, cash.decimals);
   console.log(
-    'addAmmLiquidity',
+    'getAddAmmLiquidity',
+    account,
+    'amm address', ammAddress,
+    hasLiquidity,
+    'marketId', marketId,
+    'sharetoken', sharetoken,
+    fee,
+    String(amount),
+    'No',
+    String(priceNo),
+    'Yes',
+    String(priceYes),
+  );
+
+  // converting odds to pool percentage. odds is the opposit of pool percentage
+  // same when converting pool percentage to price
+  const poolYesPercent = new BN(priceNo);
+  const poolNoPercent = new BN(priceYes);
+
+  return augurClient.amm.getAddLiquidity(
+    account,
+    ammAddress,
+    hasLiquidity,
+    marketId,
+    sharetoken,
+    new BN(fee),
+    new BN(amount),
+    poolYesPercent,
+    poolNoPercent
+  );
+}
+
+export function doAmmLiquidity(
+  account: string,
+  amm: AmmExchange,
+  marketId: string,
+  cash: Cash,
+  fee: string,
+  cashAmount: string,
+  priceNo: string,
+  priceYes: string,
+) {
+  const augurClient = augurSdkLite.get();
+  if (!augurClient || !augurClient.amm)
+    return console.error('augurClient is null');
+  const hasLiquidity = Boolean(amm?.id);
+  const sharetoken = cash?.shareToken;
+  const ammAddress = amm?.id;
+  const amount = convertDisplayCashAmountToOnChainCashAmount(cashAmount, cash.decimals);
+  console.log(
+    'doAmmLiquidity',
     account,
     ammAddress,
     hasLiquidity,
     marketId,
     sharetoken,
     fee,
-    String(cashAmount),
+    String(amount),
     'No',
     String(priceNo),
     'Yes',
@@ -70,7 +109,7 @@ export function getAmmLiquidity({
     marketId,
     sharetoken,
     new BN(fee),
-    new BN(cashAmount),
+    new BN(amount),
     poolYesPercent,
     poolNoPercent
   );
