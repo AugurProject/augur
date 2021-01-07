@@ -103,7 +103,7 @@ const AppBody = () => {
         cashes,
         markets
       );
-    if (loginAccount) {
+    if (loginAccount?.library && loginAccount?.account) {
       if (!augurSdkLite.ready()) createClient(loginAccount.library, paraConfig);
       const { ammExchanges, cashes, markets } = processed;
       fetchUserBalances(loginAccount.library, loginAccount.account, ammExchanges, cashes, markets).then((userBalances) =>

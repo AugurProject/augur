@@ -32,7 +32,7 @@ import { Pagination } from 'modules/common/pagination';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import { USDC } from '../constants';
 import { AmmExchange, MarketInfo, MarketOutcome } from '../types';
-import { formatPercent } from '../../utils/format-number';
+import { NetworkMismatchBanner } from '../common/labels';
 
 const PAGE_LIMIT = 20;
 
@@ -207,6 +207,7 @@ const MarketsView = () => {
 
   return (
     <div className={Styles.MarketsView}>
+      <NetworkMismatchBanner />
       <AppViewStats showCashAmounts />
       {isMobile && (
         <SecondaryButton
