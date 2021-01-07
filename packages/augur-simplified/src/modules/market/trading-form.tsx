@@ -99,14 +99,15 @@ export const AmountInput = ({
     <div className={classNames(Styles.AmountInput, {[Styles.Rate]: showRate})}>
       <span>amount</span>
       <span>balance: $1000</span>
-      <div className={Styles.AmountInputDropdown}>
+      <div className={classNames(Styles.AmountInputDropdown, {[Styles.Edited]: amount !== ''})}>
+        <span>$</span>
         <input
           onChange={(e) => {
             updateAmount(e.target.value);
             updateInitialAmount(e.target.value);
           }}
           value={amount}
-          placeholder="$0"
+          placeholder="0"
         />
         {!!currencyName && currencyName !== SHARES && !showCurrencyDropdown && (
           <span className={Styles.CurrencyLabel}>

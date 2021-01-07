@@ -10,7 +10,6 @@ import { formatPercent } from '../../utils/format-number';
 import { MultiButtonSelection } from '../common/selection';
 import classNames from 'classnames';
 import { MarketInfo } from '../types';
-import { useAppStatusStore } from '../stores/app-status';
 
 const TRADING_FEE_OPTIONS = [
   {
