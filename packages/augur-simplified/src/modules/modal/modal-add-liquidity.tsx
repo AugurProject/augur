@@ -10,6 +10,7 @@ import { formatPercent } from '../../utils/format-number';
 import { MultiButtonSelection } from '../common/selection';
 import classNames from 'classnames';
 import { MarketInfo } from '../types';
+import { useAppStatusStore } from '../stores/app-status';
 
 const TRADING_FEE_OPTIONS = [
   {
@@ -60,6 +61,8 @@ const ModalAddLiquidity = ({
   market,
   liquidityModalType,
 }: ModalAddLiquidityProps) => {
+  const { userInfo: { balances }} = useAppStatusStore();
+
   const [outcomes, setOutcomes] = useState(fakeYesNoOutcomes);
   const [showBackView, setShowBackView] = useState(false);
   const [amount, updateAmount] = useState('');
@@ -72,6 +75,9 @@ const ModalAddLiquidity = ({
   const percentFormatted = formatPercent(amm?.feePercent).full;
   let modalType = createLiquidity ? CREATE : ADD;
   if (liquidityModalType) modalType = liquidityModalType;
+  const [selectedCash, setSelectedCash] = useState(amm?.cash);
+  // get user balance for initial amount, if cash not selected user "0"
+  const userCashBalance = selectedCash?.name ? balances[selectedCash?.name]?.balance : "0";
 
   const RECEIVE_BREAKDOWN_FAKE_DATA = [
     {
@@ -269,9 +275,10 @@ const ModalAddLiquidity = ({
             </span>
           )}
           <AmountInput
-            currencyName={USDC}
+            cash={selectedCash}
             updateInitialAmount={(amount) => updateAmount(amount)}
-            initialAmount={amount}
+            initialAmount={userCashBalance}
+            maxValue={userCashBalance}
           />
           {LIQUIDITY_STRINGS[modalType].setTradingFee && (
             <>

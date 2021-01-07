@@ -25,6 +25,10 @@ export const MARKET_ID_PARAM_NAME = 'id';
 export const AFFILIATE_NAME = 'r';
 export const THEME_NAME = 't';
 
+export const OUTCOME_YES_NAME = 'Yes';
+export const OUTCOME_NO_NAME = 'No';
+export const OUTCOME_INVALID_NAME = 'Invalid';
+
 // Directions
 export const BUY = 'buy';
 export const SELL = 'sell';

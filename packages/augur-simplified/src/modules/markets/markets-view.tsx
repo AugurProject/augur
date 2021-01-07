@@ -31,7 +31,7 @@ import { SquareDropdown } from 'modules/common/selection';
 import { Pagination } from 'modules/common/pagination';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import { USDC } from '../constants';
-import { AmmExchange, MarketInfo, MarketOutcome } from '../types';
+import { AmmExchange, AmmOutcome, MarketInfo, MarketOutcome } from '../types';
 import { formatPercent } from '../../utils/format-number';
 
 const PAGE_LIMIT = 20;
@@ -58,17 +58,17 @@ const LoadingMarketCard = () => {
   );
 };
 
-const OutcomesTable = ({ outcomes, amm }: { outcomes: MarketOutcome[], amm: AmmExchange }) => {
+const OutcomesTable = ({ amm }: { amm: AmmExchange }) => {
   return (
     <div className={Styles.OutcomesTable}>
-      {outcomes
-        .filter((outcome) => outcome.id !== INVALID_OUTCOME_ID)
+      {amm && amm?.ammOutcomes && amm.ammOutcomes
+        .filter((outcome) => !outcome.isInvalid)
         .map((outcome) => (
           <div key={`${outcome.name}-${amm?.marketId}-${outcome.id}`}>
             <span>{outcome.name.toLowerCase()}</span>
             <span>
               {amm.liquidity !== "0" ?
-                formatDai(outcome.name === YES_OUTCOME_ID ? amm?.priceYes : amm?.priceNo)
+                formatDai(outcome.price)
                   .full
                 : "-"
               }

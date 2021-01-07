@@ -3,17 +3,12 @@ import Styles from 'modules/market/trading-form.styles.less';
 import classNames from 'classnames';
 import { BUY, SELL, YES_NO, USDC, ETH } from 'modules/constants';
 import { PrimaryButton } from 'modules/common/buttons';
-import { useAppStatusStore } from 'modules/stores/app-status';
+import { useAppStatusStore } from '../stores/app-status';
 import { CloseIcon, UsdIcon, EthIcon } from 'modules/common/icons';
 import { ApprovalButton } from '../common/buttons';
-import { ApprovalAction } from '../constants';
-
-interface OutcomeType {
-  id: number;
-  name: string;
-  price: string;
-  isInvalid?: boolean;
-}
+import { ApprovalAction, OUTCOME_YES_NAME } from '../constants';
+import { AmmExchange, AmmOutcome, Cash } from '../types';
+import { formatEther } from '../../utils/format-number';
 
 export const fakeYesNoOutcomes = [
   {
@@ -56,7 +51,7 @@ const Outcome = ({
         [Styles.YesNo]: !outcome.isInvalid && marketType === YES_NO,
         [Styles.Selected]: selected,
         [Styles.Invalid]: outcome.isInvalid,
-        [Styles.Yes]: outcome.name === 'yes',
+        [Styles.Yes]: outcome.name === OUTCOME_YES_NAME,
         [Styles.ShowAllHighlighted]: showAllHighlighted,
         [Styles.InvalidSelected]: invalidSelected,
         [Styles.nonSelectable]: nonSelectable,
@@ -83,17 +78,24 @@ const Outcome = ({
 };
 
 export const AmountInput = ({
-  currencyName,
+  cash,
   updateInitialAmount,
   initialAmount,
+  maxValue,
+} : {
+  cash: Cash,
+  updateInitialAmount: (string) => void,
+  initialAmount: string,
+  maxValue: string,
 }) => {
+  const currencyName = cash?.name;
   const [amount, updateAmount] = useState(initialAmount);
-  const icon = currencyName === USDC ? UsdIcon : EthIcon;
-  const label = currencyName === USDC ? USDC : ETH;
+  const icon = cash?.name === USDC ? UsdIcon : EthIcon;
+  const label = ''; // label not needed using icon
   return (
     <div className={Styles.AmountInput}>
       <span>amount</span>
-      <span>balance: $1000</span>
+      <span>balance: {formatEther(maxValue).formatted}</span>
       <div className={Styles.AmountInputDropdown}>
         <input
           onChange={(e) => {
@@ -114,8 +116,8 @@ export const AmountInput = ({
 };
 
 interface OutcomesGridProps {
-  outcomes: OutcomeType[];
-  selectedOutcome?: OutcomeType;
+  outcomes: AmmOutcome[];
+  selectedOutcome?: AmmOutcome;
   setSelectedOutcome: Function;
   marketType: string;
   orderType?: string;
@@ -143,6 +145,7 @@ export const OutcomesGrid = ({
     >
       {outcomes
         .filter((outcome) => !outcome.isInvalid)
+        .reverse()
         .map((outcome, index) => (
           <Outcome
             key={outcome.id}
@@ -187,13 +190,32 @@ export const InfoNumbers = ({ infoNumbers }: InfoNumbersProps) => {
   );
 };
 
+const defaultTradeBreakdown = [
+  {
+    label: 'average price',
+    value: '$0.00',
+  },
+  {
+    label: 'shares bought',
+    value: '0.00',
+  },
+  {
+    label: 'max winnings',
+    value: '$0.00',
+  },
+];
+interface TradingFormProps {
+  amm: AmmExchange,
+  marketType?: string,
+  initialSelectedOutcome: AmmOutcome,
+}
+
 const TradingForm = ({
-  outcomes = fakeYesNoOutcomes,
   initialSelectedOutcome,
   marketType = YES_NO,
-  marketCashType,
   amm,
-}) => {
+}: TradingFormProps) => {
+  const { userInfo: { balances }} = useAppStatusStore();
   const {
     isMobile,
     loginAccount,
@@ -204,6 +226,10 @@ const TradingForm = ({
   const [selectedOutcome, setSelectedOutcome] = useState(
     initialSelectedOutcome
   );
+  const [breakdown, setBreakdown] = useState(defaultTradeBreakdown);
+  const ammCash = amm?.cash;
+  const outcomes = amm.ammOutcomes;
+  const userCashBalance = amm?.cash?.name ? balances[amm?.cash?.name].balance : "0";
   return (
     <div className={Styles.TradingForm}>
       <div>
@@ -221,7 +247,7 @@ const TradingForm = ({
         </span>
         <div>
           <span>fee</span>
-          <span>0.1%</span>
+          <span>{amm.feePercent}</span>
         </div>
         {isMobile && (
           <div onClick={() => setShowTradingForm(false)}>{CloseIcon}</div>
@@ -236,31 +262,19 @@ const TradingForm = ({
           orderType={orderType}
         />
         <AmountInput
-          currencyName={marketCashType}
+          cash={ammCash}
           updateInitialAmount={() => null}
           initialAmount={''}
+          maxValue={userCashBalance}
         />
         <InfoNumbers
-          infoNumbers={[
-            {
-              label: 'average price',
-              value: '$0.00',
-            },
-            {
-              label: 'shares bought',
-              value: '0.00',
-            },
-            {
-              label: 'max winnings',
-              value: '$0.00',
-            },
-          ]}
+          infoNumbers={breakdown}
         />
         {loginAccount && (
           <ApprovalButton amm={amm} actionType={ApprovalAction.TRADE} />
         )}
         <PrimaryButton
-          disabled={!approvals?.trade[marketCashType]}
+          disabled={!approvals?.trade[ammCash?.name]}
           text={orderType}
         />
       </div>

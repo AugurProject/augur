@@ -3,7 +3,7 @@ import { BigNumber as BN } from 'bignumber.js'
 import { getDayFormat, getTimeFormat } from "../utils/date-utils";
 import { convertAttoValueToDisplayValue } from "@augurproject/sdk";
 import { convertOnChainCashAmountToDisplayCashAmount, formatShares, onChainMarketSharesToDisplayShares } from "./format-number";
-import { BUY, SEC_IN_YEAR, SELL } from "../modules/constants";
+import { BUY, OUTCOME_INVALID_NAME, OUTCOME_NO_NAME, OUTCOME_YES_NAME, SEC_IN_YEAR, SELL } from "../modules/constants";
 import { timeSinceTimestamp } from "./time-since";
 interface GraphMarket {
   id: string,
@@ -186,6 +186,29 @@ const shapeAmmExchange = (amm: GraphAmmExchange, past: GraphAmmExchange, cashes:
   const liquidity24hrUSD = calculatePastLiquidityInUsd(liquidity, pastLiquidity, cash.usdPrice)
   const apy = calculateAmmApy(volumeTotalUSD, amm, cash.usdPrice, addLiquidity, removeLiquidity);
 
+  const priceNoFixed = priceNo.toFixed(2);
+  const priceYesFixed = priceYes.toFixed(2);
+
+  // recreate outcomes specific for amm
+  const ammOutcomes = [
+    {
+      id: 0,
+      isInvalid: true,
+      price: "0",
+      name: OUTCOME_INVALID_NAME,
+    },
+    {
+      id: 1,
+      price: priceNoFixed,
+      name: OUTCOME_NO_NAME,
+    },
+    {
+      id: 2,
+      price: priceYesFixed,
+      name: OUTCOME_YES_NAME,
+    }
+  ];
+
   return {
     id: amm.id,
     marketId,
@@ -198,8 +221,8 @@ const shapeAmmExchange = (amm: GraphAmmExchange, past: GraphAmmExchange, cashes:
     liquidityCash: amm.liquidityCash,
     liquidityUSD,
     cash,
-    priceYes: priceYes.toFixed(2),
-    priceNo: priceNo.toFixed(2),
+    priceNo: priceNoFixed,
+    priceYes: priceYesFixed,
     sharetoken: amm?.shareToken?.id,
     percentageNo: amm.percentageNo,
     percentageYes: amm.percentageYes,
@@ -217,6 +240,7 @@ const shapeAmmExchange = (amm: GraphAmmExchange, past: GraphAmmExchange, cashes:
     past24hrPriceYes: past24hrPriceYes ? past24hrPriceYes.toFixed(2) : null,
     totalSupply: amm.totalSupply,
     apy,
+    ammOutcomes,
   }
 }
 

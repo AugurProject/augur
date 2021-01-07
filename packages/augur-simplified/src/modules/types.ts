@@ -167,6 +167,7 @@ export interface AmmExchange {
   past24hrPriceYes?: string,
   totalSupply?: string,
   apy?: string,
+  ammOutcomes: AmmOutcome[],
 }
 
 export interface Cashes {
@@ -191,6 +192,13 @@ export interface MarketOutcome {
   payoutNumerator: string,
   name: string,
 }
+export interface AmmOutcome {
+  id: number,
+  name: string,
+  price: string,
+  isInvalid?: boolean,
+}
+
 export interface Cash {
   address: string,
   shareToken: string,
