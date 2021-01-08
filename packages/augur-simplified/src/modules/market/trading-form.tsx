@@ -5,13 +5,26 @@ import { BUY, SELL, YES_NO, USDC, ETH } from 'modules/constants';
 import { PrimaryButton } from 'modules/common/buttons';
 import { useAppStatusStore } from '../stores/app-status';
 import { CloseIcon, UsdIcon, EthIcon } from 'modules/common/icons';
-import { AmmExchange, AmmOutcome, EstimateEnterTradeResult, EstimateExitTradeResult } from '../types';
+import {
+  AmmExchange,
+  AmmOutcome,
+  EstimateEnterTradeResult,
+  EstimateExitTradeResult,
+} from '../types';
 import { formatEther } from '../../utils/format-number';
 import { ApprovalButton, TinyButton } from '../common/buttons';
-import { ApprovalAction, SHARES, OUTCOME_YES_NAME, YES_OUTCOME_ID } from '../constants';
+import {
+  ApprovalAction,
+  SHARES,
+  OUTCOME_YES_NAME,
+  YES_OUTCOME_ID,
+} from '../constants';
 import { CurrencyDropdown } from '../common/selection';
 import { generateTooltip } from '../common/labels';
-import { estimateEnterTrade, estimateExitTrade } from '../../utils/contract-calls';
+import {
+  estimateEnterTrade,
+  estimateExitTrade,
+} from '../../utils/contract-calls';
 
 export const DefaultMarketOutcomes = [
   {
@@ -72,8 +85,8 @@ const Outcome = ({
           />
         </div>
       ) : (
-          <span>{outcome.price}</span>
-        )}
+        <span>{outcome.price}</span>
+      )}
     </div>
   );
 };
@@ -85,15 +98,15 @@ export const AmountInput = ({
   showCurrencyDropdown,
   updateCash,
   chosenCash,
-  rate
+  rate,
 }: {
-  updateInitialAmount: (string) => void,
-  initialAmount: string,
-  maxValue: string,
-  showCurrencyDropdown?: boolean,
-  updateCash?: (string) => void,
-  chosenCash: string,
-  rate?: string,
+  updateInitialAmount: (string) => void;
+  initialAmount: string;
+  maxValue: string;
+  showCurrencyDropdown?: boolean;
+  updateCash?: (string) => void;
+  chosenCash: string;
+  rate?: string;
 }) => {
   const currencyName = chosenCash;
   const [amount, updateAmount] = useState(initialAmount);
@@ -104,13 +117,19 @@ export const AmountInput = ({
   const setMax = () => {
     updateAmount(maxValue);
     updateInitialAmount(maxValue);
-  }
-  const convRate = `1 ${currencyName} = ${rate} Shares`
+  };
+  const convRate = `1 ${currencyName} = ${rate} Shares`;
   return (
-    <div className={classNames(Styles.AmountInput, { [Styles.Rate]: showRate })}>
+    <div
+      className={classNames(Styles.AmountInput, { [Styles.Rate]: showRate })}
+    >
       <span>amount</span>
       <span onClick={setMax}>balance: {formatEther(maxValue).formatted}</span>
-      <div className={classNames(Styles.AmountInputDropdown, { [Styles.Edited]: amount !== '' })}>
+      <div
+        className={classNames(Styles.AmountInputDropdown, {
+          [Styles.Edited]: amount !== '',
+        })}
+      >
         <span>{prepend}</span>
         <input
           onChange={e => {
@@ -128,9 +147,7 @@ export const AmountInput = ({
         {currencyName === SHARES && !showCurrencyDropdown && (
           <span className={Styles.SharesLabel}>
             Shares
-            <TinyButton
-              action={setMax}
-              text="Max" />
+            <TinyButton action={setMax} text="Max" />
           </span>
         )}
         {showCurrencyDropdown && (
@@ -142,7 +159,8 @@ export const AmountInput = ({
       </div>
       {showRate && (
         <span className={Styles.RateLabel}>
-          <span>Rate</span>{rate ? convRate : null}
+          <span>Rate</span>
+          {rate ? convRate : null}
         </span>
       )}
     </div>
@@ -178,7 +196,7 @@ export const OutcomesGrid = ({
       })}
     >
       {outcomes
-        .filter((outcome) => !outcome.isInvalid)
+        .filter(outcome => !outcome.isInvalid)
         .reverse()
         .map((outcome, index) => (
           <Outcome
@@ -220,10 +238,8 @@ export const InfoNumbers = ({ infoNumbers }: InfoNumbersProps) => {
         <div key={infoNumber.label}>
           <span>
             {infoNumber.label}
-            <span>
-              {infoNumber.tooltipText &&
-                generateTooltip(infoNumber.tooltipText, infoNumber.tooltipKey)}
-            </span>
+            {infoNumber.tooltipText &&
+              generateTooltip(infoNumber.tooltipText, infoNumber.tooltipKey)}
           </span>
           <span>{infoNumber.value}</span>
         </div>
@@ -233,10 +249,10 @@ export const InfoNumbers = ({ infoNumbers }: InfoNumbersProps) => {
 };
 
 const getEnterBreakdown = (breakdown: EstimateEnterTradeResult) => {
-  const avg = breakdown?.averagePrice || "$0.00";
-  const sharevalue = breakdown?.outputShares || "0.00";
-  const winnings = breakdown?.maxProfit || "$0.00"
-  const fees = breakdown?.tradeFees || "$0.00"
+  const avg = breakdown?.averagePrice || '$0.00';
+  const sharevalue = breakdown?.outputShares || '0.00';
+  const winnings = breakdown?.maxProfit || '$0.00';
+  const fees = breakdown?.tradeFees || '$0.00';
   return [
     {
       label: 'average price',
@@ -257,13 +273,13 @@ const getEnterBreakdown = (breakdown: EstimateEnterTradeResult) => {
       value: fees,
     },
   ];
-}
+};
 
 const getExitBreakdown = (breakdown: EstimateExitTradeResult) => {
-  const avg = breakdown?.averagePrice || "$0.00";
-  const cash = breakdown?.outputCash || "0.00";
-  const remaining = breakdown?.remainingShares || "0.00";
-  const fees = breakdown?.estimateFees || "$0.00"
+  const avg = breakdown?.averagePrice || '$0.00';
+  const cash = breakdown?.outputCash || '0.00';
+  const remaining = breakdown?.remainingShares || '0.00';
+  const fees = breakdown?.estimateFees || '$0.00';
   return [
     {
       label: 'Average Price',
@@ -282,17 +298,17 @@ const getExitBreakdown = (breakdown: EstimateExitTradeResult) => {
       value: fees,
     },
   ];
-}
+};
 
 interface TradeEstimates {
   slippagePercent?: string;
-  ratePerCash?: string
+  ratePerCash?: string;
 }
 
 interface TradingFormProps {
-  amm: AmmExchange,
-  marketType?: string,
-  initialSelectedOutcome: AmmOutcome,
+  amm: AmmExchange;
+  marketType?: string;
+  initialSelectedOutcome: AmmOutcome;
 }
 
 const TradingForm = ({
@@ -300,7 +316,9 @@ const TradingForm = ({
   marketType = YES_NO,
   amm,
 }: TradingFormProps) => {
-  const { userInfo: { balances } } = useAppStatusStore();
+  const {
+    userInfo: { balances },
+  } = useAppStatusStore();
   const {
     isMobile,
     loginAccount,
@@ -312,61 +330,76 @@ const TradingForm = ({
     initialSelectedOutcome
   );
   const [breakdown, setBreakdown] = useState(getEnterBreakdown(null));
-  const [amount, setAmount] = useState<string>("");
-  const [tradeEstimates, setTradeEstimates] = useState<TradeEstimates>({})
+  const [amount, setAmount] = useState<string>('');
+  const [tradeEstimates, setTradeEstimates] = useState<TradeEstimates>({});
   const ammCash = amm?.cash;
   const outcomes = amm?.ammOutcomes || [];
-  const userCashBalance = amm?.cash?.name ? balances[amm?.cash?.name]?.balance : "0";
+  const userCashBalance = amm?.cash?.name
+    ? balances[amm?.cash?.name]?.balance
+    : '0';
 
   useEffect(() => {
     let isMounted = true;
     const getEstimate = async () => {
       const outputYesShares = selectedOutcome.id === YES_OUTCOME_ID;
       if (orderType === BUY) {
-        const breakdown = await estimateEnterTrade(amm, amount, outputYesShares);
+        const breakdown = await estimateEnterTrade(
+          amm,
+          amount,
+          outputYesShares
+        );
         if (breakdown) {
-          const {slippagePercent, ratePerCash} = breakdown;
+          const { slippagePercent, ratePerCash } = breakdown;
           if (isMounted) {
-            setBreakdown(getEnterBreakdown(breakdown))
-            setTradeEstimates({slippagePercent, ratePerCash })
+            setBreakdown(getEnterBreakdown(breakdown));
+            setTradeEstimates({ slippagePercent, ratePerCash });
           }
         } else {
           // if no breakdown, means no liquidity
           // TODO: set insufficient liquidity state here
           if (isMounted) {
-            setBreakdown(getEnterBreakdown(null))
+            setBreakdown(getEnterBreakdown(null));
           }
         }
       } else {
         let userBalances = [];
-        const hasShares = balances?.marketShares && balances?.marketShares[amm?.id];
+        const hasShares =
+          balances?.marketShares && balances?.marketShares[amm?.id];
         if (hasShares) {
           userBalances = hasShares.outcomeShares;
         }
-        const breakdown = await estimateExitTrade(amm, amount, outputYesShares, userBalances);
+        const breakdown = await estimateExitTrade(
+          amm,
+          amount,
+          outputYesShares,
+          userBalances
+        );
         if (breakdown) {
-          const {slippagePercent, ratePerCash} = breakdown;
+          const { slippagePercent, ratePerCash } = breakdown;
           if (isMounted) {
-            setBreakdown(getExitBreakdown(breakdown))
-            setTradeEstimates({slippagePercent, ratePerCash })          }
+            setBreakdown(getExitBreakdown(breakdown));
+            setTradeEstimates({ slippagePercent, ratePerCash });
+          }
         } else {
           // if no breakdown, means no liquidity
           // TODO: set insufficient liquidity state here
           if (isMounted) {
-            setBreakdown(getExitBreakdown(null))
+            setBreakdown(getExitBreakdown(null));
           }
         }
       }
-    }
+    };
     if (orderType && selectedOutcome.id && amount && Number(amount) > 0) {
-      getEstimate()
+      getEstimate();
     } else {
-      orderType === BUY ? setBreakdown(getEnterBreakdown(null)) : setBreakdown(getExitBreakdown(null));
+      orderType === BUY
+        ? setBreakdown(getEnterBreakdown(null))
+        : setBreakdown(getExitBreakdown(null));
     }
     return () => {
       isMounted = false;
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderType, selectedOutcome.id, amount]);
 
   return (
@@ -374,8 +407,8 @@ const TradingForm = ({
       <div>
         <span
           onClick={() => {
-            setOrderType(BUY)
-            setBreakdown(getEnterBreakdown(null))
+            setOrderType(BUY);
+            setBreakdown(getEnterBreakdown(null));
           }}
           className={classNames({ [Styles.Selected]: BUY === orderType })}
         >
@@ -383,8 +416,8 @@ const TradingForm = ({
         </span>
         <span
           onClick={() => {
-            setBreakdown(getExitBreakdown(null))
-            setOrderType(SELL)
+            setBreakdown(getExitBreakdown(null));
+            setOrderType(SELL);
           }}
           className={classNames({ [Styles.Selected]: SELL === orderType })}
         >
@@ -413,9 +446,7 @@ const TradingForm = ({
           maxValue={userCashBalance}
           rate={tradeEstimates?.ratePerCash}
         />
-        <InfoNumbers
-          infoNumbers={breakdown}
-        />
+        <InfoNumbers infoNumbers={breakdown} />
         {loginAccount && (
           <ApprovalButton amm={amm} actionType={ApprovalAction.TRADE} />
         )}
