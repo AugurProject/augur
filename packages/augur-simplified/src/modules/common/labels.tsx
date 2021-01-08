@@ -11,10 +11,10 @@ import {
   UsdIcon,
 } from 'modules/common/icons';
 import {
-  CATEGORIES_ICON_MAP,
   MODAL_ADD_LIQUIDITY,
   MARKET,
 } from 'modules/constants';
+import { CATEGORIES_ICON_MAP } from 'modules/common/category-icons-map';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import parsePath from '../routes/helpers/parse-path';
 import ReactTooltip from 'react-tooltip';

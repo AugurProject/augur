@@ -7,7 +7,7 @@ import {
   MedicalIcon,
   PoliticsIcon,
   SportsIcon,
-} from './common/icons';
+} from './common/category-icons';
 
 // # Market Types
 export const YES_NO = MarketTypeName.YesNo;
@@ -65,8 +65,6 @@ export const OTHER = 'other';
 export const ALL_MARKETS = 'all markets';
 
 // sub categories
-export const US_POLITICS = 'us politics';
-export const WORLD_POLITICS = 'world politics';
 export const COVID = 'covid-19';
 export const ELECTORAL_COLLEGE = 'electoral college';
 export const FEDERAL_FUNDS = 'federal funds';
@@ -82,23 +80,6 @@ export const POPULAR_CATEGORIES_ICONS = {
   [ENTERTAINMENT]: EntertainmentIcon,
 };
 
-export const CATEGORIES_ICON_MAP = {
-  [MEDICAL]: {
-    icon: MedicalIcon,
-    subOptions: {},
-  },
-  [POLITICS]: {
-    icon: PoliticsIcon,
-    subOptions: {
-      [US_POLITICS]: { icon: PoliticsIcon },
-      [WORLD_POLITICS]: { icon: PoliticsIcon },
-    },
-  },
-  [CRYPTO]: { icon: CryptoIcon, subOptions: {} },
-  [FINANCE]: { icon: FinanceIcon, subOptions: {} },
-  [SPORTS]: { icon: SportsIcon, subOptions: {} },
-  [ENTERTAINMENT]: { icon: EntertainmentIcon, subOptions: {} },
-};
 // side bar types
 export const NAVIGATION = 'NAVIGATION';
 export const FILTERS = 'FILTERS';
