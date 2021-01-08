@@ -322,7 +322,7 @@ export async function doTrade(
   }
 
   if (tradeDirection === TradingDirection.EXIT) {
-    const inputOnChainSharesAmount = onChainMarketSharesToDisplayShares(new BN(inputDisplayAmount || "0"), new BN(amm.cash.decimals))
+    const inputOnChainSharesAmount = convertDisplayShareAmountToOnChainShareAmount(new BN(inputDisplayAmount || "0"), new BN(amm.cash.decimals))
     let longShares = new BN('0');
     let shortShares = new BN('0');
     let invalidShares = new BN(userBalances[0]);
