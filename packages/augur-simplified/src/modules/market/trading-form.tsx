@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Styles from 'modules/market/trading-form.styles.less';
 import classNames from 'classnames';
 import { BUY, SELL, YES_NO, USDC, ETH } from 'modules/constants';
-import { PrimaryButton } from 'modules/common/buttons';
+import { PrimaryButton } from '../common/buttons';
 import { useAppStatusStore } from '../stores/app-status';
 import { CloseIcon, UsdIcon, EthIcon } from 'modules/common/icons';
 import { AmmExchange, AmmOutcome, EstimateEnterTradeResult, EstimateExitTradeResult } from '../types';
 import { formatEther } from '../../utils/format-number';
 import { ApprovalButton, TinyButton } from '../common/buttons';
-import { ApprovalAction, SHARES, OUTCOME_YES_NAME, YES_OUTCOME_ID } from '../constants';
+import { ApprovalAction, SHARES, OUTCOME_YES_NAME, YES_OUTCOME_ID, ENTER_AMOUNT, INSUFFICIENT_LIQUIDITY, INSUFFICIENT_BALANCE } from '../constants';
 import { CurrencyDropdown } from '../common/selection';
 import { estimateEnterTrade, estimateExitTrade } from '../../utils/contract-calls';
+import BN from 'bn.js';
 
 export const DefaultMarketOutcomes = [
   {
@@ -286,6 +287,11 @@ interface TradingFormProps {
   initialSelectedOutcome: AmmOutcome,
 }
 
+interface CanTradeProps {
+  disabled: boolean;
+  actionText: string;
+}
+
 const TradingForm = ({
   initialSelectedOutcome,
   marketType = YES_NO,
@@ -305,6 +311,7 @@ const TradingForm = ({
   const [breakdown, setBreakdown] = useState(getEnterBreakdown(null));
   const [amount, setAmount] = useState<string>("");
   const [tradeEstimates, setTradeEstimates] = useState<TradeEstimates>({})
+  const [tradeError, setTradeError] = useState<string>(null);
   const ammCash = amm?.cash;
   const outcomes = amm?.ammOutcomes || [];
   const userCashBalance = amm?.cash?.name ? balances[amm?.cash?.name]?.balance : "0";
@@ -312,19 +319,19 @@ const TradingForm = ({
   useEffect(() => {
     let isMounted = true;
     const getEstimate = async () => {
+      setTradeError(null);
       const outputYesShares = selectedOutcome.id === YES_OUTCOME_ID;
       if (orderType === BUY) {
         const breakdown = await estimateEnterTrade(amm, amount, outputYesShares);
-        if (breakdown) {
+        if (breakdown && breakdown.outputShares !== "0") {
           const {slippagePercent, ratePerCash} = breakdown;
           if (isMounted) {
             setBreakdown(getEnterBreakdown(breakdown))
             setTradeEstimates({slippagePercent, ratePerCash })
           }
         } else {
-          // if no breakdown, means no liquidity
-          // TODO: set insufficient liquidity state here
           if (isMounted) {
+            setTradeError(INSUFFICIENT_LIQUIDITY);
             setBreakdown(getEnterBreakdown(null))
           }
         }
@@ -335,16 +342,16 @@ const TradingForm = ({
           userBalances = hasShares.outcomeShares;
         }
         const breakdown = await estimateExitTrade(amm, amount, outputYesShares, userBalances);
-        if (breakdown) {
+        if (breakdown && breakdown.outputCash !== "0") {
           const {slippagePercent, ratePerCash} = breakdown;
           if (isMounted) {
             setBreakdown(getExitBreakdown(breakdown))
             setTradeEstimates({slippagePercent, ratePerCash })          }
         } else {
-          // if no breakdown, means no liquidity
-          // TODO: set insufficient liquidity state here
+          setTradeError(INSUFFICIENT_LIQUIDITY);
           if (isMounted) {
             setBreakdown(getExitBreakdown(null))
+            setTradeError(INSUFFICIENT_LIQUIDITY);
           }
         }
       }
@@ -359,6 +366,27 @@ const TradingForm = ({
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderType, selectedOutcome.id, amount]);
+
+  const canMakeTrade: CanTradeProps = useMemo(() => {
+    let actionText = tradeError || orderType;
+    let disabled = false;
+    if (Number(amount) === 0 || isNaN(Number(amount)) || amount === '') {
+      actionText = ENTER_AMOUNT;
+      disabled = true;
+    } else if (new BN(amount).gt(new BN(userCashBalance))) {
+      actionText = INSUFFICIENT_BALANCE;
+      disabled = true;
+    }
+    return {
+      disabled,
+      actionText
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orderType, selectedOutcome.id, amount, tradeError, userCashBalance]);
+
+  const makeTrade = () => {
+
+  }
 
   return (
     <div className={Styles.TradingForm}>
@@ -411,8 +439,9 @@ const TradingForm = ({
           <ApprovalButton amm={amm} actionType={ApprovalAction.TRADE} />
         )}
         <PrimaryButton
-          disabled={!approvals?.trade[ammCash?.name]}
-          text={orderType}
+          disabled={!approvals?.trade[ammCash?.name] || canMakeTrade.disabled}
+          action={makeTrade}
+          text={canMakeTrade.actionText}
         />
       </div>
     </div>

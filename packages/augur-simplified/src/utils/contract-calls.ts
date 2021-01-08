@@ -148,6 +148,7 @@ export const estimateEnterTrade = async (
   const breakdownWithoutFeeRaw = await estimateMiddlewareTrade(TradingDirection.ENTRY, amm, inputDisplayAmount, outputYesShares, false);
 
   if (!breakdownWithFeeRaw || !breakdownWithoutFeeRaw) return null;
+
   const estimatedShares = onChainMarketSharesToDisplayShares(breakdownWithFeeRaw, amm.cash.decimals);
   const estimatedSharesWithoutFee = onChainMarketSharesToDisplayShares(breakdownWithoutFeeRaw, amm.cash.decimals);
   const tradeFees = String(new BN(estimatedShares).minus(new BN(estimatedSharesWithoutFee)));
