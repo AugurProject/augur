@@ -103,7 +103,6 @@ export const OPEN = 'Open';
 export const IN_SETTLEMENT = 'In settlement';
 export const FINALIZED = 'Finalized';
 
-// trade form button labels
 export const INSUFFICIENT_LIQUIDITY = 'Insufficent Liquidity';
 export const INSUFFICIENT_BALANCE = 'Insufficent Balance';
 export const OVER_SLIPPAGE = 'Over Slippage Tollerance';

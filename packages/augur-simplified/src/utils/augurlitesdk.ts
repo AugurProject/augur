@@ -1,7 +1,9 @@
 import { AugurLite } from '@augurproject/sdk-lite';
 import { NetworkId } from '@augurproject/utils';
 import { ethers } from 'ethers';
+import { getProviderOrSigner } from '../modules/ConnectAccount/utils';
 import { createBigNumber } from '../utils/create-big-number';
+import { Web3Provider } from '@ethersproject/providers'
 
 export class SDKLite {
   client: AugurLite | null = null;
@@ -10,10 +12,16 @@ export class SDKLite {
   async makeLiteClient(
     provider: ethers.providers.Provider,
     config: any,
+    account?: string,
     ): Promise<AugurLite> {
     const networkId = config.networkId;
+
+    let providerOrSigner = provider;
+    if (account) {
+      providerOrSigner = getProviderOrSigner(provider as Web3Provider, account) as ethers.providers.Provider;
+    }
     // not sure why precsion is needed to create augur lite client
-    this.client = new AugurLite(provider, config, networkId as NetworkId, createBigNumber(18));
+    this.client = new AugurLite(providerOrSigner, config, networkId as NetworkId, createBigNumber(18));
     return this.client;
   }
 
