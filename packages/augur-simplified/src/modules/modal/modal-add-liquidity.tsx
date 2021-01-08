@@ -78,6 +78,7 @@ const ModalAddLiquidity = ({
   const percentFormatted = formatPercent(amm?.feePercent).full;
   let modalType = createLiquidity ? CREATE : ADD;
   if (liquidityModalType) modalType = liquidityModalType;
+  // eslint-disable-next-line
   const [selectedCash, setSelectedCash] = useState(amm?.cash);
   // get user balance for initial amount, if cash not selected user "0"
   const userCashBalance = selectedCash?.name ? balances[selectedCash?.name]?.balance : "0";
