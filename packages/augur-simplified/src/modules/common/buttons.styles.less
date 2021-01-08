@@ -181,14 +181,18 @@
   }
 
   &.Disabled {
+    pointer-events: none;
     background: var(--light-background-color);
     border: @size-1 solid var(--simple-border);
     color: var(--simple-secondary-text);
   }
 
   &.Error {
+    pointer-events: none;
     color: var(--simple-failed);
     background: var(--simple-failed-15);
+    opacity: 1;
+    border: 0;
   }
 }
 

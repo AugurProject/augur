@@ -91,8 +91,8 @@ const ModalAddLiquidity = ({
   const [outcomes, setOutcomes] = useState(amm ? amm.ammOutcomes : fakeYesNoOutcomes);
 
   const [showBackView, setShowBackView] = useState(false);
-  const [amount, updateAmount] = useState('');
   const [chosenCash, updateCash] = useState(cash);
+  const [buttonError, updateButtonError] = useState('');
 
   // if add initial liquidity these would be set by user
   const [fee, setFee] = useState(market?.amm?.feePercent);
@@ -113,6 +113,7 @@ const ModalAddLiquidity = ({
   const [selectedCash, setSelectedCash] = useState(amm?.cash);
   // get user balance for initial amount, if cash not selected user "0"
   const userCashBalance = selectedCash?.name ? balances[selectedCash?.name]?.balance : "0";
+  const [amount, updateAmount] = useState(userCashBalance);
 
   const LIQUIDITY_STRINGS = {
     [REMOVE]: {
@@ -359,11 +360,13 @@ const ModalAddLiquidity = ({
           )}
           <AmountInput
             updateInitialAmount={(amount) => updateAmount(amount)}
-            initialAmount={userCashBalance}
+            initialAmount={amount}
             maxValue={userCashBalance}
             showCurrencyDropdown={LIQUIDITY_STRINGS[modalType].showCurrencyDropdown}
             chosenCash={chosenCash}
             updateCash={updateCash}
+            amountError={buttonError}
+            updateAmountError={updateButtonError}
           />
           {LIQUIDITY_STRINGS[modalType].setTradingFee && (
             <>
@@ -415,7 +418,8 @@ const ModalAddLiquidity = ({
           <BuySellButton
             action={() => setShowBackView(true)}
             disabled
-            text={LIQUIDITY_STRINGS[modalType].actionButtonText}
+            error={buttonError}
+            text={amount !== '' ? LIQUIDITY_STRINGS[modalType].actionButtonText : 'enter amount'}
           />
           {LIQUIDITY_STRINGS[modalType].liquidityDetailsFooter && (
             <div className={Styles.FooterText}>

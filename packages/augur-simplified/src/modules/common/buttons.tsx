@@ -8,6 +8,7 @@ import {
 } from '../hooks/use-approval-callback';
 import { useAppStatusStore } from '../stores/app-status';
 import { ApprovalAction, ApprovalState } from '../constants';
+import { v1String } from 'uuid/interfaces';
 
 interface ButtonProps {
   text?: string;
@@ -19,7 +20,7 @@ interface ButtonProps {
   href?: string;
   target?: string;
   rel?: string;
-  error?: boolean;
+  error?: string;
 }
 
 const Button = ({
@@ -43,7 +44,7 @@ const Button = ({
           [Styles.TextAndIcon]: text && icon,
           [Styles.Disabled]: disabled,
           [Styles.Selected]: selected,
-          [Styles.Error]: error
+          [Styles.Error]: error && error !== ''
         },
         className
       )}
@@ -51,7 +52,7 @@ const Button = ({
       target={target}
       rel={rel}
     >
-      {text}
+      {error && error !== '' ? error : text}
       {icon && icon}
     </a>
   ) : (
@@ -62,12 +63,13 @@ const Button = ({
           [Styles.TextAndIcon]: text && icon,
           [Styles.Disabled]: disabled,
           [Styles.Selected]: selected,
+          [Styles.Error]: error && error !== ''
         },
         className
       )}
       onClick={(e) => action && action(e)}
     >
-      {text}
+      {error && error !== '' ? error : text}
       {icon && icon}
     </button>
   );
