@@ -306,7 +306,7 @@ const TradingForm = ({
   const [amount, setAmount] = useState<string>("");
   const [tradeEstimates, setTradeEstimates] = useState<TradeEstimates>({})
   const ammCash = amm?.cash;
-  const outcomes = amm.ammOutcomes;
+  const outcomes = amm?.ammOutcomes || [];
   const userCashBalance = amm?.cash?.name ? balances[amm?.cash?.name]?.balance : "0";
 
   useEffect(() => {
@@ -373,7 +373,7 @@ const TradingForm = ({
         </span>
         <div>
           <span>fee</span>
-          <span>{amm.feePercent}</span>
+          <span>{amm?.feePercent}</span>
         </div>
         {isMobile && (
           <div onClick={() => setShowTradingForm(false)}>{CloseIcon}</div>
