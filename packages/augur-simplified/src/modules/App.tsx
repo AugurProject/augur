@@ -84,17 +84,19 @@ const AppBody = () => {
   }, []);
 
   useEffect(() => {
+    if (showTradingForm) {
+      window.scrollTo(0, 0);
+    }
     if (showTradingForm || modalShowing) {
       document.body.classList.add('App--noScroll');
-      window.scrollTo(0, 0);
     } else {
       document.body.classList.remove('App--noScroll');
     }
   }, [showTradingForm, modalShowing]);
 
   useEffect(() => {
-    const createClient = (provider, config) =>
-      augurSdkLite.makeLiteClient(provider, config);
+    const createClient = (provider, config, account) =>
+      augurSdkLite.makeLiteClient(provider, config, account);
     const fetchUserBalances = (library, account, ammExchanges, cashes, markets) =>
       getUserBalances(
         library,
@@ -104,7 +106,7 @@ const AppBody = () => {
         markets
       );
     if (loginAccount?.library && loginAccount?.account) {
-      if (!augurSdkLite.ready()) createClient(loginAccount.library, paraConfig);
+      if (!augurSdkLite.ready()) createClient(loginAccount.library, paraConfig, loginAccount?.account);
       const { ammExchanges, cashes, markets } = processed;
       fetchUserBalances(loginAccount.library, loginAccount.account, ammExchanges, cashes, markets).then((userBalances) =>
         updateUserBalances(userBalances)
