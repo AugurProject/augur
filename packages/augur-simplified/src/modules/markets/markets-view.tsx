@@ -22,8 +22,9 @@ import {
   AppViewStats,
   CategoryLabel,
   CategoryIcon,
+  InlineValueLabel,
 } from 'modules/common/labels';
-import { formatDai } from 'utils/format-number';
+import {formatDai, formatPercent} from 'utils/format-number';
 import { EthIcon, FilterIcon, UsdIcon } from 'modules/common/icons';
 import classNames from 'classnames';
 import {PrimaryButton, SecondaryButton} from 'modules/common/buttons';
@@ -87,6 +88,8 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
     marketId,
     amm,
   } = market;
+  const formattedApy = amm?.apy && formatPercent(amm.apy).full;
+
   return (
     <article
       className={classNames(Styles.MarketCard, {
@@ -112,6 +115,11 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
                 <ValueLabel
                   label="total volume"
                   value={formatDai(market.amm?.volumeTotalUSD).full}
+                />
+                <InlineValueLabel
+                  label="APY"
+                  // value="30.09%"
+                  value={formattedApy}
                 />
                 <OutcomesTable
                   amm={amm}
