@@ -24,7 +24,6 @@ interface ValueLabelProps {
   sublabel?: string;
   value: string | number;
   light?: boolean;
-  className?: string;
 }
 
 export const ValueLabel = ({
@@ -33,7 +32,6 @@ export const ValueLabel = ({
   sublabel,
   value,
   light,
-  className,
 }: ValueLabelProps) => {
   return (
     <div
