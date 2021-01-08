@@ -136,6 +136,12 @@ export interface Trade {
 export interface Trades {
   [outcomeIdx: number]: Trade[]
 }
+
+export interface AmmExchangeOutcome {
+  id: number;
+  price: string;
+  name: string;
+}
 export interface AmmExchange {
   id: string,
   marketId: string,
@@ -189,10 +195,11 @@ export interface MarketInfo {
 
 export interface MarketOutcome {
   id: number,
-  isFinalNumerator: boolean,
-  payoutNumerator: string,
+  isFinalNumerator?: boolean,
+  payoutNumerator?: string,
   name: string,
 }
+
 export interface AmmOutcome {
   id: number,
   name: string,

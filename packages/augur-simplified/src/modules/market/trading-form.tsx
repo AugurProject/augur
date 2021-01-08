@@ -22,7 +22,6 @@ import { generateTooltip } from '../common/labels';
 import { doTrade, estimateEnterTrade, estimateExitTrade } from '../../utils/contract-calls';
 import { BigNumber as BN } from 'bignumber.js'
 
-
 export const DefaultMarketOutcomes = [
   {
     id: 0,

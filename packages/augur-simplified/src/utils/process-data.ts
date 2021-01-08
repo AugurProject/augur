@@ -5,6 +5,7 @@ import { convertAttoValueToDisplayValue } from "@augurproject/sdk";
 import { convertOnChainCashAmountToDisplayCashAmount, formatShares, onChainMarketSharesToDisplayShares } from "./format-number";
 import { BUY, OUTCOME_INVALID_NAME, OUTCOME_NO_NAME, OUTCOME_YES_NAME, SEC_IN_YEAR, SELL } from "../modules/constants";
 import { timeSinceTimestamp } from "./time-since";
+
 interface GraphMarket {
   id: string,
   description: string,
@@ -149,7 +150,8 @@ const shapeOutcomes = (graphOutcomes: GraphMarketOutcome[]): MarketOutcome[] =>
     id: Number(g.id.split('-')[1]),
     isFinalNumerator: g.isFinalNumerator,
     payoutNumerator: g.payoutNumerator,
-    name: g.value
+    name: g.value,
+    isInvalid: g.id.indexOf('-0') > -1,
   }));
 
 
@@ -243,6 +245,7 @@ const shapeAmmExchange = (amm: GraphAmmExchange, past: GraphAmmExchange, cashes:
     totalSupply: amm.totalSupply,
     apy,
     ammOutcomes,
+
   }
 }
 

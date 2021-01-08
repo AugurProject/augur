@@ -10,6 +10,7 @@ import { formatPercent } from '../../utils/format-number';
 import { MultiButtonSelection } from '../common/selection';
 import classNames from 'classnames';
 import { MarketInfo } from '../types';
+import { doAmmLiquidity, getAmmLiquidity } from '../../utils/contract-calls';
 import { useAppStatusStore } from '../stores/app-status';
 
 const TRADING_FEE_OPTIONS = [
@@ -32,6 +33,20 @@ const TRADING_FEE_OPTIONS = [
     id: 3,
     label: '2%',
     value: 2,
+  },
+];
+const defaultAddLiquidityBreakdown = [
+  {
+    label: 'yes shares',
+    value: `0`,
+  },
+  {
+    label: 'no shares',
+    value: '0',
+  },
+  {
+    label: 'liquidity shares',
+    value: '0',
   },
 ];
 
@@ -69,18 +84,28 @@ const ModalAddLiquidity = ({
   liquidityModalType,
   cash = USDC,
 }: ModalAddLiquidityProps) => {
-  const { userInfo: { balances }} = useAppStatusStore();
+  const { userInfo: { balances }, loginAccount } = useAppStatusStore();
+  const account = loginAccount?.account
   const { amm } = market;
 
   const [outcomes, setOutcomes] = useState(amm ? amm.ammOutcomes : fakeYesNoOutcomes);
+
   const [showBackView, setShowBackView] = useState(false);
   const [amount, updateAmount] = useState('');
   const [chosenCash, updateCash] = useState(cash);
 
+  // if add initial liquidity these would be set by user
+  const [fee, setFee] = useState(market?.amm?.feePercent);
+  const [priceNo, setPriceNo] = useState(market?.amm?.priceNo);
+  const [priceYes, setPriceyes] = useState(market?.amm?.priceYes);
+  // needs to be set by currency picker if amm is null
+  const [breakdown, setBreakdown] = useState(defaultAddLiquidityBreakdown);
   const [tradingFeeSelection, setTradingFeeSelection] = useState(
     TRADING_FEE_OPTIONS[0].id
   );
-  const createLiquidity = !amm;
+
+  const { amm } = market;
+  const createLiquidity = !amm || amm.liquidity === "0";
   const percentFormatted = formatPercent(amm?.feePercent).full;
   let modalType = createLiquidity ? CREATE : ADD;
   if (liquidityModalType) modalType = liquidityModalType;
@@ -88,21 +113,6 @@ const ModalAddLiquidity = ({
   const [selectedCash, setSelectedCash] = useState(amm?.cash);
   // get user balance for initial amount, if cash not selected user "0"
   const userCashBalance = selectedCash?.name ? balances[selectedCash?.name]?.balance : "0";
-
-  const RECEIVE_BREAKDOWN_FAKE_DATA = [
-    {
-      label: 'yes shares',
-      value: `${amount === '' ? 0 : amount}`,
-    },
-    {
-      label: 'no shares',
-      value: '0',
-    },
-    {
-      label: 'liquidity shares',
-      value: '0',
-    },
-  ];
 
   const LIQUIDITY_STRINGS = {
     [REMOVE]: {
@@ -150,6 +160,9 @@ const ModalAddLiquidity = ({
       approvalButtonText: 'approve shares spend',
       actionButtonText: 'enter amount',
       confirmButtonText: 'confirm remove',
+      confirmAction: () => {
+
+      },
       confirmOverview: {
         title: 'What you are Removing',
         breakdown: [
@@ -187,12 +200,40 @@ const ModalAddLiquidity = ({
       showTradingFee: true,
       setOdds: true,
       setOddsTitle: 'Current Odds',
-      footerText: `By adding liquidity you'll earn ${percentFormatted} of all trades on this this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.`,
+      footerText: `By adding liquidity you'll earn ${percentFormatted} of all trades on this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.`,
       receiveTitle: "You'll receive",
-      receiveBreakdown: RECEIVE_BREAKDOWN_FAKE_DATA,
+      receiveBreakdown: async () => {
+        if (!account || !market.marketId || !amount || !priceNo || !priceYes) return defaultAddLiquidityBreakdown;
+        console.log(account, market.marketId, selectedCash, fee, amount, priceNo, priceYes);
+        const results = await getAmmLiquidity(account, amm, market.marketId, selectedCash, fee, amount, priceNo, priceYes);
+
+        console.log('results', results);
+
+        setBreakdown([
+          {
+            label: 'yes shares',
+            value: `0`,
+          },
+          {
+            label: 'no shares',
+            value: '0',
+          },
+          {
+            label: 'liquidity shares',
+            value: '0',
+          },
+        ]);
+      },
       approvalButtonText: 'approve USDC',
       actionButtonText: 'add',
       confirmButtonText: 'confirm add',
+      confirmAction: async () => {
+        if (!account || !market.marketId || !amount || !priceNo || !priceYes) return defaultAddLiquidityBreakdown;
+        console.log(account, market.marketId, selectedCash, fee, amount, priceNo, priceYes);
+        const txResponse = await doAmmLiquidity(account, amm, market.marketId, selectedCash, fee, amount, priceNo, priceYes);
+        // TODO: handle transaction response
+
+      },
       confirmOverview: {
         title: 'What you are depositing',
         breakdown: [
@@ -204,7 +245,7 @@ const ModalAddLiquidity = ({
       },
       confirmReceiveOverview: {
         title: 'What you will receive',
-        breakdown: RECEIVE_BREAKDOWN_FAKE_DATA,
+        breakdown: defaultAddLiquidityBreakdown,
       },
       marketLiquidityDetails: {
         title: 'Market liquidity details',
@@ -231,12 +272,39 @@ const ModalAddLiquidity = ({
       setOddsTitle: 'Set the odds',
       editableOutcomes: true,
       footerText:
-        "By adding initial liquidity you'll earn your set trading fee percentage of all trades on this this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.",
+        "By adding initial liquidity you'll earn your set trading fee percentage of all trades on this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.",
       receiveTitle: "You'll receive",
-      receiveBreakdown: RECEIVE_BREAKDOWN_FAKE_DATA,
+      receiveBreakdown: async () => {
+        if (!account || !market.marketId || !amount || !priceNo || !priceYes) return defaultAddLiquidityBreakdown;
+        console.log(account, market.marketId, selectedCash, fee, amount, priceNo, priceYes);
+        const results = await getAmmLiquidity(account, amm, market.marketId, selectedCash, fee, amount, priceNo, priceYes);
+
+        console.log('results', results);
+        return [
+          {
+            label: 'yes shares',
+            value: `${amount === '' ? 0 : amount}`,
+          },
+          {
+            label: 'no shares',
+            value: '0',
+          },
+          {
+            label: 'liquidity shares',
+            value: '0',
+          },
+        ];
+      },
       approvalButtonText: 'approve USDC',
       actionButtonText: 'enter amount',
       confirmButtonText: 'confirm market liquidity',
+      confirmAction: async () => {
+        if (!account || !market.marketId || !amount || !priceNo || !priceYes) return defaultAddLiquidityBreakdown;
+        console.log(account, market.marketId, selectedCash, fee, amount, priceNo, priceYes);
+        const txResponse = await doAmmLiquidity(account, amm, market.marketId, selectedCash, fee, amount, priceNo, priceYes);
+        // handle transaction response
+
+      },
       confirmOverview: {
         title: 'What you are depositing',
         breakdown: [
@@ -248,7 +316,7 @@ const ModalAddLiquidity = ({
       },
       confirmReceiveOverview: {
         title: 'What you will receive',
-        breakdown: RECEIVE_BREAKDOWN_FAKE_DATA,
+        breakdown: defaultAddLiquidityBreakdown,
       },
       marketLiquidityDetails: {
         title: 'market liquidity details',
@@ -313,7 +381,7 @@ const ModalAddLiquidity = ({
               />
             </>
           )}
-          {LIQUIDITY_STRINGS[modalType].setOdds && (
+          {createLiquidity && (
             <>
               <span className={Styles.SmallLabel}>
                 {LIQUIDITY_STRINGS[modalType].setOddsTitle}
@@ -325,7 +393,7 @@ const ModalAddLiquidity = ({
                 marketType={YES_NO}
                 orderType={BUY}
                 nonSelectable
-                editable={LIQUIDITY_STRINGS[modalType].editableOutcomes}
+                editable={createLiquidity}
                 setEditableValue={(price, index) => {
                   const newOutcomes = outcomes;
                   newOutcomes[index].price = price;
@@ -339,7 +407,7 @@ const ModalAddLiquidity = ({
             {LIQUIDITY_STRINGS[modalType].receiveTitle}
           </span>
           <InfoNumbers
-            infoNumbers={LIQUIDITY_STRINGS[modalType].receiveBreakdown}
+            infoNumbers={breakdown}
           />
           <BuySellButton
             text={LIQUIDITY_STRINGS[modalType].approvalButtonText}
@@ -356,7 +424,7 @@ const ModalAddLiquidity = ({
               </span>
               <InfoNumbers
                 infoNumbers={
-                  LIQUIDITY_STRINGS[modalType].liquidityDetailsFooter.breakdown
+                  breakdown
                 }
               />
             </div>
@@ -366,57 +434,57 @@ const ModalAddLiquidity = ({
           </div>
         </>
       ) : (
-        <>
-          <div className={Styles.Header} onClick={() => setShowBackView(false)}>
-            Back
+          <>
+            <div className={Styles.Header} onClick={() => setShowBackView(false)}>
+              Back
           </div>
-          <div className={Styles.MarketTitle}>
-            <span>Market</span>
-            <span>{market.description}</span>
-          </div>
-          <section>
-            <span className={Styles.SmallLabel}>
-              {LIQUIDITY_STRINGS[modalType].confirmOverview.title}
-            </span>
-            <InfoNumbers
-              infoNumbers={
-                LIQUIDITY_STRINGS[modalType].confirmOverview.breakdown
-              }
-            />
-          </section>
-
-          <section>
-            <span className={Styles.SmallLabel}>
-              {LIQUIDITY_STRINGS[modalType].confirmReceiveOverview.title}
-            </span>
-            <InfoNumbers
-              infoNumbers={
-                LIQUIDITY_STRINGS[modalType].confirmReceiveOverview.breakdown
-              }
-            />
-          </section>
-          {LIQUIDITY_STRINGS[modalType].marketLiquidityDetails && (
+            <div className={Styles.MarketTitle}>
+              <span>Market</span>
+              <span>{market.description}</span>
+            </div>
             <section>
               <span className={Styles.SmallLabel}>
-                {LIQUIDITY_STRINGS[modalType].marketLiquidityDetails.title}
+                {LIQUIDITY_STRINGS[modalType].confirmOverview.title}
               </span>
               <InfoNumbers
                 infoNumbers={
-                  LIQUIDITY_STRINGS[modalType].marketLiquidityDetails.breakdown
+                  LIQUIDITY_STRINGS[modalType].confirmOverview.breakdown
                 }
               />
             </section>
-          )}
 
-          <BuySellButton
-            text={LIQUIDITY_STRINGS[modalType].confirmButtonText}
-          />
-          <div className={Styles.FooterText}>
-            Need some copy here explaining why the user will get shares and that
-            they may recieve some shares when they remove their liquidity.
+            <section>
+              <span className={Styles.SmallLabel}>
+                {LIQUIDITY_STRINGS[modalType].confirmReceiveOverview.title}
+              </span>
+              <InfoNumbers
+                infoNumbers={
+                  LIQUIDITY_STRINGS[modalType].confirmReceiveOverview.breakdown
+                }
+              />
+            </section>
+            {LIQUIDITY_STRINGS[modalType].marketLiquidityDetails && (
+              <section>
+                <span className={Styles.SmallLabel}>
+                  {LIQUIDITY_STRINGS[modalType].marketLiquidityDetails.title}
+                </span>
+                <InfoNumbers
+                  infoNumbers={
+                    LIQUIDITY_STRINGS[modalType].marketLiquidityDetails.breakdown
+                  }
+                />
+              </section>
+            )}
+            <BuySellButton
+              text={LIQUIDITY_STRINGS[modalType].confirmButtonText}
+              action={LIQUIDITY_STRINGS[modalType].confirmAction}
+            />
+            <div className={Styles.FooterText}>
+              Need some copy here explaining why the user will get shares and that
+              they may recieve some shares when they remove their liquidity.
           </div>
-        </>
-      )}
+          </>
+        )}
     </section>
   );
 };

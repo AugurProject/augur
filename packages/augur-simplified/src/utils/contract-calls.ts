@@ -1,6 +1,6 @@
 import BigNumber, { BigNumber as BN } from 'bignumber.js'
 import { RemoveLiquidityRate, ParaShareToken } from '@augurproject/sdk-lite'
-import { TradeInfo, TradingDirection, AmmExchange, AmmExchanges, AmmMarketShares, AmmTransaction, Cashes, CurrencyBalance, PositionBalance, TransactionTypes, UserBalances, MarketInfos, LPTokens, EstimateEnterTradeResult, EstimateExitTradeResult } from '../modules/types'
+import { TradingDirection, AmmExchange, AmmExchanges, AmmMarketShares, AmmTransaction, Cashes, CurrencyBalance, PositionBalance, TransactionTypes, UserBalances, MarketInfos, LPTokens, EstimateEnterTradeResult, EstimateExitTradeResult, Cash } from '../modules/types'
 import ethers from 'ethers';
 import { Contract } from '@ethersproject/contracts'
 import {
@@ -15,50 +15,86 @@ import { augurSdkLite } from './augurlitesdk';
 import { ETH, FINALIZED, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_NO_OUTCOMES_NAMES, YES_OUTCOME_ID } from '../modules/constants';
 import { getProviderOrSigner } from '../modules/ConnectAccount/utils';
 
-
-export interface AddAmmLiquidity {
-  account: string;
-  ammAddress: string;
-  hasLiquidity: boolean;
-  augurClient;
-  marketId: string;
-  sharetoken: string;
-  fee: string;
-  cashAmount: string;
-  priceNo: number;
-  priceYes: number;
-  useEth: boolean;
-}
-
-export function addAmmLiquidity({
-  account,
-  ammAddress,
-  hasLiquidity,
-  marketId,
-  sharetoken,
-  fee,
-  cashAmount,
-  priceNo,
-  priceYes,
-  useEth,
-}: AddAmmLiquidity) {
+export function getAmmLiquidity(
+  account: string,
+  amm: AmmExchange,
+  marketId: string,
+  cash: Cash,
+  fee: string,
+  cashAmount: string,
+  priceNo: string,
+  priceYes: string,
+) {
   const augurClient = augurSdkLite.get();
   if (!augurClient || !augurClient.amm)
     return console.error('augurClient is null');
+  const hasLiquidity = Boolean(amm?.id) || amm.liquidity !== "0";
+  const sharetoken = cash?.shareToken;
+  const ammAddress = amm?.id;
+  const amount = convertDisplayCashAmountToOnChainCashAmount(cashAmount, cash.decimals);
   console.log(
-    'addAmmLiquidity',
+    'getAddAmmLiquidity',
+    account,
+    'amm address', ammAddress,
+    hasLiquidity,
+    'marketId', marketId,
+    'sharetoken', sharetoken,
+    fee,
+    String(amount),
+    'No',
+    String(priceNo),
+    'Yes',
+    String(priceYes),
+  );
+
+  // converting odds to pool percentage. odds is the opposit of pool percentage
+  // same when converting pool percentage to price
+  const poolYesPercent = new BN(priceNo);
+  const poolNoPercent = new BN(priceYes);
+
+  return augurClient.amm.getAddLiquidity(
+    account,
+    ammAddress,
+    hasLiquidity,
+    marketId,
+    sharetoken,
+    new BN(fee),
+    new BN(amount),
+    poolYesPercent,
+    poolNoPercent
+  );
+}
+
+export function doAmmLiquidity(
+  account: string,
+  amm: AmmExchange,
+  marketId: string,
+  cash: Cash,
+  fee: string,
+  cashAmount: string,
+  priceNo: string,
+  priceYes: string,
+) {
+  const augurClient = augurSdkLite.get();
+  if (!augurClient || !augurClient.amm)
+    return console.error('augurClient is null');
+  const hasLiquidity = Boolean(amm?.id);
+  const sharetoken = cash?.shareToken;
+  const ammAddress = amm?.id;
+  const amount = convertDisplayCashAmountToOnChainCashAmount(cashAmount, cash.decimals);
+  console.log(
+    'doAmmLiquidity',
     account,
     ammAddress,
     hasLiquidity,
     marketId,
     sharetoken,
     fee,
-    String(cashAmount),
+    String(amount),
     'No',
     String(priceNo),
     'Yes',
     String(priceYes),
-    `use ETH: ${useEth}`
   );
 
   // converting odds to pool percentage. odds is the opposit of pool percentage
@@ -73,7 +109,7 @@ export function addAmmLiquidity({
     marketId,
     sharetoken,
     new BN(fee),
-    new BN(cashAmount),
+    new BN(amount),
     poolYesPercent,
     poolNoPercent
   );

@@ -22,6 +22,7 @@ export class SDKLite {
     }
     // not sure why precsion is needed to create augur lite client
     this.client = new AugurLite(providerOrSigner, config, networkId as NetworkId, createBigNumber(18));
+
     return this.client;
   }
 
