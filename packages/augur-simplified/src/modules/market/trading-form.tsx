@@ -88,6 +88,18 @@ const Outcome = ({
   );
 };
 
+interface AmountInputProps {
+  updateInitialAmount: (string) => void;
+  initialAmount: string;
+  maxValue: string;
+  showCurrencyDropdown?: boolean;
+  updateCash?: (string) => void;
+  chosenCash: string;
+  rate?: string;
+  amountError?: string;
+  updateAmountError?: Function;
+}
+
 export const AmountInput = ({
   updateInitialAmount,
   initialAmount,
@@ -96,17 +108,13 @@ export const AmountInput = ({
   updateCash,
   chosenCash,
   rate,
-}: {
-  updateInitialAmount: (string) => void;
-  initialAmount: string;
-  maxValue: string;
-  showCurrencyDropdown?: boolean;
-  updateCash?: (string) => void;
-  chosenCash: string;
-  rate?: string;
-}) => {
+  amountError,
+  updateAmountError
+}: AmountInputProps) => {
   const currencyName = chosenCash;
   const [amount, updateAmount] = useState(initialAmount);
+  const [error, updateError] = useState(amountError);
+
   const icon = currencyName === USDC ? UsdIcon : EthIcon;
   const label = currencyName === USDC ? USDC : ETH;
   const showRate = currencyName !== SHARES;
@@ -116,6 +124,14 @@ export const AmountInput = ({
     updateInitialAmount(maxValue);
   };
   const convRate = `1 ${currencyName} = ${rate} Shares`;
+  const errorCheck = (value) => {
+    let returnError = '';
+    if (isNaN(value)) {
+      returnError = 'Amount is not valid'
+    } 
+    updateError(returnError);
+    updateAmountError(returnError);
+  }
   return (
     <div
       className={classNames(Styles.AmountInput, { [Styles.Rate]: showRate })}
@@ -132,6 +148,7 @@ export const AmountInput = ({
           onChange={e => {
             updateAmount(e.target.value);
             updateInitialAmount(e.target.value);
+            errorCheck(e.target.value);
           }}
           value={amount}
           placeholder="0"
@@ -336,10 +353,10 @@ const TradingForm = ({
   const [selectedOutcome, setSelectedOutcome] = useState(
     initialSelectedOutcome
   );
+  const [buttonError, updateButtonError] = useState('');
   const [breakdown, setBreakdown] = useState(getEnterBreakdown(null, amm?.cash));
   const [amount, setAmount] = useState<string>("");
   const [tradeEstimates, setTradeEstimates] = useState<TradeEstimates>({})
-  const [tradeError, setTradeError] = useState<string>(null);
   const ammCash = amm?.cash;
   const outcomes = amm?.ammOutcomes || [];
   const userCashBalance = amm?.cash?.name
@@ -357,11 +374,11 @@ const TradingForm = ({
           if (isMounted) {
             setBreakdown(getEnterBreakdown(breakdown, amm?.cash))
             setTradeEstimates({ slippagePercent, ratePerCash, outputAmount: outputShares })
-            setTradeError(null);
+            updateButtonError('');
           }
         } else {
           if (isMounted) {
-            setTradeError(INSUFFICIENT_LIQUIDITY);
+            updateButtonError(INSUFFICIENT_LIQUIDITY);
             setBreakdown(getEnterBreakdown(null, amm?.cash))
           }
         }
@@ -379,13 +396,13 @@ const TradingForm = ({
           if (isMounted) {
             setBreakdown(getExitBreakdown(breakdown, amm?.cash))
             setTradeEstimates({ slippagePercent, ratePerCash, outputAmount: outputCash })
-            setTradeError(null);
+            updateButtonError('');
           }
         } else {
-          setTradeError(INSUFFICIENT_LIQUIDITY);
+          updateButtonError(INSUFFICIENT_LIQUIDITY);
           if (isMounted) {
             setBreakdown(getExitBreakdown(null, amm?.cash))
-            setTradeError(INSUFFICIENT_LIQUIDITY);
+            updateButtonError(INSUFFICIENT_LIQUIDITY);
           }
         }
       }
@@ -402,7 +419,7 @@ const TradingForm = ({
   }, [orderType, selectedOutcome.id, amount]);
 
   const canMakeTrade: CanTradeProps = useMemo(() => {
-    let actionText = tradeError || orderType;
+    let actionText = buttonError || orderType;
     let disabled = false;
     if (Number(amount) === 0 || isNaN(Number(amount)) || amount === '') {
       actionText = ENTER_AMOUNT;
@@ -416,7 +433,7 @@ const TradingForm = ({
       actionText
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orderType, selectedOutcome.id, amount, tradeError, userCashBalance]);
+  }, [orderType, selectedOutcome.id, amount, buttonError, userCashBalance]);
 
   const makeTrade = () => {
     const minOutput = tradeEstimates?.outputAmount;
@@ -478,6 +495,8 @@ const TradingForm = ({
           initialAmount={''}
           maxValue={userCashBalance}
           rate={tradeEstimates?.ratePerCash}
+          amountError={buttonError}
+          updateAmountError={updateButtonError}
         />
         <InfoNumbers infoNumbers={breakdown} />
         {loginAccount && (
@@ -487,6 +506,7 @@ const TradingForm = ({
           disabled={!approvals?.trade[ammCash?.name] || canMakeTrade.disabled}
           action={makeTrade}
           text={canMakeTrade.actionText}
+          error={buttonError}
         />
       </div>
     </div>
