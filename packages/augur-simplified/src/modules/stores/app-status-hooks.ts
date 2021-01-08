@@ -5,7 +5,7 @@ import {
   APP_STATE_KEYS,
 } from './constants';
 import { windowRef } from 'utils/window-ref';
-import { getUserActvity } from 'utils/process-data';
+import { shapeUserActvity } from 'utils/process-data';
 import { ParaDeploys, TransactionDetails, UserBalances } from '../types';
 
 const {
@@ -114,7 +114,7 @@ export function AppStatusReducer(state, action) {
       updatedState[LOGIN_ACCOUNT] = action.account;
 
       if (updatedState.processed?.ammExchanges) {
-        const activity = getUserActvity(action.account?.account, updatedState.processed?.markets, updatedState.processed?.ammExchanges);
+        const activity = shapeUserActvity(action.account?.account, updatedState.processed?.markets, updatedState.processed?.ammExchanges);
         updatedState[USER_INFO] = {
           ...updatedState[USER_INFO],
           activity,
@@ -142,7 +142,7 @@ export function AppStatusReducer(state, action) {
         ammExchanges,
       };
       if (updatedState?.loginAccount?.account) {
-        const activity = getUserActvity(updatedState?.loginAccount?.account, markets, ammExchanges);
+        const activity = shapeUserActvity(updatedState?.loginAccount?.account, markets, ammExchanges);
         updatedState[USER_INFO] = {
           ...updatedState[USER_INFO],
           activity,

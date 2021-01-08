@@ -227,7 +227,7 @@
           outline: 0;
           border: 0;
         }
-  
+
         &::placeholder {
          color: var(--color-secondary-text-50);
         }
@@ -275,17 +275,17 @@
     &.Selected,
     &:not(.Selected):hover {
       .SimpleBorder;
-  
+
       background: transparent;
-      border-top-left-radius: 0; 
-      border-bottom-left-radius: 0; 
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
       color: var(--simple-secondary-text);
 
       &.Yes {
         .SimpleBorder;
 
         background: transparent;
-        border-top-right-radius: 0; 
+        border-top-right-radius: 0;
         border-bottom-right-radius: 0;
       }
 
@@ -319,10 +319,16 @@
     justify-content: flex-end;
     text-transform: capitalize;
     color: var(--simple-secondary-text);
+    cursor: pointer;
+  }
+
+  &.Rate {
+    padding-bottom: @size-12
   }
 }
 
-.CurrencyLabel {
+.CurrencyLabel,
+.SharesLabel {
   .text-16-semi-bold;
 
   align-items: center;
@@ -341,7 +347,30 @@
   }
 }
 
+.RateLabel {
+  .text-14;
+
+  color: var(--simple-secondary-text);
+  margin-top: @size-12;
+  margin-left: auto;
+  grid-column: 1 / span 2;
+
+  > span {
+    .text-14-semi-bold;
+
+    margin-right: @size-4;
+  }
+}
+
+.SharesLabel {
+  > button {
+    margin-left: @size-12;
+  }
+}
+
 .AmountInputDropdown {
+  .text-20-bold;
+
   grid-column: 1 / span 2;
   margin-top: @size-14;
   background-color: var(--simple-light-bg);
@@ -351,6 +380,7 @@
   min-height: @size-50;
   border: @size-1 solid transparent;
   outline: 0;
+  color: var(--simple-secondary-text);
 
   &:focus-within {
     border: @size-1 solid var(--simple-border);
@@ -367,6 +397,8 @@
     border: 0;
     outline: 0;
     flex: 1;
+    padding: @size-16 @size-12;
+    padding-left: 0;
 
     &:focus {
       border: 0;
@@ -378,6 +410,18 @@
     margin-left: -@size-80;
   }
 
+  > span:first-of-type {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    margin-right: @size-2;
+    margin-left: @size-16;
+  }
+
+  &.Edited {
+    color: var(--simple-primary-text);
+  }
 }
 
 .OrderInfo {
@@ -398,7 +442,7 @@
                 flex: 1;
             }
         }
-        
+
         &:not(:last-of-type) {
             margin-bottom: @size-12;;
         }

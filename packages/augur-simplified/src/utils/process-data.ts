@@ -366,8 +366,8 @@ export const getAmmTradeData = (outcomeTrades: Trades, enters: GraphEnter[], exi
   return calculateTradePrice(exits, enterTrades, displayDecimals)
 }
 
-export const getUserActvity = (account: string, markets: { [id: string]: MarketInfo }, ammExchanges: { [id: string]: AmmExchange }): ActivityData[] => {
-  if (!ammExchanges) return [];
+export const shapeUserActvity = (account: string, markets: { [id: string]: MarketInfo }, ammExchanges: { [id: string]: AmmExchange }): ActivityData[] => {
+  if (!ammExchanges || !account) return [];
   const exchanges = Object.values(ammExchanges)
   if (!exchanges || exchanges.length === 0) return []
 

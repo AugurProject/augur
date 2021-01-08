@@ -1,6 +1,6 @@
 import BigNumber, { BigNumber as BN } from 'bignumber.js'
 import { RemoveLiquidityRate, ParaShareToken } from '@augurproject/sdk-lite'
-import { TradeInfo, TradingDirection, AmmExchange, AmmExchanges, AmmMarketShares, AmmTransaction, Cashes, CurrencyBalance, PositionBalance, TransactionTypes, UserBalances, MarketInfos, LPTokens } from '../modules/types'
+import { TradeInfo, TradingDirection, AmmExchange, AmmExchanges, AmmMarketShares, AmmTransaction, Cashes, CurrencyBalance, PositionBalance, TransactionTypes, UserBalances, MarketInfos, LPTokens, EstimateEnterTradeResult, EstimateExitTradeResult } from '../modules/types'
 import ethers from 'ethers';
 import { Contract } from '@ethersproject/contracts'
 import {
@@ -138,39 +138,100 @@ export function doRemoveAmmLiquidity({
   );
 }
 
-export async function estimateTrade(
-  trade: TradeInfo,
+export const estimateEnterTrade = async (
+  amm: AmmExchange,
+  inputDisplayAmount: string,
+  outputYesShares: boolean = true,
+): Promise<EstimateEnterTradeResult> => {
+
+  const breakdownWithFeeRaw = await estimateMiddlewareTrade(TradingDirection.ENTRY, amm, inputDisplayAmount, outputYesShares);
+  const breakdownWithoutFeeRaw = await estimateMiddlewareTrade(TradingDirection.ENTRY, amm, inputDisplayAmount, outputYesShares, false);
+
+  const estimatedShares = onChainMarketSharesToDisplayShares(breakdownWithFeeRaw, amm.cash.decimals);
+  const estimatedSharesWithoutFee = onChainMarketSharesToDisplayShares(breakdownWithoutFeeRaw, amm.cash.decimals);
+  const tradeFees = String(new BN(estimatedShares).minus(new BN(estimatedSharesWithoutFee)));
+  const averagePrice = "0";
+  const maxProfit = "0";
+  const slippagePercent = "0";
+  const ratePerCash = "0";
+
+  return {
+    outputShares: String(estimatedShares),
+    tradeFees,
+    averagePrice,
+    maxProfit,
+    slippagePercent,
+    ratePerCash
+  }
+}
+
+export const estimateExitTrade = async (
+  amm: AmmExchange,
+  inputDisplayAmount: string,
+  outputYesShares: boolean = true,
+  userBalances: string[] = [],
+): Promise<EstimateExitTradeResult> => {
+
+  const breakdownWithFeeRaw = await estimateMiddlewareTrade(TradingDirection.EXIT, amm, inputDisplayAmount, outputYesShares, true, userBalances);
+  const breakdownWithoutFeeRaw = await estimateMiddlewareTrade(TradingDirection.EXIT, amm, inputDisplayAmount, outputYesShares, false, userBalances);
+
+  const estimateCash = convertOnChainCashAmountToDisplayCashAmount(breakdownWithFeeRaw, amm.cash.decimals);
+  const estimateCashWithoutFees = convertOnChainCashAmountToDisplayCashAmount(breakdownWithoutFeeRaw, amm.cash.decimals);
+  const estimateFees = String(new BN(estimateCash).minus(new BN(estimateCashWithoutFees)));
+
+  const averagePrice = "0";
+  const slippagePercent = "0";
+  const ratePerCash = "0";
+  const remainingShares = "0";
+
+  return {
+    outputCash: String(estimateCash),
+    estimateFees,
+    averagePrice,
+    slippagePercent,
+    ratePerCash,
+    remainingShares,
+  }
+}
+
+export const estimateMiddlewareTrade = async (
+  tradeDirection: TradingDirection,
+  amm: AmmExchange,
+  inputDisplayAmount: string,
+  outputYesShares: boolean = true,
   includeFee: boolean = true,
-) {
+  userBalances: string[] = [],
+): Promise<string | null> => {
   const augurClient = augurSdkLite.get();
-  if (!augurClient || !trade.amm.id)
-    return console.error('estimateTrade: augurClient is null or amm address');
-  const tradeDirection = trade.tradeType;
+  const ammId = amm?.id;
+  if (!augurClient || !ammId) {
+    console.error('estimateTrade: augurClient is null or amm address');
+    return null;
+  }
 
-  let outputYesShares = trade.buyYesShares;
   let breakdown = null;
-
+  const { cash, marketId, feePercent } = amm;
   if (tradeDirection === TradingDirection.ENTRY) {
-    const inputOnChainCashAmount = convertDisplayCashAmountToOnChainCashAmount(new BN(trade.inputDisplayAmount || "0"), new BN(trade?.amm?.cash?.decimals))
+    const inputOnChainCashAmount = convertDisplayCashAmountToOnChainCashAmount(new BN(inputDisplayAmount || "0"), new BN(cash?.decimals))
     console.log(
       tradeDirection,
       'marketId',
-      trade.marketId,
+      marketId,
       'shareToken',
-      trade.amm.sharetoken,
+      cash.shareToken,
       'fee',
-      trade.amm.feePercent,
+      feePercent,
       'cash',
-      String(trade.inputDisplayAmount),
+      String(inputDisplayAmount),
       'output yes:',
       outputYesShares,
       'includeFee:',
       includeFee
     );
     breakdown = await augurClient.amm.getEnterPosition(
-      trade.marketId,
-      trade.amm.sharetoken,
-      new BN(trade.amm.feePercent),
+      amm.marketId,
+      cash.shareToken,
+      new BN(feePercent),
       inputOnChainCashAmount,
       outputYesShares,
       includeFee
@@ -182,12 +243,12 @@ export async function estimateTrade(
   if (tradeDirection === TradingDirection.EXIT) {
     let longShares = new BN('0');
     let shortShares = new BN('0');
-    let invalidShares = new BN(trade.userBalances[0]);
+    let invalidShares = new BN(userBalances[0]);
     if (!outputYesShares) {
-      let shortOnChainShares = convertDisplayShareAmountToOnChainShareAmount(new BN(trade.inputDisplayAmount), new BN(trade.amm.cash.decimals));
+      let shortOnChainShares = convertDisplayShareAmountToOnChainShareAmount(new BN(inputDisplayAmount), new BN(cash.decimals));
       shortShares = BN.minimum(invalidShares, shortOnChainShares);
     } else {
-      longShares = convertDisplayShareAmountToOnChainShareAmount(new BN(trade.inputDisplayAmount), new BN(trade.amm.cash.decimals));
+      longShares = convertDisplayShareAmountToOnChainShareAmount(new BN(inputDisplayAmount), new BN(cash.decimals));
     }
 
     console.log(
@@ -198,14 +259,14 @@ export async function estimateTrade(
       String(longShares)
     );
     breakdown = await augurClient.amm.getExitPosition(
-      trade.marketId,
-      trade.amm.sharetoken,
-      new BN(trade.amm.feePercent),
+      marketId,
+      cash.shareToken,
+      new BN(feePercent),
       shortShares,
       longShares,
       includeFee
     );
-    return String(breakdown['cash']);
+    return String(breakdown);
   }
 
   return null;
@@ -480,12 +541,15 @@ export const getUserBalances = async (
         const trades = getUserTrades(account, amm.transactions);
         if (existingMarketShares) {
           existingMarketShares.positions.push(getPositionUsdValues(trades, rawBalance, balance, outcome, amm));
+          userBalances.marketShares[amm.id].outcomeShares[Number(outcome)] = rawBalance;
         } else if (balance !== "0") {
           userBalances.marketShares[amm.id] = {
             ammExchange: amm,
             positions: [],
+            outcomeShares: ["0", "0", "0"],
           }
           userBalances.marketShares[amm.id].positions.push(getPositionUsdValues(trades, rawBalance, balance, outcome, amm));
+          userBalances.marketShares[amm.id].outcomeShares[Number(outcome)] = rawBalance;
         }
       }
     }

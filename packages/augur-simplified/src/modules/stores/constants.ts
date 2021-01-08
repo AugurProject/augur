@@ -9,10 +9,10 @@ import {
   BUY,
   SELL,
   USDC,
+  DEFAULT_MARKET_VIEW_SETTINGS,
 } from 'modules/constants';
 import { createBigNumber } from 'utils/create-big-number';
 import { formatDai } from 'utils/format-number';
-import { ALL, ALL_MARKETS, OPEN, TOTAL_VOLUME } from 'modules/constants';
 import { AppStatusState } from '../types';
 
 export const STUBBED_APP_STATUS_ACTIONS = {
@@ -47,12 +47,7 @@ export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
   showTradingForm: false,
   marketInfos: {},
   transactions: [],
-  marketsViewSettings: {
-    categories: ALL_MARKETS,
-    reportingState: OPEN,
-    sortBy: TOTAL_VOLUME,
-    currency: ALL
-  },
+  marketsViewSettings: DEFAULT_MARKET_VIEW_SETTINGS,
   paraConfig: { addresses: {}, paraDeploys: {}},
   processed: {
     markets: {},

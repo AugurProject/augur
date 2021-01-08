@@ -907,6 +907,24 @@ export interface TradeInfo {
   userBalances?: string[]
 }
 
+export interface EstimateEnterTradeResult {
+  averagePrice: string;
+  outputShares: string;
+  maxProfit: string;
+  tradeFees: string;
+  slippagePercent: string;
+  ratePerCash: string;
+}
+
+export interface EstimateExitTradeResult {
+  averagePrice: string;
+  outputCash: string;
+  remainingShares: string;
+  estimateFees: string;
+  slippagePercent: string;
+  ratePerCash: string;
+}
+
 export interface PriceTimeSeriesData {
   tokenVolume: number;
   period: number;
@@ -1069,6 +1087,7 @@ export interface AmmMarketShares {
     ammExchange: AmmExchange;
     positions: PositionBalance[];
     claimableWinnings?: Winnings;
+    outcomeShares: string[]
   }
 }
 

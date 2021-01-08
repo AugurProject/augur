@@ -5,6 +5,7 @@ import Activity from './activity';
 import { PositionsLiquidityViewSwitcher } from 'modules/common/tables';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import { PrimaryButton } from '../common/buttons';
+import { NetworkMismatchBanner } from '../common/labels';
 
 const TABLES = 'TABLES';
 const ACTIVITY = 'ACTIVITY';
@@ -25,6 +26,7 @@ export const PortfolioView = () => {
       {!isMobile && (
         <>
           <section>
+            <NetworkMismatchBanner />
             <AppViewStats />
             {isLogged && <PrimaryButton text="$24.00 in Winnings to claim" />}
             <PositionsLiquidityViewSwitcher />
@@ -36,6 +38,7 @@ export const PortfolioView = () => {
       )}
       {isMobile &&
       <>
+        <NetworkMismatchBanner />
         <AppViewStats />
         {isLogged && <PrimaryButton text="$24.00 in Winnings to claim" />}
         <PositionsLiquidityViewSwitcher showActivityButton setTables={() => setView(TABLES)} setActivity={() => setView(ACTIVITY)}/>

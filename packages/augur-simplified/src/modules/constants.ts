@@ -47,6 +47,7 @@ export const REP = 'REP';
 export const DAI = 'DAI';
 export const USDT = 'USDT';
 export const USDC = 'USDC';
+export const SHARES = 'SHARES';
 
 // Portfolio table views
 export const POSITIONS = 'positions';
@@ -211,3 +212,10 @@ export const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 // Modals
 export const MODAL_ADD_LIQUIDITY = 'MODAL_ADD_LIQUIDITY';
+
+export const DEFAULT_MARKET_VIEW_SETTINGS = {
+  categories: ALL_MARKETS,
+  reportingState: OPEN,
+  sortBy: TOTAL_VOLUME,
+  currency: ALL
+};
