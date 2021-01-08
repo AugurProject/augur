@@ -103,8 +103,8 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
     >
         <MarketLink id={marketId} goToMarket={!!amm} ammId={amm?.id}>
         <div>
-          <CategoryIcon category={categories[0]} />
-          <CategoryLabel category={categories[1]} />
+          <CategoryIcon categories={categories} />
+          <CategoryLabel categories={categories} />
           <div>
             {amm?.cash?.name === ETH && EthIcon}
             {amm?.cash?.name === USDC && UsdIcon}

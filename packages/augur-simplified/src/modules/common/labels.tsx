@@ -11,10 +11,10 @@ import {
   UsdIcon,
 } from 'modules/common/icons';
 import {
-  POPULAR_CATEGORIES_ICONS,
   MODAL_ADD_LIQUIDITY,
   MARKET,
 } from 'modules/constants';
+import { CATEGORIES_ICON_MAP } from 'modules/common/category-icons-map';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import parsePath from '../routes/helpers/parse-path';
 import ReactTooltip from 'react-tooltip';
@@ -65,28 +65,31 @@ export const IconLabel = ({ icon, value }: IconLabelProps) => {
   );
 };
 
-interface CategoryProps {
-  category: string;
+interface CategoriesProps {
+  categories: Array<string>;
 }
 
-export const CategoryLabel = ({ category }: CategoryProps) => {
-  return <div className={classNames(Styles.CategoryLabel)}>{category}</div>;
+export const CategoryLabel = ({ categories }: CategoriesProps) => {
+  return (
+    <div className={classNames(Styles.CategoryLabel)}>
+      {!!categories[1] ? categories[1] : categories[0]}
+    </div>
+  );
 };
 
-interface CategoryProps {
-  category: string;
-}
-
-export const CategoryIcon = ({ category }: CategoryProps) => {
+export const CategoryIcon = ({ categories }: CategoriesProps) => {
+  const prime = CATEGORIES_ICON_MAP[categories[0].toLowerCase()];
+  const secondary = prime?.subOptions[categories[1].toLowerCase()];
+  const icon = secondary?.icon ? secondary.icon : prime?.icon;
   return (
     <div
       className={classNames(
         Styles.CategoryIcon,
-        Styles[`${category.toLowerCase()}`]
+        Styles[`${categories[0].toLowerCase()}`]
       )}
     >
-      {POPULAR_CATEGORIES_ICONS[category.toLowerCase()]
-        ? POPULAR_CATEGORIES_ICONS[category.toLowerCase()]
+      {!!icon
+        ? icon
         : AugurBlankIcon}
     </div>
   );
@@ -201,9 +204,11 @@ export const NetworkMismatchBanner = () => {
   return (
     <>
       {isNetworkMismatch && (
-        <article className={classNames(Styles.NetworkMismatch, {
-          [Styles.Market]: path === MARKET,
-        })}>
+        <article
+          className={classNames(Styles.NetworkMismatch, {
+            [Styles.Market]: path === MARKET,
+          })}
+        >
           You're connected to an unsupported network
         </article>
       )}
@@ -211,14 +216,11 @@ export const NetworkMismatchBanner = () => {
   );
 };
 
-
 export const generateTooltip = (tipText: string, key: string) => {
   return (
     <span className={TooltipStyles.Container}>
       <label
-        className={classNames(
-          TooltipStyles.TooltipHint,
-        )}
+        className={classNames(TooltipStyles.TooltipHint)}
         data-tip
         data-for={key}
         data-iscapture={true}

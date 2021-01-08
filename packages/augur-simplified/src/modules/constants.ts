@@ -4,10 +4,10 @@ import {
   CryptoIcon,
   EntertainmentIcon,
   FinanceIcon,
-  PillIcon,
+  MedicalIcon,
   PoliticsIcon,
   SportsIcon,
-} from './common/icons';
+} from './common/category-icons';
 
 // # Market Types
 export const YES_NO = MarketTypeName.YesNo;
@@ -53,7 +53,7 @@ export const SHARES = 'SHARES';
 export const POSITIONS = 'positions';
 export const LIQUIDITY = 'liquidity';
 
-// categories
+// top categories
 export const MEDICAL = 'medical';
 export const POLITICS = 'politics';
 export const FINANCE = 'finance';
@@ -72,7 +72,7 @@ export const REPUSD = 'REP USD';
 export const PRESIDENTIAL_ELECTION = 'electoral college';
 
 export const POPULAR_CATEGORIES_ICONS = {
-  [MEDICAL]: PillIcon,
+  [MEDICAL]: MedicalIcon,
   [POLITICS]: PoliticsIcon,
   [CRYPTO]: CryptoIcon,
   [FINANCE]: FinanceIcon,
@@ -116,7 +116,7 @@ export const MARKET_STATUS = {
   DISPUTING: 'DISPUTING',
   FINALIZED: 'FINALIZED',
   SETTLED: 'SETTLED',
-}
+};
 
 export const categoryItems = [
   {
@@ -205,7 +205,7 @@ export enum ApprovalState {
   UNKNOWN,
   NOT_APPROVED,
   PENDING,
-  APPROVED
+  APPROVED,
 }
 
 export enum ApprovalAction {
@@ -214,7 +214,7 @@ export enum ApprovalAction {
   REMOVE_LIQUIDITY,
 }
 
-export const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
+export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 // Modals
 export const MODAL_ADD_LIQUIDITY = 'MODAL_ADD_LIQUIDITY';
@@ -223,5 +223,5 @@ export const DEFAULT_MARKET_VIEW_SETTINGS = {
   categories: ALL_MARKETS,
   reportingState: OPEN,
   sortBy: TOTAL_VOLUME,
-  currency: ALL
+  currency: ALL,
 };
