@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Styles from 'modules/market/trading-form.styles.less';
 import classNames from 'classnames';
 import { BUY, SELL, YES_NO, USDC, ETH } from 'modules/constants';
-import { PrimaryButton } from '../common/buttons';
+import { BuySellButton } from '../common/buttons';
 import { useAppStatusStore } from '../stores/app-status';
 import { CloseIcon, UsdIcon, EthIcon } from 'modules/common/icons';
 import { AmmExchange, AmmOutcome, Cash, EstimateEnterTradeResult, EstimateExitTradeResult, TradingDirection } from '../types';
@@ -50,7 +50,6 @@ const Outcome = ({
   marketType,
   selected,
   onClick,
-  invalidSelected,
   showAllHighlighted,
   nonSelectable,
   editable,
@@ -66,11 +65,12 @@ const Outcome = ({
         [Styles.Yes]: outcome.name === OUTCOME_YES_NAME,
         [Styles.ShowAllHighlighted]: showAllHighlighted,
         [Styles.nonSelectable]: nonSelectable,
+        [Styles.Edited]: customVal !== ''
       })}
     >
       <span>{outcome.name}</span>
       {editable ? (
-        <div className={classNames({ [Styles.edited]: customVal !== '' })}>
+        <div>
           <span>$</span>
           <input
             value={customVal}
@@ -208,7 +208,6 @@ export const OutcomesGrid = ({
             outcome={outcome}
             onClick={() => setSelectedOutcome(outcome)}
             marketType={marketType}
-            invalidSelected={nonSelectable || selectedOutcome?.isInvalid}
             editable={editable}
             setEditableValue={price => setEditableValue(price, index)}
           />
@@ -484,7 +483,7 @@ const TradingForm = ({
         {loginAccount && (
           <ApprovalButton amm={amm} actionType={ApprovalAction.TRADE} />
         )}
-        <PrimaryButton
+        <BuySellButton
           disabled={!approvals?.trade[ammCash?.name] || canMakeTrade.disabled}
           action={makeTrade}
           text={canMakeTrade.actionText}

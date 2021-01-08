@@ -204,12 +204,6 @@
         color: var(--simple-secondary-text-50);
       }
 
-      &.edited {
-        > span {
-          color: var(--simple-primary-text);
-        }
-      }
-
       > input {
         .text-30-bold;
 
@@ -251,6 +245,10 @@
   }
 
   &.nonSelectable {
+    &.Yes {
+      border-right-color: var(--simple-border);
+    }
+
     > span:last-of-type {
       .text-20-bold;
 
@@ -276,6 +274,12 @@
 
       > span:first-of-type {
         color: var(--simple-secondary-text);
+      }
+    }
+
+    &.Edited {
+      > div > span {
+        color: var(--simple-primary-text);
       }
     }
   }
@@ -403,6 +407,7 @@
     margin-right: @size-2;
     margin-left: @size-16;
   }
+
 
   &.Edited {
     color: var(--simple-primary-text);
