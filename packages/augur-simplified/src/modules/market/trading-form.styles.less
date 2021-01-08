@@ -227,7 +227,7 @@
           outline: 0;
           border: 0;
         }
-  
+
         &::placeholder {
          color: var(--color-secondary-text-50);
         }
@@ -275,17 +275,17 @@
     &.Selected,
     &:not(.Selected):hover {
       .SimpleBorder;
-  
+
       background: transparent;
-      border-top-left-radius: 0; 
-      border-bottom-left-radius: 0; 
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
       color: var(--simple-secondary-text);
 
       &.Yes {
         .SimpleBorder;
 
         background: transparent;
-        border-top-right-radius: 0; 
+        border-top-right-radius: 0;
         border-bottom-right-radius: 0;
       }
 
@@ -319,6 +319,7 @@
     justify-content: flex-end;
     text-transform: capitalize;
     color: var(--simple-secondary-text);
+    cursor: pointer;
   }
 
   &.Rate {
@@ -348,7 +349,7 @@
 
 .RateLabel {
   .text-14;
-  
+
   color: var(--simple-secondary-text);
   margin-top: @size-12;
   margin-left: auto;
@@ -441,7 +442,7 @@
                 flex: 1;
             }
         }
-        
+
         &:not(:last-of-type) {
             margin-bottom: @size-12;;
         }

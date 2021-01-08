@@ -7,14 +7,12 @@ import {
   categoryItems,
   currencyItems,
   ETH,
-  INVALID_OUTCOME_ID,
   marketStatusItems,
   OPEN,
   OTHER,
   POPULAR_CATEGORIES_ICONS,
   sortByItems,
   TOTAL_VOLUME,
-  YES_OUTCOME_ID,
 } from 'modules/constants';
 import { MarketLink } from 'modules/routes/helpers/links';
 import {
@@ -23,15 +21,15 @@ import {
   CategoryLabel,
   CategoryIcon,
 } from 'modules/common/labels';
-import { formatDai } from 'utils/format-number';
+import {formatDai, formatPercent} from 'utils/format-number';
 import { EthIcon, FilterIcon, UsdIcon } from 'modules/common/icons';
 import classNames from 'classnames';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { SquareDropdown } from 'modules/common/selection';
 import { Pagination } from 'modules/common/pagination';
 import { useAppStatusStore } from 'modules/stores/app-status';
+import { AmmExchange, MarketInfo } from '../types';
 import { MODAL_ADD_LIQUIDITY, USDC } from '../constants';
-import { AmmExchange, MarketInfo, MarketOutcome } from '../types';
 import { NetworkMismatchBanner } from '../common/labels';
 
 const PAGE_LIMIT = 20;
@@ -59,27 +57,23 @@ const LoadingMarketCard = () => {
 };
 
 const OutcomesTable = ({
-  outcomes,
   amm,
 }: {
-  outcomes: MarketOutcome[];
   amm: AmmExchange;
 }) => {
   return (
     <div className={Styles.OutcomesTable}>
-      {outcomes
-        .filter((outcome) => outcome.id !== INVALID_OUTCOME_ID)
+      {amm && amm?.ammOutcomes && amm.ammOutcomes
+        .filter((outcome) => !outcome.isInvalid)
         .map((outcome) => (
           <div key={`${outcome.name}-${amm?.marketId}-${outcome.id}`}>
             <span>{outcome.name.toLowerCase()}</span>
             <span>
-              {amm.liquidity !== '0'
-                ? formatDai(
-                    outcome.name === YES_OUTCOME_ID
-                      ? amm?.priceYes
-                      : amm?.priceNo
-                  ).full
-                : '-'}
+              {amm.liquidity !== "0" ?
+                formatDai(outcome.price)
+                  .full
+                : "-"
+              }
             </span>
           </div>
         ))}
@@ -89,9 +83,17 @@ const OutcomesTable = ({
 
 const MarketCard = ({ market }: { market: MarketInfo }) => {
   const {
+    categories,
+    description,
+    outcomes,
+    marketId,
+    amm,
+  } = market;
+  const formattedApy = amm?.apy && formatPercent(amm.apy).full;
+  const {
     actions: { setModal },
   } = useAppStatusStore();
-  const { categories, description, outcomes, marketId, amm } = market;
+
   return (
     <article
       className={classNames(Styles.MarketCard, {
@@ -116,14 +118,21 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
               />
             </div>
           ) : (
-            <>
-              <ValueLabel
-                label="total volume"
-                value={formatDai(market.amm?.volumeTotalUSD).full}
-              />
-              <OutcomesTable amm={amm} outcomes={outcomes} />
-            </>
-          )}
+              <>
+                <ValueLabel
+                  label="total volume"
+                  value={formatDai(market.amm?.volumeTotalUSD).full}
+                />
+                <ValueLabel
+                  label="APY"
+                  value={formattedApy}
+                />
+                <OutcomesTable
+                  amm={amm}
+                  outcomes={outcomes}
+                />
+              </>
+            )}
         </div>
       </MarketLink>
     </article>
