@@ -10,6 +10,7 @@ interface MarketLinkProps {
   id: string;
   ammId?: string;
   children?: any;
+  goToMarket?: boolean;
 }
 
 const RECEIPT_LINKS = {
@@ -33,20 +34,35 @@ export const MarketsLink = ({ children, id }: MarketLinkProps) => (
   </Link>
 );
 
-export const MarketLink = ({ id, ammId, children }: MarketLinkProps) => {
+export const MarketLink = ({
+  id,
+  ammId,
+  goToMarket,
+  children,
+}: MarketLinkProps) => {
   const idString = `${id}${ammId ? '-' + ammId : ''}`;
   return (
-    <Link
-      data-testid={`link-${idString}`}
-      to={{
-        pathname: makePath(MARKET),
-        search: makeQuery({
-          [MARKET_ID_PARAM_NAME]: idString,
-        }),
-      }}
-    >
-      {children}
-    </Link>
+    <>
+      {goToMarket ? (
+        <Link
+          data-testid={`link-${idString}`}
+          to={
+            goToMarket
+              ? {
+                  pathname: makePath(MARKET),
+                  search: makeQuery({
+                    [MARKET_ID_PARAM_NAME]: idString,
+                  }),
+                }
+              : null
+          }
+        >
+          {children}
+        </Link>
+      ) : (
+        <section>{children}</section>
+      )}
+    </>
   );
 };
 

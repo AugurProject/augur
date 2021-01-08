@@ -99,8 +99,9 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
       className={classNames(Styles.MarketCard, {
         [Styles.NoLiquidity]: !amm,
       })}
+      onClick={() => amm ? null : setModal({ type: MODAL_ADD_LIQUIDITY, market })}
     >
-      <MarketLink id={marketId} ammId={amm?.id}>
+        <MarketLink id={marketId} goToMarket={!!amm} ammId={amm?.id}>
         <div>
           <CategoryIcon category={categories[0]} />
           <CategoryLabel category={categories[1]} />
@@ -113,7 +114,6 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
             <div>
               <span>Market requires Initial liquidity</span>
               <PrimaryButton
-                action={() => setModal({ type: MODAL_ADD_LIQUIDITY, market })}
                 text="Earn fees as a liquidity provider"
               />
             </div>
