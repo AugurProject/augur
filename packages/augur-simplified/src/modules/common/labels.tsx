@@ -65,19 +65,20 @@ export const IconLabel = ({ icon, value }: IconLabelProps) => {
   );
 };
 
-interface CategoryProps {
-  category: string;
+interface CategoriesProps {
+  categories: Array<string>;
 }
 
-export const CategoryLabel = ({ category }: CategoryProps) => {
-  return <div className={classNames(Styles.CategoryLabel)}>{category}</div>;
+export const CategoryLabel = ({ categories }: CategoriesProps) => {
+  return (
+    <div className={classNames(Styles.CategoryLabel)}>
+      {!!categories[1] ? categories[1] : categories[0]}
+    </div>
+  );
 };
 
-interface CategoryProps {
-  category: string;
-}
-
-export const CategoryIcon = ({ category }: CategoryProps) => {
+export const CategoryIcon = ({ categories }: CategoriesProps) => {
+  const category = categories[0];
   return (
     <div
       className={classNames(
@@ -201,9 +202,11 @@ export const NetworkMismatchBanner = () => {
   return (
     <>
       {isNetworkMismatch && (
-        <article className={classNames(Styles.NetworkMismatch, {
-          [Styles.Market]: path === MARKET,
-        })}>
+        <article
+          className={classNames(Styles.NetworkMismatch, {
+            [Styles.Market]: path === MARKET,
+          })}
+        >
           You're connected to an unsupported network
         </article>
       )}
@@ -211,14 +214,11 @@ export const NetworkMismatchBanner = () => {
   );
 };
 
-
 export const generateTooltip = (tipText: string, key: string) => {
   return (
     <span className={TooltipStyles.Container}>
       <label
-        className={classNames(
-          TooltipStyles.TooltipHint,
-        )}
+        className={classNames(TooltipStyles.TooltipHint)}
         data-tip
         data-for={key}
         data-iscapture={true}

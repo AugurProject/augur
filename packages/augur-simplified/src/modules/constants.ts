@@ -4,7 +4,7 @@ import {
   CryptoIcon,
   EntertainmentIcon,
   FinanceIcon,
-  PillIcon,
+  MedicalIcon,
   PoliticsIcon,
   SportsIcon,
 } from './common/icons';
@@ -72,7 +72,7 @@ export const REPUSD = 'REP USD';
 export const PRESIDENTIAL_ELECTION = 'electoral college';
 
 export const POPULAR_CATEGORIES_ICONS = {
-  [MEDICAL]: PillIcon,
+  [MEDICAL]: MedicalIcon,
   [POLITICS]: PoliticsIcon,
   [CRYPTO]: CryptoIcon,
   [FINANCE]: FinanceIcon,
