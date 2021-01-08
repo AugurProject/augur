@@ -53,12 +53,18 @@ const defaultAddLiquidityBreakdown = [
 const fakeYesNoOutcomes = [
   {
     id: 0,
-    name: 'yes',
+    name: 'Invalid',
     price: '$0',
+    isInvalid: true
   },
   {
     id: 1,
     name: 'No',
+    price: '$0',
+  },
+  {
+    id: 2,
+    name: 'Yes',
     price: '$0',
   },
 ];
@@ -80,7 +86,10 @@ const ModalAddLiquidity = ({
 }: ModalAddLiquidityProps) => {
   const { userInfo: { balances }, loginAccount } = useAppStatusStore();
   const { account } = loginAccount;
-  const [outcomes, setOutcomes] = useState(fakeYesNoOutcomes);
+  const { amm } = market;
+
+  const [outcomes, setOutcomes] = useState(amm ? amm.ammOutcomes : fakeYesNoOutcomes);
+
   const [showBackView, setShowBackView] = useState(false);
   const [amount, updateAmount] = useState('');
   const [chosenCash, updateCash] = useState(cash);
@@ -94,6 +103,7 @@ const ModalAddLiquidity = ({
   const [tradingFeeSelection, setTradingFeeSelection] = useState(
     TRADING_FEE_OPTIONS[0].id
   );
+
   const { amm } = market;
   const createLiquidity = !amm || amm.liquidity === "0";
   const percentFormatted = formatPercent(amm?.feePercent).full;
@@ -402,8 +412,9 @@ const ModalAddLiquidity = ({
           <BuySellButton
             text={LIQUIDITY_STRINGS[modalType].approvalButtonText}
           />
-          <SecondaryButton
+          <BuySellButton
             action={() => setShowBackView(true)}
+            disabled
             text={LIQUIDITY_STRINGS[modalType].actionButtonText}
           />
           {LIQUIDITY_STRINGS[modalType].liquidityDetailsFooter && (

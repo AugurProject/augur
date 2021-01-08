@@ -174,7 +174,22 @@
   .Button;
 
   background: var(--simple-primary-text);
-  color: var(--simple-light-bg)
+  color: var(--simple-light-bg);
+
+  &:hover {
+    background-color: var(--simple-primary-text-85);
+  }
+
+  &.Disabled {
+    background: var(--light-background-color);
+    border: @size-1 solid var(--simple-border);
+    color: var(--simple-secondary-text);
+  }
+
+  &.Error {
+    color: var(--simple-failed);
+    background: var(--simple-failed-15);
+  }
 }
 
 .ApproveButton {
