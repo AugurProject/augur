@@ -53,7 +53,7 @@ export const SHARES = 'SHARES';
 export const POSITIONS = 'positions';
 export const LIQUIDITY = 'liquidity';
 
-// categories
+// top categories
 export const MEDICAL = 'medical';
 export const POLITICS = 'politics';
 export const FINANCE = 'finance';
@@ -65,6 +65,8 @@ export const OTHER = 'other';
 export const ALL_MARKETS = 'all markets';
 
 // sub categories
+export const US_POLITICS = 'us politics';
+export const WORLD_POLITICS = 'world politics';
 export const COVID = 'covid-19';
 export const ELECTORAL_COLLEGE = 'electoral college';
 export const FEDERAL_FUNDS = 'federal funds';
@@ -80,6 +82,23 @@ export const POPULAR_CATEGORIES_ICONS = {
   [ENTERTAINMENT]: EntertainmentIcon,
 };
 
+export const CATEGORIES_ICON_MAP = {
+  [MEDICAL]: {
+    icon: MedicalIcon,
+    subOptions: {},
+  },
+  [POLITICS]: {
+    icon: PoliticsIcon,
+    subOptions: {
+      [US_POLITICS]: { icon: PoliticsIcon },
+      [WORLD_POLITICS]: { icon: PoliticsIcon },
+    },
+  },
+  [CRYPTO]: { icon: CryptoIcon, subOptions: {} },
+  [FINANCE]: { icon: FinanceIcon, subOptions: {} },
+  [SPORTS]: { icon: SportsIcon, subOptions: {} },
+  [ENTERTAINMENT]: { icon: EntertainmentIcon, subOptions: {} },
+};
 // side bar types
 export const NAVIGATION = 'NAVIGATION';
 export const FILTERS = 'FILTERS';
@@ -110,7 +129,7 @@ export const MARKET_STATUS = {
   DISPUTING: 'DISPUTING',
   FINALIZED: 'FINALIZED',
   SETTLED: 'SETTLED',
-}
+};
 
 export const categoryItems = [
   {
@@ -199,7 +218,7 @@ export enum ApprovalState {
   UNKNOWN,
   NOT_APPROVED,
   PENDING,
-  APPROVED
+  APPROVED,
 }
 
 export enum ApprovalAction {
@@ -208,7 +227,7 @@ export enum ApprovalAction {
   REMOVE_LIQUIDITY,
 }
 
-export const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
+export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 // Modals
 export const MODAL_ADD_LIQUIDITY = 'MODAL_ADD_LIQUIDITY';
@@ -217,5 +236,5 @@ export const DEFAULT_MARKET_VIEW_SETTINGS = {
   categories: ALL_MARKETS,
   reportingState: OPEN,
   sortBy: TOTAL_VOLUME,
-  currency: ALL
+  currency: ALL,
 };

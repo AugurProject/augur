@@ -11,7 +11,7 @@ import {
   UsdIcon,
 } from 'modules/common/icons';
 import {
-  POPULAR_CATEGORIES_ICONS,
+  CATEGORIES_ICON_MAP,
   MODAL_ADD_LIQUIDITY,
   MARKET,
 } from 'modules/constants';
@@ -78,16 +78,18 @@ export const CategoryLabel = ({ categories }: CategoriesProps) => {
 };
 
 export const CategoryIcon = ({ categories }: CategoriesProps) => {
-  const category = categories[0];
+  const prime = CATEGORIES_ICON_MAP[categories[0].toLowerCase()];
+  const secondary = prime?.subOptions[categories[1].toLowerCase()];
+  const icon = secondary?.icon ? secondary.icon : prime?.icon;
   return (
     <div
       className={classNames(
         Styles.CategoryIcon,
-        Styles[`${category.toLowerCase()}`]
+        Styles[`${categories[0].toLowerCase()}`]
       )}
     >
-      {POPULAR_CATEGORIES_ICONS[category.toLowerCase()]
-        ? POPULAR_CATEGORIES_ICONS[category.toLowerCase()]
+      {!!icon
+        ? icon
         : AugurBlankIcon}
     </div>
   );
