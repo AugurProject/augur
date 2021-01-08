@@ -27,7 +27,8 @@ export class SDKLite {
     if (this.client) {
       return this.client;
     }
-    throw new Error('API must be initialized before use.');
+    console.error('API must be initialized before use.');
+    return null;
   }
 
   ready(): boolean {

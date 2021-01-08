@@ -10,6 +10,7 @@ import { formatPercent } from '../../utils/format-number';
 import { MultiButtonSelection } from '../common/selection';
 import classNames from 'classnames';
 import { MarketInfo } from '../types';
+import { useAppStatusStore } from '../stores/app-status';
 
 const TRADING_FEE_OPTIONS = [
   {
@@ -62,6 +63,8 @@ const ModalAddLiquidity = ({
   liquidityModalType,
   cash = USDC,
 }: ModalAddLiquidityProps) => {
+  const { userInfo: { balances }} = useAppStatusStore();
+
   const [outcomes, setOutcomes] = useState(fakeYesNoOutcomes);
   const [showBackView, setShowBackView] = useState(false);
   const [amount, updateAmount] = useState('');
@@ -75,6 +78,10 @@ const ModalAddLiquidity = ({
   const percentFormatted = formatPercent(amm?.feePercent).full;
   let modalType = createLiquidity ? CREATE : ADD;
   if (liquidityModalType) modalType = liquidityModalType;
+  // eslint-disable-next-line
+  const [selectedCash, setSelectedCash] = useState(amm?.cash);
+  // get user balance for initial amount, if cash not selected user "0"
+  const userCashBalance = selectedCash?.name ? balances[selectedCash?.name]?.balance : "0";
 
   const RECEIVE_BREAKDOWN_FAKE_DATA = [
     {
@@ -277,12 +284,10 @@ const ModalAddLiquidity = ({
             </span>
           )}
           <AmountInput
-            currencyName={LIQUIDITY_STRINGS[modalType].currencyName}
             updateInitialAmount={(amount) => updateAmount(amount)}
-            initialAmount={amount}
-            showCurrencyDropdown={
-              LIQUIDITY_STRINGS[modalType].showCurrencyDropdown
-            }
+            initialAmount={userCashBalance}
+            maxValue={userCashBalance}
+            showCurrencyDropdown={LIQUIDITY_STRINGS[modalType].showCurrencyDropdown}
             chosenCash={chosenCash}
             updateCash={updateCash}
           />
