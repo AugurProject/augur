@@ -15,9 +15,9 @@ import {
   TransactionsTable,
 } from '../common/tables';
 import TradingForm, {
-  fakeYesNoOutcomes,
+  DefaultMarketOutcomes,
   OutcomesGrid,
-} from 'modules/market/trading-form';
+} from '../market/trading-form';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import {
   YES_NO,
@@ -69,7 +69,7 @@ const CurrencyLabel = ({ name }) => {
 
 const MarketView = ({ defaultMarket = null }) => {
   const [showMoreDetails, setShowMoreDetails] = useState(false);
-  const [selectedOutcome, setSelectedOutcome] = useState(fakeYesNoOutcomes[0]);
+  const [selectedOutcome, setSelectedOutcome] = useState(DefaultMarketOutcomes[2]);
   const marketId = useMarketQueryId();
   const {
     isMobile,
@@ -92,8 +92,6 @@ const MarketView = ({ defaultMarket = null }) => {
 
   if (!market) return <div className={Styles.MarketView} />;
   const details = getDetails(market);
-  const marketCashType = market.amm?.cash?.name;
-
 
   return (
     <div className={Styles.MarketView}>
@@ -127,8 +125,8 @@ const MarketView = ({ defaultMarket = null }) => {
         </ul>
         {isMobile && (
           <OutcomesGrid
-            outcomes={fakeYesNoOutcomes}
-            selectedOutcome={fakeYesNoOutcomes[0]}
+            outcomes={amm?.ammOutcomes}
+            selectedOutcome={amm?.ammOutcomes[2]}
             showAllHighlighted
             setSelectedOutcome={(outcome) => {
               setSelectedOutcome(outcome);
@@ -166,7 +164,7 @@ const MarketView = ({ defaultMarket = null }) => {
       </section>
       {(!isMobile || showTradingForm) && (
         <section>
-          <TradingForm initialSelectedOutcome={selectedOutcome} market={market} marketCashType={marketCashType} amm={amm} />
+          <TradingForm initialSelectedOutcome={selectedOutcome} amm={amm} />
           {!isMobile && <AddLiquidity market={market} />}
         </section>
       )}

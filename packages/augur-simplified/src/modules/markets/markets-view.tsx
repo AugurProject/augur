@@ -7,14 +7,12 @@ import {
   categoryItems,
   currencyItems,
   ETH,
-  INVALID_OUTCOME_ID,
   marketStatusItems,
   OPEN,
   OTHER,
   POPULAR_CATEGORIES_ICONS,
   sortByItems,
   TOTAL_VOLUME,
-  YES_OUTCOME_ID,
 } from 'modules/constants';
 import { MarketLink } from 'modules/routes/helpers/links';
 import {
@@ -30,8 +28,8 @@ import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { SquareDropdown } from 'modules/common/selection';
 import { Pagination } from 'modules/common/pagination';
 import { useAppStatusStore } from 'modules/stores/app-status';
+import { AmmExchange, MarketInfo } from '../types';
 import { MODAL_ADD_LIQUIDITY, USDC } from '../constants';
-import { AmmExchange, MarketInfo, MarketOutcome } from '../types';
 import { NetworkMismatchBanner } from '../common/labels';
 
 const PAGE_LIMIT = 20;
@@ -59,27 +57,23 @@ const LoadingMarketCard = () => {
 };
 
 const OutcomesTable = ({
-  outcomes,
   amm,
 }: {
-  outcomes: MarketOutcome[];
   amm: AmmExchange;
 }) => {
   return (
     <div className={Styles.OutcomesTable}>
-      {outcomes
-        .filter((outcome) => outcome.id !== INVALID_OUTCOME_ID)
+      {amm && amm?.ammOutcomes && amm.ammOutcomes
+        .filter((outcome) => !outcome.isInvalid)
         .map((outcome) => (
           <div key={`${outcome.name}-${amm?.marketId}-${outcome.id}`}>
             <span>{outcome.name.toLowerCase()}</span>
             <span>
-              {amm.liquidity !== '0'
-                ? formatDai(
-                    outcome.name === YES_OUTCOME_ID
-                      ? amm?.priceYes
-                      : amm?.priceNo
-                  ).full
-                : '-'}
+              {amm.liquidity !== "0" ?
+                formatDai(outcome.price)
+                  .full
+                : "-"
+              }
             </span>
           </div>
         ))}
@@ -91,7 +85,7 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
   const {
     actions: { setModal },
   } = useAppStatusStore();
-  const { categories, description, outcomes, marketId, amm } = market;
+  const { categories, description, marketId, amm } = market;
   return (
     <article
       className={classNames(Styles.MarketCard, {
@@ -121,7 +115,7 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
                 label="total volume"
                 value={formatDai(market.amm?.volumeTotalUSD).full}
               />
-              <OutcomesTable amm={amm} outcomes={outcomes} />
+              <OutcomesTable amm={amm} />
             </>
           )}
         </div>
