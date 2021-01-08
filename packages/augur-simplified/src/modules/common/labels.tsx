@@ -41,7 +41,7 @@ export const ValueLabel = ({
         [Styles.large]: large,
         [Styles.Sublabel]: sublabel,
         [Styles.light]: light,
-      }, className)}
+      })}
     >
       <span>{label}</span>
       {sublabel && <span>{sublabel}</span>}
