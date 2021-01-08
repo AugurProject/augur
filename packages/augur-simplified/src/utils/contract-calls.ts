@@ -142,18 +142,21 @@ export const estimateEnterTrade = async (
   amm: AmmExchange,
   inputDisplayAmount: string,
   outputYesShares: boolean = true,
-): Promise<EstimateEnterTradeResult> => {
+): Promise<EstimateEnterTradeResult | null> => {
 
   const breakdownWithFeeRaw = await estimateMiddlewareTrade(TradingDirection.ENTRY, amm, inputDisplayAmount, outputYesShares);
   const breakdownWithoutFeeRaw = await estimateMiddlewareTrade(TradingDirection.ENTRY, amm, inputDisplayAmount, outputYesShares, false);
 
+  if (!breakdownWithFeeRaw || !breakdownWithoutFeeRaw) return null;
   const estimatedShares = onChainMarketSharesToDisplayShares(breakdownWithFeeRaw, amm.cash.decimals);
   const estimatedSharesWithoutFee = onChainMarketSharesToDisplayShares(breakdownWithoutFeeRaw, amm.cash.decimals);
   const tradeFees = String(new BN(estimatedShares).minus(new BN(estimatedSharesWithoutFee)));
-  const averagePrice = "0";
-  const maxProfit = "0";
-  const slippagePercent = "0";
-  const ratePerCash = "0";
+
+  const averagePrice = new BN(inputDisplayAmount).div(new BN(estimatedShares)).toFixed(2);
+  const maxProfit = String(new BN(estimatedShares).minus(new BN(inputDisplayAmount)));
+  const price = outputYesShares ? amm.priceYes : amm.priceNo;
+  const slippagePercent = (new BN(averagePrice).minus(price)).div(price).times(100).toFixed(2);
+  const ratePerCash = new BN(estimatedShares).div(new BN(inputDisplayAmount)).toFixed(6);
 
   return {
     outputShares: String(estimatedShares),
@@ -170,7 +173,7 @@ export const estimateExitTrade = async (
   inputDisplayAmount: string,
   outputYesShares: boolean = true,
   userBalances: string[] = [],
-): Promise<EstimateExitTradeResult> => {
+): Promise<EstimateExitTradeResult | null> => {
 
   const breakdownWithFeeRaw = await estimateMiddlewareTrade(TradingDirection.EXIT, amm, inputDisplayAmount, outputYesShares, true, userBalances);
   const breakdownWithoutFeeRaw = await estimateMiddlewareTrade(TradingDirection.EXIT, amm, inputDisplayAmount, outputYesShares, false, userBalances);
@@ -235,7 +238,7 @@ export const estimateMiddlewareTrade = async (
       inputOnChainCashAmount,
       outputYesShares,
       includeFee
-    );
+    ).catch(e => console.log('Error get enter position', e));
     console.log('breakdown', JSON.stringify(breakdown));
     return String(breakdown);
   }
@@ -265,7 +268,7 @@ export const estimateMiddlewareTrade = async (
       shortShares,
       longShares,
       includeFee
-    );
+    ).catch(e => console.log('Error get Exit Position', e));
     return String(breakdown);
   }
 

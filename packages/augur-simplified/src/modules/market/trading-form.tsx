@@ -318,27 +318,37 @@ const TradingForm = ({
           const {slippagePercent, ratePerCash} = breakdown;
           setBreakdown(getEnterBreakdown(breakdown))
           setTradeEstimates({slippagePercent, ratePerCash })
+        } else {
+          // if no breakdown, means no liquidity
+          // TODO: set insufficient liquidity state here
+          setBreakdown(getEnterBreakdown(null))
         }
       } else {
-        // get user's market share balances
         let userBalances = [];
         const hasShares = balances?.marketShares[amm?.id];
         if (hasShares) {
           userBalances = hasShares.outcomeShares;
+          console.log('userBalances', userBalances)
         }
         const breakdown = await estimateExitTrade(amm, amount, outputYesShares, userBalances);
         if (breakdown) {
           const {slippagePercent, ratePerCash} = breakdown;
           setBreakdown(getExitBreakdown(breakdown))
           setTradeEstimates({slippagePercent, ratePerCash })
+        } else {
+          // if no breakdown, means no liquidity
+          // TODO: set insufficient liquidity state here
+          setBreakdown(getExitBreakdown(null))
         }
       }
     }
-    if (orderType && selectedOutcome.id && amount) {
+    if (orderType && selectedOutcome.id && amount && Number(amount) > 0) {
       getEstimate()
+    } else {
+      orderType === BUY ? setBreakdown(getEnterBreakdown(null)) : setBreakdown(getExitBreakdown(null));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orderType, selectedOutcome.id, amount, balances]);
+  }, [orderType, selectedOutcome.id, amount]);
 
   return (
     <div className={Styles.TradingForm}>
