@@ -103,6 +103,12 @@ export const OPEN = 'Open';
 export const IN_SETTLEMENT = 'In settlement';
 export const FINALIZED = 'Finalized';
 
+export const INSUFFICIENT_LIQUIDITY = 'Insufficent Liquidity';
+export const INSUFFICIENT_BALANCE = 'Insufficent Balance';
+export const OVER_SLIPPAGE = 'Over Slippage Tollerance';
+export const ENTER_AMOUNT = 'Enter Amount';
+export const CONNECT_ACCOUNT = 'Connect Account';
+
 // graph market status
 export const MARKET_STATUS = {
   TRADING: 'TRADING',
