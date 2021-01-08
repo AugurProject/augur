@@ -126,7 +126,7 @@ export const AmountInput = ({
   const convRate = `1 ${currencyName} = ${rate} Shares`;
   const errorCheck = (value) => {
     let returnError = '';
-    if (isNaN(value) || Number(value) === 0 || Number(value) < 0) {
+    if (value !== '' && (isNaN(value) || Number(value) === 0 || Number(value) < 0)) {
       returnError = 'Amount is not valid'
     } 
     updateError(returnError);
