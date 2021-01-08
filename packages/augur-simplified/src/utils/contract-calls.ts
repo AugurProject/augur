@@ -242,7 +242,7 @@ export const estimateMiddlewareTrade = async (
       outputYesShares,
       includeFee
     ).catch(e => console.log('Error get enter position', e));
-    console.log('breakdown', JSON.stringify(breakdown));
+
     return String(breakdown);
   }
 
