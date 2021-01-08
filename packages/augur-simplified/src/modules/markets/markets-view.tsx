@@ -22,7 +22,6 @@ import {
   AppViewStats,
   CategoryLabel,
   CategoryIcon,
-  InlineValueLabel,
 } from 'modules/common/labels';
 import {formatDai, formatPercent} from 'utils/format-number';
 import { EthIcon, FilterIcon, UsdIcon } from 'modules/common/icons';
@@ -116,9 +115,8 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
                   label="total volume"
                   value={formatDai(market.amm?.volumeTotalUSD).full}
                 />
-                <InlineValueLabel
+                <ValueLabel
                   label="APY"
-                  // value="30.09%"
                   value={formattedApy}
                 />
                 <OutcomesTable

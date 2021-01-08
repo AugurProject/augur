@@ -48,13 +48,6 @@ export const ValueLabel = ({
   );
 };
 
-export const InlineValueLabel = ({label, value}) => (
-  <div className={Styles.InlineValueLabel}>
-    <span>{label}</span>
-    <span>{value}</span>
-  </div>
-);
-
 interface IconLabelProps {
   icon: Object;
   value: string | number;

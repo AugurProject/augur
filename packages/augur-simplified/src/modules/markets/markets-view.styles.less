@@ -92,6 +92,19 @@
       display: flex;
       align-items: flex-end;
       height: 100%;
+
+      > span {
+        &:first-of-type {
+          .text-12;
+
+          color: var(--color-secondary-text);
+          margin-right: @size-4;
+        }
+
+        &:last-of-type {
+          .text-12-semi-bold;
+        }
+      }
     }
 
     > div:nth-of-type(6) {
