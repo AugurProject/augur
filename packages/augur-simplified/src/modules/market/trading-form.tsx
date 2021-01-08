@@ -53,10 +53,8 @@ const Outcome = ({
       className={classNames(Styles.Outcome, {
         [Styles.YesNo]: !outcome.isInvalid && marketType === YES_NO,
         [Styles.Selected]: selected,
-        [Styles.Invalid]: outcome.isInvalid,
         [Styles.Yes]: outcome.name === OUTCOME_YES_NAME,
         [Styles.ShowAllHighlighted]: showAllHighlighted,
-        [Styles.InvalidSelected]: invalidSelected,
         [Styles.nonSelectable]: nonSelectable,
       })}
     >
