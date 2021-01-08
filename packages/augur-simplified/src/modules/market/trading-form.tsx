@@ -307,7 +307,7 @@ const TradingForm = ({
   const [tradeEstimates, setTradeEstimates] = useState<TradeEstimates>({})
   const ammCash = amm?.cash;
   const outcomes = amm.ammOutcomes;
-  const userCashBalance = amm?.cash?.name ? balances[amm?.cash?.name].balance : "0";
+  const userCashBalance = amm?.cash?.name ? balances[amm?.cash?.name]?.balance : "0";
 
   useEffect(() => {
     const getEstimate = async () => {
@@ -325,7 +325,7 @@ const TradingForm = ({
         }
       } else {
         let userBalances = [];
-        const hasShares = balances?.marketShares[amm?.id];
+        const hasShares = balances?.marketShares && balances?.marketShares[amm?.id];
         if (hasShares) {
           userBalances = hasShares.outcomeShares;
           console.log('userBalances', userBalances)
