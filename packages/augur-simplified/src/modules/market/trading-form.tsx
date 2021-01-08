@@ -53,7 +53,6 @@ const Outcome = ({
   marketType,
   selected,
   onClick,
-  invalidSelected,
   showAllHighlighted,
   nonSelectable,
   editable,
@@ -69,11 +68,12 @@ const Outcome = ({
         [Styles.Yes]: outcome.name === OUTCOME_YES_NAME,
         [Styles.ShowAllHighlighted]: showAllHighlighted,
         [Styles.nonSelectable]: nonSelectable,
+        [Styles.Edited]: customVal !== ''
       })}
     >
       <span>{outcome.name}</span>
       {editable ? (
-        <div className={classNames({ [Styles.edited]: customVal !== '' })}>
+        <div>
           <span>$</span>
           <input
             value={customVal}
@@ -211,7 +211,6 @@ export const OutcomesGrid = ({
             outcome={outcome}
             onClick={() => setSelectedOutcome(outcome)}
             marketType={marketType}
-            invalidSelected={nonSelectable || selectedOutcome?.isInvalid}
             editable={editable}
             setEditableValue={price => setEditableValue(price, index)}
           />

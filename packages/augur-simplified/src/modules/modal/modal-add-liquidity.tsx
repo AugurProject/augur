@@ -38,12 +38,18 @@ const TRADING_FEE_OPTIONS = [
 const fakeYesNoOutcomes = [
   {
     id: 0,
-    name: 'yes',
+    name: 'Invalid',
     price: '$0',
+    isInvalid: true
   },
   {
     id: 1,
     name: 'No',
+    price: '$0',
+  },
+  {
+    id: 2,
+    name: 'Yes',
     price: '$0',
   },
 ];
@@ -64,8 +70,9 @@ const ModalAddLiquidity = ({
   cash = USDC,
 }: ModalAddLiquidityProps) => {
   const { userInfo: { balances }} = useAppStatusStore();
+  const { amm } = market;
 
-  const [outcomes, setOutcomes] = useState(fakeYesNoOutcomes);
+  const [outcomes, setOutcomes] = useState(amm ? amm.ammOutcomes : fakeYesNoOutcomes);
   const [showBackView, setShowBackView] = useState(false);
   const [amount, updateAmount] = useState('');
   const [chosenCash, updateCash] = useState(cash);
@@ -73,7 +80,6 @@ const ModalAddLiquidity = ({
   const [tradingFeeSelection, setTradingFeeSelection] = useState(
     TRADING_FEE_OPTIONS[0].id
   );
-  const { amm } = market;
   const createLiquidity = !amm;
   const percentFormatted = formatPercent(amm?.feePercent).full;
   let modalType = createLiquidity ? CREATE : ADD;
