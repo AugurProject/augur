@@ -344,8 +344,9 @@ const ModalAddLiquidity = ({
           <BuySellButton
             text={LIQUIDITY_STRINGS[modalType].approvalButtonText}
           />
-          <SecondaryButton
+          <BuySellButton
             action={() => setShowBackView(true)}
+            disabled
             text={LIQUIDITY_STRINGS[modalType].actionButtonText}
           />
           {LIQUIDITY_STRINGS[modalType].liquidityDetailsFooter && (

@@ -19,6 +19,7 @@ interface ButtonProps {
   href?: string;
   target?: string;
   rel?: string;
+  error?: boolean;
 }
 
 const Button = ({
@@ -29,6 +30,7 @@ const Button = ({
   icon,
   selected,
   href,
+  error,
   target = '_blank',
   rel = 'noopener noreferrer',
 }: ButtonProps) => {
@@ -41,6 +43,7 @@ const Button = ({
           [Styles.TextAndIcon]: text && icon,
           [Styles.Disabled]: disabled,
           [Styles.Selected]: selected,
+          [Styles.Error]: error
         },
         className
       )}
