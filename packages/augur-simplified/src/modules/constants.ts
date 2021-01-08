@@ -25,6 +25,10 @@ export const MARKET_ID_PARAM_NAME = 'id';
 export const AFFILIATE_NAME = 'r';
 export const THEME_NAME = 't';
 
+export const OUTCOME_YES_NAME = 'Yes';
+export const OUTCOME_NO_NAME = 'No';
+export const OUTCOME_INVALID_NAME = 'Invalid';
+
 // Directions
 export const BUY = 'buy';
 export const SELL = 'sell';
@@ -43,6 +47,7 @@ export const REP = 'REP';
 export const DAI = 'DAI';
 export const USDT = 'USDT';
 export const USDC = 'USDC';
+export const SHARES = 'SHARES';
 
 // Portfolio table views
 export const POSITIONS = 'positions';
@@ -207,3 +212,10 @@ export const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 // Modals
 export const MODAL_ADD_LIQUIDITY = 'MODAL_ADD_LIQUIDITY';
+
+export const DEFAULT_MARKET_VIEW_SETTINGS = {
+  categories: ALL_MARKETS,
+  reportingState: OPEN,
+  sortBy: TOTAL_VOLUME,
+  currency: ALL
+};
