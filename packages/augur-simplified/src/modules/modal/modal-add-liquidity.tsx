@@ -85,7 +85,7 @@ const ModalAddLiquidity = ({
   cash = USDC,
 }: ModalAddLiquidityProps) => {
   const { userInfo: { balances }, loginAccount } = useAppStatusStore();
-  const { account } = loginAccount;
+  const account = loginAccount?.account
   const { amm } = market;
 
   const [outcomes, setOutcomes] = useState(amm ? amm.ammOutcomes : fakeYesNoOutcomes);
