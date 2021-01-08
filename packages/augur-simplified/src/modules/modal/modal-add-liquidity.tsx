@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useState } from 'react';
 
 import Styles from 'modules/modal/modal.styles.less';
 import { Header } from './common';
@@ -10,8 +10,6 @@ import { formatPercent } from '../../utils/format-number';
 import { MultiButtonSelection } from '../common/selection';
 import classNames from 'classnames';
 import { MarketInfo } from '../types';
-import { useActiveWeb3React } from '../ConnectAccount/hooks';
-import { useAddLiquidityCashes } from '../hooks/use-add-liquidity-cashes';
 import { doAmmLiquidity, getAmmLiquidity } from '../../utils/contract-calls';
 import { useAppStatusStore } from '../stores/app-status';
 
