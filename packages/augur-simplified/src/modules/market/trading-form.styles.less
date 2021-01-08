@@ -248,21 +248,6 @@
     &:not(.Yes):not(.Selected):hover {
       border-left: @size-1 solid transparent;
     }
-
-    &.InvalidSelected {
-      &:first-of-type {
-        border-right: @size-1 solid var(--simple-border);
-      }
-    }
-  }
-
-  &.Invalid {
-    color: var(--simple-secondary-text);
-    grid-column: 1 / span 2;
-
-    > span:first-of-type {
-      .text-16;
-    }
   }
 
   &.nonSelectable {
@@ -439,7 +424,18 @@
             text-transform: capitalize;
 
             &:first-of-type {
-                flex: 1;
+              display: flex;
+              align-items: center;
+
+                > span {
+                  margin-left: @size-4;
+                }
+            }
+
+            &:last-of-type {
+              flex: 1;
+              justify-content: flex-end;
+              display: flex;
             }
         }
 
