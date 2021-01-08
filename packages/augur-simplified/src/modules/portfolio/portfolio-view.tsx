@@ -28,7 +28,7 @@ export const PortfolioView = () => {
           <section>
             <NetworkMismatchBanner />
             <AppViewStats />
-            {isLogged && <PrimaryButton text="$24.00 in Winnings to claim" />}
+            {isLogged && <PrimaryButton text="Claim Winnings ($24.00)" />}
             <PositionsLiquidityViewSwitcher />
           </section>
           <section>
@@ -40,7 +40,7 @@ export const PortfolioView = () => {
       <>
         <NetworkMismatchBanner />
         <AppViewStats />
-        {isLogged && <PrimaryButton text="$24.00 in Winnings to claim" />}
+        {isLogged && <PrimaryButton text="Claim Winnings ($24.00)" />}
         <PositionsLiquidityViewSwitcher showActivityButton setTables={() => setView(TABLES)} setActivity={() => setView(ACTIVITY)}/>
         {view === ACTIVITY && <Activity />}
       </>
