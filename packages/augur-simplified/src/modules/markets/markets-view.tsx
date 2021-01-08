@@ -21,7 +21,7 @@ import {
   CategoryLabel,
   CategoryIcon,
 } from 'modules/common/labels';
-import { formatDai } from 'utils/format-number';
+import {formatDai, formatPercent} from 'utils/format-number';
 import { EthIcon, FilterIcon, UsdIcon } from 'modules/common/icons';
 import classNames from 'classnames';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
@@ -83,9 +83,17 @@ const OutcomesTable = ({
 
 const MarketCard = ({ market }: { market: MarketInfo }) => {
   const {
+    categories,
+    description,
+    outcomes,
+    marketId,
+    amm,
+  } = market;
+  const formattedApy = amm?.apy && formatPercent(amm.apy).full;
+  const {
     actions: { setModal },
   } = useAppStatusStore();
-  const { categories, description, marketId, amm } = market;
+
   return (
     <article
       className={classNames(Styles.MarketCard, {
@@ -110,14 +118,21 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
               />
             </div>
           ) : (
-            <>
-              <ValueLabel
-                label="total volume"
-                value={formatDai(market.amm?.volumeTotalUSD).full}
-              />
-              <OutcomesTable amm={amm} />
-            </>
-          )}
+              <>
+                <ValueLabel
+                  label="total volume"
+                  value={formatDai(market.amm?.volumeTotalUSD).full}
+                />
+                <ValueLabel
+                  label="APY"
+                  value={formattedApy}
+                />
+                <OutcomesTable
+                  amm={amm}
+                  outcomes={outcomes}
+                />
+              </>
+            )}
         </div>
       </MarketLink>
     </article>
