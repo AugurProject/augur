@@ -438,7 +438,18 @@
             text-transform: capitalize;
 
             &:first-of-type {
-                flex: 1;
+              display: flex;
+              align-items: center;
+
+                > span {
+                  margin-left: @size-4;
+                }
+            }
+
+            &:last-of-type {
+              flex: 1;
+              justify-content: flex-end;
+              display: flex;
             }
         }
         

@@ -8,6 +8,7 @@ import { CloseIcon, UsdIcon, EthIcon } from 'modules/common/icons';
 import { ApprovalButton, TinyButton } from '../common/buttons';
 import { ApprovalAction, SHARES } from '../constants';
 import { CurrencyDropdown } from '../common/selection';
+import { generateTooltip } from '../common/labels';
 
 interface OutcomeType {
   id: number;
@@ -69,7 +70,7 @@ const Outcome = ({
           <span>$</span>
           <input
             value={customVal}
-            onChange={(v) => {
+            onChange={v => {
               setCustomVal(v.target.value);
               setEditableValue(v.target.value);
             }}
@@ -96,13 +97,19 @@ export const AmountInput = ({
   const label = currencyName === USDC ? USDC : ETH;
   const showRate = currencyName !== SHARES;
   return (
-    <div className={classNames(Styles.AmountInput, {[Styles.Rate]: showRate})}>
+    <div
+      className={classNames(Styles.AmountInput, { [Styles.Rate]: showRate })}
+    >
       <span>amount</span>
       <span>balance: $1000</span>
-      <div className={classNames(Styles.AmountInputDropdown, {[Styles.Edited]: amount !== ''})}>
+      <div
+        className={classNames(Styles.AmountInputDropdown, {
+          [Styles.Edited]: amount !== '',
+        })}
+      >
         <span>$</span>
         <input
-          onChange={(e) => {
+          onChange={e => {
             updateAmount(e.target.value);
             updateInitialAmount(e.target.value);
           }}
@@ -123,7 +130,7 @@ export const AmountInput = ({
         {showCurrencyDropdown && (
           <CurrencyDropdown
             defaultValue={chosenCash}
-            onChange={(cash) => updateCash(cash)}
+            onChange={cash => updateCash(cash)}
           />
         )}
       </div>
@@ -165,7 +172,7 @@ export const OutcomesGrid = ({
       })}
     >
       {outcomes
-        .filter((outcome) => !outcome.isInvalid)
+        .filter(outcome => !outcome.isInvalid)
         .map((outcome, index) => (
           <Outcome
             key={outcome.id}
@@ -181,7 +188,7 @@ export const OutcomesGrid = ({
             marketType={marketType}
             invalidSelected={nonSelectable || selectedOutcome?.isInvalid}
             editable={editable}
-            setEditableValue={(price) => setEditableValue(price, index)}
+            setEditableValue={price => setEditableValue(price, index)}
           />
         ))}
     </div>
@@ -191,6 +198,8 @@ export const OutcomesGrid = ({
 interface InfoNumber {
   label: string;
   value: string;
+  tooltipText?: string;
+  tooltipKey?: string;
 }
 
 interface InfoNumbersProps {
@@ -200,9 +209,15 @@ interface InfoNumbersProps {
 export const InfoNumbers = ({ infoNumbers }: InfoNumbersProps) => {
   return (
     <div className={Styles.OrderInfo}>
-      {infoNumbers.map((infoNumber) => (
+      {infoNumbers.map(infoNumber => (
         <div key={infoNumber.label}>
-          <span>{infoNumber.label}</span>
+          <span>
+            {infoNumber.label}
+            <span>
+              {infoNumber.tooltipText &&
+                generateTooltip(infoNumber.tooltipText, infoNumber.tooltipKey)}
+            </span>
+          </span>
           <span>{infoNumber.value}</span>
         </div>
       ))}
@@ -268,6 +283,8 @@ const TradingForm = ({
             {
               label: 'average price',
               value: '$0.00',
+              tooltipText: 'tooltip copy',
+              tooltipKey: 'averagePrice',
             },
             {
               label: 'shares bought',
