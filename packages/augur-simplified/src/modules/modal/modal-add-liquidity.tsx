@@ -2,17 +2,18 @@ import React, { useCallback, useMemo, useState } from 'react';
 
 import Styles from 'modules/modal/modal.styles.less';
 import { Header } from './common';
-import { YES_NO, BUY, USDC } from '../constants';
+import { YES_NO, BUY, USDC, SHARES } from '../constants';
 import { OutcomesGrid, AmountInput, InfoNumbers } from '../market/trading-form';
 import { BuySellButton, SecondaryButton } from '../common/buttons';
-import { ErrorBlock } from '../common/labels';
+import { ErrorBlock, generateTooltip } from '../common/labels';
 import { formatPercent } from '../../utils/format-number';
 import { MultiButtonSelection } from '../common/selection';
 import classNames from 'classnames';
-import { AmmExchange, Cash, MarketInfo } from '../types';
+import { MarketInfo } from '../types';
 import { useActiveWeb3React } from '../ConnectAccount/hooks';
 import { useAddLiquidityCashes } from '../hooks/use-add-liquidity-cashes';
 import { doAmmLiquidity, getAmmLiquidity } from '../../utils/contract-calls';
+import { useAppStatusStore } from '../stores/app-status';
 
 const TRADING_FEE_OPTIONS = [
   {
@@ -64,40 +65,46 @@ const fakeYesNoOutcomes = [
   },
 ];
 
-export const REMOVE = 'REMOVE';
-export const ADD = 'ADD';
-export const CREATE = 'CREATE';
+export const REMOVE = 'remove';
+export const ADD = 'add';
+export const CREATE = 'create';
 
 interface ModalAddLiquidityProps {
   market: MarketInfo;
   liquidityModalType?: string;
+  cash?: string;
 }
 
 const ModalAddLiquidity = ({
   market,
   liquidityModalType,
+  cash = USDC,
 }: ModalAddLiquidityProps) => {
-  const { account } = useActiveWeb3React();
-  const possibleCashes = useAddLiquidityCashes(market);
+  const { userInfo: { balances }, loginAccount } = useAppStatusStore();
+  const { account } = loginAccount;
   const [outcomes, setOutcomes] = useState(fakeYesNoOutcomes);
   const [showBackView, setShowBackView] = useState(false);
   const [amount, updateAmount] = useState('');
+  const [chosenCash, updateCash] = useState(cash);
 
   // if add initial liquidity these would be set by user
   const [fee, setFee] = useState(market?.amm?.feePercent);
   const [priceNo, setPriceNo] = useState(market?.amm?.priceNo);
   const [priceYes, setPriceyes] = useState(market?.amm?.priceYes);
   // needs to be set by currency picker if amm is null
-  const [selectedCash, setSelectedCash] = useState(possibleCashes[0]);
   const [breakdown, setBreakdown] = useState(defaultAddLiquidityBreakdown);
   const [tradingFeeSelection, setTradingFeeSelection] = useState(
     TRADING_FEE_OPTIONS[0].id
   );
   const { amm } = market;
-  const createLiquidity = !amm;
+  const createLiquidity = !amm || amm.liquidity === "0";
   const percentFormatted = formatPercent(amm?.feePercent).full;
   let modalType = createLiquidity ? CREATE : ADD;
   if (liquidityModalType) modalType = liquidityModalType;
+  // eslint-disable-next-line
+  const [selectedCash, setSelectedCash] = useState(amm?.cash);
+  // get user balance for initial amount, if cash not selected user "0"
+  const userCashBalance = selectedCash?.name ? balances[selectedCash?.name]?.balance : "0";
 
   const LIQUIDITY_STRINGS = {
     [REMOVE]: {
@@ -178,6 +185,7 @@ const ModalAddLiquidity = ({
           },
         ],
       },
+      currencyName: SHARES,
     },
     [ADD]: {
       header: 'add liquidity',
@@ -215,7 +223,7 @@ const ModalAddLiquidity = ({
         if (!account || !market.marketId || !amount || !priceNo || !priceYes) return defaultAddLiquidityBreakdown;
         console.log(account, market.marketId, selectedCash, fee, amount, priceNo, priceYes);
         const txResponse = await doAmmLiquidity(account, amm, market.marketId, selectedCash, fee, amount, priceNo, priceYes);
-        // handle transaction response
+        // TODO: handle transaction response
 
       },
       confirmOverview: {
@@ -244,8 +252,11 @@ const ModalAddLiquidity = ({
           },
         ],
       },
+      currencyName: cash,
     },
     [CREATE]: {
+      currencyName: USDC,
+      showCurrencyDropdown: true,
       header: 'add liquidity',
       showTradingFee: false,
       setTradingFee: true,
@@ -314,6 +325,7 @@ const ModalAddLiquidity = ({
       },
     },
   };
+
   return (
     <section
       className={classNames(Styles.ModalAddLiquidity, {
@@ -338,17 +350,22 @@ const ModalAddLiquidity = ({
             </span>
           )}
           <AmountInput
-            currencyName={selectedCash?.name}
-            updateInitialAmount={(amount) => {
-              updateAmount(amount)
-              LIQUIDITY_STRINGS[modalType].receiveBreakdown()
-            }}
-            initialAmount={amount}
+            updateInitialAmount={(amount) => updateAmount(amount)}
+            initialAmount={userCashBalance}
+            maxValue={userCashBalance}
+            showCurrencyDropdown={LIQUIDITY_STRINGS[modalType].showCurrencyDropdown}
+            chosenCash={chosenCash}
+            updateCash={updateCash}
           />
           {LIQUIDITY_STRINGS[modalType].setTradingFee && (
             <>
               <ErrorBlock text="Initial liquidity providers are required to set the odds before creating market liquidity." />
-              <span className={Styles.SmallLabel}>Set trading fee</span>
+              <span
+                className={Styles.SmallLabel}
+              >
+                Set trading fee
+                {generateTooltip('Set trading fee', 'tradingFeeInfo')}
+              </span>
               <MultiButtonSelection
                 options={TRADING_FEE_OPTIONS}
                 selection={tradingFeeSelection}
@@ -432,9 +449,9 @@ const ModalAddLiquidity = ({
                 {LIQUIDITY_STRINGS[modalType].confirmReceiveOverview.title}
               </span>
               <InfoNumbers
-                infoNumbers={LIQUIDITY_STRINGS[
-                  modalType
-                ].confirmReceiveOverview.breakdown}
+                infoNumbers={
+                  LIQUIDITY_STRINGS[modalType].confirmReceiveOverview.breakdown
+                }
               />
             </section>
             {LIQUIDITY_STRINGS[modalType].marketLiquidityDetails && (
@@ -449,7 +466,6 @@ const ModalAddLiquidity = ({
                 />
               </section>
             )}
-
             <BuySellButton
               text={LIQUIDITY_STRINGS[modalType].confirmButtonText}
               action={LIQUIDITY_STRINGS[modalType].confirmAction}

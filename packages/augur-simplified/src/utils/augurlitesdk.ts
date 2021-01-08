@@ -15,13 +15,14 @@ export class SDKLite {
     account?: string,
     ): Promise<AugurLite> {
     const networkId = config.networkId;
-    // not sure why precsion is needed to create augur lite client
-    let signer: any = provider;
+
+    let providerOrSigner = provider;
     if (account) {
-      console.log('call to get signer from create augur lite client')
-      signer = getProviderOrSigner(provider as Web3Provider, account);
+      providerOrSigner = getProviderOrSigner(provider as Web3Provider, account) as ethers.providers.Provider;
     }
-    this.client = new AugurLite(signer as ethers.providers.Provider, config, networkId as NetworkId, createBigNumber(18));
+    // not sure why precsion is needed to create augur lite client
+    this.client = new AugurLite(providerOrSigner, config, networkId as NetworkId, createBigNumber(18));
+
     return this.client;
   }
 
@@ -35,7 +36,8 @@ export class SDKLite {
     if (this.client) {
       return this.client;
     }
-    throw new Error('API must be initialized before use.');
+    console.error('API must be initialized before use.');
+    return null;
   }
 
   ready(): boolean {

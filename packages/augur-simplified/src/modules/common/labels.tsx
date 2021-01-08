@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import Styles from 'modules/common/labels.styles.less';
+import { useLocation } from 'react-router';
 import classNames from 'classnames';
 import { formatDai } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
@@ -9,10 +10,16 @@ import {
   PlusIcon,
   UsdIcon,
 } from 'modules/common/icons';
-import { POPULAR_CATEGORIES_ICONS } from 'modules/constants';
+import {
+  POPULAR_CATEGORIES_ICONS,
+  MODAL_ADD_LIQUIDITY,
+  MARKET,
+} from 'modules/constants';
 import { useAppStatusStore } from 'modules/stores/app-status';
-import { MODAL_ADD_LIQUIDITY } from '../constants';
-
+import parsePath from '../routes/helpers/parse-path';
+import ReactTooltip from 'react-tooltip';
+import TooltipStyles from 'modules/common/tooltip.styles.less';
+import { HelpIcon } from './icons';
 
 interface ValueLabelProps {
   large?: boolean;
@@ -164,9 +171,7 @@ export const AddLiquidity = ({ market }) => {
   return (
     <div
       className={classNames(Styles.AddLiquidity)}
-      onClick={() => 
-        setModal({ type: MODAL_ADD_LIQUIDITY, market })
-      }
+      onClick={() => setModal({ type: MODAL_ADD_LIQUIDITY, market })}
     >
       <span>
         {PlusIcon}
@@ -177,10 +182,60 @@ export const AddLiquidity = ({ market }) => {
   );
 };
 
-export const ErrorBlock = ({text}) => {
-  return (
-    <div className={Styles.ErrorBlock}>
-      {text}
-    </div>
+export const ErrorBlock = ({ text }) => {
+  return <div className={Styles.ErrorBlock}>{text}</div>;
+};
+
+export const NetworkMismatchBanner = () => {
+  const {
+    paraConfig: { networkId },
+    loginAccount,
+  } = useAppStatusStore();
+  const location = useLocation();
+  const path = parsePath(location.pathname)[0];
+  const { chainId } = loginAccount || {};
+  const isNetworkMismatch = useMemo(
+    () => !!chainId && String(networkId) !== String(chainId),
+    [chainId, networkId]
   );
-}
+  return (
+    <>
+      {isNetworkMismatch && (
+        <article className={classNames(Styles.NetworkMismatch, {
+          [Styles.Market]: path === MARKET,
+        })}>
+          You're connected to an unsupported network
+        </article>
+      )}
+    </>
+  );
+};
+
+
+export const generateTooltip = (tipText: string, key: string) => {
+  return (
+    <span className={TooltipStyles.Container}>
+      <label
+        className={classNames(
+          TooltipStyles.TooltipHint,
+        )}
+        data-tip
+        data-for={key}
+        data-iscapture={true}
+      >
+        {HelpIcon}
+      </label>
+      <ReactTooltip
+        id={key}
+        className={TooltipStyles.Tooltip}
+        effect="solid"
+        place="top"
+        type="light"
+        event="mouseover mouseenter"
+        eventOff="mouseleave mouseout scroll mousewheel blur"
+      >
+        <p>{tipText}</p>
+      </ReactTooltip>
+    </span>
+  );
+};

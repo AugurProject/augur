@@ -165,6 +165,7 @@ export interface AmmExchange {
   volumeTotal: string,
   volumeTotalUSD: string,
   feePercent: string,
+  feeRaw: string,
   cash: Cash,
   sharetoken: string,
   transactions: AmmTransaction[],
@@ -173,7 +174,7 @@ export interface AmmExchange {
   past24hrPriceYes?: string,
   totalSupply?: string,
   apy?: string,
-  outcomes?: AmmOutcome[]
+  ammOutcomes: AmmOutcome[],
 }
 
 export interface Cashes {
@@ -192,16 +193,20 @@ export interface MarketInfo {
   reportingState: string
 }
 
-export interface MarketOutcome extends AmmOutcome {
+export interface MarketOutcome {
+  id: number,
   isFinalNumerator?: boolean,
   payoutNumerator?: string,
+  name: string,
 }
 
 export interface AmmOutcome {
   id: number,
   name: string,
+  price: string,
   isInvalid?: boolean,
 }
+
 export interface Cash {
   address: string,
   shareToken: string,
@@ -910,6 +915,24 @@ export interface TradeInfo {
   userBalances?: string[]
 }
 
+export interface EstimateEnterTradeResult {
+  averagePrice: string;
+  outputShares: string;
+  maxProfit: string;
+  tradeFees: string;
+  slippagePercent: string;
+  ratePerCash: string;
+}
+
+export interface EstimateExitTradeResult {
+  averagePrice: string;
+  outputCash: string;
+  remainingShares: string;
+  estimateFees: string;
+  slippagePercent: string;
+  ratePerCash: string;
+}
+
 export interface PriceTimeSeriesData {
   tokenVolume: number;
   period: number;
@@ -1072,6 +1095,7 @@ export interface AmmMarketShares {
     ammExchange: AmmExchange;
     positions: PositionBalance[];
     claimableWinnings?: Winnings;
+    outcomeShares: string[]
   }
 }
 

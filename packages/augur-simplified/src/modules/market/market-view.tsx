@@ -8,15 +8,16 @@ import {
   AddLiquidity,
   CategoryIcon,
   CategoryLabel,
+  NetworkMismatchBanner
 } from 'modules/common/labels';
 import {
   PositionsLiquidityViewSwitcher,
   TransactionsTable,
 } from '../common/tables';
 import TradingForm, {
-  fakeYesNoOutcomes,
+  DefaultMarketOutcomes,
   OutcomesGrid,
-} from 'modules/market/trading-form';
+} from '../market/trading-form';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import {
   YES_NO,
@@ -68,7 +69,7 @@ const CurrencyLabel = ({ name }) => {
 
 const MarketView = ({ defaultMarket = null }) => {
   const [showMoreDetails, setShowMoreDetails] = useState(false);
-  const [selectedOutcome, setSelectedOutcome] = useState(fakeYesNoOutcomes[0]);
+  const [selectedOutcome, setSelectedOutcome] = useState(DefaultMarketOutcomes[2]);
   const marketId = useMarketQueryId();
   const {
     isMobile,
@@ -91,12 +92,11 @@ const MarketView = ({ defaultMarket = null }) => {
 
   if (!market) return <div className={Styles.MarketView} />;
   const details = getDetails(market);
-  const marketCashType = market.amm?.cash?.name;
-
 
   return (
     <div className={Styles.MarketView}>
       <section>
+        <NetworkMismatchBanner />
         <div className={Styles.topRow}>
           <CategoryIcon category={market.categories[0]} />
           <CategoryLabel category={market.categories[1]} />
@@ -125,8 +125,8 @@ const MarketView = ({ defaultMarket = null }) => {
         </ul>
         {isMobile && (
           <OutcomesGrid
-            outcomes={fakeYesNoOutcomes}
-            selectedOutcome={fakeYesNoOutcomes[0]}
+            outcomes={amm?.ammOutcomes}
+            selectedOutcome={amm?.ammOutcomes[2]}
             showAllHighlighted
             setSelectedOutcome={(outcome) => {
               setSelectedOutcome(outcome);
@@ -144,7 +144,7 @@ const MarketView = ({ defaultMarket = null }) => {
           })}
         >
           <h4>Market Details</h4>
-          {endTimeDateFull}
+          <h5>{endTimeDateFull}</h5>
           {details.map((detail, i) => (
             <p key={`${detail.substring(5, 25)}-${i}`}>{detail}</p>
           ))}
@@ -164,7 +164,7 @@ const MarketView = ({ defaultMarket = null }) => {
       </section>
       {(!isMobile || showTradingForm) && (
         <section>
-          <TradingForm initialSelectedOutcome={selectedOutcome} market={market} marketCashType={marketCashType} amm={amm} />
+          <TradingForm initialSelectedOutcome={selectedOutcome} amm={amm} />
           {!isMobile && <AddLiquidity market={market} />}
         </section>
       )}

@@ -7,14 +7,12 @@ import {
   categoryItems,
   currencyItems,
   ETH,
-  INVALID_OUTCOME_ID,
   marketStatusItems,
   OPEN,
   OTHER,
   POPULAR_CATEGORIES_ICONS,
   sortByItems,
   TOTAL_VOLUME,
-  YES_OUTCOME_ID,
 } from 'modules/constants';
 import { MarketLink } from 'modules/routes/helpers/links';
 import {
@@ -23,16 +21,16 @@ import {
   CategoryLabel,
   CategoryIcon,
 } from 'modules/common/labels';
-import { formatDai } from 'utils/format-number';
+import {formatDai, formatPercent} from 'utils/format-number';
 import { EthIcon, FilterIcon, UsdIcon } from 'modules/common/icons';
 import classNames from 'classnames';
-import { PrimaryButton } from 'modules/common/buttons';
+import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { SquareDropdown } from 'modules/common/selection';
 import { Pagination } from 'modules/common/pagination';
 import { useAppStatusStore } from 'modules/stores/app-status';
-import { USDC } from '../constants';
-import { AmmExchange, MarketInfo, MarketOutcome } from '../types';
-import { formatPercent } from '../../utils/format-number';
+import { AmmExchange, MarketInfo } from '../types';
+import { MODAL_ADD_LIQUIDITY, USDC } from '../constants';
+import { NetworkMismatchBanner } from '../common/labels';
 
 const PAGE_LIMIT = 20;
 
@@ -58,17 +56,21 @@ const LoadingMarketCard = () => {
   );
 };
 
-const OutcomesTable = ({ outcomes, amm }: { outcomes: MarketOutcome[], amm: AmmExchange }) => {
+const OutcomesTable = ({
+  amm,
+}: {
+  amm: AmmExchange;
+}) => {
   return (
     <div className={Styles.OutcomesTable}>
-      {outcomes
-        .filter((outcome) => outcome.id !== INVALID_OUTCOME_ID)
+      {amm && amm?.ammOutcomes && amm.ammOutcomes
+        .filter((outcome) => !outcome.isInvalid)
         .map((outcome) => (
           <div key={`${outcome.name}-${amm?.marketId}-${outcome.id}`}>
             <span>{outcome.name.toLowerCase()}</span>
             <span>
               {amm.liquidity !== "0" ?
-                formatDai(outcome.name === YES_OUTCOME_ID ? amm?.priceYes : amm?.priceNo)
+                formatDai(outcome.price)
                   .full
                 : "-"
               }
@@ -87,13 +89,19 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
     marketId,
     amm,
   } = market;
+  const formattedApy = amm?.apy && formatPercent(amm.apy).full;
+  const {
+    actions: { setModal },
+  } = useAppStatusStore();
+
   return (
     <article
       className={classNames(Styles.MarketCard, {
         [Styles.NoLiquidity]: !amm,
       })}
+      onClick={() => amm ? null : setModal({ type: MODAL_ADD_LIQUIDITY, market })}
     >
-      <MarketLink id={marketId} ammId={amm?.id}>
+        <MarketLink id={marketId} goToMarket={!!amm} ammId={amm?.id}>
         <div>
           <CategoryIcon category={categories[0]} />
           <CategoryLabel category={categories[1]} />
@@ -105,13 +113,19 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
           {!amm ? (
             <div>
               <span>Market requires Initial liquidity</span>
-              <PrimaryButton text="Earn fees as a liquidity provider" />
+              <PrimaryButton
+                text="Earn fees as a liquidity provider"
+              />
             </div>
           ) : (
               <>
                 <ValueLabel
                   label="total volume"
                   value={formatDai(market.amm?.volumeTotalUSD).full}
+                />
+                <ValueLabel
+                  label="APY"
+                  value={formattedApy}
                 />
                 <OutcomesTable
                   amm={amm}
@@ -135,36 +149,38 @@ const applyFiltersAndSort = (
   { categories, sortBy, currency, reportingState }
 ) => {
   let updatedFilteredMarkets = passedInMarkets;
-  updatedFilteredMarkets = updatedFilteredMarkets.filter((market: MarketInfo) => {
-    if (
-      categories !== ALL_MARKETS &&
-      categories !== OTHER &&
-      market.categories[0].toLowerCase() !== categories.toLowerCase()
-    ) {
-      return false;
-    }
-    if (
-      categories === OTHER &&
-      POPULAR_CATEGORIES_ICONS[market.categories[0].toLowerCase()]
-    ) {
-      return false;
-    }
-    if (currency !== ALL) {
-      if (!market.amm) {
-        return false;
-      } else if (market?.amm?.cash?.name !== currency) {
+  updatedFilteredMarkets = updatedFilteredMarkets.filter(
+    (market: MarketInfo) => {
+      if (
+        categories !== ALL_MARKETS &&
+        categories !== OTHER &&
+        market.categories[0].toLowerCase() !== categories.toLowerCase()
+      ) {
         return false;
       }
-    }
-    if (reportingState === OPEN) {
-      if (market.reportingState !== 'TRADING') {
+      if (
+        categories === OTHER &&
+        POPULAR_CATEGORIES_ICONS[market.categories[0].toLowerCase()]
+      ) {
         return false;
       }
-    } else if (market.reportingState !== reportingState) {
-      return false;
+      if (currency !== ALL) {
+        if (!market.amm) {
+          return false;
+        } else if (market?.amm?.cash?.name !== currency) {
+          return false;
+        }
+      }
+      if (reportingState === OPEN) {
+        if (market.reportingState !== 'TRADING') {
+          return false;
+        }
+      } else if (market.reportingState !== reportingState) {
+        return false;
+      }
+      return true;
     }
-    return true;
-  });
+  );
   updatedFilteredMarkets = updatedFilteredMarkets.sort((marketA, marketB) => {
     if (sortBy === TOTAL_VOLUME) {
       return (
@@ -201,15 +217,16 @@ const MarketsView = () => {
 
   useEffect(() => {
     // initial render only.
-    document.getElementById("mainContent")?.scrollTo(0, 0);
+    document.getElementById('mainContent')?.scrollTo(0, 0);
     window.scrollTo(0, 1);
   }, []);
 
   return (
     <div className={Styles.MarketsView}>
+      <NetworkMismatchBanner />
       <AppViewStats showCashAmounts />
       {isMobile && (
-        <PrimaryButton
+        <SecondaryButton
           text="filters"
           icon={FilterIcon}
           action={() => setSidebar(SIDEBAR_TYPES.FILTERS)}

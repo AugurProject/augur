@@ -4,12 +4,13 @@ import Styles from 'modules/common/selection.styles.less';
 import {
   CheckedRadioButton,
   EmptyCheckbox,
+  EthIcon,
   FilledCheckbox,
   RadioButton,
   SimpleChevron,
   UsdIcon,
 } from './icons';
-import { USDC } from 'modules/constants';
+import { USDC, ETH } from 'modules/constants';
 import { TinyButton } from './buttons';
 
 export interface NameValuePair {
@@ -78,11 +79,11 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
 
   componentDidMount() {
     this.measure();
-    //    window.addEventListener('click', this.handleWindowOnClick);
+    window.addEventListener('click', this.handleWindowOnClick);
   }
 
   componentWillUnmount() {
-    //    window.removeEventListener('click', this.handleWindowOnClick);
+    window.removeEventListener('click', this.handleWindowOnClick);
   }
 
   componentDidUpdate(prevProps: DropdownProps, prevState: DropdownState) {
@@ -262,12 +263,14 @@ export const SmallDropdown = (props: DropdownProps) => (
   <Dropdown {...props} className={Styles.SmallDropdown} />
 );
 
-const currencyValues = [{ label: USDC, value: USDC, icon: UsdIcon }];
+const currencyValues = [
+  { label: USDC, value: USDC, icon: UsdIcon },
+  { label: ETH, value: ETH, icon: EthIcon },
+];
 
 export const CurrencyDropdown = (props: DropdownProps) => (
   <Dropdown
     {...props}
-    defaultValue={currencyValues[0].label}
     options={currencyValues}
     className={Styles.CurrencyDropdown}
   />
@@ -356,7 +359,7 @@ export const RadioBarGroup = ({ title, items, selected, update }) => {
   );
 };
 
-export const MultiButtonSelection = ({options, selection, setSelection}) => {
+export const MultiButtonSelection = ({ options, selection, setSelection }) => {
   return (
     <ul className={Styles.MultiButtonSelection}>
       {options.map(({ id, label }) => (

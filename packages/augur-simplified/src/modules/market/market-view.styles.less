@@ -66,7 +66,7 @@
   cursor: default;
   margin-left: auto;
 
-  &:hover {    
+  &:hover {
     border: @size-1 solid var(--simple-border);
   }
 }
@@ -79,7 +79,7 @@
   flex-flow: row nowrap;
   width: 100%;
   height: @size-86;
-  
+
   > li {
     display: flex;
     flex-flow: column nowrap;
@@ -112,14 +112,20 @@
   flex-flow: column nowrap;
   justify-content: flex-start;
   align-items: flex-start;
-  grid-gap: @size-24;
 
   > h4 {
     .text-20-bold;
 
     color: var(--simple-primary-text);
     line-height: @size-24;
-    margin: 0;
+    margin: 0 0 @size-24;
+  }
+
+  > h5 {
+    .text-14-bold;
+
+    line-height: @size-20;
+    margin: 0 0 @size-12;
   }
 
   > p {
@@ -128,13 +134,13 @@
     color: var(--simple-primary-text);
     line-height: @size-22;
     flex: 1;
-    margin: 0;
+    margin: 0 0 @size-12;
   }
 
   > button {
     .RoundedButton;
     .text-16-bold;
-  
+
     background: none;
     border: none;
     line-height: 140%;
@@ -223,7 +229,7 @@
       > span:last-of-type {
         .text-16-semi-bold;
       }
-      
+
       &:last-of-type {
         grid-column: 1 / span 3;
         border-top: @size-1 solid var(--simple-border);

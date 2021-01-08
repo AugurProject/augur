@@ -52,14 +52,15 @@ const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode }) => {
     if (account) {
       updateLoginAccount(activeWeb3);
     }
-  }, [account, activeWeb3, updateLoginAccount]);
+    // eslint-disable-next-line
+  }, [account, activeWeb3]);
 
   let buttonProps = {
     action: () => setShowModal(!showModal),
     className: null,
     darkMode,
     icon: null,
-    text: 'Connect Account',
+    text: 'Connect Wallet',
   };
 
   if (account) {

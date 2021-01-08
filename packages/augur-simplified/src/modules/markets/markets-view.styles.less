@@ -36,13 +36,14 @@
   &:hover {
     .HoverDropShadow;
   }
-  
+
   > a {
     text-decoration: none;
     color: unset;
   }
 
-  > a > div {
+  > a > div,
+  > section > div {
     .text-14-bold;
     .SimpleBorder;
 
@@ -56,7 +57,7 @@
     grid-template-columns: @size-50 auto 1fr;
     padding: @size-24;
     grid-template-rows: @size-30 auto auto auto;
-    
+
     > div:first-of-type {
       display: flex;
       margin-right: @size-6;
@@ -69,25 +70,53 @@
 
     > span {
       .text-16-semi-bold;
-      .limit-lines(3);
+      .limit-lines(4);
 
       color: var(--simple-primary-text);
       grid-column: 1 / span 3;
       margin-top: @size-16;
       margin-bottom: @size-38;
       text-align: left;
-      height: @size-60;
+      height: @size-80;
     }
 
     > div:nth-of-type(4) {
       grid-column: 1 / span 2;
+      grid-row: 3;
       margin-right: @size-32;
       margin-top: auto;
+    }
+
+    > div:nth-of-type(5) {
+      grid-column: 1 / span 2;
+      grid-row: 4;
+      display: flex;
+      align-items: flex-end;
+      height: 100%;
+
+      > span {
+        &:first-of-type {
+          .text-12;
+
+          color: var(--color-secondary-text);
+          margin-right: @size-4;
+        }
+
+        &:last-of-type {
+          .text-12-semi-bold;
+        }
+      }
+    }
+
+    > div:nth-of-type(6) {
+      grid-column: 3;
+      grid-row: 3 / span 2;
     }
   }
 
   &.NoLiquidity {
-    > a > div {
+    > a > div,
+    > section > div {
       > div:nth-of-type(4) {
         grid-column: 1 / span 3;
         margin-right: 0;
@@ -160,7 +189,8 @@
         height: unset;
       }
       > div:nth-of-type(4) {
-        grid-column: 1 / span 3;
+        grid-column: 1 / span 2;
+        grid-row: 4;
         display: flex;
         flex: 1;
         margin: @size-16 0 0;
@@ -171,6 +201,17 @@
         > span:last-of-type {
           .text-16-semi-bold;
         }
+      }
+
+      > div:nth-of-type(5) {
+        grid-column: 3;
+        grid-row: 4;
+        justify-content: flex-end;
+      }
+
+      > div:nth-of-type(6) {
+        grid-row: 3;
+        grid-column: 1 / span 3;
       }
     }
   }

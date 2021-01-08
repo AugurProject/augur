@@ -59,10 +59,7 @@ export function getSigner(library: Web3Provider, account: string): JsonRpcSigner
 }
 
 // account is optional
-export function getProviderOrSigner(library: Web3Provider, account?: string) {
-  //return account ? getSigner(library, account) : library
-  // look to use ethers provider if need be.
-
+export function getProviderOrSigner(library: Web3Provider, account?: string): Web3Provider | JsonRpcSigner | EthersProvider {
   if (account) {
     // This just connects the account if necessary.
     return getSigner(library, account)

@@ -121,6 +121,7 @@ export const TopNav = () => {
   const location = useLocation();
   const path = parsePath(location.pathname)[0];
   const {
+    paraConfig: { networkId },
     loginAccount,
     isMobile,
     actions: { setSidebar, updateLoginAccount },
@@ -143,7 +144,9 @@ export const TopNav = () => {
 
   const handleAccountUpdate = (activeWeb3) => {
     if (activeWeb3) {
-      if (loginAccount && loginAccount.account) {
+      if (String(networkId) !== String(activeWeb3.chainId)) {
+        updateLoginAccount({ chainId: activeWeb3.chainId });
+      } else if (loginAccount && loginAccount.account) {
         if (loginAccount.account !== activeWeb3.account) {
           updateLoginAccount(activeWeb3);
         }

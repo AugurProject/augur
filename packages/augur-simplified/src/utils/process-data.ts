@@ -3,7 +3,7 @@ import { BigNumber as BN } from 'bignumber.js'
 import { getDayFormat, getTimeFormat } from "../utils/date-utils";
 import { convertAttoValueToDisplayValue } from "@augurproject/sdk";
 import { convertOnChainCashAmountToDisplayCashAmount, formatShares, onChainMarketSharesToDisplayShares } from "./format-number";
-import { BUY, SEC_IN_YEAR, SELL } from "../modules/constants";
+import { BUY, OUTCOME_INVALID_NAME, OUTCOME_NO_NAME, OUTCOME_YES_NAME, SEC_IN_YEAR, SELL } from "../modules/constants";
 import { timeSinceTimestamp } from "./time-since";
 
 interface GraphMarket {
@@ -68,6 +68,7 @@ interface GraphAmmExchange {
   percentageNo: string,
   percentageYes: string,
   feePercent: string,
+  fee: string,
   enters: GraphEnter[],
   exits: GraphExit[],
   addLiquidity: GraphAddLiquidity[],
@@ -149,7 +150,8 @@ const shapeOutcomes = (graphOutcomes: GraphMarketOutcome[]): MarketOutcome[] =>
     id: Number(g.id.split('-')[1]),
     isFinalNumerator: g.isFinalNumerator,
     payoutNumerator: g.payoutNumerator,
-    name: g.value
+    name: g.value,
+    isInvalid: g.id.indexOf('-0') > -1,
   }));
 
 
@@ -187,22 +189,28 @@ const shapeAmmExchange = (amm: GraphAmmExchange, past: GraphAmmExchange, cashes:
   const liquidity24hrUSD = calculatePastLiquidityInUsd(liquidity, pastLiquidity, cash.usdPrice)
   const apy = calculateAmmApy(volumeTotalUSD, amm, cash.usdPrice, addLiquidity, removeLiquidity);
 
-  const ammOutcomes = [{
-    id: 0,
-    price: "0",
-    name: market.outcomes[0].value,
-    isInvalid: true,
-  },
-  {
-    id: 1,
-    price: priceNo.toFixed(2),
-    name: market.outcomes[1].value,
-  },
-  {
-    id: 2,
-    price: priceYes.toFixed(2),
-    name: market.outcomes[2].value,
-  }]
+  const priceNoFixed = priceNo.toFixed(2);
+  const priceYesFixed = priceYes.toFixed(2);
+
+  // recreate outcomes specific for amm
+  const ammOutcomes = [
+    {
+      id: 0,
+      isInvalid: true,
+      price: "0",
+      name: OUTCOME_INVALID_NAME,
+    },
+    {
+      id: 1,
+      price: priceNoFixed,
+      name: OUTCOME_NO_NAME,
+    },
+    {
+      id: 2,
+      price: priceYesFixed,
+      name: OUTCOME_YES_NAME,
+    }
+  ];
 
   return {
     id: amm.id,
@@ -216,8 +224,8 @@ const shapeAmmExchange = (amm: GraphAmmExchange, past: GraphAmmExchange, cashes:
     liquidityCash: amm.liquidityCash,
     liquidityUSD,
     cash,
-    priceYes: priceYes.toFixed(2),
-    priceNo: priceNo.toFixed(2),
+    priceNo: priceNoFixed,
+    priceYes: priceYesFixed,
     sharetoken: amm?.shareToken?.id,
     percentageNo: amm.percentageNo,
     percentageYes: amm.percentageYes,
@@ -226,6 +234,7 @@ const shapeAmmExchange = (amm: GraphAmmExchange, past: GraphAmmExchange, cashes:
     volumeYesUSD,
     volumeNoUSD,
     feePercent: amm.feePercent,
+    feeRaw: amm.fee,
     volumeTotal,
     volume24hrTotalUSD,
     volumeTotalUSD,
@@ -235,7 +244,8 @@ const shapeAmmExchange = (amm: GraphAmmExchange, past: GraphAmmExchange, cashes:
     past24hrPriceYes: past24hrPriceYes ? past24hrPriceYes.toFixed(2) : null,
     totalSupply: amm.totalSupply,
     apy,
-    outcomes: ammOutcomes,
+    ammOutcomes,
+
   }
 }
 
@@ -361,8 +371,8 @@ export const getAmmTradeData = (outcomeTrades: Trades, enters: GraphEnter[], exi
   return calculateTradePrice(exits, enterTrades, displayDecimals)
 }
 
-export const getUserActvity = (account: string, markets: { [id: string]: MarketInfo }, ammExchanges: { [id: string]: AmmExchange }): ActivityData[] => {
-  if (!ammExchanges) return [];
+export const shapeUserActvity = (account: string, markets: { [id: string]: MarketInfo }, ammExchanges: { [id: string]: AmmExchange }): ActivityData[] => {
+  if (!ammExchanges || !account) return [];
   const exchanges = Object.values(ammExchanges)
   if (!exchanges || exchanges.length === 0) return []
 
