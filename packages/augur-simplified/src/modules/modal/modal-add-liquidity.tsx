@@ -5,7 +5,7 @@ import { Header } from './common';
 import { YES_NO, BUY, USDC, SHARES } from '../constants';
 import { OutcomesGrid, AmountInput, InfoNumbers } from '../market/trading-form';
 import { BuySellButton, SecondaryButton } from '../common/buttons';
-import { ErrorBlock } from '../common/labels';
+import { ErrorBlock, generateTooltip } from '../common/labels';
 import { formatPercent } from '../../utils/format-number';
 import { MultiButtonSelection } from '../common/selection';
 import classNames from 'classnames';
@@ -61,7 +61,7 @@ interface ModalAddLiquidityProps {
 const ModalAddLiquidity = ({
   market,
   liquidityModalType,
-  cash = USDC
+  cash = USDC,
 }: ModalAddLiquidityProps) => {
   const { userInfo: { balances }} = useAppStatusStore();
 
@@ -78,6 +78,7 @@ const ModalAddLiquidity = ({
   const percentFormatted = formatPercent(amm?.feePercent).full;
   let modalType = createLiquidity ? CREATE : ADD;
   if (liquidityModalType) modalType = liquidityModalType;
+  // eslint-disable-next-line
   const [selectedCash, setSelectedCash] = useState(amm?.cash);
   // get user balance for initial amount, if cash not selected user "0"
   const userCashBalance = selectedCash?.name ? balances[selectedCash?.name]?.balance : "0";
@@ -173,7 +174,7 @@ const ModalAddLiquidity = ({
           },
         ],
       },
-      currencyName: SHARES
+      currencyName: SHARES,
     },
     [ADD]: {
       header: 'add liquidity',
@@ -212,7 +213,7 @@ const ModalAddLiquidity = ({
           },
         ],
       },
-      currencyName: cash
+      currencyName: cash,
     },
     [CREATE]: {
       currencyName: USDC,
@@ -293,7 +294,12 @@ const ModalAddLiquidity = ({
           {LIQUIDITY_STRINGS[modalType].setTradingFee && (
             <>
               <ErrorBlock text="Initial liquidity providers are required to set the odds before creating market liquidity." />
-              <span className={Styles.SmallLabel}>Set trading fee</span>
+              <span
+                className={Styles.SmallLabel}
+              >
+                Set trading fee
+                {generateTooltip('Set trading fee', 'tradingFeeInfo')}
+              </span>
               <MultiButtonSelection
                 options={TRADING_FEE_OPTIONS}
                 selection={tradingFeeSelection}
@@ -377,9 +383,9 @@ const ModalAddLiquidity = ({
               {LIQUIDITY_STRINGS[modalType].confirmReceiveOverview.title}
             </span>
             <InfoNumbers
-              infoNumbers={LIQUIDITY_STRINGS[
-                modalType
-              ].confirmReceiveOverview.breakdown}
+              infoNumbers={
+                LIQUIDITY_STRINGS[modalType].confirmReceiveOverview.breakdown
+              }
             />
           </section>
           {LIQUIDITY_STRINGS[modalType].marketLiquidityDetails && (

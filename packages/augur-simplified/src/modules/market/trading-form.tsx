@@ -5,12 +5,12 @@ import { BUY, SELL, YES_NO, USDC, ETH } from 'modules/constants';
 import { PrimaryButton } from 'modules/common/buttons';
 import { useAppStatusStore } from '../stores/app-status';
 import { CloseIcon, UsdIcon, EthIcon } from 'modules/common/icons';
-import { AmmExchange, AmmOutcome, EstimateEnterTradeResult, EstimateExitTradeResult, TradingDirection } from '../types';
+import { AmmExchange, AmmOutcome, EstimateEnterTradeResult, EstimateExitTradeResult } from '../types';
 import { formatEther } from '../../utils/format-number';
 import { ApprovalButton, TinyButton } from '../common/buttons';
 import { ApprovalAction, SHARES, OUTCOME_YES_NAME, YES_OUTCOME_ID } from '../constants';
 import { CurrencyDropdown } from '../common/selection';
-import { estimateEnterTrade, estimateExitTrade, estimateTrade } from '../../utils/contract-calls';
+import { estimateEnterTrade, estimateExitTrade } from '../../utils/contract-calls';
 
 export const DefaultMarketOutcomes = [
   {

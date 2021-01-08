@@ -84,6 +84,7 @@
     "react-feather": "^2.0.9",
     "react-refresh": "^0.8.3",
     "react-router-dom": "^5.2.0",
+    "react-tooltip": "^4.2.11",
     "resolve": "1.18.1",
     "resolve-url-loader": "^3.1.2",
     "sass-loader": "8.0.2",

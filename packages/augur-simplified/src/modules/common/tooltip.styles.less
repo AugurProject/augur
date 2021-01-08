@@ -1,0 +1,340 @@
+@import (reference) '~assets/styles/shared';
+
+div.Tooltip {
+  .text-12;
+
+  background-color: var(--simple-light-bg);
+  border: @size-1 solid transparent;
+  border-radius: @size-2;
+  box-shadow: 0 -@size-2 @size-4 0 rgba(0, 0, 0, 0.5);
+  color: var(--simple-primary-text);
+  max-width: 13.7rem;
+  padding: @size-8;
+  pointer-events: auto;
+  text-transform: none;
+  white-space: initial;
+  z-index: @mask-above;
+
+  > h4 {
+    font-weight: 500;
+    margin-bottom: @size-8;
+  }
+
+  > p {
+    margin: 0 0 @size-12;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &:hover {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.TooltipHint {
+  margin-bottom: 0;
+  display: flex;
+
+  > svg {
+    max-height: @size-16;
+    max-width: @size-16;
+
+    > circle {
+      fill: none;
+      stroke: var(--color-secondary-text);
+    }
+
+    > path {
+      fill: var(--color-secondary-text);
+      stroke: none;
+    }
+  }
+}
+
+.Container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+:global {
+  div.__react_component_tooltip {
+    transition: none;
+
+    &.show {
+      opacity: 1;
+    }
+
+    &.place-top {
+      box-shadow: 0 -1px @size-4 0 rgba(0, 0, 0, 0.2);
+      margin-bottom: -@size-14;
+
+      &::after {
+        border-top: @size-8 solid var(--simple-light-bg);
+        bottom: -@size-8;
+      }
+
+      &.type-light::after {
+        border-left-width: @size-8;
+        border-right-width: @size-8;
+        border-top-width: @size-8;
+      }
+
+      &::before {
+        border: 0 solid transparent;
+        border-left: 0 solid transparent;
+        border-right: 0 solid transparent;
+        border-top-color: var(--simple-light-bg);
+        bottom: -@size-22;
+        content: '';
+        display: block;
+        height: 0;
+        left: 50.5%;
+        margin-left: -@size-8;
+        position: absolute;
+        top: unset;
+        width: 0;
+      }
+    }
+
+    &.place-bottom {
+      box-shadow: 0 1px @size-4 0 rgba(0, 0, 0, 0.5);
+      margin-top: -@size-14;
+
+      &::after {
+        border-bottom-color: var(--simple-light-bg);
+        top: -@size-8;
+      }
+
+      &.type-light::after {
+        border-bottom-width: @size-8;
+        border-left-width: @size-8;
+        border-right-width: @size-8;
+      }
+
+      &::before {
+        border: 0 solid transparent;
+        border-bottom-color: var(--simple-light-bg);
+        border-left: 0 solid transparent;
+        border-right: 0 solid transparent;
+        bottom: 100%;
+        content: '';
+        display: block;
+        height: 0;
+        left: 50.5%;
+        margin-left: -@size-8;
+        position: absolute;
+        top: unset;
+        width: 0;
+      }
+    }
+
+    &.place-left {
+      margin-left: -@size-14;
+      margin-top: -@size-8;
+
+      &::after {
+        border-left-color: var(--simple-light-bg);
+        right: -@size-8;
+      }
+
+      &.type-light::after {
+        border-bottom-width: @size-8;
+        border-left-width: @size-8;
+        border-top-width: @size-8;
+      }
+
+      &::before {
+        border: 0 solid transparent;
+        border-bottom: 0 solid transparent;
+        border-left-color: var(--simple-light-bg);
+        border-top: 0 solid transparent;
+        bottom: unset;
+        content: '';
+        display: block;
+        height: 0;
+        left: unset;
+        position: absolute;
+        right: -@size-22;
+        top: 50%;
+        width: 0;
+      }
+    }
+
+    &.place-right {
+      margin-right: -@size-14;
+      margin-top: -@size-8;
+
+      &::after {
+        border-right-color: var(--simple-light-bg);
+        left: -@size-8;
+      }
+
+      &.type-light::after {
+        border-bottom-width: @size-8;
+        border-right-width: @size-8;
+        border-top-width: @size-8;
+      }
+
+      &::before {
+        border: 0 solid transparent;
+        border-bottom: 0 solid transparent;
+        border-right-color: var(--simple-light-bg);
+        border-top: 0 solid transparent;
+        bottom: unset;
+        content: '';
+        display: block;
+        height: 0;
+        left: -@size-22;
+        position: absolute;
+        right: unset;
+        top: 50%;
+        width: 0;
+      }
+    }
+  }
+
+  :root[theme='BETTING'],
+  :root[theme='SPORTS'] {
+    div.__react_component_tooltip {
+      transition: none;
+
+      &.show {
+        opacity: 1;
+      }
+
+      &.place-top {
+        box-shadow: 0 -@size-1 @size-4 0 var(--color-primary-text-80);
+        margin-bottom: -@size-14;
+
+        &::after {
+          border-top: @size-8 solid var(--color-primary-text-80);
+          bottom: -@size-8;
+        }
+
+        &.type-light::after {
+          border-left-width: @size-8;
+          border-right-width: @size-8;
+          border-top-width: @size-8;
+        }
+
+        &::before {
+          border: 0 solid transparent;
+          border-left: 0 solid transparent;
+          border-right: 0 solid transparent;
+          border-top-color: var(--simple-light-bg);
+          bottom: -@size-22;
+          content: '';
+          display: block;
+          height: 0;
+          left: 50.5%;
+          margin-left: -@size-8;
+          position: absolute;
+          top: unset;
+          width: 0;
+        }
+      }
+
+      &.place-bottom {
+        box-shadow: 0 @size-1 @size-4 0 var(--color-primary-text-80);
+        margin-top: -@size-14;
+
+        &::after {
+          border-bottom-color: var(--color-primary-text-80);
+          top: -@size-8;
+        }
+
+        &.type-light::after {
+          border-bottom-width: @size-8;
+          border-left-width: @size-8;
+          border-right-width: @size-8;
+        }
+
+        &::before {
+          border: 0 solid transparent;
+          border-bottom-color: var(--simple-light-bg);
+          border-left: 0 solid transparent;
+          border-right: 0 solid transparent;
+          bottom: 100%;
+          content: '';
+          display: block;
+          height: 0;
+          left: 50.5%;
+          margin-left: -@size-8;
+          position: absolute;
+          top: unset;
+          width: 0;
+        }
+      }
+
+      &.place-left {
+        margin-left: -@size-14;
+        margin-top: 0;
+
+        &::after {
+          border-left-color: var(--simple-secondary-text-50);
+          right: -@size-8;
+          top: @size-14;
+        }
+
+        &.type-light::after {
+          border-bottom-width: @size-6;
+          border-left-width: @size-6;
+          border-top-width: @size-6;
+        }
+
+        &::before {
+          border: 0 solid transparent;
+          border-bottom: 0 solid transparent;
+          border-left-color: var(--simple-light-bg);
+          border-top: 0 solid transparent;
+          bottom: unset;
+          content: '';
+          display: block;
+          height: 0;
+          left: unset;
+          position: absolute;
+          right: -@size-22;
+          top: 50%;
+          width: 0;
+        }
+      }
+
+      &.place-right {
+        margin-right: -@size-14;
+        margin-top: 0;
+
+        &::after {
+          border-right-color: var(--simple-secondary-text-50);
+          left: -@size-6;
+          top: 50%;
+        }
+
+        &.type-light::after {
+          border-bottom-width: @size-6;
+          border-right-width: @size-6;
+          border-top-width: @size-6;
+        }
+
+        &::before {
+          border: 0 solid transparent;
+          border-bottom: 0 solid transparent;
+          border-right-color: var(--simple-secondary-text);
+          border-top: 0 solid transparent;
+          bottom: unset;
+          content: '';
+          display: block;
+          height: 0;
+          left: -@size-1;
+          position: absolute;
+          right: unset;
+          top: 50%;
+          width: 0;
+        }
+      }
+    }
+  }
+}
