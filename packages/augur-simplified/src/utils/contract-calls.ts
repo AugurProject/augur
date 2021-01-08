@@ -143,7 +143,7 @@ export const estimateEnterTrade = async (
   inputDisplayAmount: string,
   outputYesShares: boolean = true,
 ): Promise<EstimateEnterTradeResult | null> => {
-
+  const startTime = new Date().getTime()
   const breakdownWithFeeRaw = await estimateMiddlewareTrade(TradingDirection.ENTRY, amm, inputDisplayAmount, outputYesShares);
   const breakdownWithoutFeeRaw = await estimateMiddlewareTrade(TradingDirection.ENTRY, amm, inputDisplayAmount, outputYesShares, false);
 
@@ -158,6 +158,8 @@ export const estimateEnterTrade = async (
   const slippagePercent = (new BN(averagePrice).minus(price)).div(price).times(100).toFixed(2);
   const ratePerCash = new BN(estimatedShares).div(new BN(inputDisplayAmount)).toFixed(6);
 
+  const endTime = new Date().getTime();
+  console.log('seconds to estimate', (endTime - startTime)/ 1000)
   return {
     outputShares: String(estimatedShares),
     tradeFees,
@@ -175,6 +177,7 @@ export const estimateExitTrade = async (
   userBalances: string[] = [],
 ): Promise<EstimateExitTradeResult | null> => {
 
+  const startTime = new Date().getTime()
   const breakdownWithFeeRaw = await estimateMiddlewareTrade(TradingDirection.EXIT, amm, inputDisplayAmount, outputYesShares, true, userBalances);
   const breakdownWithoutFeeRaw = await estimateMiddlewareTrade(TradingDirection.EXIT, amm, inputDisplayAmount, outputYesShares, false, userBalances);
 
@@ -189,6 +192,9 @@ export const estimateExitTrade = async (
   const ratePerCash = new BN(estimateCash).div(new BN(inputDisplayAmount)).toFixed(6);
   const displayShares = onChainMarketSharesToDisplayShares(shares, amm.cash.decimals);
   const remainingShares = new BN(displayShares).minus(new BN(inputDisplayAmount)).toFixed(6);
+
+  const endTime = new Date().getTime();
+  console.log('seconds to estimate', (endTime - startTime)/ 1000)
 
   return {
     outputCash: String(estimateCash),
@@ -242,7 +248,7 @@ export const estimateMiddlewareTrade = async (
       outputYesShares,
       includeFee
     ).catch(e => console.log('Error get enter position', e));
-    console.log('breakdown', JSON.stringify(breakdown));
+
     return String(breakdown);
   }
 

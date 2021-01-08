@@ -310,35 +310,42 @@ const TradingForm = ({
   const userCashBalance = amm?.cash?.name ? balances[amm?.cash?.name]?.balance : "0";
 
   useEffect(() => {
+    let isMounted = true;
     const getEstimate = async () => {
       const outputYesShares = selectedOutcome.id === YES_OUTCOME_ID;
       if (orderType === BUY) {
         const breakdown = await estimateEnterTrade(amm, amount, outputYesShares);
         if (breakdown) {
           const {slippagePercent, ratePerCash} = breakdown;
-          setBreakdown(getEnterBreakdown(breakdown))
-          setTradeEstimates({slippagePercent, ratePerCash })
+          if (isMounted) {
+            setBreakdown(getEnterBreakdown(breakdown))
+            setTradeEstimates({slippagePercent, ratePerCash })
+          }
         } else {
           // if no breakdown, means no liquidity
           // TODO: set insufficient liquidity state here
-          setBreakdown(getEnterBreakdown(null))
+          if (isMounted) {
+            setBreakdown(getEnterBreakdown(null))
+          }
         }
       } else {
         let userBalances = [];
         const hasShares = balances?.marketShares && balances?.marketShares[amm?.id];
         if (hasShares) {
           userBalances = hasShares.outcomeShares;
-          console.log('userBalances', userBalances)
         }
         const breakdown = await estimateExitTrade(amm, amount, outputYesShares, userBalances);
         if (breakdown) {
           const {slippagePercent, ratePerCash} = breakdown;
-          setBreakdown(getExitBreakdown(breakdown))
-          setTradeEstimates({slippagePercent, ratePerCash })
+          if (isMounted) {
+            setBreakdown(getExitBreakdown(breakdown))
+            setTradeEstimates({slippagePercent, ratePerCash })          }
         } else {
           // if no breakdown, means no liquidity
           // TODO: set insufficient liquidity state here
-          setBreakdown(getExitBreakdown(null))
+          if (isMounted) {
+            setBreakdown(getExitBreakdown(null))
+          }
         }
       }
     }
@@ -346,6 +353,9 @@ const TradingForm = ({
       getEstimate()
     } else {
       orderType === BUY ? setBreakdown(getEnterBreakdown(null)) : setBreakdown(getExitBreakdown(null));
+    }
+    return () => {
+      isMounted = false;
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderType, selectedOutcome.id, amount]);
