@@ -187,7 +187,7 @@ export const estimateEnterTrade = async (
 
   const estimatedShares = onChainMarketSharesToDisplayShares(breakdownWithFeeRaw, amm.cash.decimals);
   const estimatedSharesWithoutFee = onChainMarketSharesToDisplayShares(breakdownWithoutFeeRaw, amm.cash.decimals);
-  const tradeFees = String(new BN(estimatedShares).minus(new BN(estimatedSharesWithoutFee)));
+  const tradeFees = String(new BN(estimatedSharesWithoutFee).minus(new BN(estimatedShares)));
 
   const averagePrice = new BN(inputDisplayAmount).div(new BN(estimatedShares)).toFixed(2);
   const maxProfit = String(new BN(estimatedShares).minus(new BN(inputDisplayAmount)));
@@ -198,7 +198,6 @@ export const estimateEnterTrade = async (
   const endTime = new Date().getTime();
   console.log('seconds to estimate', (endTime - startTime)/ 1000)
 
-  console.log('slippagePercent', String(slippagePercent))
   return {
     outputShares: String(estimatedShares),
     tradeFees,
@@ -222,8 +221,8 @@ export const estimateExitTrade = async (
 
   const estimateCash = convertOnChainCashAmountToDisplayCashAmount(breakdownWithFeeRaw, amm.cash.decimals);
   const estimateCashWithoutFees = convertOnChainCashAmountToDisplayCashAmount(breakdownWithoutFeeRaw, amm.cash.decimals);
-  const estimateFees = String(new BN(estimateCash).minus(new BN(estimateCashWithoutFees)));
-
+  const estimateFees = String(new BN(estimateCashWithoutFees).minus(new BN(estimateCash)));
+  console.log('breakdownWithoutFeeRaw', String(breakdownWithoutFeeRaw))
   const averagePrice = new BN(estimateCash).div(new BN(inputDisplayAmount)).toFixed(2);
   const price = outputYesShares ? amm.priceYes : amm.priceNo;
   const shares = outputYesShares ? new BN(userBalances[YES_OUTCOME_ID]) : BigNumber.min(new BN(userBalances[0]), new BN(userBalances[NO_OUTCOME_ID]));

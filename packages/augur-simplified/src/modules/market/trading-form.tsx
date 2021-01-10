@@ -449,6 +449,8 @@ const TradingForm = ({
 
   const makeTrade = () => {
     const minOutput = tradeEstimates?.outputAmount;
+    const percentageOff = new BN(1).minus(new BN(slippage).div(100));
+    const worstCaseOutput = String(new BN(minOutput).times(percentageOff));
     const direction = orderType === BUY ? TradingDirection.ENTRY : TradingDirection.EXIT;
     const outputYesShares = selectedOutcome.id === YES_OUTCOME_ID;
     let userBalances = [];
@@ -456,7 +458,7 @@ const TradingForm = ({
     if (hasShares) {
       userBalances = hasShares.outcomeShares;
     }
-    doTrade(direction, amm, minOutput, amount, outputYesShares, userBalances).then(response => {
+    doTrade(direction, amm, worstCaseOutput, amount, outputYesShares, userBalances).then(response => {
       console.log('kicked off trade');
     })
       .catch(e => {
