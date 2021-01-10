@@ -210,7 +210,6 @@ export enum ApprovalState {
 }
 
 export enum ApprovalAction {
-  TRADE,
   ENTER_POSITION,
   EXIT_POSITION,
   ADD_LIQUIDITY,
