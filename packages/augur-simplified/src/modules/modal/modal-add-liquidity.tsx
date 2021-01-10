@@ -4,7 +4,7 @@ import Styles from 'modules/modal/modal.styles.less';
 import { Header } from './common';
 import { YES_NO, BUY, USDC, SHARES } from '../constants';
 import { OutcomesGrid, AmountInput, InfoNumbers } from '../market/trading-form';
-import { BuySellButton, SecondaryButton } from '../common/buttons';
+import { BuySellButton } from '../common/buttons';
 import { ErrorBlock, generateTooltip } from '../common/labels';
 import { formatPercent } from '../../utils/format-number';
 import { MultiButtonSelection } from '../common/selection';
@@ -104,7 +104,6 @@ const ModalAddLiquidity = ({
     TRADING_FEE_OPTIONS[0].id
   );
 
-  const { amm } = market;
   const createLiquidity = !amm || amm.liquidity === "0";
   const percentFormatted = formatPercent(amm?.feePercent).full;
   let modalType = createLiquidity ? CREATE : ADD;
