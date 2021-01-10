@@ -514,7 +514,7 @@ const TradingForm = ({
         />
         <InfoNumbers infoNumbers={breakdown} />
         {loginAccount && (
-          <ApprovalButton amm={amm} actionType={ApprovalAction.TRADE} />
+          <ApprovalButton amm={amm} actionType={orderType === BUY ? ApprovalAction.ENTER_POSITION : ApprovalAction.EXIT_POSITION} />
         )}
         <BuySellButton
           disabled={canMakeTrade.disabled || !approvals?.trade[ammCash?.name]}
