@@ -197,6 +197,8 @@ export const estimateEnterTrade = async (
 
   const endTime = new Date().getTime();
   console.log('seconds to estimate', (endTime - startTime)/ 1000)
+
+  console.log('slippagePercent', String(slippagePercent))
   return {
     outputShares: String(estimatedShares),
     tradeFees,
@@ -300,13 +302,6 @@ export const estimateMiddlewareTrade = async (
       longShares = convertDisplayShareAmountToOnChainShareAmount(new BN(inputDisplayAmount), new BN(cash.decimals));
     }
 
-    console.log(
-      tradeDirection,
-      'no:',
-      String(shortShares),
-      'yes:',
-      String(longShares)
-    );
     breakdown = await augurClient.amm.getExitPosition(
       marketId,
       cash.shareToken,
@@ -346,7 +341,7 @@ export async function doTrade(
     );
 
     const inputOnChainCashAmount = convertDisplayCashAmountToOnChainCashAmount(new BN(inputDisplayAmount || "0"), new BN(amm.cash.decimals))
-    const onChainMinShares = onChainMarketSharesToDisplayShares(minAmount, amm.cash.decimals);
+    const onChainMinShares = convertDisplayShareAmountToOnChainShareAmount(minAmount, amm.cash.decimals);
     return augurClient.amm.doEnterPosition(
       amm.marketId,
       amm.cash.shareToken,
@@ -368,7 +363,7 @@ export async function doTrade(
     } else {
       longShares = new BN(inputOnChainSharesAmount);
     }
-
+    const onChainMinAmount = convertDisplayCashAmountToOnChainCashAmount(new BN(minAmount), new BN(amm.cash.decimals));
     console.log(
       'doExitPosition:',
       amm.marketId,
@@ -376,10 +371,9 @@ export async function doTrade(
       amm.feeRaw,
       String(shortShares),
       String(longShares),
-      String(minAmount)
+      String(onChainMinAmount)
     );
 
-    const onChainMinAmount = convertDisplayCashAmountToOnChainCashAmount(new BN(minAmount), new BN(amm.cash.decimals));
     return augurClient.amm.doExitPosition(
       amm.marketId,
       amm.cash.shareToken,
@@ -594,15 +588,18 @@ export const getUserBalances = async (
         const trades = getUserTrades(account, amm.transactions);
         if (existingMarketShares) {
           existingMarketShares.positions.push(getPositionUsdValues(trades, rawBalance, balance, outcome, amm));
-          userBalances.marketShares[amm.id].outcomeShares[Number(outcome)] = rawBalance;
+          userBalances.marketShares[amm.id].outcomeSharesRaw[Number(outcome)] = rawBalance;
+          userBalances.marketShares[amm.id].outcomeShares[Number(outcome)] = onChainMarketSharesToDisplayShares(rawBalance, cash.decimals);
         } else if (balance !== "0") {
           userBalances.marketShares[amm.id] = {
             ammExchange: amm,
             positions: [],
+            outcomeSharesRaw: ["0", "0", "0"],
             outcomeShares: ["0", "0", "0"],
           }
           userBalances.marketShares[amm.id].positions.push(getPositionUsdValues(trades, rawBalance, balance, outcome, amm));
-          userBalances.marketShares[amm.id].outcomeShares[Number(outcome)] = rawBalance;
+          userBalances.marketShares[amm.id].outcomeSharesRaw[Number(outcome)] = rawBalance;
+          userBalances.marketShares[amm.id].outcomeShares[Number(outcome)] = onChainMarketSharesToDisplayShares(rawBalance, cash.decimals);
         }
       }
     }

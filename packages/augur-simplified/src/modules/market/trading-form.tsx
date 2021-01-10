@@ -16,6 +16,8 @@ import {
   INSUFFICIENT_LIQUIDITY,
   ENTER_AMOUNT,
   INSUFFICIENT_BALANCE,
+  SETTINGS_SLIPPAGE,
+  OVER_SLIPPAGE,
 } from '../constants';
 import { CurrencyDropdown } from '../common/selection';
 import { generateTooltip } from '../common/labels';
@@ -127,7 +129,7 @@ export const AmountInput = ({
     let returnError = '';
     if (value !== '' && (isNaN(value) || Number(value) === 0 || Number(value) < 0)) {
       returnError = 'Amount is not valid'
-    } 
+    }
     updateError(returnError);
     updateAmountError(returnError);
   }
@@ -340,13 +342,12 @@ const TradingForm = ({
   amm,
 }: TradingFormProps) => {
   const {
-    userInfo: { balances },
-  } = useAppStatusStore();
-  const {
     isMobile,
     loginAccount,
     approvals,
     actions: { setShowTradingForm },
+    settings: { slippage },
+    userInfo: { balances },
   } = useAppStatusStore();
   const [orderType, setOrderType] = useState(BUY);
   const [selectedOutcome, setSelectedOutcome] = useState(
@@ -358,9 +359,6 @@ const TradingForm = ({
   const [tradeEstimates, setTradeEstimates] = useState<TradeEstimates>({})
   const ammCash = amm?.cash;
   const outcomes = amm?.ammOutcomes || [];
-  const userCashBalance = amm?.cash?.name
-    ? balances[amm?.cash?.name]?.balance
-    : '0';
 
   useEffect(() => {
     let isMounted = true;
@@ -386,7 +384,7 @@ const TradingForm = ({
         const hasShares =
           balances?.marketShares && balances?.marketShares[amm?.id];
         if (hasShares) {
-          userBalances = hasShares.outcomeShares;
+          userBalances = hasShares.outcomeSharesRaw;
         }
         const breakdown = await estimateExitTrade(amm, amount, outputYesShares, userBalances);
         if (breakdown && breakdown.outputCash !== "0") {
@@ -417,22 +415,37 @@ const TradingForm = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderType, selectedOutcome.id, amount]);
 
+  const userBalance = useMemo(() => {
+    return orderType === BUY ? amm?.cash?.name
+      ? balances[amm?.cash?.name]?.balance
+      : '0' : balances?.marketShares && balances?.marketShares[amm?.id] &&
+        balances?.marketShares[amm?.id].outcomeShares ?
+        balances?.marketShares[amm?.id].outcomeShares[selectedOutcome.id]
+        : "0"
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orderType, amm?.cash?.name, amm?.id, selectedOutcome.id, balances]);
+
   const canMakeTrade: CanTradeProps = useMemo(() => {
     let actionText = buttonError || orderType;
     let disabled = false;
     if (Number(amount) === 0 || isNaN(Number(amount)) || amount === '') {
       actionText = ENTER_AMOUNT;
       disabled = true;
-    } else if (new BN(amount).gt(new BN(userCashBalance))) {
+    } else if (new BN(amount).gt(new BN(userBalance))) {
       actionText = INSUFFICIENT_BALANCE;
       disabled = true;
+    } else if (new BN(slippage || SETTINGS_SLIPPAGE).lt(new BN(tradeEstimates?.slippagePercent))) {
+      actionText = OVER_SLIPPAGE;
+      disabled = true;
     }
+
     return {
       disabled,
       actionText
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orderType, selectedOutcome.id, amount, buttonError, userCashBalance]);
+  }, [orderType, selectedOutcome.id, amount, buttonError, userBalance, tradeEstimates, slippage]);
 
   const makeTrade = () => {
     const minOutput = tradeEstimates?.outputAmount;
@@ -489,10 +502,10 @@ const TradingForm = ({
           orderType={orderType}
         />
         <AmountInput
-          chosenCash={ammCash?.name}
+          chosenCash={orderType === BUY ? ammCash?.name : SHARES}
           updateInitialAmount={setAmount}
           initialAmount={''}
-          maxValue={userCashBalance}
+          maxValue={userBalance}
           rate={tradeEstimates?.ratePerCash}
           amountError={buttonError}
           updateAmountError={updateButtonError}
@@ -502,7 +515,7 @@ const TradingForm = ({
           <ApprovalButton amm={amm} actionType={ApprovalAction.TRADE} />
         )}
         <BuySellButton
-          disabled={!approvals?.trade[ammCash?.name] || canMakeTrade.disabled}
+          disabled={canMakeTrade.disabled || !approvals?.trade[ammCash?.name]}
           action={makeTrade}
           text={canMakeTrade.actionText}
           error={buttonError}

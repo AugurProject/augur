@@ -1095,7 +1095,8 @@ export interface AmmMarketShares {
     ammExchange: AmmExchange;
     positions: PositionBalance[];
     claimableWinnings?: Winnings;
-    outcomeShares: string[]
+    outcomeShares: string[];
+    outcomeSharesRaw: string[];
   }
 }
 
@@ -1127,6 +1128,10 @@ interface Modal {
   type: string;
 }
 
+export interface Settings {
+  slippage: string,
+  showInvalidMarkets: boolean,
+}
 export interface AppStatusState {
   approvals: {
     trade: {
@@ -1147,6 +1152,7 @@ export interface AppStatusState {
   showTradingForm: boolean;
   sidebarType: string;
   modal: Modal;
+  settings: Settings;
 }
 
 export interface TransactionDetails {
