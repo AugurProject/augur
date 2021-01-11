@@ -152,7 +152,7 @@ const MarketView = ({ defaultMarket = null }) => {
             {currentAMMs.length === 1 && (
               <AddCurrencyLiquidity
                 market={market}
-                cash={currentAMMs[0] === USDC ? ETH : USDC}
+                currency={currentAMMs[0] === USDC ? ETH : USDC}
               />
             )}
           </article>
@@ -188,7 +188,7 @@ const MarketView = ({ defaultMarket = null }) => {
           {currentAMMs.length === 1 && (
             <AddCurrencyLiquidity
               market={market}
-              cash={currentAMMs[0] === USDC ? ETH : USDC}
+              currency={currentAMMs[0] === USDC ? ETH : USDC}
             />
           )}
         </section>
