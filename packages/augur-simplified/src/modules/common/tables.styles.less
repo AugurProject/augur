@@ -21,15 +21,22 @@
   justify-content: center;
   align-items: center;
 
-  > span {
+  > a {
+    display: flex;
+    flex: 1;
+    text-decoration: none;
+  }
+
+  > a > span {
     .text-16-semi-bold;
 
     color: var(--simple-primary-text);
     flex: 1;
     margin-right: @size-12;
+    text-decoration: none;
   }
 
-  > svg {
+  > a > svg {
     width: @size-20;
     height: @size-20;
   }

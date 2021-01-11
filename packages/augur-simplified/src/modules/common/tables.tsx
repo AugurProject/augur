@@ -29,6 +29,7 @@ import {
 import { formatDai } from '../../utils/format-number';
 import { MODAL_ADD_LIQUIDITY, USDC } from '../constants';
 import { useAppStatusStore } from '../stores/app-status';
+import { MarketLink } from '../routes/helpers/links';
 
 interface PositionsTableProps {
   market: MarketInfo;
@@ -54,8 +55,10 @@ const MarketTableHeader = ({
 }) => {
   return (
     <div className={Styles.MarketTableHeader}>
-      <span>{market.description}</span>
-      {ammExchange.cash.symbol === USDC ? UsdIcon : EthIcon}
+      <MarketLink id={market.marketId} ammId={market.amm?.id}>
+        <span>{market.description}</span>
+        {ammExchange.cash.symbol === USDC ? UsdIcon : EthIcon}
+      </MarketLink>
     </div>
   );
 };
@@ -139,7 +142,7 @@ export const AllPositionTable = () => {
       }[])
     : [];
 
-  const positionVis = positions.map((position) => {
+  const positionVis = positions.map(position => {
     return (
       <PositionTable
         market={position.ammExchange.market}
@@ -169,12 +172,14 @@ export const PositionTable = ({
       {positions.length === 0 && <span>No positions to show</span>}
       {positions &&
         positions
-          .filter((p) => p.visible)
+          .filter(p => p.visible)
           .map((position, id) => <PositionRow key={id} position={position} />)}
       {!singleMarket && (
         <PositionFooter claimableWinnings={claimableWinnings} />
       )}
-      {singleMarket && positions.length !== 0 && <div className={Styles.PaginationFooter} />}
+      {singleMarket && positions.length !== 0 && (
+        <div className={Styles.PaginationFooter} />
+      )}
     </div>
   );
 };
@@ -197,20 +202,29 @@ const LiquidityRow = ({ liquidity }: { liquidity: LPTokenBalance }) => {
       <li>{formatDai(liquidity.balance).formatted}</li>
       <li>{formatDai(liquidity.initCostUsd).full}</li>
       <li>{liquidity.usdValue ? formatDai(liquidity.usdValue).full : '-'}</li>
-      <li>{liquidity.feesEarned ? formatDai(liquidity.feesEarned).full : '-'}</li>
+      <li>
+        {liquidity.feesEarned ? formatDai(liquidity.feesEarned).full : '-'}
+      </li>
     </ul>
   );
 };
 
-export const LiquidityFooter = ({market}) => {
+export const LiquidityFooter = ({ market }) => {
   const {
     actions: { setModal },
   } = useAppStatusStore();
   return (
     <div className={Styles.LiquidityFooter}>
-      <PrimaryButton text="remove liquidity" action={() => 
-        setModal({ type: MODAL_ADD_LIQUIDITY, market, liquidityModalType: REMOVE })
-      }/>
+      <PrimaryButton
+        text="remove liquidity"
+        action={() =>
+          setModal({
+            type: MODAL_ADD_LIQUIDITY,
+            market,
+            liquidityModalType: REMOVE,
+          })
+        }
+      />
       <SecondaryButton text="add liquidity" />
     </div>
   );
@@ -225,13 +239,13 @@ export const AllLiquidityTable = () => {
   } = useAppStatusStore();
   const { ammExchanges } = processed;
   const liquidities = lpTokens
-    ? Object.keys(lpTokens).map((ammId) => ({
+    ? Object.keys(lpTokens).map(ammId => ({
         ammExchange: ammExchanges[ammId],
         market: ammExchanges[ammId].market,
         lpTokens: lpTokens[ammId],
       }))
     : [];
-  const liquiditiesViz = liquidities.map((liquidity) => {
+  const liquiditiesViz = liquidities.map(liquidity => {
     return (
       <LiquidityTable
         market={liquidity.market}
@@ -251,7 +265,7 @@ export const LiquidityTable = ({
   lpTokens,
 }: LiquidityTableProps) => {
   const {
-    actions: { setModal }
+    actions: { setModal },
   } = useAppStatusStore();
   return (
     <div className={Styles.LiquidityTable}>
@@ -262,11 +276,14 @@ export const LiquidityTable = ({
       {!lpTokens && (
         <span>
           No liquidity to show
-          <PrimaryButton action={() => setModal({type: MODAL_ADD_LIQUIDITY, market})} text="Earn fees as a liquidity provider" />
+          <PrimaryButton
+            action={() => setModal({ type: MODAL_ADD_LIQUIDITY, market })}
+            text="Earn fees as a liquidity provider"
+          />
         </span>
       )}
       {lpTokens && <LiquidityRow liquidity={lpTokens} />}
-      {lpTokens && <LiquidityFooter market={market}/>}
+      {lpTokens && <LiquidityFooter market={market} />}
     </div>
   );
 };
@@ -314,7 +331,7 @@ export const PositionsLiquidityViewSwitcher = ({
       }[])
     : [];
   const liquidities = lpTokens
-    ? Object.keys(lpTokens).map((ammId) => ({
+    ? Object.keys(lpTokens).map(ammId => ({
         ammExchange: ammExchanges[ammId],
         market: ammExchanges[ammId].market,
         lpTokens: lpTokens[ammId],
@@ -362,6 +379,11 @@ export const PositionsLiquidityViewSwitcher = ({
             <>
               {tableView === POSITIONS && <AllPositionTable />}
               {tableView === LIQUIDITY && <AllLiquidityTable />}
+            </>
+          )}
+          {!ammId &&
+            ((positions.length > 0 && tableView === POSITIONS) ||
+              (liquidities.length > 0 && tableView === LIQUIDITY)) && (
               <Pagination
                 page={1}
                 itemCount={10}
@@ -369,8 +391,7 @@ export const PositionsLiquidityViewSwitcher = ({
                 action={() => null}
                 updateLimit={() => null}
               />
-            </>
-          )}
+            )}
           {ammId && (
             <>
               {tableView === POSITIONS && (
@@ -412,7 +433,7 @@ const TransactionsHeader = () => {
       <li>
         {isMobile ? (
           <SmallDropdown
-            onChange={(value) => setSelectedType(value)}
+            onChange={value => setSelectedType(value)}
             options={[
               { label: ALL, value: 0 },
               { label: SWAP, value: 1 },
@@ -505,7 +526,7 @@ export const TransactionsTable = ({ transactions }: TransactionsProps) => {
       {transactions?.length > 0 ? (
         <>
           <TransactionsHeader />
-          {transactions.map((transaction) => (
+          {transactions.map(transaction => (
             <TransactionRow key={transaction.id} transaction={transaction} />
           ))}
           <div className={Styles.PaginationFooter}>
