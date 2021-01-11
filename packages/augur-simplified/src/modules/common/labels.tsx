@@ -169,11 +169,8 @@ export const AppViewStats = ({ showCashAmounts }: AppViewStatsProps) => {
   );
 };
 
-interface AddLiquidityProps {
-  market: MarketInfo;
-}
 
-export const AddLiquidity = ({ market }: AddLiquidityProps) => {
+export const AddLiquidity = ({ market }: { market: MarketInfo }) => {
   const {
     actions: { setModal },
   } = useAppStatusStore();
@@ -191,22 +188,17 @@ export const AddLiquidity = ({ market }: AddLiquidityProps) => {
   );
 };
 
-
-interface AddCurrencyLiquidityProps extends AddLiquidityProps {
-  cash: string;
-}
-
-export const AddCurrencyLiquidity = ({ market, cash }: AddCurrencyLiquidityProps) => {
+export const AddCurrencyLiquidity = ({ market, currency }: { market: MarketInfo, currency: string}) => {
   const {
     actions: { setModal },
   } = useAppStatusStore();
   return (
     <div
       className={classNames(Styles.AddCurrencyLiquidity)}
-      onClick={() => setModal({ type: MODAL_ADD_LIQUIDITY, market, cash })}
+      onClick={() => setModal({ type: MODAL_ADD_LIQUIDITY, market, currency })}
     >
-      {cash === USDC ? USDCIcon : EthIcon}
-      {`Create this market in ${cash}`}
+      {currency === USDC ? USDCIcon : EthIcon}
+      {`Create this market in ${currency}`}
     </div>
   );
 };

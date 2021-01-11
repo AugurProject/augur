@@ -1,6 +1,6 @@
 import BigNumber, { BigNumber as BN } from 'bignumber.js'
 import { RemoveLiquidityRate, ParaShareToken } from '@augurproject/sdk-lite'
-import { TradingDirection, AmmExchange, AmmExchanges, AmmMarketShares, AmmTransaction, Cashes, CurrencyBalance, PositionBalance, TransactionTypes, UserBalances, MarketInfos, LPTokens, EstimateEnterTradeResult, EstimateExitTradeResult, Cash } from '../modules/types'
+import { TradingDirection, AmmExchange, AmmExchanges, AmmMarketShares, AmmTransaction, Cashes, CurrencyBalance, PositionBalance, TransactionTypes, UserBalances, MarketInfos, LPTokens, EstimateEnterTradeResult, EstimateExitTradeResult, Cash, AddLiquidityBreakdown } from '../modules/types'
 import ethers from 'ethers';
 import { Contract } from '@ethersproject/contracts'
 import {
@@ -15,7 +15,11 @@ import { augurSdkLite } from './augurlitesdk';
 import { ETH, FINALIZED, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_NO_OUTCOMES_NAMES, YES_OUTCOME_ID } from '../modules/constants';
 import { getProviderOrSigner } from '../modules/ConnectAccount/utils';
 
-export function getAmmLiquidity(
+const convertPriceToPercent = (price: string) => {
+  return String(new BN(price).times(100));
+}
+
+export async function getAmmLiquidity(
   account: string,
   amm: AmmExchange,
   marketId: string,
@@ -24,11 +28,14 @@ export function getAmmLiquidity(
   cashAmount: string,
   priceNo: string,
   priceYes: string,
-) {
+): Promise<AddLiquidityBreakdown> {
   const augurClient = augurSdkLite.get();
-  if (!augurClient || !augurClient.amm)
-    return console.error('augurClient is null');
-  const hasLiquidity = Boolean(amm?.id) || amm.liquidity !== "0";
+  if (!augurClient || !augurClient.amm) {
+    console.error('augurClient is null');
+    return null;
+  }
+
+  const hasLiquidity = amm !== null && amm?.id !== undefined && amm?.liquidity !== "0";
   const sharetoken = cash?.shareToken;
   const ammAddress = amm?.id;
   const amount = convertDisplayCashAmountToOnChainCashAmount(cashAmount, cash.decimals);
@@ -49,10 +56,10 @@ export function getAmmLiquidity(
 
   // converting odds to pool percentage. odds is the opposit of pool percentage
   // same when converting pool percentage to price
-  const poolYesPercent = new BN(priceNo);
-  const poolNoPercent = new BN(priceYes);
+  const poolYesPercent = new BN(convertPriceToPercent(priceNo));
+  const poolNoPercent = new BN(convertPriceToPercent(priceYes));
 
-  return augurClient.amm.getAddLiquidity(
+  const addLiquidityResults = await augurClient.amm.getAddLiquidity(
     account,
     ammAddress,
     hasLiquidity,
@@ -63,6 +70,21 @@ export function getAmmLiquidity(
     poolYesPercent,
     poolNoPercent
   );
+  if (addLiquidityResults) {
+    console.log('addLiquidityResults', String(addLiquidityResults[1]))
+    // TODO: Get amounts of yes and no shares from estimate
+    // middleware changes might be needed
+    const lpTokens = String(convertOnChainCashAmountToDisplayCashAmount(String(addLiquidityResults[1]), cash.decimals));
+    return {
+      lpTokens,
+      cashAmount: "0",
+      yesShares: "0",
+      noShares: "0",
+    }
+  }
+
+  return null;
+
 }
 
 export function doAmmLiquidity(
@@ -72,13 +94,13 @@ export function doAmmLiquidity(
   cash: Cash,
   fee: string,
   cashAmount: string,
+  hasLiquidity: boolean,
   priceNo: string,
   priceYes: string,
 ) {
   const augurClient = augurSdkLite.get();
   if (!augurClient || !augurClient.amm)
     return console.error('augurClient is null');
-  const hasLiquidity = Boolean(amm?.id);
   const sharetoken = cash?.shareToken;
   const ammAddress = amm?.id;
   const amount = convertDisplayCashAmountToOnChainCashAmount(cashAmount, cash.decimals);
@@ -99,8 +121,8 @@ export function doAmmLiquidity(
 
   // converting odds to pool percentage. odds is the opposit of pool percentage
   // same when converting pool percentage to price
-  const poolYesPercent = new BN(priceNo);
-  const poolNoPercent = new BN(priceYes);
+  const poolYesPercent = new BN(convertPriceToPercent(priceNo));
+  const poolNoPercent = new BN(convertPriceToPercent(priceYes));
 
   return augurClient.amm.doAddLiquidity(
     account,
@@ -721,7 +743,7 @@ const getLPCurrentValue = async (rawBalance: string, amm: AmmExchange): Promise<
   const { totalSupply } = amm;
   const usdPrice = amm.cash?.usdPrice ? amm.cash?.usdPrice : "0";
   const userPercentage = totalSupply !== "0" ? new BN(rawBalance).div(totalSupply) : "0";
-  const userPercentLiquidity = new BN(amm.liquidity).times(new BN(userPercentage));
+  const userPercentLiquidity = new BN(amm?.liquidity || "0").times(new BN(userPercentage));
   const userPercentLIquidityUsd = userPercentLiquidity.times(new BN(usdPrice));
   return String(userPercentLIquidityUsd);
 
