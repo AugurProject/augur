@@ -1128,3 +1128,10 @@ export interface TransactionDetails {
   confirmedTime?: number;
   timestamp?: number;
 }
+
+export interface AddLiquidityBreakdown {
+  lpTokens: string;
+  yesShares: string;
+  noShares: string;
+  cashAmount: string;
+}

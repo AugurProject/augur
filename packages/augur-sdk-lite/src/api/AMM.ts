@@ -396,7 +396,7 @@ class ExchangeCommon {
   }
 
   async rateAddAMMWithLiquidity(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, ratio: BigNumber, keepLong: Boolean, recipient: string): Promise<BigNumber> {
-    return this.factory.callStatic.addAMMWithLiquidity(market, fee.toFixed(), ratio.toFixed(), keepLong, recipient, { value: cash.toFixed() });
+    return this.factory.callStatic.addAMMWithLiquidity(market, paraShareToken, fee.toFixed(), cash.toFixed(), ratio.toFixed(), keepLong, recipient);
   }
 
   async rateAddInitialLiquidity(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, ratio: BigNumber, keepLong: Boolean, recipient: string): Promise<BigNumber> {
