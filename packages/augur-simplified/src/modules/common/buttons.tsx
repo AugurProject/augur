@@ -132,6 +132,7 @@ export const DirectionButton = ({
 );
 
 export const ApprovalButton = ({ amm, actionType }) => {
+  //TODO: wire up enter and exit positions.
   const marketCashType = amm?.cash?.name;
   const tokenAddress = amm?.cash?.address;
 
@@ -216,7 +217,7 @@ export const ApprovalButton = ({ amm, actionType }) => {
 
   return (
     <>
-      {ApprovalAction.TRADE === actionType && (
+      {ApprovalAction.ENTER_POSITION === actionType && (
         <ApproveButton
           disabled={isPendingTx}
           text={isPendingTx ? 'Approving...' : 'Approve to Buy'}
