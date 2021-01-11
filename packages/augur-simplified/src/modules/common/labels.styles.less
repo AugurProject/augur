@@ -161,11 +161,12 @@
 
 .AddLiquidity {
   .SimpleBorder;
+  .HoverDropShadow;
 
-  background: var(--simple-light-bg);
+  background: transparent;
   padding: @size-16;
   display: flex;
-  flex-direction: column;
+  flex-flow: column wrap;
   height: fit-content;
   cursor: pointer;
 
@@ -186,6 +187,26 @@
     margin-top: @size-8;
     text-transform: capitalize;
     color: var(--simple-secondary-text);
+  }
+
+  &:hover {
+    .FixedBoxShadow;
+
+    background: var(--simple-light-bg);
+  }
+}
+
+.AddCurrencyLiquidity {
+  .AddLiquidity;
+  .text-14-semi-bold;
+
+  align-items: center;
+  color: var(--simple-secondary-text);
+  flex-flow: row nowrap;
+  margin-top: @size-12;
+
+  > svg {
+    margin-right: @size-12;
   }
 }
 

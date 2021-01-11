@@ -8,7 +8,7 @@ import {
   AddLiquidity,
   CategoryIcon,
   CategoryLabel,
-  NetworkMismatchBanner
+  NetworkMismatchBanner,
 } from 'modules/common/labels';
 import {
   PositionsLiquidityViewSwitcher,
@@ -19,17 +19,17 @@ import TradingForm, {
   OutcomesGrid,
 } from '../market/trading-form';
 import { useAppStatusStore } from 'modules/stores/app-status';
-import {
-  YES_NO,
-  BUY,
-  MARKET_ID_PARAM_NAME,
-  ETH,
-} from 'modules/constants';
+import { YES_NO, BUY, MARKET_ID_PARAM_NAME, ETH } from 'modules/constants';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import { USDC } from '../constants';
 import { AmmExchange, MarketInfo } from '../types';
 import { formatDai } from '../../utils/format-number';
-import { getMarketEndtimeFull, getMarketEndtimeDate } from '../../utils/date-utils';
+import {
+  getMarketEndtimeFull,
+  getMarketEndtimeDate,
+} from '../../utils/date-utils';
+import { AddCurrencyLiquidity } from '../common/labels';
+import { getCurrentAmms } from '../stores/app-status-hooks';
 
 const getDetails = (market) => {
   const rawInfo = market?.extraInfoRaw || '{}';
@@ -69,7 +69,9 @@ const CurrencyLabel = ({ name }) => {
 
 const MarketView = ({ defaultMarket = null }) => {
   const [showMoreDetails, setShowMoreDetails] = useState(false);
-  const [selectedOutcome, setSelectedOutcome] = useState(DefaultMarketOutcomes[2]);
+  const [selectedOutcome, setSelectedOutcome] = useState(
+    DefaultMarketOutcomes[2]
+  );
   const marketId = useMarketQueryId();
   const {
     isMobile,
@@ -80,19 +82,27 @@ const MarketView = ({ defaultMarket = null }) => {
 
   useEffect(() => {
     // initial render only.
-    document.getElementById("mainContent")?.scrollTo(0, 0);
+    document.getElementById('mainContent')?.scrollTo(0, 0);
     window.scrollTo(0, 1);
   }, []);
 
-  const market: MarketInfo = !!defaultMarket ? defaultMarket : markets[marketId];
-  const endTimeDate = useMemo(() => getMarketEndtimeDate(market?.endTimestamp), [market?.endTimestamp])
+  const market: MarketInfo = !!defaultMarket
+    ? defaultMarket
+    : markets[marketId];
+  const endTimeDate = useMemo(
+    () => getMarketEndtimeDate(market?.endTimestamp),
+    [market?.endTimestamp]
+  );
   // add end time data full to market details when design is ready
-  const endTimeDateFull = useMemo(() => getMarketEndtimeFull(market?.endTimestamp), [market?.endTimestamp])
+  const endTimeDateFull = useMemo(
+    () => getMarketEndtimeFull(market?.endTimestamp),
+    [market?.endTimestamp]
+  );
   const amm: AmmExchange = market?.amm;
 
   if (!market) return <div className={Styles.MarketView} />;
   const details = getDetails(market);
-
+  const currentAMMs = getCurrentAmms(market, markets);
   return (
     <div className={Styles.MarketView}>
       <section>
@@ -118,9 +128,7 @@ const MarketView = ({ defaultMarket = null }) => {
           </li>
           <li>
             <span>Expires</span>
-            <span>
-              {endTimeDate}
-            </span>
+            <span>{endTimeDate}</span>
           </li>
         </ul>
         {isMobile && (
@@ -138,6 +146,17 @@ const MarketView = ({ defaultMarket = null }) => {
         )}
         <SimpleChartSection {...{ market }} />
         <PositionsLiquidityViewSwitcher ammExchange={amm} />
+        {isMobile && (
+          <article className={Styles.MobileLiquidSection}>
+            <AddLiquidity market={market} />
+            {currentAMMs.length === 1 && (
+              <AddCurrencyLiquidity
+                market={market}
+                cash={currentAMMs[0] === USDC ? ETH : USDC}
+              />
+            )}
+          </article>
+        )}
         <div
           className={classNames(Styles.Details, {
             [Styles.isClosed]: !showMoreDetails,
@@ -159,13 +178,19 @@ const MarketView = ({ defaultMarket = null }) => {
         </div>
         <div className={Styles.TransactionsTable}>
           <span>Transactions</span>
-          <TransactionsTable transactions={amm?.transactions}/>
+          <TransactionsTable transactions={amm?.transactions} />
         </div>
       </section>
       {(!isMobile || showTradingForm) && (
         <section>
           <TradingForm initialSelectedOutcome={selectedOutcome} amm={amm} />
           {!isMobile && <AddLiquidity market={market} />}
+          {currentAMMs.length === 1 && (
+            <AddCurrencyLiquidity
+              market={market}
+              cash={currentAMMs[0] === USDC ? ETH : USDC}
+            />
+          )}
         </section>
       )}
     </div>

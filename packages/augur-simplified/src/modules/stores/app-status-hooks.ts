@@ -6,7 +6,12 @@ import {
 } from './constants';
 import { windowRef } from 'utils/window-ref';
 import { shapeUserActvity } from 'utils/process-data';
-import { ParaDeploys, TransactionDetails, UserBalances } from '../types';
+import {
+  MarketInfo,
+  ParaDeploys,
+  TransactionDetails,
+  UserBalances,
+} from '../types';
 
 const {
   SET_SHOW_TRADING_FORM,
@@ -39,7 +44,7 @@ const {
   SETTINGS,
   TRANSACTIONS,
   BLOCKNUMBER,
-  MODAL
+  MODAL,
 } = APP_STATE_KEYS;
 
 const isAsync = (obj) => {
@@ -73,13 +78,30 @@ const middleware = (dispatch, action) => {
   }
 };
 
+export const getRelatedMarkets = (
+  market: MarketInfo,
+  markets: Array<MarketInfo>
+) =>
+  keyedObjToKeyArray(markets)
+    .filter((mrkt) => mrkt.includes(market.marketId))
+    .map((mid) => markets[mid]);
+
+export const getCurrentAmms = (
+  market: MarketInfo,
+  markets: Array<MarketInfo>
+) => getRelatedMarkets(market, markets).map((m) => m.amm.cash.name);
+
 export const dispatchMiddleware = (dispatch) => (action) =>
   middleware(dispatch, action);
 
 export const keyedObjToArray = (KeyedObject: object) =>
   Object.entries(KeyedObject).map((i) => i[1]);
 
-export const arrayToKeyedObject = (ArrayOfObj: Array<{ id: string }>) => arrayToKeyedObjectByProp(ArrayOfObj, 'id');
+export const keyedObjToKeyArray = (KeyedObject: object) =>
+  Object.entries(KeyedObject).map((i) => i[0]);
+
+export const arrayToKeyedObject = (ArrayOfObj: Array<{ id: string }>) =>
+  arrayToKeyedObjectByProp(ArrayOfObj, 'id');
 
 export const arrayToKeyedObjectByProp = (ArrayOfObj: any[], prop: string) =>
   ArrayOfObj.reduce((acc, obj) => {
@@ -116,11 +138,15 @@ export function AppStatusReducer(state, action) {
       updatedState[LOGIN_ACCOUNT] = action.account;
 
       if (updatedState.processed?.ammExchanges) {
-        const activity = shapeUserActvity(action.account?.account, updatedState.processed?.markets, updatedState.processed?.ammExchanges);
+        const activity = shapeUserActvity(
+          action.account?.account,
+          updatedState.processed?.markets,
+          updatedState.processed?.ammExchanges
+        );
         updatedState[USER_INFO] = {
           ...updatedState[USER_INFO],
           activity,
-        }
+        };
       }
       break;
     }
@@ -144,11 +170,15 @@ export function AppStatusReducer(state, action) {
         ammExchanges,
       };
       if (updatedState?.loginAccount?.account) {
-        const activity = shapeUserActvity(updatedState?.loginAccount?.account, markets, ammExchanges);
+        const activity = shapeUserActvity(
+          updatedState?.loginAccount?.account,
+          markets,
+          ammExchanges
+        );
         updatedState[USER_INFO] = {
           ...updatedState[USER_INFO],
           activity,
-        }
+        };
       }
       break;
     }
@@ -174,7 +204,7 @@ export function AppStatusReducer(state, action) {
       updatedState[TRANSACTIONS] = [
         ...updatedState[TRANSACTIONS],
         { ...action.transaction, timestamp: now }
-      ]
+      ];
       window.localStorage.setItem('transactions', JSON.stringify(updatedState[TRANSACTIONS]));
       break;
     }
@@ -193,12 +223,11 @@ export function AppStatusReducer(state, action) {
       break;
     }
     case FINALIZE_TRANSACTION: {
-      updatedState[TRANSACTIONS]
-        .forEach(tx => {
-          if (tx.hash === action.hash) {
-            tx.confirmedTime = now;
-          }
-        });
+      updatedState[TRANSACTIONS].forEach((tx) => {
+        if (tx.hash === action.hash) {
+          tx.confirmedTime = now;
+        }
+      });
       break;
     }
     default:
@@ -212,13 +241,17 @@ export function AppStatusReducer(state, action) {
 const paraConfig: ParaDeploys = process.env.CONFIGURATION || {};
 
 export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
-  const [state, pureDispatch] = useReducer(AppStatusReducer, { ...defaultState, paraConfig });
+  const [state, pureDispatch] = useReducer(AppStatusReducer, {
+    ...defaultState,
+    paraConfig,
+  });
   const dispatch = dispatchMiddleware(pureDispatch);
   windowRef.appStatus = state;
   return {
     ...state,
     actions: {
-      updateMarketsViewSettings: (marketsViewSettings) => dispatch({ type: UPDATE_MARKETS_VIEW_SETTINGS, marketsViewSettings }),
+      updateMarketsViewSettings: (marketsViewSettings) =>
+        dispatch({ type: UPDATE_MARKETS_VIEW_SETTINGS, marketsViewSettings }),
       setShowTradingForm: (showTradingForm) =>
         dispatch({ type: SET_SHOW_TRADING_FORM, showTradingForm }),
       setSidebar: (sidebarType) => dispatch({ type: SET_SIDEBAR, sidebarType }),
