@@ -36,20 +36,27 @@
     }
   }
 
+  .Focused;
+
   &:disabled,
   &.Disabled {
+    pointer-events: none;
     opacity: .5;
-  }
-
-  &:focus:not(:active):not(:hover):not(:disabled):not(:visited) {
-    .Focused;
   }
 }
 
 .Focused {
-  outline: 0;
-  border: @size-1 solid var(--color-focused);
-  box-shadow: inset 0 0 0 @size-2 var(--color-focused);
+  &:not(:disabled):not(.Disabled) {
+    &:focus {
+      outline: 0;
+    }
+
+    &:focus-visible {
+      outline: 0;
+      border: @size-1 solid var(--color-focused);
+      box-shadow: inset 0 0 0 @size-2 var(--color-focused);
+    }
+  }
 }
 
 .PrimaryButton {
@@ -142,6 +149,29 @@
   &.Selected {
     color: var(--simple-primary-text);
     border: @size-1 solid var(--simple-secondary-text);
+  }
+}
+
+.TinyTransparentButton {
+  .TinyButton;
+
+  background-color: transparent;
+  border: @size-1 solid var(--simple-border);
+
+  &:not(:disabled):not(.Disabled) {
+    &:hover {
+      background-color: var(--simple-alternate-background);
+    }
+
+    &:focus {
+      background-color: transparent;
+    }
+
+    &:active,
+    &.Selected {
+      background-color: var(--simple-alternate-background);
+      border: @size-1 solid var(--color-secondary-text);
+    }
   }
 }
 

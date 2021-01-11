@@ -168,16 +168,13 @@
     > ul {
       display: flex;
       flex-flow: row nowrap;
-      grid-gap: @size-4;
+      grid-gap: @size-8;
       align-self: flex-end;
-
-      > li > button[class*="selected"] {
-        background: var(--simple-alternate-background);
-      }
 
       > li > div {
         .SimpleBorder;
 
+        background-color: transparent;
         box-sizing: border-box;
         display: flex;
         flex-flow: row nowrap;
@@ -215,6 +212,30 @@
 
           color: var(--simple-primary-text);
           margin-left: @size-4;
+        }
+
+        &[class*="Selected"] {
+          background-color: var(--simple-alternate-background);
+          border: @size-1 solid var(--simple-secondary-text);
+
+          > input {
+            color: var(--simple-primary-text);
+          }
+
+          &:not(:disabled):not(.Disabled) {
+            &:hover {
+              background-color: var(--simple-alternate-background);
+              border: @size-1 solid var(--simple-secondary-text);
+            }
+
+            &:focus {
+              background-color: var(--simple-alternate-background);
+            }
+
+            &:active {
+              background-color: var(--simple-alternate-background);
+            }
+          }
         }
       }
     }
