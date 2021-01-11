@@ -141,7 +141,6 @@ export const ApprovalButton = ({ amm, actionType }) => {
 
   const marketCashType = amm?.cash?.name;
   const tokenAddress = amm?.cash?.address
-  //const { cash } = amm;
   const approvingName = amm?.cash?.symbol;
   const { addresses } = paraConfig;
   const { AMMFactory, WethWrapperForAMMExchange } = addresses;
