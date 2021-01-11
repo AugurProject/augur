@@ -450,7 +450,7 @@ const TradingForm = ({
   const makeTrade = () => {
     const minOutput = tradeEstimates?.outputAmount;
     const percentageOff = new BN(1).minus(new BN(slippage).div(100));
-    const worstCaseOutput = String(new BN(minOutput).times(percentageOff));
+    const worstCaseOutput = String(new BN(minOutput).times(percentageOff).decimalPlaces(0));
     const direction = orderType === BUY ? TradingDirection.ENTRY : TradingDirection.EXIT;
     const outputYesShares = selectedOutcome.id === YES_OUTCOME_ID;
     let userBalances = [];
