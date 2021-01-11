@@ -2,7 +2,7 @@ import React, { ReactNode, useEffect, useState } from 'react';
 import Styles from 'modules/common/buttons.styles.less';
 import classNames from 'classnames';
 import { Arrow } from './icons';
-import { approveERC20Contract, checkAllowance} from '../hooks/use-approval-callback';
+import { approveERC20Contract, approveERC1155Contract, checkAllowance, isERC1155ContractApproved} from '../hooks/use-approval-callback';
 import { useAppStatusStore } from '../stores/app-status';
 import { ApprovalAction, ApprovalState, ETH } from '../constants';
 import { AmmExchange, Cash } from '../types';
@@ -143,6 +143,7 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
   const marketCashType = cash?.name;
   const tokenAddress = cash?.address
   const approvingName = cash?.name;
+  const { shareToken } = cash;
   const { addresses } = paraConfig;
   const { AMMFactory, WethWrapperForAMMExchange } = addresses;
   const isETH = cash?.name === ETH;
@@ -157,9 +158,7 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
         setIsPendingTx(false);
         console.error(error);
       }
-    }
-
-    else if (actionType === ApprovalAction.REMOVE_LIQUIDITY) {
+    } else if (actionType === ApprovalAction.REMOVE_LIQUIDITY) {
       try {
         setIsPendingTx(true);
         const tx = await approveERC20Contract(amm.id, approvingName, WethWrapperForAMMExchange, loginAccount);
@@ -168,25 +167,63 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
         setIsPendingTx(false);
         console.error(error);
       }
-    }
-
-    else if (actionType === ApprovalAction.ENTER_POSITION) {
+    } else if (actionType === ApprovalAction.ENTER_POSITION) {
       try {
         setIsPendingTx(true);
-        const tx = await approveERC20Contract(tokenAddress, marketCashType, loginAccount.account, loginAccount);
+        const tx = await approveERC1155Contract(shareToken, approvingName, AMMFactory, loginAccount);
         addTransaction(tx);
       } catch (error) {
         setIsPendingTx(false);
         console.error(error);
       }
-
+    } else if (actionType === ApprovalAction.EXIT_POSITION) {
+      try {
+        setIsPendingTx(true);
+        let tx = null;
+        if (isETH) {
+          tx = await approveERC1155Contract(shareToken, approvingName, WethWrapperForAMMExchange, loginAccount);
+        } else {
+          tx = await approveERC20Contract(cash.address, approvingName, AMMFactory, loginAccount);
+        }
+        addTransaction(tx);
+      } catch (error) {
+        setIsPendingTx(false);
+        console.error(error);
+      }
     }
   }
 
   useEffect(() => {
     const checkIfApproved = async () => {
       if (actionType === ApprovalAction.ENTER_POSITION) {
-        const check = await checkAllowance(tokenAddress, loginAccount.account, loginAccount, transactions);
+        if (isETH) {
+          setIsApproved(ApprovalState.APPROVED);
+        } else {
+          const check = await isERC1155ContractApproved(shareToken, AMMFactory, loginAccount, transactions);
+          if (check === ApprovalState.PENDING) {
+            setIsPendingTx(true);
+          } else if (check === ApprovalState.APPROVED) {
+            setIsPendingTx(false);
+            if (transactions.length > 0) {
+              const tx = transactions.find(tx => tx.approval
+                && tx?.approval?.spender === loginAccount.account
+                && tx?.approval?.tokenAddress === tokenAddress)
+              if (tx) {
+                removeTransaction(tx.hash);
+              }
+            }
+          }
+          setIsApproved(check);
+        }
+      } else if (actionType === ApprovalAction.EXIT_POSITION) {
+        let check = null;
+
+        if (isETH) {
+          check = await isERC1155ContractApproved(shareToken, WethWrapperForAMMExchange, loginAccount, transactions);
+        } else {
+          check = await checkAllowance(cash.address, AMMFactory, loginAccount, transactions);
+        }
+
         if (check === ApprovalState.PENDING) {
           setIsPendingTx(true);
         } else if (check === ApprovalState.APPROVED) {
@@ -201,19 +238,15 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
           }
         }
         setIsApproved(check);
-      }
-
-      if (actionType === ApprovalAction.ADD_LIQUIDITY) {
+      } else if (actionType === ApprovalAction.ADD_LIQUIDITY) {
         if (isETH) {
           setIsApproved(ApprovalState.APPROVED);
         } else {
           const check = await checkAllowance(cash?.address, AMMFactory, loginAccount, transactions)
           setIsApproved(check);
         }
-      }
-
-      if (actionType === ApprovalAction.REMOVE_LIQUIDITY) {
-        if (isETH) {
+      } else if (actionType === ApprovalAction.REMOVE_LIQUIDITY) {
+        if (!isETH) {
           setIsApproved(ApprovalState.APPROVED);
         } else {
           const check = await checkAllowance(amm.id, WethWrapperForAMMExchange, loginAccount, transactions)
@@ -238,7 +271,7 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
         setApprovals(newState);
       }
     }
-  }, [setApprovals, loginAccount, isApproved, actionType, amm, paraConfig, tokenAddress, approvals, transactions, AMMFactory, WethWrapperForAMMExchange, cash?.address, isETH, marketCashType, removeTransaction]);
+  }, [setApprovals, loginAccount, isApproved, actionType, amm, paraConfig, tokenAddress, approvals, transactions, AMMFactory, WethWrapperForAMMExchange, cash?.address, isETH, marketCashType, removeTransaction, shareToken]);
 
 
   if (!loginAccount) {
@@ -253,6 +286,8 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
 
   if (actionType === ApprovalAction.ENTER_POSITION) {
     buttonText = 'Approve to Buy';
+  } else if (actionType === ApprovalAction.EXIT_POSITION) {
+    buttonText = 'Approve to Sell';
   } else if (actionType === ApprovalAction.ADD_LIQUIDITY || actionType === ApprovalAction.REMOVE_LIQUIDITY) {
     buttonText = `Approve ${marketCashType}`;
   }

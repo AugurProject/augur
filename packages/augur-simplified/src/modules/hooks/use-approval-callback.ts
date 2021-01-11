@@ -268,6 +268,23 @@ export async function checkAllowance(
   return isPending ? ApprovalState.PENDING : ApprovalState.NOT_APPROVED;
 }
 
+export const isERC1155ContractApproved = async (
+  erc1155Address: string,
+  spender: string,
+  loginAccount: LoginAccount,
+  transactions: TransactionDetails[],
+) => {
+    const { account, library } = loginAccount;
+    const isPending = await hasPendingTransaction(transactions, loginAccount.account, erc1155Address, spender);
+    const isApproved = await getERC1155ApprovedForAll(erc1155Address, library, account, spender);
+
+    return isApproved
+      ? ApprovalState.APPROVED
+      : isPending
+        ? ApprovalState.PENDING
+        : ApprovalState.NOT_APPROVED
+}
+
 export const approveERC20Contract = async (
   tokenAddress: string,
   approvingName: string,
@@ -304,4 +321,38 @@ export const approveERC20Contract = async (
       console.debug('Failed to approve token', error)
       throw error
     }
+}
+
+export const approveERC1155Contract = async (
+  erc1155Address: string,
+  approvingName: string,
+  spender: string,
+  loginAccount: LoginAccount,
+) => {
+  const { chainId, account, library } = loginAccount;
+
+  const tokenContract = getErc1155Contract(erc1155Address, library, account);
+  const estimatedGas = await tokenContract.estimateGas.setApprovalForAll(spender, true).catch(() => {
+    return tokenContract.estimateGas.setApprovalForAll(spender, true)
+  });
+
+  try {
+    const response: TransactionResponse = await tokenContract.setApprovalForAll(spender, true, {
+      gasLimit: estimatedGas
+    })
+
+    const { hash } = response;
+    return {
+      hash,
+      chainId,
+      addedTime: new Date().getTime(),
+      from: account,
+      summary: `Approve ${approvingName || 'for use'}`,
+      approval: { tokenAddress: erc1155Address, spender }
+    }
+  }
+  catch (error) {
+    console.debug('Failed to approve token', error)
+    throw error
+  }
 }
