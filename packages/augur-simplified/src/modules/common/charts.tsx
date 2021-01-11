@@ -48,53 +48,100 @@ const RANGE_OPTIONS = [
   },
 ];
 
-const SERIES_COLORS = ['#58586B', '#FF7D5E', '#05B169', '#73D2DE', '#218380', '#FFBC42', '#D81159', '#1F71B5'];
+const SERIES_COLORS = [
+  '#58586B',
+  '#FF7D5E',
+  '#05B169',
+  '#73D2DE',
+  '#218380',
+  '#FFBC42',
+  '#D81159',
+  '#1F71B5',
+];
 const SERIES_GRADIENTS = [
-  [[0, 'rgba(88, 88, 107, .15)'], [1, 'rgba(88, 88, 107, 0)']],
-  [[0, 'rgba(255, 125, 94, .15)'], [1, 'rgba(255, 125, 94, 0)']],
-  [[0, 'rgba(5, 177, 105, .15)'], [1, 'rgba(5, 177, 105, 0)']],
-  [[0, 'rgba(​115, ​210, ​222, 0.15)'], [1, 'rgba(​115, ​210, ​222, 0)']],
-  [[0, 'rgba(​33, ​131, 128, 0.15)'], [1, 'rgba(​33, ​131, 128, 0)']],
-  [[0, 'rgba(​255, ​188, ​66, 0.15)'], [1, 'rgba(​255, ​188, ​66, 0)']],
-  [[0, 'rgba(​216, 17, 89, 0.15)'], [1, 'rgba(​216, 17, 89, 0)']],
-  [[0, 'rgba(​31, 113, ​181, 0.15)'], [1, 'rgba(​31, 113, ​181, 0)']],
+  [
+    [0, 'rgba(88, 88, 107, .15)'],
+    [1, 'rgba(88, 88, 107, 0)'],
+  ],
+  [
+    [0, 'rgba(255, 125, 94, .15)'],
+    [1, 'rgba(255, 125, 94, 0)'],
+  ],
+  [
+    [0, 'rgba(5, 177, 105, .15)'],
+    [1, 'rgba(5, 177, 105, 0)'],
+  ],
+  [
+    [0, 'rgba(​115, ​210, ​222, 0.15)'],
+    [1, 'rgba(​115, ​210, ​222, 0)'],
+  ],
+  [
+    [0, 'rgba(​33, ​131, 128, 0.15)'],
+    [1, 'rgba(​33, ​131, 128, 0)'],
+  ],
+  [
+    [0, 'rgba(​255, ​188, ​66, 0.15)'],
+    [1, 'rgba(​255, ​188, ​66, 0)'],
+  ],
+  [
+    [0, 'rgba(​216, 17, 89, 0.15)'],
+    [1, 'rgba(​216, 17, 89, 0)'],
+  ],
+  [
+    [0, 'rgba(​31, 113, ​181, 0.15)'],
+    [1, 'rgba(​31, 113, ​181, 0)'],
+  ],
 ];
 
-function getRandomInt(max) {
-  return Math.floor(Math.random() * Math.floor(max));
-}
 interface HighcartsChart extends Highcharts.Chart {
   renderTo?: string | Element | React.ReactNode;
 }
 
-const getMockPriceTime = (formattedOutcomes, market, rangeSelection) => ({
-  priceTimeArray: formattedOutcomes.map(outcome => {
+const determinelastPrice = (sortedOutcomeTrades, startTime) => {
+  let lastPrice = 0;
+  const firstTrade = sortedOutcomeTrades[0];
+  if (firstTrade) {
+    const firstTradeTime = firstTrade.timestamp * 1000;
+    const firstPrice = firstTrade.price;
+    if (firstTradeTime < startTime) {
+      lastPrice = firstPrice;
+    }
+  }
+  return createBigNumber(lastPrice).toFixed(4);
+}
+
+const processPriceTimeData = (formattedOutcomes, market, rangeSelection) => ({
+  priceTimeArray: formattedOutcomes.map((outcome) => {
     const { startTime, tick } = RANGE_OPTIONS[rangeSelection];
     const totalTicks = (END_TIME - startTime) / tick;
-    const outcomePriceTime = [];
-    let lastPrice = createBigNumber(outcome.lastPrice);
-    let curTimestamp = END_TIME;
-    while (outcomePriceTime.length < totalTicks) {
-      const rand = getRandomInt(5);
-      let priceVariance = getRandomInt(rand) * 0.1;
-      let nextPrice = Boolean(Math.round(Math.random()))
-        ? lastPrice.plus(priceVariance)
-        : lastPrice.minus(priceVariance);
-      if (nextPrice.gt(market.maxPriceBigNumber || 1)) {
-        nextPrice = createBigNumber(market.maxPriceBigNumber || 1);
-      } else if (nextPrice.lt(market.minPriceBigNumber || 0)) {
-        nextPrice = createBigNumber(market.minPriceBigNumber || 0);
-      }
-      outcomePriceTime.push({
-        price: nextPrice.toFixed(2),
-        amount: 100,
-        timestamp: curTimestamp,
-        logIndex: 0,
+    const newArray = [];
+    const sortedOutcomeTrades = market.amm.trades[outcome.id].sort(
+      (a, b) => a.timestamp - b.timestamp
+    );
+    let newLastPrice = determinelastPrice(sortedOutcomeTrades, startTime);
+    for (let i = 0; i < totalTicks; i++) {
+      const curTick = startTime + (tick * i);
+      const nextTick = curTick + tick;
+      const matchingTrades = sortedOutcomeTrades.filter(trade => { 
+        const tradeTime = trade.timestamp * 1000;
+        return tradeTime > curTick && nextTick > tradeTime;
       });
-      curTimestamp = curTimestamp - tick;
-      lastPrice = nextPrice;
+      let priceToUse = newLastPrice;
+      let amountToUse = 0;
+      if (matchingTrades.length > 0) {
+        const FinalTradeOfPeriod = matchingTrades[matchingTrades.length - 1];
+        priceToUse = FinalTradeOfPeriod.price;
+        amountToUse = FinalTradeOfPeriod.amount;
+      }
+      const nextPrice = createBigNumber(priceToUse).toFixed(4);
+      newArray.push({
+        price: nextPrice,
+        amount: amountToUse,
+        timestamp: curTick,
+      });
+      newLastPrice = nextPrice;
     }
-    return outcomePriceTime;
+    return newArray;
   }),
 });
 
@@ -108,8 +155,11 @@ export const PriceHistoryChart = ({
   // eslint-disable-next-line
   const [forceRender, setForceRender] = useState(false);
   const { maxPriceBigNumber: maxPrice, minPriceBigNumber: minPrice } = market;
-  // const { priceTimeArray } = useMemo(() => getMockPriceTime(market), [market]);
-  const { priceTimeArray } = getMockPriceTime(formattedOutcomes, market, rangeSelection);
+  const { priceTimeArray } = processPriceTimeData(
+    formattedOutcomes,
+    market,
+    rangeSelection
+  );
   const options = useMemo(
     () =>
       getOptions({
@@ -196,7 +246,7 @@ export const SimpleChartSection = ({ market }) => {
   );
   const [rangeSelection, setRangeSelection] = useState(3);
 
-  const toggleOutcome = id => {
+  const toggleOutcome = (id) => {
     const updates = [].concat(selectedOutcomes);
     updates[id] = !updates[id];
     setSelectedOutcomes(updates);
@@ -204,12 +254,16 @@ export const SimpleChartSection = ({ market }) => {
 
   return (
     <section className={Styles.SimpleChartSection}>
-      <MultiButtonSelection options={RANGE_OPTIONS} selection={rangeSelection} setSelection={(id) => setRangeSelection(id)}/>
+      <MultiButtonSelection
+        options={RANGE_OPTIONS}
+        selection={rangeSelection}
+        setSelection={(id) => setRangeSelection(id)}
+      />
       <PriceHistoryChart
         {...{ market, formattedOutcomes, selectedOutcomes, rangeSelection }}
       />
       <div>
-        {formattedOutcomes.map(outcome => (
+        {formattedOutcomes.map((outcome) => (
           <SelectOutcomeButton
             key={`${outcome.id}_${outcome.name}`}
             outcome={outcome}
@@ -241,7 +295,7 @@ const handleSeries = (
     ) {
       mostRecentTradetime = priceTimeData[length - 1].timestamp;
     }
-    const data = priceTimeData.map(pts => [
+    const data = priceTimeData.map((pts) => [
       pts.timestamp,
       createBigNumber(pts.price).toNumber(),
     ]);
@@ -253,7 +307,7 @@ const handleSeries = (
       states: {
         hover: {
           lineWidth: isSelected ? HIGHLIGHTED_LINE_WIDTH : NORMAL_LINE_WIDTH,
-        }
+        },
       },
       color: SERIES_COLORS[index],
       fillColor: {
@@ -268,8 +322,8 @@ const handleSeries = (
             enabled: true,
             symbol: 'circle',
             radius: 4,
-          }
-        }
+          },
+        },
       },
       // @ts-ignore
       data,
@@ -278,7 +332,7 @@ const handleSeries = (
 
     series.push({ ...baseSeriesOptions });
   });
-  series.forEach(seriesObject => {
+  series.forEach((seriesObject) => {
     const seriesData = seriesObject.data;
     // make sure we have a trade to fill chart
     if (
@@ -347,13 +401,18 @@ const getOptions = ({
     split: false,
     useHTML: true,
     formatter() {
-      let out = `<h5>${Highcharts.dateFormat('%b %e %k:%M %p', this.x)}</h5><ul>`;
-      this.points.forEach(point => {
-        out += `<li><span style="color:${point.color}">&#9679;</span><b>${point.series.name}</b><span>${formatDai(createBigNumber(point.y)).full}</span></li>`;
+      let out = `<h5>${Highcharts.dateFormat(
+        '%b %e %l:%M %p',
+        this.x
+      )}</h5><ul>`;
+      this.points.forEach((point) => {
+        out += `<li><span style="color:${point.color}">&#9679;</span><b>${
+          point.series.name
+        }</b><span>${formatDai(createBigNumber(point.y)).full}</span></li>`;
       });
       out += '</ul>';
       return out;
-    }
+    },
   },
   rangeSelector: {
     enabled: false,
@@ -362,12 +421,13 @@ const getOptions = ({
 
 export const getFormattedOutcomes = ({
   market: { amm, outcomes },
-}: { market: MarketInfo }) => {
+}: {
+  market: MarketInfo;
+}) => {
   return outcomes.map((outcome, outcomeIdx) => ({
     ...outcome,
     outcomeIdx,
     label: (outcome?.name).toLowerCase(),
     lastPrice: !amm ? '0.5' : outcomeIdx === 1 ? amm.priceNo : amm.priceYes,
   }));
-
 };
