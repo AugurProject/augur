@@ -5,6 +5,7 @@ import { Arrow } from './icons';
 import { approveERC20Contract, checkAllowance} from '../hooks/use-approval-callback';
 import { useAppStatusStore } from '../stores/app-status';
 import { ApprovalAction, ApprovalState, ETH } from '../constants';
+import { AmmExchange, Cash } from '../types';
 
 interface ButtonProps {
   text?: string;
@@ -127,7 +128,7 @@ export const DirectionButton = ({
   </button>
 );
 
-export const ApprovalButton = ({ amm, actionType }) => {
+export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, cash: Cash, actionType: ApprovalAction}) => {
   const [isPendingTx, setIsPendingTx] = useState(false);
   const [isApproved, setIsApproved] = useState(ApprovalState.UNKNOWN);
 
@@ -139,10 +140,9 @@ export const ApprovalButton = ({ amm, actionType }) => {
     actions: { addTransaction, setApprovals, removeTransaction }
   } = useAppStatusStore();
 
-  const marketCashType = amm?.cash?.name;
-  const tokenAddress = amm?.cash?.address
-  const { cash } = amm;
-  const approvingName = cash.symbol;
+  const marketCashType = cash?.name;
+  const tokenAddress = cash?.address
+  const approvingName = cash?.symbol;
   const { addresses } = paraConfig;
   const { AMMFactory, WethWrapperForAMMExchange } = addresses;
   const isETH = cash.symbol === ETH;

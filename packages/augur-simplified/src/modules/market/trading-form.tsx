@@ -227,7 +227,7 @@ export const OutcomesGrid = ({
             onClick={() => setSelectedOutcome(outcome)}
             marketType={marketType}
             editable={editable}
-            setEditableValue={price => setEditableValue(price, index)}
+            setEditableValue={price => setEditableValue(price, outcome.id)}
           />
         ))}
     </div>
@@ -514,7 +514,7 @@ const TradingForm = ({
         />
         <InfoNumbers infoNumbers={breakdown} />
         {loginAccount && (
-          <ApprovalButton amm={amm} actionType={orderType === BUY ? ApprovalAction.ENTER_POSITION : ApprovalAction.EXIT_POSITION} />
+          <ApprovalButton amm={amm} cash={amm?.cash} actionType={orderType === BUY ? ApprovalAction.ENTER_POSITION : ApprovalAction.EXIT_POSITION} />
         )}
         <BuySellButton
           disabled={canMakeTrade.disabled || !approvals?.trade[ammCash?.name]}

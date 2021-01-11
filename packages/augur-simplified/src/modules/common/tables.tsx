@@ -208,7 +208,7 @@ export const LiquidityFooter = ({market}) => {
   } = useAppStatusStore();
   return (
     <div className={Styles.LiquidityFooter}>
-      <PrimaryButton text="remove liquidity" action={() => 
+      <PrimaryButton text="remove liquidity" action={() =>
         setModal({ type: MODAL_ADD_LIQUIDITY, market, liquidityModalType: REMOVE })
       }/>
       <SecondaryButton text="add liquidity" />
@@ -262,7 +262,7 @@ export const LiquidityTable = ({
       {!lpTokens && (
         <span>
           No liquidity to show
-          <PrimaryButton action={() => setModal({type: MODAL_ADD_LIQUIDITY, market})} text="Earn fees as a liquidity provider" />
+          <PrimaryButton action={() => setModal({type: MODAL_ADD_LIQUIDITY, market, currency: ammExchange?.cash?.name})} text="Earn fees as a liquidity provider" />
         </span>
       )}
       {lpTokens && <LiquidityRow liquidity={lpTokens} />}

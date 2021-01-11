@@ -184,6 +184,7 @@ export interface MarketInfo {
   marketId: string,
   description: string,
   endTimestamp: string,
+  creationTimestamp: string,
   extraInfoRaw: string,
   longDescription: string,
   fee: string,

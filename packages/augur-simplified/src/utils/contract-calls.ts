@@ -28,7 +28,7 @@ export function getAmmLiquidity(
   const augurClient = augurSdkLite.get();
   if (!augurClient || !augurClient.amm)
     return console.error('augurClient is null');
-  const hasLiquidity = Boolean(amm?.id) || amm.liquidity !== "0";
+  const hasLiquidity = Boolean(amm?.id) || amm?.liquidity !== "0";
   const sharetoken = cash?.shareToken;
   const ammAddress = amm?.id;
   const amount = convertDisplayCashAmountToOnChainCashAmount(cashAmount, cash.decimals);
@@ -721,7 +721,7 @@ const getLPCurrentValue = async (rawBalance: string, amm: AmmExchange): Promise<
   const { totalSupply } = amm;
   const usdPrice = amm.cash?.usdPrice ? amm.cash?.usdPrice : "0";
   const userPercentage = totalSupply !== "0" ? new BN(rawBalance).div(totalSupply) : "0";
-  const userPercentLiquidity = new BN(amm.liquidity).times(new BN(userPercentage));
+  const userPercentLiquidity = new BN(amm?.liquidity || "0").times(new BN(userPercentage));
   const userPercentLIquidityUsd = userPercentLiquidity.times(new BN(usdPrice));
   return String(userPercentLIquidityUsd);
 
