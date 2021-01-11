@@ -38,7 +38,7 @@ const {
   SETTINGS,
   TRANSACTIONS,
   BLOCKNUMBER,
-  MODAL
+  MODAL,
 } = APP_STATE_KEYS;
 
 const isAsync = (obj) => {
@@ -72,13 +72,28 @@ const middleware = (dispatch, action) => {
   }
 };
 
+export const getRelatedMarkets = (market, markets) =>
+  keyedObjToKeyArray(markets)
+    .filter((mrkt) => mrkt.includes(market.marketId))
+    .map((mid) => markets[mid]);
+
+export const getCurrentAmms = (market, markets) => {
+  const relatedMarkets = getRelatedMarkets(market, markets);
+  const activeAMMs = relatedMarkets.map(m => m.amm.cash.name);
+  return activeAMMs;
+};
+
 export const dispatchMiddleware = (dispatch) => (action) =>
   middleware(dispatch, action);
 
 export const keyedObjToArray = (KeyedObject: object) =>
   Object.entries(KeyedObject).map((i) => i[1]);
 
-export const arrayToKeyedObject = (ArrayOfObj: Array<{ id: string }>) => arrayToKeyedObjectByProp(ArrayOfObj, 'id');
+export const keyedObjToKeyArray = (KeyedObject: object) =>
+  Object.entries(KeyedObject).map((i) => i[0]);
+
+export const arrayToKeyedObject = (ArrayOfObj: Array<{ id: string }>) =>
+  arrayToKeyedObjectByProp(ArrayOfObj, 'id');
 
 export const arrayToKeyedObjectByProp = (ArrayOfObj: any[], prop: string) =>
   ArrayOfObj.reduce((acc, obj) => {
@@ -114,11 +129,15 @@ export function AppStatusReducer(state, action) {
       updatedState[LOGIN_ACCOUNT] = action.account;
 
       if (updatedState.processed?.ammExchanges) {
-        const activity = shapeUserActvity(action.account?.account, updatedState.processed?.markets, updatedState.processed?.ammExchanges);
+        const activity = shapeUserActvity(
+          action.account?.account,
+          updatedState.processed?.markets,
+          updatedState.processed?.ammExchanges
+        );
         updatedState[USER_INFO] = {
           ...updatedState[USER_INFO],
           activity,
-        }
+        };
       }
       break;
     }
@@ -142,11 +161,15 @@ export function AppStatusReducer(state, action) {
         ammExchanges,
       };
       if (updatedState?.loginAccount?.account) {
-        const activity = shapeUserActvity(updatedState?.loginAccount?.account, markets, ammExchanges);
+        const activity = shapeUserActvity(
+          updatedState?.loginAccount?.account,
+          markets,
+          ammExchanges
+        );
         updatedState[USER_INFO] = {
           ...updatedState[USER_INFO],
           activity,
-        }
+        };
       }
       break;
     }
@@ -171,8 +194,8 @@ export function AppStatusReducer(state, action) {
     case ADD_TRANSACTION: {
       updatedState[TRANSACTIONS] = [
         ...updatedState[TRANSACTIONS],
-        { ...action.transaction, timestamp: now }
-      ]
+        { ...action.transaction, timestamp: now },
+      ];
       break;
     }
     case UPDATE_BLOCKNUMBER: {
@@ -180,12 +203,11 @@ export function AppStatusReducer(state, action) {
       break;
     }
     case FINALIZE_TRANSACTION: {
-      updatedState[TRANSACTIONS]
-        .forEach(tx => {
-          if (tx.hash === action.hash) {
-            tx.confirmedTime = now;
-          }
-        });
+      updatedState[TRANSACTIONS].forEach((tx) => {
+        if (tx.hash === action.hash) {
+          tx.confirmedTime = now;
+        }
+      });
       break;
     }
     default:
@@ -199,13 +221,17 @@ export function AppStatusReducer(state, action) {
 const paraConfig: ParaDeploys = process.env.CONFIGURATION || {};
 
 export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
-  const [state, pureDispatch] = useReducer(AppStatusReducer, { ...defaultState, paraConfig });
+  const [state, pureDispatch] = useReducer(AppStatusReducer, {
+    ...defaultState,
+    paraConfig,
+  });
   const dispatch = dispatchMiddleware(pureDispatch);
   windowRef.appStatus = state;
   return {
     ...state,
     actions: {
-      updateMarketsViewSettings: (marketsViewSettings) => dispatch({ type: UPDATE_MARKETS_VIEW_SETTINGS, marketsViewSettings }),
+      updateMarketsViewSettings: (marketsViewSettings) =>
+        dispatch({ type: UPDATE_MARKETS_VIEW_SETTINGS, marketsViewSettings }),
       setShowTradingForm: (showTradingForm) =>
         dispatch({ type: SET_SHOW_TRADING_FORM, showTradingForm }),
       setSidebar: (sidebarType) => dispatch({ type: SET_SIDEBAR, sidebarType }),
@@ -219,11 +245,15 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
         dispatch({ type: SET_LOGIN_ACCOUNT, account }),
       updateUserBalances: (userBalances: UserBalances) =>
         dispatch({ type: UPDATE_USER_BALANCES, userBalances }),
-      updateSettings: settings => dispatch({ type: UPDATE_SETTINGS, settings }),
-      addTransaction: (transaction: TransactionDetails) => dispatch({ type: ADD_TRANSACTION, transaction }),
-      updateBlocknumber: blocknumber => dispatch({ type: UPDATE_BLOCKNUMBER, blocknumber }),
-      finalizeTransaction: hash => dispatch({ type: FINALIZE_TRANSACTION, hash }),
-      setModal: modal => dispatch({ type: SET_MODAL, modal }),
+      updateSettings: (settings) =>
+        dispatch({ type: UPDATE_SETTINGS, settings }),
+      addTransaction: (transaction: TransactionDetails) =>
+        dispatch({ type: ADD_TRANSACTION, transaction }),
+      updateBlocknumber: (blocknumber) =>
+        dispatch({ type: UPDATE_BLOCKNUMBER, blocknumber }),
+      finalizeTransaction: (hash) =>
+        dispatch({ type: FINALIZE_TRANSACTION, hash }),
+      setModal: (modal) => dispatch({ type: SET_MODAL, modal }),
       closeModal: () => dispatch({ type: CLOSE_MODAL }),
     },
   };

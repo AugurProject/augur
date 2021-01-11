@@ -86,7 +86,6 @@ export const Pagination = ({
     itemsPerPage === 1 ? 1 : Math.ceil(itemCount / (itemsPerPage || 10)) || 1;
 
   useEffect(() => {
-    console.log("pagination Use Effect", page);
     document.getElementById('mainContent')?.scrollTo(0, 0);
     window.scrollTo(0, 1);
   }, [page])

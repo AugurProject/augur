@@ -19,7 +19,8 @@ import { useAppStatusStore } from 'modules/stores/app-status';
 import parsePath from '../routes/helpers/parse-path';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
-import { HelpIcon } from './icons';
+import { HelpIcon, USDCIcon } from './icons';
+import { USDC } from '../constants';
 
 interface ValueLabelProps {
   large?: boolean;
@@ -181,6 +182,21 @@ export const AddLiquidity = ({ market }) => {
         add liquidity
       </span>
       <span>earn fees as a liquidity provider</span>
+    </div>
+  );
+};
+
+export const AddCurrencyLiquidity = ({ market, cash }) => {
+  const {
+    actions: { setModal },
+  } = useAppStatusStore();
+  return (
+    <div
+      className={classNames(Styles.AddCurrencyLiquidity)}
+      onClick={() => setModal({ type: MODAL_ADD_LIQUIDITY, market, cash })}
+    >
+      {cash === USDC ? USDCIcon : EthIcon}
+      {`Create this market in ${cash}`}
     </div>
   );
 };
