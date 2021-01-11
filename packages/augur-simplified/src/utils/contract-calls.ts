@@ -578,7 +578,7 @@ export const getUserBalances = async (
           usdValue: String(usdcValue),
         };
       } else {
-        const cash = cashes[ammExchanges[contractAddress]?.cash.address];
+        const cash = cashes[ammExchanges[contractAddress]?.cash?.address];
         const balance = onChainMarketSharesToDisplayShares(
           rawBalance,
           cash.decimals
