@@ -111,7 +111,7 @@ const getCashTokenData = async (cashes: Cash[]): Promise<{ [address: string]: Ca
         let usdPrice = await client.query({
           query: CASH_TOKEN_DATA,
           variables: {
-            tokenAddr: cash.address
+            tokenAddr: cash?.address
           },
           fetchPolicy: 'cache-first'
         })

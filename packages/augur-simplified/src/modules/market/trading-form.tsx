@@ -109,12 +109,10 @@ export const AmountInput = ({
   updateCash,
   chosenCash,
   rate,
-  amountError,
   updateAmountError
 }: AmountInputProps) => {
   const currencyName = chosenCash;
   const [amount, updateAmount] = useState(initialAmount);
-  const [error, updateError] = useState(amountError);
 
   const icon = currencyName === USDC ? UsdIcon : EthIcon;
   const label = currencyName === USDC ? USDC : ETH;
@@ -130,7 +128,6 @@ export const AmountInput = ({
     if (value !== '' && (isNaN(value) || Number(value) === 0 || Number(value) < 0)) {
       returnError = 'Amount is not valid'
     }
-    updateError(returnError);
     updateAmountError(returnError);
   }
   return (
@@ -509,7 +506,6 @@ const TradingForm = ({
           initialAmount={''}
           maxValue={userBalance}
           rate={tradeEstimates?.ratePerCash}
-          amountError={buttonError}
           updateAmountError={updateButtonError}
         />
         <InfoNumbers infoNumbers={breakdown} />

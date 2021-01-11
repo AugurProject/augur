@@ -578,10 +578,10 @@ export const getUserBalances = async (
           usdValue: String(usdcValue),
         };
       } else {
-        const cash = cashes[ammExchanges[contractAddress]?.cash.address];
+        const cash = cashes[ammExchanges[contractAddress]?.cash?.address];
         const balance = onChainMarketSharesToDisplayShares(
           rawBalance,
-          cash.decimals
+          cash?.decimals
         );
         if (balance !== '0') {
           userBalances.lpTokens[contractAddress] = { balance, rawBalance };
@@ -594,7 +594,7 @@ export const getUserBalances = async (
       );
       const balance = onChainMarketSharesToDisplayShares(
         rawBalance,
-        cash.decimals
+        cash?.decimals
       );
 
       const [marketId, outcome] = params.split(',');

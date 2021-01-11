@@ -9,7 +9,7 @@ import { ErrorBlock, generateTooltip } from '../common/labels';
 import { formatPercent } from '../../utils/format-number';
 import { MultiButtonSelection } from '../common/selection';
 import classNames from 'classnames';
-import { AmmOutcome, Cash, MarketInfo } from '../types';
+import { AmmOutcome, MarketInfo } from '../types';
 import { doAmmLiquidity, getAmmLiquidity } from '../../utils/contract-calls';
 import { useAppStatusStore } from '../stores/app-status';
 
@@ -399,7 +399,6 @@ const ModalAddLiquidity = ({
             showCurrencyDropdown={LIQUIDITY_STRINGS[modalType].showCurrencyDropdown}
             chosenCash={chosenCash}
             updateCash={updateCash}
-            amountError={buttonError}
             updateAmountError={updateButtonError}
           />
           {LIQUIDITY_STRINGS[modalType].setTradingFee && (
