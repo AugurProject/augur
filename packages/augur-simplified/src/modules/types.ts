@@ -1134,6 +1134,10 @@ export interface Settings {
 }
 export interface AppStatusState {
   approvals: {
+    liquidity: {
+      USDC: boolean,
+      ETH: boolean,
+    },
     trade: {
       USDC: boolean,
       ETH: boolean,

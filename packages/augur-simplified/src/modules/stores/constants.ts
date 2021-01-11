@@ -28,6 +28,7 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   updateUserBalances: balances => {},
   updateSettings: settings => {},
   addTransaction: transaction => {},
+  removeTransaction: hash => {},
   updateBlocknumber: blocknumber => {},
   finalizeTransaction: hash => {},
   setModal: modal => {},
@@ -40,6 +41,10 @@ export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
     trade: {
       USDC: false,
       ETH: false,
+    },
+    liquidity: {
+      USDC: false,
+      ETH: false
     },
   },
   sidebarType: null,
@@ -120,6 +125,7 @@ export const APP_STATUS_ACTIONS = {
   UPDATE_USER_BALANCES: 'UPDATE_USER_BALANCES',
   UPDATE_SETTINGS: 'UPDATE_SETTINGS',
   ADD_TRANSACTION: 'ADD_TRANSACTION',
+  REMOVE_TRANSACTION: 'REMOVE_TRANSACTION',
   UPDATE_BLOCKNUMBER: 'UPDATE_BLOCKNUMBER',
   FINALIZE_TRANSACTION: 'FINALIZE_TRANSACTION',
   SET_MODAL: 'SET_MODAL',
