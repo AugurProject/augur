@@ -317,6 +317,21 @@ contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
     }
 
     /**
+     * @notice Claims winnings for multiple markets and for a particular shareholder
+     * @param _markets Array of markets to claim winnings for
+     * @param _shareHolder The account to claim winnings for
+     * @param _fingerprint Fingerprint of the user to restrict affiliate fees
+     * @return Bool True
+     */
+    function claimMarketsProceeds(IMarket[] calldata _markets, address payable _shareHolder, bytes32 _fingerprint) external returns (bool) {
+        for (uint256 i=0; i < _markets.length; i++) {
+            claimTradingProceedsInternal(_markets[i], address(this), _fingerprint);
+        }
+
+        return true;
+    }
+
+    /**
      * @notice Claims winnings for a market and for a particular shareholder
      * @param _market The market to claim winnings for
      * @param _shareHolder The account to claim winnings for

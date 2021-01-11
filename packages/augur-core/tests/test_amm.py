@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
 from eth_tester.exceptions import TransactionFailed
+from tests.reporting_utils import proceedToInitialReporting
 from pytest import raises, fixture, mark, skip
-from utils import nullAddress
-
+from utils import nullAddress, stringToBytes
 
 FEE = 10 # 10/1000 aka 1%
 ATTO = 10 ** 18
@@ -24,6 +24,10 @@ def amm(sessionFixture, factory, market, shareToken):
 @fixture
 def account0(sessionFixture):
     return sessionFixture.accounts[0]
+
+@fixture
+def account1(sessionFixture):
+    return sessionFixture.accounts[1]
 
 def test_amm_calc_addr(contractsFixture, factory, shareToken, market):
     if not contractsFixture.paraAugur:
@@ -556,6 +560,46 @@ def test_amm_lp_fee_lp_withdraw(contractsFixture, market, shareToken, cash, fact
     assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == 0
     assert cash.balanceOf(amm.address) == 0
+
+
+def test_amm_claim_from_multiple_markets(sessionFixture, universe, market, factory, shareToken, cash, account0, account1):
+    if not sessionFixture.paraAugur:
+        return skip("Test is only for para augur")
+
+
+    def do_it():
+        market = sessionFixture.createReasonableYesNoMarket(universe)
+        numticks = market.getNumTicks()
+
+        amm = make_amm(sessionFixture, factory, market, shareToken, cash, account1, FEE, 100)
+
+        yesPositionSets = 10 * ATTO
+        yesPositionCost = yesPositionSets * numticks
+        sharesReceived = amm.rateEnterPosition(yesPositionCost, True)
+
+        cash.faucet(yesPositionCost)
+        amm.enterPosition(yesPositionCost, True, sharesReceived)
+
+        proceedToInitialReporting(sessionFixture, market)
+
+        market.doInitialReport([0, 0, market.getNumTicks()], "", 0)
+
+        disputeWindow = sessionFixture.applySignature('DisputeWindow', market.getDisputeWindow())
+        sessionFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
+
+        market.finalize()
+
+        return market
+
+    market1 = do_it()
+    market2 = do_it()
+
+    balanceBeforeFinalization = cash.balanceOf(account0)
+    shareToken.claimTradingProceeds(market1.address, account0, stringToBytes(""))
+    shareToken.claimTradingProceeds(market2.address, account0, stringToBytes(""))
+
+    # Should have more cash than before because both markets resolved in account0's favor.
+    assert cash.balanceOf(account0) > balanceBeforeFinalization
 
 # TODO tests
 # 1. Two users add and remove liquidity, without trading occuring.
