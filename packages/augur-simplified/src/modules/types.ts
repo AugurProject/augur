@@ -4,7 +4,6 @@ import type {
   Address,
   PayoutNumeratorValue,
   MarketInfoOutcome,
-  DisputeInfo,
   MarketOrderBookOrder,
   OutcomeOrderBook,
   MarketOrderBook,

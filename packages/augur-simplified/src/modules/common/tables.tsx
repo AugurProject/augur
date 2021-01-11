@@ -277,7 +277,7 @@ export const LiquidityTable = ({
         <span>
           No liquidity to show
           <PrimaryButton
-            action={() => setModal({ type: MODAL_ADD_LIQUIDITY, market })}
+            action={() => setModal({ type: MODAL_ADD_LIQUIDITY, market, currency: ammExchange?.cash?.name })}
             text="Earn fees as a liquidity provider"
           />
         </span>

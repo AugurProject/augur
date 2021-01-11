@@ -145,13 +145,13 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
   const approvingName = cash?.symbol;
   const { addresses } = paraConfig;
   const { AMMFactory, WethWrapperForAMMExchange } = addresses;
-  const isETH = cash.symbol === ETH;
+  const isETH = cash?.symbol === ETH;
 
   const approve = async () => {
     if (actionType === ApprovalAction.ADD_LIQUIDITY) {
       try {
         setIsPendingTx(true);
-        const tx = await approveERC20Contract(cash.address, approvingName, AMMFactory, loginAccount);
+        const tx = await approveERC20Contract(cash?.address, approvingName, AMMFactory, loginAccount);
         addTransaction(tx);
       } catch (error) {
         setIsPendingTx(false);
