@@ -21,6 +21,7 @@ import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { HelpIcon, USDCIcon } from './icons';
 import { USDC } from '../constants';
+import { MarketInfo } from '../types';
 
 interface ValueLabelProps {
   large?: boolean;
@@ -168,7 +169,11 @@ export const AppViewStats = ({ showCashAmounts }: AppViewStatsProps) => {
   );
 };
 
-export const AddLiquidity = ({ market }) => {
+interface AddLiquidityProps {
+  market: MarketInfo;
+}
+
+export const AddLiquidity = ({ market }: AddLiquidityProps) => {
   const {
     actions: { setModal },
   } = useAppStatusStore();
@@ -186,7 +191,12 @@ export const AddLiquidity = ({ market }) => {
   );
 };
 
-export const AddCurrencyLiquidity = ({ market, cash }) => {
+
+interface AddCurrencyLiquidityProps extends AddLiquidityProps {
+  cash: string;
+}
+
+export const AddCurrencyLiquidity = ({ market, cash }: AddCurrencyLiquidityProps) => {
   const {
     actions: { setModal },
   } = useAppStatusStore();
