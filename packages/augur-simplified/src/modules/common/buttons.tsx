@@ -207,7 +207,7 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
         if (isETH) {
           setIsApproved(ApprovalState.APPROVED);
         } else {
-          const check = await checkAllowance(cash.address, AMMFactory, loginAccount, transactions)
+          const check = await checkAllowance(cash?.address, AMMFactory, loginAccount, transactions)
           setIsApproved(check);
         }
       }
@@ -238,7 +238,7 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
         setApprovals(newState);
       }
     }
-  }, [setApprovals, loginAccount, isApproved, actionType, amm, paraConfig, tokenAddress, approvals, transactions, AMMFactory, WethWrapperForAMMExchange, cash.address, isETH, marketCashType, removeTransaction]);
+  }, [setApprovals, loginAccount, isApproved, actionType, amm, paraConfig, tokenAddress, approvals, transactions, AMMFactory, WethWrapperForAMMExchange, cash?.address, isETH, marketCashType, removeTransaction]);
 
 
   if (!loginAccount) {

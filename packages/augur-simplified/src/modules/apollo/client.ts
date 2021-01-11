@@ -121,7 +121,7 @@ const getCashTokenData = async (cashes: Cash[]): Promise<{ [address: string]: Ca
           // TOOD remove this, used only form kovan testing
           tokenData = {
             ...cash,
-            usdPrice: cash.address.toLowerCase() === "0x7290c2b7D5Fc91a112d462fe06aBBB8948668f56".toLowerCase() ? '1050' : '1'
+            usdPrice: cash?.address.toLowerCase() === "0x7290c2b7D5Fc91a112d462fe06aBBB8948668f56".toLowerCase() ? '1050' : '1'
           }
         }
         return tokenData
