@@ -69,7 +69,7 @@ const OutcomesTable = ({
           <div key={`${outcome.name}-${amm?.marketId}-${outcome.id}`}>
             <span>{outcome.name.toLowerCase()}</span>
             <span>
-              {amm.liquidity !== "0" ?
+              {amm?.liquidity !== "0" ?
                 formatDai(outcome.price)
                   .full
                 : "-"
@@ -99,9 +99,9 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
       className={classNames(Styles.MarketCard, {
         [Styles.NoLiquidity]: !amm,
       })}
-      onClick={() => amm ? null : setModal({ type: MODAL_ADD_LIQUIDITY, market })}
+      onClick={() => amm ? null : setModal({ type: MODAL_ADD_LIQUIDITY, market, currency: amm?.cash?.name })}
     >
-        <MarketLink id={marketId} goToMarket={!!amm} ammId={amm?.id}>
+        <MarketLink id={marketId} dontGoToMarket={!amm} ammId={amm?.id}>
         <div>
           <CategoryIcon categories={categories} />
           <CategoryLabel categories={categories} />

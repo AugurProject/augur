@@ -28,7 +28,7 @@ export const Activity = () => {
   return (
     <div className={Styles.Activity}>
       <span>your activity</span>
-      {isLogged ? (
+      {isLogged && activity.length > 0 ? (
         <>
           <div>
             {activity.map((activityGroup) => (

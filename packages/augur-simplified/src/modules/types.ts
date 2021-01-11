@@ -184,6 +184,7 @@ export interface MarketInfo {
   marketId: string,
   description: string,
   endTimestamp: string,
+  creationTimestamp: string,
   extraInfoRaw: string,
   longDescription: string,
   fee: string,
@@ -1126,4 +1127,11 @@ export interface TransactionDetails {
   addedTime: number;
   confirmedTime?: number;
   timestamp?: number;
+}
+
+export interface AddLiquidityBreakdown {
+  lpTokens: string;
+  yesShares: string;
+  noShares: string;
+  cashAmount: string;
 }
