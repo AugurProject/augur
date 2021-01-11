@@ -141,17 +141,17 @@ export const ApprovalButton = ({ amm, actionType }) => {
 
   const marketCashType = amm?.cash?.name;
   const tokenAddress = amm?.cash?.address
-  const { cash } = amm;
-  const approvingName = cash.symbol;
+  //const { cash } = amm;
+  const approvingName = amm?.cash?.symbol;
   const { addresses } = paraConfig;
   const { AMMFactory, WethWrapperForAMMExchange } = addresses;
-  const isETH = cash.symbol === ETH;
+  const isETH = amm?.cash?.symbol === ETH;
 
   const approve = async () => {
     if (actionType === ApprovalAction.ADD_LIQUIDITY) {
       try {
         setIsPendingTx(true);
-        const tx = await approveERC20Contract(cash.address, approvingName, AMMFactory, loginAccount);
+        const tx = await approveERC20Contract(amm?.cash?.address, approvingName, AMMFactory, loginAccount);
         addTransaction(tx);
       } catch (error) {
         setIsPendingTx(false);
@@ -207,7 +207,7 @@ export const ApprovalButton = ({ amm, actionType }) => {
         if (isETH) {
           setIsApproved(ApprovalState.APPROVED);
         } else {
-          const check = await checkAllowance(cash.address, AMMFactory, loginAccount, transactions)
+          const check = await checkAllowance(amm?.cash?.address, AMMFactory, loginAccount, transactions)
           setIsApproved(check);
         }
       }
@@ -238,7 +238,7 @@ export const ApprovalButton = ({ amm, actionType }) => {
         setApprovals(newState);
       }
     }
-  }, [setApprovals, loginAccount, isApproved, actionType, amm, paraConfig, tokenAddress, approvals, transactions, AMMFactory, WethWrapperForAMMExchange, cash.address, isETH, marketCashType, removeTransaction]);
+  }, [setApprovals, loginAccount, isApproved, actionType, amm, paraConfig, tokenAddress, approvals, transactions, AMMFactory, WethWrapperForAMMExchange, amm?.cash?.address, isETH, marketCashType, removeTransaction]);
 
 
   if (!loginAccount) {
