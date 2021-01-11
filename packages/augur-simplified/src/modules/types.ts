@@ -240,50 +240,6 @@ export interface OutcomeFormatted extends MarketInfoOutcome {
   isTradeable: boolean;
 }
 
-export interface MarketData {
-  id: string;
-  description: string;
-  marketId: string;
-  marketStatus: string;
-  marketType: string;
-  tickSize: string;
-  numTicks: string;
-  defaultSelectedOutcomeId: number;
-  minPrice: string;
-  maxPrice: string;
-  minPriceBigNumber: BigNumber;
-  maxPriceBigNumber: BigNumber;
-  noShowBondAmountFormatted: FormattedNumber;
-  creationTimeFormatted: DateFormattedObject;
-  endTimeFormatted: DateFormattedObject;
-  endTime: number;
-  reportingState: string;
-  reportingFeeRatePercent: FormattedNumber;
-  marketCreatorFeeRatePercent: FormattedNumber;
-  settlementFeePercent: FormattedNumber;
-  openInterestFormatted: FormattedNumber;
-  volumeFormatted: FormattedNumber;
-  unclaimedCreatorFeesFormatted: FormattedNumber;
-  marketCreatorFeesCollectedFormatted: FormattedNumber;
-  finalizationTimeFormatted: DateFormattedObject | null;
-  finalizationTime: number | null;
-  isArchived: boolean;
-  disputeInfo: DisputeInfo;
-  consensusFormatted: ConsensusFormatted | null;
-  outcomesFormatted: OutcomeFormatted[];
-  isTemplate: boolean;
-  pending?: boolean;
-  status?: string;
-  hasPendingLiquidityOrders?: boolean;
-  noShowBondAmount: string;
-  isWarpSync: boolean;
-  scalarDenomination: string | null;
-  author: string;
-  isForking?: boolean;
-  orderBook?: { [outcome: number]: LiquidityOrder[] };
-  setEndTime?: string;
-}
-
 export interface ForkingInfo {
   forkEndTime: number;
   forkAttoReputationGoal: BigNumber;
@@ -441,7 +397,7 @@ export interface Notification {
   buttonLabel: string;
   buttonAction: ButtonActionType;
   Template: ReactNode;
-  market: MarketData;
+  market: MarketInfo;
   markets: string[];
   claimReportingFees?: object;
   totalProceeds?: number;
@@ -945,7 +901,7 @@ export interface PriceTimeSeriesData {
 }
 
 export interface MarketClaimablePositions {
-  markets: MarketData[];
+  markets: MarketInfo[];
   totals: {
     totalUnclaimedProfit: BigNumber;
     totalUnclaimedProceeds: BigNumber;
@@ -972,7 +928,7 @@ export interface MarketReportContracts {
   marketId: string;
   contracts: string[];
   totalAmount: BigNumber;
-  marketObject: MarketData;
+  marketObject: MarketInfo;
 }
 
 export interface marketsReportingCollection {
