@@ -5,7 +5,7 @@ import { getERC1155ApprovedForAll, getErc1155Contract, getERC20Allowance, getErc
 import { BigNumber as BN } from 'bignumber.js'
 import { useAppStatusStore } from "../stores/app-status";
 import { TransactionResponse } from '@ethersproject/providers'
-import { AmmExchange } from "../types";
+import { AmmExchange, LoginAccount, TransactionDetails } from "../types";
 
 const APPROVAL_AMOUNT = String(new BN(2 ** 255).minus(1));
 
@@ -242,4 +242,66 @@ export const useApproveCallbackForLiquidity = (ammExchange: AmmExchange, isAdd: 
     return [approveAmmWrapperStatus, approveAmmWrapper]
   }
   return [ApprovalState.APPROVED, () => null]
+}
+
+export const hasPendingTransaction = async (transactions: TransactionDetails[], account: string, tokenAddress: string, spender: string): Promise<boolean> => {
+  if (!account || !tokenAddress || !spender) return false;
+  const tx = Object.values(transactions).find(tx => tx.approval
+    && !tx.receipt
+    && tx?.approval?.spender === spender
+    && tx?.approval?.tokenAddress === tokenAddress)
+  return Boolean(tx);
+}
+
+export async function checkAllowance(
+  tokenAddress: string,
+  spender: string,
+  loginAccount: LoginAccount,
+  transactions: TransactionDetails[],
+): Promise<ApprovalState> {
+  const { account, library } = loginAccount;
+  const allowance = await getERC20Allowance(tokenAddress, library, account, spender);
+  if (allowance && new BN(allowance).gt(0)) {
+      return ApprovalState.APPROVED;
+  }
+  const isPending = await hasPendingTransaction(transactions, loginAccount.account, tokenAddress, spender);
+  return isPending ? ApprovalState.PENDING : ApprovalState.NOT_APPROVED;
+}
+
+export const approveERC20Contract = async (
+  tokenAddress: string,
+  approvingName: string,
+  spender: string,
+  loginAccount: LoginAccount,
+) => {
+  const { chainId, account, library } = loginAccount;
+    if (!spender) {
+      console.error('no spender')
+      return
+    }
+
+    const tokenContract = getErc20Contract(tokenAddress, library, account);
+    const estimatedGas = await tokenContract.estimateGas.approve(spender, APPROVAL_AMOUNT).catch(() => {
+      // general fallback for tokens who restrict approval amounts
+      return tokenContract.estimateGas.approve(spender, APPROVAL_AMOUNT)
+    })
+
+    try {
+      const response: TransactionResponse = await tokenContract.approve(spender, APPROVAL_AMOUNT, {
+        gasLimit: estimatedGas
+      });
+      const { hash } = response;
+      return {
+        hash,
+        chainId,
+        addedTime: new Date().getTime(),
+        from: account,
+        summary: `Approve ${approvingName || 'for use'}`,
+        approval: { tokenAddress: tokenAddress, spender: spender }
+      }
+    }
+    catch (error) {
+      console.debug('Failed to approve token', error)
+      throw error
+    }
 }

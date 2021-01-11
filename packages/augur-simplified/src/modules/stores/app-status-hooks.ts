@@ -20,6 +20,7 @@ const {
   UPDATE_USER_BALANCES,
   UPDATE_SETTINGS,
   ADD_TRANSACTION,
+  REMOVE_TRANSACTION,
   UPDATE_BLOCKNUMBER,
   FINALIZE_TRANSACTION,
   SET_MODAL,
@@ -89,6 +90,7 @@ export const arrayToKeyedObjectByProp = (ArrayOfObj: any[], prop: string) =>
 export function AppStatusReducer(state, action) {
   const updatedState = { ...state };
   const now = new Date().getTime();
+
   switch (action.type) {
     case SET_APPROVALS: {
       updatedState[APPROVALS] = action.approvals;
@@ -173,8 +175,19 @@ export function AppStatusReducer(state, action) {
         ...updatedState[TRANSACTIONS],
         { ...action.transaction, timestamp: now }
       ]
+      window.localStorage.setItem('transactions', JSON.stringify(updatedState[TRANSACTIONS]));
       break;
     }
+
+    case REMOVE_TRANSACTION: {
+      if (action.hash) {
+        updatedState[TRANSACTIONS] = updatedState[TRANSACTIONS].filter(tx => tx.hash !== action.hash)
+        window.localStorage.setItem('transactions', JSON.stringify(updatedState[TRANSACTIONS]));
+      }
+      break;
+    }
+
+
     case UPDATE_BLOCKNUMBER: {
       updatedState[BLOCKNUMBER] = action.blocknumber;
       break;
@@ -221,6 +234,7 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
         dispatch({ type: UPDATE_USER_BALANCES, userBalances }),
       updateSettings: settings => dispatch({ type: UPDATE_SETTINGS, settings }),
       addTransaction: (transaction: TransactionDetails) => dispatch({ type: ADD_TRANSACTION, transaction }),
+      removeTransaction: (hash: string) => dispatch({ type: REMOVE_TRANSACTION, hash }),
       updateBlocknumber: blocknumber => dispatch({ type: UPDATE_BLOCKNUMBER, blocknumber }),
       finalizeTransaction: hash => dispatch({ type: FINALIZE_TRANSACTION, hash }),
       setModal: modal => dispatch({ type: SET_MODAL, modal }),
