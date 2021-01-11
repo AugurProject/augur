@@ -101,7 +101,7 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
       })}
       onClick={() => amm ? null : setModal({ type: MODAL_ADD_LIQUIDITY, market, currency: amm?.cash?.name })}
     >
-        <MarketLink id={marketId} goToMarket={!!amm} ammId={amm?.id}>
+        <MarketLink id={marketId} dontGoToMarket={!amm} ammId={amm?.id}>
         <div>
           <CategoryIcon categories={categories} />
           <CategoryLabel categories={categories} />

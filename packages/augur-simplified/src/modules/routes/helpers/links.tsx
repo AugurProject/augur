@@ -10,7 +10,7 @@ interface MarketLinkProps {
   id: string;
   ammId?: string;
   children?: any;
-  goToMarket?: boolean;
+  dontGoToMarket?: boolean;
 }
 
 const RECEIPT_LINKS = {
@@ -37,17 +37,17 @@ export const MarketsLink = ({ children, id }: MarketLinkProps) => (
 export const MarketLink = ({
   id,
   ammId,
-  goToMarket,
+  dontGoToMarket,
   children,
 }: MarketLinkProps) => {
   const idString = `${id}${ammId ? '-' + ammId : ''}`;
   return (
     <>
-      {goToMarket ? (
+      {!dontGoToMarket ? (
         <Link
           data-testid={`link-${idString}`}
           to={
-            goToMarket
+            !dontGoToMarket
               ? {
                   pathname: makePath(MARKET),
                   search: makeQuery({
