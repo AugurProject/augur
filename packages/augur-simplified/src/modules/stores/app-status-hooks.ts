@@ -6,7 +6,12 @@ import {
 } from './constants';
 import { windowRef } from 'utils/window-ref';
 import { shapeUserActvity } from 'utils/process-data';
-import { ParaDeploys, TransactionDetails, UserBalances } from '../types';
+import {
+  MarketInfo,
+  ParaDeploys,
+  TransactionDetails,
+  UserBalances,
+} from '../types';
 
 const {
   SET_SHOW_TRADING_FORM,
@@ -73,16 +78,18 @@ const middleware = (dispatch, action) => {
   }
 };
 
-export const getRelatedMarkets = (market, markets) =>
+export const getRelatedMarkets = (
+  market: MarketInfo,
+  markets: Array<MarketInfo>
+) =>
   keyedObjToKeyArray(markets)
     .filter((mrkt) => mrkt.includes(market.marketId))
     .map((mid) => markets[mid]);
 
-export const getCurrentAmms = (market, markets) => {
-  const relatedMarkets = getRelatedMarkets(market, markets);
-  const activeAMMs = relatedMarkets.map(m => m.amm.cash.name);
-  return activeAMMs;
-};
+export const getCurrentAmms = (
+  market: MarketInfo,
+  markets: Array<MarketInfo>
+) => getRelatedMarkets(market, markets).map((m) => m.amm.cash.name);
 
 export const dispatchMiddleware = (dispatch) => (action) =>
   middleware(dispatch, action);
