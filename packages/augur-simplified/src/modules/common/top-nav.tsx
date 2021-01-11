@@ -1,6 +1,7 @@
-import React, { useEffect, useState, useMemo, Fragment } from 'react';
+import React, {useEffect, useState, useMemo, Fragment, useRef} from 'react';
 import { useLocation } from 'react-router';
 import Styles from 'modules/common/top-nav.styles.less';
+import ButtonStyles from 'modules/common/buttons.styles.less'
 import { Link } from 'react-router-dom';
 import { MARKETS, PORTFOLIO, SIDEBAR_TYPES } from 'modules/constants';
 import makePath from 'modules/routes/helpers/make-path';
@@ -21,6 +22,7 @@ export const SettingsButton = () => {
   } = useAppStatusStore();
   const [open, setOpened] = useState(false);
   const [customVal, setCustomVal] = useState('');
+  const settingsRef = useRef(null);
   const isSelectedArray = useMemo(() => {
     let output = [false, false, false, false];
     switch (slippage) {
@@ -44,11 +46,25 @@ export const SettingsButton = () => {
     return output;
   }, [slippage]);
 
+  const handleWindowOnClick = (event) => {
+    if (settingsRef && !settingsRef?.current?.contains(event.target)) {
+      setOpened(false);
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('click', handleWindowOnClick);
+
+    return () => {
+      window.removeEventListener('click', handleWindowOnClick);
+    }
+  });
+
   return (
     <Fragment key="settingsButton">
       <SecondaryButton action={() => setOpened(!open)} icon={GearIcon} />
       {open && (
-        <ul className={Styles.SettingsMenu}>
+        <ul className={Styles.SettingsMenu} ref={settingsRef}>
           <li>
             <h2>Settings</h2>
           </li>
@@ -60,6 +76,7 @@ export const SettingsButton = () => {
                   text="0.1%"
                   action={() => updateSettings({ slippage: '0.1' })}
                   selected={isSelectedArray[0]}
+                  className={ButtonStyles.TinyTransparentButton}
                 />
               </li>
               <li>
@@ -67,6 +84,7 @@ export const SettingsButton = () => {
                   text="0.5%"
                   action={() => updateSettings({ slippage: '0.5' })}
                   selected={isSelectedArray[1]}
+                  className={ButtonStyles.TinyTransparentButton}
                 />
               </li>
               <li>
@@ -74,14 +92,14 @@ export const SettingsButton = () => {
                   text="1%"
                   action={() => updateSettings({ slippage: '1' })}
                   selected={isSelectedArray[2]}
+                  className={ButtonStyles.TinyTransparentButton}
                 />
               </li>
               <li>
-                <div>
+                <div className={classNames({
+                  [Styles.Selected]: isSelectedArray[3],
+                })}>
                   <input
-                    className={classNames({
-                      [Styles.Selected]: isSelectedArray[3],
-                    })}
                     type="number"
                     step="0.1"
                     value={customVal}
