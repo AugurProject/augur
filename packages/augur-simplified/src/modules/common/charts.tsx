@@ -99,16 +99,15 @@ interface HighcartsChart extends Highcharts.Chart {
 
 const determinelastPrice = (sortedOutcomeTrades, startTime) => {
   let lastPrice = 0;
-  const firstTrade = sortedOutcomeTrades[0];
-  if (firstTrade) {
-    const firstTradeTime = firstTrade.timestamp * 1000;
-    const firstPrice = firstTrade.price;
-    if (firstTradeTime < startTime) {
-      lastPrice = firstPrice;
-    }
+  const index = sortedOutcomeTrades
+    .sort((a, b) => b.timestamp - a.timestamp)
+    .findIndex((t) => startTime > t.timestamp * 1000);
+  const sortTS = sortedOutcomeTrades[index]?.timestamp * 1000;
+  if (!isNaN(sortTS)) {
+    lastPrice = sortedOutcomeTrades[index].price;
   }
   return createBigNumber(lastPrice).toFixed(4);
-}
+};
 
 const processPriceTimeData = (formattedOutcomes, market, rangeSelection) => ({
   priceTimeArray: formattedOutcomes.map((outcome) => {
@@ -120,9 +119,9 @@ const processPriceTimeData = (formattedOutcomes, market, rangeSelection) => ({
     );
     let newLastPrice = determinelastPrice(sortedOutcomeTrades, startTime);
     for (let i = 0; i < totalTicks; i++) {
-      const curTick = startTime + (tick * i);
+      const curTick = startTime + tick * i;
       const nextTick = curTick + tick;
-      const matchingTrades = sortedOutcomeTrades.filter(trade => { 
+      const matchingTrades = sortedOutcomeTrades.filter((trade) => {
         const tradeTime = trade.timestamp * 1000;
         return tradeTime > curTick && nextTick > tradeTime;
       });
