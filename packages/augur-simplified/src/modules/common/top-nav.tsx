@@ -123,8 +123,9 @@ export const TopNav = () => {
   const {
     paraConfig: { networkId },
     loginAccount,
+    transactions,
     isMobile,
-    actions: { setSidebar, updateLoginAccount },
+    actions: { setSidebar, updateLoginAccount, addTransaction },
   } = useAppStatusStore();
   const [user, setUser] = useLocalStorage('user', null);
 
@@ -144,6 +145,12 @@ export const TopNav = () => {
 
   const handleAccountUpdate = (activeWeb3) => {
     if (activeWeb3) {
+      const savedTransactions = JSON.parse(window.localStorage.getItem('transactions')) || [];
+
+      if (transactions && transactions.length === 0 && savedTransactions && savedTransactions.length > 0) {
+        savedTransactions.map(tx => addTransaction(tx));
+      }
+
       if (String(networkId) !== String(activeWeb3.chainId)) {
         updateLoginAccount({ chainId: activeWeb3.chainId });
       } else if (loginAccount && loginAccount.account) {

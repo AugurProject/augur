@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 
 import Styles from 'modules/modal/modal.styles.less';
 import { Header } from './common';
-import { YES_NO, BUY, USDC, SHARES } from '../constants';
+import { YES_NO, BUY, USDC, SHARES, ApprovalAction } from '../constants';
 import { OutcomesGrid, AmountInput, InfoNumbers } from '../market/trading-form';
-import { BuySellButton } from '../common/buttons';
+import { ApprovalButton, BuySellButton } from '../common/buttons';
 import { ErrorBlock, generateTooltip } from '../common/labels';
 import { formatPercent } from '../../utils/format-number';
 import { MultiButtonSelection } from '../common/selection';
@@ -411,9 +411,12 @@ const ModalAddLiquidity = ({
           <InfoNumbers
             infoNumbers={breakdown}
           />
-          <BuySellButton
-            text={LIQUIDITY_STRINGS[modalType].approvalButtonText}
+
+          <ApprovalButton
+            amm={amm}
+            actionType={ApprovalAction.ADD_LIQUIDITY}
           />
+
           <BuySellButton
             action={() => setShowBackView(true)}
             disabled

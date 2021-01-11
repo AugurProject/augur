@@ -2,13 +2,9 @@ import React, { ReactNode, useEffect, useState } from 'react';
 import Styles from 'modules/common/buttons.styles.less';
 import classNames from 'classnames';
 import { Arrow } from './icons';
-import {
-  useApproveCallback,
-  useIsTokenApproved,
-} from '../hooks/use-approval-callback';
+import { approveERC20Contract, checkAllowance} from '../hooks/use-approval-callback';
 import { useAppStatusStore } from '../stores/app-status';
-import { ApprovalAction, ApprovalState } from '../constants';
-import { v1String } from 'uuid/interfaces';
+import { ApprovalAction, ApprovalState, ETH } from '../constants';
 
 interface ButtonProps {
   text?: string;
@@ -132,98 +128,142 @@ export const DirectionButton = ({
 );
 
 export const ApprovalButton = ({ amm, actionType }) => {
-  //TODO: wire up enter and exit positions.
-  const marketCashType = amm?.cash?.name;
-  const tokenAddress = amm?.cash?.address;
-
-  const [isApprovedToTrade, setIsApprovedToTrade] = useState(false);
   const [isPendingTx, setIsPendingTx] = useState(false);
+  const [isApproved, setIsApproved] = useState(ApprovalState.UNKNOWN);
 
   const {
     loginAccount,
     approvals,
-    actions: { setApprovals },
+    paraConfig,
+    transactions,
+    actions: { addTransaction, setApprovals, removeTransaction }
   } = useAppStatusStore();
 
-  const isTokenApproved = useIsTokenApproved(
-    tokenAddress,
-    loginAccount.account
-  );
-  const [approvalState, approve] = useApproveCallback(
-    tokenAddress,
-    marketCashType,
-    loginAccount.account
-  );
+  const marketCashType = amm?.cash?.name;
+  const tokenAddress = amm?.cash?.address
+  const { cash } = amm;
+  const approvingName = cash.symbol;
+  const { addresses } = paraConfig;
+  const { AMMFactory, WethWrapperForAMMExchange } = addresses;
+  const isETH = cash.symbol === ETH;
+
+  const approve = async () => {
+    if (actionType === ApprovalAction.ADD_LIQUIDITY) {
+      try {
+        setIsPendingTx(true);
+        const tx = await approveERC20Contract(cash.address, approvingName, AMMFactory, loginAccount);
+        addTransaction(tx);
+      } catch (error) {
+        setIsPendingTx(false);
+        console.error(error);
+      }
+    }
+
+    else if (actionType === ApprovalAction.REMOVE_LIQUIDITY) {
+      try {
+        setIsPendingTx(true);
+        const tx = await approveERC20Contract(amm.id, approvingName, WethWrapperForAMMExchange, loginAccount);
+        addTransaction(tx);
+      } catch (error) {
+        setIsPendingTx(false);
+        console.error(error);
+      }
+    }
+
+    else if (actionType === ApprovalAction.ENTER_POSITION) {
+      try {
+        setIsPendingTx(true);
+        const tx = await approveERC20Contract(tokenAddress, marketCashType, loginAccount.account, loginAccount);
+        addTransaction(tx);
+      } catch (error) {
+        setIsPendingTx(false);
+        console.error(error);
+      }
+
+    }
+  }
 
   useEffect(() => {
-    if (loginAccount && !isApprovedToTrade) {
-      isTokenApproved
-        .then((isApproved) => {
-          if (isApproved) {
-            setIsPendingTx(false);
-            setIsApprovedToTrade(true);
-            const approvalState = approvals;
-            approvalState.trade[marketCashType] = true;
-            setApprovals(approvalState);
+    const checkIfApproved = async () => {
+      if (actionType === ApprovalAction.ENTER_POSITION) {
+        const check = await checkAllowance(tokenAddress, loginAccount.account, loginAccount, transactions);
+        if (check === ApprovalState.PENDING) {
+          setIsPendingTx(true);
+        } else if (check === ApprovalState.APPROVED) {
+          setIsPendingTx(false);
+          if (transactions.length > 0) {
+            const tx = transactions.find(tx => tx.approval
+              && tx?.approval?.spender === loginAccount.account
+              && tx?.approval?.tokenAddress === tokenAddress)
+            if (tx) {
+              removeTransaction(tx.hash);
+            }
           }
-        })
-        .catch((error) => {
-          console.log('error', error);
-          setIsApprovedToTrade(false);
-        });
-    }
-  }, [
-    loginAccount,
-    isTokenApproved,
-    isApprovedToTrade,
-    marketCashType,
-    approvals,
-    setApprovals,
-  ]);
+        }
+        setIsApproved(check);
+      }
 
-  const approveTrade = () => {
-    if (
-      [ApprovalState.UNKNOWN, ApprovalState.NOT_APPROVED].includes(
-        approvalState
-      )
-    ) {
-      setIsPendingTx(true);
-      approve()
-        .then((_) => {
-          setIsPendingTx(false);
-          setIsApprovedToTrade(true);
-          const approvalState = approvals;
-          approvalState.trade[marketCashType] = true;
-          setApprovals(approvalState);
-        })
-        .catch((error) => {
-          console.log(error);
-          setIsPendingTx(false);
-        });
-    } else if (ApprovalState.PENDING === approvalState) {
-      // TODO
-    } else if (ApprovalState.APPROVED === approvalState) {
-      // TODO
+      if (actionType === ApprovalAction.ADD_LIQUIDITY) {
+        if (isETH) {
+          setIsApproved(ApprovalState.APPROVED);
+        } else {
+          const check = await checkAllowance(cash.address, AMMFactory, loginAccount, transactions)
+          setIsApproved(check);
+        }
+      }
+
+      if (actionType === ApprovalAction.REMOVE_LIQUIDITY) {
+        if (isETH) {
+          setIsApproved(ApprovalState.APPROVED);
+        } else {
+          const check = await checkAllowance(amm.id, WethWrapperForAMMExchange, loginAccount, transactions)
+          setIsApproved(check);
+        }
+      }
     }
-  };
+
+    if (isApproved !== ApprovalState.APPROVED && loginAccount) {
+      checkIfApproved();
+    } else {
+      if (approvals
+          && ((actionType === ApprovalAction.ENTER_POSITION && !approvals.trade[marketCashType])
+          || (actionType === ApprovalAction.ADD_LIQUIDITY && !approvals.liquidity[marketCashType]))) {
+        let newState = approvals;
+        if (actionType === ApprovalAction.ENTER_POSITION) {
+          newState.trade[marketCashType] = true;
+        }
+        else if (actionType === ApprovalAction.ADD_LIQUIDITY) {
+          newState.liquidity[marketCashType] = true;
+        }
+        setApprovals(newState);
+      }
+    }
+  }, [setApprovals, loginAccount, isApproved, actionType, amm, paraConfig, tokenAddress, approvals, transactions, AMMFactory, WethWrapperForAMMExchange, cash.address, isETH, marketCashType, removeTransaction]);
+
 
   if (!loginAccount) {
     return null;
   }
 
-  if (isApprovedToTrade) {
+  if (isApproved === ApprovalState.APPROVED) {
     return null;
   }
 
+  let buttonText = '';
+
+  if (actionType === ApprovalAction.ENTER_POSITION) {
+    buttonText = 'Approve to Buy';
+  } else if (actionType === ApprovalAction.ADD_LIQUIDITY || actionType === ApprovalAction.REMOVE_LIQUIDITY) {
+    buttonText = `Approve ${marketCashType}`;
+  }
+
   return (
-    <>
-      {ApprovalAction.ENTER_POSITION === actionType && (
-        <ApproveButton
-          disabled={isPendingTx}
-          text={isPendingTx ? 'Approving...' : 'Approve to Buy'}
-          action={() => approveTrade()}
-        />
-      )}
-    </>
-  );
-};
+    <div className={Styles.Approval}>
+      <ApproveButton
+        disabled={isPendingTx}
+        text={isPendingTx ? 'Approving...' : buttonText}
+        action={() => approve()}
+      />
+    </div>
+  )
+}
