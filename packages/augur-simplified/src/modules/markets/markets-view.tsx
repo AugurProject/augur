@@ -30,7 +30,7 @@ import { Pagination } from 'modules/common/pagination';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import { AmmExchange, MarketInfo } from '../types';
 import { MODAL_ADD_LIQUIDITY, USDC } from '../constants';
-import { NetworkMismatchBanner } from '../common/labels';
+import { NetworkMismatchBanner, ReportingStateLabel } from '../common/labels';
 
 const PAGE_LIMIT = 20;
 
@@ -88,6 +88,7 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
     outcomes,
     marketId,
     amm,
+    reportingState,
   } = market;
   const formattedApy = amm?.apy && formatPercent(amm.apy).full;
   const {
@@ -106,6 +107,7 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
           <CategoryIcon categories={categories} />
           <CategoryLabel categories={categories} />
           <div>
+            <ReportingStateLabel {...{ reportingState }} />
             {amm?.cash?.name === ETH && EthIcon}
             {amm?.cash?.name === USDC && UsdIcon}
           </div>

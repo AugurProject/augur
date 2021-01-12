@@ -28,7 +28,7 @@ import {
   getMarketEndtimeFull,
   getMarketEndtimeDate,
 } from '../../utils/date-utils';
-import { AddCurrencyLiquidity } from '../common/labels';
+import { AddCurrencyLiquidity, ReportingStateLabel } from '../common/labels';
 import { getCurrentAmms } from '../stores/app-status-hooks';
 
 const getDetails = (market) => {
@@ -55,11 +55,11 @@ const CurrencyLabel = ({ name }) => {
   let content = <>Add Liquidity</>;
   switch (name) {
     case ETH: {
-      content = <>{EthIcon} ETH Market</>;
+      content = <><span>ETH Market</span> {EthIcon}</>;
       break;
     }
     case USDC: {
-      content = <>{UsdIcon} USDC Market</>;
+      content = <><span>USDC Market</span> {UsdIcon}</>;
       break;
     }
     default:
@@ -104,6 +104,7 @@ const MarketView = ({ defaultMarket = null }) => {
   if (!market) return <div className={Styles.MarketView} />;
   const details = getDetails(market);
   const currentAMMs = getCurrentAmms(market, markets);
+  const { reportingState } = market;
   return (
     <div className={Styles.MarketView}>
       <section>
@@ -111,6 +112,7 @@ const MarketView = ({ defaultMarket = null }) => {
         <div className={Styles.topRow}>
           <CategoryIcon categories={market.categories} />
           <CategoryLabel categories={market.categories} />
+          <ReportingStateLabel {...{ reportingState, big: true }} />
           <CurrencyLabel name={amm?.cash?.name} />
         </div>
         <h1>{market.description}</h1>
