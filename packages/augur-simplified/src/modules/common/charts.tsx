@@ -351,7 +351,7 @@ const getOptions = ({
   minPrice = createBigNumber(0),
 }) => ({
   lang: {
-    noData: 'No data...',
+    noData: 'Select an outcome below',
   },
   title: {
     text: '',
