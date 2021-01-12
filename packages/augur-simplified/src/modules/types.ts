@@ -1081,7 +1081,7 @@ export interface ProcessedData {
 }
 
 interface Modal {
-  type: string;
+  type?: string;
 }
 
 export interface Settings {
@@ -1126,6 +1126,7 @@ export interface TransactionDetails {
   addedTime: number;
   confirmedTime?: number;
   timestamp?: number;
+  seen?: boolean;
 }
 
 export interface LiquidityBreakdown {

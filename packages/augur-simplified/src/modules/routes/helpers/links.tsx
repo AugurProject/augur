@@ -83,15 +83,15 @@ export const ExternalLink = ({ URL, label }: ExternalLinkProps) => (
 );
 
 interface ReceiptLinkProps {
-  txId: string;
+  hash: string;
   label?: string;
 }
 
-export const ReceiptLink = ({ txId, label = 'Receipt' }: ReceiptLinkProps) => {
+export const ReceiptLink = ({ hash, label = 'Receipt' }: ReceiptLinkProps) => {
   const {
     paraConfig: { networkId },
   } = useAppStatusStore();
-  const URL = `${RECEIPT_LINKS[networkId] || RECEIPT_LINKS[1]}${txId}`;
+  const URL = `${RECEIPT_LINKS[networkId] || RECEIPT_LINKS[1]}${hash}`;
   return <ExternalLink {...{ URL, label }} />;
 };
 

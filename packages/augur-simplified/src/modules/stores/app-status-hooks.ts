@@ -25,6 +25,7 @@ const {
   UPDATE_MARKETS_VIEW_SETTINGS,
   UPDATE_USER_BALANCES,
   UPDATE_SETTINGS,
+  UPDATE_TRANSACTION,
   ADD_TRANSACTION,
   REMOVE_TRANSACTION,
   UPDATE_BLOCKNUMBER,
@@ -210,24 +211,44 @@ export function AppStatusReducer(state, action) {
       updatedState[USER_INFO].balances = action.userBalances;
       break;
     }
-    case ADD_TRANSACTION: {
-      updatedState[TRANSACTIONS] = [
-        ...updatedState[TRANSACTIONS],
-        { ...action.transaction, timestamp: now }
-      ];
-      window.localStorage.setItem('transactions', JSON.stringify(updatedState[TRANSACTIONS]));
-      break;
-    }
-
-    case REMOVE_TRANSACTION: {
-      if (action.hash) {
-        updatedState[TRANSACTIONS] = updatedState[TRANSACTIONS].filter(tx => tx.hash !== action.hash)
-        window.localStorage.setItem('transactions', JSON.stringify(updatedState[TRANSACTIONS]));
+    case UPDATE_TRANSACTION: {
+      const transactionIndex = updatedState[TRANSACTIONS].findIndex(transaction => transaction.hash === action.hash);
+      if (transactionIndex >= 0) {
+        updatedState[TRANSACTIONS][transactionIndex] = {
+          ...updatedState[TRANSACTIONS][transactionIndex],
+          ...action.updates,
+          timestamp: now,
+        };
+        window.localStorage.setItem(
+          'transactions',
+          JSON.stringify(updatedState[TRANSACTIONS])
+        );
       }
       break;
     }
-
-
+    case ADD_TRANSACTION: {
+      updatedState[TRANSACTIONS] = [
+        ...updatedState[TRANSACTIONS],
+        { ...action.transaction, timestamp: now },
+      ];
+      window.localStorage.setItem(
+        'transactions',
+        JSON.stringify(updatedState[TRANSACTIONS])
+      );
+      break;
+    }
+    case REMOVE_TRANSACTION: {
+      if (action.hash) {
+        updatedState[TRANSACTIONS] = updatedState[TRANSACTIONS].filter(
+          (tx) => tx.hash !== action.hash
+        );
+        window.localStorage.setItem(
+          'transactions',
+          JSON.stringify(updatedState[TRANSACTIONS])
+        );
+      }
+      break;
+    }
     case UPDATE_BLOCKNUMBER: {
       updatedState[BLOCKNUMBER] = action.blocknumber;
       break;
@@ -275,12 +296,19 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
         dispatch({ type: SET_LOGIN_ACCOUNT, account }),
       updateUserBalances: (userBalances: UserBalances) =>
         dispatch({ type: UPDATE_USER_BALANCES, userBalances }),
-      updateSettings: settings => dispatch({ type: UPDATE_SETTINGS, settings }),
-      addTransaction: (transaction: TransactionDetails) => dispatch({ type: ADD_TRANSACTION, transaction }),
-      removeTransaction: (hash: string) => dispatch({ type: REMOVE_TRANSACTION, hash }),
-      updateBlocknumber: blocknumber => dispatch({ type: UPDATE_BLOCKNUMBER, blocknumber }),
-      finalizeTransaction: hash => dispatch({ type: FINALIZE_TRANSACTION, hash }),
-      setModal: modal => dispatch({ type: SET_MODAL, modal }),
+      updateSettings: (settings) =>
+        dispatch({ type: UPDATE_SETTINGS, settings }),
+      updateTransaction: (hash, updates) =>
+        dispatch({ type: UPDATE_TRANSACTION, hash, updates }),
+      addTransaction: (transaction: TransactionDetails) =>
+        dispatch({ type: ADD_TRANSACTION, transaction }),
+      removeTransaction: (hash: string) =>
+        dispatch({ type: REMOVE_TRANSACTION, hash }),
+      updateBlocknumber: (blocknumber) =>
+        dispatch({ type: UPDATE_BLOCKNUMBER, blocknumber }),
+      finalizeTransaction: (hash) =>
+        dispatch({ type: FINALIZE_TRANSACTION, hash }),
+      setModal: (modal) => dispatch({ type: SET_MODAL, modal }),
       closeModal: () => dispatch({ type: CLOSE_MODAL }),
       logout: () => dispatch({ type: LOGOUT }),
     },

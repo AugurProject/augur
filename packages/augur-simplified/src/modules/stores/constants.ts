@@ -19,7 +19,7 @@ import { AppStatusState } from '../types';
 export const STUBBED_APP_STATUS_ACTIONS = {
   setIsMobile: isMobile => {},
   setApprovals: approvals => {},
-  setSidebar: (sidebarType) => {},
+  setSidebar: sidebarType => {},
   updateGraphData: graphData => {},
   setShowTradingForm: showTradingForm => {},
   updateProcessed: processed => {},
@@ -27,6 +27,7 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   updateMarketsViewSettings: settings => {},
   updateUserBalances: balances => {},
   updateSettings: settings => {},
+  updateTransaction: (hash, updates) => {},
   addTransaction: transaction => {},
   removeTransaction: hash => {},
   logout: () => {},
@@ -125,6 +126,7 @@ export const APP_STATUS_ACTIONS = {
   UPDATE_MARKETS_VIEW_SETTINGS: 'UPDATE_MARKETS_VIEW_SETTINGS',
   UPDATE_USER_BALANCES: 'UPDATE_USER_BALANCES',
   UPDATE_SETTINGS: 'UPDATE_SETTINGS',
+  UPDATE_TRANSACTION: 'UPDATE_TRANSACTION',
   ADD_TRANSACTION: 'ADD_TRANSACTION',
   REMOVE_TRANSACTION: 'REMOVE_TRANSACTION',
   UPDATE_BLOCKNUMBER: 'UPDATE_BLOCKNUMBER',
@@ -210,12 +212,40 @@ export const fakeLiquidityData = [
   },
 ];
 
+
+const MockTransactions = [
+  {
+    chainId: '42',
+    hash: '0xdeadbeef',
+    from: '0x000000000004',
+    status: 'CONFIRMED',
+    marketDescription: "Extra long COVID-19 related market that has a very long name that requires us to cut it off because it's way to big to show on one line cuz it's a massive run on sentance with some bad grammar.",
+    message: 'Claimed $24.32 in winnings.',
+    addedTime: new Date().getTime() - 3600,
+    timestamp: new Date().getTime(),
+    confirmedTime: new Date().getTime(),
+    seen: false,
+  },
+  {
+    chainId: '42',
+    hash: '0xdeadbeef2',
+    from: '0x000000000004',
+    status: 'FAILED',
+    marketDescription: "short market name that won't need to wrap.",
+    message: 'Claimed $85.90 in winnings.',
+    addedTime: new Date().getTime() - 3600,
+    timestamp: new Date().getTime(),
+    confirmedTime: new Date().getTime(),
+    seen: false,
+  }
+];
+
 export const MOCK_APP_STATUS_STATE = {
   ...DEFAULT_APP_STATUS_STATE,
   positions: fakePositionsData,
   liquidity: fakeLiquidityData,
   blocknumber: 0,
-  transactions: [],
+  transactions: MockTransactions,
   marketInfos: {
     '0xdeadbeef': {
       id: '0xdeadbeef',
