@@ -33,6 +33,8 @@ describe('AMM Middleware for ETH', () => {
   const ALSO_SELL = true;
   const DONT_SELL = false;
 
+  const ONE_ETH = bn(1000).times(1e18); // 1000 ETH
+
   function makeAMMMiddleware(user: TestContractAPI): AMM {
     const wethParaShareTokenAddress = config?.paraDeploys[config.addresses.WETH9]?.addresses.ShareToken;
     return new AMM(user.signer, wethParaShareTokenAddress, config.addresses.AMMFactory, config.addresses.WethWrapperForAMMExchange);
@@ -81,9 +83,64 @@ describe('AMM Middleware for ETH', () => {
     YES = await wethParaShare.getTokenId_(market.address, bn(2));
   });
 
+  describe('getAddLiquidity method', () => {
+    let middleware;
+    let numTicks;
+    let ONE_ETH_DIV_BY_NUMTICKS;
+    beforeAll(async () => {
+      middleware = makeAMMMiddleware(mary);
+      numTicks = await market.getNumTicks_();
+      ONE_ETH_DIV_BY_NUMTICKS = ONE_ETH.idiv(numTicks);
+    });
+
+    test('initial liquidity', async () => {
+      const longPercent = bn(50);
+      const shortPercent = bn(100).minus(longPercent);
+
+      const result = await middleware.getAddLiquidity(
+        bn(0),
+        bn(0),
+        bn(0),
+        bn(0),
+        ONE_ETH,
+        longPercent,
+        shortPercent
+      );
+
+      expect(result).toEqual({
+        cash: ONE_ETH,
+        long:  bn(0),
+        lpTokens: ONE_ETH_DIV_BY_NUMTICKS,
+        short:  bn(0)
+      });
+    });
+
+    test('existing liquidity', async () => {
+      const longPercent = bn(50);
+      const shortPercent = bn(100).minus(longPercent);
+
+      // no swapping has happened.
+      const result = await middleware.getAddLiquidity(
+        ONE_ETH_DIV_BY_NUMTICKS,
+        ONE_ETH_DIV_BY_NUMTICKS,
+        ONE_ETH_DIV_BY_NUMTICKS,
+        ONE_ETH,
+        ONE_ETH,
+        longPercent,
+        shortPercent
+      );
+
+      expect(result).toEqual({
+        cash: ONE_ETH,
+        long:  bn(0),
+        lpTokens: ONE_ETH_DIV_BY_NUMTICKS.idiv(2),
+        short:  bn(0)
+      });
+    });
+  });
+
   describe('with a simple liquid AMM', () => {
     const fee = bn(10); // 1%
-    const initialLiquidity = bn(1000).times(1e18); // 1000 ETH
 
     beforeAll(async () => {
       const longPercent = bn(50);
@@ -99,7 +156,7 @@ describe('AMM Middleware for ETH', () => {
         market.address,
         wethParaShare.address,
         fee,
-        initialLiquidity,
+        ONE_ETH,
         longPercent,
         shortPercent,
       );
@@ -115,7 +172,7 @@ describe('AMM Middleware for ETH', () => {
     test('liquidity minted lp tokens', async () => {
       const middleware = makeAMMMiddleware(mary);
       console.log('Verify the LP token supply');
-      const expectedLPTokens = initialLiquidity.idiv(await market.getNumTicks_());
+      const expectedLPTokens = ONE_ETH.idiv(await market.getNumTicks_());
       const actualLPTokens = await middleware.supplyOfLiquidityTokens(market.address, wethParaShare.address, fee);
       expect(actualLPTokens).toEqual(expectedLPTokens);
 
