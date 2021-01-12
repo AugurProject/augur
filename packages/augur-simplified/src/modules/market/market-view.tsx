@@ -164,7 +164,7 @@ const MarketView = ({ defaultMarket = null }) => {
           })}
         >
           <h4>Market Details</h4>
-          <h5>{endTimeDateFull}</h5>
+          <h5>Market Expiration: {endTimeDateFull}</h5>
           {details.map((detail, i) => (
             <p key={`${detail.substring(5, 25)}-${i}`}>{detail}</p>
           ))}
