@@ -97,12 +97,16 @@ export const ReceiptLink = ({ hash, label = 'Receipt' }: ReceiptLinkProps) => {
 
 interface AccountLinkProps {
   account: string;
+  short?: boolean;
 }
 
-export const AddressLink = ({ account }: AccountLinkProps) => {
+export const AddressLink = ({ account, short = false }: AccountLinkProps) => {
   const {
     paraConfig: { networkId },
   } = useAppStatusStore();
+  const label = short
+    ? `${account.slice(0, 6)}...${account.slice(38, 42)}`
+    : account;
   const URL = `${ADDRESS_LINKS[networkId] || ADDRESS_LINKS[1]}${account}`;
-  return <ExternalLink {...{ URL, label: account }} />;
+  return <ExternalLink {...{ URL, label }} />;
 };

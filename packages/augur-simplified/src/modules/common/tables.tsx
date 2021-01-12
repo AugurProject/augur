@@ -29,7 +29,7 @@ import {
 import { formatDai } from '../../utils/format-number';
 import { MODAL_ADD_LIQUIDITY, USDC } from '../constants';
 import { useAppStatusStore } from '../stores/app-status';
-import { MarketLink } from '../routes/helpers/links';
+import { AddressLink, MarketLink } from '../routes/helpers/links';
 
 interface PositionsTableProps {
   market: MarketInfo;
@@ -488,15 +488,6 @@ const TransactionsHeader = () => {
   );
 };
 
-const AccountLink = ({ account }) => {
-  // TODO: make this a etherscan link
-  return (
-    <span>
-      {account && account.slice(0, 6) + '...' + account.slice(38, 42)}
-    </span>
-  );
-};
-
 interface TransactionProps {
   transaction: AmmTransaction;
 }
@@ -509,7 +500,7 @@ const TransactionRow = ({ transaction }: TransactionProps) => {
       <li>{transaction.tokenAmount}</li>
       <li>{transaction.shareAmount}</li>
       <li>
-        <AccountLink account={transaction.sender} />
+        <AddressLink account={transaction.sender} short />
       </li>
       <li>{transaction.time}</li>
     </ul>
