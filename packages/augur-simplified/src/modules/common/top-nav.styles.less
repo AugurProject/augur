@@ -89,11 +89,22 @@
 
 @media @breakpoint-mobile-tablet {
   .TopNav {
+    display: grid;
+    grid-template-columns: auto 1fr;
+
     > section:first-of-type {
-      padding-left: @size-16
+      padding-left: @size-16;
+      grid-column: 1;
+
+      > a > section {
+        width: @size-56;
+      }
     }
+
     > section:last-of-type {
-      padding-right: @size-16
+      padding-right: @size-16;
+      grid-column: 2;
+      margin-left: auto;
     }
 
     &.TwoTone > section:last-of-type {
