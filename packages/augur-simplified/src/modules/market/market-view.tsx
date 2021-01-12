@@ -35,7 +35,8 @@ const getDetails = (market) => {
   const rawInfo = market?.extraInfoRaw || '{}';
   const { longDescription } = JSON.parse(rawInfo, (key, value) => {
     if (key === 'longDescription') {
-      const processDesc = value.split('\n');
+      // added to handle edge case were details are defined as an empty string.
+      const processDesc = value?.length !== 0 ? value.split('\n') : [];
       return processDesc;
     } else {
       return value;
