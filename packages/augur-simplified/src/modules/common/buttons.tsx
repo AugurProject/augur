@@ -194,64 +194,61 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
   }
 
   useEffect(() => {
+    const findApprovedTxAndRemove = (transactions) => {
+      if (transactions.length > 0) {
+        const tx = transactions.find(tx => tx.approval
+          && tx?.approval?.spender === loginAccount.account
+          && tx?.approval?.tokenAddress === tokenAddress);
+        if (tx) {
+          removeTransaction(tx.hash);
+        }
+      }
+    }
+
     const checkIfApproved = async () => {
+      let approvalCheck = ApprovalState.UNKNOWN;
+
       if (actionType === ApprovalAction.ENTER_POSITION) {
         if (isETH) {
           setIsApproved(ApprovalState.APPROVED);
         } else {
-          const check = await isERC1155ContractApproved(shareToken, AMMFactory, loginAccount, transactions);
-          if (check === ApprovalState.PENDING) {
-            setIsPendingTx(true);
-          } else if (check === ApprovalState.APPROVED) {
-            setIsPendingTx(false);
-            if (transactions.length > 0) {
-              const tx = transactions.find(tx => tx.approval
-                && tx?.approval?.spender === loginAccount.account
-                && tx?.approval?.tokenAddress === tokenAddress)
-              if (tx) {
-                removeTransaction(tx.hash);
-              }
-            }
-          }
-          setIsApproved(check);
+          approvalCheck = await isERC1155ContractApproved(shareToken, AMMFactory, loginAccount, transactions);
+          setIsApproved(approvalCheck);
         }
-      } else if (actionType === ApprovalAction.EXIT_POSITION) {
-        let check = null;
+      }
 
+      else if (actionType === ApprovalAction.EXIT_POSITION) {
         if (isETH) {
-          check = await isERC1155ContractApproved(shareToken, WethWrapperForAMMExchange, loginAccount, transactions);
+          approvalCheck = await isERC1155ContractApproved(shareToken, WethWrapperForAMMExchange, loginAccount, transactions);
         } else {
-          check = await checkAllowance(cash.address, AMMFactory, loginAccount, transactions);
+          approvalCheck = await checkAllowance(cash.address, AMMFactory, loginAccount, transactions);
         }
+        setIsApproved(approvalCheck);
+      }
 
-        if (check === ApprovalState.PENDING) {
-          setIsPendingTx(true);
-        } else if (check === ApprovalState.APPROVED) {
-          setIsPendingTx(false);
-          if (transactions.length > 0) {
-            const tx = transactions.find(tx => tx.approval
-              && tx?.approval?.spender === loginAccount.account
-              && tx?.approval?.tokenAddress === tokenAddress)
-            if (tx) {
-              removeTransaction(tx.hash);
-            }
-          }
-        }
-        setIsApproved(check);
-      } else if (actionType === ApprovalAction.ADD_LIQUIDITY) {
+      else if (actionType === ApprovalAction.ADD_LIQUIDITY) {
         if (isETH) {
           setIsApproved(ApprovalState.APPROVED);
         } else {
-          const check = await checkAllowance(cash?.address, AMMFactory, loginAccount, transactions)
-          setIsApproved(check);
+          approvalCheck = await checkAllowance(cash?.address, AMMFactory, loginAccount, transactions)
+          setIsApproved(approvalCheck);
         }
-      } else if (actionType === ApprovalAction.REMOVE_LIQUIDITY) {
+      }
+
+      else if (actionType === ApprovalAction.REMOVE_LIQUIDITY) {
         if (!isETH) {
           setIsApproved(ApprovalState.APPROVED);
         } else {
-          const check = await checkAllowance(amm.id, WethWrapperForAMMExchange, loginAccount, transactions)
-          setIsApproved(check);
+          approvalCheck = await checkAllowance(amm.id, WethWrapperForAMMExchange, loginAccount, transactions)
+          setIsApproved(approvalCheck);
         }
+      }
+
+      if (approvalCheck === ApprovalState.PENDING) {
+        setIsPendingTx(true);
+      } else if (approvalCheck === ApprovalState.APPROVED) {
+        setIsPendingTx(false);
+        findApprovedTxAndRemove(transactions);
       }
     }
 
