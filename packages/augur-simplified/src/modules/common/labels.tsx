@@ -97,19 +97,19 @@ export const CategoryIcon = ({ categories }: CategoriesProps) => {
   );
 };
 
-export const ReportingStateLabel = ({ reportingState }) => {
+export const ReportingStateLabel = ({ reportingState, big }) => {
   let content;
   switch (reportingState) {
     case (MARKET_STATUS.FINALIZED):
     case (MARKET_STATUS.SETTLED): {
-      content = (<div className={Styles.Resolved}>
+      content = (<div data-big={big} className={Styles.Resolved}>
         Resolved
       </div>);
       break;
     }
     case (MARKET_STATUS.REPORTING):
     case (MARKET_STATUS.DISPUTING): {
-      content = (<div className={Styles.InSettlement}>
+      content = (<div data-big={big} className={Styles.InSettlement}>
         In Settlement
       </div>);
       break;
