@@ -152,22 +152,25 @@ export const categoryItems = [
 ];
 
 export const TOTAL_VOLUME = 'Total Volume';
+export const TWENTY_FOUR_HOUR_VOLUME = '24hr volume';
+export const ENDING_SOON = 'ending soon';
+
 export const sortByItems = [
   {
     label: TOTAL_VOLUME,
     value: TOTAL_VOLUME,
   },
   {
-    label: '24hr volume',
-    value: '24hr volume',
+    label: TWENTY_FOUR_HOUR_VOLUME,
+    value: TWENTY_FOUR_HOUR_VOLUME,
   },
   {
-    label: 'liquidity',
-    value: 'liquidity',
+    label: LIQUIDITY,
+    value: LIQUIDITY,
   },
   {
-    label: 'ending soon',
-    value: 'ending soon',
+    label: ENDING_SOON,
+    value: ENDING_SOON,
   },
 ];
 
