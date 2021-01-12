@@ -107,6 +107,7 @@ export const INSUFFICIENT_LIQUIDITY = 'Insufficent Liquidity';
 export const INSUFFICIENT_BALANCE = 'Insufficent Balance';
 export const OVER_SLIPPAGE = 'Over Slippage Tolerance';
 export const ENTER_AMOUNT = 'Enter Amount';
+export const ERROR_AMOUNT = 'Amount is not valid';
 export const CONNECT_ACCOUNT = 'Connect Account';
 
 export const SETTINGS_SLIPPAGE = "0.5"
@@ -274,10 +275,10 @@ export const LIQUIDITY_STRINGS = {
     showTradingFee: false,
     setTradingFee: true,
     setOdds: true,
-    setOddsTitle: 'Set the odds',
+    setOddsTitle: 'Set the price between (0.0 to 1.0)',
     editableOutcomes: true,
     receiveTitle: "You'll receive",
-    actionButtonText: 'enter amount',
+    actionButtonText: 'add',
     confirmButtonText: 'confirm market liquidity',
     confirmOverview: {
       title: 'What you are depositing',

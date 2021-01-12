@@ -18,6 +18,7 @@ import {
   INSUFFICIENT_BALANCE,
   SETTINGS_SLIPPAGE,
   OVER_SLIPPAGE,
+  ERROR_AMOUNT,
 } from '../constants';
 import { CurrencyDropdown } from '../common/selection';
 import { generateTooltip } from '../common/labels';
@@ -129,10 +130,13 @@ export const AmountInput = ({
   const errorCheck = (value) => {
     let returnError = '';
     if (value !== '' && (isNaN(value) || Number(value) === 0 || Number(value) < 0)) {
-      returnError = 'Amount is not valid'
+      returnError = ERROR_AMOUNT;
+    } else if (value > maxValue) {
+      returnError = INSUFFICIENT_BALANCE;
     }
     updateAmountError(returnError);
   }
+  useEffect(() => updateAmount(initialAmount), [initialAmount])
   return (
     <div
       className={classNames(Styles.AmountInput, { [Styles.Rate]: showRate })}
