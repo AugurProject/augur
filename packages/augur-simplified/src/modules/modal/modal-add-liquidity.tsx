@@ -297,13 +297,9 @@ const ModalAddLiquidity = ({
         const results = await getAmmLiquidity(account, amm, market.marketId, cash, fee, amount, priceNo, priceYes);
         setErrorMessage('');
 
-        results ?
-          setBreakdown(getAddAdditionBreakdown(results))
-          :
-          // TODO: display errors
-          setBreakdown(defaultAddLiquidityBreakdown);
-
-
+        // TODO: display errors if get amm liquidity barfs
+        results ? setBreakdown(getAddAdditionBreakdown(results))
+          : setBreakdown(defaultAddLiquidityBreakdown);
       },
       approvalButtonText: `approve ${chosenCash}`,
       confirmAction: async () => {
@@ -312,9 +308,13 @@ const ModalAddLiquidity = ({
         const priceYes = outcomes[YES_OUTCOME_ID]?.price
         const fee = String(tradingFeeSelection);
         console.log(account, market.marketId, cash, fee, amount, priceNo, priceYes);
-        const txResponse = await doAmmLiquidity(account, amm, market.marketId, cash, fee, amount, false, priceNo, priceYes);
-        // handle transaction response
-
+        await doAmmLiquidity(account, amm, market.marketId, cash, fee, amount, false, priceNo, priceYes)
+          .then(response => {
+            // TODO: handle transaction response
+          })
+          .catch(e => {
+            // TODO: handle error
+          });
       },
       confirmOverview: {
         breakdown: [
