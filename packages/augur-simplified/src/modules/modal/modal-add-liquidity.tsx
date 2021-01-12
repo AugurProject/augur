@@ -2,15 +2,15 @@ import React, { useEffect, useMemo, useState } from 'react';
 
 import Styles from 'modules/modal/modal.styles.less';
 import { Header } from './common';
-import { YES_NO, BUY, USDC, SHARES, ApprovalAction, ENTER_AMOUNT, YES_OUTCOME_ID, NO_OUTCOME_ID } from '../constants';
+import { YES_NO, BUY, USDC, SHARES, ApprovalAction, ENTER_AMOUNT, YES_OUTCOME_ID, NO_OUTCOME_ID, CREATE, ADD, REMOVE, LIQUIDITY_STRINGS } from '../constants';
 import { OutcomesGrid, AmountInput, InfoNumbers } from '../market/trading-form';
 import { ApprovalButton, BuySellButton } from '../common/buttons';
 import { ErrorBlock, generateTooltip } from '../common/labels';
 import { formatPercent } from '../../utils/format-number';
 import { MultiButtonSelection } from '../common/selection';
 import classNames from 'classnames';
-import { AmmOutcome, MarketInfo } from '../types';
-import { doAmmLiquidity, getAmmLiquidity } from '../../utils/contract-calls';
+import { AddLiquidityBreakdown, AmmOutcome, LiquidityBreakdown, MarketInfo } from '../types';
+import { doAmmLiquidity, doRemoveAmmLiquidity, getAmmLiquidity, getRemoveLiquidity } from '../../utils/contract-calls';
 import { useAppStatusStore } from '../stores/app-status';
 
 const TRADING_FEE_OPTIONS = [
@@ -69,10 +69,39 @@ const fakeYesNoOutcomes = [
   },
 ];
 
-export const REMOVE = 'remove';
-export const ADD = 'add';
-export const CREATE = 'create';
+const getLiquidityBreakdown = (breakdown: LiquidityBreakdown) => {
+  return [
+    {
+      label: 'yes shares',
+      value: breakdown.yesShares,
+    },
+    {
+      label: 'no shares',
+      value: breakdown.noShares,
+    },
+    {
+      label: 'liquidity shares',
+      value: breakdown.cashAmount,
+    },
+  ]
+}
 
+const getAddAdditionBreakdown = (breakdown: AddLiquidityBreakdown) => {
+  return [
+    {
+      label: 'yes shares',
+      value: breakdown.yesShares,
+    },
+    {
+      label: 'no shares',
+      value: breakdown.noShares,
+    },
+    {
+      label: 'liquidity shares',
+      value: breakdown.lpTokens,
+    },
+  ]
+}
 interface ModalAddLiquidityProps {
   market: MarketInfo;
   liquidityModalType?: string;
@@ -84,7 +113,7 @@ const ModalAddLiquidity = ({
   liquidityModalType,
   currency = USDC,
 }: ModalAddLiquidityProps) => {
-  const { userInfo: { balances }, processed : { cashes }, loginAccount } = useAppStatusStore();
+  const { userInfo: { balances }, processed: { cashes }, loginAccount } = useAppStatusStore();
   const account = loginAccount?.account
   const amm = market?.amm;
 
@@ -105,7 +134,7 @@ const ModalAddLiquidity = ({
 
   const cash = useMemo(() => {
     return cashes && chosenCash ? Object.values(cashes).find(c => c.name === chosenCash) : Object.values(cashes)[0]
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chosenCash]);
 
   const userCashBalance = cash?.name ? balances[cash?.name]?.balance : "0";
@@ -113,106 +142,83 @@ const ModalAddLiquidity = ({
   const [errorMessage, setErrorMessage] = useState<string>(ENTER_AMOUNT)
 
   useEffect(() => {
-    LIQUIDITY_STRINGS[modalType].receiveBreakdown();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    LIQUIDITY_METHODS[modalType].receiveBreakdown();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account, amount, outcomes, tradingFeeSelection, cash]);
 
-  const LIQUIDITY_STRINGS = {
+  const LIQUIDITY_METHODS = {
     [REMOVE]: {
-      header: 'remove liquidity',
-      showTradingFee: false,
-      amountSubtitle: 'How much do you want to remove?',
       footerText:
         'Need some copy here explaining why the user may recieve some shares when they remove their liquidity and they would need to sell these if possible.',
-      receiveTitle: 'What you will recieve',
-      receiveBreakdown: async (cash) => {
-        if (!account || !market.marketId || !amount || !outcomes || outcomes.length === 0 || !cash) return defaultAddLiquidityBreakdown;
-        const priceNo = outcomes[NO_OUTCOME_ID]?.price
-        const priceYes = outcomes[YES_OUTCOME_ID]?.price
-        if (priceNo === undefined || priceNo === "0" || priceYes === undefined || priceYes === "0") return defaultAddLiquidityBreakdown;
+      receiveBreakdown: async () => {
+        if (!account || !market.marketId || !amount || !cash) return defaultAddLiquidityBreakdown;
         const fee = String(amm.feeRaw);
-        console.log(account, market.marketId, cash, fee, amount, priceNo, priceYes);
-        const results = await getAmmLiquidity(account, amm, market.marketId, cash, fee, amount, priceNo, priceYes);
+        console.log(account, market.marketId, cash, fee, amount);
+        const results = await getRemoveLiquidity(market.marketId, cash, fee, amount);
         setErrorMessage('');
-        console.log('results', String(results));
-
-        setBreakdown([
-          {
-            label: 'yes shares',
-            value: `0`,
-          },
-          {
-            label: 'no shares',
-            value: '0',
-          },
-          {
-            label: 'liquidity shares',
-            value: '0',
-          },
-        ]);
+        if (!results) return setBreakdown(defaultAddLiquidityBreakdown);
+        setBreakdown(getLiquidityBreakdown(results));
       },
       liquidityDetailsFooter: {
-        title: 'Market Liquidity Details',
         breakdown: [
           {
             label: 'Trading fee',
-            value: '1.0%',
+            value: `${percentFormatted}`,
           },
           {
             label: 'your share of the liquidity pool',
-            value: '0.05%',
+            value: '-',
           },
           {
             label: 'your total fees earned',
-            value: '$0.50 USDC',
+            value: '-',
           },
         ],
       },
-      approvalButtonText: 'approve shares spend',
-      actionButtonText: 'enter amount',
-      confirmButtonText: 'confirm remove',
-      confirmAction: () => {
+      confirmAction: async () => {
+        if (!account || !market.marketId || !amount || !cash) return defaultAddLiquidityBreakdown;
+        const fee = String(amm.feeRaw);
+        console.log(account, market.marketId, cash, fee, amount);
+        doRemoveAmmLiquidity(market.marketId, cash, fee, amount)
+          .then(response => {
+          // TODO: manage transaction
 
+          })
+          .catch(e => {
+            //TODO: handle errors here
+          });
       },
       confirmOverview: {
-        title: 'What you are Removing',
         breakdown: [
           {
             label: 'liquidity shares',
-            value: '10.06',
+            value: `${amount}`,
           },
         ],
       },
       confirmReceiveOverview: {
-        title: 'What you will recieve',
         breakdown: [
           {
             label: 'yes shares',
-            value: '0.00',
+            value: '-',
           },
           {
             label: 'no shares',
-            value: '1.72 ($0.94)',
+            value: '-',
           },
           {
-            label: 'USDC',
-            value: '$9.06 USDC',
+            label: `${cash?.name}`,
+            value: '-',
           },
           {
             label: 'Fees Earned',
-            value: '$0.50 USDC',
+            value: '-',
           },
         ],
       },
-      currencyName: SHARES,
     },
     [ADD]: {
-      header: 'add liquidity',
-      showTradingFee: true,
-      setOdds: true,
-      setOddsTitle: 'Current Odds',
       footerText: `By adding liquidity you'll earn ${percentFormatted} of all trades on this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.`,
-      receiveTitle: "You'll receive",
       receiveBreakdown: async () => {
         if (!account || !market.marketId || !amount || !outcomes || outcomes.length === 0 || !cash) return defaultAddLiquidityBreakdown;
         const priceNo = outcomes[NO_OUTCOME_ID]?.price
@@ -224,25 +230,10 @@ const ModalAddLiquidity = ({
         const results = await getAmmLiquidity(account, amm, market.marketId, cash, fee, amount, priceNo, priceYes);
         setErrorMessage('');
         console.log('results', String(results));
-
-        setBreakdown([
-          {
-            label: 'yes shares',
-            value: `0`,
-          },
-          {
-            label: 'no shares',
-            value: '0',
-          },
-          {
-            label: 'liquidity shares',
-            value: '0',
-          },
-        ]);
+        if (!results) return defaultAddLiquidityBreakdown;
+        setBreakdown(getAddAdditionBreakdown(results));
       },
-      approvalButtonText: 'approve USDC',
-      actionButtonText: 'add',
-      confirmButtonText: 'confirm add',
+      approvalButtonText: `approve ${chosenCash}`,
       confirmAction: async () => {
         if (!account || !market.marketId || !amount || !outcomes || outcomes.length === 0) return defaultAddLiquidityBreakdown;
         const priceNo = outcomes[NO_OUTCOME_ID]?.price
@@ -251,12 +242,15 @@ const ModalAddLiquidity = ({
         const fee = String(amm.feeRaw);
         console.log(account, market.marketId, cash, fee, amount, priceNo, priceYes);
         const hasLiquidity = amm?.liquidity !== undefined && amm?.liquidity !== "0";
-        const txResponse = await doAmmLiquidity(account, amm, market.marketId, cash, fee, amount, hasLiquidity, priceNo, priceYes);
-        // TODO: handle transaction response
-
+        doAmmLiquidity(account, amm, market.marketId, cash, fee, amount, hasLiquidity, priceNo, priceYes)
+          .then(response => {
+            // TODO: handle transaction response
+          })
+          .catch(e => {
+            // TODO: handle error here
+          })
       },
       confirmOverview: {
-        title: 'What you are depositing',
         breakdown: [
           {
             label: 'amount',
@@ -265,11 +259,9 @@ const ModalAddLiquidity = ({
         ],
       },
       confirmReceiveOverview: {
-        title: 'What you will receive',
         breakdown: defaultAddLiquidityBreakdown,
       },
       marketLiquidityDetails: {
-        title: 'Market liquidity details',
         breakdown: [
           {
             label: 'trading fee',
@@ -281,27 +273,19 @@ const ModalAddLiquidity = ({
           },
         ],
       },
-      currencyName: cash,
+      currencyName: `${chosenCash}`,
     },
     [CREATE]: {
-      currencyName: USDC,
-      showCurrencyDropdown: true,
-      header: 'add liquidity',
-      showTradingFee: false,
-      setTradingFee: true,
-      setOdds: true,
-      setOddsTitle: 'Set the odds',
-      editableOutcomes: true,
+      currencyName: `${chosenCash}`,
       footerText:
         "By adding initial liquidity you'll earn your set trading fee percentage of all trades on this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.",
-      receiveTitle: "You'll receive",
       receiveBreakdown: async () => {
         if (!account || !market.marketId || !amount || !outcomes || outcomes.length === 0 || !cash) return defaultAddLiquidityBreakdown;
         const priceNo = outcomes[NO_OUTCOME_ID]?.price
         const priceYes = outcomes[YES_OUTCOME_ID]?.price
         if (priceNo === undefined || priceNo === "0" || priceYes === undefined || priceYes === "0") return defaultAddLiquidityBreakdown;
         const feeSelected = TRADING_FEE_OPTIONS.find(t => t.id === tradingFeeSelection);
-        const fee = String(feeSelected? feeSelected.value : "0");
+        const fee = String(feeSelected ? feeSelected.value : "0");
         console.log(account, market.marketId, cash, fee, amount, priceNo, priceYes);
         const results = await getAmmLiquidity(account, amm, market.marketId, cash, fee, amount, priceNo, priceYes);
         setErrorMessage('');
@@ -327,9 +311,7 @@ const ModalAddLiquidity = ({
         }
 
       },
-      approvalButtonText: 'approve USDC',
-      actionButtonText: 'enter amount',
-      confirmButtonText: 'confirm market liquidity',
+      approvalButtonText: `approve ${chosenCash}`,
       confirmAction: async () => {
         if (!account || !market.marketId || !amount || !outcomes || outcomes.length === 0 || !cash) return defaultAddLiquidityBreakdown;
         const priceNo = outcomes[NO_OUTCOME_ID]?.price
@@ -341,28 +323,25 @@ const ModalAddLiquidity = ({
 
       },
       confirmOverview: {
-        title: 'What you are depositing',
         breakdown: [
           {
             label: 'amount',
-            value: '10.00 USDC',
+            value: `${amount} ${cash?.name}`,
           },
         ],
       },
       confirmReceiveOverview: {
-        title: 'What you will receive',
         breakdown: defaultAddLiquidityBreakdown,
       },
       marketLiquidityDetails: {
-        title: 'market liquidity details',
         breakdown: [
           {
             label: 'trading fee',
-            value: '1.0%',
+            value: '-',
           },
           {
             label: 'your share of the pool',
-            value: '100%',
+            value: '-',
           },
         ],
       },

@@ -1,6 +1,6 @@
 import BigNumber, { BigNumber as BN } from 'bignumber.js'
 import { RemoveLiquidityRate, ParaShareToken } from '@augurproject/sdk-lite'
-import { TradingDirection, AmmExchange, AmmExchanges, AmmMarketShares, AmmTransaction, Cashes, CurrencyBalance, PositionBalance, TransactionTypes, UserBalances, MarketInfos, LPTokens, EstimateEnterTradeResult, EstimateExitTradeResult, Cash, AddLiquidityBreakdown } from '../modules/types'
+import { TradingDirection, AmmExchange, AmmExchanges, AmmMarketShares, AmmTransaction, Cashes, CurrencyBalance, PositionBalance, TransactionTypes, UserBalances, MarketInfos, LPTokens, EstimateEnterTradeResult, EstimateExitTradeResult, Cash, AddLiquidityBreakdown, LiquidityBreakdown } from '../modules/types'
 import ethers from 'ethers';
 import { Contract } from '@ethersproject/contracts'
 import {
@@ -8,8 +8,7 @@ import {
   ContractCallResults,
   ContractCallContext,
 } from '@augurproject/ethereum-multicall';
-
-import { Web3Provider } from '@ethersproject/providers'
+import { TransactionResponse, Web3Provider } from '@ethersproject/providers'
 import { convertDisplayCashAmountToOnChainCashAmount, convertDisplayShareAmountToOnChainShareAmount, convertOnChainCashAmountToDisplayCashAmount, formatDai, formatEther, onChainMarketSharesToDisplayShares } from './format-number';
 import { augurSdkLite } from './augurlitesdk';
 import { ETH, FINALIZED, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_NO_OUTCOMES_NAMES, YES_OUTCOME_ID } from '../modules/constants';
@@ -97,10 +96,12 @@ export function doAmmLiquidity(
   hasLiquidity: boolean,
   priceNo: string,
   priceYes: string,
-) {
+): Promise<TransactionResponse | null> {
   const augurClient = augurSdkLite.get();
-  if (!augurClient || !augurClient.amm)
-    return console.error('augurClient is null');
+  if (!augurClient || !augurClient.amm) {
+    console.error('augurClient is null');
+    return null;
+  }
   const sharetoken = cash?.shareToken;
   const ammAddress = amm?.id;
   const amount = convertDisplayCashAmountToOnChainCashAmount(cashAmount, cash.decimals);
@@ -137,61 +138,56 @@ export function doAmmLiquidity(
   );
 }
 
-export interface GetRemoveLiquidity {
-  marketId: string;
-  paraShareToken: string;
-  fee: string;
-  lpTokenBalance: string;
-}
-
-export async function getRemoveLiquidity({
-  marketId,
-  paraShareToken,
-  fee,
-  lpTokenBalance,
-}: GetRemoveLiquidity): Promise<{
-  noShares: string;
-  yesShares: string;
-  cashShares: string;
-} | null> {
+export async function getRemoveLiquidity(
+  marketId: string,
+  cash: Cash,
+  fee: string,
+  lpTokenBalance: string,
+): Promise<LiquidityBreakdown | null> {
   const augurClient = augurSdkLite.get();
-  if (!augurClient || !marketId || !paraShareToken || !fee) {
+  if (!augurClient || !marketId || !cash?.shareToken || !fee || !cash?.decimals) {
     console.error('getRemoveLiquidity: augurClient is null or no amm address');
     return null;
   }
-  console.log('marketId', marketId, 'paraSharetoken', paraShareToken, 'fee', fee, 'lp tokens', lpTokenBalance);
+  console.log('marketId', marketId, 'paraSharetoken', cash?.shareToken, 'fee', fee, 'lp tokens', lpTokenBalance);
+  const balance = convertDisplayCashAmountToOnChainCashAmount(lpTokenBalance, cash?.decimals);
   const alsoSell = true;
   const results: RemoveLiquidityRate = await augurClient.amm.getRemoveLiquidity(
     marketId,
-    paraShareToken,
+    cash.shareToken,
     new BN(String(fee)),
-    new BN(String(lpTokenBalance)),
+    new BN(String(balance)),
     alsoSell
   );
+  const shortShares = String(onChainMarketSharesToDisplayShares(results.short, cash.decimals));
+  const longShares = String(onChainMarketSharesToDisplayShares(results.long, cash.decimals));
+  const cashAmount = String(convertOnChainCashAmountToDisplayCashAmount(results.cash, cash.decimals));
+
   return {
-    noShares: results.short.toFixed(),
-    yesShares: results.long.toFixed(),
-    cashShares: results.cash.toFixed(),
+    noShares: shortShares,
+    yesShares: longShares,
+    cashAmount: cashAmount,
   };
 }
 
-export function doRemoveAmmLiquidity({
-  marketId,
-  paraShareToken,
-  fee,
-  lpTokenBalance,
-}: GetRemoveLiquidity) {
+export function doRemoveAmmLiquidity(
+  marketId: string,
+  cash: Cash,
+  fee: string,
+  lpTokenBalance: string,
+): Promise<TransactionResponse | null> {
   const augurClient = augurSdkLite.get();
-  if (!augurClient || !marketId || !paraShareToken || !fee)
-    return console.error(
-      'removeAmmLiquidity: augurClient is null or no amm address'
-    );
+  if (!augurClient || !marketId || !cash?.shareToken || !fee) {
+    console.error('doRemoveLiquidity: augurClient is null or no amm address');
+    return null;
+  }
+  const balance = convertDisplayCashAmountToOnChainCashAmount(lpTokenBalance, cash?.decimals);
   const alsoSell = true;
   return augurClient.amm.doRemoveLiquidity(
     marketId,
-    paraShareToken,
+    cash.shareToken,
     new BN(fee),
-    new BN(lpTokenBalance),
+    new BN(balance),
     alsoSell
   );
 }
