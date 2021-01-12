@@ -422,7 +422,7 @@ const ModalAddLiquidity = ({
           <ApprovalButton
             amm={amm}
             cash={cash}
-            actionType={ApprovalAction.ADD_LIQUIDITY}
+            actionType={modalType !== REMOVE ? ApprovalAction.ADD_LIQUIDITY : ApprovalAction.REMOVE_LIQUIDITY}
           />
 
           <BuySellButton
