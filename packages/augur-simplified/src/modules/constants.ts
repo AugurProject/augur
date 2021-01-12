@@ -107,6 +107,7 @@ export const INSUFFICIENT_LIQUIDITY = 'Insufficent Liquidity';
 export const INSUFFICIENT_BALANCE = 'Insufficent Balance';
 export const OVER_SLIPPAGE = 'Over Slippage Tolerance';
 export const ENTER_AMOUNT = 'Enter Amount';
+export const ERROR_AMOUNT = 'Amount is not valid';
 export const CONNECT_ACCOUNT = 'Connect Account';
 
 export const SETTINGS_SLIPPAGE = "0.5"

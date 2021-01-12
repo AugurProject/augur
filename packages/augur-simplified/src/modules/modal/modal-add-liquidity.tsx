@@ -6,12 +6,13 @@ import { YES_NO, BUY, USDC, SHARES, ApprovalAction, ENTER_AMOUNT, YES_OUTCOME_ID
 import { OutcomesGrid, AmountInput, InfoNumbers } from '../market/trading-form';
 import { ApprovalButton, BuySellButton } from '../common/buttons';
 import { ErrorBlock, generateTooltip } from '../common/labels';
-import { formatPercent } from '../../utils/format-number';
+import { convertDisplayShareAmountToOnChainShareAmount, formatPercent, onChainMarketSharesToDisplayShares } from '../../utils/format-number';
 import { MultiButtonSelection } from '../common/selection';
 import classNames from 'classnames';
 import { AddLiquidityBreakdown, AmmOutcome, LiquidityBreakdown, MarketInfo } from '../types';
 import { doAmmLiquidity, doRemoveAmmLiquidity, getAmmLiquidity, getRemoveLiquidity } from '../../utils/contract-calls';
 import { useAppStatusStore } from '../stores/app-status';
+import { BigNumber as BN } from 'bignumber.js'
 
 const TRADING_FEE_OPTIONS = [
   {
@@ -132,21 +133,47 @@ const ModalAddLiquidity = ({
   const [buttonError, updateButtonError] = useState('');
   // needs to be set by currency picker if amm is null
   const [breakdown, setBreakdown] = useState(defaultAddLiquidityBreakdown);
-  const [tradingFeeSelection, setTradingFeeSelection] = useState(
+  const [estimatedLpAmount, setEstimatedLpAmount] = useState<string>("0")
+  const [tradingFeeSelection, setTradingFeeSelection] = useState<number>(
     TRADING_FEE_OPTIONS[0].id
   );
-
-  const percentFormatted = formatPercent(amm?.feePercent).full;
 
   const cash = useMemo(() => {
     return cashes && chosenCash ? Object.values(cashes).find(c => c.name === chosenCash) : Object.values(cashes)[0]
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chosenCash]);
 
-  const userCashBalance = cash?.name ? balances[cash?.name]?.balance : "0";
+  const userTokenBalance = cash?.name ? balances[cash?.name]?.balance : "0";
   const shareBalance = balances && balances.lpTokens && balances.lpTokens[amm?.id] && balances.lpTokens[amm?.id]?.balance;
-  const [amount, updateAmount] = useState(userCashBalance);
+  const [amount, updateAmount] = useState(userTokenBalance);
   const [errorMessage, setErrorMessage] = useState<string>(ENTER_AMOUNT)
+
+  const percentFormatted = useMemo(() => {
+    const feeOption = TRADING_FEE_OPTIONS.find(t => t.id === tradingFeeSelection)
+    const feePercent = amm?.feePercent ? amm?.feePercent
+    : feeOption.value;
+    return formatPercent(feePercent).full
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[amm?.feePercent, tradingFeeSelection]);
+
+  const userPercentOfPool = useMemo(() => {
+    let userPercent = "100";
+    const rawSupply = amm?.totalSupply;
+    if (rawSupply) {
+      if (modalType === ADD) {
+        const displaySupply = onChainMarketSharesToDisplayShares(rawSupply, cash?.decimals);
+        userPercent = String((new BN(estimatedLpAmount).plus(new BN(shareBalance || "0"))).div(new BN(displaySupply).plus(new BN(estimatedLpAmount))).times(new BN(100)));
+      } else if (modalType === REMOVE) {
+        const userBalanceLpTokens = balances && balances.lpTokens && balances.lpTokens[amm?.id];
+        const userAmount = userBalanceLpTokens.rawBalance || "0";
+        const estUserAmount = convertDisplayShareAmountToOnChainShareAmount(amount, cash?.decimals);
+        userPercent = String((new BN(userAmount || "0").minus(new BN(estUserAmount))).div(new BN(rawSupply).minus(new BN(estUserAmount))));
+      }
+    }
+
+    return formatPercent(userPercent).full;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [amm?.totalSupply, amount, balances, shareBalance, estimatedLpAmount])
 
   useEffect(() => {
     LIQUIDITY_METHODS[modalType].receiveBreakdown();
@@ -174,7 +201,7 @@ const ModalAddLiquidity = ({
           },
           {
             label: 'your share of the liquidity pool',
-            value: '-',
+            value: `${userPercentOfPool}`,
           },
           {
             label: 'your total fees earned',
@@ -225,9 +252,10 @@ const ModalAddLiquidity = ({
         console.log(account, market.marketId, cash, fee, amount, priceNo, priceYes);
         const results = await getAmmLiquidity(account, amm, market.marketId, cash, fee, amount, priceNo, priceYes);
         setErrorMessage('');
-        console.log('results', String(results));
+
         if (!results) return defaultAddLiquidityBreakdown;
         setBreakdown(getAddAdditionBreakdown(results));
+        setEstimatedLpAmount(results.lpTokens)
       },
       approvalButtonText: `approve ${chosenCash}`,
       confirmAction: async () => {
@@ -250,22 +278,22 @@ const ModalAddLiquidity = ({
         breakdown: [
           {
             label: 'amount',
-            value: '10.00 USDC',
+            value: `${amount} ${amm?.cash?.name}`,
           },
         ],
       },
       confirmReceiveOverview: {
-        breakdown: defaultAddLiquidityBreakdown,
+        breakdown: breakdown,
       },
       marketLiquidityDetails: {
         breakdown: [
           {
             label: 'trading fee',
-            value: '1.0%',
+            value: `${percentFormatted}`,
           },
           {
             label: 'your share of the pool',
-            value: '100%',
+            value: `${userPercentOfPool}`,
           },
         ],
       },
@@ -316,7 +344,7 @@ const ModalAddLiquidity = ({
         ],
       },
       confirmReceiveOverview: {
-        breakdown: defaultAddLiquidityBreakdown,
+        breakdown: breakdown,
       },
       marketLiquidityDetails: {
         breakdown: [
@@ -326,7 +354,7 @@ const ModalAddLiquidity = ({
           },
           {
             label: 'your share of the pool',
-            value: '-',
+            value: `${userPercentOfPool}`,
           },
         ],
       },
@@ -359,7 +387,7 @@ const ModalAddLiquidity = ({
           <AmountInput
             updateInitialAmount={(amount) => updateAmount(amount)}
             initialAmount={modalType === REMOVE ? null : amount}
-            maxValue={modalType === REMOVE ? shareBalance : userCashBalance}
+            maxValue={modalType === REMOVE ? shareBalance : userTokenBalance}
             showCurrencyDropdown={LIQUIDITY_STRINGS[modalType].showCurrencyDropdown}
             chosenCash={modalType === REMOVE ? SHARES : chosenCash}
             updateCash={updateCash}
@@ -399,6 +427,7 @@ const ModalAddLiquidity = ({
                   newOutcomes[index].price = price;
                   setOutcomes(newOutcomes);
                 }}
+                ammCash={cash}
               />
             </>
           )}
