@@ -115,7 +115,16 @@ const ModalAddLiquidity = ({
 }: ModalAddLiquidityProps) => {
   const { userInfo: { balances }, processed: { cashes }, loginAccount } = useAppStatusStore();
   const account = loginAccount?.account
-  const amm = market?.amm;
+
+  let amm = market?.amm;
+  let createLiquidity = !amm || amm?.liquidity === undefined || amm?.liquidity === "0";
+  let modalType = createLiquidity ? CREATE : ADD;
+  if (liquidityModalType) modalType = liquidityModalType;
+  // force create using currency passed in
+  if (liquidityModalType === CREATE) {
+    amm = null;
+    createLiquidity = true;
+  }
 
   const [outcomes, setOutcomes] = useState<AmmOutcome[]>(amm ? amm.ammOutcomes : fakeYesNoOutcomes);
   const [showBackView, setShowBackView] = useState(false);
@@ -127,10 +136,7 @@ const ModalAddLiquidity = ({
     TRADING_FEE_OPTIONS[0].id
   );
 
-  const createLiquidity = !amm || amm?.liquidity === undefined || amm?.liquidity === "0";
   const percentFormatted = formatPercent(amm?.feePercent).full;
-  let modalType = createLiquidity ? CREATE : ADD;
-  if (liquidityModalType) modalType = liquidityModalType;
 
   const cash = useMemo(() => {
     return cashes && chosenCash ? Object.values(cashes).find(c => c.name === chosenCash) : Object.values(cashes)[0]
@@ -138,6 +144,7 @@ const ModalAddLiquidity = ({
   }, [chosenCash]);
 
   const userCashBalance = cash?.name ? balances[cash?.name]?.balance : "0";
+  const shareBalance = balances && balances.lpTokens && balances.lpTokens[amm?.id] && balances.lpTokens[amm?.id]?.balance;
   const [amount, updateAmount] = useState(userCashBalance);
   const [errorMessage, setErrorMessage] = useState<string>(ENTER_AMOUNT)
 
@@ -181,7 +188,7 @@ const ModalAddLiquidity = ({
         console.log(account, market.marketId, cash, fee, amount);
         doRemoveAmmLiquidity(market.marketId, cash, fee, amount)
           .then(response => {
-          // TODO: manage transaction
+            // TODO: manage transaction
 
           })
           .catch(e => {
@@ -290,25 +297,12 @@ const ModalAddLiquidity = ({
         const results = await getAmmLiquidity(account, amm, market.marketId, cash, fee, amount, priceNo, priceYes);
         setErrorMessage('');
 
-        if (results) {
-          setBreakdown([
-            {
-              label: 'yes shares',
-              value: results.yesShares,
-            },
-            {
-              label: 'no shares',
-              value: results.noShares,
-            },
-            {
-              label: 'liquidity shares',
-              value: results.lpTokens,
-            },
-          ]);
-        } else {
+        results ?
+          setBreakdown(getAddAdditionBreakdown(results))
+          :
           // TODO: display errors
           setBreakdown(defaultAddLiquidityBreakdown);
-        }
+
 
       },
       approvalButtonText: `approve ${chosenCash}`,
@@ -374,9 +368,9 @@ const ModalAddLiquidity = ({
           <AmountInput
             updateInitialAmount={(amount) => updateAmount(amount)}
             initialAmount={amount}
-            maxValue={userCashBalance}
+            maxValue={modalType === REMOVE ? shareBalance : userCashBalance}
             showCurrencyDropdown={LIQUIDITY_STRINGS[modalType].showCurrencyDropdown}
-            chosenCash={chosenCash}
+            chosenCash={modalType === REMOVE ? SHARES : chosenCash}
             updateCash={updateCash}
             updateAmountError={updateButtonError}
           />
@@ -497,7 +491,7 @@ const ModalAddLiquidity = ({
             )}
             <BuySellButton
               text={LIQUIDITY_STRINGS[modalType].confirmButtonText}
-              action={LIQUIDITY_STRINGS[modalType].confirmAction}
+              action={LIQUIDITY_METHODS[modalType].confirmAction}
             />
             <div className={Styles.FooterText}>
               Need some copy here explaining why the user will get shares and that

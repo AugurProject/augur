@@ -20,7 +20,7 @@ import parsePath from '../routes/helpers/parse-path';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { HelpIcon, USDCIcon } from './icons';
-import { USDC } from '../constants';
+import { CREATE, USDC } from '../constants';
 import { MarketInfo } from '../types';
 
 interface ValueLabelProps {
@@ -192,10 +192,11 @@ export const AddCurrencyLiquidity = ({ market, currency }: { market: MarketInfo,
   const {
     actions: { setModal },
   } = useAppStatusStore();
+
   return (
     <div
       className={classNames(Styles.AddCurrencyLiquidity)}
-      onClick={() => setModal({ type: MODAL_ADD_LIQUIDITY, market, currency })}
+      onClick={() => setModal({ type: MODAL_ADD_LIQUIDITY, market, liquidityModalType: CREATE, currency })}
     >
       {currency === USDC ? USDCIcon : EthIcon}
       {`Create this market in ${currency}`}
