@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 
 import Styles from 'modules/modal/modal.styles.less';
 import { Header } from './common';
-import { YES_NO, BUY, USDC, SHARES, ApprovalAction, ENTER_AMOUNT, YES_OUTCOME_ID, NO_OUTCOME_ID, CREATE, ADD, REMOVE, LIQUIDITY_STRINGS } from '../constants';
+import { YES_NO, BUY, USDC, SHARES, ApprovalAction, ENTER_AMOUNT, YES_OUTCOME_ID, NO_OUTCOME_ID, CREATE, ADD, REMOVE, LIQUIDITY_STRINGS, CONNECT_ACCOUNT } from '../constants';
 import { OutcomesGrid, AmountInput, InfoNumbers } from '../market/trading-form';
 import { ApprovalButton, BuySellButton } from '../common/buttons';
 import { ErrorBlock, generateTooltip } from '../common/labels';
@@ -135,7 +135,7 @@ const ModalAddLiquidity = ({
   const [breakdown, setBreakdown] = useState(defaultAddLiquidityBreakdown);
   const [estimatedLpAmount, setEstimatedLpAmount] = useState<string>("0")
   const [tradingFeeSelection, setTradingFeeSelection] = useState<number>(
-    TRADING_FEE_OPTIONS[0].id
+    TRADING_FEE_OPTIONS[2].id
   );
 
   const cash = useMemo(() => {
@@ -175,6 +175,7 @@ const ModalAddLiquidity = ({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [amm?.totalSupply, amount, balances, shareBalance, estimatedLpAmount])
 
+  useEffect(() => !account && updateButtonError(CONNECT_ACCOUNT), [account]);
   useEffect(() => {
     LIQUIDITY_METHODS[modalType].receiveBreakdown();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -395,7 +396,7 @@ const ModalAddLiquidity = ({
           />
           {LIQUIDITY_STRINGS[modalType].setTradingFee && (
             <>
-              <ErrorBlock text="Initial liquidity providers are required to set the odds before creating market liquidity." />
+              <ErrorBlock text="Initial liquidity providers are required to set the starting prices before adding market liquidity." />
               <span
                 className={Styles.SmallLabel}
               >
