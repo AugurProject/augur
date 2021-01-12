@@ -36,7 +36,7 @@ export const getMarketEndtimeDate = (timestamp: string | number) => {
   const date = new Date(inMilli)
   const year = date.getFullYear();
   const monthDay = getDayFormat(timestamp);
-  return `${monthDay} ${year}`
+  return `${monthDay}, ${year}`
 }
 
 export const getMarketEndtimeFull = (timestamp: string | number) => {

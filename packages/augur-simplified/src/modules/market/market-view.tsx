@@ -28,14 +28,15 @@ import {
   getMarketEndtimeFull,
   getMarketEndtimeDate,
 } from '../../utils/date-utils';
-import { AddCurrencyLiquidity } from '../common/labels';
+import { AddCurrencyLiquidity, ReportingStateLabel } from '../common/labels';
 import { getCurrentAmms } from '../stores/app-status-hooks';
 
 const getDetails = (market) => {
   const rawInfo = market?.extraInfoRaw || '{}';
   const { longDescription } = JSON.parse(rawInfo, (key, value) => {
     if (key === 'longDescription') {
-      const processDesc = value.split('\n');
+      // added to handle edge case were details are defined as an empty string.
+      const processDesc = value?.length !== 0 ? value.split('\n') : [];
       return processDesc;
     } else {
       return value;
@@ -54,11 +55,11 @@ const CurrencyLabel = ({ name }) => {
   let content = <>Add Liquidity</>;
   switch (name) {
     case ETH: {
-      content = <>{EthIcon} ETH Market</>;
+      content = <><span>ETH Market</span> {EthIcon}</>;
       break;
     }
     case USDC: {
-      content = <>{UsdIcon} USDC Market</>;
+      content = <><span>USDC Market</span> {UsdIcon}</>;
       break;
     }
     default:
@@ -103,6 +104,7 @@ const MarketView = ({ defaultMarket = null }) => {
   if (!market) return <div className={Styles.MarketView} />;
   const details = getDetails(market);
   const currentAMMs = getCurrentAmms(market, markets);
+  const { reportingState } = market;
   return (
     <div className={Styles.MarketView}>
       <section>
@@ -110,6 +112,7 @@ const MarketView = ({ defaultMarket = null }) => {
         <div className={Styles.topRow}>
           <CategoryIcon categories={market.categories} />
           <CategoryLabel categories={market.categories} />
+          <ReportingStateLabel {...{ reportingState, big: true }} />
           <CurrencyLabel name={amm?.cash?.name} />
         </div>
         <h1>{market.description}</h1>
@@ -135,6 +138,7 @@ const MarketView = ({ defaultMarket = null }) => {
           <OutcomesGrid
             outcomes={amm?.ammOutcomes}
             selectedOutcome={amm?.ammOutcomes[2]}
+            ammCash={amm?.cash}
             showAllHighlighted
             setSelectedOutcome={(outcome) => {
               setSelectedOutcome(outcome);
@@ -142,6 +146,7 @@ const MarketView = ({ defaultMarket = null }) => {
             }}
             marketType={YES_NO}
             orderType={BUY}
+            ammCash={amm?.cash}
           />
         )}
         <SimpleChartSection {...{ market }} />
@@ -163,7 +168,7 @@ const MarketView = ({ defaultMarket = null }) => {
           })}
         >
           <h4>Market Details</h4>
-          <h5>{endTimeDateFull}</h5>
+          <h5>Market Expiration: {endTimeDateFull}</h5>
           {details.map((detail, i) => (
             <p key={`${detail.substring(5, 25)}-${i}`}>{detail}</p>
           ))}

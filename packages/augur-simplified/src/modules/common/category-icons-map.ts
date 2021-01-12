@@ -34,7 +34,7 @@ import {
   LITECOIN,
   ADDITIONAL_TOKENS,
 } from '@augurproject/sdk-lite';
-import { FINANCE } from 'modules/constants';
+import { FINANCE } from '../constants';
 import {
   MedicalIcon,
   PoliticsIcon,
@@ -70,6 +70,19 @@ import {
   AMPLIcon,
   LTCIcon,
   AdditionalCryptoIcon,
+  WETHIcon,
+  ETCIcon,
+  ATOMIcon,
+  ALGOIcon,
+  DASHIcon,
+  EOSIcon,
+  KNCIcon,
+  OMGIcon,
+  OXTIcon,
+  XLMIcon,
+  XRPIcon,
+  XTZIcon,
+  USDTIcon,
 } from './category-icons';
 // SUB CATEGORIES
 // MEDICAL
@@ -78,6 +91,20 @@ import {
 // FINANCE
 // CRYPTO
 // SPORTS
+
+const WETH = 'WETH';
+const ETC = 'ETC';
+const ATOM = 'ATOM';
+const ALGO = 'ALGO';
+const DASH = 'DASH';
+const EOS = 'EOS';
+const KNC = 'KNC';
+const OMG = 'OMG';
+const OXT = 'OXT';
+const XLM = 'XLM';
+const XRP = 'XRP';
+const XTZ = 'XTZ';
+const USDT = 'USDT';
 
 export const CATEGORIES_ICON_MAP = {
   [MEDICAL.toLowerCase()]: {
@@ -101,31 +128,50 @@ export const CATEGORIES_ICON_MAP = {
   },
   [FINANCE.toLowerCase()]: { icon: FinanceIcon, subOptions: {} },
   [ECONOMICS.toLowerCase()]: { icon: FinanceIcon, subOptions: {} },
-  [CRYPTO.toLowerCase()]: { icon: CryptoIcon, subOptions: {
-    [BITCOIN.toLowerCase()]: { icon: BTCIcon },
-    [ETHEREUM.toLowerCase()]: { icon: ETHIcon },
-    [COMPOUND.toLowerCase()]: { icon: COMPIcon },
-    [BALANCER.toLowerCase()]: { icon: BALIcon },
-    [AUGUR.toLowerCase()]: { icon: REPV2Icon },
-    [MAKER.toLowerCase()]: { icon: MKRIcon },
-    [AMPLE.toLowerCase()]: { icon: AMPLIcon },
-    [ZEROX.toLowerCase()]: { icon: ZRXIcon },
-    [CHAINLINK.toLowerCase()]: { icon: LINKIcon },
-    [LITECOIN.toLowerCase()]: { icon: LTCIcon },
-    [ADDITIONAL_TOKENS.toLowerCase()]: { icon: AdditionalCryptoIcon },
-  } },
-  [SPORTS.toLowerCase()]: { icon: SportsIcon, subOptions: {
-    [BASKETBALL.toLowerCase()]: { icon: BasketballIcon },
-    [TENNIS.toLowerCase()]: { icon: TennisIcon },
-    [HORSE_RACING.toLowerCase()]: { icon: HorseRacingIcon },
-    [SOCCER.toLowerCase()]: { icon: SoccerIcon },
-    [AMERICAN_FOOTBALL.toLowerCase()]: { icon: FootballIcon },
-    [HOCKEY.toLowerCase()]: { icon: HockeyIcon },
-    [GOLF.toLowerCase()]: { icon: GolfIcon },
-    [OLYMPICS.toLowerCase()]: { icon: OlympicIcon },
-    [BASEBALL.toLowerCase()]: { icon: BaseballIcon },
-    [BOXING.toLowerCase()]: { icon: BoxingIcon },
-    [MMA.toLowerCase()]: { icon: MMAIcon },
-    [CAR_RACING.toLowerCase()]: { icon: CarRacingIcon }
-  } },
+  [CRYPTO.toLowerCase()]: {
+    icon: CryptoIcon,
+    subOptions: {
+      [BITCOIN.toLowerCase()]: { icon: BTCIcon },
+      [ETHEREUM.toLowerCase()]: { icon: ETHIcon },
+      [COMPOUND.toLowerCase()]: { icon: COMPIcon },
+      [BALANCER.toLowerCase()]: { icon: BALIcon },
+      [AUGUR.toLowerCase()]: { icon: REPV2Icon },
+      [MAKER.toLowerCase()]: { icon: MKRIcon },
+      [AMPLE.toLowerCase()]: { icon: AMPLIcon },
+      [ZEROX.toLowerCase()]: { icon: ZRXIcon },
+      [CHAINLINK.toLowerCase()]: { icon: LINKIcon },
+      [LITECOIN.toLowerCase()]: { icon: LTCIcon },
+      [ADDITIONAL_TOKENS.toLowerCase()]: { icon: AdditionalCryptoIcon },
+      [WETH.toLowerCase()]: { icon: WETHIcon },
+      [ETC.toLowerCase()]: { icon: ETCIcon },
+      [ATOM.toLowerCase()]: { icon: ATOMIcon },
+      [ALGO.toLowerCase()]: { icon: ALGOIcon },
+      [DASH.toLowerCase()]: { icon: DASHIcon },
+      [EOS.toLowerCase()]: { icon: EOSIcon },
+      [KNC.toLowerCase()]: { icon: KNCIcon },
+      [OMG.toLowerCase()]: { icon: OMGIcon },
+      [OXT.toLowerCase()]: { icon: OXTIcon },
+      [XLM.toLowerCase()]: { icon: XLMIcon },
+      [XRP.toLowerCase()]: { icon: XRPIcon },
+      [XTZ.toLowerCase()]: { icon: XTZIcon },
+      [USDT.toLowerCase()]: { icon: USDTIcon },
+    },
+  },
+  [SPORTS.toLowerCase()]: {
+    icon: SportsIcon,
+    subOptions: {
+      [BASKETBALL.toLowerCase()]: { icon: BasketballIcon },
+      [TENNIS.toLowerCase()]: { icon: TennisIcon },
+      [HORSE_RACING.toLowerCase()]: { icon: HorseRacingIcon },
+      [SOCCER.toLowerCase()]: { icon: SoccerIcon },
+      [AMERICAN_FOOTBALL.toLowerCase()]: { icon: FootballIcon },
+      [HOCKEY.toLowerCase()]: { icon: HockeyIcon },
+      [GOLF.toLowerCase()]: { icon: GolfIcon },
+      [OLYMPICS.toLowerCase()]: { icon: OlympicIcon },
+      [BASEBALL.toLowerCase()]: { icon: BaseballIcon },
+      [BOXING.toLowerCase()]: { icon: BoxingIcon },
+      [MMA.toLowerCase()]: { icon: MMAIcon },
+      [CAR_RACING.toLowerCase()]: { icon: CarRacingIcon },
+    },
+  },
 };

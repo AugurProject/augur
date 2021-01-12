@@ -6,7 +6,7 @@ import { BuySellButton } from '../common/buttons';
 import { useAppStatusStore } from '../stores/app-status';
 import { CloseIcon, UsdIcon, EthIcon } from 'modules/common/icons';
 import { AmmExchange, AmmOutcome, Cash, EstimateEnterTradeResult, EstimateExitTradeResult, TradingDirection } from '../types';
-import { formatEther } from '../../utils/format-number';
+import { formatDai, formatEther } from '../../utils/format-number';
 import { ApprovalButton, TinyButton } from '../common/buttons';
 import {
   ApprovalAction,
@@ -18,6 +18,7 @@ import {
   INSUFFICIENT_BALANCE,
   SETTINGS_SLIPPAGE,
   OVER_SLIPPAGE,
+  ERROR_AMOUNT,
 } from '../constants';
 import { CurrencyDropdown } from '../common/selection';
 import { generateTooltip } from '../common/labels';
@@ -55,8 +56,11 @@ const Outcome = ({
   nonSelectable,
   editable,
   setEditableValue,
+  ammCash,
 }) => {
   const [customVal, setCustomVal] = useState('');
+  const formattedPrice = formatDai(outcome.price);
+  // console.log(ammCash.name);
   return (
     <div
       onClick={onClick}
@@ -83,7 +87,7 @@ const Outcome = ({
           />
         </div>
       ) : (
-          <span>{outcome.price}</span>
+          <span>{ammCash?.name === USDC ? formattedPrice.full : formattedPrice.formatted}</span>
         )}
     </div>
   );
@@ -109,12 +113,10 @@ export const AmountInput = ({
   updateCash,
   chosenCash,
   rate,
-  amountError,
   updateAmountError
 }: AmountInputProps) => {
   const currencyName = chosenCash;
   const [amount, updateAmount] = useState(initialAmount);
-  const [error, updateError] = useState(amountError);
 
   const icon = currencyName === USDC ? UsdIcon : EthIcon;
   const label = currencyName === USDC ? USDC : ETH;
@@ -128,11 +130,13 @@ export const AmountInput = ({
   const errorCheck = (value) => {
     let returnError = '';
     if (value !== '' && (isNaN(value) || Number(value) === 0 || Number(value) < 0)) {
-      returnError = 'Amount is not valid'
+      returnError = ERROR_AMOUNT;
+    } else if (value > maxValue) {
+      returnError = INSUFFICIENT_BALANCE;
     }
-    updateError(returnError);
     updateAmountError(returnError);
   }
+  useEffect(() => updateAmount(initialAmount), [initialAmount])
   return (
     <div
       className={classNames(Styles.AmountInput, { [Styles.Rate]: showRate })}
@@ -192,6 +196,7 @@ interface OutcomesGridProps {
   nonSelectable?: boolean;
   editable?: boolean;
   setEditableValue?: Function;
+  ammCash: Cash;
 }
 export const OutcomesGrid = ({
   outcomes,
@@ -202,6 +207,7 @@ export const OutcomesGrid = ({
   nonSelectable,
   editable,
   setEditableValue,
+  ammCash,
 }: OutcomesGridProps) => {
   return (
     <div
@@ -228,6 +234,7 @@ export const OutcomesGrid = ({
             marketType={marketType}
             editable={editable}
             setEditableValue={price => setEditableValue(price, outcome.id)}
+            ammCash={ammCash}
           />
         ))}
     </div>
@@ -472,7 +479,7 @@ const TradingForm = ({
         <span
           onClick={() => {
             setOrderType(BUY)
-            setBreakdown(getEnterBreakdown(null, amm?.cash))
+            setBreakdown(getEnterBreakdown(null, ammCash))
           }}
           className={classNames({ [Styles.Selected]: BUY === orderType })}
         >
@@ -480,7 +487,7 @@ const TradingForm = ({
         </span>
         <span
           onClick={() => {
-            setBreakdown(getExitBreakdown(null, amm?.cash))
+            setBreakdown(getExitBreakdown(null, ammCash))
             setOrderType(SELL)
           }}
           className={classNames({ [Styles.Selected]: SELL === orderType })}
@@ -502,6 +509,7 @@ const TradingForm = ({
           setSelectedOutcome={setSelectedOutcome}
           marketType={marketType}
           orderType={orderType}
+          ammCash={ammCash}
         />
         <AmountInput
           chosenCash={orderType === BUY ? ammCash?.name : SHARES}
@@ -509,12 +517,14 @@ const TradingForm = ({
           initialAmount={''}
           maxValue={userBalance}
           rate={tradeEstimates?.ratePerCash}
-          amountError={buttonError}
           updateAmountError={updateButtonError}
         />
         <InfoNumbers infoNumbers={breakdown} />
-        {loginAccount && (
-          <ApprovalButton amm={amm} cash={amm?.cash} actionType={orderType === BUY ? ApprovalAction.ENTER_POSITION : ApprovalAction.EXIT_POSITION} />
+        {loginAccount && orderType === BUY && (
+          <ApprovalButton amm={amm} cash={ammCash}  actionType={ApprovalAction.ENTER_POSITION} />
+        )}
+        {loginAccount && orderType === SELL && (
+          <ApprovalButton amm={amm} cash={ammCash}  actionType={ApprovalAction.EXIT_POSITION} />
         )}
         <BuySellButton
           disabled={canMakeTrade.disabled || !approvals?.trade[ammCash?.name]}

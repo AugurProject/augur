@@ -3,6 +3,7 @@ import {
   APP_STATUS_ACTIONS,
   MOCK_APP_STATUS_STATE,
   APP_STATE_KEYS,
+  DEFAULT_APP_STATUS_STATE,
 } from './constants';
 import { windowRef } from 'utils/window-ref';
 import { shapeUserActvity } from 'utils/process-data';
@@ -24,12 +25,14 @@ const {
   UPDATE_MARKETS_VIEW_SETTINGS,
   UPDATE_USER_BALANCES,
   UPDATE_SETTINGS,
+  UPDATE_TRANSACTION,
   ADD_TRANSACTION,
   REMOVE_TRANSACTION,
   UPDATE_BLOCKNUMBER,
   FINALIZE_TRANSACTION,
   SET_MODAL,
   CLOSE_MODAL,
+  LOGOUT,
 } = APP_STATUS_ACTIONS;
 
 const {
@@ -134,6 +137,14 @@ export function AppStatusReducer(state, action) {
       updatedState[MODAL] = {};
       break;
     }
+    case LOGOUT: {
+      updatedState[TRANSACTIONS] = [];
+      updatedState[LOGIN_ACCOUNT] = null;
+      updatedState[APPROVALS] = DEFAULT_APP_STATUS_STATE.approvals
+      updatedState[USER_INFO] = DEFAULT_APP_STATUS_STATE.userInfo
+      break;
+    }
+
     case SET_LOGIN_ACCOUNT: {
       updatedState[LOGIN_ACCOUNT] = action.account;
 
@@ -200,24 +211,44 @@ export function AppStatusReducer(state, action) {
       updatedState[USER_INFO].balances = action.userBalances;
       break;
     }
-    case ADD_TRANSACTION: {
-      updatedState[TRANSACTIONS] = [
-        ...updatedState[TRANSACTIONS],
-        { ...action.transaction, timestamp: now }
-      ];
-      window.localStorage.setItem('transactions', JSON.stringify(updatedState[TRANSACTIONS]));
-      break;
-    }
-
-    case REMOVE_TRANSACTION: {
-      if (action.hash) {
-        updatedState[TRANSACTIONS] = updatedState[TRANSACTIONS].filter(tx => tx.hash !== action.hash)
-        window.localStorage.setItem('transactions', JSON.stringify(updatedState[TRANSACTIONS]));
+    case UPDATE_TRANSACTION: {
+      const transactionIndex = updatedState[TRANSACTIONS].findIndex(transaction => transaction.hash === action.hash);
+      if (transactionIndex >= 0) {
+        updatedState[TRANSACTIONS][transactionIndex] = {
+          ...updatedState[TRANSACTIONS][transactionIndex],
+          ...action.updates,
+          timestamp: now,
+        };
+        window.localStorage.setItem(
+          'transactions',
+          JSON.stringify(updatedState[TRANSACTIONS])
+        );
       }
       break;
     }
-
-
+    case ADD_TRANSACTION: {
+      updatedState[TRANSACTIONS] = [
+        ...updatedState[TRANSACTIONS],
+        { ...action.transaction, timestamp: now },
+      ];
+      window.localStorage.setItem(
+        'transactions',
+        JSON.stringify(updatedState[TRANSACTIONS])
+      );
+      break;
+    }
+    case REMOVE_TRANSACTION: {
+      if (action.hash) {
+        updatedState[TRANSACTIONS] = updatedState[TRANSACTIONS].filter(
+          (tx) => tx.hash !== action.hash
+        );
+        window.localStorage.setItem(
+          'transactions',
+          JSON.stringify(updatedState[TRANSACTIONS])
+        );
+      }
+      break;
+    }
     case UPDATE_BLOCKNUMBER: {
       updatedState[BLOCKNUMBER] = action.blocknumber;
       break;
@@ -265,13 +296,21 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
         dispatch({ type: SET_LOGIN_ACCOUNT, account }),
       updateUserBalances: (userBalances: UserBalances) =>
         dispatch({ type: UPDATE_USER_BALANCES, userBalances }),
-      updateSettings: settings => dispatch({ type: UPDATE_SETTINGS, settings }),
-      addTransaction: (transaction: TransactionDetails) => dispatch({ type: ADD_TRANSACTION, transaction }),
-      removeTransaction: (hash: string) => dispatch({ type: REMOVE_TRANSACTION, hash }),
-      updateBlocknumber: blocknumber => dispatch({ type: UPDATE_BLOCKNUMBER, blocknumber }),
-      finalizeTransaction: hash => dispatch({ type: FINALIZE_TRANSACTION, hash }),
-      setModal: modal => dispatch({ type: SET_MODAL, modal }),
+      updateSettings: (settings) =>
+        dispatch({ type: UPDATE_SETTINGS, settings }),
+      updateTransaction: (hash, updates) =>
+        dispatch({ type: UPDATE_TRANSACTION, hash, updates }),
+      addTransaction: (transaction: TransactionDetails) =>
+        dispatch({ type: ADD_TRANSACTION, transaction }),
+      removeTransaction: (hash: string) =>
+        dispatch({ type: REMOVE_TRANSACTION, hash }),
+      updateBlocknumber: (blocknumber) =>
+        dispatch({ type: UPDATE_BLOCKNUMBER, blocknumber }),
+      finalizeTransaction: (hash) =>
+        dispatch({ type: FINALIZE_TRANSACTION, hash }),
+      setModal: (modal) => dispatch({ type: SET_MODAL, modal }),
       closeModal: () => dispatch({ type: CLOSE_MODAL }),
+      logout: () => dispatch({ type: LOGOUT }),
     },
   };
 };

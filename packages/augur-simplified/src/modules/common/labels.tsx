@@ -20,7 +20,7 @@ import parsePath from '../routes/helpers/parse-path';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { HelpIcon, USDCIcon } from './icons';
-import { USDC } from '../constants';
+import { CREATE, USDC, MARKET_STATUS } from '../constants';
 import { MarketInfo } from '../types';
 
 interface ValueLabelProps {
@@ -95,6 +95,33 @@ export const CategoryIcon = ({ categories }: CategoriesProps) => {
         : AugurBlankIcon}
     </div>
   );
+};
+
+export const ReportingStateLabel = ({ reportingState, big }) => {
+  let content;
+  switch (reportingState) {
+    case (MARKET_STATUS.FINALIZED):
+    case (MARKET_STATUS.SETTLED): {
+      content = (<div data-big={big} className={Styles.Resolved}>
+        Resolved
+      </div>);
+      break;
+    }
+    case (MARKET_STATUS.REPORTING):
+    case (MARKET_STATUS.DISPUTING): {
+      content = (<div data-big={big} className={Styles.InSettlement}>
+        In Settlement
+      </div>);
+      break;
+    }
+    default:
+      break;
+  }
+  return (
+    <>
+      {content}
+    </>
+  )
 };
 
 const ONE_HUNDRED_K = '100000.00';
@@ -192,10 +219,11 @@ export const AddCurrencyLiquidity = ({ market, currency }: { market: MarketInfo,
   const {
     actions: { setModal },
   } = useAppStatusStore();
+
   return (
     <div
       className={classNames(Styles.AddCurrencyLiquidity)}
-      onClick={() => setModal({ type: MODAL_ADD_LIQUIDITY, market, currency })}
+      onClick={() => setModal({ type: MODAL_ADD_LIQUIDITY, market, liquidityModalType: CREATE, currency })}
     >
       {currency === USDC ? USDCIcon : EthIcon}
       {`Create this market in ${currency}`}

@@ -107,6 +107,7 @@ export const INSUFFICIENT_LIQUIDITY = 'Insufficent Liquidity';
 export const INSUFFICIENT_BALANCE = 'Insufficent Balance';
 export const OVER_SLIPPAGE = 'Over Slippage Tolerance';
 export const ENTER_AMOUNT = 'Enter Amount';
+export const ERROR_AMOUNT = 'Amount is not valid';
 export const CONNECT_ACCOUNT = 'Connect Account';
 
 export const SETTINGS_SLIPPAGE = "0.5"
@@ -230,3 +231,66 @@ export const DEFAULT_MARKET_VIEW_SETTINGS = {
   sortBy: TOTAL_VOLUME,
   currency: ALL,
 };
+
+export const CREATE = 'create';
+
+export const LIQUIDITY_STRINGS = {
+  [REMOVE]: {
+    header: 'remove liquidity',
+    showTradingFee: false,
+    amountSubtitle: 'How much do you want to remove?',
+    receiveTitle: 'What you will recieve',
+    approvalButtonText: 'approve shares spend',
+    actionButtonText: 'enter amount',
+    confirmButtonText: 'confirm remove',
+    currencyName: SHARES,
+    liquidityDetailsFooter: {
+      title: 'Market Liquidity Details',
+    },
+    confirmOverview: {
+      title: 'What you are Removing',
+    },
+    confirmReceiveOverview: {
+      title: 'What you will recieve',
+    }
+  },
+  [ADD]: {
+    header: 'add liquidity',
+    showTradingFee: true,
+    setOdds: true,
+    setOddsTitle: 'Current Odds',
+    receiveTitle: "You'll receive",
+    actionButtonText: 'add',
+    confirmButtonText: 'confirm add',
+    confirmOverview: {
+      title: 'What you are depositing',
+    },
+    confirmReceiveOverview: {
+      title: 'What you will receive',
+    },
+    marketLiquidityDetails: {
+      title: 'Market liquidity details',
+    }
+  },
+  [CREATE]: {
+    showCurrencyDropdown: true,
+    header: 'add liquidity',
+    showTradingFee: false,
+    setTradingFee: true,
+    setOdds: true,
+    setOddsTitle: 'Set the price between (0.0 to 1.0)',
+    editableOutcomes: true,
+    receiveTitle: "You'll receive",
+    actionButtonText: 'add',
+    confirmButtonText: 'confirm market liquidity',
+    confirmOverview: {
+      title: 'What you are depositing',
+    },
+    confirmReceiveOverview: {
+      title: 'What you will receive',
+    },
+    marketLiquidityDetails: {
+      title: 'market liquidity details',
+    }
+  }
+}

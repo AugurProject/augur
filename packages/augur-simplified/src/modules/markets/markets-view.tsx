@@ -40,7 +40,7 @@ import {
   TWENTY_FOUR_HOUR_VOLUME,
   USDC,
 } from '../constants';
-import { NetworkMismatchBanner } from '../common/labels';
+import { NetworkMismatchBanner, ReportingStateLabel } from '../common/labels';
 
 const PAGE_LIMIT = 20;
 
@@ -86,7 +86,14 @@ const OutcomesTable = ({ amm }: { amm: AmmExchange }) => {
 };
 
 const MarketCard = ({ market }: { market: MarketInfo }) => {
-  const { categories, description, outcomes, marketId, amm } = market;
+  const {
+    categories,
+    description,
+    outcomes,
+    marketId,
+    amm,
+    reportingState,
+  } = market;
   const formattedApy = amm?.apy && formatPercent(amm.apy).full;
   const {
     actions: { setModal },
@@ -112,6 +119,7 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
           <CategoryIcon categories={categories} />
           <CategoryLabel categories={categories} />
           <div>
+            <ReportingStateLabel {...{ reportingState }} />
             {amm?.cash?.name === ETH && EthIcon}
             {amm?.cash?.name === USDC && UsdIcon}
           </div>

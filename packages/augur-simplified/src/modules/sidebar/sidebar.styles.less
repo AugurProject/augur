@@ -3,16 +3,17 @@
 
 div.Sidebar {
   @media @breakpoint-mobile-tablet {
-    position: absolute;
+    position: fixed;
     background: var(--light-background-color);
     z-index: @above-all-content-top-layer;
     top: 0;
     bottom: 0;
+    left: 0;
+    right: 0;
     margin: 0;
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    overflow-y: scroll;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    grid-template-columns: 1fr;
   }
 }
 
@@ -26,6 +27,8 @@ div.Sidebar {
   align-content: center;
   justify-content: center;
   align-items: center;
+  grid-column: 1;
+  grid-row: 1;
 
   > span:first-of-type {
     .text-20-bold;
@@ -53,6 +56,9 @@ div.Sidebar {
   padding: @size-24 @size-16;
   padding-right: @size-66;
   flex: 1;
+  grid-column: 1;
+  grid-row: 2;
+  overflow: auto;
 
   > div:not(:last-of-type) {
     margin-bottom: @size-24;
@@ -84,6 +90,8 @@ div.Sidebar {
   display: flex;
   justify-content: space-between;
   padding: @size-12 @size-16;
+  grid-column: 1;
+  grid-row: 3;
 }
 
 .NavigationFooter {

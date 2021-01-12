@@ -34,11 +34,19 @@
   flex-flow: row nowrap;
   width: 100%;
   align-items: center;
-  height: @size-42;
+  height: @size-44;
 
   > div:nth-of-type(2) {
     padding: 0 @size-16;
     margin-left: @size-8;
+  }
+
+  > div:nth-of-type(3) {
+    margin-left: auto;
+  }
+
+  > :nth-child(4) {
+    margin-left: 0;
   }
 }
 
@@ -68,6 +76,16 @@
 
   &:hover {
     border: @size-1 solid var(--simple-border);
+  }
+
+  @media @breakpoint-mobile-tablet {
+    border: none;
+    border-radius: 0;
+    padding: 0;
+
+    > span {
+      display: none;
+    }
   }
 }
 
