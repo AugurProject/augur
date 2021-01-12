@@ -29,6 +29,7 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   updateSettings: settings => {},
   addTransaction: transaction => {},
   removeTransaction: hash => {},
+  logout: () => {},
   updateBlocknumber: blocknumber => {},
   finalizeTransaction: hash => {},
   setModal: modal => {},
@@ -130,6 +131,7 @@ export const APP_STATUS_ACTIONS = {
   FINALIZE_TRANSACTION: 'FINALIZE_TRANSACTION',
   SET_MODAL: 'SET_MODAL',
   CLOSE_MODAL: 'CLOSE_MODAL',
+  LOGOUT: 'LOGOUT',
 };
 
 export const fakePositionsData = [

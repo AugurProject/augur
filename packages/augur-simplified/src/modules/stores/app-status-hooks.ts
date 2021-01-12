@@ -3,6 +3,7 @@ import {
   APP_STATUS_ACTIONS,
   MOCK_APP_STATUS_STATE,
   APP_STATE_KEYS,
+  DEFAULT_APP_STATUS_STATE,
 } from './constants';
 import { windowRef } from 'utils/window-ref';
 import { shapeUserActvity } from 'utils/process-data';
@@ -30,6 +31,7 @@ const {
   FINALIZE_TRANSACTION,
   SET_MODAL,
   CLOSE_MODAL,
+  LOGOUT,
 } = APP_STATUS_ACTIONS;
 
 const {
@@ -134,6 +136,14 @@ export function AppStatusReducer(state, action) {
       updatedState[MODAL] = {};
       break;
     }
+    case LOGOUT: {
+      updatedState[TRANSACTIONS] = [];
+      updatedState[LOGIN_ACCOUNT] = null;
+      updatedState[APPROVALS] = DEFAULT_APP_STATUS_STATE.approvals
+      updatedState[USER_INFO] = DEFAULT_APP_STATUS_STATE.userInfo
+      break;
+    }
+
     case SET_LOGIN_ACCOUNT: {
       updatedState[LOGIN_ACCOUNT] = action.account;
 
@@ -272,6 +282,7 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
       finalizeTransaction: hash => dispatch({ type: FINALIZE_TRANSACTION, hash }),
       setModal: modal => dispatch({ type: SET_MODAL, modal }),
       closeModal: () => dispatch({ type: CLOSE_MODAL }),
+      logout: () => dispatch({ type: LOGOUT }),
     },
   };
 };
