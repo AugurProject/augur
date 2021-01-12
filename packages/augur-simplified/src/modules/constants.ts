@@ -278,7 +278,7 @@ export const LIQUIDITY_STRINGS = {
     setOddsTitle: 'Set the price between (0.0 to 1.0)',
     editableOutcomes: true,
     receiveTitle: "You'll receive",
-    actionButtonText: 'enter amount',
+    actionButtonText: 'add',
     confirmButtonText: 'confirm market liquidity',
     confirmOverview: {
       title: 'What you are depositing',

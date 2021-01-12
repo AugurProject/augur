@@ -146,7 +146,7 @@ const ModalAddLiquidity = ({
   const userTokenBalance = cash?.name ? balances[cash?.name]?.balance : "0";
   const shareBalance = balances && balances.lpTokens && balances.lpTokens[amm?.id] && balances.lpTokens[amm?.id]?.balance;
   const [amount, updateAmount] = useState(userTokenBalance);
-  const [errorMessage, setErrorMessage] = useState<string>(ENTER_AMOUNT)
+  const [errorMessage, setErrorMessage] = useState<string>(modalType === REMOVE ? ENTER_AMOUNT : '');
 
   const percentFormatted = useMemo(() => {
     const feeOption = TRADING_FEE_OPTIONS.find(t => t.id === tradingFeeSelection)

@@ -77,8 +77,8 @@ const PositionHeader = () => {
             owned
           </>
         ) : (
-          'quantity owned'
-        )}
+            'quantity owned'
+          )}
       </li>
       <li>
         {isMobile ? (
@@ -88,8 +88,8 @@ const PositionHeader = () => {
             price
           </>
         ) : (
-          'avg. price paid'
-        )}
+            'avg. price paid'
+          )}
       </li>
       <li>init. value</li>
       <li>cur.{isMobile ? <br /> : ' '}value</li>
@@ -137,10 +137,10 @@ export const AllPositionTable = () => {
   } = useAppStatusStore();
   const positions = marketShares
     ? ((Object.values(marketShares) as unknown[]) as {
-        ammExchange: AmmExchange;
-        positions: PositionBalance[];
-        claimableWinnings: Winnings;
-      }[])
+      ammExchange: AmmExchange;
+      positions: PositionBalance[];
+      claimableWinnings: Winnings;
+    }[])
     : [];
 
   const positionVis = positions.map((position) => {
@@ -226,7 +226,15 @@ export const LiquidityFooter = ({ market }) => {
           })
         }
       />
-      <SecondaryButton text="add liquidity" />
+      <SecondaryButton text="add liquidity"
+        action={() =>
+          setModal({
+            type: MODAL_ADD_LIQUIDITY,
+            market,
+            liquidityModalType: ADD,
+          })
+        }
+      />
     </div>
   );
 };
@@ -241,10 +249,10 @@ export const AllLiquidityTable = () => {
   const { ammExchanges } = processed;
   const liquidities = lpTokens
     ? Object.keys(lpTokens).map((ammId) => ({
-        ammExchange: ammExchanges[ammId],
-        market: ammExchanges[ammId].market,
-        lpTokens: lpTokens[ammId],
-      }))
+      ammExchange: ammExchanges[ammId],
+      market: ammExchanges[ammId].market,
+      lpTokens: lpTokens[ammId],
+    }))
     : [];
   const liquiditiesViz = liquidities.map((liquidity) => {
     return (
@@ -332,17 +340,17 @@ export const PositionsLiquidityViewSwitcher = ({
 
   const positions = marketShares
     ? ((Object.values(marketShares) as unknown[]) as {
-        ammExchange: AmmExchange;
-        positions: PositionBalance[];
-        claimableWinnings: Winnings;
-      }[])
+      ammExchange: AmmExchange;
+      positions: PositionBalance[];
+      claimableWinnings: Winnings;
+    }[])
     : [];
   const liquidities = lpTokens
     ? Object.keys(lpTokens).map((ammId) => ({
-        ammExchange: ammExchanges[ammId],
-        market: ammExchanges[ammId].market,
-        lpTokens: lpTokens[ammId],
-      }))
+      ammExchange: ammExchanges[ammId],
+      market: ammExchanges[ammId].market,
+      lpTokens: lpTokens[ammId],
+    }))
     : [];
   return (
     <div className={Styles.PositionsLiquidityViewSwitcher}>
@@ -449,41 +457,41 @@ const TransactionsHeader = ({ selectedType, setSelectedType }) => {
             defaultValue={ALL}
           />
         ) : (
-          <>
-            <span
-              className={classNames({
-                [Styles.Selected]: selectedType === ALL,
-              })}
-              onClick={() => setSelectedType(ALL)}
-            >
-              all
+            <>
+              <span
+                className={classNames({
+                  [Styles.Selected]: selectedType === ALL,
+                })}
+                onClick={() => setSelectedType(ALL)}
+              >
+                all
             </span>
-            <span
-              className={classNames({
-                [Styles.Selected]: selectedType === SWAP,
-              })}
-              onClick={() => setSelectedType(SWAP)}
-            >
-              swaps
+              <span
+                className={classNames({
+                  [Styles.Selected]: selectedType === SWAP,
+                })}
+                onClick={() => setSelectedType(SWAP)}
+              >
+                swaps
             </span>
-            <span
-              className={classNames({
-                [Styles.Selected]: selectedType === ADD,
-              })}
-              onClick={() => setSelectedType(ADD)}
-            >
-              adds
+              <span
+                className={classNames({
+                  [Styles.Selected]: selectedType === ADD,
+                })}
+                onClick={() => setSelectedType(ADD)}
+              >
+                adds
             </span>
-            <span
-              className={classNames({
-                [Styles.Selected]: selectedType === REMOVE,
-              })}
-              onClick={() => setSelectedType(REMOVE)}
-            >
-              removes
+              <span
+                className={classNames({
+                  [Styles.Selected]: selectedType === REMOVE,
+                })}
+                onClick={() => setSelectedType(REMOVE)}
+              >
+                removes
             </span>
-          </>
-        )}
+            </>
+          )}
       </li>
       <li>total value</li>
       <li>token amount</li>
@@ -562,8 +570,8 @@ export const TransactionsTable = ({ transactions }: TransactionsProps) => {
           </div>
         </>
       ) : (
-        <span>No transactions to show</span>
-      )}
+          <span>No transactions to show</span>
+        )}
     </div>
   );
 };
