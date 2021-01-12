@@ -194,10 +194,10 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
   }
 
   useEffect(() => {
-    const findApprovedTxAndRemove = (transactions) => {
+    const findApprovedTxAndRemove = (transactions, spender, tokenAddress) => {
       if (transactions.length > 0) {
         const tx = transactions.find(tx => tx.approval
-          && tx?.approval?.spender === loginAccount.account
+          && tx?.approval?.spender === spender
           && tx?.approval?.tokenAddress === tokenAddress);
         if (tx) {
           removeTransaction(tx.hash);
@@ -214,14 +214,23 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
         } else {
           approvalCheck = await isERC1155ContractApproved(shareToken, AMMFactory, loginAccount, transactions);
           setIsApproved(approvalCheck);
+          if (approvalCheck === ApprovalState.APPROVED) {
+            findApprovedTxAndRemove(transactions, AMMFactory, shareToken);
+          }
         }
       }
 
       else if (actionType === ApprovalAction.EXIT_POSITION) {
         if (isETH) {
           approvalCheck = await isERC1155ContractApproved(shareToken, WethWrapperForAMMExchange, loginAccount, transactions);
+          if (approvalCheck === ApprovalState.APPROVED) {
+            findApprovedTxAndRemove(transactions, WethWrapperForAMMExchange, shareToken);
+          }
         } else {
           approvalCheck = await checkAllowance(cash.address, AMMFactory, loginAccount, transactions);
+          if (approvalCheck === ApprovalState.APPROVED) {
+            findApprovedTxAndRemove(transactions, AMMFactory, cash?.address);
+          }
         }
         setIsApproved(approvalCheck);
       }
@@ -232,6 +241,10 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
         } else {
           approvalCheck = await checkAllowance(cash?.address, AMMFactory, loginAccount, transactions)
           setIsApproved(approvalCheck);
+
+          if (approvalCheck === ApprovalState.APPROVED) {
+            findApprovedTxAndRemove(transactions, AMMFactory, cash?.address);
+          }
         }
       }
 
@@ -241,6 +254,10 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
         } else {
           approvalCheck = await checkAllowance(amm.id, WethWrapperForAMMExchange, loginAccount, transactions)
           setIsApproved(approvalCheck);
+
+          if (approvalCheck === ApprovalState.APPROVED) {
+            findApprovedTxAndRemove(transactions, WethWrapperForAMMExchange, amm?.id);
+          }
         }
       }
 
@@ -248,7 +265,6 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
         setIsPendingTx(true);
       } else if (approvalCheck === ApprovalState.APPROVED) {
         setIsPendingTx(false);
-        findApprovedTxAndRemove(transactions);
       }
     }
 
