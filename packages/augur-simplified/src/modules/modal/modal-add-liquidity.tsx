@@ -205,18 +205,7 @@ const ModalAddLiquidity = ({
       },
       confirmReceiveOverview: {
         breakdown: [
-          {
-            label: 'yes shares',
-            value: '-',
-          },
-          {
-            label: 'no shares',
-            value: '-',
-          },
-          {
-            label: `${cash?.name}`,
-            value: '-',
-          },
+          ...breakdown,
           {
             label: 'Fees Earned',
             value: '-',
@@ -294,7 +283,9 @@ const ModalAddLiquidity = ({
         const feeSelected = TRADING_FEE_OPTIONS.find(t => t.id === tradingFeeSelection);
         const fee = String(feeSelected ? feeSelected.value : "0");
         console.log(account, market.marketId, cash, fee, amount, priceNo, priceYes);
-        const results = await getAmmLiquidity(account, amm, market.marketId, cash, fee, amount, priceNo, priceYes);
+        // TOOD: create eth amm estimate fails
+        //const results = await getAmmLiquidity(account, amm, market.marketId, cash, fee, amount, priceNo, priceYes);
+        const results = null;
         setErrorMessage('');
 
         // TODO: display errors if get amm liquidity barfs
@@ -367,7 +358,7 @@ const ModalAddLiquidity = ({
           )}
           <AmountInput
             updateInitialAmount={(amount) => updateAmount(amount)}
-            initialAmount={amount}
+            initialAmount={modalType === REMOVE ? null : amount}
             maxValue={modalType === REMOVE ? shareBalance : userCashBalance}
             showCurrencyDropdown={LIQUIDITY_STRINGS[modalType].showCurrencyDropdown}
             chosenCash={modalType === REMOVE ? SHARES : chosenCash}
@@ -438,7 +429,7 @@ const ModalAddLiquidity = ({
               </span>
               <InfoNumbers
                 infoNumbers={
-                  breakdown
+                  LIQUIDITY_METHODS[modalType].liquidityDetailsFooter.breakdown
                 }
               />
             </div>
@@ -462,7 +453,7 @@ const ModalAddLiquidity = ({
               </span>
               <InfoNumbers
                 infoNumbers={
-                  breakdown
+                  LIQUIDITY_METHODS[modalType].confirmOverview.breakdown
                 }
               />
             </section>
@@ -473,7 +464,7 @@ const ModalAddLiquidity = ({
               </span>
               <InfoNumbers
                 infoNumbers={
-                  breakdown
+                  LIQUIDITY_METHODS[modalType].confirmReceiveOverview.breakdown
                 }
               />
             </section>
@@ -484,7 +475,7 @@ const ModalAddLiquidity = ({
                 </span>
                 <InfoNumbers
                   infoNumbers={
-                    breakdown
+                    LIQUIDITY_METHODS[modalType].marketLiquidityDetails.breakdown
                   }
                 />
               </section>

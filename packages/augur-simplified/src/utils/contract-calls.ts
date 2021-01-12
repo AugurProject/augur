@@ -70,7 +70,7 @@ export async function getAmmLiquidity(
     poolNoPercent
   );
   if (addLiquidityResults) {
-    console.log('addLiquidityResults', String(addLiquidityResults[1]))
+    console.log('addLiquidityResults', String(addLiquidityResults))
     // TODO: Get amounts of yes and no shares from estimate
     // middleware changes might be needed
     const lpTokens = String(convertOnChainCashAmountToDisplayCashAmount(String(addLiquidityResults[1]), cash.decimals));
