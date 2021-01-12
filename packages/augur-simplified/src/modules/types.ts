@@ -1128,9 +1128,11 @@ export interface TransactionDetails {
   timestamp?: number;
 }
 
-export interface AddLiquidityBreakdown {
-  lpTokens: string;
+export interface LiquidityBreakdown {
   yesShares: string;
   noShares: string;
   cashAmount: string;
+}
+export interface AddLiquidityBreakdown extends LiquidityBreakdown {
+  lpTokens: string;
 }

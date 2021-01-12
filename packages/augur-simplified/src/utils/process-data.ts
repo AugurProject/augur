@@ -360,9 +360,11 @@ const calculatePastLiquidityInUsd = (volume: string, pastVolume: string, priceUs
 const calculateTradePrice = (txs: (GraphEnter | GraphExit)[], trades: Trades, displayDecimals: number) => {
   return txs.reduce((p, tx) => {
     if (tx.noShares !== '0') {
-      p[1].push({ shares: tx.noShares, price: Number(Number.parseFloat(tx.price).toPrecision(displayDecimals)), timestamp: Number(tx.timestamp) })
+      const shares = onChainMarketSharesToDisplayShares(tx.noShares, displayDecimals);
+      p[1].push({ shares: shares, price: Number(Number.parseFloat(tx.price).toPrecision(displayDecimals)), timestamp: Number(tx.timestamp) })
     } else {
-      p[2].push({ shares: tx.yesShares, price: Number(Number.parseFloat(tx.price).toPrecision(displayDecimals)), timestamp: Number(tx.timestamp) })
+      const shares = onChainMarketSharesToDisplayShares(tx.yesShares, displayDecimals);
+      p[2].push({ shares: shares, price: Number(Number.parseFloat(tx.price).toPrecision(displayDecimals)), timestamp: Number(tx.timestamp) })
     }
     return p;
   }, trades)

@@ -142,10 +142,10 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
 
   const marketCashType = cash?.name;
   const tokenAddress = cash?.address
-  const approvingName = cash?.symbol;
+  const approvingName = cash?.name;
   const { addresses } = paraConfig;
   const { AMMFactory, WethWrapperForAMMExchange } = addresses;
-  const isETH = cash?.symbol === ETH;
+  const isETH = cash?.name === ETH;
 
   const approve = async () => {
     if (actionType === ApprovalAction.ADD_LIQUIDITY) {
