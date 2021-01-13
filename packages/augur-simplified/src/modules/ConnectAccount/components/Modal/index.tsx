@@ -1,53 +1,35 @@
-import React from 'react'
-import { transparentize } from 'polished'
+import React from 'react';
+import Styles from 'modules/ConnectAccount/index.styles.less';
 
-
-const Overlay = ({ children, darkMode, onDismiss }) => (
-  <div
-    // onDismiss={onDismiss}
-    style={{
-      zIndex: 2,
-      overflow: 'hidden',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: `${darkMode ? 'rgba(0,0,0,0.85)' : 'rgba(0,0,0,0.6)'}`,
-      width: '100vw',
-      height: '100vh',
-      position: 'absolute',
-      top: 0,
-      left: 0,
-    }
-  }>{children}</div>
-)
-
-const Content = ({ children, darkMode }) => (
-  <div
-    style={{
-      margin: '0 0 2rem 0',
-      backgroundColor: `${darkMode ? '#212429' : '#FAFAFA'}`,
-      boxShadow: `0 4px 8px 0 ${transparentize(0.95, darkMode ? '#000' : '#2F80ED')}`,
-      padding: '0px',
-      width: window.innerWidth < 650 ? '100%' : '50vw',
-      maxWidth: '420px',
-      maxHeight: '90vh',
-      display: 'flex',
-      borderRadius: '20px',
-    }
-  }>{children}</div>
-)
-
-const StyledDialogOverlay = ({ onDismiss, darkMode, children }) => (
-  <Overlay onDismiss={onDismiss} darkMode={darkMode}>
+const ModalOverlay = ({children}) => (
+  <div className={Styles.ModalOverlay}>
     {children}
-  </Overlay>
-)
+  </div>
+);
 
-const StyledDialogContent = ({ darkMode, children }) => (
-  <Content darkMode={darkMode}>
+const ModalContainer = ({children}) => (
+  <div className={Styles.ModalContainer}>
     {children}
-  </Content>
-)
+  </div>
+);
+
+const ModalHeader = ({children}) => (
+  <div className={Styles.ModalHeader}>
+    {children}
+  </div>
+);
+
+const ModalBody = ({children}) => (
+  <div className={Styles.ModalBody}>
+    {children}
+  </div>
+);
+
+const ModalFooter = ({children}) => (
+  <div className={Styles.ModalFooter}>
+    {children}
+  </div>
+);
 
 interface ModalProps {
   isOpen: boolean
@@ -65,17 +47,24 @@ export default function Modal({
   children,
   darkMode
 }: ModalProps) {
-  return (
-    <>
-      {isOpen &&
-        <StyledDialogOverlay onDismiss={onDismiss} darkMode={darkMode}>
-          <StyledDialogContent
-            darkMode={darkMode}
-          >
-            {children}
-          </StyledDialogContent>
-        </StyledDialogOverlay>
-      }
-    </>
-  )
+  return isOpen ? (
+    <ModalOverlay onDismiss={onDismiss} darkMode={darkMode}>
+      <ModalContainer>
+        <ModalHeader>
+
+        </ModalHeader>
+        <ModalBody>
+
+        </ModalBody>
+        <ModalFooter>
+
+        </ModalFooter>
+      </ModalContainer>
+      {/*<StyledDialogContent*/}
+      {/*  darkMode={darkMode}*/}
+      {/*>*/}
+      {/*  {children}*/}
+      {/*</StyledDialogContent>*/}
+    </ModalOverlay>
+  ) : null
 }

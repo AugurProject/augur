@@ -8,6 +8,8 @@ import classNames from 'classnames';
 import ButtonStyles from 'modules/common/buttons.styles.less';
 import {GetWalletIcon} from 'modules/common/get-wallet-icon';
 import {useActiveWeb3React} from 'modules/ConnectAccount/hooks';
+import {CREATE, MODAL_ADD_LIQUIDITY, MODAL_CONNECT_WALLET} from 'modules/constants';
+import {useAppStatusStore} from 'modules/stores/app-status';
 
 interface LoginButtonProps {
   action: Function;
@@ -44,6 +46,9 @@ const shortenAddress = (address: string, chars = 4): string => {
 }
 
 const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode }) => {
+  const {
+    actions: { setModal },
+  } = useAppStatusStore();
   const { account, connector, error } = useWeb3React();
   const [showModal, setShowModal] = useState<boolean>();
   const activeWeb3 = useActiveWeb3React();
@@ -56,7 +61,8 @@ const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode }) => {
   }, [account, activeWeb3]);
 
   let buttonProps = {
-    action: () => setShowModal(!showModal),
+    // action: () => setShowModal(!showModal),
+    action: () => setModal({ type: MODAL_CONNECT_WALLET }),
     className: null,
     darkMode,
     icon: null,

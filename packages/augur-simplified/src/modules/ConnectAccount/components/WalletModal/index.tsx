@@ -236,6 +236,61 @@ export default function WalletModal({
     })
   }, [showModal, toggleWalletModal])
 
+  function getWalletButtons() {
+    const isMetamask = window['ethereum'] && window['ethereum']['isMetaMask']
+    const walletButtons = Object.keys(SUPPORTED_WALLETS).map(key => {
+      const wallet = SUPPORTED_WALLETS[key];
+      if (isMobile) {
+        if (!window['web3'] && !window['ethereum'] && wallet.mobile && wallet.connector !== portis) {
+          return {
+            action: () => wallet.connector !== connector && !wallet.href && tryActivation(wallet.connector),
+            id: `connect-${key}`,
+            key,
+            selected: wallet?.connector === connector,
+            href: wallet.href,
+            text: wallet.name,
+            icon: require('../../assets/' + wallet.iconName).default,
+          };
+        }
+      } else {
+        if (wallet.connector === injected) {
+          if (!(window['web3'] || window['ethereum'])) {
+            if (wallet.name === 'MetaMask') {
+              return {
+                id: `connect-${key}`,
+                key,
+                text: 'Install Metamask',
+                href: 'https://metamask.io/',
+                icon: MetamaskIcon,
+                selected: wallet?.connector === connector,
+              }
+            } else {
+              return null;
+            }
+          } else if ((wallet.name === 'MetaMask' && !isMetamask) || (wallet.name === 'Injected' && isMetamask)) {
+            return null;
+          }
+        }
+        if (!wallet.mobileOnly) {
+          return {
+            id: `connect-${key}`,
+            action: () =>
+              wallet.connector === connector
+                ? setWalletView(WALLET_VIEWS.ACCOUNT)
+                : !wallet.href && tryActivation(wallet.connector),
+            key,
+            selected: wallet?.connector === connector,
+            color: wallet.color,
+            link: wallet.href,
+            header: wallet.name,
+            subheader: null, //use wallet.description to bring back multi-line
+            icon: require('../../assets/' + wallet.iconName).default,
+          }
+        }
+      }
+    })
+    return walletButtons;
+  }
   // get wallets user can switch too, depending on device/browser
   function getOptions() {
     const isMetamask = window['ethereum'] && window['ethereum']['isMetaMask']

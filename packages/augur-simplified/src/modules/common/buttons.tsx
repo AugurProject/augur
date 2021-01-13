@@ -92,16 +92,22 @@ export const TinyButton = (props: ButtonProps) => (
 );
 export const BuySellButton = (props: ButtonProps) => (
   <Button
-    className={classNames(Styles.BuySellButton, props.className)}
     {...props}
+    className={classNames(Styles.BuySellButton, props.className)}
   />
 );
 export const ApproveButton = (props: ButtonProps) => (
   <Button
-    className={classNames(Styles.ApproveButton, props.className)}
     {...props}
+    className={classNames(Styles.ApproveButton, props.className)}
   />
 );
+export const WalletButton = (props: ButtonProps) => (
+  <Button
+    {...props}
+    className={classNames(Styles.WalletButton, props.className)}
+  />
+)
 
 export interface DirectionButtonProps {
   action: Function;
