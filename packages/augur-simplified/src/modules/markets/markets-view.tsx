@@ -114,7 +114,7 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
             })
       }
     >
-      <MarketLink id={marketId} dontGoToMarket={!amm} ammId={amm?.id}>
+      {/* <MarketLink id={marketId} dontGoToMarket={!amm} ammId={amm?.id}> */}
         <div>
           <CategoryIcon categories={categories} />
           <CategoryLabel categories={categories} />
@@ -122,7 +122,9 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
             <ReportingStateLabel {...{ reportingState }} />
             <CurrencyTipIcon name={amm?.cash?.name} marketId={marketId} />
           </div>
-          <span>{description}</span>
+          {!amm ? (<span>{description}</span>) : (<MarketLink id={marketId} dontGoToMarket={!amm} ammId={amm?.id}>
+            {description}
+          </MarketLink>)}
           {!amm ? (
             <div>
               <span>Market requires Initial liquidity</span>
@@ -139,7 +141,7 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
             </>
           )}
         </div>
-      </MarketLink>
+      {/* </MarketLink> */}
     </article>
   );
 };
