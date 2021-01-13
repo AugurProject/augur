@@ -3,7 +3,7 @@ import { BigNumber as BN } from 'bignumber.js'
 import { getDayFormat, getDayTimestamp, getTimeFormat } from "../utils/date-utils";
 import { convertAttoValueToDisplayValue } from "@augurproject/sdk";
 import { convertOnChainCashAmountToDisplayCashAmount, formatDai, formatEther, formatShares, onChainMarketSharesToDisplayShares, sameAddress } from "./format-number";
-import { ADD, BUY, OUTCOME_INVALID_NAME, OUTCOME_NO_NAME, OUTCOME_YES_NAME, REMOVE, SEC_IN_YEAR, SELL, USDC } from "../modules/constants";
+import { BUY, OUTCOME_INVALID_NAME, OUTCOME_NO_NAME, OUTCOME_YES_NAME, SEC_IN_YEAR, SELL, USDC } from "../modules/constants";
 import { timeSinceTimestamp } from "./time-since";
 
 interface GraphMarket {

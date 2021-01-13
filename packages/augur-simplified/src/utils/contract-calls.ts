@@ -69,11 +69,15 @@ export async function getAmmLiquidity(
     poolYesPercent,
     poolNoPercent
   );
+
   if (addLiquidityResults) {
-    console.log('addLiquidityResults', String(addLiquidityResults))
+    let lpTokensValue = String(addLiquidityResults);
+    if (Array.isArray(addLiquidityResults)) {
+      lpTokensValue = String(addLiquidityResults[1]);
+    }
     // TODO: Get amounts of yes and no shares from estimate
     // middleware changes might be needed
-    const lpTokens = String(convertOnChainCashAmountToDisplayCashAmount(String(addLiquidityResults[1]), cash.decimals));
+    const lpTokens = String(onChainMarketSharesToDisplayShares(String(lpTokensValue), cash.decimals));
     return {
       lpTokens,
       cashAmount: "0",
@@ -924,7 +928,6 @@ export const getERC1155ApprovedForAll = async (tokenAddress: string, provider: W
     contractAllowanceCall
   );
 
-  console.log('isApproved result', String(isApprovedResult))
   let isApproved = false;
   Object.keys(isApprovedResult.results).forEach((key) => {
     const value = isApprovedResult.results[key].callsReturnContext[0].returnValues as ethers.utils.Result;
