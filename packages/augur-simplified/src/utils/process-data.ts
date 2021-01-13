@@ -1,9 +1,9 @@
 import { AmmTransaction, Trades, AmmExchange, Cash, Cashes, MarketOutcome, TransactionTypes, MarketInfo, ActivityData, ProcessedData } from "../modules/types";
 import { BigNumber as BN } from 'bignumber.js'
-import { getDayFormat, getTimeFormat } from "../utils/date-utils";
+import { getDayFormat, getDayTimestamp, getTimeFormat } from "../utils/date-utils";
 import { convertAttoValueToDisplayValue } from "@augurproject/sdk";
-import { convertOnChainCashAmountToDisplayCashAmount, formatShares, onChainMarketSharesToDisplayShares } from "./format-number";
-import { BUY, OUTCOME_INVALID_NAME, OUTCOME_NO_NAME, OUTCOME_YES_NAME, SEC_IN_YEAR, SELL } from "../modules/constants";
+import { convertOnChainCashAmountToDisplayCashAmount, formatShares, onChainMarketSharesToDisplayShares, sameAddress } from "./format-number";
+import { ADD, BUY, OUTCOME_INVALID_NAME, OUTCOME_NO_NAME, OUTCOME_YES_NAME, REMOVE, SEC_IN_YEAR, SELL, USDC } from "../modules/constants";
 import { timeSinceTimestamp } from "./time-since";
 
 interface GraphMarket {
@@ -375,6 +375,41 @@ export const getAmmTradeData = (outcomeTrades: Trades, enters: GraphEnter[], exi
   return calculateTradePrice(exits, enterTrades, displayDecimals)
 }
 
+const getActivityType = (tx: AmmTransaction, cash: Cash): {
+  type: string,
+  subheader: string,
+  value: string
+} => {
+  let type = null;
+  let subheader = null;
+  let value = null;
+  const prepend = cash.name === USDC ? '$' : '';
+  if (tx.tx_type === TransactionTypes.ADD_LIQUIDITY) {
+    type = 'Add';
+    value = `${prepend}${String(new BN(tx.value).times(new BN(cash.usdPrice)))}`;
+    subheader = `${tx.value} ${cash.name}`
+  } else if (tx.tx_type === TransactionTypes.REMOVE_LIQUIDITY) {
+    type = 'Remove';
+    value = `${prepend}${String(new BN(tx.value).times(new BN(cash.usdPrice)))}`;
+    subheader = `${tx.shareAmount} LP tokens`
+  } else {
+    const shares = tx.yesShares !== "0" ?
+      onChainMarketSharesToDisplayShares(tx.yesShares, cash.decimals) :
+      onChainMarketSharesToDisplayShares(tx.noShares, cash.decimals)
+    const shareType = tx.yesShares !== "0" ? 'yes' : 'no'
+    const price = Number(tx.price).toFixed(2)
+    subheader = `${shares} ${shareType} @ ${price}`
+    value = `${prepend}${String(new BN(price).times(new BN(shares)).times(new BN(cash.usdPrice)))}`;
+    type = tx.tx_type === TransactionTypes.ENTER ? BUY : SELL;
+  }
+
+  return {
+    type,
+    value,
+    subheader
+  }
+}
+
 export const shapeUserActvity = (account: string, markets: { [id: string]: MarketInfo }, ammExchanges: { [id: string]: AmmExchange }): ActivityData[] => {
   if (!ammExchanges || !account) return [];
   const exchanges = Object.values(ammExchanges)
@@ -382,31 +417,27 @@ export const shapeUserActvity = (account: string, markets: { [id: string]: Marke
 
   const transactions = exchanges.reduce((p, exchange) => {
     const cashName = exchange.cash?.name;
-    const userTx: AmmTransaction[] = exchange.transactions.filter(t => t.sender.toLowerCase() === account.toLowerCase())
+    const userTx: AmmTransaction[] = exchange.transactions.filter(t => sameAddress(t.sender, account));
+
     if (userTx.length === 0) return p;
 
     const datedUserTx = userTx.map(t => {
-      const type = t.tx_type === TransactionTypes.ENTER ? BUY : SELL;
-      const shares = t.yesShares !== "0" ?
-        onChainMarketSharesToDisplayShares(t.yesShares, exchange.cash.decimals) :
-        onChainMarketSharesToDisplayShares(t.noShares, exchange.cash.decimals)
-      const price = Number(t.price).toFixed(2)
-      const subheader = `${shares} yes @ ${price}`
-      const value = String(new BN(price).times(new BN(shares)).times(new BN(exchange.cash.usdPrice)))
+      const typeDetails = getActivityType(t, exchange.cash);
       return ({
         id: t.id,
         currency: cashName,
         description: markets[`${exchange.marketId}-${exchange.id}`]?.description,
-        type,
+        ...typeDetails,
         date: getDayFormat(t.timestamp),
+        sortableMonthDay: getDayTimestamp(t.timestamp),
         time: getTimeFormat(t.timestamp),
-        subheader,
-        value,
         txHash: t.tx_hash,
+        timestamp: Number(t.timestamp)
       })
     })
     return [...p, ...datedUserTx]
   }, [])
+    .sort((a, b) => a.timestamp < b.timestamp ? 1 : -1)
 
   // form array of grouped by date activities
   return transactions.reduce((p, t) => {
@@ -417,9 +448,11 @@ export const shapeUserActvity = (account: string, markets: { [id: string]: Marke
     }
     return [...p, {
       date: t.date,
+      sortableMonthDay: t.sortableMonthDay,
       activity: [t]
     }]
 
   }, [])
+    .sort((a, b) => a.sortableMonthDay < b.sortableMonthDay ? 1 : -1)
 
 }
