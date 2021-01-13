@@ -1,6 +1,6 @@
 import { AmmTransaction, Trades, AmmExchange, Cash, Cashes, MarketOutcome, TransactionTypes, MarketInfo, ActivityData, ProcessedData } from "../modules/types";
 import { BigNumber as BN } from 'bignumber.js'
-import { getDayFormat, getTimeFormat } from "../utils/date-utils";
+import { getDayFormat, getDayTimestamp, getTimeFormat } from "../utils/date-utils";
 import { convertAttoValueToDisplayValue } from "@augurproject/sdk";
 import { convertOnChainCashAmountToDisplayCashAmount, formatShares, onChainMarketSharesToDisplayShares } from "./format-number";
 import { BUY, OUTCOME_INVALID_NAME, OUTCOME_NO_NAME, OUTCOME_YES_NAME, SEC_IN_YEAR, SELL } from "../modules/constants";
@@ -399,14 +399,17 @@ export const shapeUserActvity = (account: string, markets: { [id: string]: Marke
         description: markets[`${exchange.marketId}-${exchange.id}`]?.description,
         type,
         date: getDayFormat(t.timestamp),
+        sortableMonthDay: getDayTimestamp(t.timestamp),
         time: getTimeFormat(t.timestamp),
         subheader,
         value,
         txHash: t.tx_hash,
+        timestamp: Number(t.timestamp)
       })
     })
     return [...p, ...datedUserTx]
   }, [])
+    .sort((a, b) => a.timestamp < b.timestamp ? 1 : -1)
 
   // form array of grouped by date activities
   return transactions.reduce((p, t) => {
@@ -417,9 +420,11 @@ export const shapeUserActvity = (account: string, markets: { [id: string]: Marke
     }
     return [...p, {
       date: t.date,
+      sortableMonthDay: t.sortableMonthDay,
       activity: [t]
     }]
 
   }, [])
+    .sort((a, b) => a.sortableMonthDay < b.sortableMonthDay ? 1 : -1)
 
 }

@@ -993,6 +993,7 @@ export interface Initialized3box {
 
 export interface ActivityData {
   date?: string;
+  sortableMonthDay?: number;
   activity?: ActivityItem[];
 }
 
@@ -1005,6 +1006,7 @@ export interface ActivityItem {
   time: string;
   value: string;
   txHash: string;
+  timestamp: number;
 }
 
 export interface SimpleBalance {
