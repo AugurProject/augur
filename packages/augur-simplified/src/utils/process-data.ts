@@ -235,7 +235,7 @@ const shapeAmmExchange = (amm: GraphAmmExchange, past: GraphAmmExchange, cashes:
     volumeNo,
     volumeYesUSD,
     volumeNoUSD,
-    feePercent: amm.feePercent,
+    feeDecimal: amm.feePercent,
     feeRaw: amm.fee,
     volumeTotal,
     volume24hrTotalUSD,

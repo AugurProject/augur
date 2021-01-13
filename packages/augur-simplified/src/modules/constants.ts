@@ -290,7 +290,7 @@ export const LIQUIDITY_STRINGS = {
       title: 'What you will receive',
     },
     marketLiquidityDetails: {
-      title: 'market liquidity details',
+      title: 'Market liquidity details',
     }
   }
 }

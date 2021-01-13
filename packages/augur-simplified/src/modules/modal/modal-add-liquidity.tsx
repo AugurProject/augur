@@ -150,11 +150,11 @@ const ModalAddLiquidity = ({
 
   const percentFormatted = useMemo(() => {
     const feeOption = TRADING_FEE_OPTIONS.find(t => t.id === tradingFeeSelection)
-    const feePercent = amm?.feePercent ? amm?.feePercent
+    const feePercent = amm?.feeDecimal ? amm?.feeDecimal
     : feeOption.value;
     return formatPercent(feePercent).full
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[amm?.feePercent, tradingFeeSelection]);
+  },[amm?.feeDecimal, tradingFeeSelection]);
 
   const userPercentOfPool = useMemo(() => {
     let userPercent = "100";
@@ -326,7 +326,9 @@ const ModalAddLiquidity = ({
         if (!account || !market.marketId || !amount || !outcomes || outcomes.length === 0 || !cash) return defaultAddLiquidityBreakdown;
         const priceNo = outcomes[NO_OUTCOME_ID]?.price
         const priceYes = outcomes[YES_OUTCOME_ID]?.price
-        const fee = String(tradingFeeSelection);
+        const feeSelected = TRADING_FEE_OPTIONS.find(t => t.id === tradingFeeSelection);
+        const fee = String(feeSelected ? feeSelected.value : "0");
+
         console.log(account, market.marketId, cash, fee, amount, priceNo, priceYes);
         await doAmmLiquidity(account, amm, market.marketId, cash, fee, amount, false, priceNo, priceYes)
           .then(response => {
@@ -351,7 +353,7 @@ const ModalAddLiquidity = ({
         breakdown: [
           {
             label: 'trading fee',
-            value: '-',
+            value: `${percentFormatted}`,
           },
           {
             label: 'your share of the pool',

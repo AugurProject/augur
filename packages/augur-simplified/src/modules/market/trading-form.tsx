@@ -6,7 +6,7 @@ import { BuySellButton } from '../common/buttons';
 import { useAppStatusStore } from '../stores/app-status';
 import { CloseIcon, UsdIcon, EthIcon } from 'modules/common/icons';
 import { AmmExchange, AmmOutcome, Cash, EstimateEnterTradeResult, EstimateExitTradeResult, TradingDirection } from '../types';
-import { formatDai, formatEther } from '../../utils/format-number';
+import { formatDai, formatEther, formatPercent } from '../../utils/format-number';
 import { ApprovalButton, TinyButton } from '../common/buttons';
 import {
   ApprovalAction,
@@ -496,7 +496,7 @@ const TradingForm = ({
         </span>
         <div>
           <span>fee</span>
-          <span>{amm?.feePercent}</span>
+          <span>{formatPercent(amm?.feeDecimal).full}</span>
         </div>
         {isMobile && (
           <div onClick={() => setShowTradingForm(false)}>{CloseIcon}</div>
