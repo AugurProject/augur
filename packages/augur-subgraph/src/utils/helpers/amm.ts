@@ -58,7 +58,7 @@ export function createAndSaveAMMExchange(
   amm.shareToken = shareTokenId;
   amm.cash = cashId;
   amm.fee = fee;
-  amm.feePercent = fee.divDecimal(BigInt.fromI32(1000).toBigDecimal());
+  amm.feePercent = fee.divDecimal(BigInt.fromI32(100).toBigDecimal());
   amm.save()
 
   return updateAMM(id);
