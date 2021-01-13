@@ -4,23 +4,26 @@ import { useLocation } from 'react-router';
 import classNames from 'classnames';
 import { formatDai } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
-import {
-  AugurBlankIcon,
-  EthIcon,
-  PlusIcon,
-  UsdIcon,
-} from 'modules/common/icons';
-import {
-  MODAL_ADD_LIQUIDITY,
-  MARKET,
-} from 'modules/constants';
 import { CATEGORIES_ICON_MAP } from 'modules/common/category-icons-map';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import parsePath from '../routes/helpers/parse-path';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
-import { HelpIcon, USDCIcon } from './icons';
-import { CREATE, USDC, MARKET_STATUS } from '../constants';
+import {
+  HelpIcon,
+  USDCIcon,
+  AugurBlankIcon,
+  EthIcon,
+  PlusIcon,
+  UsdIcon,
+} from './icons';
+import {
+  CREATE,
+  USDC,
+  MARKET_STATUS,
+  MODAL_ADD_LIQUIDITY,
+  MARKET,
+} from '../constants';
 import { MarketInfo } from '../types';
 
 interface ValueLabelProps {
@@ -90,38 +93,68 @@ export const CategoryIcon = ({ categories }: CategoriesProps) => {
         Styles[`${categories[0].toLowerCase()}`]
       )}
     >
-      {!!icon
-        ? icon
-        : AugurBlankIcon}
+      {!!icon ? icon : AugurBlankIcon}
     </div>
   );
 };
 
-export const ReportingStateLabel = ({ reportingState, big }) => {
+const AMM_MAP = {
+  ETH: {
+    icon: EthIcon,
+    label: 'ETH Market',
+  },
+  USDC: {
+    icon: UsdIcon,
+    label: 'USDC Market',
+  },
+};
+
+const getInfo = (name) =>
+  AMM_MAP[name] ? AMM_MAP[name] : { label: 'Add Liquidity', icon: null };
+
+export const CurrencyTipIcon = ({ name, marketId }) => {
+  const { icon } = getInfo(name);
+  return icon ? icon : null;
+};
+
+export const CurrencyLabel = ({ name }) => {
+  let content = <>Add Liquidity</>;
+  const { label, icon } = getInfo(name);
+  if (icon) {
+    content = (
+      <>
+        <span>{label}</span> {icon}
+      </>
+    );
+  }
+  return <span className={Styles.CurrencyLabel}>{content}</span>;
+};
+
+export const ReportingStateLabel = ({ reportingState, big = false }) => {
   let content;
   switch (reportingState) {
-    case (MARKET_STATUS.FINALIZED):
-    case (MARKET_STATUS.SETTLED): {
-      content = (<div data-big={big} className={Styles.Resolved}>
-        Resolved
-      </div>);
+    case MARKET_STATUS.FINALIZED:
+    case MARKET_STATUS.SETTLED: {
+      content = (
+        <div data-big={big} className={Styles.Resolved}>
+          Resolved
+        </div>
+      );
       break;
     }
-    case (MARKET_STATUS.REPORTING):
-    case (MARKET_STATUS.DISPUTING): {
-      content = (<div data-big={big} className={Styles.InSettlement}>
-        In Settlement
-      </div>);
+    case MARKET_STATUS.REPORTING:
+    case MARKET_STATUS.DISPUTING: {
+      content = (
+        <div data-big={big} className={Styles.InSettlement}>
+          In Settlement
+        </div>
+      );
       break;
     }
     default:
       break;
   }
-  return (
-    <>
-      {content}
-    </>
-  )
+  return <>{content}</>;
 };
 
 const ONE_HUNDRED_K = '100000.00';
@@ -154,10 +187,9 @@ export const AppViewStats = ({ showCashAmounts }: AppViewStatsProps) => {
     () => handleValue(isLogged ? balances?.availableFundsUsd : 0),
     [isLogged, balances.availableFundsUsd]
   );
-  const usdValueETH = useMemo(
-    () => handleValue(balances?.ETH?.usdValue || 0),
-    [balances?.ETH?.usdValue]
-  );
+  const usdValueETH = useMemo(() => handleValue(balances?.ETH?.usdValue || 0), [
+    balances?.ETH?.usdValue,
+  ]);
   const usdValueUSDC = useMemo(
     () => handleValue(balances?.USDC?.usdValue || 0),
     [balances?.USDC?.usdValue]
@@ -196,7 +228,6 @@ export const AppViewStats = ({ showCashAmounts }: AppViewStatsProps) => {
   );
 };
 
-
 export const AddLiquidity = ({ market }: { market: MarketInfo }) => {
   const {
     actions: { setModal },
@@ -215,7 +246,13 @@ export const AddLiquidity = ({ market }: { market: MarketInfo }) => {
   );
 };
 
-export const AddCurrencyLiquidity = ({ market, currency }: { market: MarketInfo, currency: string}) => {
+export const AddCurrencyLiquidity = ({
+  market,
+  currency,
+}: {
+  market: MarketInfo;
+  currency: string;
+}) => {
   const {
     actions: { setModal },
   } = useAppStatusStore();
@@ -223,7 +260,14 @@ export const AddCurrencyLiquidity = ({ market, currency }: { market: MarketInfo,
   return (
     <div
       className={classNames(Styles.AddCurrencyLiquidity)}
-      onClick={() => setModal({ type: MODAL_ADD_LIQUIDITY, market, liquidityModalType: CREATE, currency })}
+      onClick={() =>
+        setModal({
+          type: MODAL_ADD_LIQUIDITY,
+          market,
+          liquidityModalType: CREATE,
+          currency,
+        })
+      }
     >
       {currency === USDC ? USDCIcon : EthIcon}
       {`Create this market in ${currency}`}

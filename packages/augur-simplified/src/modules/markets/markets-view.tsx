@@ -1,19 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import Styles from 'modules/markets/markets-view.styles.less';
-import {
-  SIDEBAR_TYPES,
-  ALL,
-  ALL_MARKETS,
-  categoryItems,
-  currencyItems,
-  ETH,
-  marketStatusItems,
-  OPEN,
-  OTHER,
-  POPULAR_CATEGORIES_ICONS,
-  sortByItems,
-  TOTAL_VOLUME,
-} from 'modules/constants';
 import { MarketLink } from 'modules/routes/helpers/links';
 import {
   ValueLabel,
@@ -22,7 +8,7 @@ import {
   CategoryIcon,
 } from 'modules/common/labels';
 import { formatDai, formatPercent } from 'utils/format-number';
-import { EthIcon, FilterIcon, UsdIcon } from 'modules/common/icons';
+import { FilterIcon } from 'modules/common/icons';
 import classNames from 'classnames';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { SquareDropdown } from 'modules/common/selection';
@@ -30,6 +16,17 @@ import { Pagination } from 'modules/common/pagination';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import { AmmExchange, MarketInfo } from '../types';
 import {
+  SIDEBAR_TYPES,
+  ALL,
+  ALL_MARKETS,
+  categoryItems,
+  currencyItems,
+  marketStatusItems,
+  OPEN,
+  OTHER,
+  POPULAR_CATEGORIES_ICONS,
+  sortByItems,
+  TOTAL_VOLUME,
   DEFAULT_MARKET_VIEW_SETTINGS,
   ENDING_SOON,
   FINALIZED,
@@ -38,9 +35,12 @@ import {
   MARKET_STATUS,
   MODAL_ADD_LIQUIDITY,
   TWENTY_FOUR_HOUR_VOLUME,
-  USDC,
 } from '../constants';
-import { NetworkMismatchBanner, ReportingStateLabel } from '../common/labels';
+import {
+  CurrencyTipIcon,
+  NetworkMismatchBanner,
+  ReportingStateLabel,
+} from '../common/labels';
 
 const PAGE_LIMIT = 20;
 
@@ -120,8 +120,7 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
           <CategoryLabel categories={categories} />
           <div>
             <ReportingStateLabel {...{ reportingState }} />
-            {amm?.cash?.name === ETH && EthIcon}
-            {amm?.cash?.name === USDC && UsdIcon}
+            <CurrencyTipIcon name={amm?.cash?.name} marketId={marketId} />
           </div>
           <span>{description}</span>
           {!amm ? (
@@ -212,7 +211,7 @@ const applyFiltersAndSort = (
     return true;
   });
   // finally -- put all non-amm markets at the bottom.
-  updatedFilteredMarkets.sort(a => (a?.amm === null ? 1 : -1));
+  updatedFilteredMarkets.sort((a) => (a?.amm === null ? 1 : -1));
   setFilteredMarkets(updatedFilteredMarkets);
 };
 
