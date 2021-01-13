@@ -51,6 +51,19 @@ export function handleAddLiquidity(event: AddLiquidityEvent): void {
   addLiquidity.yesShares = event.params.longShares;
   addLiquidity.sender = event.params.sender.toHexString();
 
+  // Will be zero if ratio is 50-50.
+  let netShares = addLiquidity.noShares.minus(addLiquidity.yesShares).abs();
+  let priceOfGainedShares = BigInt.fromI32(0);
+  let totalShares = addLiquidity.noShares.plus(addLiquidity.yesShares);
+
+  if(addLiquidity.yesShares.gt(addLiquidity.noShares)) {
+    priceOfGainedShares = addLiquidity.yesShares.div(totalShares);
+  } else {
+    priceOfGainedShares = addLiquidity.noShares.div(totalShares);
+  }
+
+  // Cash value is the cost of the lp tokens received accounting for shares returned to user.
+  addLiquidity.cashValue = addLiquidity.cash.minus(priceOfGainedShares.times(netShares));
   addLiquidity.save();
 
   updateAMM(addLiquidity.ammExchange);

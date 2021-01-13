@@ -889,6 +889,9 @@ type AddLiquidity @entity {
 
   "Number of LP tokens minted."
   lpTokens: BigInt!
+
+  "Net cash value of the lp tokens minted"
+  cashValue: BigInt!
 }
 
 type RemoveLiquidity @entity {
