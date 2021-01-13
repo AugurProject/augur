@@ -306,12 +306,10 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
   }
 
   return (
-    <div className={Styles.Approval}>
-      <ApproveButton
-        disabled={isPendingTx}
-        text={isPendingTx ? 'Approving...' : buttonText}
-        action={() => approve()}
-      />
-    </div>
+    <ApproveButton
+      disabled={isPendingTx}
+      text={isPendingTx ? 'Approving...' : buttonText}
+      action={() => approve()}
+    />
   )
 }
