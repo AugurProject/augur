@@ -72,8 +72,8 @@ const OutcomesTable = ({ amm }: { amm: AmmExchange }) => {
       {amm &&
         amm?.ammOutcomes &&
         amm.ammOutcomes
-          .filter(outcome => !outcome.isInvalid)
-          .map(outcome => (
+          .filter((outcome) => !outcome.isInvalid)
+          .map((outcome) => (
             <div key={`${outcome.name}-${amm?.marketId}-${outcome.id}`}>
               <span>{outcome.name.toLowerCase()}</span>
               <span>
@@ -145,7 +145,7 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
   );
 };
 
-const getOffset = page => {
+const getOffset = (page) => {
   return (page - 1) * PAGE_LIMIT;
 };
 
@@ -199,26 +199,20 @@ const applyFiltersAndSort = (
   );
   updatedFilteredMarkets = updatedFilteredMarkets.sort((marketA, marketB) => {
     if (sortBy === TOTAL_VOLUME) {
-      return (
-        marketB?.amm?.volumeTotalUSD -
-        marketA?.amm?.volumeTotalUSD
-      );
+      return marketB?.amm?.volumeTotalUSD - marketA?.amm?.volumeTotalUSD;
     } else if (sortBy === TWENTY_FOUR_HOUR_VOLUME) {
       return (
-        marketB?.amm?.volume24hrTotalUSD -
-        marketA?.amm?.volume24hrTotalUSD
+        marketB?.amm?.volume24hrTotalUSD - marketA?.amm?.volume24hrTotalUSD
       );
     } else if (sortBy === LIQUIDITY) {
-      return (
-        marketB?.amm?.liquidityUSD - marketA?.amm?.liquidityUSD
-      );
+      return marketB?.amm?.liquidityUSD - marketA?.amm?.liquidityUSD;
     } else if (sortBy === ENDING_SOON) {
-      return (
-        marketB?.amm?.endTimestamp - marketA?.amm?.endTimestamp
-      );
+      return marketB?.amm?.endTimestamp - marketA?.amm?.endTimestamp;
     }
     return true;
   });
+  // finally -- put all non-amm markets at the bottom.
+  updatedFilteredMarkets.sort((a, b) => (a?.amm === null ? 1 : -1));
   setFilteredMarkets(updatedFilteredMarkets);
 };
 
@@ -253,7 +247,7 @@ const MarketsView = () => {
 
   let changedFilters = 0;
 
-  Object.keys(DEFAULT_MARKET_VIEW_SETTINGS).forEach(setting => {
+  Object.keys(DEFAULT_MARKET_VIEW_SETTINGS).forEach((setting) => {
     if (marketsViewSettings[setting] !== DEFAULT_MARKET_VIEW_SETTINGS[setting])
       changedFilters++;
   });
@@ -271,28 +265,28 @@ const MarketsView = () => {
       )}
       <ul>
         <SquareDropdown
-          onChange={value => {
+          onChange={(value) => {
             updateMarketsViewSettings({ categories: value });
           }}
           options={categoryItems}
           defaultValue={categories}
         />
         <SquareDropdown
-          onChange={value => {
+          onChange={(value) => {
             updateMarketsViewSettings({ sortBy: value });
           }}
           options={sortByItems}
           defaultValue={sortBy}
         />
         <SquareDropdown
-          onChange={value => {
+          onChange={(value) => {
             updateMarketsViewSettings({ reportingState: value });
           }}
           options={marketStatusItems}
           defaultValue={reportingState}
         />
         <SquareDropdown
-          onChange={value => {
+          onChange={(value) => {
             updateMarketsViewSettings({ currency: value });
           }}
           options={currencyItems}
@@ -315,7 +309,7 @@ const MarketsView = () => {
         page={page}
         itemCount={filteredMarkets.length}
         itemsPerPage={PAGE_LIMIT}
-        action={page => {
+        action={(page) => {
           setPage(page);
         }}
         updateLimit={null}
