@@ -87,7 +87,7 @@ interface ReceiptLinkProps {
   label?: string;
 }
 
-export const ReceiptLink = ({ hash, label = 'Receipt' }: ReceiptLinkProps) => {
+export const ReceiptLink = ({ hash, label = 'View Txn' }: ReceiptLinkProps) => {
   const {
     paraConfig: { networkId },
   } = useAppStatusStore();
