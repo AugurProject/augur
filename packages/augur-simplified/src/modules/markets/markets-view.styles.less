@@ -46,12 +46,12 @@
     .HoverDropShadow;
   }
 
-  > a {
-    text-decoration: none;
-    color: unset;
-  }
+  // > a {
+  //   text-decoration: none;
+  //   color: unset;
+  // }
 
-  > a > div,
+  > div,
   > section > div {
     .text-14-bold;
     .SimpleBorder;
@@ -78,6 +78,7 @@
       display: flex;
     }
 
+    > a,
     > span {
       .text-16-semi-bold;
       .limit-lines(4);
@@ -125,7 +126,7 @@
   }
 
   &.NoLiquidity {
-    > a > div,
+    > div,
     > section > div {
       > div:nth-of-type(4) {
         grid-column: 1 / span 3;

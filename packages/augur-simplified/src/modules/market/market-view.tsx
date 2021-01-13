@@ -2,13 +2,13 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import Styles from 'modules/market/market-view.styles.less';
 import classNames from 'classnames';
-import { UsdIcon, EthIcon } from 'modules/common/icons';
 import SimpleChartSection from 'modules/common/charts';
 import {
   AddLiquidity,
   CategoryIcon,
   CategoryLabel,
   NetworkMismatchBanner,
+  CurrencyLabel,
 } from 'modules/common/labels';
 import {
   PositionsLiquidityViewSwitcher,
@@ -49,23 +49,6 @@ const useMarketQueryId = () => {
   const location = useLocation();
   const { [MARKET_ID_PARAM_NAME]: marketId } = parseQuery(location.search);
   return marketId;
-};
-
-const CurrencyLabel = ({ name }) => {
-  let content = <>Add Liquidity</>;
-  switch (name) {
-    case ETH: {
-      content = <><span>ETH Market</span> {EthIcon}</>;
-      break;
-    }
-    case USDC: {
-      content = <><span>USDC Market</span> {UsdIcon}</>;
-      break;
-    }
-    default:
-      break;
-  }
-  return <span className={Styles.CurrencyLabel}>{content}</span>;
 };
 
 const MarketView = ({ defaultMarket = null }) => {

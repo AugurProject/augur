@@ -78,6 +78,27 @@
   height: 100%;
 }
 
+.CurrencyLabel {
+  .RoundedLabel;
+
+  cursor: default;
+  margin-left: auto;
+
+  &:hover {
+    border: @size-1 solid var(--simple-border);
+  }
+
+  @media @breakpoint-mobile-tablet {
+    border: none;
+    border-radius: 0;
+    padding: 0;
+
+    > span {
+      display: none;
+    }
+  }
+}
+
 .AppStats {
   .SimpleBorder;
 
