@@ -9,7 +9,7 @@ import {
   ContractCallContext,
 } from '@augurproject/ethereum-multicall';
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers'
-import { convertDisplayCashAmountToOnChainCashAmount, convertDisplayShareAmountToOnChainShareAmount, convertOnChainCashAmountToDisplayCashAmount, formatDai, formatEther, onChainMarketSharesToDisplayShares } from './format-number';
+import { convertDisplayCashAmountToOnChainCashAmount, convertDisplayShareAmountToOnChainShareAmount, convertOnChainCashAmountToDisplayCashAmount, formatDai, formatEther, onChainMarketSharesToDisplayShares, sameAddress } from './format-number';
 import { augurSdkLite } from './augurlitesdk';
 import { ETH, FINALIZED, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_NO_OUTCOMES_NAMES, YES_OUTCOME_ID } from '../modules/constants';
 import { getProviderOrSigner } from '../modules/ConnectAccount/utils';
@@ -770,7 +770,7 @@ const populateInitLPValues = async (lptokens: LPTokens, ammExchanges: AmmExchang
     const amm = ammExchanges[ammId];
     const cashPrice = amm.cash?.usdPrice ? amm.cash?.usdPrice : "0";
     // sum up enters shares
-    const accum = accumLpSharesAmounts(amm.transactions, account);
+    const accum = accumLpSharesAmounts(amm.transactions, account, amm?.cash?.decimals);
     const initialCashValue = convertOnChainCashAmountToDisplayCashAmount(new BN(accum), new BN(amm.cash.decimals));
     lptoken.initCostUsd = String(new BN(initialCashValue).times(new BN(cashPrice)));
     lptoken.usdValue = await getLPCurrentValue(lptoken.rawBalance, amm);
@@ -781,11 +781,19 @@ const populateInitLPValues = async (lptokens: LPTokens, ammExchanges: AmmExchang
 }
 
 
-const accumLpSharesAmounts = (transactions: AmmTransaction[], account: string): string => {
-  const adds = transactions.filter(t => t.sender.toLowerCase() === account.toLowerCase() && t.tx_type === TransactionTypes.ADD_LIQUIDITY)
-    .reduce((p, t) => p.plus(new BN(t.cash)), new BN("0"))
-  const removed = transactions.filter(t => t.sender.toLowerCase() === account.toLowerCase() && t.tx_type === TransactionTypes.REMOVE_LIQUIDITY)
-    .reduce((p, t) => p.plus(new BN(t.cash)), new BN("0"))
+const accumLpSharesAmounts = (transactions: AmmTransaction[], account: string, decimals: number): string => {
+  const adds = transactions.filter(t => sameAddress(t.sender, account) && t.tx_type === TransactionTypes.ADD_LIQUIDITY)
+    .reduce((p, t) => {
+      // graph data has display value for share amount
+      const shareAmount = convertDisplayCashAmountToOnChainCashAmount(t.shareAmount, decimals);
+      return p.plus(new BN(shareAmount))
+    }, new BN("0"))
+  const removed = transactions.filter(t => sameAddress(t.sender, account) && t.tx_type === TransactionTypes.REMOVE_LIQUIDITY)
+    .reduce((p, t) => {
+      console.log(t)
+      const shareAmount = convertDisplayCashAmountToOnChainCashAmount(t.shareAmount, decimals);
+      return p.plus(new BN(shareAmount))
+    }, new BN("0"))
 
   return String(adds.minus(removed));
 }
