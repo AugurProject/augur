@@ -138,7 +138,6 @@ const MarketView = ({ defaultMarket = null }) => {
           <OutcomesGrid
             outcomes={amm?.ammOutcomes}
             selectedOutcome={amm?.ammOutcomes[2]}
-            ammCash={amm?.cash}
             showAllHighlighted
             setSelectedOutcome={(outcome) => {
               setSelectedOutcome(outcome);

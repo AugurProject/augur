@@ -14,7 +14,7 @@ const ActivityCard = ({ activity }: { activity: ActivityItem }) => (
     <span>{activity.description}</span>
     <div>{activity.subheader}</div>
     <div>{activity.time}</div>
-    <div>get info</div>
+    <div>View Txn</div>
   </div>
 );
 

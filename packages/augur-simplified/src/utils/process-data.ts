@@ -2,8 +2,8 @@ import { AmmTransaction, Trades, AmmExchange, Cash, Cashes, MarketOutcome, Trans
 import { BigNumber as BN } from 'bignumber.js'
 import { getDayFormat, getDayTimestamp, getTimeFormat } from "../utils/date-utils";
 import { convertAttoValueToDisplayValue } from "@augurproject/sdk";
-import { convertOnChainCashAmountToDisplayCashAmount, formatShares, onChainMarketSharesToDisplayShares, sameAddress } from "./format-number";
-import { ADD, BUY, OUTCOME_INVALID_NAME, OUTCOME_NO_NAME, OUTCOME_YES_NAME, REMOVE, SEC_IN_YEAR, SELL, USDC } from "../modules/constants";
+import { convertOnChainCashAmountToDisplayCashAmount, formatDai, formatEther, formatShares, onChainMarketSharesToDisplayShares, sameAddress } from "./format-number";
+import { BUY, OUTCOME_INVALID_NAME, OUTCOME_NO_NAME, OUTCOME_YES_NAME, SEC_IN_YEAR, SELL, USDC } from "../modules/constants";
 import { timeSinceTimestamp } from "./time-since";
 
 interface GraphMarket {
@@ -383,14 +383,18 @@ const getActivityType = (tx: AmmTransaction, cash: Cash): {
   let type = null;
   let subheader = null;
   let value = null;
-  const prepend = cash.name === USDC ? '$' : '';
+  const formatter = cash.name === USDC ? formatDai : formatEther;
   if (tx.tx_type === TransactionTypes.ADD_LIQUIDITY) {
     type = 'Add';
-    value = `${prepend}${String(new BN(tx.value).times(new BN(cash.usdPrice)))}`;
-    subheader = `${tx.value} ${cash.name}`
+    // when design wants to add usd value
+    //const usdValue = `${String(new BN(tx.value).times(new BN(cash.usdPrice)))}`;
+    value = `${tx.value} ${cash?.name}`
+    subheader = `${formatter(tx.value).formatted} ${cash.name}`
   } else if (tx.tx_type === TransactionTypes.REMOVE_LIQUIDITY) {
     type = 'Remove';
-    value = `${prepend}${String(new BN(tx.value).times(new BN(cash.usdPrice)))}`;
+    // when design wants to add usd value
+    //const usdValue = `${String(new BN(tx.value).times(new BN(cash.usdPrice)))}`;
+    value = `${formatter(tx.value).formatted} ${cash?.name}`
     subheader = `${tx.shareAmount} LP tokens`
   } else {
     const shares = tx.yesShares !== "0" ?
@@ -399,7 +403,9 @@ const getActivityType = (tx: AmmTransaction, cash: Cash): {
     const shareType = tx.yesShares !== "0" ? 'yes' : 'no'
     const price = Number(tx.price).toFixed(2)
     subheader = `${shares} ${shareType} @ ${price}`
-    value = `${prepend}${String(new BN(price).times(new BN(shares)).times(new BN(cash.usdPrice)))}`;
+    // when design wants to add usd value
+    // const usdValue = `${String(new BN(price).times(new BN(shares)).times(new BN(cash.usdPrice)))}`;
+    value = `${formatter(String(new BN(price).times(new BN(shares)))).formatted} ${cash.name}`;
     type = tx.tx_type === TransactionTypes.ENTER ? BUY : SELL;
   }
 
