@@ -253,7 +253,7 @@ const MarketsView = () => {
 
   let changedFilters = 0;
 
-  Object.keys(DEFAULT_MARKET_VIEW_SETTINGS).map(setting => {
+  Object.keys(DEFAULT_MARKET_VIEW_SETTINGS).forEach(setting => {
     if (marketsViewSettings[setting] !== DEFAULT_MARKET_VIEW_SETTINGS[setting])
       changedFilters++;
   });
