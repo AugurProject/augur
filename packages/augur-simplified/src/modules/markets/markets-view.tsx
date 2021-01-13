@@ -1,19 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import Styles from 'modules/markets/markets-view.styles.less';
-import {
-  SIDEBAR_TYPES,
-  ALL,
-  ALL_MARKETS,
-  categoryItems,
-  currencyItems,
-  ETH,
-  marketStatusItems,
-  OPEN,
-  OTHER,
-  POPULAR_CATEGORIES_ICONS,
-  sortByItems,
-  TOTAL_VOLUME,
-} from 'modules/constants';
 import { MarketLink } from 'modules/routes/helpers/links';
 import {
   ValueLabel,
@@ -22,7 +8,7 @@ import {
   CategoryIcon,
 } from 'modules/common/labels';
 import { formatDai, formatPercent } from 'utils/format-number';
-import { EthIcon, FilterIcon, UsdIcon } from 'modules/common/icons';
+import { FilterIcon } from 'modules/common/icons';
 import classNames from 'classnames';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { SquareDropdown } from 'modules/common/selection';
@@ -30,6 +16,17 @@ import { Pagination } from 'modules/common/pagination';
 import { useAppStatusStore } from 'modules/stores/app-status';
 import { AmmExchange, MarketInfo } from '../types';
 import {
+  SIDEBAR_TYPES,
+  ALL,
+  ALL_MARKETS,
+  categoryItems,
+  currencyItems,
+  marketStatusItems,
+  OPEN,
+  OTHER,
+  POPULAR_CATEGORIES_ICONS,
+  sortByItems,
+  TOTAL_VOLUME,
   DEFAULT_MARKET_VIEW_SETTINGS,
   ENDING_SOON,
   FINALIZED,
@@ -38,9 +35,12 @@ import {
   MARKET_STATUS,
   MODAL_ADD_LIQUIDITY,
   TWENTY_FOUR_HOUR_VOLUME,
-  USDC,
 } from '../constants';
-import { NetworkMismatchBanner, ReportingStateLabel } from '../common/labels';
+import {
+  CurrencyTipIcon,
+  NetworkMismatchBanner,
+  ReportingStateLabel,
+} from '../common/labels';
 
 const PAGE_LIMIT = 20;
 
@@ -72,8 +72,8 @@ const OutcomesTable = ({ amm }: { amm: AmmExchange }) => {
       {amm &&
         amm?.ammOutcomes &&
         amm.ammOutcomes
-          .filter(outcome => !outcome.isInvalid)
-          .map(outcome => (
+          .filter((outcome) => !outcome.isInvalid)
+          .map((outcome) => (
             <div key={`${outcome.name}-${amm?.marketId}-${outcome.id}`}>
               <span>{outcome.name.toLowerCase()}</span>
               <span>
@@ -114,38 +114,41 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
             })
       }
     >
-      <MarketLink id={marketId} dontGoToMarket={!amm} ammId={amm?.id}>
+      <div>
+        <CategoryIcon categories={categories} />
+        <CategoryLabel categories={categories} />
         <div>
-          <CategoryIcon categories={categories} />
-          <CategoryLabel categories={categories} />
-          <div>
-            <ReportingStateLabel {...{ reportingState }} />
-            {amm?.cash?.name === ETH && EthIcon}
-            {amm?.cash?.name === USDC && UsdIcon}
-          </div>
-          <span>{description}</span>
-          {!amm ? (
-            <div>
-              <span>Market requires Initial liquidity</span>
-              <PrimaryButton text="Earn fees as a liquidity provider" />
-            </div>
-          ) : (
-            <>
-              <ValueLabel
-                label="total volume"
-                value={formatDai(market.amm?.volumeTotalUSD).full}
-              />
-              <ValueLabel label="APY" value={formattedApy} />
-              <OutcomesTable amm={amm} outcomes={outcomes} />
-            </>
-          )}
+          <ReportingStateLabel {...{ reportingState }} />
+          <CurrencyTipIcon name={amm?.cash?.name} marketId={marketId} />
         </div>
-      </MarketLink>
+        {!amm ? (
+          <span>{description}</span>
+        ) : (
+          <MarketLink id={marketId} dontGoToMarket={!amm} ammId={amm?.id}>
+            {description}
+          </MarketLink>
+        )}
+        {!amm ? (
+          <div>
+            <span>Market requires Initial liquidity</span>
+            <PrimaryButton text="Earn fees as a liquidity provider" />
+          </div>
+        ) : (
+          <>
+            <ValueLabel
+              label="total volume"
+              value={formatDai(market.amm?.volumeTotalUSD).full}
+            />
+            <ValueLabel label="APY" value={formattedApy} />
+            <OutcomesTable amm={amm} outcomes={outcomes} />
+          </>
+        )}
+      </div>
     </article>
   );
 };
 
-const getOffset = page => {
+const getOffset = (page) => {
   return (page - 1) * PAGE_LIMIT;
 };
 
@@ -199,26 +202,23 @@ const applyFiltersAndSort = (
   );
   updatedFilteredMarkets = updatedFilteredMarkets.sort((marketA, marketB) => {
     if (sortBy === TOTAL_VOLUME) {
-      return (
-        marketB?.amm?.volumeTotalUSD -
-        marketA?.amm?.volumeTotalUSD
-      );
+      return marketB?.amm?.volumeTotalUSD - marketA?.amm?.volumeTotalUSD;
     } else if (sortBy === TWENTY_FOUR_HOUR_VOLUME) {
       return (
-        marketB?.amm?.volume24hrTotalUSD -
-        marketA?.amm?.volume24hrTotalUSD
+        marketB?.amm?.volume24hrTotalUSD - marketA?.amm?.volume24hrTotalUSD
       );
     } else if (sortBy === LIQUIDITY) {
-      return (
-        marketB?.amm?.liquidityUSD - marketA?.amm?.liquidityUSD
-      );
+      return marketB?.amm?.liquidityUSD - marketA?.amm?.liquidityUSD;
     } else if (sortBy === ENDING_SOON) {
-      return (
-        marketB?.amm?.endTimestamp - marketA?.amm?.endTimestamp
-      );
+      return marketA?.endTimestamp - marketB?.endTimestamp;
     }
     return true;
   });
+  if (sortBy !== ENDING_SOON) {
+    updatedFilteredMarkets = updatedFilteredMarkets
+      .filter((m) => m.amm !== null)
+      .concat(updatedFilteredMarkets.filter((m) => m.amm === null));
+  }
   setFilteredMarkets(updatedFilteredMarkets);
 };
 
@@ -253,7 +253,7 @@ const MarketsView = () => {
 
   let changedFilters = 0;
 
-  Object.keys(DEFAULT_MARKET_VIEW_SETTINGS).map(setting => {
+  Object.keys(DEFAULT_MARKET_VIEW_SETTINGS).forEach((setting) => {
     if (marketsViewSettings[setting] !== DEFAULT_MARKET_VIEW_SETTINGS[setting])
       changedFilters++;
   });
@@ -271,28 +271,28 @@ const MarketsView = () => {
       )}
       <ul>
         <SquareDropdown
-          onChange={value => {
+          onChange={(value) => {
             updateMarketsViewSettings({ categories: value });
           }}
           options={categoryItems}
           defaultValue={categories}
         />
         <SquareDropdown
-          onChange={value => {
+          onChange={(value) => {
             updateMarketsViewSettings({ sortBy: value });
           }}
           options={sortByItems}
           defaultValue={sortBy}
         />
         <SquareDropdown
-          onChange={value => {
+          onChange={(value) => {
             updateMarketsViewSettings({ reportingState: value });
           }}
           options={marketStatusItems}
           defaultValue={reportingState}
         />
         <SquareDropdown
-          onChange={value => {
+          onChange={(value) => {
             updateMarketsViewSettings({ currency: value });
           }}
           options={currencyItems}
@@ -305,21 +305,29 @@ const MarketsView = () => {
             .fill(null)
             .map((m, index) => <LoadingMarketCard key={index} />)}
         {!loading &&
+          filteredMarkets.length > 0 &&
           filteredMarkets
             .slice(getOffset(page), getOffset(page) + PAGE_LIMIT)
             .map((market, index) => (
               <MarketCard key={`${market.marketId}-${index}`} market={market} />
             ))}
       </section>
-      <Pagination
-        page={page}
-        itemCount={filteredMarkets.length}
-        itemsPerPage={PAGE_LIMIT}
-        action={page => {
-          setPage(page);
-        }}
-        updateLimit={null}
-      />
+      {filteredMarkets.length === 0 && (
+        <span className={Styles.EmptyMarketsMessage}>
+          No markets to show. Try changing the filter options.
+        </span>
+      )}
+      {filteredMarkets.length > 0 && (
+        <Pagination
+          page={page}
+          itemCount={filteredMarkets.length}
+          itemsPerPage={PAGE_LIMIT}
+          action={(page) => {
+            setPage(page);
+          }}
+          updateLimit={null}
+        />
+      )}
     </div>
   );
 };

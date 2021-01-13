@@ -467,7 +467,7 @@ const ModalAddLiquidity = ({
             </div>
           )}
           <div className={Styles.FooterText}>
-            {LIQUIDITY_STRINGS[modalType].footerText}
+            {LIQUIDITY_METHODS[modalType].footerText}
           </div>
         </>
       ) : (

@@ -364,6 +364,11 @@ const getOptions = ({
     animation: false,
     reflow: true,
     spacing: [8, 0, 8, 0],
+    panning: { enabled: false },
+    zoomType: undefined,
+    pinchType: undefined,
+    panKey: undefined,
+    zoomKey: undefined,
   },
   credits: {
     enabled: false,
