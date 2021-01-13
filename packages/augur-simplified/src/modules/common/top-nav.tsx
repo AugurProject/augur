@@ -46,13 +46,13 @@ export const SettingsButton = () => {
     return output;
   }, [slippage]);
 
-  const handleWindowOnClick = (event) => {
-    if (settingsRef && !settingsRef?.current?.contains(event.target)) {
-      setOpened(false);
-    }
-  }
-
   useEffect(() => {
+    const handleWindowOnClick = (event) => {
+      if (open && !!(event.target) && settingsRef.current !== null && !settingsRef?.current?.contains(event.target)) {
+        setOpened(false);
+      }
+    };
+
     window.addEventListener('click', handleWindowOnClick);
 
     return () => {
