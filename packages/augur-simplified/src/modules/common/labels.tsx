@@ -155,12 +155,12 @@ export const AppViewStats = ({ showCashAmounts }: AppViewStatsProps) => {
     [isLogged, balances.availableFundsUsd]
   );
   const usdValueETH = useMemo(
-    () => handleValue(balances?.USDC?.usdValue || 0),
-    [balances?.USDC?.usdValue]
-  );
-  const usdValueUSDC = useMemo(
     () => handleValue(balances?.ETH?.usdValue || 0),
     [balances?.ETH?.usdValue]
+  );
+  const usdValueUSDC = useMemo(
+    () => handleValue(balances?.USDC?.usdValue || 0),
+    [balances?.USDC?.usdValue]
   );
   return (
     <div
