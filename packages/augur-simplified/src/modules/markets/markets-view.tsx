@@ -114,34 +114,36 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
             })
       }
     >
-      {/* <MarketLink id={marketId} dontGoToMarket={!amm} ammId={amm?.id}> */}
+      <div>
+        <CategoryIcon categories={categories} />
+        <CategoryLabel categories={categories} />
         <div>
-          <CategoryIcon categories={categories} />
-          <CategoryLabel categories={categories} />
-          <div>
-            <ReportingStateLabel {...{ reportingState }} />
-            <CurrencyTipIcon name={amm?.cash?.name} marketId={marketId} />
-          </div>
-          {!amm ? (<span>{description}</span>) : (<MarketLink id={marketId} dontGoToMarket={!amm} ammId={amm?.id}>
-            {description}
-          </MarketLink>)}
-          {!amm ? (
-            <div>
-              <span>Market requires Initial liquidity</span>
-              <PrimaryButton text="Earn fees as a liquidity provider" />
-            </div>
-          ) : (
-            <>
-              <ValueLabel
-                label="total volume"
-                value={formatDai(market.amm?.volumeTotalUSD).full}
-              />
-              <ValueLabel label="APY" value={formattedApy} />
-              <OutcomesTable amm={amm} outcomes={outcomes} />
-            </>
-          )}
+          <ReportingStateLabel {...{ reportingState }} />
+          <CurrencyTipIcon name={amm?.cash?.name} marketId={marketId} />
         </div>
-      {/* </MarketLink> */}
+        {!amm ? (
+          <span>{description}</span>
+        ) : (
+          <MarketLink id={marketId} dontGoToMarket={!amm} ammId={amm?.id}>
+            {description}
+          </MarketLink>
+        )}
+        {!amm ? (
+          <div>
+            <span>Market requires Initial liquidity</span>
+            <PrimaryButton text="Earn fees as a liquidity provider" />
+          </div>
+        ) : (
+          <>
+            <ValueLabel
+              label="total volume"
+              value={formatDai(market.amm?.volumeTotalUSD).full}
+            />
+            <ValueLabel label="APY" value={formattedApy} />
+            <OutcomesTable amm={amm} outcomes={outcomes} />
+          </>
+        )}
+      </div>
     </article>
   );
 };
@@ -212,8 +214,10 @@ const applyFiltersAndSort = (
     }
     return true;
   });
-  // finally -- put all non-amm markets at the bottom.
-  updatedFilteredMarkets.sort((a) => (a?.amm === null ? 1 : -1));
+
+  updatedFilteredMarkets = updatedFilteredMarkets
+    .filter((m) => m.amm !== null)
+    .concat(updatedFilteredMarkets.filter((m) => m.amm === null));
   setFilteredMarkets(updatedFilteredMarkets);
 };
 
