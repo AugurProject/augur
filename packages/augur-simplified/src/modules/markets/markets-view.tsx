@@ -210,7 +210,7 @@ const applyFiltersAndSort = (
     } else if (sortBy === LIQUIDITY) {
       return marketB?.amm?.liquidityUSD - marketA?.amm?.liquidityUSD;
     } else if (sortBy === ENDING_SOON) {
-      return marketB?.endTimestamp - marketA?.endTimestamp;
+      return marketA?.endTimestamp - marketB?.endTimestamp;
     }
     return true;
   });
