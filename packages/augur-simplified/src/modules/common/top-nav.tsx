@@ -208,6 +208,7 @@ export const TopNav = () => {
         <ConnectAccount
           updateLoginAccount={handleAccountUpdate}
           autoLogin={autoLogin}
+          transactions={transactions}
         />
         {isMobile ? (
           <button

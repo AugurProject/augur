@@ -68,48 +68,49 @@ const AccountCard = ({
 }
 
 const GetStatusIcon = (transactionStatus: string) => {
-  if (transactionStatus === 'pending') {
+  if (transactionStatus === 'PENDING') {
     return <span><Spinner /></span>;
-  } else if (transactionStatus === 'failure') {
+  } else if (transactionStatus === 'FAILURE') {
     return <span className={Styles.Failure}><XCircle size={16} /></span>;
-  } else if (transactionStatus === 'success') {
+  } else if (transactionStatus === 'CONFIRMED') {
     return <span className={Styles.Success}><CheckCircle size={16} /></span>;
   } else {
     return null;
   }
 };
 
-const Transaction = ({label, link, status}) => (
+const Transaction = ({label, link, status, chainId}) => (
   <div>
     <span>{label}</span>
     <a
-      href={link}
+      href={getEtherscanLink(chainId, link, 'transaction')}
       target='_blank'
       rel='noopener noreferrer'
     >
       <LinkIcon />
     </a>
-    {GetStatusIcon(status)}
+    {GetStatusIcon(status,)}
   </div>
 );
 
-const Transactions = ({transactions}) => {
-  return transactions.length === 0 ? ( // TODO: wire up transactions
+const Transactions = ({transactions, chainId}) => {
+  return transactions.length === 0 ? (
     <span>Your Transactions will appear here</span>
   ) : (
     <div className={Styles.Transactions}>
       <div>
         <span>Recent Transactions</span>
-        <span>Clear all</span>
+        <span></span>
       </div>
       <div className={Styles.TransactionList}>
         {
-          transactions.map(({label, link, status}, index) => (
+          transactions.map(({message, hash, status}, index) => (
             <Transaction
               key={index}
-              label={label}
-              link={link}
+              label={message}
+              link={hash}
               status={status}
+              chainId={chainId}
             />
           ))
         }
@@ -133,12 +134,14 @@ interface AccountDetailsProps {
   toggleWalletModal: Function;
   openOptions: Function;
   darkMode: boolean;
+  transactions: object[];
 }
 
 const AccountDetails = ({
   toggleWalletModal,
   openOptions,
   darkMode,
+  transactions,
 }: AccountDetailsProps) => {
   const { chainId, account, connector } = useActiveWeb3React();
   const [connectorName, setConnectorName] = useState(formatConnectorName(connector));
@@ -146,20 +149,6 @@ const AccountDetails = ({
   useEffect(() => {
     setConnectorName(formatConnectorName(connector));
   }, [account, connector]);
-
-  const mockTransactions = [{
-    label: 'Work in progress @ 0.40',
-    link: '',
-    status: 'success',
-  }, {
-    label: 'Buy 100 yes @ 0.40',
-    link: '',
-    status: 'failure',
-  }, {
-    label: 'Buy 100 yes @ 0.40',
-    link: '',
-    status: 'pending',
-  }];
 
   return (
     <div className={classNames(Styles.AccountDetails, {
@@ -181,7 +170,7 @@ const AccountDetails = ({
         />
       </section>
       <footer>
-        <Transactions transactions={mockTransactions} />
+        <Transactions chainId={chainId} transactions={transactions} />
       </footer>
     </div>
   )
