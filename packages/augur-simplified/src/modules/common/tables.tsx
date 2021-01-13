@@ -204,7 +204,7 @@ const LiquidityRow = ({ liquidity }: { liquidity: LPTokenBalance }) => {
       <li>{formatDai(liquidity.initCostUsd).full}</li>
       <li>{liquidity.usdValue ? formatDai(liquidity.usdValue).full : '-'}</li>
       <li>
-        {liquidity.feesEarned ? formatDai(liquidity.feesEarned).full : '-'}
+        {'-' /*liquidity.feesEarned ? formatDai(liquidity.feesEarned).full : '-'*/}
       </li>
     </ul>
   );
