@@ -46,9 +46,11 @@ export function handleAddLiquidity(event: AddLiquidityEvent): void {
   addLiquidity.timestamp = event.block.timestamp;
   addLiquidity.ammExchange = event.address.toHexString();
   addLiquidity.cash = event.params.cash;
+  addLiquidity.lpTokens = event.params.lpTokens;
   addLiquidity.noShares = event.params.shortShares;
   addLiquidity.yesShares = event.params.longShares;
   addLiquidity.sender = event.params.sender.toHexString();
+
   addLiquidity.save();
 
   updateAMM(addLiquidity.ammExchange);
@@ -64,6 +66,7 @@ export function handleRemoveLiquidity(event: RemoveLiquidityEvent): void {
   removeLiquidity.cash = event.params.cash;
   removeLiquidity.noShares = event.params.shortShares;
   removeLiquidity.yesShares = event.params.longShares;
+  removeLiquidity.completeSetsSold = event.params.completeSetsSold
   removeLiquidity.sender = event.params.sender.toHexString();
   removeLiquidity.save();
 
