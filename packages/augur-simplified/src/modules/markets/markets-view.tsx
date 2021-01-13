@@ -212,7 +212,7 @@ const applyFiltersAndSort = (
     return true;
   });
   // finally -- put all non-amm markets at the bottom.
-  updatedFilteredMarkets.sort((a, b) => (a?.amm === null ? 1 : -1));
+  updatedFilteredMarkets.sort(a => (a?.amm === null ? 1 : -1));
   setFilteredMarkets(updatedFilteredMarkets);
 };
 
