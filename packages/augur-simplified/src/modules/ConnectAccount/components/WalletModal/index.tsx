@@ -143,11 +143,13 @@ export default function WalletModal({
   toggleWalletModal,
   darkMode,
   autoLogin,
+  transactions,
 }: {
   showModal: boolean
   toggleWalletModal: Function
   darkMode: boolean
   autoLogin: boolean
+  transactions
 }) {
   // important that these are destructed from the account-specific web3-react context
   const { active, account, connector, activate, error } = useWeb3React()
@@ -350,6 +352,7 @@ export default function WalletModal({
           toggleWalletModal={() => toggleWalletModal()}
           openOptions={() => setWalletView(WALLET_VIEWS.OPTIONS)}
           darkMode={darkMode}
+          transactions={transactions}
         />
       )
     }

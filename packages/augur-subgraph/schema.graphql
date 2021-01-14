@@ -886,6 +886,12 @@ type AddLiquidity @entity {
 
   "Amount of cash user transferred to the amm."
   cash: BigInt!
+
+  "Number of LP tokens minted."
+  lpTokens: BigInt!
+
+  "Net cash value of the lp tokens minted"
+  cashValue: BigInt!
 }
 
 type RemoveLiquidity @entity {
@@ -909,4 +915,10 @@ type RemoveLiquidity @entity {
 
   "Amount of cash user recieves for redeemed shares"
   cash: BigInt!
+
+  "Number of complete sets sold."
+  completeSetsSold: BigInt!
+
+  "Net cash value of the lp tokens burned"
+  cashValue: BigInt!
 }

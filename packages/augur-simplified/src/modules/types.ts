@@ -1131,6 +1131,8 @@ export interface TransactionDetails {
   confirmedTime?: number;
   timestamp?: number;
   seen?: boolean;
+  status?: string;
+  marketDescription?: string;
 }
 
 export interface LiquidityBreakdown {

@@ -767,7 +767,6 @@ const populateInitLPValues = async (lptokens: LPTokens, ammExchanges: AmmExchang
   return lptokens;
 }
 
-
 const accumLpSharesAmounts = (transactions: AmmTransaction[], account: string): string => {
   const adds = transactions.filter(t => isSameAddress(t.sender, account) && t.tx_type === TransactionTypes.ADD_LIQUIDITY)
     .reduce((p, t) => p.plus(new BN(t.cashValueUsd || "0")), new BN("0"))
@@ -776,7 +775,6 @@ const accumLpSharesAmounts = (transactions: AmmTransaction[], account: string): 
 
   return String(adds.minus(removed));
 }
-
 
 // TODO: isYesOutcome is for convenience, down the road, outcome index will be used.
 const getInitPositionValues = (trades: UserTrades, amm: AmmExchange, isYesOutcome: boolean): { avgPrice: string, initCostUsd: string } => {
