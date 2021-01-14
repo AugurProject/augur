@@ -107,7 +107,13 @@ export const WalletButton = (props: ButtonProps) => (
     {...props}
     className={classNames(Styles.WalletButton, props.className)}
   />
-)
+);
+export const TextButton = (props: ButtonProps) => (
+  <Button
+    {...props}
+    className={classNames(Styles.TextButton, props.className)}
+  />
+);
 
 export interface DirectionButtonProps {
   action: Function;

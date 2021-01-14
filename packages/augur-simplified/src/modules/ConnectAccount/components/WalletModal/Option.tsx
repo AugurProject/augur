@@ -1,5 +1,4 @@
 import React from 'react'
-import { ExternalLink } from './'
 
 export const IconWrapper = ({ children }) => (
   <div style={{
@@ -148,9 +147,9 @@ export default function Option({
       </IconWrapper>
     </OptionCardClickable>
   )
-  if (link) {
-    return <ExternalLink href={link}>{content}</ExternalLink>
-  }
+  // if (link) {
+  //   return <ExternalLink href={link}>{content}</ExternalLink>
+  // }
 
   return content
 }

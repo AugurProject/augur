@@ -2,7 +2,6 @@ import React, {ReactElement, useEffect, useState} from 'react';
 import {UnsupportedChainIdError, useWeb3React} from '@web3-react/core';
 import {Activity as NetworkIcon} from 'react-feather';
 import {ethers} from 'ethers';
-import WalletModal from './components/WalletModal';
 import {SecondaryButton} from '../common/buttons';
 import classNames from 'classnames';
 import ButtonStyles from 'modules/common/buttons.styles.less';
@@ -93,12 +92,6 @@ const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode }) => {
   return (
     <>
       <LoginButton {...buttonProps} />
-      <WalletModal
-        toggleWalletModal={() => setShowModal(!showModal)}
-        showModal={showModal}
-        darkMode={darkMode}
-        autoLogin={autoLogin}
-      />
     </>
   )
 }

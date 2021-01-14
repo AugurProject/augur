@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Header} from './common';
 import Styles from 'modules/modal/modal.styles.less';
-import {WalletButton} from 'modules/common/buttons';
+import {TextButton, WalletButton} from 'modules/common/buttons';
 import {GetWalletIcon} from 'modules/common/get-wallet-icon';
 import {UnsupportedChainIdError, useWeb3React} from '@web3-react/core';
 import {AbstractConnector} from '@web3-react/abstract-connector';
@@ -11,6 +11,8 @@ import {fortmatic, injected, portis} from 'modules/ConnectAccount/connectors';
 import {OVERLAY_READY} from 'modules/ConnectAccount/connectors/Fortmatic';
 import {isMobile} from 'react-device-detect';
 import MetamaskIcon from 'modules/ConnectAccount/assets/metamask.png';
+import PendingView from 'modules/ConnectAccount/components/WalletModal/PendingView';
+import {ErrorBlock} from 'modules/common/labels';
 
 const WALLET_VIEWS = {
   OPTIONS: 'options',
@@ -33,6 +35,18 @@ export function usePrevious<T>(value: T) {
   return ref.current
 }
 
+const WalletList = ({walletList}) => (
+  <ul>
+    {
+      walletList.map(wallet => (
+        <li key={wallet.key}>
+          <WalletButton {...wallet} />
+        </li>
+      ))
+    }
+  </ul>
+)
+
 interface ModalConnectWalletProps {
   showModal: boolean;
   toggleWalletModal: Function;
@@ -43,10 +57,8 @@ interface ModalConnectWalletProps {
 const ModalConnectWallet = ({
   showModal,
   toggleWalletModal,
-  darkMode,
   autoLogin,
 }: ModalConnectWalletProps) => {
-  const [selected, setSelected] = useState(false);
   // important that these are destructed from the account-specific web3-react context
   const { active, account, connector, activate, error } = useWeb3React()
   const [walletView, setWalletView] = useState(WALLET_VIEWS.ACCOUNT)
@@ -54,6 +66,7 @@ const ModalConnectWallet = ({
   const [pendingError, setPendingError] = useState<boolean>()
   const walletModalOpen = showModal
   const previousAccount = usePrevious(account)
+  const [walletList, setWalletList] = useState();
 
   const tryActivation = useCallback((connector: AbstractConnector | undefined) => {
     let name = ''
@@ -101,7 +114,6 @@ const ModalConnectWallet = ({
     }
   }, [autoLogin, tryActivation, account, previousAccount, walletModalOpen, toggleWalletModal])
 
-
   // always reset to account view
   useEffect(() => {
     if (walletModalOpen) {
@@ -120,7 +132,6 @@ const ModalConnectWallet = ({
     }
   }, [setWalletView, active, error, connector, walletModalOpen, activePrevious, connectorPrevious])
 
-
   // close wallet modal if fortmatic modal is active
   useEffect(() => {
     fortmatic.on(OVERLAY_READY, () => {
@@ -128,7 +139,7 @@ const ModalConnectWallet = ({
     })
   }, [showModal, toggleWalletModal])
 
-  function getWalletButtons() {
+  const getWalletButtons = useCallback(() => {
     const isMetamask = window['ethereum'] && window['ethereum']['isMetaMask']
     const walletButtons = Object.keys(SUPPORTED_WALLETS).map(key => {
       const wallet = SUPPORTED_WALLETS[key];
@@ -141,7 +152,7 @@ const ModalConnectWallet = ({
             selected: wallet?.connector === connector,
             href: wallet.href,
             text: wallet.name,
-            icon: require('../../assets/' + wallet.iconName).default,
+            // icon: require('../../assets/' + wallet.iconName).default,
           };
         }
       } else {
@@ -172,45 +183,64 @@ const ModalConnectWallet = ({
                 : !wallet.href && tryActivation(wallet.connector),
             key,
             selected: wallet?.connector === connector,
-            color: wallet.color,
-            link: wallet.href,
-            header: wallet.name,
-            subheader: null, //use wallet.description to bring back multi-line
-            icon: require('../../assets/' + wallet.iconName).default,
+            href: wallet.href,
+            text: wallet.name,
+            // icon: require('../../assets/' + wallet.iconName).default,
           }
         }
       }
-    })
+    }).filter(element => !!element);
     return walletButtons;
-  }
+  }, [connector, tryActivation]);
+
+  useEffect(() => {
+    setWalletList(getWalletButtons());
+  }, [getWalletButtons]);
 
   return (
-    <>
+    <div className={Styles.ModalConnectWallet}>
       <Header
-        // title={LIQUIDITY_STRINGS[modalType].header}
-        title='Connect a wallet'
+        title={walletView !== WALLET_VIEWS.ACCOUNT ? (
+          <span
+            className={Styles.HeaderLink}
+            onClick={() => {
+              setPendingError(false)
+              setWalletView(WALLET_VIEWS.ACCOUNT)
+            }}
+          >
+            Back
+          </span>
+        ) : 'Connect a wallet'}
       />
-      <div className={Styles.ModalConnectWallet}>
-        <ul>
-          <li>
-            <WalletButton
-              text='Metamask'
-              selected={selected}
-              action={() => setSelected(!selected)}
-              // icon={(
-              //   <GetWalletIcon
-              //     connector={connector}
-              //     account={account}
-              //     showPortisButton={true}
-              //   />
-              // )}
+      <div>
+        {
+          error ? (
+            <ErrorBlock
+              text={
+                error instanceof UnsupportedChainIdError ?
+                  'Please connect to the appropriate Ethereum network.' :
+                  'Error connecting. Try refreshing the page.'
+              }
             />
-          </li>
-          {getWalletButtons().map(wallet => <WalletButton {...wallet} />)}
-        </ul>
-        <p>New to Ethereum? Learn more about wallets</p>
+          ) : (
+            walletView === WALLET_VIEWS.PENDING ? (
+            <PendingView
+              connector={pendingWallet}
+              error={pendingError}
+              setPendingError={setPendingError}
+              tryActivation={tryActivation}
+            />
+          ) : (
+            <>
+              {walletList && <WalletList walletList={walletList} />}
+              <div>
+                New to Ethereum? <TextButton href='https://ethereum.org/wallets/' text='Learn more about wallets' />
+              </div>
+            </>
+          ))
+        }
       </div>
-    </>
+    </div>
   );
 };
 

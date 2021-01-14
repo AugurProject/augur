@@ -77,7 +77,7 @@ export default function PendingView({
   error?: boolean
   setPendingError: (error: boolean) => void
   tryActivation: (connector: AbstractConnector) => void
-  darkMode: boolean
+  darkMode?: boolean
 }) {
   const isMetamask = window['ethereum'] && window['ethereum']['isMetaMask']
 

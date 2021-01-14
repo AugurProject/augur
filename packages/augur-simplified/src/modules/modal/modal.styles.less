@@ -166,6 +166,7 @@
     background: transparent;
     outline: 0;
     border: 0;
+    cursor: pointer;
   }
 }
 
@@ -210,6 +211,26 @@
 }
 
 .ModalConnectWallet {
-  padding: @size-24 @size-16;
-  width: @size-420;
+  > div:first-of-type > .HeaderLink {
+    cursor: pointer;
+  }
+
+  > div:last-of-type {
+    padding: @size-24 @size-16;
+    width: @size-420;
+
+    > ul {
+      margin-bottom: @size-16;
+
+      > li:not(:last-of-type) {
+        margin-bottom: @size-8;
+      }
+    }
+
+    > div {
+      .text-16-semi-bold;
+
+      margin-left: @size-16;
+    }
+  }
 }
