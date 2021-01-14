@@ -90,9 +90,7 @@ const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode }) => {
   }
 
   return (
-    <>
-      <LoginButton {...buttonProps} />
-    </>
+    <LoginButton {...buttonProps} />
   )
 }
 

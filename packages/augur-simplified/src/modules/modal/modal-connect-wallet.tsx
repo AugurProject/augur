@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Header} from './common';
 import Styles from 'modules/modal/modal.styles.less';
-import {TextButton, WalletButton} from 'modules/common/buttons';
+import {SecondaryButton, TextButton, WalletButton} from 'modules/common/buttons';
 import {GetWalletIcon} from 'modules/common/get-wallet-icon';
 import {UnsupportedChainIdError, useWeb3React} from '@web3-react/core';
 import {AbstractConnector} from '@web3-react/abstract-connector';
@@ -13,6 +13,8 @@ import {isMobile} from 'react-device-detect';
 import MetamaskIcon from 'modules/ConnectAccount/assets/metamask.png';
 import PendingView from 'modules/ConnectAccount/components/WalletModal/PendingView';
 import {ErrorBlock} from 'modules/common/labels';
+import Loader from 'modules/ConnectAccount/components/Loader';
+import Option from 'modules/ConnectAccount/components/WalletModal/Option';
 
 const WALLET_VIEWS = {
   OPTIONS: 'options',
@@ -45,7 +47,78 @@ const WalletList = ({walletList}) => (
       ))
     }
   </ul>
-)
+);
+
+interface PendingWalletViewProps {
+  connector?: AbstractConnector;
+  error?: boolean;
+  setPendingError: (error: boolean) => void;
+  tryActivation: (connector: AbstractConnector) => void;
+  darkMode?: boolean;
+}
+
+const PendingWalletView = ({
+  connector,
+  error = false,
+  setPendingError,
+  tryActivation,
+  darkMode,
+}: PendingWalletViewProps) => {
+  const isMetamask = window['ethereum'] && window['ethereum']['isMetaMask'];
+
+  return (
+    <div className={Styles.PendingWalletView}>
+      {
+        error ? (
+          <div>
+            <span>Error connecting.</span>
+            <SecondaryButton
+              action={() => {
+                setPendingError(false)
+                connector && tryActivation(connector)
+              }}
+              text='Try again'
+            />
+          </div>
+        ) : (
+          <>
+            <Loader darkMode={darkMode} />
+            <span>Initializing...</span>
+          </>
+        )
+      }
+      {Object.keys(SUPPORTED_WALLETS).map(key => {
+        const wallet = SUPPORTED_WALLETS[key];
+
+        if (wallet.connector === connector) {
+          if (wallet.connector === injected) {
+            if (isMetamask && wallet.name !== 'MetaMask') {
+              return null;
+            }
+            if (!isMetamask && wallet.name === 'MetaMask') {
+              return null;
+            }
+          }
+          return (
+            <WalletButton
+              id={`connect-${key}`}
+              key={key}
+              text={wallet.name}
+              // subheader={wallet.description}
+              icon={(
+                <img
+                  src={require('modules/ConnectAccount/assets/' + wallet.iconName).default}
+                  alt={wallet.name}
+                />
+              )}
+            />
+          )
+        }
+        return null;
+      })}
+    </div>
+  )
+}
 
 interface ModalConnectWalletProps {
   showModal: boolean;
@@ -152,7 +225,12 @@ const ModalConnectWallet = ({
             selected: wallet?.connector === connector,
             href: wallet.href,
             text: wallet.name,
-            // icon: require('../../assets/' + wallet.iconName).default,
+            icon: (
+              <img
+                src={require('modules/ConnectAccount/assets/' + wallet.iconName).default}
+                alt={wallet.name}
+              />
+            ),
           };
         }
       } else {
@@ -185,7 +263,12 @@ const ModalConnectWallet = ({
             selected: wallet?.connector === connector,
             href: wallet.href,
             text: wallet.name,
-            // icon: require('../../assets/' + wallet.iconName).default,
+            icon: (
+              <img
+                src={require('modules/ConnectAccount/assets/' + wallet.iconName).default}
+                alt={wallet.name}
+              />
+            ),
           }
         }
       }
@@ -224,16 +307,16 @@ const ModalConnectWallet = ({
             />
           ) : (
             walletView === WALLET_VIEWS.PENDING ? (
-            <PendingView
-              connector={pendingWallet}
-              error={pendingError}
-              setPendingError={setPendingError}
-              tryActivation={tryActivation}
-            />
+              <PendingWalletView
+                connector={pendingWallet}
+                error={pendingError}
+                setPendingError={setPendingError}
+                tryActivation={tryActivation}
+              />
           ) : (
             <>
               {walletList && <WalletList walletList={walletList} />}
-              <div>
+              <div className={Styles.LearnMore}>
                 New to Ethereum? <TextButton href='https://ethereum.org/wallets/' text='Learn more about wallets' />
               </div>
             </>
