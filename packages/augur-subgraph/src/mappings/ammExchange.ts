@@ -46,9 +46,24 @@ export function handleAddLiquidity(event: AddLiquidityEvent): void {
   addLiquidity.timestamp = event.block.timestamp;
   addLiquidity.ammExchange = event.address.toHexString();
   addLiquidity.cash = event.params.cash;
+  addLiquidity.lpTokens = event.params.lpTokens;
   addLiquidity.noShares = event.params.shortShares;
   addLiquidity.yesShares = event.params.longShares;
   addLiquidity.sender = event.params.sender.toHexString();
+
+  // Will be zero if ratio is 50-50.
+  let netShares = addLiquidity.noShares.minus(addLiquidity.yesShares).abs();
+  let priceOfGainedShares = BigInt.fromI32(0);
+  let totalShares = addLiquidity.noShares.plus(addLiquidity.yesShares);
+
+  if(addLiquidity.yesShares.gt(addLiquidity.noShares)) {
+    priceOfGainedShares = addLiquidity.yesShares.div(totalShares);
+  } else {
+    priceOfGainedShares = addLiquidity.noShares.div(totalShares);
+  }
+
+  // Cash value is the cost of the lp tokens received accounting for shares returned to user.
+  addLiquidity.cashValue = addLiquidity.cash.minus(priceOfGainedShares.times(netShares));
   addLiquidity.save();
 
   updateAMM(addLiquidity.ammExchange);
@@ -64,7 +79,18 @@ export function handleRemoveLiquidity(event: RemoveLiquidityEvent): void {
   removeLiquidity.cash = event.params.cash;
   removeLiquidity.noShares = event.params.shortShares;
   removeLiquidity.yesShares = event.params.longShares;
+  removeLiquidity.completeSetsSold = event.params.completeSetsSold
   removeLiquidity.sender = event.params.sender.toHexString();
+
+  let totalNo = removeLiquidity.noShares.plus(removeLiquidity.completeSetsSold);
+  let totalYes = removeLiquidity.yesShares.plus(removeLiquidity.completeSetsSold);
+  let totalShares = totalNo.plus(totalYes);
+
+  let valueOfNoShares = totalNo.div(totalShares).times(removeLiquidity.noShares);
+  let valueOfYesShares = totalYes.div(totalShares).times(removeLiquidity.yesShares);
+
+  // Cash value is the cost of the lp tokens received accounting for shares returned to user.
+  removeLiquidity.cashValue = removeLiquidity.cash.plus(valueOfNoShares).plus(valueOfYesShares);
   removeLiquidity.save();
 
   updateAMM(removeLiquidity.ammExchange);
