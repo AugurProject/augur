@@ -18,7 +18,7 @@
         padding: 0;
       }
     }
-    &:last-of-type {
+    &:last-of-type:not(:first-of-type) {
       display: flex;
       flex-direction: column;
 
@@ -36,6 +36,11 @@
   align-items: center;
   height: @size-44;
 
+  @media @breakpoint-mobile-tablet {
+    margin-bottom: @size-16;
+    height: @size-32;
+  }
+
   > div:nth-of-type(2) {
     padding: 0 @size-16;
     margin-left: @size-8;
@@ -47,6 +52,10 @@
 
   > :nth-child(4) {
     margin-left: 0;
+
+    @media @breakpoint-mobile-tablet {
+      margin-left: auto;
+    }
   }
 }
 
@@ -169,9 +178,9 @@
       max-width: unset;
       grid-gap: unset;
 
-      > div:first-of-type {
-        margin-bottom: @size-16;
-      }
+      // > div:first-of-type {
+      //   margin-bottom: unset;
+      // }
 
       > h1 {
         margin-bottom: @size-24;

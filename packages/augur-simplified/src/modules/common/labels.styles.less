@@ -407,15 +407,15 @@
   flex-flow: row nowrap;
   align-items: center;
   justify-content: center;
+  padding: @size-13 @size-16;
   max-height: @size-48;
   min-height: @size-48;
   height: @size-48;
   margin-bottom: @size-16;
   margin-top: -@size-24;
+  white-space: nowrap;
 
   @media @breakpoint-mobile-tablet {
-    .text-14-bold;
-
     margin-top: 0;
   }
 
@@ -441,9 +441,23 @@
   flex-flow: row nowrap;
   white-space: nowrap;
   margin-right: @size-8;
+  width: fit-content;
 
   &[data-big="true"] {
+    padding: @size-9 @size-8;
     margin-left: @size-8;
+
+    @media @breakpoint-mobile-tablet {
+      .text-12;
+
+      margin-left: 0;
+      margin-right: 0;
+      margin-bottom: @size-16;
+
+      &:first-child {
+        margin-top: -@size-8;
+      }
+    }
   }
 }
 
