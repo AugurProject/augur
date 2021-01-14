@@ -192,7 +192,7 @@ export function useApproveERC1155Callback(
 /*
 # AMM Middleware: Approvals Needed for Methods
 method                  | USDx                  | ETH
-----------------------------------------------------------------`
+----------------------------------------------------------------
 doAddLiquidity          | cash: factory         | none
 doRemoveLiquidity       | none                  | amm: wrapper
 doEnterPosition         | cash: factory         | none
