@@ -165,7 +165,7 @@ const ModalAddLiquidity = ({
         userPercent = String((new BN(estimatedLpAmount).plus(new BN(shareBalance || "0"))).div(new BN(displaySupply).plus(new BN(estimatedLpAmount))).times(new BN(100)));
       } else if (modalType === REMOVE) {
         const userBalanceLpTokens = balances && balances.lpTokens && balances.lpTokens[amm?.id];
-        const userAmount = userBalanceLpTokens.rawBalance || "0";
+        const userAmount = userBalanceLpTokens?.rawBalance || "0";
         const estUserAmount = convertDisplayShareAmountToOnChainShareAmount(amount, cash?.decimals);
         userPercent = String((new BN(userAmount || "0").minus(new BN(estUserAmount))).div(new BN(rawSupply).minus(new BN(estUserAmount))));
       }
