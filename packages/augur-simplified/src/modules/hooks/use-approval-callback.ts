@@ -1,4 +1,4 @@
-import { ApprovalState, ETH } from "../constants"
+import { ApprovalState, ETH, TX_STATUS } from "../constants"
 import { useActiveWeb3React } from '../ConnectAccount/hooks';
 import { useCallback, useMemo } from "react";
 import { getERC1155ApprovedForAll, getErc1155Contract, getERC20Allowance, getErc20Contract } from "../../utils/contract-calls";
@@ -270,7 +270,7 @@ export async function checkAllowance(
         && tx?.approval?.tokenAddress === tokenAddress);
 
       if (updateTxState) {
-        updateTxState.status = 'CONFIRMED';
+        updateTxState.status = TX_STATUS.CONFIRMED;
         updateTransactions(updateTxState.hash, updateTxState);
       }
       return ApprovalState.APPROVED;
@@ -299,7 +299,7 @@ export const isERC1155ContractApproved = async (
         && tx?.approval?.tokenAddress === erc1155Address);
 
       if (updateTxState) {
-        updateTxState.status = 'CONFIRMED';
+        updateTxState.status = TX_STATUS.CONFIRMED;
         updateTransactions(updateTxState.hash, updateTxState);
       }
     }
@@ -340,7 +340,7 @@ export const approveERC20Contract = async (
         chainId,
         addedTime: new Date().getTime(),
         seen: false,
-        status: 'PENDING',
+        status: TX_STATUS.PENDING,
         marketDescription: null,
         from: account,
         message: `Approve ${approvingName || 'for use'}`,
@@ -377,7 +377,7 @@ export const approveERC1155Contract = async (
       chainId,
       addedTime: new Date().getTime(),
       seen: false,
-      status: 'PENDING',
+      status: TX_STATUS.PENDING,
       marketDescription: null,
       from: account,
       message: `Approve ${approvingName || 'for use'}`,

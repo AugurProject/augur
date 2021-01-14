@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 
 import Styles from 'modules/modal/modal.styles.less';
 import { Header } from './common';
-import { YES_NO, BUY, USDC, SHARES, ApprovalAction, ENTER_AMOUNT, YES_OUTCOME_ID, NO_OUTCOME_ID, CREATE, ADD, REMOVE, LIQUIDITY_STRINGS, CONNECT_ACCOUNT, SET_PRICES } from '../constants';
+import { YES_NO, BUY, USDC, SHARES, ApprovalAction, ENTER_AMOUNT, YES_OUTCOME_ID, NO_OUTCOME_ID, CREATE, ADD, REMOVE, LIQUIDITY_STRINGS, CONNECT_ACCOUNT, SET_PRICES, TX_STATUS } from '../constants';
 import { OutcomesGrid, AmountInput, InfoNumbers } from '../market/trading-form';
 import { ApprovalButton, BuySellButton } from '../common/buttons';
 import { ErrorBlock, generateTooltip } from '../common/labels';
@@ -109,12 +109,13 @@ interface ModalAddLiquidityProps {
   currency?: string;
 }
 
+
 const ModalAddLiquidity = ({
   market,
   liquidityModalType,
   currency,
 }: ModalAddLiquidityProps) => {
-  const { userInfo: { balances }, processed: { cashes }, loginAccount } = useAppStatusStore();
+  const { userInfo: { balances }, processed: { cashes }, loginAccount, actions: { addTransaction, updateTransaction }  } = useAppStatusStore();
   const account = loginAccount?.account
 
   let amm = market?.amm;
@@ -126,6 +127,18 @@ const ModalAddLiquidity = ({
   if (liquidityModalType === CREATE) {
     amm = null;
     createLiquidity = true;
+  }
+
+  const updateTxStatus = (txResponse) => {
+    if (txResponse.confirmations > 0) {
+      // TODO temp workaround
+      const tx = window.appStatus.transactions || JSON.parse(window.localStorage.getItem('transactions'));
+      const updateTxState = tx.find(tx => tx.hash === txResponse.transactionHash);
+      if (updateTxState) {
+        updateTxState.status = TX_STATUS.CONFIRMED;
+        updateTransaction(txResponse.transactionHash, updateTxState);
+      }
+    }
   }
 
   const [outcomes, setOutcomes] = useState<AmmOutcome[]>(amm ? amm.ammOutcomes : fakeYesNoOutcomes);
@@ -231,8 +244,18 @@ const ModalAddLiquidity = ({
         console.log(account, market.marketId, cash, fee, amount);
         doRemoveAmmLiquidity(market.marketId, cash, fee, amount)
           .then(response => {
-            // TODO: manage transaction
-
+            const { hash } = response;
+            addTransaction({
+              hash,
+              chainId: loginAccount.chainId,
+              seen: false,
+              status: TX_STATUS.PENDING,
+              from: account,
+              addedTime: new Date().getTime(),
+              message: `Remove Liquidity`,
+              marketDescription: market.description,
+            });
+            response.wait().then(response => updateTxStatus(response));
           })
           .catch(e => {
             //TODO: handle errors here
@@ -285,7 +308,18 @@ const ModalAddLiquidity = ({
         const hasLiquidity = amm?.liquidity !== undefined && amm?.liquidity !== "0";
         doAmmLiquidity(account, amm, market.marketId, cash, fee, amount, hasLiquidity, priceNo, priceYes)
           .then(response => {
-            // TODO: handle transaction response
+            const { hash } = response;
+            addTransaction({
+              hash,
+              chainId: loginAccount.chainId,
+              from: account,
+              seen: false,
+              status: TX_STATUS.PENDING,
+              addedTime: new Date().getTime(),
+              message: `Add Liquidity`,
+              marketDescription: market.description,
+            });
+            response.wait().then(response => updateTxStatus(response));
           })
           .catch(e => {
             // TODO: handle error here
@@ -349,7 +383,18 @@ const ModalAddLiquidity = ({
         console.log(account, market.marketId, cash, fee, amount, priceNo, priceYes);
         await doAmmLiquidity(account, amm, market.marketId, cash, fee, amount, false, priceNo, priceYes)
           .then(response => {
-            // TODO: handle transaction response
+            const { hash } = response;
+            addTransaction({
+              hash,
+              chainId: loginAccount.chainId,
+              from: account,
+              seen: false,
+              status: TX_STATUS.PENDING,
+              addedTime: new Date().getTime(),
+              message: `Add Liquidity`,
+              marketDescription: market.description,
+            });
+            response.wait().then(response => updateTxStatus(response));
           })
           .catch(e => {
             // TODO: handle error

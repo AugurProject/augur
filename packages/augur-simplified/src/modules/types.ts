@@ -1095,12 +1095,24 @@ export interface Settings {
 export interface AppStatusState {
   approvals: {
     liquidity: {
-      USDC: boolean,
-      ETH: boolean,
+      add: {
+        USDC: boolean,
+        ETH: boolean,
+      },
+      remove: {
+        USDC: boolean,
+        ETH: boolean,
+      }
     },
     trade: {
-      USDC: boolean,
-      ETH: boolean,
+      enter: {
+        USDC: boolean,
+        ETH: boolean,
+      },
+      exit: {
+        USDC: boolean,
+        ETH: boolean,
+      }
     },
   },
   processed: ProcessedData,

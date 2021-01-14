@@ -5,13 +5,16 @@ import Styles from './toasts.styles.less';
 import { CloseIcon, FailedX, ConfirmedCheck } from '../common/icons';
 import { ReceiptLink } from '../routes/helpers/links';
 import { useAppStatusStore } from '../stores/app-status';
+import { TX_STATUS } from '../constants';
 
 export const Toasts = () => {
   const {
     transactions,
     actions: { updateTransaction },
   } = useAppStatusStore();
-  const toasts = transactions.sort((a,b) => a.timestamp - b.timestamp).filter(t => !t.seen);
+  const toasts = transactions.sort((a,b) => a.timestamp - b.timestamp)
+    .filter(t => !t.seen)
+    .filter(t => t.status !== TX_STATUS.PENDING);
   const numToastsToSee = toasts.length;
   return (
     <>
@@ -32,29 +35,23 @@ export const Toasts = () => {
   );
 };
 
+
 const Toast = ({ toast, markAsSeen }) => {
-  const confirmed = toast.status === 'CONFIRMED';
+  const confirmed = toast.status === TX_STATUS.CONFIRMED;
+  useEffect(() => {
+    const curToast = toast;
+    if (!curToast.seen) {
+      const hide = setTimeout(() => {
+        markAsSeen(curToast);
+      }, 4000);
 
-  // TODO
-  // Having issues here, need to look into where markAsSeen gets called before i see the render
-  // useEffect(() => {
-  //   const curToast = toast;
-  //   if (!curToast.seen) {
-  //     const hide = setTimeout(() => {
-  //       markAsSeen(curToast);
-  //     }, 4000);
-
-  //     return () => {
-  //       clearTimeout(hide);
-  //     }
-  //   }
-  //   return undefined;
-  //   // eslint-disable-next-line
-  // }, []);
-
-  if (toast.status === 'PENDING') {
-    return null;
-  }
+      return () => {
+        clearTimeout(hide);
+      }
+    }
+    return undefined;
+    // eslint-disable-next-line
+  }, []);
 
   return (
     <article
