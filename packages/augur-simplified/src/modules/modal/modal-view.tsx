@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react';
-
+import React, {useEffect, useState} from 'react';
 import ModalAddLiquidity from '../modal/modal-add-liquidity';
-import { useHistory } from 'react-router';
-
+import {useHistory} from 'react-router';
 import Styles from 'modules/modal/modal.styles.less';
-import { useAppStatusStore } from 'modules/stores/app-status';
-import { MODAL_ADD_LIQUIDITY } from 'modules/constants';
+import {useAppStatusStore} from 'modules/stores/app-status';
+import {MODAL_ADD_LIQUIDITY, MODAL_CONNECT_WALLET} from 'modules/constants';
+import ModalConnectWallet from 'modules/modal/modal-connect-wallet';
 
 function selectModal(type, modal) {
   switch (type) {
     case MODAL_ADD_LIQUIDITY:
       return <ModalAddLiquidity {...modal} />;
+    case MODAL_CONNECT_WALLET:
+      return <ModalConnectWallet {...modal} />
     default:
       return <div />;
   }

@@ -12,7 +12,7 @@ export const Header = ({ title, subtitle }) => {
   return (
     <div className={Styles.Header}>
       <span>{title}</span>
-      {subtitle.value && (
+      {subtitle?.value && (
         <div>
           <span>{subtitle.label}</span>
           <span>{subtitle.value}</span>

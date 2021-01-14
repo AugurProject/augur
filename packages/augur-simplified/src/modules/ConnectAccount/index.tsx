@@ -1,13 +1,14 @@
-import React, {ReactElement, useEffect, useState} from 'react';
+import React, {ReactElement, useEffect} from 'react';
 import {UnsupportedChainIdError, useWeb3React} from '@web3-react/core';
 import {Activity as NetworkIcon} from 'react-feather';
 import {ethers} from 'ethers';
-import WalletModal from './components/WalletModal';
 import {SecondaryButton} from '../common/buttons';
 import classNames from 'classnames';
 import ButtonStyles from 'modules/common/buttons.styles.less';
 import {GetWalletIcon} from 'modules/common/get-wallet-icon';
 import {useActiveWeb3React} from 'modules/ConnectAccount/hooks';
+import {MODAL_CONNECT_WALLET} from 'modules/constants';
+import {useAppStatusStore} from 'modules/stores/app-status';
 
 interface LoginButtonProps {
   action: Function;
@@ -44,8 +45,10 @@ const shortenAddress = (address: string, chars = 4): string => {
 }
 
 const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode, transactions }) => {
+  const {
+    actions: { setModal },
+  } = useAppStatusStore();
   const { account, connector, error } = useWeb3React();
-  const [showModal, setShowModal] = useState<boolean>();
   const activeWeb3 = useActiveWeb3React();
 
   useEffect(() => {
@@ -56,7 +59,12 @@ const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode, transac
   }, [account, activeWeb3]);
 
   let buttonProps = {
-    action: () => setShowModal(!showModal),
+    action: () => setModal({
+      type: MODAL_CONNECT_WALLET,
+      darkMode,
+      autoLogin,
+      transactions,
+    }),
     className: null,
     darkMode,
     icon: null,
@@ -85,16 +93,7 @@ const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode, transac
   }
 
   return (
-    <>
-      <LoginButton {...buttonProps} />
-      <WalletModal
-        toggleWalletModal={() => setShowModal(!showModal)}
-        showModal={showModal}
-        darkMode={darkMode}
-        autoLogin={autoLogin}
-        transactions={transactions}
-      />
-    </>
+    <LoginButton {...buttonProps} />
   )
 }
 

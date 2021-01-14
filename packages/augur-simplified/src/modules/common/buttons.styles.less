@@ -243,3 +243,63 @@
     background-color: var(--simple-alternate-background);
   }
 }
+
+.Approval button {
+  margin-top: @size-16;
+  width: 100%;
+}
+
+.WalletButton {
+  .Button;
+
+  width: 100%;
+  min-height: @size-56;
+  height: @size-56;
+  max-height: @size-56;
+  padding: 0 @size-24 0 @size-28;
+  border-radius: @size-16;
+  background-color: var(--color-brand-secondary);
+  justify-content: space-between;
+
+  > img {
+    max-height: @size-24;
+  }
+
+  &:not(:disabled):not(.Disabled) {
+    &:hover {
+      border: @size-1 solid var(--simple-secondary-text);
+    }
+
+    &:active,
+    &.Selected {
+      border: @size-1 solid var(--color-brand);
+      position: relative;
+
+      &:before {
+        content: '';
+        position: absolute;
+        left: @size-12;
+        width: @size-8;
+        height: @size-8;
+        border-radius: 50%;
+        background-color: var(--color-brand);
+      }
+    }
+  }
+}
+
+.TextButton {
+  .Button;
+  .text-16-semi-bold;
+
+  min-height: unset;
+  height: unset;
+  max-height: unset;
+  border: none;
+  text-transform: unset;
+  text-decoration: underline;
+  color: var(--simple-secondary-text);
+  padding: 0;
+  background-color: transparent;
+  display: inline;
+}
