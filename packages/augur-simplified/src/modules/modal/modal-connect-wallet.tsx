@@ -285,6 +285,7 @@ const ModalConnectWallet = ({
           }
         }
       }
+      return null;
     }).filter(element => !!element);
     return walletButtons;
   }, [connector, tryActivation]);
