@@ -1,4 +1,4 @@
-import React, {ReactElement, useEffect, useState} from 'react';
+import React, {ReactElement, useEffect} from 'react';
 import {UnsupportedChainIdError, useWeb3React} from '@web3-react/core';
 import {Activity as NetworkIcon} from 'react-feather';
 import {ethers} from 'ethers';

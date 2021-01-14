@@ -3,7 +3,6 @@ import {CheckCircle, ExternalLink as LinkIcon, XCircle} from 'react-feather';
 import CopyHelper from './CopyHelper';
 import {getEtherscanLink, shortenAddress} from '../../utils';
 import {injected, walletlink} from '../../connectors';
-import {ReactComponent as Close} from '../../assets/x.svg';
 import {SUPPORTED_WALLETS} from '../../constants';
 import {useActiveWeb3React} from '../../hooks';
 import Styles from 'modules/ConnectAccount/components/AccountDetails/index.less';

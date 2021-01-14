@@ -6,8 +6,7 @@ import {UnsupportedChainIdError, useWeb3React} from '@web3-react/core';
 import {AbstractConnector} from '@web3-react/abstract-connector';
 import {SUPPORTED_WALLETS} from 'modules/ConnectAccount/constants';
 import {WalletConnectConnector} from '@web3-react/walletconnect-connector';
-import {fortmatic, injected, portis} from 'modules/ConnectAccount/connectors';
-import {OVERLAY_READY} from 'modules/ConnectAccount/connectors/Fortmatic';
+import {injected, portis} from 'modules/ConnectAccount/connectors';
 import {isMobile} from 'react-device-detect';
 import MetamaskIcon from 'modules/ConnectAccount/assets/metamask.png';
 import {ErrorBlock} from 'modules/common/labels';
@@ -15,6 +14,7 @@ import Loader from 'modules/ConnectAccount/components/Loader';
 import AccountDetails from 'modules/ConnectAccount/components/AccountDetails';
 import {useAppStatusStore} from 'modules/stores/app-status';
 import classNames from 'classnames';
+import {MODAL_CONNECT_WALLET} from 'modules/constants';
 
 const WALLET_VIEWS = {
   OPTIONS: 'options',
@@ -132,7 +132,8 @@ const ModalConnectWallet = ({
   transactions,
 }: ModalConnectWalletProps) => {
   const {
-    actions: { closeModal },
+    actions: { closeModal, setModal },
+    modal: { type },
   } = useAppStatusStore();
   // important that these are destructed from the account-specific web3-react context
   const { active, account, connector, activate, error } = useWeb3React();
@@ -141,6 +142,20 @@ const ModalConnectWallet = ({
   const [pendingError, setPendingError] = useState<boolean>();
   const previousAccount = usePrevious(account);
   const [walletList, setWalletList] = useState();
+  const modalIsOpen = type === MODAL_CONNECT_WALLET;
+
+  const toggleModal = useCallback(() => {
+    if (type === MODAL_CONNECT_WALLET) {
+      closeModal();
+    } else {
+      setModal({
+        type,
+        darkMode,
+        autoLogin,
+        transactions,
+      });
+    }
+  }, [autoLogin, closeModal, darkMode, modalIsOpen, setModal, transactions, type]);
 
   const tryActivation = useCallback((connector: AbstractConnector | undefined) => {
     let name = '';
@@ -179,6 +194,7 @@ const ModalConnectWallet = ({
   useEffect(() => {
     if (account && !previousAccount) {
       // closeModal();
+      // toggleModal();
     }
 
     if (autoLogin && !account) {
@@ -186,7 +202,7 @@ const ModalConnectWallet = ({
       tryActivation(option.connector)
       setWalletView(WALLET_VIEWS.ACCOUNT)
     }
-  }, [autoLogin, tryActivation, account, previousAccount]);
+  }, [autoLogin, tryActivation, account, previousAccount, toggleModal]);
 
   // always reset to account view
   // close wallet modal if fortmatic modal is active
@@ -194,9 +210,10 @@ const ModalConnectWallet = ({
     setPendingError(false);
     setWalletView(WALLET_VIEWS.ACCOUNT);
     // fortmatic.on(OVERLAY_READY, () => {
-    //   closeModal();
+    //   // closeModal();
+    //   toggleModal();
     // });
-  }, []);
+  }, [toggleModal]);
 
   // close modal when a connection is successful
   const activePrevious = usePrevious(active);
@@ -308,7 +325,7 @@ const ModalConnectWallet = ({
             />
           ) : (account && walletView === WALLET_VIEWS.ACCOUNT) ? (
             <AccountDetails
-              toggleWalletModal={() => closeModal()}
+              toggleWalletModal={() => toggleModal()}
               openOptions={() => setWalletView(WALLET_VIEWS.OPTIONS)}
               darkMode={darkMode}
               transactions={transactions}
