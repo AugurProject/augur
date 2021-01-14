@@ -632,6 +632,7 @@ export const getUserBalances = async (
     populateClaimableWinnings(keyedFinalizedMarkets, finalizedAmmExchanges, userBalances.marketShares);
   }
 
+  normalizeNoInvalidPositionsBalances(userBalances.marketShares, ammExchanges);
   const userPositions = getTotalPositions(userBalances.marketShares);
   const availableFundsUsd = String(new BN(userBalances.ETH.usdValue).plus(new BN(userBalances.USDC.usdValue)));
   const totalAccountValue = String(new BN(availableFundsUsd).plus(new BN(userPositions.totalPositionUsd)));
@@ -664,6 +665,27 @@ const populateClaimableWinnings = (finalizedMarkets: MarketInfos, finalizedAmmEx
     }
     return p;
   }, {})
+}
+
+const normalizeNoInvalidPositionsBalances = (ammMarketShares: AmmMarketShares, ammExchanges: AmmExchanges): void => {
+  Object.keys(ammMarketShares).forEach(ammId => {
+    const marketShares = ammMarketShares[ammId];
+    const amm = ammExchanges[ammId];
+    const minNoInvalidBalance = String(Math.min(Number(marketShares.outcomeShares[0]), Number(marketShares.outcomeShares[1])));
+    const minNoInvalidRawBalance = String(BigNumber.min(new BN(marketShares.outcomeSharesRaw[0]), new BN(marketShares.outcomeSharesRaw[1])));
+    marketShares.positions.forEach(position => {
+      // user can only sell the min of 'No' and 'Invalid' shares
+      if (position.outcomeId === NO_OUTCOME_ID) {
+        const { priceNo, past24hrPriceNo } = amm;
+        position.balance = minNoInvalidBalance;
+        position.rawBalance = minNoInvalidRawBalance;
+        position.quantity = formatEther(position.balance).formatted;
+        position.usdValue = String(new BN(minNoInvalidBalance).times(new BN(priceNo)));
+        position.past24hrUsdValue = past24hrPriceNo ? String(new BN(minNoInvalidBalance).times(new BN(past24hrPriceNo))) : null;
+
+      }
+    })
+  })
 }
 
 const getTotalPositions = (ammMarketShares: AmmMarketShares): { change24hrPositionUsd: string, totalPositionUsd: string, total24hrPositionUsd: string } => {
