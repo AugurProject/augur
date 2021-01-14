@@ -130,6 +130,7 @@ const MarketView = ({ defaultMarket = null }) => {
             marketType={YES_NO}
             orderType={BUY}
             ammCash={amm?.cash}
+            showAsButtons
           />
         )}
         <SimpleChartSection {...{ market }} />
