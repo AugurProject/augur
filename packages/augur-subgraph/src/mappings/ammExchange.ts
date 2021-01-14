@@ -81,6 +81,16 @@ export function handleRemoveLiquidity(event: RemoveLiquidityEvent): void {
   removeLiquidity.yesShares = event.params.longShares;
   removeLiquidity.completeSetsSold = event.params.completeSetsSold
   removeLiquidity.sender = event.params.sender.toHexString();
+
+  let totalNo = removeLiquidity.noShares.plus(removeLiquidity.completeSetsSold);
+  let totalYes = removeLiquidity.yesShares.plus(removeLiquidity.completeSetsSold);
+  let totalShares = totalNo.plus(totalYes);
+
+  let valueOfNoShares = totalNo.div(totalShares).times(removeLiquidity.noShares);
+  let valueOfYesShares = totalYes.div(totalShares).times(removeLiquidity.yesShares);
+
+  // Cash value is the cost of the lp tokens received accounting for shares returned to user.
+  removeLiquidity.cashValue = removeLiquidity.cash.plus(valueOfNoShares).plus(valueOfYesShares);
   removeLiquidity.save();
 
   updateAMM(removeLiquidity.ammExchange);

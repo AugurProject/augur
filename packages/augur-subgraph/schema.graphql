@@ -918,4 +918,7 @@ type RemoveLiquidity @entity {
 
   "Number of complete sets sold."
   completeSetsSold: BigInt!
+
+  "Net cash value of the lp tokens burned"
+  cashValue: BigInt!
 }
