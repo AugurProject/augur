@@ -380,9 +380,6 @@ const ModalAddLiquidity = ({
     },
   };
 
-  console.log(
-    'buttonError', buttonError
-  )
   return (
     <section
       className={classNames(Styles.ModalAddLiquidity, {
