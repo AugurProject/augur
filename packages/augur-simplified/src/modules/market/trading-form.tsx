@@ -178,7 +178,7 @@ export const AmountInput = ({
       </div>
       {showRate && (
         <span className={Styles.RateLabel}>
-          <span>Rate</span>
+          {rate && <span>Rate</span>}
           {rate ? convRate : null}
         </span>
       )}
