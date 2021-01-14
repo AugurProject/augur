@@ -2,7 +2,7 @@ import { AmmTransaction, Trades, AmmExchange, Cash, Cashes, MarketOutcome, Trans
 import { BigNumber as BN } from 'bignumber.js'
 import { getDayFormat, getDayTimestamp, getTimeFormat } from "../utils/date-utils";
 import { convertAttoValueToDisplayValue } from "@augurproject/sdk";
-import { convertOnChainCashAmountToDisplayCashAmount, formatDai, formatEther, formatShares, convertOnChainSharesToDisplayShareAmount, sameAddress } from "./format-number";
+import { convertOnChainCashAmountToDisplayCashAmount, formatDai, formatEther, formatShares, convertOnChainSharesToDisplayShareAmount, isSameAddress } from "./format-number";
 import { BUY, OUTCOME_INVALID_NAME, OUTCOME_NO_NAME, OUTCOME_YES_NAME, SEC_IN_YEAR, SELL, USDC } from "../modules/constants";
 import { timeSinceTimestamp } from "./time-since";
 
@@ -44,10 +44,13 @@ interface GraphExit extends GraphTransaction {
 
 interface GraphAddLiquidity extends GraphTransaction {
   ammExchange: GraphAmmExchange,
+  cashValue: string,
+  lpTokens: string,
 }
 
 interface GraphRemoveLiquidity extends GraphTransaction {
   ammExchange: GraphAmmExchange,
+  cashValue: string,
 }
 
 interface GraphAmmExchange {
@@ -292,23 +295,25 @@ const shapeExitTransactions = (transactions: GraphExit[], cash: Cash): AmmTransa
 const shapeAddLiquidityTransactions = (transactions: GraphAddLiquidity[], cash: Cash): AmmTransaction[] => {
   return transactions.map(e => {
     const properties = formatTransaction(e, cash);
-    const subheader = `Add ${cash.name} Liquidity`
-    return { ...e, tx_type: TransactionTypes.ADD_LIQUIDITY, sender: e.sender.id, subheader, ...properties, price: null }
+    const subheader = `Add ${cash.name} Liquidity`;
+    const cashValueUsd = String(convertOnChainCashAmountToDisplayCashAmount(new BN(e.cashValue), new BN(cash.decimals)));
+    const lpTokens = String(convertOnChainSharesToDisplayShareAmount(new BN(e.lpTokens), new BN(cash.decimals)));
+    return { ...e, tx_type: TransactionTypes.ADD_LIQUIDITY, sender: e.sender.id, subheader, ...properties, price: null, cashValueUsd, lpTokens }
   });
 }
 
-const shapeRemoveLiquidityTransactions = (transactions: GraphAddLiquidity[], cash: Cash): AmmTransaction[] => {
+const shapeRemoveLiquidityTransactions = (transactions: GraphRemoveLiquidity[], cash: Cash): AmmTransaction[] => {
   return transactions.map(e => {
     const properties = formatTransaction(e, cash);
     const subheader = `Remove ${cash.name} Liquidity`
-    return { ...e, tx_type: TransactionTypes.REMOVE_LIQUIDITY, sender: e.sender.id, subheader, ...properties, price: null }
+    const cashValueUsd = String(convertOnChainCashAmountToDisplayCashAmount(new BN(e.cashValue), new BN(cash.decimals)));
+    return { ...e, tx_type: TransactionTypes.REMOVE_LIQUIDITY, sender: e.sender.id, subheader, ...properties, price: null, cashValueUsd }
   });
 }
 
 const formatTransaction = (tx: GraphEnter | GraphExit | GraphAddLiquidity | GraphRemoveLiquidity, cash: Cash) => {
   const tokenAmount = convertOnChainCashAmountToDisplayCashAmount(new BN(tx.cash), new BN(cash.decimals));
   const value = String(tokenAmount.times(cash.usdPrice));
-
   const date = getDayFormat(tx.timestamp);
   const time = timeSinceTimestamp(Number(tx.timestamp));
   const currency = cash.symbol;
@@ -423,7 +428,7 @@ export const shapeUserActvity = (account: string, markets: { [id: string]: Marke
 
   const transactions = exchanges.reduce((p, exchange) => {
     const cashName = exchange.cash?.name;
-    const userTx: AmmTransaction[] = exchange.transactions.filter(t => sameAddress(t.sender, account));
+    const userTx: AmmTransaction[] = exchange.transactions.filter(t => isSameAddress(t.sender, account));
 
     if (userTx.length === 0) return p;
 

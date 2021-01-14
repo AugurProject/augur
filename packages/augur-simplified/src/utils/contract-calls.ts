@@ -9,7 +9,7 @@ import {
   ContractCallContext,
 } from '@augurproject/ethereum-multicall';
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers'
-import { convertDisplayCashAmountToOnChainCashAmount, convertDisplayShareAmountToOnChainShareAmount, convertOnChainCashAmountToDisplayCashAmount, formatDai, formatEther, convertOnChainSharesToDisplayShareAmount } from './format-number';
+import { convertDisplayCashAmountToOnChainCashAmount, convertDisplayShareAmountToOnChainShareAmount, convertOnChainCashAmountToDisplayCashAmount, formatDai, formatEther, convertOnChainSharesToDisplayShareAmount, isSameAddress } from './format-number';
 import { augurSdkLite } from './augurlitesdk';
 import { ETH, FINALIZED, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_NO_OUTCOMES_NAMES, YES_OUTCOME_ID } from '../modules/constants';
 import { getProviderOrSigner } from '../modules/ConnectAccount/utils';
@@ -746,8 +746,6 @@ const getLPCurrentValue = async (displayBalance: string, amm: AmmExchange): Prom
     const displayNoValue = new BN(estimate.noShares).times(new BN(priceNo)).times(usdPrice);
     const displayYesValue = new BN(estimate.yesShares).times(new BN(priceYes)).times(usdPrice);
     const totalValue = displayCashValue.plus(displayNoValue).plus(displayYesValue);
-    console.log('estimate', estimate);
-    console.log(String(totalValue), '=', String(displayCashValue), String(displayNoValue), String(displayYesValue));
     return String(totalValue);
   }
   return null;
@@ -759,12 +757,9 @@ const populateInitLPValues = async (lptokens: LPTokens, ammExchanges: AmmExchang
     const ammId = ammIds[i];
     const lptoken = lptokens[ammId];
     const amm = ammExchanges[ammId];
-    const cashPrice = amm.cash?.usdPrice ? amm.cash?.usdPrice : "0";
-    // sum up enters shares
-    const accum = accumLpSharesAmounts(amm.transactions, account);
-    const initialCashValue = convertOnChainCashAmountToDisplayCashAmount(new BN(accum), new BN(amm.cash.decimals));
-    lptoken.initCostUsd = String(new BN(initialCashValue).times(new BN(cashPrice)));
-    console.log('lp token raw balance', lptoken.rawBalance);
+    // sum up enters/exits transaction usd cash values
+    const initialCashValueUsd = accumLpSharesAmounts(amm.transactions, account);
+    lptoken.initCostUsd = initialCashValueUsd;
     lptoken.usdValue = await getLPCurrentValue(lptoken.balance, amm);
     lptoken.feesEarned = String(new BN(lptoken.usdValue).minus(new BN(lptoken.initCostUsd)));
   }
@@ -774,10 +769,10 @@ const populateInitLPValues = async (lptokens: LPTokens, ammExchanges: AmmExchang
 
 
 const accumLpSharesAmounts = (transactions: AmmTransaction[], account: string): string => {
-  const adds = transactions.filter(t => t.sender.toLowerCase() === account.toLowerCase() && t.tx_type === TransactionTypes.ADD_LIQUIDITY)
-    .reduce((p, t) => p.plus(new BN(t.cash)), new BN("0"))
-  const removed = transactions.filter(t => t.sender.toLowerCase() === account.toLowerCase() && t.tx_type === TransactionTypes.REMOVE_LIQUIDITY)
-    .reduce((p, t) => p.plus(new BN(t.cash)), new BN("0"))
+  const adds = transactions.filter(t => isSameAddress(t.sender, account) && t.tx_type === TransactionTypes.ADD_LIQUIDITY)
+    .reduce((p, t) => p.plus(new BN(t.cashValueUsd || "0")), new BN("0"))
+  const removed = transactions.filter(t => isSameAddress(t.sender, account) && t.tx_type === TransactionTypes.REMOVE_LIQUIDITY)
+    .reduce((p, t) => p.plus(new BN(t.cashValueUsd || "0")), new BN("0"))
 
   return String(adds.minus(removed));
 }

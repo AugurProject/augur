@@ -125,6 +125,8 @@ export interface AmmTransaction {
   currency: string,
   shareAmount: string,
   tokenAmount: string,
+  cashValueUsd?: string,
+  lpTokens?: string,
 }
 
 export interface Trade {
