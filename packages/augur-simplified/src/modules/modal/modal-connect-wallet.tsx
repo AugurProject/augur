@@ -2,7 +2,6 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Header} from './common';
 import Styles from 'modules/modal/modal.styles.less';
 import {SecondaryButton, TextButton, WalletButton} from 'modules/common/buttons';
-import {GetWalletIcon} from 'modules/common/get-wallet-icon';
 import {UnsupportedChainIdError, useWeb3React} from '@web3-react/core';
 import {AbstractConnector} from '@web3-react/abstract-connector';
 import {SUPPORTED_WALLETS} from 'modules/ConnectAccount/constants';
@@ -11,10 +10,8 @@ import {fortmatic, injected, portis} from 'modules/ConnectAccount/connectors';
 import {OVERLAY_READY} from 'modules/ConnectAccount/connectors/Fortmatic';
 import {isMobile} from 'react-device-detect';
 import MetamaskIcon from 'modules/ConnectAccount/assets/metamask.png';
-import PendingView from 'modules/ConnectAccount/components/WalletModal/PendingView';
 import {ErrorBlock} from 'modules/common/labels';
 import Loader from 'modules/ConnectAccount/components/Loader';
-import Option from 'modules/ConnectAccount/components/WalletModal/Option';
 
 const WALLET_VIEWS = {
   OPTIONS: 'options',

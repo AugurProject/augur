@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import ButtonStyles from 'modules/common/buttons.styles.less';
 import {GetWalletIcon} from 'modules/common/get-wallet-icon';
 import {useActiveWeb3React} from 'modules/ConnectAccount/hooks';
-import {CREATE, MODAL_ADD_LIQUIDITY, MODAL_CONNECT_WALLET} from 'modules/constants';
+import {MODAL_CONNECT_WALLET} from 'modules/constants';
 import {useAppStatusStore} from 'modules/stores/app-status';
 
 interface LoginButtonProps {
