@@ -10,7 +10,7 @@ import { convertDisplayShareAmountToOnChainShareAmount, formatPercent, convertOn
 import { MultiButtonSelection } from '../common/selection';
 import classNames from 'classnames';
 import { AddLiquidityBreakdown, AmmOutcome, LiquidityBreakdown, MarketInfo } from '../types';
-import { doAmmLiquidity, doRemoveAmmLiquidity, getAmmLiquidity, getRemoveLiquidity } from '../../utils/contract-calls';
+import { checkConvertLiquidityProperties, doAmmLiquidity, doRemoveAmmLiquidity, getAmmLiquidity, getRemoveLiquidity, runAddAdditionalLiquidity } from '../../utils/contract-calls';
 import { useAppStatusStore } from '../stores/app-status';
 import { BigNumber as BN } from 'bignumber.js'
 
@@ -192,7 +192,7 @@ const ModalAddLiquidity = ({
         return SET_PRICES
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [errorMessage, buttonError, modalType, outcomes[YES_OUTCOME_ID]?.price, outcomes[NO_OUTCOME_ID]?.price, amount, account]);
 
   const LIQUIDITY_METHODS = {
@@ -200,12 +200,17 @@ const ModalAddLiquidity = ({
       footerText:
         'Need some copy here explaining why the user may recieve some shares when they remove their liquidity and they would need to sell these if possible.',
       receiveBreakdown: async () => {
-        if (!account || !market.marketId || !amount || !cash) return defaultAddLiquidityBreakdown;
         const fee = String(amm.feeRaw);
-        console.log(account, market.marketId, cash, fee, amount);
-        const results = await getRemoveLiquidity(market.marketId, cash, fee, amount);
+        const properties = checkConvertLiquidityProperties(account, market.marketId, amount, fee, outcomes, cash, amm);
+        if (!properties) {
+          return defaultAddLiquidityBreakdown;
+        }
+        const results = await getRemoveLiquidity(properties.marketId, cash, fee, amount);
+        if (!results) {
+          setErrorMessage('Estimation error');
+          return defaultAddLiquidityBreakdown;
+        }
         setErrorMessage('');
-        if (!results) return setBreakdown(defaultAddLiquidityBreakdown);
         setBreakdown(getLiquidityBreakdown(results));
       },
       liquidityDetailsFooter: {
@@ -227,8 +232,11 @@ const ModalAddLiquidity = ({
       confirmAction: async () => {
         if (!account || !market.marketId || !amount || !cash) return defaultAddLiquidityBreakdown;
         const fee = String(amm.feeRaw);
-        console.log(account, market.marketId, cash, fee, amount);
-        doRemoveAmmLiquidity(market.marketId, cash, fee, amount)
+        const properties = checkConvertLiquidityProperties(account, market.marketId, amount, fee, outcomes, cash, amm);
+        if (!properties) {
+          return defaultAddLiquidityBreakdown;
+        }
+        doRemoveAmmLiquidity(properties.marketId, properties.cash, properties.fee, properties.amount)
           .then(response => {
             // TODO: manage transaction
 
@@ -258,31 +266,30 @@ const ModalAddLiquidity = ({
     [ADD]: {
       footerText: `By adding liquidity you'll earn ${percentFormatted} of all trades on this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.`,
       receiveBreakdown: async () => {
-        if (!account || !market.marketId || !amount || !outcomes || outcomes.length === 0 || !cash) return defaultAddLiquidityBreakdown;
-        const priceNo = outcomes[NO_OUTCOME_ID]?.price
-        const priceYes = outcomes[YES_OUTCOME_ID]?.price
-        console.log('priceNo', priceNo, 'priceYes', priceYes);
-        if (priceNo === undefined || priceNo === "0" || priceYes === undefined || priceYes === "0" || priceNo === "0.00" || priceYes === "0.00") return defaultAddLiquidityBreakdown;
-
-        const fee = String(amm.feeRaw);
-        console.log(account, market.marketId, cash, fee, amount, priceNo, priceYes);
-        const results = await getAmmLiquidity(account, amm, market.marketId, cash, fee, amount, priceNo, priceYes);
+        const fee = amm.feeRaw;
+        const properties = checkConvertLiquidityProperties(account, market.marketId, amount, fee, outcomes, cash, amm);
+        if (!properties) {
+          return defaultAddLiquidityBreakdown;
+        }
+        const results = await getAmmLiquidity(properties.account, properties.amm, properties.marketId, properties.cash, properties.fee, properties.amount, properties.priceNo, properties.priceYes);
+        if (!results) {
+          setErrorMessage('Estimation error');
+          return defaultAddLiquidityBreakdown;
+        }
         setErrorMessage('');
-
-        if (!results) return defaultAddLiquidityBreakdown;
         setBreakdown(getAddAdditionBreakdown(results));
         setEstimatedLpAmount(results.lpTokens)
       },
       approvalButtonText: `approve ${chosenCash}`,
       confirmAction: async () => {
-        if (!account || !market.marketId || !amount || !outcomes || outcomes.length === 0) return defaultAddLiquidityBreakdown;
-        const priceNo = outcomes[NO_OUTCOME_ID]?.price
-        const priceYes = outcomes[YES_OUTCOME_ID]?.price
-        if (priceNo === undefined || priceNo === "0" || priceYes === undefined || priceYes === "0" || priceNo === "0.00" || priceYes === "0.00") return defaultAddLiquidityBreakdown;
-        const fee = String(amm.feeRaw);
-        console.log(account, market.marketId, cash, fee, amount, priceNo, priceYes);
-        const hasLiquidity = amm?.liquidity !== undefined && amm?.liquidity !== "0";
-        doAmmLiquidity(account, amm, market.marketId, cash, fee, amount, hasLiquidity, priceNo, priceYes)
+        const fee = amm.feeRaw;
+        const properties = checkConvertLiquidityProperties(account, market.marketId, amount, fee, outcomes, cash, amm);
+        if (!properties) {
+          return defaultAddLiquidityBreakdown;
+        }
+        setErrorMessage('');
+        const hasLiquidity = amm !== null && amm?.id !== undefined && amm?.liquidity !== "0";
+        doAmmLiquidity(properties.account, properties.amm, properties.marketId, properties.cash, properties.fee, properties.amount, hasLiquidity, properties.priceNo, properties.priceYes)
           .then(response => {
             // TODO: handle transaction response
           })
@@ -320,33 +327,29 @@ const ModalAddLiquidity = ({
       footerText:
         "By adding initial liquidity you'll earn your set trading fee percentage of all trades on this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.",
       receiveBreakdown: async () => {
-        if (!account || !market.marketId || !amount || !outcomes || outcomes.length === 0 || !cash) return defaultAddLiquidityBreakdown;
-        const priceNo = outcomes[NO_OUTCOME_ID]?.price
-        const priceYes = outcomes[YES_OUTCOME_ID]?.price
-        if (priceNo === undefined || priceNo === "0" || priceYes === undefined || priceYes === "0" || priceNo === "0.00" || priceYes === "0.00") return defaultAddLiquidityBreakdown;
         const feeSelected = TRADING_FEE_OPTIONS.find(t => t.id === tradingFeeSelection);
         const fee = market?.amm?.feeRaw ? market?.amm?.feeRaw : String(feeSelected ? feeSelected.value : "0");
-        console.log(account, market.marketId, cash, fee, amount, priceNo, priceYes);
-        // TOOD: create eth amm estimate fails
-        const results = await getAmmLiquidity(account, amm, market.marketId, cash, fee, amount, priceNo, priceYes);
-        //const results = null;
+        const properties = checkConvertLiquidityProperties(account, market.marketId, amount, fee, outcomes, cash, amm);
+        if (!properties) {
+          return defaultAddLiquidityBreakdown;
+        }
+        const results = await getAmmLiquidity(properties.account, properties.amm, properties.marketId, properties.cash, properties.fee, properties.amount, properties.priceNo, properties.priceYes);
+        if (!results) {
+          setErrorMessage('Estimation error');
+          return defaultAddLiquidityBreakdown;
+        }
         setErrorMessage('');
-
-        // TODO: display errors if get amm liquidity barfs
-        results ? setBreakdown(getAddAdditionBreakdown(results))
-          : setBreakdown(defaultAddLiquidityBreakdown);
+        setBreakdown(getAddAdditionBreakdown(results));
       },
       approvalButtonText: `approve ${chosenCash}`,
       confirmAction: async () => {
-        if (!account || !market.marketId || !amount || !outcomes || outcomes.length === 0 || !cash) return defaultAddLiquidityBreakdown;
-        const priceNo = outcomes[NO_OUTCOME_ID]?.price
-        const priceYes = outcomes[YES_OUTCOME_ID]?.price
-        if (priceNo === undefined || priceNo === "0" || priceYes === undefined || priceYes === "0" || priceNo === "0.00" || priceYes === "0.00") return defaultAddLiquidityBreakdown;
         const feeSelected = TRADING_FEE_OPTIONS.find(t => t.id === tradingFeeSelection);
-        const fee = String(feeSelected ? feeSelected.value : "0");
-
-        console.log(account, market.marketId, cash, fee, amount, priceNo, priceYes);
-        await doAmmLiquidity(account, amm, market.marketId, cash, fee, amount, false, priceNo, priceYes)
+        const fee = market?.amm?.feeRaw ? market?.amm?.feeRaw : String(feeSelected ? feeSelected.value : "0");
+        const properties = checkConvertLiquidityProperties(account, market.marketId, amount, fee, outcomes, cash, amm);
+        if (!properties) {
+          return defaultAddLiquidityBreakdown;
+        }
+        await doAmmLiquidity(properties.account, properties.amm, properties.marketId, properties.cash, properties.fee, properties.amount, false, properties.priceNo, properties.priceYes)
           .then(response => {
             // TODO: handle transaction response
           })
