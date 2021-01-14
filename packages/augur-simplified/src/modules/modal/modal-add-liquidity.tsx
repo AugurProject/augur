@@ -176,16 +176,15 @@ const ModalAddLiquidity = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [amm?.totalSupply, amount, balances, shareBalance, estimatedLpAmount])
 
-  useEffect(() => !account && updateButtonError(CONNECT_ACCOUNT), [account]);
   useEffect(() => {
     LIQUIDITY_METHODS[modalType].receiveBreakdown();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account, amount, tradingFeeSelection, cash, outcomes[YES_OUTCOME_ID]?.price, outcomes[NO_OUTCOME_ID]?.price]);
 
   const InputFormError = useMemo(() => {
-    if (buttonError) return buttonError;
     if (errorMessage) return errorMessage;
     if (!amount || amount === '0') return ENTER_AMOUNT;
+    if (!account) return CONNECT_ACCOUNT;
     if (modalType === CREATE) {
       const yesPrice = outcomes[YES_OUTCOME_ID].price;
       const noPrice = outcomes[NO_OUTCOME_ID].price;
@@ -194,7 +193,7 @@ const ModalAddLiquidity = ({
       }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [errorMessage, buttonError, modalType, outcomes[YES_OUTCOME_ID]?.price, outcomes[NO_OUTCOME_ID]?.price, amount]);
+  }, [errorMessage, buttonError, modalType, outcomes[YES_OUTCOME_ID]?.price, outcomes[NO_OUTCOME_ID]?.price, amount, account]);
 
   const LIQUIDITY_METHODS = {
     [REMOVE]: {
@@ -381,6 +380,9 @@ const ModalAddLiquidity = ({
     },
   };
 
+  console.log(
+    'buttonError', buttonError
+  )
   return (
     <section
       className={classNames(Styles.ModalAddLiquidity, {
@@ -468,8 +470,8 @@ const ModalAddLiquidity = ({
           <BuySellButton
             action={() => setShowBackView(true)}
             disabled={Boolean(InputFormError)}
-            error={InputFormError}
-            text={!InputFormError ? LIQUIDITY_STRINGS[modalType].actionButtonText : InputFormError}
+            error={buttonError}
+            text={!InputFormError ? buttonError ? buttonError : LIQUIDITY_STRINGS[modalType].actionButtonText : InputFormError}
           />
           {LIQUIDITY_STRINGS[modalType].liquidityDetailsFooter && (
             <div className={Styles.FooterText}>
