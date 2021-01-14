@@ -4,9 +4,9 @@ div.Tooltip {
   .text-12;
 
   background-color: var(--simple-light-bg);
-  border: @size-1 solid transparent;
+  border: @size-1 solid var(--simple-border);
   border-radius: @size-2;
-  box-shadow: 0 -@size-2 @size-4 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 0 @size-8 @size-40 rgba(14, 14, 33, 0.1);
   color: var(--simple-primary-text);
   max-width: 13.7rem;
   padding: @size-8;
@@ -55,10 +55,10 @@ div.Tooltip {
 }
 
 .Container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 }
 
 :global {
@@ -70,7 +70,6 @@ div.Tooltip {
     }
 
     &.place-top {
-      box-shadow: 0 -1px @size-4 0 rgba(0, 0, 0, 0.2);
       margin-bottom: -@size-14;
 
       &::after {

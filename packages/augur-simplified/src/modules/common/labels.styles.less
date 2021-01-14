@@ -1,5 +1,23 @@
 @import (reference) '~assets/styles/shared';
 
+.DefaultLabelHeight {
+  height: @size-32;
+  min-height: @size-32;
+  max-height: @size-32;
+
+  &[data-big="true"] {
+    height: @size-44;
+    min-height: @size-44;
+    max-height: @size-44;
+
+    @media @breakpoint-mobile-tablet {
+      height: @size-32;
+      min-height: @size-32;
+      max-height: @size-32;
+    }
+  }
+}
+
 .ValueLabel {
   display: grid;
   grid-template-columns: auto auto;
@@ -63,6 +81,7 @@
 }
 
 .CategoryLabel {
+  .DefaultLabelHeight;
   .text-14;
   .SimpleBorder;
 
@@ -71,11 +90,21 @@
   justify-content: center;
   display: flex;
   text-transform: capitalize;
-  padding-left: @size-8;
-  padding-right: @size-8;
   justify-content: center;
+  padding: @size-5 @size-8;
   align-items: center;
-  height: 100%;
+
+  &[data-big="true"] {
+    .text-16;
+
+    padding: @size-11 @size-16;
+
+    @media @breakpoint-mobile-tablet {
+      .text-12;
+
+      padding: @size-9 @size-8;
+    }
+  }
 }
 
 .CurrencyLabel {
@@ -83,18 +112,40 @@
 
   cursor: default;
   margin-left: auto;
+  grid-gap: unset;
+  padding: @size-11 @size-16;
+  height: @size-44;
+  max-height: @size-44;
+  min-height: @size-44;
+
+  > span {
+    .text-16;
+  }
+
+  > svg {
+    height: @size-24;
+    width: @size-24;
+    margin-left: @size-12;
+  }
 
   &:hover {
     border: @size-1 solid var(--simple-border);
   }
 
   @media @breakpoint-mobile-tablet {
-    border: none;
-    border-radius: 0;
-    padding: 0;
+    padding: @size-9 @size-8;
+    height: @size-32;
+    max-height: @size-32;
+    min-height: @size-32;
 
     > span {
-      display: none;
+      .text-12;
+    }
+
+    > svg {
+      height: @size-16;
+      width: @size-16;
+      margin-left: @size-8;
     }
   }
 }
@@ -141,17 +192,42 @@
 }
 
 .CategoryIcon {
+  .DefaultLabelHeight;
+
   display: flex;
   border-radius: @size-8;
   justify-content: center;
   align-items: center;
-  width: @size-42;
-  height: 100%;
+  width: @size-40;
+  min-width: @size-40;
+  max-width: @size-40;
   border: @size-1 solid var(--simple-invalid);
 
   > svg {
-    width: @size-20;
     height: @size-20;
+    width: @size-20;
+  }
+
+  &[data-big="true"] {
+    width: @size-55;
+    min-width: @size-55;
+    max-width: @size-55;
+
+    > svg {
+      height: @size-28;
+      width: @size-28;
+    }
+
+    @media @breakpoint-mobile-tablet {
+      width: @size-40;
+      min-width: @size-40;
+      max-width: @size-40;
+
+      > svg {
+        height: @size-20;
+        width: @size-20;
+      }
+    }
   }
 
   &.medical {
@@ -331,15 +407,15 @@
   flex-flow: row nowrap;
   align-items: center;
   justify-content: center;
+  padding: @size-13 @size-16;
   max-height: @size-48;
   min-height: @size-48;
   height: @size-48;
   margin-bottom: @size-16;
   margin-top: -@size-24;
+  white-space: nowrap;
 
   @media @breakpoint-mobile-tablet {
-    .text-14-bold;
-
     margin-top: 0;
   }
 
@@ -354,25 +430,34 @@
 }
 
 .ReportingStatusLabel {
+  .DefaultLabelHeight;
   .text-14;
 
   align-items: center;
   justify-content: center;
-  height: @size-32;
-  min-height: @size-32;
-  max-height: @size-32;
   padding: @size-5 @size-8;
   border-radius: @size-8;
   display: flex;
   flex-flow: row nowrap;
   white-space: nowrap;
   margin-right: @size-8;
+  width: fit-content;
 
   &[data-big="true"] {
-    height: @size-44;
-    min-height: @size-44;
-    max-height: @size-44;
+    padding: @size-9 @size-8;
     margin-left: @size-8;
+
+    @media @breakpoint-mobile-tablet {
+      .text-12;
+
+      margin-left: 0;
+      margin-right: 0;
+      margin-bottom: @size-16;
+
+      &:first-child {
+        margin-top: -@size-8;
+      }
+    }
   }
 }
 
@@ -388,4 +473,19 @@
 
   background: var(--simple-warning-5);
   color: var(--simple-warning);
+}
+
+.CurrencyTipIcon {
+  height: @size-32;
+  min-height: @size-32;
+  max-height: @size-32;
+
+  > label {
+    > svg {
+      height: @size-24;
+      width: @size-24;
+      max-height: @size-24;
+      max-width: @size-24;
+    }
+  }
 }

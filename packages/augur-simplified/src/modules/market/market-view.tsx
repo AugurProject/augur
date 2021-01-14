@@ -92,10 +92,11 @@ const MarketView = ({ defaultMarket = null }) => {
     <div className={Styles.MarketView}>
       <section>
         <NetworkMismatchBanner />
+        {isMobile && <ReportingStateLabel {...{ reportingState, big: true }} />}
         <div className={Styles.topRow}>
-          <CategoryIcon categories={market.categories} />
-          <CategoryLabel categories={market.categories} />
-          <ReportingStateLabel {...{ reportingState, big: true }} />
+          <CategoryIcon big categories={market.categories} />
+          <CategoryLabel big categories={market.categories} />
+          {!isMobile && <ReportingStateLabel {...{ reportingState, big: true }} />}
           <CurrencyLabel name={amm?.cash?.name} />
         </div>
         <h1>{market.description}</h1>

@@ -72,22 +72,24 @@ export const IconLabel = ({ icon, value }: IconLabelProps) => {
 
 interface CategoriesProps {
   categories: Array<string>;
+  big?: boolean;
 }
 
-export const CategoryLabel = ({ categories }: CategoriesProps) => {
+export const CategoryLabel = ({ categories, big = false }: CategoriesProps) => {
   return (
-    <div className={classNames(Styles.CategoryLabel)}>
+    <div data-big={big} className={classNames(Styles.CategoryLabel)}>
       {!!categories[1] ? categories[1] : categories[0]}
     </div>
   );
 };
 
-export const CategoryIcon = ({ categories }: CategoriesProps) => {
+export const CategoryIcon = ({ categories, big = false }: CategoriesProps) => {
   const prime = CATEGORIES_ICON_MAP[categories[0].toLowerCase()];
   const secondary = prime?.subOptions[categories[1].toLowerCase()];
   const icon = secondary?.icon ? secondary.icon : prime?.icon;
   return (
     <div
+      data-big={big}
       className={classNames(
         Styles.CategoryIcon,
         Styles[`${categories[0].toLowerCase()}`]
@@ -113,8 +115,31 @@ const getInfo = (name) =>
   AMM_MAP[name] ? AMM_MAP[name] : { label: 'Add Liquidity', icon: null };
 
 export const CurrencyTipIcon = ({ name, marketId }) => {
-  const { icon } = getInfo(name);
-  return icon ? icon : null;
+  const { label, icon } = getInfo(name);
+  return (
+    <span className={classNames(Styles.CurrencyTipIcon, TooltipStyles.Container)}>
+      <label
+        className={classNames(TooltipStyles.TooltipHint)}
+        data-tip
+        data-for={`currencyTipIcon-${marketId}-${name}`}
+        data-iscapture={true}
+      >
+        {icon}
+      </label>
+      <ReactTooltip
+        id={`currencyTipIcon-${marketId}-${name}`}
+        className={TooltipStyles.Tooltip}
+        effect="solid"
+        place="top"
+        type="light"
+        event="mouseover mouseenter"
+        eventOff="mouseleave mouseout scroll mousewheel blur"
+      >
+        <p>{label}</p>
+      </ReactTooltip>
+    </span>
+  );
+  // return icon ? icon : null;
 };
 
 export const CurrencyLabel = ({ name }) => {
