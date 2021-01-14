@@ -43,7 +43,7 @@ const shortenAddress = (address: string, chars = 4): string => {
   return `${parsed.substring(0, chars + 2)}...${parsed.substring(42 - chars)}`
 }
 
-const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode }) => {
+const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode, transactions }) => {
   const { account, connector, error } = useWeb3React();
   const [showModal, setShowModal] = useState<boolean>();
   const activeWeb3 = useActiveWeb3React();
@@ -92,14 +92,15 @@ const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode }) => {
         showModal={showModal}
         darkMode={darkMode}
         autoLogin={autoLogin}
+        transactions={transactions}
       />
     </>
   )
 }
 
-export default function ConnectAccount({ autoLogin, updateLoginAccount, darkMode }) {
+export default function ConnectAccount({ autoLogin, updateLoginAccount, darkMode, transactions }) {
   return (
-    <ConnectAccountButton autoLogin={autoLogin} updateLoginAccount={updateLoginAccount} darkMode={darkMode} />
+    <ConnectAccountButton autoLogin={autoLogin} updateLoginAccount={updateLoginAccount} darkMode={darkMode} transactions={transactions} />
   );
 }
 

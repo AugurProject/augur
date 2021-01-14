@@ -299,19 +299,22 @@ const MarketsView = () => {
           defaultValue={currency}
         />
       </ul>
-      <section>
-        {loading &&
-          new Array(PAGE_LIMIT)
-            .fill(null)
-            .map((m, index) => <LoadingMarketCard key={index} />)}
-        {!loading &&
-          filteredMarkets.length > 0 &&
-          filteredMarkets
+      {loading && (
+        <section>
+          {new Array(PAGE_LIMIT).fill(null).map((m, index) => (
+            <LoadingMarketCard key={index} />
+          ))}
+        </section>
+      )}
+      {!loading && filteredMarkets.length > 0 && (
+        <section>
+          {filteredMarkets
             .slice(getOffset(page), getOffset(page) + PAGE_LIMIT)
             .map((market, index) => (
               <MarketCard key={`${market.marketId}-${index}`} market={market} />
             ))}
-      </section>
+        </section>
+      )}
       {filteredMarkets.length === 0 && (
         <span className={Styles.EmptyMarketsMessage}>
           No markets to show. Try changing the filter options.

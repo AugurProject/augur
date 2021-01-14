@@ -305,6 +305,8 @@ const getExitBreakdown = (breakdown: EstimateExitTradeResult, cash: Cash) => {
     {
       label: 'Average Price',
       value: avg,
+      tooltipText: 'tooltip copy',
+      tooltipKey: 'averagePrice',
     },
     {
       label: `Amount You'll Recieve`,
