@@ -6,7 +6,7 @@ import { YES_NO, BUY, USDC, SHARES, ApprovalAction, ENTER_AMOUNT, YES_OUTCOME_ID
 import { OutcomesGrid, AmountInput, InfoNumbers } from '../market/trading-form';
 import { ApprovalButton, BuySellButton } from '../common/buttons';
 import { ErrorBlock, generateTooltip } from '../common/labels';
-import { convertDisplayShareAmountToOnChainShareAmount, formatPercent, onChainMarketSharesToDisplayShares } from '../../utils/format-number';
+import { convertDisplayShareAmountToOnChainShareAmount, formatPercent, convertOnChainSharesToDisplayShareAmount } from '../../utils/format-number';
 import { MultiButtonSelection } from '../common/selection';
 import classNames from 'classnames';
 import { AddLiquidityBreakdown, AmmOutcome, LiquidityBreakdown, MarketInfo } from '../types';
@@ -161,7 +161,7 @@ const ModalAddLiquidity = ({
     const rawSupply = amm?.totalSupply;
     if (rawSupply) {
       if (modalType === ADD) {
-        const displaySupply = onChainMarketSharesToDisplayShares(rawSupply, cash?.decimals);
+        const displaySupply = convertOnChainSharesToDisplayShareAmount(rawSupply, cash?.decimals);
         userPercent = String((new BN(estimatedLpAmount).plus(new BN(shareBalance || "0"))).div(new BN(displaySupply).plus(new BN(estimatedLpAmount))).times(new BN(100)));
       } else if (modalType === REMOVE) {
         const userBalanceLpTokens = balances && balances.lpTokens && balances.lpTokens[amm?.id];

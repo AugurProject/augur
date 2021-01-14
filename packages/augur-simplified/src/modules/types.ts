@@ -287,7 +287,7 @@ export interface FormattedNumber {
   minimized: string;
   value: number;
   rounded: number | string;
-  full: number | string;
+  full: string;
   percent: number | string;
 }
 

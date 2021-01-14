@@ -2,7 +2,7 @@ import { AmmTransaction, Trades, AmmExchange, Cash, Cashes, MarketOutcome, Trans
 import { BigNumber as BN } from 'bignumber.js'
 import { getDayFormat, getDayTimestamp, getTimeFormat } from "../utils/date-utils";
 import { convertAttoValueToDisplayValue } from "@augurproject/sdk";
-import { convertOnChainCashAmountToDisplayCashAmount, formatDai, formatEther, formatShares, onChainMarketSharesToDisplayShares, sameAddress } from "./format-number";
+import { convertOnChainCashAmountToDisplayCashAmount, formatDai, formatEther, formatShares, convertOnChainSharesToDisplayShareAmount, sameAddress } from "./format-number";
 import { BUY, OUTCOME_INVALID_NAME, OUTCOME_NO_NAME, OUTCOME_YES_NAME, SEC_IN_YEAR, SELL, USDC } from "../modules/constants";
 import { timeSinceTimestamp } from "./time-since";
 
@@ -313,7 +313,7 @@ const formatTransaction = (tx: GraphEnter | GraphExit | GraphAddLiquidity | Grap
   const time = timeSinceTimestamp(Number(tx.timestamp));
   const currency = cash.symbol;
   const shares = tx.noShares !== "0" ? tx.noShares : tx.yesShares;
-  const shareAmount = formatShares(onChainMarketSharesToDisplayShares(new BN(shares), new BN(cash.decimals)), {
+  const shareAmount = formatShares(convertOnChainSharesToDisplayShareAmount(new BN(shares), new BN(cash.decimals)), {
     decimals: 4,
     decimalsRounded: 4,
   }).formatted
@@ -360,10 +360,10 @@ const calculatePastLiquidityInUsd = (volume: string, pastVolume: string, priceUs
 const calculateTradePrice = (txs: (GraphEnter | GraphExit)[], trades: Trades, displayDecimals: number) => {
   return txs.reduce((p, tx) => {
     if (tx.noShares !== '0') {
-      const shares = onChainMarketSharesToDisplayShares(tx.noShares, displayDecimals);
+      const shares = String(convertOnChainSharesToDisplayShareAmount(tx.noShares, displayDecimals));
       p[1].push({ shares: shares, price: Number(Number.parseFloat(tx.price).toPrecision(displayDecimals)), timestamp: Number(tx.timestamp) })
     } else {
-      const shares = onChainMarketSharesToDisplayShares(tx.yesShares, displayDecimals);
+      const shares = String(convertOnChainSharesToDisplayShareAmount(tx.yesShares, displayDecimals));
       p[2].push({ shares: shares, price: Number(Number.parseFloat(tx.price).toPrecision(displayDecimals)), timestamp: Number(tx.timestamp) })
     }
     return p;
@@ -398,11 +398,11 @@ const getActivityType = (tx: AmmTransaction, cash: Cash): {
     subheader = `${tx.shareAmount} LP tokens`
   } else {
     const shares = tx.yesShares !== "0" ?
-      onChainMarketSharesToDisplayShares(tx.yesShares, cash.decimals) :
-      onChainMarketSharesToDisplayShares(tx.noShares, cash.decimals)
+      convertOnChainSharesToDisplayShareAmount(tx.yesShares, cash.decimals) :
+      convertOnChainSharesToDisplayShareAmount(tx.noShares, cash.decimals)
     const shareType = tx.yesShares !== "0" ? 'yes' : 'no'
     const price = Number(tx.price).toFixed(2)
-    subheader = `${shares} ${shareType} @ ${price}`
+    subheader = `${String(shares)} ${shareType} @ ${price}`
     // when design wants to add usd value
     // const usdValue = `${String(new BN(price).times(new BN(shares)).times(new BN(cash.usdPrice)))}`;
     value = `${formatter(String(new BN(price).times(new BN(shares)))).formatted} ${cash.name}`;
