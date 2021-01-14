@@ -1,4 +1,4 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts';
+import { Address, BigDecimal, BigInt, log } from '@graphprotocol/graph-ts';
 import {
   EnterPosition as EnterPositionEvent,
   ExitPosition as ExitPositionEvent,
@@ -53,17 +53,17 @@ export function handleAddLiquidity(event: AddLiquidityEvent): void {
 
   // Will be zero if ratio is 50-50.
   let netShares = addLiquidity.noShares.minus(addLiquidity.yesShares).abs();
-  let priceOfGainedShares = BigInt.fromI32(0);
+  let priceOfGainedShares: BigDecimal;
   let totalShares = addLiquidity.noShares.plus(addLiquidity.yesShares);
 
   if(addLiquidity.yesShares.gt(addLiquidity.noShares)) {
-    priceOfGainedShares = addLiquidity.yesShares.div(totalShares);
+    priceOfGainedShares = addLiquidity.yesShares.toBigDecimal().div(totalShares.toBigDecimal());
   } else {
-    priceOfGainedShares = addLiquidity.noShares.div(totalShares);
+    priceOfGainedShares = addLiquidity.noShares.toBigDecimal().div(totalShares.toBigDecimal());
   }
 
   // Cash value is the cost of the lp tokens received accounting for shares returned to user.
-  addLiquidity.cashValue = addLiquidity.cash.minus(priceOfGainedShares.times(netShares));
+  addLiquidity.cashValue = addLiquidity.cash.toBigDecimal().minus(priceOfGainedShares.times(netShares.toBigDecimal())).truncate(0);
   addLiquidity.save();
 
   updateAMM(addLiquidity.ammExchange);
@@ -86,11 +86,11 @@ export function handleRemoveLiquidity(event: RemoveLiquidityEvent): void {
   let totalYes = removeLiquidity.yesShares.plus(removeLiquidity.completeSetsSold);
   let totalShares = totalNo.plus(totalYes);
 
-  let valueOfNoShares = totalNo.div(totalShares).times(removeLiquidity.noShares);
-  let valueOfYesShares = totalYes.div(totalShares).times(removeLiquidity.yesShares);
+  let valueOfNoShares = totalNo.toBigDecimal().div(totalShares.toBigDecimal()).times(removeLiquidity.noShares.toBigDecimal());
+  let valueOfYesShares = totalYes.toBigDecimal().div(totalShares.toBigDecimal()).times(removeLiquidity.yesShares.toBigDecimal());
 
   // Cash value is the cost of the lp tokens received accounting for shares returned to user.
-  removeLiquidity.cashValue = removeLiquidity.cash.plus(valueOfNoShares).plus(valueOfYesShares);
+  removeLiquidity.cashValue = removeLiquidity.cash.toBigDecimal().plus(valueOfNoShares).plus(valueOfYesShares).truncate(0);
   removeLiquidity.save();
 
   updateAMM(removeLiquidity.ammExchange);

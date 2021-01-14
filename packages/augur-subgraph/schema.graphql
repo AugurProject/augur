@@ -891,7 +891,7 @@ type AddLiquidity @entity {
   lpTokens: BigInt!
 
   "Net cash value of the lp tokens minted"
-  cashValue: BigInt!
+  cashValue: BigDecimal!
 }
 
 type RemoveLiquidity @entity {
@@ -920,5 +920,5 @@ type RemoveLiquidity @entity {
   completeSetsSold: BigInt!
 
   "Net cash value of the lp tokens burned"
-  cashValue: BigInt!
+  cashValue: BigDecimal!
 }
