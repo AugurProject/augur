@@ -235,7 +235,7 @@ export const AddLiquidity = ({ market }: { market: MarketInfo }) => {
   return (
     <div
       className={classNames(Styles.AddLiquidity)}
-      onClick={() => setModal({ type: MODAL_ADD_LIQUIDITY, market })}
+      onClick={() => setModal({ type: MODAL_ADD_LIQUIDITY, market, currency: market?.amm?.cash?.name })}
     >
       <span>
         {PlusIcon}

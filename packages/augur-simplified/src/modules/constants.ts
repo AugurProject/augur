@@ -273,7 +273,6 @@ export const LIQUIDITY_STRINGS = {
     }
   },
   [CREATE]: {
-    showCurrencyDropdown: true,
     header: 'add liquidity',
     showTradingFee: false,
     setTradingFee: true,

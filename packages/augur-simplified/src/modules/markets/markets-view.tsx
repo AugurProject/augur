@@ -89,7 +89,6 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
   const {
     categories,
     description,
-    outcomes,
     marketId,
     amm,
     reportingState,
@@ -140,7 +139,7 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
               value={formatDai(market.amm?.volumeTotalUSD).full}
             />
             <ValueLabel label="APY" value={formattedApy} />
-            <OutcomesTable amm={amm} outcomes={outcomes} />
+            <OutcomesTable amm={amm} />
           </>
         )}
       </div>

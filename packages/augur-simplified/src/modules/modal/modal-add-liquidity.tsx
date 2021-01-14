@@ -112,7 +112,7 @@ interface ModalAddLiquidityProps {
 const ModalAddLiquidity = ({
   market,
   liquidityModalType,
-  currency = USDC,
+  currency,
 }: ModalAddLiquidityProps) => {
   const { userInfo: { balances }, processed: { cashes }, loginAccount } = useAppStatusStore();
   const account = loginAccount?.account
@@ -129,7 +129,7 @@ const ModalAddLiquidity = ({
 
   const [outcomes, setOutcomes] = useState<AmmOutcome[]>(amm ? amm.ammOutcomes : fakeYesNoOutcomes);
   const [showBackView, setShowBackView] = useState(false);
-  const [chosenCash, updateCash] = useState<string>(currency);
+  const [chosenCash, updateCash] = useState<string>(currency ? currency : USDC);
   const [buttonError, updateButtonError] = useState('');
   // needs to be set by currency picker if amm is null
   const [breakdown, setBreakdown] = useState(defaultAddLiquidityBreakdown);
@@ -391,7 +391,7 @@ const ModalAddLiquidity = ({
             updateInitialAmount={(amount) => updateAmount(amount)}
             initialAmount={modalType === REMOVE ? null : amount}
             maxValue={modalType === REMOVE ? shareBalance : userTokenBalance}
-            showCurrencyDropdown={LIQUIDITY_STRINGS[modalType].showCurrencyDropdown}
+            showCurrencyDropdown={!currency}
             chosenCash={modalType === REMOVE ? SHARES : chosenCash}
             updateCash={updateCash}
             updateAmountError={updateButtonError}
