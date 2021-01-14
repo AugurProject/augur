@@ -55,5 +55,13 @@ const getTimestampTimezoneOffSet = (timestamp: string | number) => {
   const timezone = date.getTimezoneOffset() / 60;
   const direction = timezone > 0 ? "+" : "-"
   return `(UTC${direction}${Math.abs(timezone)})`
+}
 
+export const getDayTimestamp = (timestamp: string) => {
+  const inMilli = Number(timestamp) * 1000;
+  const date = new Date(inMilli)
+  const day = `0${date.getDate()}`.slice(-2);
+  const mon = `0${Number(date.getMonth())+1}`.slice(-2);
+  const year = date.getFullYear();
+  return Number(`${year}${mon}${day}`);
 }

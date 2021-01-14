@@ -34,43 +34,26 @@
   flex-flow: row nowrap;
   width: 100%;
   align-items: center;
-  height: @size-42;
+  height: @size-44;
 
   > div:nth-of-type(2) {
     padding: 0 @size-16;
     margin-left: @size-8;
   }
-}
 
-.RoundedLabel {
-  .RoundedButton;
-  .text-16;
+  > div:nth-of-type(3) {
+    margin-left: auto;
+  }
 
-  color: var(--simple-primary-text);
-  line-height: 140%;
-  height: @size-44;
-  min-height: @size-44;
-  max-height: @size-44;
-  white-space: nowrap;
-  padding: 0 @size-16;
+  > :nth-child(4) {
+    margin-left: 0;
+  }
 }
 
 .CategoryIcon,
 .CategoryLabel {
   .RoundedLabel;
 }
-
-.CurrencyLabel {
-  .RoundedLabel;
-
-  cursor: default;
-  margin-left: auto;
-
-  &:hover {
-    border: @size-1 solid var(--simple-border);
-  }
-}
-
 
 .StatsRow {
   .SimpleBorder;

@@ -83,26 +83,30 @@ export const ExternalLink = ({ URL, label }: ExternalLinkProps) => (
 );
 
 interface ReceiptLinkProps {
-  txId: string;
+  hash: string;
   label?: string;
 }
 
-export const ReceiptLink = ({ txId, label = 'Receipt' }: ReceiptLinkProps) => {
+export const ReceiptLink = ({ hash, label = 'View Txn' }: ReceiptLinkProps) => {
   const {
     paraConfig: { networkId },
   } = useAppStatusStore();
-  const URL = `${RECEIPT_LINKS[networkId] || RECEIPT_LINKS[1]}${txId}`;
+  const URL = `${RECEIPT_LINKS[networkId] || RECEIPT_LINKS[1]}${hash}`;
   return <ExternalLink {...{ URL, label }} />;
 };
 
 interface AccountLinkProps {
   account: string;
+  short?: boolean;
 }
 
-export const AddressLink = ({ account }: AccountLinkProps) => {
+export const AddressLink = ({ account, short = false }: AccountLinkProps) => {
   const {
     paraConfig: { networkId },
   } = useAppStatusStore();
+  const label = short
+    ? `${account.slice(0, 6)}...${account.slice(38, 42)}`
+    : account;
   const URL = `${ADDRESS_LINKS[networkId] || ADDRESS_LINKS[1]}${account}`;
-  return <ExternalLink {...{ URL, label: account }} />;
+  return <ExternalLink {...{ URL, label }} />;
 };

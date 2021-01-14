@@ -1,5 +1,14 @@
 @import (reference) '~assets/styles/shared';
 
+.EmptyMarketsMessage {
+  .EmptyMessage;
+
+  background: var(--simple-light-bg);
+  padding: @size-20 0;
+  display: flex;
+  border-radius: @size-8;
+}
+
 .MarketsView {
   display: flex;
   flex-flow: column nowrap;
@@ -24,25 +33,23 @@
     display: grid;
     grid-gap: @size-16;
     grid-template-columns: repeat(3, 1fr);
+    flex: 1;
   }
 
   > div:last-of-type {
     justify-content: center;
-    margin: @size-12 0;
+    margin: @size-48 0 @size-8;
   }
 }
 
 .MarketCard {
   &:hover {
     .HoverDropShadow;
+    
+    transition: box-shadow 0.3s ease-out;
   }
 
-  > a {
-    text-decoration: none;
-    color: unset;
-  }
-
-  > a > div,
+  > div,
   > section > div {
     .text-14-bold;
     .SimpleBorder;
@@ -64,10 +71,12 @@
     }
 
     > div:nth-of-type(3) {
+      align-items: center;
       justify-content: flex-end;
       display: flex;
     }
 
+    > a,
     > span {
       .text-16-semi-bold;
       .limit-lines(4);
@@ -115,7 +124,7 @@
   }
 
   &.NoLiquidity {
-    > a > div,
+    > div,
     > section > div {
       > div:nth-of-type(4) {
         grid-column: 1 / span 3;

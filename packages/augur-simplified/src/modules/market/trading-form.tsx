@@ -18,6 +18,7 @@ import {
   INSUFFICIENT_BALANCE,
   SETTINGS_SLIPPAGE,
   OVER_SLIPPAGE,
+  ERROR_AMOUNT,
 } from '../constants';
 import { CurrencyDropdown } from '../common/selection';
 import { generateTooltip } from '../common/labels';
@@ -129,10 +130,13 @@ export const AmountInput = ({
   const errorCheck = (value) => {
     let returnError = '';
     if (value !== '' && (isNaN(value) || Number(value) === 0 || Number(value) < 0)) {
-      returnError = 'Amount is not valid'
+      returnError = ERROR_AMOUNT;
+    } else if (value > maxValue) {
+      returnError = INSUFFICIENT_BALANCE;
     }
     updateAmountError(returnError);
   }
+  useEffect(() => updateAmount(initialAmount), [initialAmount])
   return (
     <div
       className={classNames(Styles.AmountInput, { [Styles.Rate]: showRate })}
@@ -301,6 +305,8 @@ const getExitBreakdown = (breakdown: EstimateExitTradeResult, cash: Cash) => {
     {
       label: 'Average Price',
       value: avg,
+      tooltipText: 'tooltip copy',
+      tooltipKey: 'averagePrice',
     },
     {
       label: `Amount You'll Recieve`,
@@ -516,8 +522,11 @@ const TradingForm = ({
           updateAmountError={updateButtonError}
         />
         <InfoNumbers infoNumbers={breakdown} />
-        {loginAccount && (
-          <ApprovalButton amm={amm} cash={ammCash} actionType={orderType === BUY ? ApprovalAction.ENTER_POSITION : ApprovalAction.EXIT_POSITION} />
+        {loginAccount && orderType === BUY && (
+          <ApprovalButton amm={amm} cash={ammCash}  actionType={ApprovalAction.ENTER_POSITION} />
+        )}
+        {loginAccount && orderType === SELL && (
+          <ApprovalButton amm={amm} cash={ammCash}  actionType={ApprovalAction.EXIT_POSITION} />
         )}
         <BuySellButton
           disabled={canMakeTrade.disabled || !approvals?.trade[ammCash?.name]}

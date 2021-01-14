@@ -480,7 +480,7 @@ jobs:
   - template: .azure-templates/simplified-ui-build-to-s3.yml
     parameters:
       name: deploy_simplified_to_dev
-      environment: dev
+      environment: v2
       deployBucketName: simplified.augur.sh
       triggerBranch: refs/heads/dev
       cloudfrontDistributionId: E2O15YTS7NLFRA

@@ -2,8 +2,9 @@ import React from 'react';
 import Styles from 'modules/portfolio/activity.styles.less';
 import { UsdIcon } from 'modules/common/icons';
 import { Pagination } from 'modules/common/pagination';
-import { useAppStatusStore } from 'modules/stores/app-status';
+import { useAppStatusStore } from '../stores/app-status';
 import { ActivityItem } from '../types';
+import { ReceiptLink } from '../routes/helpers/links';
 
 
 const ActivityCard = ({ activity }: { activity: ActivityItem }) => (
@@ -14,7 +15,7 @@ const ActivityCard = ({ activity }: { activity: ActivityItem }) => (
     <span>{activity.description}</span>
     <div>{activity.subheader}</div>
     <div>{activity.time}</div>
-    <div>get info</div>
+    <ReceiptLink hash={activity.txHash} />
   </div>
 );
 
@@ -24,7 +25,6 @@ export const Activity = () => {
     loginAccount,
   } = useAppStatusStore();
   const isLogged = loginAccount !== null;
-
   return (
     <div className={Styles.Activity}>
       <span>your activity</span>

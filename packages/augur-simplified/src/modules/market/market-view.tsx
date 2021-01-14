@@ -2,13 +2,13 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import Styles from 'modules/market/market-view.styles.less';
 import classNames from 'classnames';
-import { UsdIcon, EthIcon } from 'modules/common/icons';
 import SimpleChartSection from 'modules/common/charts';
 import {
   AddLiquidity,
   CategoryIcon,
   CategoryLabel,
   NetworkMismatchBanner,
+  CurrencyLabel,
 } from 'modules/common/labels';
 import {
   PositionsLiquidityViewSwitcher,
@@ -28,7 +28,7 @@ import {
   getMarketEndtimeFull,
   getMarketEndtimeDate,
 } from '../../utils/date-utils';
-import { AddCurrencyLiquidity } from '../common/labels';
+import { AddCurrencyLiquidity, ReportingStateLabel } from '../common/labels';
 import { getCurrentAmms } from '../stores/app-status-hooks';
 
 const getDetails = (market) => {
@@ -49,23 +49,6 @@ const useMarketQueryId = () => {
   const location = useLocation();
   const { [MARKET_ID_PARAM_NAME]: marketId } = parseQuery(location.search);
   return marketId;
-};
-
-const CurrencyLabel = ({ name }) => {
-  let content = <>Add Liquidity</>;
-  switch (name) {
-    case ETH: {
-      content = <>{EthIcon} ETH Market</>;
-      break;
-    }
-    case USDC: {
-      content = <>{UsdIcon} USDC Market</>;
-      break;
-    }
-    default:
-      break;
-  }
-  return <span className={Styles.CurrencyLabel}>{content}</span>;
 };
 
 const MarketView = ({ defaultMarket = null }) => {
@@ -104,6 +87,7 @@ const MarketView = ({ defaultMarket = null }) => {
   if (!market) return <div className={Styles.MarketView} />;
   const details = getDetails(market);
   const currentAMMs = getCurrentAmms(market, markets);
+  const { reportingState } = market;
   return (
     <div className={Styles.MarketView}>
       <section>
@@ -111,6 +95,7 @@ const MarketView = ({ defaultMarket = null }) => {
         <div className={Styles.topRow}>
           <CategoryIcon categories={market.categories} />
           <CategoryLabel categories={market.categories} />
+          <ReportingStateLabel {...{ reportingState, big: true }} />
           <CurrencyLabel name={amm?.cash?.name} />
         </div>
         <h1>{market.description}</h1>
@@ -143,6 +128,7 @@ const MarketView = ({ defaultMarket = null }) => {
             }}
             marketType={YES_NO}
             orderType={BUY}
+            ammCash={amm?.cash}
           />
         )}
         <SimpleChartSection {...{ market }} />

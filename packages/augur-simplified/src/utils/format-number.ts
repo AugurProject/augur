@@ -661,3 +661,7 @@ export function convertDisplayCashAmountToOnChainCashAmount(
 ): BigNumber {
   return createBigNumber(onChainAmount).times(createBigNumber(10).pow(createBigNumber(precision)));
 }
+
+export const sameAddress = (address1: string, address2: string) => {
+  return address1.toLowerCase() === address2.toLowerCase()
+}

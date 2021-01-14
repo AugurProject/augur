@@ -46,13 +46,13 @@ export const SettingsButton = () => {
     return output;
   }, [slippage]);
 
-  const handleWindowOnClick = (event) => {
-    if (settingsRef && !settingsRef?.current?.contains(event.target)) {
-      setOpened(false);
-    }
-  }
-
   useEffect(() => {
+    const handleWindowOnClick = (event) => {
+      if (open && !!(event.target) && settingsRef.current !== null && !settingsRef?.current?.contains(event.target)) {
+        setOpened(false);
+      }
+    };
+
     window.addEventListener('click', handleWindowOnClick);
 
     return () => {
@@ -143,7 +143,7 @@ export const TopNav = () => {
     loginAccount,
     transactions,
     isMobile,
-    actions: { setSidebar, updateLoginAccount, addTransaction },
+    actions: { setSidebar, updateLoginAccount, logout, addTransaction },
   } = useAppStatusStore();
   const [user, setUser] = useLocalStorage('user', null);
 
@@ -173,6 +173,10 @@ export const TopNav = () => {
         updateLoginAccount({ chainId: activeWeb3.chainId });
       } else if (loginAccount && loginAccount.account) {
         if (loginAccount.account !== activeWeb3.account) {
+          // Cleanup old user state
+          logout();
+          window.localStorage.setItem('transactions', JSON.stringify([]));
+
           updateLoginAccount(activeWeb3);
         }
       } else {

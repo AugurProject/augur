@@ -75,7 +75,18 @@
       }
 
       .highcharts-no-data {
-        font-size: @size-16;
+        .text-12;
+
+        font-weight: 400;
+        color: var(--simple-primary-text);
+
+        > text,
+        > text > tspan {
+          .text-12;
+
+          font-weight: 400;
+          fill: var(--simple-primary-text);
+        }
       }
 
       .highcharts-crosshair-label {

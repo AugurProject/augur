@@ -78,6 +78,27 @@
   height: 100%;
 }
 
+.CurrencyLabel {
+  .RoundedLabel;
+
+  cursor: default;
+  margin-left: auto;
+
+  &:hover {
+    border: @size-1 solid var(--simple-border);
+  }
+
+  @media @breakpoint-mobile-tablet {
+    border: none;
+    border-radius: 0;
+    padding: 0;
+
+    > span {
+      display: none;
+    }
+  }
+}
+
 .AppStats {
   .SimpleBorder;
 
@@ -330,4 +351,41 @@
       margin-top: -@size-8;
     }
   }
+}
+
+.ReportingStatusLabel {
+  .text-14;
+
+  align-items: center;
+  justify-content: center;
+  height: @size-32;
+  min-height: @size-32;
+  max-height: @size-32;
+  padding: @size-5 @size-8;
+  border-radius: @size-8;
+  display: flex;
+  flex-flow: row nowrap;
+  white-space: nowrap;
+  margin-right: @size-8;
+
+  &[data-big="true"] {
+    height: @size-44;
+    min-height: @size-44;
+    max-height: @size-44;
+    margin-left: @size-8;
+  }
+}
+
+.Resolved {
+  .ReportingStatusLabel;
+
+  background: var(--simple-failed-5);
+  color: var(--simple-failed);
+}
+
+.InSettlement {
+  .ReportingStatusLabel;
+
+  background: var(--simple-warning-5);
+  color: var(--simple-warning);
 }
