@@ -44,7 +44,7 @@ const shortenAddress = (address: string, chars = 4): string => {
   return `${parsed.substring(0, chars + 2)}...${parsed.substring(42 - chars)}`
 }
 
-const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode }) => {
+const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode, transactions }) => {
   const {
     actions: { setModal },
   } = useAppStatusStore();
@@ -63,6 +63,7 @@ const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode }) => {
       type: MODAL_CONNECT_WALLET,
       darkMode,
       autoLogin,
+      transactions,
     }),
     className: null,
     darkMode,
@@ -96,9 +97,9 @@ const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode }) => {
   )
 }
 
-export default function ConnectAccount({ autoLogin, updateLoginAccount, darkMode }) {
+export default function ConnectAccount({ autoLogin, updateLoginAccount, darkMode, transactions }) {
   return (
-    <ConnectAccountButton autoLogin={autoLogin} updateLoginAccount={updateLoginAccount} darkMode={darkMode} />
+    <ConnectAccountButton autoLogin={autoLogin} updateLoginAccount={updateLoginAccount} darkMode={darkMode} transactions={transactions} />
   );
 }
 

@@ -123,11 +123,13 @@ const PendingWalletView = ({
 interface ModalConnectWalletProps {
   darkMode: boolean;
   autoLogin: boolean;
+  transactions: any;
 }
 
 const ModalConnectWallet = ({
   darkMode,
   autoLogin,
+  transactions,
 }: ModalConnectWalletProps) => {
   const {
     actions: { closeModal },
@@ -309,6 +311,7 @@ const ModalConnectWallet = ({
               toggleWalletModal={() => closeModal()}
               openOptions={() => setWalletView(WALLET_VIEWS.OPTIONS)}
               darkMode={darkMode}
+              transactions={transactions}
             />
           ) : walletView === WALLET_VIEWS.PENDING ? (
             <PendingWalletView
