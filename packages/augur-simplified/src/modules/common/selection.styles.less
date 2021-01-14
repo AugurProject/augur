@@ -664,13 +664,16 @@
 }
 
 .CurrencyDropdown {
-  background-color: transparent;
+  background-color: var(--simple-light-bg);
   border: 0;
+  border-radius: @size-8;
 
   > button {
     background-color: transparent;
     border: 0;
     align-items: center;
+    padding-left: @size-8;
+    border-radius: @size-8;
 
     > span {
       .text-16-semi-bold;
@@ -701,7 +704,6 @@
     &:hover,
     &:active,
     &:focus {
-      background-color: transparent;
       border: 0;
       outline: 0;
     }
@@ -710,7 +712,6 @@
   &:hover,
   &:active,
   &:focus {
-    background-color: transparent;
     border: 0;
     outline: 0;
   }
