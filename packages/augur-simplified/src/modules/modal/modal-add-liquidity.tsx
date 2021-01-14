@@ -326,7 +326,7 @@ const ModalAddLiquidity = ({
         const priceYes = outcomes[YES_OUTCOME_ID]?.price
         if (priceNo === undefined || priceNo === "0" || priceYes === undefined || priceYes === "0" || priceNo === "0.00" || priceYes === "0.00") return defaultAddLiquidityBreakdown;
         const feeSelected = TRADING_FEE_OPTIONS.find(t => t.id === tradingFeeSelection);
-        const fee = String(feeSelected ? feeSelected.value : "0");
+        const fee = market?.amm?.feeRaw ? market?.amm?.feeRaw : String(feeSelected ? feeSelected.value : "0");
         console.log(account, market.marketId, cash, fee, amount, priceNo, priceYes);
         // TOOD: create eth amm estimate fails
         const results = await getAmmLiquidity(account, amm, market.marketId, cash, fee, amount, priceNo, priceYes);
