@@ -210,7 +210,7 @@ const LiquidityRow = ({ liquidity }: { liquidity: LPTokenBalance }) => {
   );
 };
 
-export const LiquidityFooter = ({ market }) => {
+export const LiquidityFooter = ({ market }: { market: MarketInfo }) => {
   const {
     actions: { setModal },
   } = useAppStatusStore();
@@ -231,6 +231,7 @@ export const LiquidityFooter = ({ market }) => {
           setModal({
             type: MODAL_ADD_LIQUIDITY,
             market,
+            currency: market?.amm?.cash?.name,
             liquidityModalType: ADD,
           })
         }

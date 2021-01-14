@@ -13,9 +13,9 @@ import {
   TEN,
   ZERO,
 } from 'modules/constants';
-import { FormattedNumber, FormattedNumberOptions } from 'modules/types';
 import addCommas from 'utils/add-commas-to-number';
 import getPrecision from 'utils/get-number-precision';
+import { FormattedNumber, FormattedNumberOptions } from '../modules/types';
 import { BigNumber, createBigNumber } from './create-big-number';
 
 type NumStrBigNumber = number | BigNumber | string;
@@ -627,17 +627,7 @@ export function calcPercentageFromPrice(
   return Number(percentage.toFixed(2));
 }
 
-export const onChainMarketSharesToDisplayShares = (num: NumStrBigNumber, precision: NumStrBigNumber) => {
-  // TODO: get numTicks using max/min price from market
-  const displayValue = String(convertOnChainSharesToDisplayShareAmount(createBigNumber(num), createBigNumber(precision)))
-  if (isNaN(Number(displayValue))) {
-    console.log('num issue', num, precision)
-    return "0"
-  }
-  return displayValue;
-}
-
-function convertOnChainSharesToDisplayShareAmount(
+export function convertOnChainSharesToDisplayShareAmount(
   onChainAmount: NumStrBigNumber,
   precision: NumStrBigNumber,
 ): BigNumber {
@@ -662,6 +652,6 @@ export function convertDisplayCashAmountToOnChainCashAmount(
   return createBigNumber(onChainAmount).times(createBigNumber(10).pow(createBigNumber(precision)));
 }
 
-export const sameAddress = (address1: string, address2: string) => {
+export const isSameAddress = (address1: string, address2: string) => {
   return address1.toLowerCase() === address2.toLowerCase()
 }

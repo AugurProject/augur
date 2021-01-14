@@ -6,7 +6,7 @@ import { BuySellButton } from '../common/buttons';
 import { useAppStatusStore } from '../stores/app-status';
 import { CloseIcon, UsdIcon, EthIcon } from 'modules/common/icons';
 import { AmmExchange, AmmOutcome, Cash, EstimateEnterTradeResult, EstimateExitTradeResult, TradingDirection } from '../types';
-import { formatDai, formatEther } from '../../utils/format-number';
+import { formatDai, formatEther, formatPercent } from '../../utils/format-number';
 import { ApprovalButton, TinyButton } from '../common/buttons';
 import {
   ApprovalAction,
@@ -137,6 +137,8 @@ export const AmountInput = ({
     updateAmountError(returnError);
   }
   useEffect(() => updateAmount(initialAmount), [initialAmount])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => errorCheck(amount), [amount, maxValue])
   return (
     <div
       className={classNames(Styles.AmountInput, { [Styles.Rate]: showRate })}
@@ -178,7 +180,7 @@ export const AmountInput = ({
       </div>
       {showRate && (
         <span className={Styles.RateLabel}>
-          <span>Rate</span>
+          {rate && <span>Rate</span>}
           {rate ? convRate : null}
         </span>
       )}
@@ -498,7 +500,7 @@ const TradingForm = ({
         </span>
         <div>
           <span>fee</span>
-          <span>{amm?.feePercent}</span>
+          <span>{formatPercent(amm?.feeDecimal).full}</span>
         </div>
         {isMobile && (
           <div onClick={() => setShowTradingForm(false)}>{CloseIcon}</div>
@@ -523,10 +525,10 @@ const TradingForm = ({
         />
         <InfoNumbers infoNumbers={breakdown} />
         {loginAccount && orderType === BUY && (
-          <ApprovalButton amm={amm} cash={ammCash}  actionType={ApprovalAction.ENTER_POSITION} />
+          <ApprovalButton amm={amm} cash={ammCash} actionType={ApprovalAction.ENTER_POSITION} />
         )}
         {loginAccount && orderType === SELL && (
-          <ApprovalButton amm={amm} cash={ammCash}  actionType={ApprovalAction.EXIT_POSITION} />
+          <ApprovalButton amm={amm} cash={ammCash} actionType={ApprovalAction.EXIT_POSITION} />
         )}
         <BuySellButton
           disabled={canMakeTrade.disabled || !approvals?.trade[ammCash?.name]}

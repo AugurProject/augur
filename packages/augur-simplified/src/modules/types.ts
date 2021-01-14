@@ -125,6 +125,8 @@ export interface AmmTransaction {
   currency: string,
   shareAmount: string,
   tokenAmount: string,
+  cashValueUsd?: string,
+  lpTokens?: string,
 }
 
 export interface Trade {
@@ -163,7 +165,7 @@ export interface AmmExchange {
   volume24hrTotalUSD: string,
   volumeTotal: string,
   volumeTotalUSD: string,
-  feePercent: string,
+  feeDecimal: string,
   feeRaw: string,
   cash: Cash,
   sharetoken: string,
@@ -287,7 +289,7 @@ export interface FormattedNumber {
   minimized: string;
   value: number;
   rounded: number | string;
-  full: number | string;
+  full: string;
   percent: number | string;
 }
 

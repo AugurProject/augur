@@ -109,6 +109,7 @@ export const OVER_SLIPPAGE = 'Over Slippage Tolerance';
 export const ENTER_AMOUNT = 'Enter Amount';
 export const ERROR_AMOUNT = 'Amount is not valid';
 export const CONNECT_ACCOUNT = 'Connect Account';
+export const SET_PRICES = 'Set Prices';
 
 export const SETTINGS_SLIPPAGE = "0.5"
 // graph market status
@@ -241,7 +242,7 @@ export const LIQUIDITY_STRINGS = {
     amountSubtitle: 'How much do you want to remove?',
     receiveTitle: 'What you will recieve',
     approvalButtonText: 'approve shares spend',
-    actionButtonText: 'enter amount',
+    actionButtonText: 'Remove',
     confirmButtonText: 'confirm remove',
     currencyName: SHARES,
     liquidityDetailsFooter: {
@@ -260,7 +261,7 @@ export const LIQUIDITY_STRINGS = {
     setOdds: true,
     setOddsTitle: 'Current Odds',
     receiveTitle: "You'll receive",
-    actionButtonText: 'add',
+    actionButtonText: 'Add',
     confirmButtonText: 'confirm add',
     confirmOverview: {
       title: 'What you are depositing',
@@ -273,15 +274,13 @@ export const LIQUIDITY_STRINGS = {
     }
   },
   [CREATE]: {
-    showCurrencyDropdown: true,
     header: 'add liquidity',
     showTradingFee: false,
-    setTradingFee: true,
     setOdds: true,
     setOddsTitle: 'Set the price between (0.0 to 1.0)',
     editableOutcomes: true,
     receiveTitle: "You'll receive",
-    actionButtonText: 'add',
+    actionButtonText: 'Add',
     confirmButtonText: 'confirm market liquidity',
     confirmOverview: {
       title: 'What you are depositing',
@@ -290,7 +289,7 @@ export const LIQUIDITY_STRINGS = {
       title: 'What you will receive',
     },
     marketLiquidityDetails: {
-      title: 'market liquidity details',
+      title: 'Market liquidity details',
     }
   }
 }
