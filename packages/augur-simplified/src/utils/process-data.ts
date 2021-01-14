@@ -312,7 +312,7 @@ const shapeRemoveLiquidityTransactions = (transactions: GraphRemoveLiquidity[], 
 }
 
 const formatTransaction = (tx: GraphEnter | GraphExit | GraphAddLiquidity | GraphRemoveLiquidity, cash: Cash) => {
-  const tokenAmount = convertOnChainCashAmountToDisplayCashAmount(new BN(tx.cash), new BN(cash.decimals));
+  const tokenAmount = convertOnChainCashAmountToDisplayCashAmount(new BN(tx.cash), new BN(cash.decimals)).abs();
   const value = String(tokenAmount.times(cash.usdPrice));
   const date = getDayFormat(tx.timestamp);
   const time = timeSinceTimestamp(Number(tx.timestamp));
