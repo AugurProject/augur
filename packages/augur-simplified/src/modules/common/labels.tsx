@@ -115,8 +115,31 @@ const getInfo = (name) =>
   AMM_MAP[name] ? AMM_MAP[name] : { label: 'Add Liquidity', icon: null };
 
 export const CurrencyTipIcon = ({ name, marketId }) => {
-  const { icon } = getInfo(name);
-  return icon ? icon : null;
+  const { label, icon } = getInfo(name);
+  return (
+    <span className={classNames(Styles.CurrencyTipIcon, TooltipStyles.Container)}>
+      <label
+        className={classNames(TooltipStyles.TooltipHint)}
+        data-tip
+        data-for={`currencyTipIcon-${marketId}-${name}`}
+        data-iscapture={true}
+      >
+        {icon}
+      </label>
+      <ReactTooltip
+        id={`currencyTipIcon-${marketId}-${name}`}
+        className={TooltipStyles.Tooltip}
+        effect="solid"
+        place="top"
+        type="light"
+        event="mouseover mouseenter"
+        eventOff="mouseleave mouseout scroll mousewheel blur"
+      >
+        <p>{label}</p>
+      </ReactTooltip>
+    </span>
+  );
+  // return icon ? icon : null;
 };
 
 export const CurrencyLabel = ({ name }) => {
