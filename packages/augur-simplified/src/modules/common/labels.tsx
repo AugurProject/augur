@@ -72,22 +72,24 @@ export const IconLabel = ({ icon, value }: IconLabelProps) => {
 
 interface CategoriesProps {
   categories: Array<string>;
+  big?: boolean;
 }
 
-export const CategoryLabel = ({ categories }: CategoriesProps) => {
+export const CategoryLabel = ({ categories, big = false }: CategoriesProps) => {
   return (
-    <div className={classNames(Styles.CategoryLabel)}>
+    <div data-big={big} className={classNames(Styles.CategoryLabel)}>
       {!!categories[1] ? categories[1] : categories[0]}
     </div>
   );
 };
 
-export const CategoryIcon = ({ categories }: CategoriesProps) => {
+export const CategoryIcon = ({ categories, big = false }: CategoriesProps) => {
   const prime = CATEGORIES_ICON_MAP[categories[0].toLowerCase()];
   const secondary = prime?.subOptions[categories[1].toLowerCase()];
   const icon = secondary?.icon ? secondary.icon : prime?.icon;
   return (
     <div
+      data-big={big}
       className={classNames(
         Styles.CategoryIcon,
         Styles[`${categories[0].toLowerCase()}`]

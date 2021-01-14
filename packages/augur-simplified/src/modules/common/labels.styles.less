@@ -1,5 +1,23 @@
 @import (reference) '~assets/styles/shared';
 
+.DefaultLabelHeight {
+  height: @size-32;
+  min-height: @size-32;
+  max-height: @size-32;
+
+  &[data-big="true"] {
+    height: @size-44;
+    min-height: @size-44;
+    max-height: @size-44;
+
+    @media @breakpoint-mobile-tablet {
+      height: @size-32;
+      min-height: @size-32;
+      max-height: @size-32;
+    }
+  }
+}
+
 .ValueLabel {
   display: grid;
   grid-template-columns: auto auto;
@@ -141,17 +159,42 @@
 }
 
 .CategoryIcon {
+  .DefaultLabelHeight;
+
   display: flex;
   border-radius: @size-8;
   justify-content: center;
   align-items: center;
-  width: @size-42;
-  height: 100%;
+  width: @size-40;
+  min-width: @size-40;
+  max-width: @size-40;
   border: @size-1 solid var(--simple-invalid);
 
   > svg {
-    width: @size-20;
     height: @size-20;
+    width: @size-20;
+  }
+
+  &[data-big="true"] {
+    width: @size-55;
+    min-width: @size-55;
+    max-width: @size-55;
+
+    > svg {
+      height: @size-28;
+      width: @size-28;
+    }
+
+    @media @breakpoint-mobile-tablet {
+      width: @size-40;
+      min-width: @size-40;
+      max-width: @size-40;
+
+      > svg {
+        height: @size-20;
+        width: @size-20;
+      }
+    }
   }
 
   &.medical {
@@ -354,13 +397,11 @@
 }
 
 .ReportingStatusLabel {
+  .DefaultLabelHeight;
   .text-14;
 
   align-items: center;
   justify-content: center;
-  height: @size-32;
-  min-height: @size-32;
-  max-height: @size-32;
   padding: @size-5 @size-8;
   border-radius: @size-8;
   display: flex;
@@ -369,9 +410,6 @@
   margin-right: @size-8;
 
   &[data-big="true"] {
-    height: @size-44;
-    min-height: @size-44;
-    max-height: @size-44;
     margin-left: @size-8;
   }
 }

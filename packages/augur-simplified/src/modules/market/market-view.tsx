@@ -93,8 +93,8 @@ const MarketView = ({ defaultMarket = null }) => {
       <section>
         <NetworkMismatchBanner />
         <div className={Styles.topRow}>
-          <CategoryIcon categories={market.categories} />
-          <CategoryLabel categories={market.categories} />
+          <CategoryIcon big categories={market.categories} />
+          <CategoryLabel big categories={market.categories} />
           <ReportingStateLabel {...{ reportingState, big: true }} />
           <CurrencyLabel name={amm?.cash?.name} />
         </div>
