@@ -81,6 +81,7 @@
 }
 
 .CategoryLabel {
+  .DefaultLabelHeight;
   .text-14;
   .SimpleBorder;
 
@@ -89,11 +90,21 @@
   justify-content: center;
   display: flex;
   text-transform: capitalize;
-  padding-left: @size-8;
-  padding-right: @size-8;
   justify-content: center;
+  padding: @size-5 @size-8;
   align-items: center;
-  height: 100%;
+
+  &[data-big="true"] {
+    .text-16;
+
+    padding: @size-11 @size-16;
+
+    @media @breakpoint-mobile-tablet {
+      .text-12;
+
+      padding: @size-9 @size-8;
+    }
+  }
 }
 
 .CurrencyLabel {
