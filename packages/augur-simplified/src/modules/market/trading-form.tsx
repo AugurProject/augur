@@ -137,6 +137,8 @@ export const AmountInput = ({
     updateAmountError(returnError);
   }
   useEffect(() => updateAmount(initialAmount), [initialAmount])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => errorCheck(amount), [amount, maxValue])
   return (
     <div
       className={classNames(Styles.AmountInput, { [Styles.Rate]: showRate })}
@@ -523,10 +525,10 @@ const TradingForm = ({
         />
         <InfoNumbers infoNumbers={breakdown} />
         {loginAccount && orderType === BUY && (
-          <ApprovalButton amm={amm} cash={ammCash}  actionType={ApprovalAction.ENTER_POSITION} />
+          <ApprovalButton amm={amm} cash={ammCash} actionType={ApprovalAction.ENTER_POSITION} />
         )}
         {loginAccount && orderType === SELL && (
-          <ApprovalButton amm={amm} cash={ammCash}  actionType={ApprovalAction.EXIT_POSITION} />
+          <ApprovalButton amm={amm} cash={ammCash} actionType={ApprovalAction.EXIT_POSITION} />
         )}
         <BuySellButton
           disabled={canMakeTrade.disabled || !approvals?.trade[ammCash?.name]}
