@@ -165,12 +165,6 @@ const AccountDetails = ({
     <div className={classNames(Styles.AccountDetails, {
       [Styles.DarkMode]: darkMode
     })}>
-      <header>
-        <h2>Account</h2>
-        <span onClick={() => toggleWalletModal()}>
-          <Close/>
-        </span>
-      </header>
       <section className={Styles.Content}>
         <AccountCard
           account={account}

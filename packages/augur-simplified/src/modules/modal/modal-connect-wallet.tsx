@@ -12,6 +12,9 @@ import {isMobile} from 'react-device-detect';
 import MetamaskIcon from 'modules/ConnectAccount/assets/metamask.png';
 import {ErrorBlock} from 'modules/common/labels';
 import Loader from 'modules/ConnectAccount/components/Loader';
+import AccountDetails from 'modules/ConnectAccount/components/AccountDetails';
+import {useAppStatusStore} from 'modules/stores/app-status';
+import classNames from 'classnames';
 
 const WALLET_VIEWS = {
   OPTIONS: 'options',
@@ -118,37 +121,36 @@ const PendingWalletView = ({
 }
 
 interface ModalConnectWalletProps {
-  showModal: boolean;
-  toggleWalletModal: Function;
   darkMode: boolean;
   autoLogin: boolean;
 }
 
 const ModalConnectWallet = ({
-  showModal,
-  toggleWalletModal,
+  darkMode,
   autoLogin,
 }: ModalConnectWalletProps) => {
+  const {
+    actions: { closeModal },
+  } = useAppStatusStore();
   // important that these are destructed from the account-specific web3-react context
-  const { active, account, connector, activate, error } = useWeb3React()
-  const [walletView, setWalletView] = useState(WALLET_VIEWS.ACCOUNT)
-  const [pendingWallet, setPendingWallet] = useState<AbstractConnector | undefined>()
-  const [pendingError, setPendingError] = useState<boolean>()
-  const walletModalOpen = showModal
-  const previousAccount = usePrevious(account)
+  const { active, account, connector, activate, error } = useWeb3React();
+  const [walletView, setWalletView] = useState(WALLET_VIEWS.ACCOUNT);
+  const [pendingWallet, setPendingWallet] = useState<AbstractConnector | undefined>();
+  const [pendingError, setPendingError] = useState<boolean>();
+  const previousAccount = usePrevious(account);
   const [walletList, setWalletList] = useState();
 
   const tryActivation = useCallback((connector: AbstractConnector | undefined) => {
-    let name = ''
+    let name = '';
     Object.keys(SUPPORTED_WALLETS).map(key => {
       if (connector === SUPPORTED_WALLETS[key].connector) {
-        name = SUPPORTED_WALLETS[key].name
-        return (name)
+        name = SUPPORTED_WALLETS[key].name;
+        return (name);
       }
-      return true
+      return true;
     })
-    setPendingWallet(connector) // set wallet for pending view
-    setWalletView(WALLET_VIEWS.PENDING)
+    setPendingWallet(connector); // set wallet for pending view
+    setWalletView(WALLET_VIEWS.PENDING);
 
     // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
     if (connector instanceof WalletConnectConnector && connector.walletConnectProvider?.wc?.uri) {
@@ -169,12 +171,12 @@ const ModalConnectWallet = ({
       })
     });
 
-  }, [activate])
+  }, [activate]);
 
   // close on connection, when logged out before
   useEffect(() => {
-    if (account && !previousAccount && walletModalOpen) {
-      toggleWalletModal()
+    if (account && !previousAccount) {
+      // closeModal();
     }
 
     if (autoLogin && !account) {
@@ -182,32 +184,27 @@ const ModalConnectWallet = ({
       tryActivation(option.connector)
       setWalletView(WALLET_VIEWS.ACCOUNT)
     }
-  }, [autoLogin, tryActivation, account, previousAccount, walletModalOpen, toggleWalletModal])
+  }, [autoLogin, tryActivation, account, previousAccount]);
 
   // always reset to account view
-  useEffect(() => {
-    if (walletModalOpen) {
-      setPendingError(false)
-      setWalletView(WALLET_VIEWS.ACCOUNT)
-    }
-  }, [walletModalOpen])
-
-  // close modal when a connection is successful
-  const activePrevious = usePrevious(active)
-  const connectorPrevious = usePrevious(connector)
-
-  useEffect(() => {
-    if (walletModalOpen && ((active && !activePrevious) || (connector && connector !== connectorPrevious && !error))) {
-      setWalletView(WALLET_VIEWS.ACCOUNT)
-    }
-  }, [setWalletView, active, error, connector, walletModalOpen, activePrevious, connectorPrevious])
-
   // close wallet modal if fortmatic modal is active
   useEffect(() => {
-    fortmatic.on(OVERLAY_READY, () => {
-      toggleWalletModal()
-    })
-  }, [showModal, toggleWalletModal])
+    setPendingError(false);
+    setWalletView(WALLET_VIEWS.ACCOUNT);
+    // fortmatic.on(OVERLAY_READY, () => {
+    //   closeModal();
+    // });
+  }, []);
+
+  // close modal when a connection is successful
+  const activePrevious = usePrevious(active);
+  const connectorPrevious = usePrevious(connector);
+
+  useEffect(() => {
+    if (((active && !activePrevious) || (connector && connector !== connectorPrevious && !error))) {
+      setWalletView(WALLET_VIEWS.ACCOUNT)
+    }
+  }, [setWalletView, active, error, connector, activePrevious, connectorPrevious]);
 
   const getWalletButtons = useCallback(() => {
     const isMetamask = window['ethereum'] && window['ethereum']['isMetaMask']
@@ -278,7 +275,9 @@ const ModalConnectWallet = ({
   }, [getWalletButtons]);
 
   return (
-    <div className={Styles.ModalConnectWallet}>
+    <div className={classNames(Styles.ModalConnectWallet, {
+      [Styles.Account]: account && walletView === WALLET_VIEWS.ACCOUNT,
+    })}>
       <Header
         title={walletView !== WALLET_VIEWS.ACCOUNT ? (
           <span
@@ -290,7 +289,10 @@ const ModalConnectWallet = ({
           >
             Back
           </span>
-        ) : 'Connect a wallet'}
+        ) : (account && walletView === WALLET_VIEWS.ACCOUNT) ?
+          'Account' :
+          'Connect a wallet'
+        }
       />
       <div>
         {
@@ -302,14 +304,19 @@ const ModalConnectWallet = ({
                   'Error connecting. Try refreshing the page.'
               }
             />
-          ) : (
-            walletView === WALLET_VIEWS.PENDING ? (
-              <PendingWalletView
-                connector={pendingWallet}
-                error={pendingError}
-                setPendingError={setPendingError}
-                tryActivation={tryActivation}
-              />
+          ) : (account && walletView === WALLET_VIEWS.ACCOUNT) ? (
+            <AccountDetails
+              toggleWalletModal={() => closeModal()}
+              openOptions={() => setWalletView(WALLET_VIEWS.OPTIONS)}
+              darkMode={darkMode}
+            />
+          ) : walletView === WALLET_VIEWS.PENDING ? (
+            <PendingWalletView
+              connector={pendingWallet}
+              error={pendingError}
+              setPendingError={setPendingError}
+              tryActivation={tryActivation}
+            />
           ) : (
             <>
               {walletList && <WalletList walletList={walletList} />}
@@ -317,7 +324,7 @@ const ModalConnectWallet = ({
                 New to Ethereum? <TextButton href='https://ethereum.org/wallets/' text='Learn more about wallets' />
               </div>
             </>
-          ))
+          )
         }
       </div>
     </div>

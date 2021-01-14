@@ -49,7 +49,6 @@ const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode }) => {
     actions: { setModal },
   } = useAppStatusStore();
   const { account, connector, error } = useWeb3React();
-  const [showModal, setShowModal] = useState<boolean>();
   const activeWeb3 = useActiveWeb3React();
 
   useEffect(() => {
@@ -60,8 +59,11 @@ const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode }) => {
   }, [account, activeWeb3]);
 
   let buttonProps = {
-    // action: () => setShowModal(!showModal),
-    action: () => setModal({ type: MODAL_CONNECT_WALLET }),
+    action: () => setModal({
+      type: MODAL_CONNECT_WALLET,
+      darkMode,
+      autoLogin,
+    }),
     className: null,
     darkMode,
     icon: null,
