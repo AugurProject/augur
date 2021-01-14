@@ -35,20 +35,26 @@ export const Toasts = () => {
 const Toast = ({ toast, markAsSeen }) => {
   const confirmed = toast.status === 'CONFIRMED';
 
-  useEffect(() => {
-    const curToast = toast;
-    if (!curToast.seen) {
-      const hide = setTimeout(() => {
-        markAsSeen(curToast);
-      }, 4000);
+  // TODO
+  // Having issues here, need to look into where markAsSeen gets called before i see the render
+  // useEffect(() => {
+  //   const curToast = toast;
+  //   if (!curToast.seen) {
+  //     const hide = setTimeout(() => {
+  //       markAsSeen(curToast);
+  //     }, 4000);
 
-      return () => {
-        clearTimeout(hide);
-      }
-    }
-    return undefined;
-    // eslint-disable-next-line
-  }, []);
+  //     return () => {
+  //       clearTimeout(hide);
+  //     }
+  //   }
+  //   return undefined;
+  //   // eslint-disable-next-line
+  // }, []);
+
+  if (toast.status === 'PENDING') {
+    return null;
+  }
 
   return (
     <article

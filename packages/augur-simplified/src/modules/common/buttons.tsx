@@ -149,12 +149,13 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
     approvals,
     paraConfig,
     transactions,
-    actions: { addTransaction, setApprovals, removeTransaction }
+    actions: { addTransaction, setApprovals, updateTransaction }
   } = useAppStatusStore();
 
   const marketCashType = cash?.name;
   const tokenAddress = cash?.address
   const approvingName = cash?.name;
+  const marketDescription =  amm?.market?.description;
   const { shareToken } = cash;
   const { addresses } = paraConfig;
   const { AMMFactory, WethWrapperForAMMExchange } = addresses;
@@ -164,7 +165,8 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
     if (actionType === ApprovalAction.ADD_LIQUIDITY) {
       try {
         setIsPendingTx(true);
-        const tx = await approveERC20Contract(cash?.address, approvingName, AMMFactory, loginAccount);
+        const tx = await approveERC20Contract(cash?.address, `Liquidity (${approvingName})`, AMMFactory, loginAccount);
+        tx.marketDescription = marketDescription;
         addTransaction(tx);
       } catch (error) {
         setIsPendingTx(false);
@@ -173,7 +175,8 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
     } else if (actionType === ApprovalAction.REMOVE_LIQUIDITY) {
       try {
         setIsPendingTx(true);
-        const tx = await approveERC20Contract(amm.id, approvingName, WethWrapperForAMMExchange, loginAccount);
+        const tx = await approveERC20Contract(amm.id, `Liquidity (${approvingName})`, WethWrapperForAMMExchange, loginAccount);
+        tx.marketDescription = marketDescription;
         addTransaction(tx);
       } catch (error) {
         setIsPendingTx(false);
@@ -182,7 +185,8 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
     } else if (actionType === ApprovalAction.ENTER_POSITION) {
       try {
         setIsPendingTx(true);
-        const tx = await approveERC1155Contract(shareToken, approvingName, AMMFactory, loginAccount);
+        const tx = await approveERC1155Contract(shareToken, `To Buy (${approvingName})`, AMMFactory, loginAccount);
+        tx.marketDescription = marketDescription;
         addTransaction(tx);
       } catch (error) {
         setIsPendingTx(false);
@@ -193,10 +197,11 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
         setIsPendingTx(true);
         let tx = null;
         if (isETH) {
-          tx = await approveERC1155Contract(shareToken, approvingName, WethWrapperForAMMExchange, loginAccount);
+          tx = await approveERC1155Contract(shareToken, `To Sell (${approvingName})`, WethWrapperForAMMExchange, loginAccount);
         } else {
-          tx = await approveERC20Contract(cash.address, approvingName, AMMFactory, loginAccount);
+          tx = await approveERC20Contract(cash.address, `To Sell (${approvingName})`, AMMFactory, loginAccount);
         }
+        tx.marketDescription = marketDescription;
         addTransaction(tx);
       } catch (error) {
         setIsPendingTx(false);
@@ -206,17 +211,6 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
   }
 
   useEffect(() => {
-    const findApprovedTxAndRemove = (transactions, spender, tokenAddress) => {
-      if (transactions.length > 0) {
-        const tx = transactions.find(tx => tx.approval
-          && tx?.approval?.spender === spender
-          && tx?.approval?.tokenAddress === tokenAddress);
-        if (tx) {
-          removeTransaction(tx.hash);
-        }
-      }
-    }
-
     const checkIfApproved = async () => {
       let approvalCheck = ApprovalState.UNKNOWN;
 
@@ -224,25 +218,16 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
         if (isETH) {
           setIsApproved(ApprovalState.APPROVED);
         } else {
-          approvalCheck = await isERC1155ContractApproved(shareToken, AMMFactory, loginAccount, transactions);
+          approvalCheck = await isERC1155ContractApproved(shareToken, AMMFactory, loginAccount, transactions, updateTransaction);
           setIsApproved(approvalCheck);
-          if (approvalCheck === ApprovalState.APPROVED) {
-            findApprovedTxAndRemove(transactions, AMMFactory, shareToken);
-          }
         }
       }
 
       else if (actionType === ApprovalAction.EXIT_POSITION) {
         if (isETH) {
-          approvalCheck = await isERC1155ContractApproved(shareToken, WethWrapperForAMMExchange, loginAccount, transactions);
-          if (approvalCheck === ApprovalState.APPROVED) {
-            findApprovedTxAndRemove(transactions, WethWrapperForAMMExchange, shareToken);
-          }
+          approvalCheck = await isERC1155ContractApproved(shareToken, WethWrapperForAMMExchange, loginAccount, transactions, updateTransaction);
         } else {
-          approvalCheck = await checkAllowance(cash.address, AMMFactory, loginAccount, transactions);
-          if (approvalCheck === ApprovalState.APPROVED) {
-            findApprovedTxAndRemove(transactions, AMMFactory, cash?.address);
-          }
+          approvalCheck = await checkAllowance(cash.address, AMMFactory, loginAccount, transactions, updateTransaction);
         }
         setIsApproved(approvalCheck);
       }
@@ -251,12 +236,8 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
         if (isETH) {
           setIsApproved(ApprovalState.APPROVED);
         } else {
-          approvalCheck = await checkAllowance(cash?.address, AMMFactory, loginAccount, transactions)
+          approvalCheck = await checkAllowance(cash?.address, AMMFactory, loginAccount, transactions, updateTransaction)
           setIsApproved(approvalCheck);
-
-          if (approvalCheck === ApprovalState.APPROVED) {
-            findApprovedTxAndRemove(transactions, AMMFactory, cash?.address);
-          }
         }
       }
 
@@ -264,12 +245,8 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
         if (!isETH) {
           setIsApproved(ApprovalState.APPROVED);
         } else {
-          approvalCheck = await checkAllowance(amm.id, WethWrapperForAMMExchange, loginAccount, transactions)
+          approvalCheck = await checkAllowance(amm.id, WethWrapperForAMMExchange, loginAccount, transactions, updateTransaction)
           setIsApproved(approvalCheck);
-
-          if (approvalCheck === ApprovalState.APPROVED) {
-            findApprovedTxAndRemove(transactions, WethWrapperForAMMExchange, amm?.id);
-          }
         }
       }
 
@@ -296,7 +273,7 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
         setApprovals(newState);
       }
     }
-  }, [setApprovals, loginAccount, isApproved, actionType, amm, paraConfig, tokenAddress, approvals, transactions, AMMFactory, WethWrapperForAMMExchange, cash?.address, isETH, marketCashType, removeTransaction, shareToken]);
+  }, [setApprovals, loginAccount, isApproved, actionType, amm, paraConfig, tokenAddress, approvals, transactions, AMMFactory, WethWrapperForAMMExchange, cash?.address, isETH, marketCashType, shareToken, updateTransaction]);
 
 
   if (!loginAccount) {

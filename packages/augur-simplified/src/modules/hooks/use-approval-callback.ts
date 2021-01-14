@@ -258,10 +258,21 @@ export async function checkAllowance(
   spender: string,
   loginAccount: LoginAccount,
   transactions: TransactionDetails[],
+  updateTransactions: Function,
 ): Promise<ApprovalState> {
   const { account, library } = loginAccount;
   const allowance = await getERC20Allowance(tokenAddress, library, account, spender);
   if (allowance && new BN(allowance).gt(0)) {
+      const updateTxState = transactions.find(tx =>
+        tx.approval
+        && !tx.receipt
+        && tx?.approval?.spender === spender
+        && tx?.approval?.tokenAddress === tokenAddress);
+
+      if (updateTxState) {
+        updateTxState.status = 'CONFIRMED';
+        updateTransactions(updateTxState.hash, updateTxState);
+      }
       return ApprovalState.APPROVED;
   }
   const isPending = await hasPendingTransaction(transactions, loginAccount.account, tokenAddress, spender);
@@ -273,10 +284,26 @@ export const isERC1155ContractApproved = async (
   spender: string,
   loginAccount: LoginAccount,
   transactions: TransactionDetails[],
+  updateTransactions: Function,
 ) => {
     const { account, library } = loginAccount;
     const isPending = await hasPendingTransaction(transactions, loginAccount.account, erc1155Address, spender);
     const isApproved = await getERC1155ApprovedForAll(erc1155Address, library, account, spender);
+
+
+    if (isApproved) {
+      const updateTxState = transactions.find(tx =>
+        tx.approval
+        && !tx.receipt
+        && tx?.approval?.spender === spender
+        && tx?.approval?.tokenAddress === erc1155Address);
+
+      if (updateTxState) {
+        updateTxState.status = 'CONFIRMED';
+        updateTransactions(updateTxState.hash, updateTxState);
+      }
+    }
+
 
     return isApproved
       ? ApprovalState.APPROVED
@@ -312,8 +339,11 @@ export const approveERC20Contract = async (
         hash,
         chainId,
         addedTime: new Date().getTime(),
+        seen: false,
+        status: 'PENDING',
+        marketDescription: null,
         from: account,
-        summary: `Approve ${approvingName || 'for use'}`,
+        message: `Approve ${approvingName || 'for use'}`,
         approval: { tokenAddress: tokenAddress, spender: spender }
       }
     }
@@ -346,8 +376,11 @@ export const approveERC1155Contract = async (
       hash,
       chainId,
       addedTime: new Date().getTime(),
+      seen: false,
+      status: 'PENDING',
+      marketDescription: null,
       from: account,
-      summary: `Approve ${approvingName || 'for use'}`,
+      message: `Approve ${approvingName || 'for use'}`,
       approval: { tokenAddress: erc1155Address, spender }
     }
   }
