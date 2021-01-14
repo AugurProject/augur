@@ -57,6 +57,7 @@ const Outcome = ({
   editable,
   setEditableValue,
   ammCash,
+  showAsButton
 }) => {
   const [customVal, setCustomVal] = useState('');
   const formattedPrice = formatDai(outcome.price);
@@ -70,7 +71,8 @@ const Outcome = ({
         [Styles.Yes]: outcome.name === OUTCOME_YES_NAME,
         [Styles.ShowAllHighlighted]: showAllHighlighted,
         [Styles.nonSelectable]: nonSelectable,
-        [Styles.Edited]: customVal !== ''
+        [Styles.Edited]: customVal !== '',
+        [Styles.showAsButton]: showAsButton
       })}
     >
       <span>{outcome.name}</span>
@@ -197,6 +199,7 @@ interface OutcomesGridProps {
   editable?: boolean;
   setEditableValue?: Function;
   ammCash: Cash;
+  showAsButtons?: boolean;
 }
 export const OutcomesGrid = ({
   outcomes,
@@ -208,12 +211,14 @@ export const OutcomesGrid = ({
   editable,
   setEditableValue,
   ammCash,
+  showAsButtons
 }: OutcomesGridProps) => {
   return (
     <div
       className={classNames(Styles.Outcomes, {
         [Styles.YesNo]: marketType === YES_NO,
         [Styles.nonSelectable]: nonSelectable,
+        [Styles.showAsButtons]: showAsButtons
       })}
     >
       {outcomes
@@ -235,6 +240,7 @@ export const OutcomesGrid = ({
             editable={editable}
             setEditableValue={price => setEditableValue(price, outcome.id)}
             ammCash={ammCash}
+            showAsButton={showAsButtons}
           />
         ))}
     </div>
