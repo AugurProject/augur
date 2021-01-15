@@ -286,10 +286,12 @@
     color: var(--simple-secondary-text);
   }
 
-  &:hover {
-    .FixedBoxShadow;
-
+  &:not(:disabled):hover {
     background: var(--simple-light-bg);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
   }
 }
 

@@ -118,7 +118,9 @@ const getInfo = (name) =>
 export const CurrencyTipIcon = ({ name, marketId }) => {
   const { label, icon } = getInfo(name);
   return (
-    <span className={classNames(Styles.CurrencyTipIcon, TooltipStyles.Container)}>
+    <span
+      className={classNames(Styles.CurrencyTipIcon, TooltipStyles.Container)}
+    >
       <label
         className={classNames(TooltipStyles.TooltipHint)}
         data-tip
@@ -256,19 +258,32 @@ export const AppViewStats = ({ showCashAmounts }: AppViewStatsProps) => {
 
 export const AddLiquidity = ({ market }: { market: MarketInfo }) => {
   const {
+    loginAccount,
     actions: { setModal },
   } = useAppStatusStore();
+  const isLogged = loginAccount?.account;
   return (
-    <div
+    <button
       className={classNames(Styles.AddLiquidity)}
-      onClick={() => setModal({ type: MODAL_ADD_LIQUIDITY, market, liquidityModalType: ADD, currency: market?.amm?.cash?.name })}
+      title={isLogged ? 'Add liquidity' : 'Connect an account to add liquidity'}
+      onClick={() => {
+        if (isLogged) {
+          setModal({
+            type: MODAL_ADD_LIQUIDITY,
+            market,
+            liquidityModalType: ADD,
+            currency: market?.amm?.cash?.name,
+          });
+        }
+      }}
+      disabled={!isLogged}
     >
       <span>
         {PlusIcon}
         add liquidity
       </span>
       <span>earn fees as a liquidity provider</span>
-    </div>
+    </button>
   );
 };
 
@@ -280,24 +295,29 @@ export const AddCurrencyLiquidity = ({
   currency: string;
 }) => {
   const {
+    loginAccount,
     actions: { setModal },
   } = useAppStatusStore();
-
+  const isLogged = loginAccount?.account;
   return (
-    <div
+    <button
       className={classNames(Styles.AddCurrencyLiquidity)}
-      onClick={() =>
-        setModal({
-          type: MODAL_ADD_LIQUIDITY,
-          market,
-          liquidityModalType: CREATE,
-          currency,
-        })
-      }
+      title={isLogged ? `Create this market in ${currency}` : `Connect an account to create this market in ${currency}`}
+      onClick={() => {
+        if (isLogged) {
+          setModal({
+            type: MODAL_ADD_LIQUIDITY,
+            market,
+            liquidityModalType: CREATE,
+            currency,
+          });
+        }
+      }}
+      disabled={!isLogged}
     >
       {currency === USDC ? USDCIcon : EthIcon}
       {`Create this market in ${currency}`}
-    </div>
+    </button>
   );
 };
 

@@ -77,8 +77,8 @@ const PositionHeader = () => {
             owned
           </>
         ) : (
-            'quantity owned'
-          )}
+          'quantity owned'
+        )}
       </li>
       <li>
         {isMobile ? (
@@ -88,8 +88,8 @@ const PositionHeader = () => {
             price
           </>
         ) : (
-            'avg. price paid'
-          )}
+          'avg. price paid'
+        )}
       </li>
       <li>init. value</li>
       <li>cur.{isMobile ? <br /> : ' '}value</li>
@@ -137,10 +137,10 @@ export const AllPositionTable = () => {
   } = useAppStatusStore();
   const positions = marketShares
     ? ((Object.values(marketShares) as unknown[]) as {
-      ammExchange: AmmExchange;
-      positions: PositionBalance[];
-      claimableWinnings: Winnings;
-    }[])
+        ammExchange: AmmExchange;
+        positions: PositionBalance[];
+        claimableWinnings: Winnings;
+      }[])
     : [];
 
   const positionVis = positions.map((position) => {
@@ -204,7 +204,9 @@ const LiquidityRow = ({ liquidity }: { liquidity: LPTokenBalance }) => {
       <li>{formatDai(liquidity.initCostUsd).full}</li>
       <li>{liquidity.usdValue ? formatDai(liquidity.usdValue).full : '-'}</li>
       <li>
-        {'-' /*liquidity.feesEarned ? formatDai(liquidity.feesEarned).full : '-'*/}
+        {
+          '-' /*liquidity.feesEarned ? formatDai(liquidity.feesEarned).full : '-'*/
+        }
       </li>
     </ul>
   );
@@ -227,7 +229,8 @@ export const LiquidityFooter = ({ market }: { market: MarketInfo }) => {
           })
         }
       />
-      <SecondaryButton text="add liquidity"
+      <SecondaryButton
+        text="add liquidity"
         action={() =>
           setModal({
             type: MODAL_ADD_LIQUIDITY,
@@ -251,10 +254,10 @@ export const AllLiquidityTable = () => {
   const { ammExchanges } = processed;
   const liquidities = lpTokens
     ? Object.keys(lpTokens).map((ammId) => ({
-      ammExchange: ammExchanges[ammId],
-      market: ammExchanges[ammId].market,
-      lpTokens: lpTokens[ammId],
-    }))
+        ammExchange: ammExchanges[ammId],
+        market: ammExchanges[ammId].market,
+        lpTokens: lpTokens[ammId],
+      }))
     : [];
   const liquiditiesViz = liquidities.map((liquidity) => {
     return (
@@ -276,8 +279,10 @@ export const LiquidityTable = ({
   lpTokens,
 }: LiquidityTableProps) => {
   const {
+    loginAccount,
     actions: { setModal },
   } = useAppStatusStore();
+  const isLogged = loginAccount?.account;
   return (
     <div className={Styles.LiquidityTable}>
       {!singleMarket && (
@@ -288,14 +293,18 @@ export const LiquidityTable = ({
         <span>
           No liquidity to show
           <PrimaryButton
-            action={() =>
-              setModal({
-                type: MODAL_ADD_LIQUIDITY,
-                market,
-                liquidityModalType: ADD,
-                currency: ammExchange?.cash?.name,
-              })
+            action={() => {
+                if (isLogged) {
+                  setModal({
+                    type: MODAL_ADD_LIQUIDITY,
+                    market,
+                    liquidityModalType: ADD,
+                    currency: ammExchange?.cash?.name,
+                  })
+                }
+              }
             }
+            disabled={!isLogged}
             text="Earn fees as a liquidity provider"
           />
         </span>
@@ -343,17 +352,17 @@ export const PositionsLiquidityViewSwitcher = ({
 
   const positions = marketShares
     ? ((Object.values(marketShares) as unknown[]) as {
-      ammExchange: AmmExchange;
-      positions: PositionBalance[];
-      claimableWinnings: Winnings;
-    }[])
+        ammExchange: AmmExchange;
+        positions: PositionBalance[];
+        claimableWinnings: Winnings;
+      }[])
     : [];
   const liquidities = lpTokens
     ? Object.keys(lpTokens).map((ammId) => ({
-      ammExchange: ammExchanges[ammId],
-      market: ammExchanges[ammId].market,
-      lpTokens: lpTokens[ammId],
-    }))
+        ammExchange: ammExchanges[ammId],
+        market: ammExchanges[ammId].market,
+        lpTokens: lpTokens[ammId],
+      }))
     : [];
   return (
     <div className={Styles.PositionsLiquidityViewSwitcher}>
@@ -460,41 +469,41 @@ const TransactionsHeader = ({ selectedType, setSelectedType }) => {
             defaultValue={ALL}
           />
         ) : (
-            <>
-              <span
-                className={classNames({
-                  [Styles.Selected]: selectedType === ALL,
-                })}
-                onClick={() => setSelectedType(ALL)}
-              >
-                all
+          <>
+            <span
+              className={classNames({
+                [Styles.Selected]: selectedType === ALL,
+              })}
+              onClick={() => setSelectedType(ALL)}
+            >
+              all
             </span>
-              <span
-                className={classNames({
-                  [Styles.Selected]: selectedType === SWAP,
-                })}
-                onClick={() => setSelectedType(SWAP)}
-              >
-                swaps
+            <span
+              className={classNames({
+                [Styles.Selected]: selectedType === SWAP,
+              })}
+              onClick={() => setSelectedType(SWAP)}
+            >
+              swaps
             </span>
-              <span
-                className={classNames({
-                  [Styles.Selected]: selectedType === ADD,
-                })}
-                onClick={() => setSelectedType(ADD)}
-              >
-                adds
+            <span
+              className={classNames({
+                [Styles.Selected]: selectedType === ADD,
+              })}
+              onClick={() => setSelectedType(ADD)}
+            >
+              adds
             </span>
-              <span
-                className={classNames({
-                  [Styles.Selected]: selectedType === REMOVE,
-                })}
-                onClick={() => setSelectedType(REMOVE)}
-              >
-                removes
+            <span
+              className={classNames({
+                [Styles.Selected]: selectedType === REMOVE,
+              })}
+              onClick={() => setSelectedType(REMOVE)}
+            >
+              removes
             </span>
-            </>
-          )}
+          </>
+        )}
       </li>
       <li>total value</li>
       <li>token amount</li>
@@ -532,25 +541,28 @@ export const TransactionsTable = ({ transactions }: TransactionsProps) => {
   const [selectedType, setSelectedType] = useState(ALL);
   const filteredTransactions = useMemo(
     () =>
-      [].concat(transactions).filter(({ tx_type }) => {
-        switch (selectedType) {
-          case SWAP: {
-            return (
-              tx_type === TransactionTypes.ENTER ||
-              tx_type === TransactionTypes.EXIT
-            );
+      []
+        .concat(transactions)
+        .filter(({ tx_type }) => {
+          switch (selectedType) {
+            case SWAP: {
+              return (
+                tx_type === TransactionTypes.ENTER ||
+                tx_type === TransactionTypes.EXIT
+              );
+            }
+            case ADD: {
+              return tx_type === TransactionTypes.ADD_LIQUIDITY;
+            }
+            case REMOVE: {
+              return tx_type === TransactionTypes.REMOVE_LIQUIDITY;
+            }
+            case ALL:
+            default:
+              return true;
           }
-          case ADD: {
-            return tx_type === TransactionTypes.ADD_LIQUIDITY;
-          }
-          case REMOVE: {
-            return tx_type === TransactionTypes.REMOVE_LIQUIDITY;
-          }
-          case ALL:
-          default:
-            return true;
-        }
-      }),
+        })
+        .sort((a, b) => b.timestamp - a.timestamp),
     [selectedType, transactions]
   );
 
@@ -573,8 +585,8 @@ export const TransactionsTable = ({ transactions }: TransactionsProps) => {
           </div>
         </>
       ) : (
-          <span>No transactions to show</span>
-        )}
+        <span>No transactions to show</span>
+      )}
     </div>
   );
 };
