@@ -41,12 +41,24 @@ export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
   isMobile: false,
   approvals: {
     trade: {
-      USDC: false,
-      ETH: false,
+      enter: {
+        USDC: false,
+        ETH: false,
+      },
+      exit: {
+        USDC: false,
+        ETH: false,
+      },
     },
     liquidity: {
-      USDC: false,
-      ETH: false
+      add: {
+        USDC: false,
+        ETH: false
+      },
+      remove: {
+        USDC: false,
+        ETH: false
+      },
     },
   },
   sidebarType: null,

@@ -261,14 +261,24 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
       checkIfApproved();
     } else {
       if (approvals
-          && ((actionType === ApprovalAction.ENTER_POSITION && !approvals.trade[marketCashType])
-          || (actionType === ApprovalAction.ADD_LIQUIDITY && !approvals.liquidity[marketCashType]))) {
+        && ((actionType === ApprovalAction.ENTER_POSITION && !approvals?.trade?.enter[marketCashType])
+        || (actionType === ApprovalAction.EXIT_POSITION && !approvals?.trade?.exit[marketCashType])
+        || (actionType === ApprovalAction.ADD_LIQUIDITY && !approvals?.liquidity?.add[marketCashType])
+        || (actionType === ApprovalAction.REMOVE_LIQUIDITY && !approvals?.liquidity?.remove[marketCashType])
+      )) {
         let newState = approvals;
+
         if (actionType === ApprovalAction.ENTER_POSITION) {
-          newState.trade[marketCashType] = true;
+          newState.trade.enter[marketCashType] = true;
+        }
+        else if (actionType === ApprovalAction.EXIT_POSITION) {
+          newState.trade.exit[marketCashType] = true;
         }
         else if (actionType === ApprovalAction.ADD_LIQUIDITY) {
-          newState.liquidity[marketCashType] = true;
+          newState.liquidity.add[marketCashType] = true;
+        }
+        else if (actionType === ApprovalAction.REMOVE_LIQUIDITY) {
+          newState.liquidity.remove[marketCashType] = true;
         }
         setApprovals(newState);
       }

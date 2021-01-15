@@ -205,8 +205,13 @@ export const currencyItems = [
   },
 ];
 
-// approvals
+export const TX_STATUS = {
+  CONFIRMED: 'CONFIRMED',
+  PENDING: 'PENDING',
+  FAILURE: 'FAILURE',
+}
 
+// approvals
 export enum ApprovalState {
   UNKNOWN,
   NOT_APPROVED,
