@@ -198,4 +198,48 @@ contract WethWrapperForAMMExchange {
         // Send unwrapped eth back to _shareHolder
         _shareHolder.transfer(address(this).balance);
     }
+
+    /**
+     * @notice Claims winnings for multiple markets and for a particular shareholder
+     * @param _markets Array of markets to claim winnings for
+     * @param _shareHolder The account to claim winnings for
+     * @param _fingerprint Fingerprint of the user to restrict affiliate fees
+     * @return Bool True
+     */
+    function claimMarketsProceeds(IMarket[] calldata _markets, address payable _shareHolder, bytes32 _fingerprint) external returns (bool) {
+        require(shareToken.isApprovedForAll(_shareHolder, address(this)), "Weth wrapper contract must be approved to do share token transfers on behalf of the share holder.");
+        for (uint256 i=0; i < _markets.length; i++) {
+            // Not using shareTransfer method to save gas.
+            uint256 _INVALID = shareToken.getTokenId(_markets[i], 0);
+            uint256 _NO = shareToken.getTokenId(_markets[i], 1);
+            uint256 _YES = shareToken.getTokenId(_markets[i], 2);
+
+            uint256[] memory _tokenIds = new uint256[](3);
+            _tokenIds[0] = _INVALID;
+            _tokenIds[1] = _NO;
+            _tokenIds[2] = _YES;
+
+            address[] memory _shareHolders = new address[](3);
+            _shareHolders[0] = _shareHolder;
+            _shareHolders[1] = _shareHolder;
+            _shareHolders[2] = _shareHolder;
+
+            uint256[] memory _balances = shareToken.balanceOfBatch(_shareHolders, _tokenIds);
+
+            // Get all share tokens from _shareHolder.
+            shareToken.unsafeBatchTransferFrom(_shareHolder, address(this), _tokenIds, _balances);
+
+            // Turn em' in.
+            shareToken.claimTradingProceeds(_markets[i], address(this), _fingerprint);
+        }
+
+        // Unwrap weth
+        uint _balance = weth.balanceOf(address(this));
+        weth.withdraw(_balance);
+
+        // Send unwrapped eth back to _shareHolder
+        _shareHolder.transfer(address(this).balance);
+
+        return true;
+    }
 }
