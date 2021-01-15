@@ -19,6 +19,18 @@ interface PagesArrayObject {
 
 const NullPage = { page: null, active: false };
 
+
+const getOffset = (page, pageLimit) => {
+  return (page - 1) * pageLimit;
+};
+
+export const sliceByPage = (array, page, pageLimit) => {
+  return array.slice(
+    getOffset(page, pageLimit),
+    getOffset(page, pageLimit) + pageLimit
+  )
+}; 
+
 export const createPagesArray = (page: number, totalPages: number) => {
   if (totalPages <= 1) {
     return [

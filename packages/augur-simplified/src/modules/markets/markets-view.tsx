@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Styles from 'modules/markets/markets-view.styles.less';
 import { MarketLink } from 'modules/routes/helpers/links';
 import {
@@ -42,8 +42,9 @@ import {
   NetworkMismatchBanner,
   ReportingStateLabel,
 } from '../common/labels';
+import { sliceByPage } from '../common/pagination';
 
-const PAGE_LIMIT = 20;
+const PAGE_LIMIT = 21;
 
 const LoadingMarketCard = () => {
   return (
@@ -151,10 +152,6 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
   );
 };
 
-const getOffset = (page) => {
-  return (page - 1) * PAGE_LIMIT;
-};
-
 const applyFiltersAndSort = (
   passedInMarkets,
   setFilteredMarkets,
@@ -246,7 +243,17 @@ const MarketsView = () => {
       currency,
       reportingState,
     });
-  }, [sortBy, categories, reportingState, currency, markets]);
+  }, [sortBy, categories, reportingState, currency]);
+
+  useEffect(() => {
+    if (Object.values(markets).length > 0) setLoading(false);
+    applyFiltersAndSort(Object.values(markets), setFilteredMarkets, {
+      categories,
+      sortBy,
+      currency,
+      reportingState,
+    });
+  }, [markets]);
 
   useEffect(() => {
     // initial render only.
@@ -311,9 +318,7 @@ const MarketsView = () => {
       )}
       {!loading && filteredMarkets.length > 0 && (
         <section>
-          {filteredMarkets
-            .slice(getOffset(page), getOffset(page) + PAGE_LIMIT)
-            .map((market, index) => (
+          {sliceByPage(filteredMarkets, page, PAGE_LIMIT).map((market, index) => (
               <MarketCard key={`${market.marketId}-${index}`} market={market} />
             ))}
         </section>

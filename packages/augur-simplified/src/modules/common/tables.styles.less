@@ -172,6 +172,40 @@
 
 .PositionFooter {
   .FooterSharedStyles;
+
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  display: grid;
+
+  > span {
+    .text-14-bold;
+
+    color: var(--simple-warning);
+  }
+
+  > button {
+    &:last-of-type {
+      grid-column: 3 / span 1;
+    }
+  }
+
+  @media @breakpoint-mobile-tablet {
+    grid-template-columns: 1fr;
+    padding: @size-16;
+
+    > span {
+      display: flex;
+      justify-content: center;
+      order: 2;
+      margin-top: @size-8;
+    }
+
+    > button {
+      &:last-of-type {
+        grid-column: 1 / span 3;
+      }
+    }
+  }
 }
 
 div.PositionsLiquidityViewSwitcher {
@@ -267,7 +301,6 @@ div.PositionsLiquidityViewSwitcher {
   > span {
     .EmptyMessage;
 
-    border-top: 0;
     border-radius: @size-8;
   }
 }

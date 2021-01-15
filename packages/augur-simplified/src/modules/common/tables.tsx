@@ -31,6 +31,7 @@ import { formatDai } from '../../utils/format-number';
 import { MODAL_ADD_LIQUIDITY, USDC } from '../constants';
 import { useAppStatusStore } from '../stores/app-status';
 import { AddressLink, MarketLink } from '../routes/helpers/links';
+import { sliceByPage } from './pagination';
 
 interface PositionsTableProps {
   market: MarketInfo;
@@ -113,23 +114,30 @@ const PositionRow = ({ position }: { position: PositionBalance }) => {
 
 interface PositionFooterProps {
   claimableWinnings?: Winnings;
+  market: MarketInfo;
 }
-export const PositionFooter = ({ claimableWinnings }: PositionFooterProps) => {
+export const PositionFooter = ({
+  claimableWinnings,
+  market,
+}: PositionFooterProps) => {
   const { isMobile } = useAppStatusStore();
   if (isMobile && !claimableWinnings) return null;
   return (
     <div className={Styles.PositionFooter}>
       {claimableWinnings && (
-        <SecondaryButton
-          text={`${claimableWinnings.claimableBalance} in Winnings to claim`}
-        />
+        <>
+          <span>{`${market.fee}% fee charged on settlement`}</span>
+          <PrimaryButton
+            text={`${claimableWinnings?.claimableBalance} in Winnings to claim`}
+          />
+        </>
       )}
-      {!isMobile && <PrimaryButton text="trade" />}
+      {!isMobile && <SecondaryButton text="trade" />}
     </div>
   );
 };
 
-export const AllPositionTable = () => {
+export const AllPositionTable = ({ page }) => {
   const {
     userInfo: {
       balances: { marketShares },
@@ -143,16 +151,16 @@ export const AllPositionTable = () => {
       }[])
     : [];
 
-  const positionVis = positions.map((position) => {
-    return (
-      <PositionTable
-        market={position.ammExchange.market}
-        ammExchange={position.ammExchange}
-        positions={position.positions}
-        claimableWinnings={position.claimableWinnings}
-      />
-    );
-  });
+  const positionVis = sliceByPage(positions, page, POSITIONS_LIQUIDITY_LIMIT).map((position) => {
+      return (
+        <PositionTable
+          market={position.ammExchange.market}
+          ammExchange={position.ammExchange}
+          positions={position.positions}
+          claimableWinnings={position.claimableWinnings}
+        />
+      );
+    });
 
   return <>{positionVis}</>;
 };
@@ -176,7 +184,7 @@ export const PositionTable = ({
           .filter((p) => p.visible)
           .map((position, id) => <PositionRow key={id} position={position} />)}
       {!singleMarket && (
-        <PositionFooter claimableWinnings={claimableWinnings} />
+        <PositionFooter market={market} claimableWinnings={claimableWinnings} />
       )}
       {singleMarket && positions.length !== 0 && (
         <div className={Styles.PaginationFooter} />
@@ -244,7 +252,7 @@ export const LiquidityFooter = ({ market }: { market: MarketInfo }) => {
   );
 };
 
-export const AllLiquidityTable = () => {
+export const AllLiquidityTable = ({ page }) => {
   const {
     processed,
     userInfo: {
@@ -259,15 +267,15 @@ export const AllLiquidityTable = () => {
         lpTokens: lpTokens[ammId],
       }))
     : [];
-  const liquiditiesViz = liquidities.map((liquidity) => {
-    return (
-      <LiquidityTable
-        market={liquidity.market}
-        ammExchange={liquidity.ammExchange}
-        lpTokens={liquidity.lpTokens}
-      />
-    );
-  });
+  const liquiditiesViz = sliceByPage(liquidities, page, POSITIONS_LIQUIDITY_LIMIT).map((liquidity) => {
+      return (
+        <LiquidityTable
+          market={liquidity.market}
+          ammExchange={liquidity.ammExchange}
+          lpTokens={liquidity.lpTokens}
+        />
+      );
+    });
 
   return <>{liquiditiesViz}</>;
 };
@@ -293,16 +301,15 @@ export const LiquidityTable = ({
           No liquidity to show
           <PrimaryButton
             action={() => {
-                if (isLogged) {
-                  setModal({
-                    type: MODAL_ADD_LIQUIDITY,
-                    market,
-                    liquidityModalType: ADD,
-                    currency: ammExchange?.cash?.name,
-                  })
-                }
+              if (isLogged) {
+                setModal({
+                  type: MODAL_ADD_LIQUIDITY,
+                  market,
+                  liquidityModalType: ADD,
+                  currency: ammExchange?.cash?.name,
+                });
               }
-            }
+            }}
             disabled={!isLogged}
             text="Earn fees as a liquidity provider"
           />
@@ -321,6 +328,8 @@ interface PositionsLiquidityViewSwitcherProps {
   setTables?: Function;
 }
 
+const POSITIONS_LIQUIDITY_LIMIT = 5;
+
 export const PositionsLiquidityViewSwitcher = ({
   ammExchange,
   showActivityButton,
@@ -328,6 +337,7 @@ export const PositionsLiquidityViewSwitcher = ({
   setTables,
 }: PositionsLiquidityViewSwitcherProps) => {
   const [tableView, setTableView] = useState(POSITIONS);
+  const [page, setPage] = useState(1);
   const {
     processed,
     userInfo: {
@@ -403,18 +413,22 @@ export const PositionsLiquidityViewSwitcher = ({
         <div>
           {!ammId && (positions.length > 0 || liquidities.length > 0) && (
             <>
-              {tableView === POSITIONS && <AllPositionTable />}
-              {tableView === LIQUIDITY && <AllLiquidityTable />}
+              {tableView === POSITIONS && <AllPositionTable page={page} />}
+              {tableView === LIQUIDITY && <AllLiquidityTable page={page} />}
             </>
           )}
           {!ammId &&
             ((positions.length > 0 && tableView === POSITIONS) ||
               (liquidities.length > 0 && tableView === LIQUIDITY)) && (
               <Pagination
-                page={1}
-                itemCount={10}
-                itemsPerPage={9}
-                action={() => null}
+                page={page}
+                itemCount={
+                  tableView === POSITIONS
+                    ? positions.length
+                    : liquidities.length
+                }
+                itemsPerPage={POSITIONS_LIQUIDITY_LIMIT}
+                action={(page) => setPage(page)}
                 updateLimit={() => null}
               />
             )}
@@ -517,6 +531,8 @@ interface TransactionProps {
   transaction: AmmTransaction;
 }
 
+const TX_PAGE_LIMIT = 10;
+
 const TransactionRow = ({ transaction }: TransactionProps) => {
   return (
     <ul className={Styles.TransactionRow}>
@@ -538,6 +554,7 @@ interface TransactionsProps {
 
 export const TransactionsTable = ({ transactions }: TransactionsProps) => {
   const [selectedType, setSelectedType] = useState(ALL);
+  const [page, setPage] = useState(1);
   const filteredTransactions = useMemo(
     () =>
       []
@@ -567,23 +584,22 @@ export const TransactionsTable = ({ transactions }: TransactionsProps) => {
 
   return (
     <div className={Styles.TransactionsTable}>
-      {transactions?.length > 0 ? (
-        <>
-          <TransactionsHeader {...{ selectedType, setSelectedType }} />
-          {filteredTransactions.map((transaction) => (
-            <TransactionRow key={transaction.id} transaction={transaction} />
-          ))}
-          <div className={Styles.PaginationFooter}>
-            <Pagination
-              page={1}
-              itemCount={10}
-              itemsPerPage={9}
-              action={() => null}
-              updateLimit={() => null}
-            />
-          </div>
-        </>
-      ) : (
+      <TransactionsHeader {...{ selectedType, setSelectedType }} />
+      {sliceByPage(filteredTransactions, page, TX_PAGE_LIMIT).map((transaction) => (
+          <TransactionRow key={transaction.id} transaction={transaction} />
+        ))}
+      {filteredTransactions.length > 0 && (
+        <div className={Styles.PaginationFooter}>
+          <Pagination
+            page={page}
+            itemCount={filteredTransactions.length}
+            itemsPerPage={TX_PAGE_LIMIT}
+            action={(page) => setPage(page)}
+            updateLimit={() => null}
+          />
+        </div>
+      )}
+      {filteredTransactions.length === 0 && (
         <span>No transactions to show</span>
       )}
     </div>
