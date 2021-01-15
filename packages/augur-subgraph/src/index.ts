@@ -40,8 +40,7 @@ export {
 } from "./mappings/augur";
 
 export {
-  handleAddAMMExchange,
-  handleAddAMMExchangeWithLiquidity
+  handleAMMCreated
 } from "./mappings/ammFactory"
 
 export {

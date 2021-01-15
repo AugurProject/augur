@@ -2,7 +2,7 @@ import {
   AMMExchange,
   Market
 } from '../../../generated/schema';
-import { Address, BigInt, BigDecimal } from '@graphprotocol/graph-ts'
+import { Address, BigInt, BigDecimal, log } from '@graphprotocol/graph-ts'
 import { ERC20 } from '../../../generated/templates/Cash/ERC20';
 import { ParaShareToken } from '../../../generated/templates/ParaShareToken/ParaShareToken';
 import { AMMExchange as AMMExchangeContract } from "../../../generated/templates/AMMExchange/AMMExchange";
@@ -15,11 +15,14 @@ export function getOrCreateAMMExchange(
   id: string,
   createIfNotFound: boolean = true
 ): AMMExchange {
+  log.error('checkpoint1', []);
   let amm = AMMExchange.load(id);
+
+  log.error('checkpoint1', []);
 
   if (amm == null && createIfNotFound) {
     let ZERO = BigDecimal.fromString('0');
-
+    log.error('checkpoint2', [])
     amm = new AMMExchange(id);
     amm.cashBalance = BigInt.fromI32(0);
     amm.liquidity = ZERO;
@@ -34,6 +37,9 @@ export function getOrCreateAMMExchange(
     amm.volumeYes = BigDecimal.fromString('0');
     amm.fee = BigInt.fromI32(0);
     amm.feePercent = BigDecimal.fromString('0');
+
+    log.error('checkpoint3', [])
+
     AMMExchangeTemplate.create(Address.fromString(id));
   }
 
@@ -48,10 +54,13 @@ export function createAndSaveAMMExchange(
   fee: BigInt
 ): AMMExchange {
   // This just create the entity.
+
+  log.error('1checkpoint1', []);
   let cash = getOrCreateCash(cashId);
   let shareToken = getOrCreateParaShareToken(shareTokenId);
   shareToken.cash = cashId;
-  shareToken.save()
+  shareToken.save();
+
 
   let amm = getOrCreateAMMExchange(id);
   amm.market = market;
@@ -60,6 +69,8 @@ export function createAndSaveAMMExchange(
   amm.fee = fee;
   amm.feePercent = fee.divDecimal(BigInt.fromI32(100).toBigDecimal());
   amm.save()
+
+
 
   return updateAMM(id);
 }

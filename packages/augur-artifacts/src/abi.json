@@ -22432,6 +22432,37 @@
 			"type": "constructor"
 		},
 		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"internalType": "contract IAMMExchange",
+					"name": "amm",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "contract IMarket",
+					"name": "market",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "contract ParaShareToken",
+					"name": "shareToken",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "fee",
+					"type": "uint256"
+				}
+			],
+			"name": "AMMCreated",
+			"type": "event"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
