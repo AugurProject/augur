@@ -90,10 +90,9 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
   const { categories, description, marketId, amm, reportingState } = market;
   const formattedApy = amm?.apy && formatPercent(amm.apy).full;
   const {
-    loginAccount,
+    isLogged,
     actions: { setModal },
   } = useAppStatusStore();
-  const isLogged = loginAccount?.account;
   return (
     <article
       className={classNames(Styles.MarketCard, {

@@ -11,9 +11,8 @@ const TABLES = 'TABLES';
 const ACTIVITY = 'ACTIVITY';
 
 export const PortfolioView = () => {
-  const { loginAccount, isMobile } = useAppStatusStore();
+  const { isLogged, isMobile } = useAppStatusStore();
   const [view, setView] = useState(TABLES);
-  const isLogged = loginAccount?.account !== null;
 
   useEffect(() => {
     // initial render only.
