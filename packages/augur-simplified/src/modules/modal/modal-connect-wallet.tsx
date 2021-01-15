@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Header} from './common';
+import {Header, ModalStructure} from './common';
 import Styles from 'modules/modal/modal.styles.less';
 import {SecondaryButton, TextButton, WalletButton} from 'modules/common/buttons';
 import {UnsupportedChainIdError, useWeb3React} from '@web3-react/core';
@@ -299,62 +299,70 @@ const ModalConnectWallet = ({
     setWalletList(getWalletButtons());
   }, [getWalletButtons]);
 
-  return (
+  const header = (
+    <Header
+      title={walletView !== WALLET_VIEWS.ACCOUNT ? (
+        <span
+          className={Styles.HeaderLink}
+          onClick={() => {
+            setPendingError(false)
+            setWalletView(WALLET_VIEWS.ACCOUNT)
+          }}
+        >
+            Back
+          </span>
+      ) : (account && walletView === WALLET_VIEWS.ACCOUNT) ?
+        'Account' :
+        'Connect a wallet'
+      }
+    />
+  );
+
+  const body = (
     <div className={classNames(Styles.ModalConnectWallet, {
       [Styles.Account]: account && walletView === WALLET_VIEWS.ACCOUNT,
     })}>
-      <Header
-        title={walletView !== WALLET_VIEWS.ACCOUNT ? (
-          <span
-            className={Styles.HeaderLink}
-            onClick={() => {
-              setPendingError(false)
-              setWalletView(WALLET_VIEWS.ACCOUNT)
-            }}
-          >
-            Back
-          </span>
-        ) : (account && walletView === WALLET_VIEWS.ACCOUNT) ?
-          'Account' :
-          'Connect a wallet'
-        }
-      />
-      <div>
-        {
-          error ? (
-            <ErrorBlock
-              text={
-                error instanceof UnsupportedChainIdError ?
-                  'Please connect to the appropriate Ethereum network.' :
-                  'Error connecting. Try refreshing the page.'
-              }
-            />
-          ) : (account && walletView === WALLET_VIEWS.ACCOUNT) ? (
-            <AccountDetails
-              toggleWalletModal={() => toggleModal()}
-              openOptions={() => setWalletView(WALLET_VIEWS.OPTIONS)}
-              darkMode={darkMode}
-              transactions={transactions}
-            />
-          ) : walletView === WALLET_VIEWS.PENDING ? (
-            <PendingWalletView
-              connector={pendingWallet}
-              error={pendingError}
-              setPendingError={setPendingError}
-              tryActivation={tryActivation}
-            />
-          ) : (
-            <>
-              {walletList && <WalletList walletList={walletList} />}
-              <div className={Styles.LearnMore}>
-                New to Ethereum? <TextButton href='https://ethereum.org/wallets/' text='Learn more about wallets' />
-              </div>
-            </>
-          )
-        }
-      </div>
+      {
+        error ? (
+          <ErrorBlock
+            text={
+              error instanceof UnsupportedChainIdError ?
+                'Please connect to the appropriate Ethereum network.' :
+                'Error connecting. Try refreshing the page.'
+            }
+          />
+        ) : (account && walletView === WALLET_VIEWS.ACCOUNT) ? (
+          <AccountDetails
+            toggleWalletModal={() => toggleModal()}
+            openOptions={() => setWalletView(WALLET_VIEWS.OPTIONS)}
+            darkMode={darkMode}
+            transactions={transactions}
+          />
+        ) : walletView === WALLET_VIEWS.PENDING ? (
+          <PendingWalletView
+            connector={pendingWallet}
+            error={pendingError}
+            setPendingError={setPendingError}
+            tryActivation={tryActivation}
+          />
+        ) : (
+          <>
+            {walletList && <WalletList walletList={walletList} />}
+            <div className={Styles.LearnMore}>
+              New to Ethereum? <TextButton href='https://ethereum.org/wallets/' text='Learn more about wallets' />
+            </div>
+          </>
+        )
+      }
     </div>
   );
+
+  return (
+    <ModalStructure
+      header={header}
+      body={body}
+    />
+  )
 };
 
 export default ModalConnectWallet;
