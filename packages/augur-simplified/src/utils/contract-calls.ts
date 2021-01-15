@@ -113,7 +113,7 @@ export async function getAmmLiquidity(
     }
     // TODO: Get amounts of yes and no shares from estimate
     // middleware changes might be needed
-    const lpTokens = String(convertOnChainSharesToDisplayShareAmount(String(lpTokensValue), cash.decimals));
+    const lpTokens = String(formatEther(convertOnChainSharesToDisplayShareAmount(String(lpTokensValue), cash.decimals)).formattedValue);
     return {
       lpTokens,
       cashAmount: "0",
