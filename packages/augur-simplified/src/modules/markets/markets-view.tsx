@@ -29,7 +29,7 @@ import {
   TOTAL_VOLUME,
   DEFAULT_MARKET_VIEW_SETTINGS,
   ENDING_SOON,
-  FINALIZED,
+  RESOLVED,
   IN_SETTLEMENT,
   LIQUIDITY,
   MARKET_STATUS,
@@ -194,7 +194,7 @@ const applyFiltersAndSort = (
           market.reportingState !== MARKET_STATUS.DISPUTING
         )
           return false;
-      } else if (reportingState === FINALIZED) {
+      } else if (reportingState === RESOLVED) {
         if (
           market.reportingState !== MARKET_STATUS.FINALIZED &&
           market.reportingState !== MARKET_STATUS.SETTLED

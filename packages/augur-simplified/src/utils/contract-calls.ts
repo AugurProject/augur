@@ -11,7 +11,7 @@ import {
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers'
 import { convertDisplayCashAmountToOnChainCashAmount, convertDisplayShareAmountToOnChainShareAmount, convertOnChainCashAmountToDisplayCashAmount, formatDai, formatEther, convertOnChainSharesToDisplayShareAmount, isSameAddress } from './format-number';
 import { augurSdkLite } from './augurlitesdk';
-import { ETH, FINALIZED, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_NO_OUTCOMES_NAMES, YES_OUTCOME_ID } from '../modules/constants';
+import { ETH, RESOLVED, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_NO_OUTCOMES_NAMES, YES_OUTCOME_ID } from '../modules/constants';
 import { getProviderOrSigner } from '../modules/ConnectAccount/utils';
 
 const isValidPrice = (price: string): boolean => {
@@ -488,7 +488,7 @@ export const getUserBalances = async (
   //const lpAbi = AMMFactoryAbi;
   const lpAbi = ERC20ABI;
   // finalized markets
-  const finalizedMarkets = Object.values(markets).filter(m => m.reportingState === FINALIZED);
+  const finalizedMarkets = Object.values(markets).filter(m => m.reportingState === RESOLVED);
   const finalizedMarketIds = finalizedMarkets.map(f => f.marketId);
   const finalizedAmmExchanges = Object.values(ammExchanges).filter(a => finalizedMarketIds.includes(a.marketId));
 
