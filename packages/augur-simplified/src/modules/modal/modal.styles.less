@@ -19,7 +19,8 @@
     height: fit-content;
     justify-content: center;
     width: fit-content;
-    min-width: @size-320;
+    min-width: @size-288;
+    margin: 0 @size-16;
     background: var(--simple-light-bg);
 
     > section {
@@ -46,7 +47,7 @@
   flex-direction: column;
   width: 395px;
   max-height: calc(100vh - 100px);
-  overflow-y: scroll;
+  overflow-y: auto;
   border-radius: @size-8;
 
   > button:first-of-type {
@@ -217,7 +218,7 @@
 
   > div:last-of-type {
     padding: @size-24 @size-16;
-    width: @size-420;
+    max-width: @size-420;
 
     > ul {
       margin-bottom: @size-16;
