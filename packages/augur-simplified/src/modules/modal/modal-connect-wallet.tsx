@@ -255,7 +255,12 @@ const ModalConnectWallet = ({
                 key,
                 text: 'Install Metamask',
                 href: 'https://metamask.io/',
-                icon: MetamaskIcon,
+                icon: (
+                  <img
+                    src={MetamaskIcon}
+                    alt={wallet.name}
+                  />
+                ),
                 selected: wallet?.connector === connector,
               }
             } else {
