@@ -87,33 +87,28 @@ const OutcomesTable = ({ amm }: { amm: AmmExchange }) => {
 };
 
 const MarketCard = ({ market }: { market: MarketInfo }) => {
-  const {
-    categories,
-    description,
-    marketId,
-    amm,
-    reportingState,
-  } = market;
+  const { categories, description, marketId, amm, reportingState } = market;
   const formattedApy = amm?.apy && formatPercent(amm.apy).full;
   const {
+    loginAccount,
     actions: { setModal },
   } = useAppStatusStore();
-
+  const isLogged = loginAccount?.account;
   return (
     <article
       className={classNames(Styles.MarketCard, {
         [Styles.NoLiquidity]: !amm,
       })}
-      onClick={() =>
-        amm
-          ? null
-          : setModal({
-              type: MODAL_ADD_LIQUIDITY,
-              market,
-              liquidityModalType: CREATE,
-              currency: amm?.cash?.name,
-            })
-      }
+      onClick={() => {
+        if (!amm && isLogged) {
+          setModal({
+            type: MODAL_ADD_LIQUIDITY,
+            market,
+            liquidityModalType: CREATE,
+            currency: amm?.cash?.name,
+          });
+        }
+      }}
     >
       <div>
         <CategoryIcon categories={categories} />
@@ -132,7 +127,15 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
         {!amm ? (
           <div>
             <span>Market requires Initial liquidity</span>
-            <PrimaryButton text="Earn fees as a liquidity provider" />
+            <PrimaryButton
+              title={
+                isLogged
+                  ? 'Earn fees as a liquidity provider'
+                  : `Connect an account to earn fees as a liquidity provider`
+              }
+              disabled={!isLogged}
+              text="Earn fees as a liquidity provider"
+            />
           </div>
         ) : (
           <>

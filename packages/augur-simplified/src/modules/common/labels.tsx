@@ -261,11 +261,11 @@ export const AddLiquidity = ({ market }: { market: MarketInfo }) => {
     loginAccount,
     actions: { setModal },
   } = useAppStatusStore();
-  const isLogged = loginAccount?.address;
+  const isLogged = loginAccount?.account;
   return (
     <button
       className={classNames(Styles.AddLiquidity)}
-      title={isLogged ? 'add liquidity' : 'connect an account to add liquidity'}
+      title={isLogged ? 'Add liquidity' : 'Connect an account to add liquidity'}
       onClick={() => {
         if (isLogged) {
           setModal({
@@ -298,11 +298,11 @@ export const AddCurrencyLiquidity = ({
     loginAccount,
     actions: { setModal },
   } = useAppStatusStore();
-  const isLogged = loginAccount?.address;
+  const isLogged = loginAccount?.account;
   return (
     <button
       className={classNames(Styles.AddCurrencyLiquidity)}
-      title={isLogged ? 'add liquidity' : 'connect an account to add liquidity'}
+      title={isLogged ? `Create this market in ${currency}` : `Connect an account to create this market in ${currency}`}
       onClick={() => {
         if (isLogged) {
           setModal({

@@ -279,8 +279,10 @@ export const LiquidityTable = ({
   lpTokens,
 }: LiquidityTableProps) => {
   const {
+    loginAccount,
     actions: { setModal },
   } = useAppStatusStore();
+  const isLogged = loginAccount?.account;
   return (
     <div className={Styles.LiquidityTable}>
       {!singleMarket && (
@@ -291,14 +293,18 @@ export const LiquidityTable = ({
         <span>
           No liquidity to show
           <PrimaryButton
-            action={() =>
-              setModal({
-                type: MODAL_ADD_LIQUIDITY,
-                market,
-                liquidityModalType: ADD,
-                currency: ammExchange?.cash?.name,
-              })
+            action={() => {
+                if (isLogged) {
+                  setModal({
+                    type: MODAL_ADD_LIQUIDITY,
+                    market,
+                    liquidityModalType: ADD,
+                    currency: ammExchange?.cash?.name,
+                  })
+                }
+              }
             }
+            disabled={!isLogged}
             text="Earn fees as a liquidity provider"
           />
         </span>
