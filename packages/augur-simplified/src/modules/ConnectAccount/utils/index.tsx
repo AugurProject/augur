@@ -85,7 +85,7 @@ export default function getLibrary(provider: any): Web3Provider {
   return library
 }
 
-export const tryAutoLogin = (account, activate) => {
+export const tryAutoLogin = (activate) => {
   const {connector} = SUPPORTED_WALLETS['METAMASK'];
   // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
   if (connector instanceof WalletConnectConnector && connector.walletConnectProvider?.wc?.uri) {

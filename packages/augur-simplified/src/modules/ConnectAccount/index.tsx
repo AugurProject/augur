@@ -53,7 +53,7 @@ const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode, transac
   const activeWeb3 = useActiveWeb3React();
 
   useEffect(() => {
-    if (autoLogin && !account) tryAutoLogin(account, activate);
+    if (autoLogin && !account) tryAutoLogin(activate);
   }, [autoLogin]);
 
   useEffect(() => {
