@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Styles from 'modules/markets/markets-view.styles.less';
 import { MarketLink } from 'modules/routes/helpers/links';
 import {
@@ -243,7 +243,17 @@ const MarketsView = () => {
       currency,
       reportingState,
     });
-  }, [sortBy, categories, reportingState, currency, markets]);
+  }, [sortBy, categories, reportingState, currency]);
+
+  useEffect(() => {
+    if (Object.values(markets).length > 0) setLoading(false);
+    applyFiltersAndSort(Object.values(markets), setFilteredMarkets, {
+      categories,
+      sortBy,
+      currency,
+      reportingState,
+    });
+  }, [markets]);
 
   useEffect(() => {
     // initial render only.
