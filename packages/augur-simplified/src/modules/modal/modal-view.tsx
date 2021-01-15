@@ -9,6 +9,7 @@ import ModalConnectWallet from 'modules/modal/modal-connect-wallet';
 function selectModal(type, modal) {
   switch (type) {
     case MODAL_ADD_LIQUIDITY:
+      console.log('modal', modal)
       return <ModalAddLiquidity {...modal} />;
     case MODAL_CONNECT_WALLET:
       return <ModalConnectWallet {...modal} />

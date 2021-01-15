@@ -23,6 +23,7 @@ import {
   MARKET_STATUS,
   MODAL_ADD_LIQUIDITY,
   MARKET,
+  ADD,
 } from '../constants';
 import { MarketInfo } from '../types';
 
@@ -260,7 +261,7 @@ export const AddLiquidity = ({ market }: { market: MarketInfo }) => {
   return (
     <div
       className={classNames(Styles.AddLiquidity)}
-      onClick={() => setModal({ type: MODAL_ADD_LIQUIDITY, market, currency: market?.amm?.cash?.name })}
+      onClick={() => setModal({ type: MODAL_ADD_LIQUIDITY, market, liquidityModalType: ADD, currency: market?.amm?.cash?.name })}
     >
       <span>
         {PlusIcon}

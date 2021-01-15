@@ -291,6 +291,7 @@ export const LiquidityTable = ({
               setModal({
                 type: MODAL_ADD_LIQUIDITY,
                 market,
+                liquidityModalType: ADD,
                 currency: ammExchange?.cash?.name,
               })
             }

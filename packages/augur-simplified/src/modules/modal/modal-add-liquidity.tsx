@@ -105,7 +105,7 @@ const getAddAdditionBreakdown = (breakdown: AddLiquidityBreakdown) => {
 }
 interface ModalAddLiquidityProps {
   market: MarketInfo;
-  liquidityModalType?: string;
+  liquidityModalType: string;
   currency?: string;
 }
 
@@ -118,15 +118,8 @@ const ModalAddLiquidity = ({
   const account = loginAccount?.account
 
   let amm = market?.amm;
-  const ammExistsHideFee = Boolean(amm);
-  let createLiquidity = !amm || amm?.liquidity === undefined || amm?.liquidity === "0";
-  let modalType = createLiquidity ? CREATE : ADD;
-  if (liquidityModalType) modalType = liquidityModalType;
-  // force create using currency passed in
-  if (liquidityModalType === CREATE) {
-    amm = null;
-    createLiquidity = true;
-  }
+  const mustSetPrices = !amm || amm?.liquidity === undefined || amm?.liquidity === "0";
+  const modalType = liquidityModalType;
 
   const [outcomes, setOutcomes] = useState<AmmOutcome[]>(amm ? amm.ammOutcomes : fakeYesNoOutcomes);
   const [showBackView, setShowBackView] = useState(false);
@@ -141,7 +134,6 @@ const ModalAddLiquidity = ({
 
   const cash = useMemo(() => {
     return cashes && chosenCash ? Object.values(cashes).find(c => c.name === chosenCash) : Object.values(cashes)[0]
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chosenCash]);
 
   const userTokenBalance = cash?.name ? balances[cash?.name]?.balance : "0";
@@ -151,10 +143,8 @@ const ModalAddLiquidity = ({
 
   const percentFormatted = useMemo(() => {
     const feeOption = TRADING_FEE_OPTIONS.find(t => t.id === tradingFeeSelection)
-    const feePercent = amm?.feeRaw ? amm?.feeRaw
-      : feeOption.value;
+    const feePercent = LIQUIDITY_STRINGS[modalType].setFees ? feeOption.value : amm?.feeDecimal;
     return formatPercent(feePercent).full
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [amm?.feeRaw, tradingFeeSelection]);
 
   const userPercentOfPool = useMemo(() => {
@@ -173,12 +163,10 @@ const ModalAddLiquidity = ({
     }
 
     return formatPercent(userPercent).full;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [amm?.totalSupply, amount, balances, shareBalance, estimatedLpAmount])
 
   useEffect(() => {
     LIQUIDITY_METHODS[modalType].receiveBreakdown();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account, amount, tradingFeeSelection, cash, outcomes[YES_OUTCOME_ID]?.price, outcomes[NO_OUTCOME_ID]?.price]);
 
   const InputFormError = useMemo(() => {
@@ -192,7 +180,6 @@ const ModalAddLiquidity = ({
         return SET_PRICES
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [errorMessage, buttonError, modalType, outcomes[YES_OUTCOME_ID]?.price, outcomes[NO_OUTCOME_ID]?.price, amount, account]);
 
   const LIQUIDITY_METHODS = {
@@ -415,7 +402,7 @@ const ModalAddLiquidity = ({
             updateCash={updateCash}
             updateAmountError={updateButtonError}
           />
-          {!ammExistsHideFee && (
+          {LIQUIDITY_STRINGS[modalType].setFees && (
             <>
               <ErrorBlock text="Initial liquidity providers are required to set the starting prices before adding market liquidity." />
               <span
@@ -431,7 +418,7 @@ const ModalAddLiquidity = ({
               />
             </>
           )}
-          {createLiquidity && (
+          {mustSetPrices && (
             <>
               <span className={Styles.SmallLabel}>
                 {LIQUIDITY_STRINGS[modalType].setOddsTitle}
@@ -443,7 +430,7 @@ const ModalAddLiquidity = ({
                 marketType={YES_NO}
                 orderType={BUY}
                 nonSelectable
-                editable={createLiquidity}
+                editable={mustSetPrices}
                 setEditableValue={(price, index) => {
                   const newOutcomes = outcomes;
                   newOutcomes[index].price = price;
