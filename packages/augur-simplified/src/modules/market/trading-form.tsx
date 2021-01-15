@@ -119,16 +119,14 @@ export const AmountInput = ({
 }: AmountInputProps) => {
   const currencyName = chosenCash;
   const [amount, updateAmount] = useState(initialAmount);
-
   const icon = currencyName === USDC ? UsdIcon : EthIcon;
   const label = currencyName === USDC ? USDC : ETH;
-  const showRate = currencyName !== SHARES;
+  const showRate = Boolean(rate);
   const prepend = currencyName === USDC ? '$' : '';
   const setMax = () => {
     updateAmount(maxValue);
     updateInitialAmount(maxValue);
   };
-  const convRate = `1 ${currencyName} = ${rate} Shares`;
   const errorCheck = (value) => {
     let returnError = '';
     if (value !== '' && (isNaN(value) || Number(value) === 0 || Number(value) < 0)) {
@@ -179,8 +177,8 @@ export const AmountInput = ({
       </div>
       {showRate && (
         <span className={Styles.RateLabel}>
-          {rate && <span>Rate</span>}
-          {rate ? convRate : null}
+          <span>Rate</span>
+          {rate}
         </span>
       )}
     </div>
@@ -381,9 +379,10 @@ const TradingForm = ({
       if (orderType === BUY) {
         const breakdown = await estimateEnterTrade(amm, amount, outputYesShares);
         if (breakdown && breakdown.outputShares !== "0") {
-          const { slippagePercent, ratePerCash, outputShares } = breakdown;
+          const { slippagePercent, ratePerCash: rate, outputShares } = breakdown;
           if (isMounted) {
             setBreakdown(getEnterBreakdown(breakdown, amm?.cash))
+            const ratePerCash = `1 ${amm?.cash?.name} = ${rate}`;
             setTradeEstimates({ slippagePercent, ratePerCash, outputAmount: outputShares })
             updateButtonError('');
           }
@@ -402,10 +401,11 @@ const TradingForm = ({
         }
         const breakdown = await estimateExitTrade(amm, amount, outputYesShares, userBalances);
         if (breakdown && breakdown.outputCash !== "0") {
-          const { slippagePercent, ratePerCash, outputCash } = breakdown;
+          const { slippagePercent, ratePerCash: rate, outputCash } = breakdown;
 
           if (isMounted) {
             setBreakdown(getExitBreakdown(breakdown, amm?.cash))
+            const ratePerCash = `1 ${amm?.cash?.name} = ${rate}`;
             setTradeEstimates({ slippagePercent, ratePerCash, outputAmount: outputCash })
             updateButtonError('');
           }
