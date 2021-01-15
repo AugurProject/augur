@@ -109,35 +109,35 @@ interface ModalAddLiquidityProps {
   currency?: string;
 }
 
+export const updateTxStatus = (txResponse, updateTransaction) => {
+  if (txResponse.confirmations > 0) {
+    // TODO temp workaround
+    const tx = window.appStatus.transactions || JSON.parse(window.localStorage.getItem('transactions'));
+    const updateTxState = tx.find(tx => tx.hash === txResponse.transactionHash);
+    if (updateTxState) {
+      updateTxState.status = TX_STATUS.CONFIRMED;
+      updateTransaction(txResponse.transactionHash, updateTxState);
+    }
+  }
+}
 
 const ModalAddLiquidity = ({
   market,
   liquidityModalType,
   currency,
 }: ModalAddLiquidityProps) => {
-  const { userInfo: { balances }, processed: { cashes }, loginAccount, actions: { addTransaction, updateTransaction }  } = useAppStatusStore();
+  const { userInfo: { balances }, approvals, processed: { cashes }, loginAccount, actions: { closeModal, addTransaction, updateTransaction }  } = useAppStatusStore();
   const account = loginAccount?.account
 
   let amm = market?.amm;
   const mustSetPrices = !amm || amm?.liquidity === undefined || amm?.liquidity === "0";
   const modalType = liquidityModalType;
 
-  const updateTxStatus = (txResponse) => {
-    if (txResponse.confirmations > 0) {
-      // TODO temp workaround
-      const tx = window.appStatus.transactions || JSON.parse(window.localStorage.getItem('transactions'));
-      const updateTxState = tx.find(tx => tx.hash === txResponse.transactionHash);
-      if (updateTxState) {
-        updateTxState.status = TX_STATUS.CONFIRMED;
-        updateTransaction(txResponse.transactionHash, updateTxState);
-      }
-    }
-  }
-
   const [outcomes, setOutcomes] = useState<AmmOutcome[]>(amm ? amm.ammOutcomes : fakeYesNoOutcomes);
   const [showBackView, setShowBackView] = useState(false);
   const [chosenCash, updateCash] = useState<string>(currency ? currency : USDC);
   const [buttonError, updateButtonError] = useState('');
+  const [isApproved, setIsApproved] = useState(true);
   // needs to be set by currency picker if amm is null
   const [breakdown, setBreakdown] = useState(defaultAddLiquidityBreakdown);
   const [estimatedLpAmount, setEstimatedLpAmount] = useState<string>("0")
@@ -160,7 +160,7 @@ const ModalAddLiquidity = ({
     const feeOption = TRADING_FEE_OPTIONS.find(t => t.id === tradingFeeSelection)
     const feePercent = LIQUIDITY_STRINGS[modalType].setFees ? feeOption.value : amm?.feeDecimal;
     return formatPercent(feePercent).full
-  }, [amm?.feeRaw, tradingFeeSelection]);
+  }, [tradingFeeSelection, amm?.feeDecimal, modalType]);
 
   const userPercentOfPool = useMemo(() => {
     let userPercent = "100";
@@ -178,10 +178,27 @@ const ModalAddLiquidity = ({
     }
 
     return formatPercent(userPercent).full;
-  }, [amm?.totalSupply, amount, balances, shareBalance, estimatedLpAmount])
+  }, [amm?.totalSupply, amount, balances, shareBalance, estimatedLpAmount, amm?.id, cash?.decimals, modalType])
 
   useEffect(() => {
     LIQUIDITY_METHODS[modalType].receiveBreakdown();
+
+    if (account && approvals) {
+      if (modalType === REMOVE) {
+        if (approvals?.liquidity?.remove[cash?.name]) {
+          setIsApproved(true);
+        } else {
+          setIsApproved(false);
+        }
+      } else if (modalType === ADD) {
+        if (approvals?.liquidity?.add[cash?.name]) {
+          setIsApproved(true);
+        } else {
+          setIsApproved(false);
+        }
+      }
+    }
+
   }, [account, amount, tradingFeeSelection, cash, outcomes[YES_OUTCOME_ID]?.price, outcomes[NO_OUTCOME_ID]?.price]);
 
   const InputFormError = useMemo(() => {
@@ -252,11 +269,12 @@ const ModalAddLiquidity = ({
               message: `Remove Liquidity`,
               marketDescription: market.description,
             });
-            response.wait().then(response => updateTxStatus(response));
+            response.wait().then(response => updateTxStatus(response, updateTransaction));
           })
           .catch(e => {
             //TODO: handle errors here
           });
+          closeModal();
       },
       confirmOverview: {
         breakdown: [
@@ -315,11 +333,12 @@ const ModalAddLiquidity = ({
               message: `Add Liquidity`,
               marketDescription: market.description,
             });
-            response.wait().then(response => updateTxStatus(response));
+            response.wait().then(response => updateTxStatus(response, updateTransaction));
           })
           .catch(e => {
             // TODO: handle error here
           })
+        closeModal();
       },
       confirmOverview: {
         breakdown: [
@@ -386,11 +405,12 @@ const ModalAddLiquidity = ({
               message: `Add Liquidity`,
               marketDescription: market.description,
             });
-            response.wait().then(response => updateTxStatus(response));
+            response.wait().then(response => updateTxStatus(response, updateTransaction));
           })
           .catch(e => {
             // TODO: handle error
           });
+        closeModal();
       },
       confirmOverview: {
         breakdown: [
@@ -504,7 +524,7 @@ const ModalAddLiquidity = ({
 
           <BuySellButton
             action={() => setShowBackView(true)}
-            disabled={Boolean(InputFormError)}
+            disabled={!isApproved || Boolean(InputFormError)}
             error={buttonError}
             text={!InputFormError ? buttonError ? buttonError : LIQUIDITY_STRINGS[modalType].actionButtonText : InputFormError}
           />

@@ -132,7 +132,7 @@ const ModalConnectWallet = ({
   transactions,
 }: ModalConnectWalletProps) => {
   const {
-    actions: { closeModal, setModal },
+    actions: { removeTransaction, closeModal, setModal },
     modal: { type },
   } = useAppStatusStore();
   // important that these are destructed from the account-specific web3-react context
@@ -142,8 +142,6 @@ const ModalConnectWallet = ({
   const [pendingError, setPendingError] = useState<boolean>();
   const previousAccount = usePrevious(account);
   const [walletList, setWalletList] = useState();
-  const modalIsOpen = type === MODAL_CONNECT_WALLET;
-
   const toggleModal = useCallback(() => {
     if (type === MODAL_CONNECT_WALLET) {
       closeModal();
@@ -155,7 +153,7 @@ const ModalConnectWallet = ({
         transactions,
       });
     }
-  }, [autoLogin, closeModal, darkMode, modalIsOpen, setModal, transactions, type]);
+  }, [autoLogin, closeModal, darkMode, setModal, transactions, type]);
 
   const tryActivation = useCallback((connector: AbstractConnector | undefined) => {
     let name = '';

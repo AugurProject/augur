@@ -11,6 +11,7 @@ import {TinyButton} from 'modules/common/buttons';
 import {Spinner} from 'modules/common/spinner';
 import {GetWalletIcon} from 'modules/common/get-wallet-icon';
 import {AbstractConnector} from '@web3-react/abstract-connector';
+import { TX_STATUS } from '../../../constants';
 
 interface AccountCardProps {
   account: string;
@@ -92,18 +93,45 @@ const Transaction = ({label, link, status, chainId}) => (
   </div>
 );
 
-const Transactions = ({transactions, chainId}) => {
-  return transactions.length === 0 ? (
+
+const Transactions = ({transactions, removeTransaction, chainId}) => {
+  const [clear, setClear ] = useState(false);
+  const [userTransactions, setUserTransactions ] = useState(transactions);
+
+  useEffect(() => {
+    const handleClear = () => {
+      // Remove all transaction that aren't PENDING
+      const transactionsToRemove = transactions
+        .filter(tx => [TX_STATUS.CONFIRMED, TX_STATUS.FAILURE].includes(tx.status))
+        .map(tx => tx.hash);
+
+      setUserTransactions(userTransactions.filter(tx => !transactionsToRemove.includes(tx.hash)))
+      if (transactionsToRemove) {
+        transactionsToRemove.forEach(tx => {
+          removeTransaction(tx);
+        });
+        setClear(false);
+      }
+    }
+
+    if (clear) {
+      handleClear();
+    }
+  }, [removeTransaction, transactions, clear, setClear, userTransactions]);
+
+  const canClear = userTransactions.filter(tx => [TX_STATUS.CONFIRMED, TX_STATUS.FAILURE].includes(tx.status)).length > 0;
+
+  return userTransactions.length === 0 ? (
     <span>Your Transactions will appear here</span>
   ) : (
     <div className={Styles.Transactions}>
       <div>
         <span>Recent Transactions</span>
-        <span></span>
+        <span onClick={() => canClear ? setClear(true) : null}>{canClear && 'Clear All'}</span>
       </div>
       <div className={Styles.TransactionList}>
         {
-          transactions.map(({message, hash, status}, index) => (
+          userTransactions.map(({message, hash, status}, index) => (
             <Transaction
               key={index}
               label={message}
@@ -134,6 +162,7 @@ interface AccountDetailsProps {
   openOptions: Function;
   darkMode: boolean;
   transactions: object[];
+  removeTransaction: Function;
 }
 
 const AccountDetails = ({
@@ -141,13 +170,15 @@ const AccountDetails = ({
   openOptions,
   darkMode,
   transactions,
+  removeTransaction,
 }: AccountDetailsProps) => {
   const { chainId, account, connector } = useActiveWeb3React();
   const [connectorName, setConnectorName] = useState(formatConnectorName(connector));
 
   useEffect(() => {
+    console.log('RENDER!~')
     setConnectorName(formatConnectorName(connector));
-  }, [account, connector]);
+  }, [account, connector, transactions]);
 
   return (
     <div className={classNames(Styles.AccountDetails, {
@@ -163,7 +194,7 @@ const AccountDetails = ({
         />
       </section>
       <footer>
-        <Transactions chainId={chainId} transactions={transactions} />
+        <Transactions chainId={chainId} removeTransaction={removeTransaction} transactions={transactions} />
       </footer>
     </div>
   )

@@ -19,11 +19,13 @@ import {
   SETTINGS_SLIPPAGE,
   OVER_SLIPPAGE,
   ERROR_AMOUNT,
+  TX_STATUS,
 } from '../constants';
 import { CurrencyDropdown } from '../common/selection';
 import { generateTooltip } from '../common/labels';
 import { doTrade, estimateEnterTrade, estimateExitTrade } from '../../utils/contract-calls';
 import { BigNumber as BN } from 'bignumber.js'
+import { updateTxStatus } from '../modal/modal-add-liquidity';
 
 export const DefaultMarketOutcomes = [
   {
@@ -358,7 +360,7 @@ const TradingForm = ({
     isMobile,
     loginAccount,
     approvals,
-    actions: { setShowTradingForm },
+    actions: { addTransaction, updateTransaction, setShowTradingForm },
     settings: { slippage },
     userInfo: { balances },
   } = useAppStatusStore();
@@ -367,14 +369,33 @@ const TradingForm = ({
     initialSelectedOutcome
   );
   const [buttonError, updateButtonError] = useState('');
+  const [isApproved, setIsApproved] = useState(true);
   const [breakdown, setBreakdown] = useState(getEnterBreakdown(null, amm?.cash));
   const [amount, setAmount] = useState<string>("");
   const [tradeEstimates, setTradeEstimates] = useState<TradeEstimates>({})
+
   const ammCash = amm?.cash;
   const outcomes = amm?.ammOutcomes || [];
 
   useEffect(() => {
     let isMounted = true;
+
+    if (loginAccount?.account && approvals) {
+      if (orderType === BUY ) {
+        if (approvals?.trade?.enter[ammCash?.name]) {
+          setIsApproved(true);
+        } else {
+          setIsApproved(false);
+        }
+      } else if (orderType === SELL) {
+        if (approvals?.trade?.exit[ammCash?.name]) {
+          setIsApproved(true);
+        } else {
+          setIsApproved(false);
+        }
+      }
+    }
+
     const getEstimate = async () => {
       const outputYesShares = selectedOutcome.id === YES_OUTCOME_ID;
       if (orderType === BUY) {
@@ -427,7 +448,7 @@ const TradingForm = ({
     return () => {
       isMounted = false;
     }
-  }, [orderType, selectedOutcome.id, amount]);
+  }, [orderType, selectedOutcome.id, amount, approvals, amm, loginAccount?.account, amm?.cash, ammCash?.name, balances?.marketShares]);
 
   const userBalance = useMemo(() => {
     return orderType === BUY ? amm?.cash?.name
@@ -457,7 +478,7 @@ const TradingForm = ({
       disabled,
       actionText
     }
-  }, [orderType, selectedOutcome.id, amount, buttonError, userBalance, tradeEstimates, slippage]);
+  }, [orderType, amount, buttonError, userBalance, tradeEstimates, slippage]);
 
   const makeTrade = () => {
     const minOutput = tradeEstimates?.outputAmount;
@@ -470,12 +491,26 @@ const TradingForm = ({
     if (hasShares) {
       userBalances = hasShares.outcomeShares;
     }
-    doTrade(direction, amm, worstCaseOutput, amount, outputYesShares, userBalances).then(response => {
-      console.log('kicked off trade');
+    doTrade(direction, amm, worstCaseOutput, amount, outputYesShares, userBalances)
+    .then(response => {
+      if (response) {
+        const { hash } = response;
+        addTransaction({
+          hash,
+          chainId: loginAccount.chainId,
+          seen: false,
+          status: TX_STATUS.PENDING,
+          from: loginAccount.account,
+          addedTime: new Date().getTime(),
+          message: `${direction === TradingDirection.ENTRY ? 'Enter' : 'Exit'} Trade`,
+          marketDescription: amm?.market?.description,
+        });
+        response.wait().then(response => updateTxStatus(response, updateTransaction));
+      }
     })
-      .catch(e => {
-        console.error('trade issue', e);
-      })
+    .catch(e => {
+      //TODO: handle errors here
+    });
   }
 
   return (
@@ -525,14 +560,14 @@ const TradingForm = ({
           updateAmountError={updateButtonError}
         />
         <InfoNumbers infoNumbers={breakdown} />
-        {loginAccount && orderType === BUY && (
+        {loginAccount && !isApproved && orderType === BUY && (
           <ApprovalButton amm={amm} cash={ammCash} actionType={ApprovalAction.ENTER_POSITION} />
         )}
-        {loginAccount && orderType === SELL && (
+        {loginAccount && !isApproved && orderType === SELL && (
           <ApprovalButton amm={amm} cash={ammCash} actionType={ApprovalAction.EXIT_POSITION} />
         )}
         <BuySellButton
-          disabled={canMakeTrade.disabled || !approvals?.trade[ammCash?.name]}
+          disabled={canMakeTrade.disabled || !isApproved}
           action={makeTrade}
           text={canMakeTrade.actionText}
           error={buttonError}

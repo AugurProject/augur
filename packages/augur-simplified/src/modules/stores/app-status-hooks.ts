@@ -142,7 +142,28 @@ export function AppStatusReducer(state, action) {
       updatedState[IS_LOGGED] = false;
       updatedState[TRANSACTIONS] = [];
       updatedState[LOGIN_ACCOUNT] = null;
-      updatedState[APPROVALS] = DEFAULT_APP_STATUS_STATE.approvals
+      updatedState[APPROVALS] = {
+        trade: {
+          enter: {
+            USDC: false,
+            ETH: false,
+          },
+          exit: {
+            USDC: false,
+            ETH: false,
+          },
+        },
+        liquidity: {
+          add: {
+            USDC: false,
+            ETH: false
+          },
+          remove: {
+            USDC: false,
+            ETH: false
+          },
+        },
+      };
       updatedState[USER_INFO] = DEFAULT_APP_STATUS_STATE.userInfo
       break;
     }

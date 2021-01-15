@@ -54,7 +54,7 @@ const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode, transac
 
   useEffect(() => {
     if (autoLogin && !account) tryAutoLogin(activate);
-  }, [autoLogin]);
+  }, [autoLogin, account, activate]);
 
   useEffect(() => {
     if (account) {
