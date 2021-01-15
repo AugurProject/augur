@@ -1,6 +1,6 @@
 import BigNumber, { BigNumber as BN } from 'bignumber.js'
 import { RemoveLiquidityRate, ParaShareToken } from '@augurproject/sdk-lite'
-import { TradingDirection, AmmExchange, AmmExchanges, AmmMarketShares, AmmTransaction, Cashes, CurrencyBalance, PositionBalance, TransactionTypes, UserBalances, MarketInfos, LPTokens, EstimateEnterTradeResult, EstimateExitTradeResult, Cash, AddLiquidityBreakdown, LiquidityBreakdown } from '../modules/types'
+import { TradingDirection, AmmExchange, AmmExchanges, AmmMarketShares, AmmTransaction, Cashes, CurrencyBalance, PositionBalance, TransactionTypes, UserBalances, MarketInfos, LPTokens, EstimateEnterTradeResult, EstimateExitTradeResult, Cash, AddLiquidityBreakdown, LiquidityBreakdown, AmmOutcome } from '../modules/types'
 import ethers from 'ethers';
 import { Contract } from '@ethersproject/contracts'
 import {
@@ -13,6 +13,42 @@ import { convertDisplayCashAmountToOnChainCashAmount, convertDisplayShareAmountT
 import { augurSdkLite } from './augurlitesdk';
 import { ETH, FINALIZED, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_NO_OUTCOMES_NAMES, YES_OUTCOME_ID } from '../modules/constants';
 import { getProviderOrSigner } from '../modules/ConnectAccount/utils';
+
+const isValidPrice = (price: string): boolean => {
+  return price !== null && price !== undefined && price !== "0" && price !== "0.00";
+}
+
+interface LiquidityProperties {
+  account: string,
+  amm: AmmExchange,
+  marketId: string,
+  cash: Cash,
+  fee: string,
+  amount: string,
+  priceNo: string,
+  priceYes: string
+}
+
+export const checkConvertLiquidityProperties = (account: string, marketId: string,
+  amount: string, fee: string, outcomes: AmmOutcome[], cash: Cash, amm: AmmExchange): LiquidityProperties => {
+  if (!account || !marketId || !amount || !outcomes || outcomes.length === 0 || !cash) return null;
+  const priceNo = outcomes[NO_OUTCOME_ID]?.price;
+  const priceYes = outcomes[YES_OUTCOME_ID]?.price;
+  if (!isValidPrice(priceNo) || !isValidPrice(priceYes)) return null;
+  if (amount === "0" || amount === "0.00") return null;
+  if (Number(fee) < 0) return null;
+
+  return {
+    account,
+    amm,
+    marketId,
+    cash,
+    fee,
+    amount,
+    priceNo,
+    priceYes
+  };
+}
 
 const convertPriceToPercent = (price: string) => {
   return String(new BN(price).times(100));
@@ -77,7 +113,7 @@ export async function getAmmLiquidity(
     }
     // TODO: Get amounts of yes and no shares from estimate
     // middleware changes might be needed
-    const lpTokens = String(convertOnChainSharesToDisplayShareAmount(String(lpTokensValue), cash.decimals));
+    const lpTokens = String(formatEther(convertOnChainSharesToDisplayShareAmount(String(lpTokensValue), cash.decimals)).formattedValue);
     return {
       lpTokens,
       cashAmount: "0",
@@ -153,8 +189,8 @@ export async function getRemoveLiquidity(
     console.error('getRemoveLiquidity: augurClient is null or no amm address');
     return null;
   }
-  //console.log('marketId', marketId, 'paraSharetoken', cash?.shareToken, 'fee', fee, 'lp tokens', lpTokenBalance);
   const balance = convertDisplayShareAmountToOnChainShareAmount(lpTokenBalance, cash?.decimals);
+  console.log('marketId', marketId, 'paraSharetoken', cash?.shareToken, 'fee', fee, 'lp tokens', lpTokenBalance, 'raw balance', String(balance));
   const alsoSell = true;
   const results: RemoveLiquidityRate = await augurClient.amm.getRemoveLiquidity(
     marketId,

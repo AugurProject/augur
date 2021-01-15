@@ -139,7 +139,6 @@ export const AmountInput = ({
     updateAmountError(returnError);
   }
   useEffect(() => updateAmount(initialAmount), [initialAmount])
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => errorCheck(amount), [amount, maxValue])
   return (
     <div
@@ -429,7 +428,6 @@ const TradingForm = ({
     return () => {
       isMounted = false;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderType, selectedOutcome.id, amount]);
 
   const userBalance = useMemo(() => {
@@ -440,7 +438,6 @@ const TradingForm = ({
         balances?.marketShares[amm?.id].outcomeShares[selectedOutcome.id]
         : "0"
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderType, amm?.cash?.name, amm?.id, selectedOutcome.id, balances]);
 
   const canMakeTrade: CanTradeProps = useMemo(() => {
@@ -461,7 +458,6 @@ const TradingForm = ({
       disabled,
       actionText
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderType, selectedOutcome.id, amount, buttonError, userBalance, tradeEstimates, slippage]);
 
   const makeTrade = () => {
