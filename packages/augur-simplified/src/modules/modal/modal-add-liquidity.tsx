@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 
 import Styles from 'modules/modal/modal.styles.less';
 import { Header } from './common';
-import { YES_NO, BUY, USDC, SHARES, ApprovalAction, ENTER_AMOUNT, YES_OUTCOME_ID, NO_OUTCOME_ID, CREATE, ADD, REMOVE, LIQUIDITY_STRINGS, CONNECT_ACCOUNT, SET_PRICES } from '../constants';
+import { YES_NO, BUY, USDC, SHARES, ApprovalAction, ENTER_AMOUNT, YES_OUTCOME_ID, NO_OUTCOME_ID, CREATE, ADD, REMOVE, LIQUIDITY_STRINGS, CONNECT_ACCOUNT, SET_PRICES, INSUFFICIENT_BALANCE } from '../constants';
 import { OutcomesGrid, AmountInput, InfoNumbers } from '../market/trading-form';
 import { ApprovalButton, BuySellButton } from '../common/buttons';
 import { ErrorBlock, generateTooltip } from '../common/labels';
@@ -10,7 +10,7 @@ import { convertDisplayShareAmountToOnChainShareAmount, formatPercent, convertOn
 import { MultiButtonSelection } from '../common/selection';
 import classNames from 'classnames';
 import { AddLiquidityBreakdown, AmmOutcome, LiquidityBreakdown, MarketInfo } from '../types';
-import { checkConvertLiquidityProperties, doAmmLiquidity, doRemoveAmmLiquidity, getAmmLiquidity, getRemoveLiquidity, runAddAdditionalLiquidity } from '../../utils/contract-calls';
+import { checkConvertLiquidityProperties, doAmmLiquidity, doRemoveAmmLiquidity, getAmmLiquidity, getRemoveLiquidity } from '../../utils/contract-calls';
 import { useAppStatusStore } from '../stores/app-status';
 import { BigNumber as BN } from 'bignumber.js'
 
@@ -138,7 +138,9 @@ const ModalAddLiquidity = ({
 
   const userTokenBalance = cash?.name ? balances[cash?.name]?.balance : "0";
   const shareBalance = balances && balances.lpTokens && balances.lpTokens[amm?.id] && balances.lpTokens[amm?.id]?.balance;
-  const [amount, updateAmount] = useState(userTokenBalance);
+  const userMaxAmount = modalType === REMOVE ? shareBalance : userTokenBalance;
+
+  const [amount, updateAmount] = useState(modalType === REMOVE ? '' : userMaxAmount);
   const [errorMessage, setErrorMessage] = useState<string>(modalType === REMOVE ? ENTER_AMOUNT : '');
 
   const percentFormatted = useMemo(() => {
@@ -173,6 +175,7 @@ const ModalAddLiquidity = ({
     if (errorMessage) return errorMessage;
     if (!amount || amount === '0') return ENTER_AMOUNT;
     if (!account) return CONNECT_ACCOUNT;
+    if (new BN(amount).gt(new BN(userMaxAmount))) return INSUFFICIENT_BALANCE;
     if (modalType === CREATE) {
       const yesPrice = outcomes[YES_OUTCOME_ID].price;
       const noPrice = outcomes[NO_OUTCOME_ID].price;
@@ -180,7 +183,7 @@ const ModalAddLiquidity = ({
         return SET_PRICES
       }
     }
-  }, [errorMessage, buttonError, modalType, outcomes[YES_OUTCOME_ID]?.price, outcomes[NO_OUTCOME_ID]?.price, amount, account]);
+  }, [errorMessage, buttonError, modalType, outcomes[YES_OUTCOME_ID]?.price, outcomes[NO_OUTCOME_ID]?.price, amount, account, userMaxAmount]);
 
   const LIQUIDITY_METHODS = {
     [REMOVE]: {
@@ -396,7 +399,7 @@ const ModalAddLiquidity = ({
           <AmountInput
             updateInitialAmount={(amount) => updateAmount(amount)}
             initialAmount={modalType === REMOVE ? '' : amount}
-            maxValue={modalType === REMOVE ? shareBalance : userTokenBalance}
+            maxValue={userMaxAmount}
             showCurrencyDropdown={!currency}
             chosenCash={modalType === REMOVE ? SHARES : chosenCash}
             updateCash={updateCash}
