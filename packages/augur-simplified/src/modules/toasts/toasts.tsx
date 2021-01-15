@@ -38,6 +38,7 @@ export const Toasts = () => {
 
 const Toast = ({ toast, markAsSeen }) => {
   const confirmed = toast.status === TX_STATUS.CONFIRMED;
+
   useEffect(() => {
     const curToast = toast;
     if (!curToast.seen) {
@@ -50,7 +51,6 @@ const Toast = ({ toast, markAsSeen }) => {
       }
     }
     return undefined;
-    // eslint-disable-next-line
   }, []);
 
   return (
