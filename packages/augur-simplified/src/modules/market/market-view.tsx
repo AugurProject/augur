@@ -174,7 +174,7 @@ const MarketView = ({ defaultMarket = null }) => {
         <section>
           <TradingForm initialSelectedOutcome={selectedOutcome} amm={amm} />
           {!isMobile && <AddLiquidity market={market} />}
-          {currentAMMs.length === 1 && (
+          {!isMobile && currentAMMs.length === 1 && (
             <AddCurrencyLiquidity
               market={market}
               currency={currentAMMs[0] === USDC ? ETH : USDC}
