@@ -9,6 +9,7 @@ import {GetWalletIcon} from 'modules/common/get-wallet-icon';
 import {useActiveWeb3React} from 'modules/ConnectAccount/hooks';
 import {MODAL_CONNECT_WALLET} from 'modules/constants';
 import {useAppStatusStore} from 'modules/stores/app-status';
+import {tryAutoLogin} from 'modules/ConnectAccount/utils';
 
 interface LoginButtonProps {
   action: Function;
@@ -48,8 +49,12 @@ const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode, transac
   const {
     actions: { setModal },
   } = useAppStatusStore();
-  const { account, connector, error } = useWeb3React();
+  const { account, activate, connector, error } = useWeb3React();
   const activeWeb3 = useActiveWeb3React();
+
+  useEffect(() => {
+    if (autoLogin && !account) tryAutoLogin(account, activate);
+  }, [autoLogin]);
 
   useEffect(() => {
     if (account) {

@@ -3,6 +3,9 @@ import { ChainId } from "@uniswap/sdk"
 import { Contract, ethers } from "ethers"
 import { AddressZero } from '@ethersproject/constants'
 import { EthersProvider } from '@augurproject/ethersjs-provider'
+import {SUPPORTED_WALLETS} from 'modules/ConnectAccount/constants';
+import {WalletConnectConnector} from '@web3-react/walletconnect-connector';
+import {UnsupportedChainIdError} from '@web3-react/core';
 
 const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
   1: '',
@@ -80,4 +83,22 @@ export default function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider, 'any')
   library.pollingInterval = 12000
   return library
+}
+
+export const tryAutoLogin = (account, activate) => {
+  const {connector} = SUPPORTED_WALLETS['METAMASK'];
+  // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
+  if (connector instanceof WalletConnectConnector && connector.walletConnectProvider?.wc?.uri) {
+    connector.walletConnectProvider = undefined
+  }
+
+  setTimeout(() => {
+    activate(connector, undefined, true).catch(error => {
+      if (error instanceof UnsupportedChainIdError) {
+        activate(connector) // a little janky...can't use setError because the connector isn't set
+      }
+    }).then(() => {
+      activate(connector)
+    })
+  });
 }
