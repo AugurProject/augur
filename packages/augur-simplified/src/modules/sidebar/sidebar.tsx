@@ -43,7 +43,7 @@ const FilterSideBar = () => {
     actions: { updateMarketsViewSettings, setSidebar },
   } = useAppStatusStore();
   const [localSettings, setLocalSettings] = useState(marketsViewSettings);
-  const filtersAreResetted = JSON.stringify(localSettings) === JSON.stringify(DEFAULT_MARKET_VIEW_SETTINGS);
+  const filtersAreReset = JSON.stringify(localSettings) === JSON.stringify(DEFAULT_MARKET_VIEW_SETTINGS);
 
   return (
     <>
@@ -88,7 +88,7 @@ const FilterSideBar = () => {
           action={() => {
             setLocalSettings(DEFAULT_MARKET_VIEW_SETTINGS);
           }}
-          disabled={filtersAreResetted}
+          disabled={filtersAreReset}
         />
         <PrimaryButton
           text="apply filters"
