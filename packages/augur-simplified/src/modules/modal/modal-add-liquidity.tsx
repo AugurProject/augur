@@ -9,7 +9,7 @@ import { ErrorBlock, generateTooltip } from '../common/labels';
 import { convertDisplayShareAmountToOnChainShareAmount, formatPercent, convertOnChainSharesToDisplayShareAmount } from '../../utils/format-number';
 import { MultiButtonSelection } from '../common/selection';
 import classNames from 'classnames';
-import { AddLiquidityBreakdown, AmmOutcome, LiquidityBreakdown, MarketInfo } from '../types';
+import { AddLiquidityBreakdown, AmmOutcome, Cash, LiquidityBreakdown, MarketInfo } from '../types';
 import { checkConvertLiquidityProperties, doAmmLiquidity, doRemoveAmmLiquidity, getAmmLiquidity, getRemoveLiquidity } from '../../utils/contract-calls';
 import { useAppStatusStore } from '../stores/app-status';
 import { BigNumber as BN } from 'bignumber.js'
@@ -70,7 +70,7 @@ const fakeYesNoOutcomes = [
   },
 ];
 
-const getLiquidityBreakdown = (breakdown: LiquidityBreakdown) => {
+const getRemoveLiquidityBreakdown = (breakdown: LiquidityBreakdown, cash: Cash) => {
   return [
     {
       label: 'yes shares',
@@ -81,7 +81,7 @@ const getLiquidityBreakdown = (breakdown: LiquidityBreakdown) => {
       value: breakdown.noShares,
     },
     {
-      label: 'liquidity shares',
+      label: `${cash?.name || 'collateral'}`,
       value: breakdown.cashAmount,
     },
   ]
@@ -214,7 +214,7 @@ const ModalAddLiquidity = ({
           return defaultAddLiquidityBreakdown;
         }
         setErrorMessage('');
-        setBreakdown(getLiquidityBreakdown(results));
+        setBreakdown(getRemoveLiquidityBreakdown(results, cash));
       },
       liquidityDetailsFooter: {
         breakdown: [
