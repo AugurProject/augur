@@ -147,7 +147,7 @@
   box-shadow: unset;
   transition: box-shadow 0.3s ease-out;
 
-  &:hover {
+  &:hover:not(:disabled) {
     box-shadow: 0 @size-8 @size-40 var(--simple-shadow-10);
     transition: box-shadow 0.3s ease-out;
   }
