@@ -318,7 +318,7 @@ const ModalConnectWallet = ({
     />
   );
 
-  const body = (
+  const main = (
     <div className={classNames(Styles.ModalConnectWallet, {
       [Styles.Account]: account && walletView === WALLET_VIEWS.ACCOUNT,
     })}>
@@ -360,7 +360,7 @@ const ModalConnectWallet = ({
   return (
     <ModalStructure
       header={header}
-      body={body}
+      main={main}
     />
   )
 };

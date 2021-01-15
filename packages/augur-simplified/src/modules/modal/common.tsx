@@ -29,7 +29,7 @@ interface ModalStructureProps {
   footer?: ReactNode;
 }
 
-export const ModalStructure = ({header, body, footer}: ModalStructureProps) => {
+export const ModalStructure = ({header, main, footer}: ModalStructureProps) => {
   return (
     <div className={Styles.ModalStructure}>
       {header && (
@@ -37,9 +37,9 @@ export const ModalStructure = ({header, body, footer}: ModalStructureProps) => {
           {header}
         </header>
       )}
-      {body && (
+      {main && (
         <main>
-          {body}
+          {main}
         </main>
       )}
       {footer && (
