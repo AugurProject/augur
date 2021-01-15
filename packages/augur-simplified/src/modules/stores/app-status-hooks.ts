@@ -48,6 +48,7 @@ const {
   TRANSACTIONS,
   BLOCKNUMBER,
   MODAL,
+  IS_LOGGED,
 } = APP_STATE_KEYS;
 
 const isAsync = (obj) => {
@@ -138,15 +139,16 @@ export function AppStatusReducer(state, action) {
       break;
     }
     case LOGOUT: {
+      updatedState[IS_LOGGED] = false;
       updatedState[TRANSACTIONS] = [];
       updatedState[LOGIN_ACCOUNT] = null;
       updatedState[APPROVALS] = DEFAULT_APP_STATUS_STATE.approvals
       updatedState[USER_INFO] = DEFAULT_APP_STATUS_STATE.userInfo
       break;
     }
-
     case SET_LOGIN_ACCOUNT: {
       updatedState[LOGIN_ACCOUNT] = action.account;
+      updatedState[IS_LOGGED] = !!action.account?.account;
 
       if (updatedState.processed?.ammExchanges) {
         const activity = shapeUserActvity(

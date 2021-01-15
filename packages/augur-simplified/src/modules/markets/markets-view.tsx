@@ -29,7 +29,7 @@ import {
   TOTAL_VOLUME,
   DEFAULT_MARKET_VIEW_SETTINGS,
   ENDING_SOON,
-  FINALIZED,
+  RESOLVED,
   IN_SETTLEMENT,
   LIQUIDITY,
   MARKET_STATUS,
@@ -90,10 +90,9 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
   const { categories, description, marketId, amm, reportingState } = market;
   const formattedApy = amm?.apy && formatPercent(amm.apy).full;
   const {
-    loginAccount,
+    isLogged,
     actions: { setModal },
   } = useAppStatusStore();
-  const isLogged = loginAccount?.account;
   return (
     <article
       className={classNames(Styles.MarketCard, {
@@ -194,7 +193,7 @@ const applyFiltersAndSort = (
           market.reportingState !== MARKET_STATUS.DISPUTING
         )
           return false;
-      } else if (reportingState === FINALIZED) {
+      } else if (reportingState === RESOLVED) {
         if (
           market.reportingState !== MARKET_STATUS.FINALIZED &&
           market.reportingState !== MARKET_STATUS.SETTLED

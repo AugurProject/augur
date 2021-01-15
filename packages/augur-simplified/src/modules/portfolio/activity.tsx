@@ -21,10 +21,9 @@ const ActivityCard = ({ activity }: { activity: ActivityItem }) => (
 
 export const Activity = () => {
   const {
+    isLogged,
     userInfo: { activity },
-    loginAccount,
   } = useAppStatusStore();
-  const isLogged = loginAccount !== null;
   return (
     <div className={Styles.Activity}>
       <span>your activity</span>

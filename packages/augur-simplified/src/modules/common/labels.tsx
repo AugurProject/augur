@@ -199,10 +199,9 @@ interface AppViewStatsProps {
 export const AppViewStats = ({ showCashAmounts }: AppViewStatsProps) => {
   const {
     isMobile,
-    loginAccount,
+    isLogged,
     userInfo: { balances },
   } = useAppStatusStore();
-  const isLogged = Boolean(loginAccount?.account);
   const totalAccountValue = useMemo(
     () => handleValue(isLogged ? balances?.totalAccountValue : 0),
     [isLogged, balances.totalAccountValue]
@@ -258,10 +257,9 @@ export const AppViewStats = ({ showCashAmounts }: AppViewStatsProps) => {
 
 export const AddLiquidity = ({ market }: { market: MarketInfo }) => {
   const {
-    loginAccount,
+    isLogged,
     actions: { setModal },
   } = useAppStatusStore();
-  const isLogged = loginAccount?.account;
   return (
     <button
       className={classNames(Styles.AddLiquidity)}
@@ -295,10 +293,9 @@ export const AddCurrencyLiquidity = ({
   currency: string;
 }) => {
   const {
-    loginAccount,
+    isLogged,
     actions: { setModal },
   } = useAppStatusStore();
-  const isLogged = loginAccount?.account;
   return (
     <button
       className={classNames(Styles.AddCurrencyLiquidity)}

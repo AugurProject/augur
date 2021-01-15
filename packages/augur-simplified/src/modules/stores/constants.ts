@@ -63,6 +63,7 @@ export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
   },
   sidebarType: null,
   loginAccount: null,
+  isLogged: false,
   modal: {},
   showTradingForm: false,
   marketInfos: {},
@@ -124,7 +125,8 @@ export const APP_STATE_KEYS = {
   PARA_CONFIG: 'paraConfig',
   SETTINGS: 'settings',
   BLOCKNUMBER: 'blocknumber',
-  MODAL: 'modal'
+  MODAL: 'modal',
+  IS_LOGGED: 'isLogged',
 };
 
 export const APP_STATUS_ACTIONS = {

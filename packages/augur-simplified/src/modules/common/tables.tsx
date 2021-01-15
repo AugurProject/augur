@@ -279,10 +279,9 @@ export const LiquidityTable = ({
   lpTokens,
 }: LiquidityTableProps) => {
   const {
-    loginAccount,
+    isLogged,
     actions: { setModal },
   } = useAppStatusStore();
-  const isLogged = loginAccount?.account;
   return (
     <div className={Styles.LiquidityTable}>
       {!singleMarket && (
