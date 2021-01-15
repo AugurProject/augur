@@ -2,9 +2,9 @@ import React, {useEffect, useState} from 'react';
 import ModalAddLiquidity from '../modal/modal-add-liquidity';
 import {useHistory} from 'react-router';
 import Styles from 'modules/modal/modal.styles.less';
-import {useAppStatusStore} from 'modules/stores/app-status';
-import {MODAL_ADD_LIQUIDITY, MODAL_CONNECT_WALLET} from 'modules/constants';
-import ModalConnectWallet from 'modules/modal/modal-connect-wallet';
+import {useAppStatusStore} from '../stores/app-status';
+import {MODAL_ADD_LIQUIDITY, MODAL_CONNECT_WALLET} from '../constants';
+import ModalConnectWallet from '../modal/modal-connect-wallet';
 
 function selectModal(type, modal) {
   switch (type) {

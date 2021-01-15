@@ -36,7 +36,7 @@
     flex: 1;
   }
 
-  > div:last-of-type {
+  > div:last-of-type:not(:first-of-type) {
     justify-content: center;
     margin: @size-48 0 @size-8;
   }
@@ -83,8 +83,7 @@
 
       color: var(--simple-primary-text);
       grid-column: 1 / span 3;
-      margin-top: @size-16;
-      margin-bottom: @size-38;
+      margin: @size-16 0;
       text-align: left;
       height: @size-80;
     }

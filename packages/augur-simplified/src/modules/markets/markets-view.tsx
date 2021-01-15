@@ -35,6 +35,7 @@ import {
   MARKET_STATUS,
   MODAL_ADD_LIQUIDITY,
   TWENTY_FOUR_HOUR_VOLUME,
+  CREATE,
 } from '../constants';
 import {
   CurrencyTipIcon,
@@ -109,6 +110,7 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
           : setModal({
               type: MODAL_ADD_LIQUIDITY,
               market,
+              liquidityModalType: CREATE,
               currency: amm?.cash?.name,
             })
       }

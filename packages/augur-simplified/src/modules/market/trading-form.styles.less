@@ -73,7 +73,7 @@
       margin-top: @size-24;
 
       &:nth-of-type(2) {
-        margin-top: @size-8;
+        margin-top: @size-16;
       }
     }
 
@@ -150,6 +150,10 @@
   padding: @size-10 @size-16;
   flex: 1;
   text-transform: capitalize;
+  min-height: @size-106;
+  height: @size-106;
+  max-height: @size-106;
+  justify-content: center;
 
   > span {
     &:first-of-type {
@@ -158,7 +162,6 @@
     &:last-of-type {
       .text-16-semi-bold;
 
-      flex: 1;
       justify-content: flex-end;
       display: flex;
     }
@@ -409,6 +412,8 @@
     outline: 0;
     flex: 1;
     padding: @size-16 @size-12;
+    margin-right: @size-80;
+    padding-right: 0;
     padding-left: 0;
 
     &:focus {

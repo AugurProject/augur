@@ -222,6 +222,7 @@ export const LiquidityFooter = ({ market }: { market: MarketInfo }) => {
           setModal({
             type: MODAL_ADD_LIQUIDITY,
             market,
+            currency: market?.amm?.cash?.name,
             liquidityModalType: REMOVE,
           })
         }
@@ -291,6 +292,7 @@ export const LiquidityTable = ({
               setModal({
                 type: MODAL_ADD_LIQUIDITY,
                 market,
+                liquidityModalType: ADD,
                 currency: ammExchange?.cash?.name,
               })
             }
