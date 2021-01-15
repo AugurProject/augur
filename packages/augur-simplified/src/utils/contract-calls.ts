@@ -189,8 +189,8 @@ export async function getRemoveLiquidity(
     console.error('getRemoveLiquidity: augurClient is null or no amm address');
     return null;
   }
-  //console.log('marketId', marketId, 'paraSharetoken', cash?.shareToken, 'fee', fee, 'lp tokens', lpTokenBalance);
   const balance = convertDisplayShareAmountToOnChainShareAmount(lpTokenBalance, cash?.decimals);
+  console.log('marketId', marketId, 'paraSharetoken', cash?.shareToken, 'fee', fee, 'lp tokens', lpTokenBalance, 'raw balance', String(balance));
   const alsoSell = true;
   const results: RemoveLiquidityRate = await augurClient.amm.getRemoveLiquidity(
     marketId,
