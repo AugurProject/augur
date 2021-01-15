@@ -25,7 +25,7 @@ export const Header = ({ title, subtitle }) => {
 
 interface ModalStructureProps {
   header?: ReactNode;
-  body?: ReactNode;
+  main?: ReactNode;
   footer?: ReactNode;
 }
 
@@ -33,19 +33,19 @@ export const ModalStructure = ({header, body, footer}: ModalStructureProps) => {
   return (
     <div className={Styles.ModalStructure}>
       {header && (
-        <div className={Styles.ModalStructureHeader}>
+        <header>
           {header}
-        </div>
+        </header>
       )}
       {body && (
-        <div className={Styles.ModalStructureBody}>
+        <main>
           {body}
-        </div>
+        </main>
       )}
       {footer && (
-        <div className={Styles.ModalStructureFooter}>
+        <footer>
           {footer}
-        </div>
+        </footer>
       )}
     </div>
   )
