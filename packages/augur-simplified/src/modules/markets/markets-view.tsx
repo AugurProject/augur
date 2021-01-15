@@ -42,8 +42,9 @@ import {
   NetworkMismatchBanner,
   ReportingStateLabel,
 } from '../common/labels';
+import { sliceByPage } from '../common/pagination';
 
-const PAGE_LIMIT = 20;
+const PAGE_LIMIT = 21;
 
 const LoadingMarketCard = () => {
   return (
@@ -149,10 +150,6 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
       </div>
     </article>
   );
-};
-
-const getOffset = (page) => {
-  return (page - 1) * PAGE_LIMIT;
 };
 
 const applyFiltersAndSort = (
@@ -311,9 +308,7 @@ const MarketsView = () => {
       )}
       {!loading && filteredMarkets.length > 0 && (
         <section>
-          {filteredMarkets
-            .slice(getOffset(page), getOffset(page) + PAGE_LIMIT)
-            .map((market, index) => (
+          {sliceByPage(filteredMarkets, page, PAGE_LIMIT).map((market, index) => (
               <MarketCard key={`${market.marketId}-${index}`} market={market} />
             ))}
         </section>
