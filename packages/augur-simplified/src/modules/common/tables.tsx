@@ -113,18 +113,24 @@ const PositionRow = ({ position }: { position: PositionBalance }) => {
 
 interface PositionFooterProps {
   claimableWinnings?: Winnings;
+  market: MarketInfo;
 }
-export const PositionFooter = ({ claimableWinnings }: PositionFooterProps) => {
+export const PositionFooter = ({ claimableWinnings, market }: PositionFooterProps) => {
   const { isMobile } = useAppStatusStore();
-  if (isMobile && !claimableWinnings) return null;
+ if (isMobile && !claimableWinnings) return null;
   return (
     <div className={Styles.PositionFooter}>
       {claimableWinnings && (
-        <SecondaryButton
-          text={`${claimableWinnings.claimableBalance} in Winnings to claim`}
-        />
+        <>
+          <span>
+            {`${market.fee}% fee charged on settlement`}
+          </span>
+          <PrimaryButton
+            text={`${claimableWinnings?.claimableBalance} in Winnings to claim`}
+          />
+        </>
       )}
-      {!isMobile && <PrimaryButton text="trade" />}
+      {!isMobile && <SecondaryButton text="trade" />}
     </div>
   );
 };
@@ -176,7 +182,7 @@ export const PositionTable = ({
           .filter((p) => p.visible)
           .map((position, id) => <PositionRow key={id} position={position} />)}
       {!singleMarket && (
-        <PositionFooter claimableWinnings={claimableWinnings} />
+        <PositionFooter market={market} claimableWinnings={claimableWinnings} />
       )}
       {singleMarket && positions.length !== 0 && (
         <div className={Styles.PaginationFooter} />

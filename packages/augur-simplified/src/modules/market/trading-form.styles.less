@@ -412,7 +412,7 @@
     outline: 0;
     flex: 1;
     padding: @size-16 @size-12;
-    margin-right: @size-80;
+    margin-right: @size-8;
     padding-right: 0;
     padding-left: 0;
 
@@ -435,9 +435,14 @@
     margin-left: @size-16;
   }
 
-
   &.Edited {
     color: var(--simple-primary-text);
+  }
+
+  &.showCurrencyDropdown {
+    > input {
+      margin-right: @size-80;
+    }
   }
 }
 

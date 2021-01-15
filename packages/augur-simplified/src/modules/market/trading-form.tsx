@@ -147,6 +147,7 @@ export const AmountInput = ({
       <div
         className={classNames(Styles.AmountInputDropdown, {
           [Styles.Edited]: amount !== '',
+          [Styles.showCurrencyDropdown]: showCurrencyDropdown
         })}
       >
         <span>{prepend}</span>
