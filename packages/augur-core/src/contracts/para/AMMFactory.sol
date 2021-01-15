@@ -13,6 +13,8 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
 
     IAMMExchange internal proxyToClone;
 
+    event AMMCreated(IAMMExchange amm, IMarket market, ParaShareToken shareToken, uint256 fee);
+
     constructor(address _proxyToClone) public {
         proxyToClone = IAMMExchange(_proxyToClone);
     }
@@ -21,6 +23,9 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         IAMMExchange _amm = IAMMExchange(createClone2(address(proxyToClone), salt(_market, _para, _fee)));
         _amm.initialize(_market, _para, _fee);
         exchanges[address(_market)][address(_para)][_fee] = address(_amm);
+
+        emit AMMCreated(_amm, _market, _para, _fee);
+
         return address(_amm);
     }
 
@@ -37,6 +42,8 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         IAMMExchange _amm = IAMMExchange(_ammAddress);
         _amm.initialize(_market, _para, _fee);
         exchanges[address(_market)][address(_para)][_fee] = _ammAddress;
+
+        emit AMMCreated(_amm, _market, _para, _fee);
 
         // User sends cash to factory, which turns cash into LP tokens and shares which it gives to the user.
         _para.cash().transferFrom(msg.sender, address(this), _cash);
