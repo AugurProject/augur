@@ -133,8 +133,6 @@ export const AmountInput = ({
     let returnError = '';
     if (value !== '' && (isNaN(value) || Number(value) === 0 || Number(value) < 0)) {
       returnError = ERROR_AMOUNT;
-    } else if (value > maxValue) {
-      returnError = INSUFFICIENT_BALANCE;
     }
     updateAmountError(returnError);
   }
