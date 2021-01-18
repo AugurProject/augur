@@ -48,6 +48,7 @@ export const DAI = 'DAI';
 export const USDT = 'USDT';
 export const USDC = 'USDC';
 export const SHARES = 'SHARES';
+export const ALL_CURRENCIES = 'All Currencies';
 
 // Portfolio table views
 export const POSITIONS = 'positions';
@@ -192,8 +193,8 @@ export const marketStatusItems = [
 
 export const currencyItems = [
   {
-    label: ALL,
-    value: ALL,
+    label: ALL_CURRENCIES,
+    value: ALL_CURRENCIES,
   },
   {
     label: ETH,
@@ -236,7 +237,7 @@ export const DEFAULT_MARKET_VIEW_SETTINGS = {
   categories: ALL_MARKETS,
   reportingState: OPEN,
   sortBy: TOTAL_VOLUME,
-  currency: ALL,
+  currency: ALL_CURRENCIES,
 };
 
 export const CREATE = 'create';
