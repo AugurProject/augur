@@ -191,7 +191,7 @@ export async function getRemoveLiquidity(
     return null;
   }
   const balance = convertDisplayShareAmountToOnChainShareAmount(lpTokenBalance, cash?.decimals);
-  console.log('marketId', marketId, 'paraSharetoken', cash?.shareToken, 'fee', fee, 'lp tokens', lpTokenBalance, 'raw balance', String(balance));
+  //console.log('estimate remove liquidity', 'marketId', marketId, 'paraSharetoken', cash?.shareToken, 'fee', fee, 'lp tokens', lpTokenBalance, 'raw balance', String(balance));
   const results: RemoveLiquidityRate = await augurClient.amm.getRemoveLiquidity(
     marketId,
     cash.shareToken,
@@ -247,7 +247,7 @@ export const estimateEnterTrade = async (
   const estimatedShares = convertOnChainSharesToDisplayShareAmount(breakdownWithFeeRaw, amm.cash.decimals);
   const estimatedSharesWithoutFee = convertOnChainSharesToDisplayShareAmount(breakdownWithoutFeeRaw, amm.cash.decimals);
   const tradeFees = String(new BN(estimatedSharesWithoutFee).minus(new BN(estimatedShares)));
-
+  console.log('enter, breakdown estimateShares', String(estimatedShares))
   const averagePrice = new BN(inputDisplayAmount).div(new BN(estimatedShares)).toFixed(2);
   const maxProfit = String(new BN(estimatedShares).minus(new BN(inputDisplayAmount)));
   const price = outputYesShares ? amm.priceYes : amm.priceNo;
@@ -281,7 +281,7 @@ export const estimateExitTrade = async (
   const estimateCash = convertOnChainCashAmountToDisplayCashAmount(breakdownWithFeeRaw, amm.cash.decimals);
   const estimateCashWithoutFees = convertOnChainCashAmountToDisplayCashAmount(breakdownWithoutFeeRaw, amm.cash.decimals);
   const estimateFees = String(new BN(estimateCashWithoutFees).minus(new BN(estimateCash)));
-  console.log('breakdownWithoutFeeRaw', String(breakdownWithoutFeeRaw))
+  console.log('exit, breakdown estimateCash', String(estimateCash))
   const averagePrice = new BN(estimateCash).div(new BN(inputDisplayAmount)).toFixed(2);
   const price = outputYesShares ? amm.priceYes : amm.priceNo;
   const shares = outputYesShares ? new BN(userBalances[YES_OUTCOME_ID] || "0") : BigNumber.min(new BN(userBalances[0]), new BN(userBalances[NO_OUTCOME_ID]));
@@ -323,6 +323,7 @@ export const estimateMiddlewareTrade = async (
   if (tradeDirection === TradingDirection.ENTRY) {
     const inputOnChainCashAmount = convertDisplayCashAmountToOnChainCashAmount(new BN(inputDisplayAmount || "0"), new BN(cash?.decimals))
     console.log(
+      'estimate enter position',
       tradeDirection,
       'marketId',
       marketId,
