@@ -208,12 +208,8 @@ const ModalAddLiquidity = ({
     balances.lpTokens[amm?.id]?.balance;
   const userMaxAmount = modalType === REMOVE ? shareBalance : userTokenBalance;
 
-  const [amount, updateAmount] = useState(
-    modalType === REMOVE ? '' : userMaxAmount
-  );
-  const [errorMessage, setErrorMessage] = useState<string>(
-    modalType === REMOVE ? ENTER_AMOUNT : ''
-  );
+  const [amount, updateAmount] = useState(userMaxAmount);
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   const percentFormatted = useMemo(() => {
     const feeOption = TRADING_FEE_OPTIONS.find(
@@ -659,7 +655,6 @@ const ModalAddLiquidity = ({
       },
     },
   };
-
   return (
     <section
       className={classNames(Styles.ModalAddLiquidity, {
@@ -678,20 +673,24 @@ const ModalAddLiquidity = ({
                 : null,
             }}
           />
-          {LIQUIDITY_STRINGS[modalType].amountSubtitle && (
-            <span className={Styles.SmallLabel}>
-              {LIQUIDITY_STRINGS[modalType].amountSubtitle}
-            </span>
+          {!LIQUIDITY_STRINGS[modalType].cantEditAmount && (
+            <>
+              {LIQUIDITY_STRINGS[modalType].amountSubtitle && (
+                <span className={Styles.SmallLabel}>
+                  {LIQUIDITY_STRINGS[modalType].amountSubtitle}
+                </span>
+              )}
+              <AmountInput
+                updateInitialAmount={(amount) => updateAmount(amount)}
+                initialAmount={modalType === REMOVE ? '' : amount}
+                maxValue={userMaxAmount}
+                showCurrencyDropdown={!currency}
+                chosenCash={modalType === REMOVE ? SHARES : chosenCash}
+                updateCash={updateCash}
+                updateAmountError={updateButtonError}
+              />
+            </>
           )}
-          <AmountInput
-            updateInitialAmount={(amount) => updateAmount(amount)}
-            initialAmount={modalType === REMOVE ? '' : amount}
-            maxValue={userMaxAmount}
-            showCurrencyDropdown={!currency}
-            chosenCash={modalType === REMOVE ? SHARES : chosenCash}
-            updateCash={updateCash}
-            updateAmountError={updateButtonError}
-          />
           {LIQUIDITY_STRINGS[modalType].setFees && (
             <>
               <ErrorBlock text="Initial liquidity providers are required to set the starting prices before adding market liquidity." />
@@ -706,26 +705,28 @@ const ModalAddLiquidity = ({
               />
             </>
           )}
-
-          <span className={Styles.SmallLabel}>
-            {LIQUIDITY_STRINGS[modalType].setOddsTitle}
-          </span>
-          <OutcomesGrid
-            outcomes={outcomes}
-            selectedOutcome={null}
-            setSelectedOutcome={() => null}
-            marketType={YES_NO}
-            orderType={BUY}
-            nonSelectable
-            editable={mustSetPrices}
-            setEditableValue={(price, index) => {
-              const newOutcomes = outcomes;
-              newOutcomes[index].price = price;
-              setOutcomes(newOutcomes);
-            }}
-            ammCash={cash}
-          />
-
+          {!LIQUIDITY_STRINGS[modalType].hideCurrentOdds && (
+            <>
+              <span className={Styles.SmallLabel}>
+                {LIQUIDITY_STRINGS[modalType].setOddsTitle}
+              </span>
+              <OutcomesGrid
+                outcomes={outcomes}
+                selectedOutcome={null}
+                setSelectedOutcome={() => null}
+                marketType={YES_NO}
+                orderType={BUY}
+                nonSelectable
+                editable={mustSetPrices}
+                setEditableValue={(price, index) => {
+                  const newOutcomes = outcomes;
+                  newOutcomes[index].price = price;
+                  setOutcomes(newOutcomes);
+                }}
+                ammCash={cash}
+              />
+            </>
+          )}
           <span className={Styles.SmallLabel}>
             {LIQUIDITY_STRINGS[modalType].receiveTitle}
           </span>
