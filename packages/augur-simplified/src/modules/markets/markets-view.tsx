@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Styles from 'modules/markets/markets-view.styles.less';
 import { MarketLink } from 'modules/routes/helpers/links';
 import {
@@ -17,7 +17,7 @@ import { useAppStatusStore } from 'modules/stores/app-status';
 import { AmmExchange, MarketInfo } from '../types';
 import {
   SIDEBAR_TYPES,
-  ALL,
+  ALL_CURRENCIES,
   ALL_MARKETS,
   categoryItems,
   currencyItems,
@@ -173,7 +173,7 @@ const applyFiltersAndSort = (
       ) {
         return false;
       }
-      if (currency !== ALL) {
+      if (currency !== ALL_CURRENCIES) {
         if (!market.amm) {
           return false;
         } else if (market?.amm?.cash?.name !== currency) {

@@ -1,7 +1,7 @@
-import React, {useEffect, useState, useMemo, Fragment, useRef} from 'react';
+import React, { useEffect, useState, useMemo, Fragment, useRef } from 'react';
 import { useLocation } from 'react-router';
 import Styles from 'modules/common/top-nav.styles.less';
-import ButtonStyles from 'modules/common/buttons.styles.less'
+import ButtonStyles from 'modules/common/buttons.styles.less';
 import { Link } from 'react-router-dom';
 import { MARKETS, PORTFOLIO, SIDEBAR_TYPES } from 'modules/constants';
 import makePath from 'modules/routes/helpers/make-path';
@@ -48,7 +48,12 @@ export const SettingsButton = () => {
 
   useEffect(() => {
     const handleWindowOnClick = (event) => {
-      if (open && !!(event.target) && settingsRef.current !== null && !settingsRef?.current?.contains(event.target)) {
+      if (
+        open &&
+        !!event.target &&
+        settingsRef.current !== null &&
+        !settingsRef?.current?.contains(event.target)
+      ) {
         setOpened(false);
       }
     };
@@ -57,7 +62,7 @@ export const SettingsButton = () => {
 
     return () => {
       window.removeEventListener('click', handleWindowOnClick);
-    }
+    };
   });
 
   return (
@@ -96,9 +101,11 @@ export const SettingsButton = () => {
                 />
               </li>
               <li>
-                <div className={classNames({
-                  [Styles.Selected]: isSelectedArray[3],
-                })}>
+                <div
+                  className={classNames({
+                    [Styles.Selected]: isSelectedArray[3],
+                  })}
+                >
                   <input
                     type="number"
                     step="0.1"
@@ -142,6 +149,7 @@ export const TopNav = () => {
     paraConfig: { networkId },
     loginAccount,
     transactions,
+    isLogged,
     isMobile,
     actions: { setSidebar, updateLoginAccount, logout, addTransaction },
   } = useAppStatusStore();
@@ -163,10 +171,16 @@ export const TopNav = () => {
 
   const handleAccountUpdate = (activeWeb3) => {
     if (activeWeb3) {
-      const savedTransactions = JSON.parse(window.localStorage.getItem('transactions')) || [];
+      const savedTransactions =
+        JSON.parse(window.localStorage.getItem('transactions')) || [];
 
-      if (transactions && transactions.length === 0 && savedTransactions && savedTransactions.length > 0) {
-        savedTransactions.map(tx => addTransaction(tx));
+      if (
+        transactions &&
+        transactions.length === 0 &&
+        savedTransactions &&
+        savedTransactions.length > 0
+      ) {
+        savedTransactions.map((tx) => addTransaction(tx));
       }
 
       if (String(networkId) !== String(activeWeb3.chainId)) {
@@ -196,10 +210,19 @@ export const TopNav = () => {
         {!isMobile && (
           <ol>
             <li className={classNames({ [Styles.Active]: path === MARKETS })}>
-              <Link to={makePath(MARKETS)}>Markets</Link>
+              <Link placeholder="Markets" to={makePath(MARKETS)}>Markets</Link>
             </li>
             <li className={classNames({ [Styles.Active]: path === PORTFOLIO })}>
-              <Link to={makePath(PORTFOLIO)}>Portfolio</Link>
+              <Link
+                onClick={(e) => {
+                  !isLogged && e.preventDefault();
+                }}
+                disabled={!isLogged}
+                to={makePath(PORTFOLIO)}
+                placeholder={isLogged ? 'Portfolio' : 'Please Login to view Portfolio'}
+              >
+                Portfolio
+              </Link>
             </li>
           </ol>
         )}
