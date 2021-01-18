@@ -211,41 +211,52 @@
   }
 }
 
+.HeaderLink {
+  cursor: pointer;
+}
+
 .ModalConnectWallet {
-  > div:first-of-type > .HeaderLink {
-    cursor: pointer;
+  padding: @size-24 @size-16;
+  max-width: @size-420;
+  width: @size-420;
+
+  @media @breakpoint-mobile {
+    width: calc(100vw - @size-32);
   }
 
-  > div:last-of-type {
-    padding: @size-24 @size-16;
-    max-width: @size-420;
+  > ul {
+    margin-bottom: @size-16;
 
-    > ul {
-      margin-bottom: @size-16;
-
-      > li:not(:last-of-type) {
-        margin-bottom: @size-8;
-      }
+    > li:not(:last-of-type) {
+      margin-bottom: @size-8;
     }
+  }
 
-    > .LearnMore {
-      .text-16-semi-bold;
+  > .LearnMore {
+    .text-16-semi-bold;
 
-      margin-left: @size-16;
-    }
+    margin-left: @size-16;
+  }
 
-    > .PendingWalletView {
-      > button {
-        margin-top: @size-16;
-        pointer-events: none;
-        cursor: none;
-      }
+  > .PendingWalletView {
+    > button {
+      margin-top: @size-16;
+      pointer-events: none;
+      cursor: none;
     }
   }
 
   &.Account {
-    > div:last-of-type {
-      padding: 0;
-    }
+    padding: 0;
+  }
+}
+
+.ModalStructure {
+  max-height: calc(100vh - @size-32);
+  display: flex;
+  flex-direction: column;
+
+  > main {
+    overflow-y: auto;
   }
 }

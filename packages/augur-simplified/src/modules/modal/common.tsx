@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ReactNode} from 'react';
 
 import Styles from 'modules/modal/modal.styles.less';
 import { CloseIcon } from '../common/icons';
@@ -22,3 +22,31 @@ export const Header = ({ title, subtitle }) => {
     </div>
   );
 };
+
+interface ModalStructureProps {
+  header?: ReactNode;
+  main?: ReactNode;
+  footer?: ReactNode;
+}
+
+export const ModalStructure = ({header, main, footer}: ModalStructureProps) => {
+  return (
+    <div className={Styles.ModalStructure}>
+      {header && (
+        <header>
+          {header}
+        </header>
+      )}
+      {main && (
+        <main>
+          {main}
+        </main>
+      )}
+      {footer && (
+        <footer>
+          {footer}
+        </footer>
+      )}
+    </div>
+  )
+}
