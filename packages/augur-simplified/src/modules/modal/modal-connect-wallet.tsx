@@ -335,6 +335,7 @@ const ModalConnectWallet = ({
             openOptions={() => setWalletView(WALLET_VIEWS.OPTIONS)}
             darkMode={darkMode}
             transactions={transactions}
+            removeTransaction={removeTransaction}
           />
         ) : walletView === WALLET_VIEWS.PENDING ? (
           <PendingWalletView
