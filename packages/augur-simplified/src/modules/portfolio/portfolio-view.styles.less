@@ -9,6 +9,10 @@
     > div[class*="PositionsLiquidityViewSwitcher"] {
       margin-top: @size-64;
     }
+
+    > div[class*="Activity"] {
+      display: none;
+    }
   }
 }
 
@@ -18,9 +22,22 @@
     padding: @size-16 @size-16 @size-40;
     flex-flow: column nowrap;
 
-    > div[class*="PositionsLiquidityViewSwitcher"] {
-      margin-top: @size-40;
+    > section:last-of-type { 
+      display: none;
     }
+
+    > section:first-of-type  {
+      padding: 0;
+
+      > div[class*="PositionsLiquidityViewSwitcher"] {
+        margin-top: @size-40;
+      }
+
+      > div[class*="Activity"] {
+        display: flex;
+      }
+    }
+    
   }
 }
 

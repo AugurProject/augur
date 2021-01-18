@@ -12,13 +12,20 @@ const TABLES = 'TABLES';
 const ACTIVITY = 'ACTIVITY';
 
 export const ClaimWinningsSection = () => {
-  const { isLogged} = useAppStatusStore();
+  const { isLogged } = useAppStatusStore();
   // userInfo: { balances: { claimableWinnings }}
   // console.log(isLogged, claimableWinnings);
   return (
     <div className={Styles.ClaimableWinningsSection}>
-      {isLogged && <PrimaryButton text="Claim Winnings ($24.00)" icon={UsdIcon} />}
-      {isLogged && <PrimaryButton text="Approve to Claim Winnings (0.87 ETH)" icon={EthIcon} />}
+      {isLogged && (
+        <PrimaryButton text="Claim Winnings ($24.00)" icon={UsdIcon} />
+      )}
+      {isLogged && (
+        <PrimaryButton
+          text="Approve to Claim Winnings (0.87 ETH)"
+          icon={EthIcon}
+        />
+      )}
     </div>
   );
 };
@@ -35,32 +42,20 @@ export const PortfolioView = () => {
 
   return (
     <div className={Styles.PortfolioView}>
-      {!isMobile && (
-        <>
-          <section>
-            <NetworkMismatchBanner />
-            <AppViewStats />
-            <ClaimWinningsSection />
-            <PositionsLiquidityViewSwitcher />
-          </section>
-          <section>
-            <Activity />
-          </section>
-        </>
-      )}
-      {isMobile && (
-        <>
-          <NetworkMismatchBanner />
-          <AppViewStats />
-          <ClaimWinningsSection />
-          <PositionsLiquidityViewSwitcher
-            showActivityButton
-            setTables={() => setView(TABLES)}
-            setActivity={() => setView(ACTIVITY)}
-          />
-          {view === ACTIVITY && <Activity />}
-        </>
-      )}
+      <section>
+        <NetworkMismatchBanner />
+        <AppViewStats />
+        <ClaimWinningsSection />
+        <PositionsLiquidityViewSwitcher
+          showActivityButton={isMobile}
+          setTables={() => setView(TABLES)}
+          setActivity={() => setView(ACTIVITY)}
+        />
+        {view === ACTIVITY && <Activity />}
+      </section>
+      <section>
+        <Activity />
+      </section>
     </div>
   );
 };
