@@ -1061,15 +1061,16 @@ export interface AmmMarketShares {
 }
 
 export interface UserBalances {
-  ETH: CurrencyBalance,
-  USDC: CurrencyBalance,
-  totalAccountValue: string,
-  totalPositionUsd: string,
-  total24hrPositionUsd: string,
-  change24hrPositionUsd: string,
-  availableFundsUsd: string,
-  lpTokens: LPTokens,
-  marketShares: AmmMarketShares,
+  ETH: CurrencyBalance;
+  USDC: CurrencyBalance;
+  totalAccountValue: string;
+  totalPositionUsd: string;
+  total24hrPositionUsd: string;
+  change24hrPositionUsd: string;
+  availableFundsUsd: string;
+  lpTokens: LPTokens;
+  marketShares: AmmMarketShares;
+  claimableWinnings: PositionWinnings;
 }
 
 export interface ProcessedData {
@@ -1096,27 +1097,27 @@ export interface AppStatusState {
   approvals: {
     liquidity: {
       add: {
-        USDC: boolean,
-        ETH: boolean,
+        USDC: boolean;
+        ETH: boolean;
       },
       remove: {
-        USDC: boolean,
-        ETH: boolean,
+        USDC: boolean;
+        ETH: boolean;
       }
-    },
+    };
     trade: {
       enter: {
-        USDC: boolean,
-        ETH: boolean,
-      },
+        USDC: boolean;
+        ETH: boolean;
+      };
       exit: {
-        USDC: boolean,
-        ETH: boolean,
+        USDC: boolean;
+        ETH: boolean;
       }
-    },
-  },
-  processed: ProcessedData,
-  loginAccount: LoginAccount,
+    };
+  };
+  processed: ProcessedData;
+  loginAccount: LoginAccount;
   userInfo: {
     activity: ActivityData[];
     balances: UserBalances;
@@ -1125,6 +1126,7 @@ export interface AppStatusState {
   paraConfig: ParaDeploys;
   blocknumber: number;
   isMobile: boolean;
+  isLogged: boolean;
   showTradingForm: boolean;
   sidebarType: string;
   modal: Modal;
