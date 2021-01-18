@@ -64,10 +64,9 @@ const Outcome = ({
 }) => {
   const [customVal, setCustomVal] = useState('');
   const formattedPrice = formatDai(outcome.price);
-  // console.log(ammCash.name);
   return (
     <div
-      onClick={onClick}
+      onClick={() => outcome.isInvalid ? null : onClick()}
       className={classNames(Styles.Outcome, {
         [Styles.YesNo]: !outcome.isInvalid && marketType === YES_NO,
         [Styles.Selected]: selected,
