@@ -892,6 +892,10 @@ type AddLiquidity @entity {
 
   "Net cash value of the lp tokens minted"
   cashValue: BigDecimal!
+
+  noShareCashValue: BigDecimal!
+
+  yesShareCashValue: BigDecimal!
 }
 
 type RemoveLiquidity @entity {
@@ -921,4 +925,8 @@ type RemoveLiquidity @entity {
 
   "Net cash value of the lp tokens burned"
   cashValue: BigDecimal!
+
+  noShareCashValue: BigDecimal!
+
+  yesShareCashValue: BigDecimal!
 }
