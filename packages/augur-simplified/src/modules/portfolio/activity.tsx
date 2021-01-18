@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Styles from 'modules/portfolio/activity.styles.less';
 import { UsdIcon } from 'modules/common/icons';
 import { Pagination } from 'modules/common/pagination';
 import { useAppStatusStore } from '../stores/app-status';
 import { ActivityItem } from '../types';
 import { ReceiptLink } from '../routes/helpers/links';
+import { sliceByPage } from '../common/pagination';
 
 
 const ActivityCard = ({ activity }: { activity: ActivityItem }) => (
@@ -19,18 +20,20 @@ const ActivityCard = ({ activity }: { activity: ActivityItem }) => (
   </div>
 );
 
+const ACTIVITY_PAGE_LIMIT = 10; 
 export const Activity = () => {
   const {
     isLogged,
     userInfo: { activity },
   } = useAppStatusStore();
+  const [page, setPage] = useState(1);
   return (
     <div className={Styles.Activity}>
       <span>your activity</span>
       {isLogged && activity.length > 0 ? (
         <>
           <div>
-            {activity.map((activityGroup) => (
+            {sliceByPage(activity, page, ACTIVITY_PAGE_LIMIT).map((activityGroup) => (
               <div key={activityGroup.date}>
                 <span>{activityGroup.date}</span>
                 <div>
@@ -45,10 +48,10 @@ export const Activity = () => {
             ))}
           </div>
           <Pagination
-            page={1}
-            itemCount={10}
-            itemsPerPage={9}
-            action={() => null}
+            page={page}
+            itemCount={activity.length}
+            itemsPerPage={ACTIVITY_PAGE_LIMIT}
+            action={(page) => setPage(page)}
             updateLimit={() => null}
           />
         </>
