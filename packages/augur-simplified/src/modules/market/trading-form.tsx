@@ -369,7 +369,8 @@ const TradingForm = ({
     initialSelectedOutcome
   );
   const [buttonError, updateButtonError] = useState('');
-  const [isApproved, setIsApproved] = useState(true);
+  const [isApprovedTrade, setIsApprovedTrade] = useState(true);
+  const [isApprovedCash, setIsApprovedCash] = useState(true);
   const [breakdown, setBreakdown] = useState(getEnterBreakdown(null, amm?.cash));
   const [amount, setAmount] = useState<string>("");
   const [tradeEstimates, setTradeEstimates] = useState<TradeEstimates>({})
@@ -381,17 +382,22 @@ const TradingForm = ({
     let isMounted = true;
 
     if (loginAccount?.account && approvals) {
+      if (approvals?.liquidity?.add[ammCash?.name]) {
+        setIsApprovedCash(true);
+      } else {
+        setIsApprovedCash(false);
+      }
       if (orderType === BUY ) {
         if (approvals?.trade?.enter[ammCash?.name]) {
-          setIsApproved(true);
+          setIsApprovedTrade(true);
         } else {
-          setIsApproved(false);
+          setIsApprovedTrade(false);
         }
       } else if (orderType === SELL) {
         if (approvals?.trade?.exit[ammCash?.name]) {
-          setIsApproved(true);
+          setIsApprovedTrade(true);
         } else {
-          setIsApproved(false);
+          setIsApprovedTrade(false);
         }
       }
     }
@@ -560,14 +566,17 @@ const TradingForm = ({
           updateAmountError={updateButtonError}
         />
         <InfoNumbers infoNumbers={breakdown} />
-        {loginAccount && !isApproved && orderType === BUY && (
+        {loginAccount && !isApprovedCash && (
+          <ApprovalButton amm={amm} cash={ammCash} actionType={ApprovalAction.ADD_LIQUIDITY} />
+        )}
+        {loginAccount && isApprovedCash && !isApprovedTrade && orderType === BUY && (
           <ApprovalButton amm={amm} cash={ammCash} actionType={ApprovalAction.ENTER_POSITION} />
         )}
-        {loginAccount && !isApproved && orderType === SELL && (
+        {loginAccount && isApprovedCash && !isApprovedTrade && orderType === SELL && (
           <ApprovalButton amm={amm} cash={ammCash} actionType={ApprovalAction.EXIT_POSITION} />
         )}
         <BuySellButton
-          disabled={canMakeTrade.disabled || !isApproved}
+          disabled={canMakeTrade.disabled || !isApprovedTrade}
           action={makeTrade}
           text={canMakeTrade.actionText}
           error={buttonError}
