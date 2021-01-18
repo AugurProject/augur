@@ -18,17 +18,23 @@
   > section {
     align-items: center;
     box-sizing: border-box;
-    display: flex;
-    flex-flow: row nowrap;
+    display: inline-grid;
+    grid-template-columns: auto auto;
     flex: 1;
     grid-gap: @size-16;
     width: 100%;
-    margin: auto 0;
+    height: 100%;
 
     &:first-of-type {
       max-width: @size-912;
       padding-left: @size-88;
+      grid-template-columns: 0fr 1fr;
       grid-gap: @size-80;
+
+      @media @breakpoint-mobile-tablet {
+        grid-template-columns: auto;
+        grid-gap: 0;
+      }
 
       > ol {
         align-items: center;
