@@ -186,7 +186,7 @@ const ModalAddLiquidity = ({
   const [showBackView, setShowBackView] = useState(false);
   const [chosenCash, updateCash] = useState<string>(currency ? currency : USDC);
   const [buttonError, updateButtonError] = useState('');
-  const [isApproved, setIsApproved] = useState(true);
+  let isApproved = true;
   // needs to be set by currency picker if amm is null
   const [breakdown, setBreakdown] = useState(defaultAddLiquidityBreakdown);
   const [estimatedLpAmount, setEstimatedLpAmount] = useState<string>('0');
@@ -266,22 +266,6 @@ const ModalAddLiquidity = ({
 
   useEffect(() => {
     LIQUIDITY_METHODS[modalType].receiveBreakdown();
-
-    if (account && approvals) {
-      if (modalType === REMOVE) {
-        if (approvals?.liquidity?.remove[cash?.name]) {
-          setIsApproved(true);
-        } else {
-          setIsApproved(false);
-        }
-      } else if (modalType === ADD) {
-        if (approvals?.liquidity?.add[cash?.name]) {
-          setIsApproved(true);
-        } else {
-          setIsApproved(false);
-        }
-      }
-    }
   }, [
     account,
     amount,
@@ -290,7 +274,21 @@ const ModalAddLiquidity = ({
     outcomes[YES_OUTCOME_ID]?.price,
     outcomes[NO_OUTCOME_ID]?.price,
   ]);
-
+  if (account && approvals) {
+    if (modalType === REMOVE) {
+      if (approvals?.liquidity?.remove[cash?.name]) {
+        isApproved = true;
+      } else {
+        isApproved = false;
+      }
+    } else if (modalType === ADD) {
+      if (approvals?.liquidity?.add[cash?.name]) {
+        isApproved = true;
+      } else {
+        isApproved = false;
+      }
+    }
+  }
   const InputFormError = useMemo(() => {
     if (errorMessage) return errorMessage;
     if (!amount || amount === '0') return ENTER_AMOUNT;
