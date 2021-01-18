@@ -2,7 +2,6 @@ import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
 import { AMMCreated } from '../../generated/AMMFactory/AMMFactory';
 import { AMMExchange, ParaShareToken } from '../../generated/schema';
 import { AMMExchange as AMMExchangeTemplate } from '../../generated/templates';
-import { getOrCreateAMMExchange } from '../utils/helpers';
 import { updateAMM } from '../utils/helpers/amm';
 
 export function handleAMMCreated(event: AMMCreated): void {
