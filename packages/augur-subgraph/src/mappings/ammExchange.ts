@@ -56,14 +56,21 @@ export function handleAddLiquidity(event: AddLiquidityEvent): void {
   let priceOfGainedShares: BigDecimal;
   let totalShares = addLiquidity.noShares.plus(addLiquidity.yesShares);
 
+  let priceOfNoShares = addLiquidity.noShares.toBigDecimal().div(totalShares.toBigDecimal());
+  let priceOfYesShares = addLiquidity.yesShares.toBigDecimal().div(totalShares.toBigDecimal());
+
   if(addLiquidity.yesShares.gt(addLiquidity.noShares)) {
-    priceOfGainedShares = addLiquidity.yesShares.toBigDecimal().div(totalShares.toBigDecimal());
+    priceOfGainedShares = priceOfYesShares;
   } else {
-    priceOfGainedShares = addLiquidity.noShares.toBigDecimal().div(totalShares.toBigDecimal());
+    priceOfGainedShares = priceOfNoShares;
   }
 
   // Cash value is the cost of the lp tokens received accounting for shares returned to user.
   addLiquidity.cashValue = addLiquidity.cash.toBigDecimal().minus(priceOfGainedShares.times(netShares.toBigDecimal())).truncate(0);
+
+  addLiquidity.noShareCashValue = priceOfNoShares.times(addLiquidity.noShares.toBigDecimal());
+  addLiquidity.yesShareCashValue = priceOfYesShares.times(addLiquidity.yesShares.toBigDecimal());
+
   addLiquidity.save();
 
   updateAMM(addLiquidity.ammExchange);
@@ -86,11 +93,11 @@ export function handleRemoveLiquidity(event: RemoveLiquidityEvent): void {
   let totalYes = removeLiquidity.yesShares.plus(removeLiquidity.completeSetsSold);
   let totalShares = totalNo.plus(totalYes);
 
-  let valueOfNoShares = totalNo.toBigDecimal().div(totalShares.toBigDecimal()).times(removeLiquidity.noShares.toBigDecimal());
-  let valueOfYesShares = totalYes.toBigDecimal().div(totalShares.toBigDecimal()).times(removeLiquidity.yesShares.toBigDecimal());
+  removeLiquidity.noShareCashValue = totalNo.toBigDecimal().div(totalShares.toBigDecimal()).times(removeLiquidity.noShares.toBigDecimal());
+  removeLiquidity.yesShareCashValue = totalYes.toBigDecimal().div(totalShares.toBigDecimal()).times(removeLiquidity.yesShares.toBigDecimal());
 
   // Cash value is the cost of the lp tokens received accounting for shares returned to user.
-  removeLiquidity.cashValue = removeLiquidity.cash.toBigDecimal().plus(valueOfNoShares).plus(valueOfYesShares).truncate(0);
+  removeLiquidity.cashValue = removeLiquidity.cash.toBigDecimal().plus(removeLiquidity.noShareCashValue).plus(removeLiquidity.yesShareCashValue).truncate(0);
   removeLiquidity.save();
 
   updateAMM(removeLiquidity.ammExchange);
