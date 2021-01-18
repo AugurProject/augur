@@ -244,12 +244,13 @@ export const CREATE = 'create';
 
 export const LIQUIDITY_STRINGS = {
   [REMOVE]: {
-    header: 'remove liquidity',
+    header: 'remove all liquidity',
     showTradingFee: false,
-    amountSubtitle: 'How much do you want to remove?',
+    cantEditAmount: true,
+    hideCurrentOdds: true,
     receiveTitle: 'What you will recieve',
     approvalButtonText: 'approve shares spend',
-    actionButtonText: 'Remove',
+    actionButtonText: 'Remove all liquidity',
     confirmButtonText: 'confirm remove',
     currencyName: SHARES,
     liquidityDetailsFooter: {
