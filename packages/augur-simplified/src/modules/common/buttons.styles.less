@@ -124,9 +124,10 @@
 }
 
 .TinyButton {
-  .SecondaryButton;
+  .Button;
   .text-12-semi-bold;
 
+  background-color: transparent;
   color: var(--simple-secondary-text);
   min-height: @size-25;
   height: @size-25;
@@ -145,10 +146,22 @@
     margin-right: @size-4;
   }
 
-  &:not(:disabled):not(.Disabled):active,
-  &.Selected {
-    color: var(--simple-primary-text);
-    border: @size-1 solid var(--simple-secondary-text);
+  &:not(:disabled):not(.Disabled) {
+    &:hover {
+      background-color: transparent;
+      border: @size-1 solid var(--simple-secondary-text);
+    }
+
+    &:focus {
+      background-color: transparent;
+    }
+
+    &:active,
+    .Selected {
+      background-color: var(--simple-alternate-background);
+      border: @size-1 solid var(--simple-secondary-text);
+      color: var(--simple-primary-text);
+    }
   }
 }
 
