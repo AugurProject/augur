@@ -53,9 +53,6 @@ const useMarketQueryId = () => {
 
 const MarketView = ({ defaultMarket = null }) => {
   const [showMoreDetails, setShowMoreDetails] = useState(false);
-  const [selectedOutcome, setSelectedOutcome] = useState(
-    DefaultMarketOutcomes[2]
-  );
   const marketId = useMarketQueryId();
   const {
     isMobile,
@@ -76,6 +73,9 @@ const MarketView = ({ defaultMarket = null }) => {
   const endTimeDate = useMemo(
     () => getMarketEndtimeDate(market?.endTimestamp),
     [market?.endTimestamp]
+  );
+  const [selectedOutcome, setSelectedOutcome] = useState(
+    market ? market.outcomes[2] : DefaultMarketOutcomes[2]
   );
   // add end time data full to market details when design is ready
   const endTimeDateFull = useMemo(

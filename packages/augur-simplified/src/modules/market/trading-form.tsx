@@ -26,24 +26,24 @@ import { generateTooltip } from '../common/labels';
 import { doTrade, estimateEnterTrade, estimateExitTrade } from '../../utils/contract-calls';
 import { BigNumber as BN } from 'bignumber.js'
 import { updateTxStatus } from '../modal/modal-add-liquidity';
+import { LinkIcon } from '../common/icons';
 
 export const DefaultMarketOutcomes = [
   {
     id: 0,
-    name: 'yes',
-    price: '$0.75',
+    name: 'Invalid',
+    price: '$0.00',
+    isInvalid: true,
   },
   {
     id: 1,
-
     name: 'No',
     price: '$0.25',
   },
   {
     id: 2,
-    name: 'Invalid',
-    price: '$0.00',
-    isInvalid: true,
+    name: 'yes',
+    price: '$0.75',
   },
 ];
 
@@ -59,7 +59,8 @@ const Outcome = ({
   editable,
   setEditableValue,
   ammCash,
-  showAsButton
+  showAsButton,
+  invalidSelected
 }) => {
   const [customVal, setCustomVal] = useState('');
   const formattedPrice = formatDai(outcome.price);
@@ -74,7 +75,9 @@ const Outcome = ({
         [Styles.ShowAllHighlighted]: showAllHighlighted,
         [Styles.nonSelectable]: nonSelectable,
         [Styles.Edited]: customVal !== '',
-        [Styles.showAsButton]: showAsButton
+        [Styles.showAsButton]: showAsButton,
+        [Styles.Invalid]: outcome.isInvalid,
+        [Styles.InvalidSelected]: invalidSelected,
       })}
     >
       <span>{outcome.name}</span>
@@ -91,7 +94,10 @@ const Outcome = ({
           />
         </div>
       ) : (
-          <span>{ammCash?.name === USDC ? formattedPrice.full : formattedPrice.formatted}</span>
+        <>
+          {!outcome.isInvalid && <span>{ammCash?.name === USDC ? formattedPrice.full : formattedPrice.formatted}</span>}
+          {outcome.isInvalid && LinkIcon}
+        </>
         )}
     </div>
   );
@@ -200,6 +206,7 @@ interface OutcomesGridProps {
   setEditableValue?: Function;
   ammCash: Cash;
   showAsButtons?: boolean;
+  dontFilterInvalid?: boolean;
 }
 export const OutcomesGrid = ({
   outcomes,
@@ -211,7 +218,8 @@ export const OutcomesGrid = ({
   editable,
   setEditableValue,
   ammCash,
-  showAsButtons
+  showAsButtons,
+  dontFilterInvalid
 }: OutcomesGridProps) => {
   return (
     <div
@@ -222,9 +230,8 @@ export const OutcomesGrid = ({
       })}
     >
       {outcomes
-        .filter(outcome => !outcome.isInvalid)
-        .reverse()
-        .map((outcome, index) => (
+        .filter(outcome => dontFilterInvalid ? true : !outcome.isInvalid)
+        .reverse().map((outcome, index) => (
           <Outcome
             key={outcome.id}
             selected={
@@ -241,6 +248,7 @@ export const OutcomesGrid = ({
             setEditableValue={price => setEditableValue(price, outcome.id)}
             ammCash={ammCash}
             showAsButton={showAsButtons}
+            invalidSelected={selectedOutcome?.isInvalid}
           />
         ))}
     </div>
@@ -550,6 +558,7 @@ const TradingForm = ({
           marketType={marketType}
           orderType={orderType}
           ammCash={ammCash}
+          dontFilterInvalid
         />
         <AmountInput
           chosenCash={orderType === BUY ? ammCash?.name : SHARES}
