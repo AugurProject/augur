@@ -16,11 +16,6 @@ export {
 } from "./market";
 
 export {
-  getOrCreateAMMExchange,
-  createAndSaveAMMExchange
-} from "./amm";
-
-export {
   createAndSaveParaAugurDeployFinishedEvent,
   getOrCreateParaShareToken
 } from "./paraDeployer";
