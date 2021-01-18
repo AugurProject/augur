@@ -284,11 +284,11 @@ export const estimateExitTrade = async (
   console.log('breakdownWithoutFeeRaw', String(breakdownWithoutFeeRaw))
   const averagePrice = new BN(estimateCash).div(new BN(inputDisplayAmount)).toFixed(2);
   const price = outputYesShares ? amm.priceYes : amm.priceNo;
-  const shares = outputYesShares ? new BN(userBalances[YES_OUTCOME_ID]) : BigNumber.min(new BN(userBalances[0]), new BN(userBalances[NO_OUTCOME_ID]));
+  const shares = outputYesShares ? new BN(userBalances[YES_OUTCOME_ID] || "0") : BigNumber.min(new BN(userBalances[0]), new BN(userBalances[NO_OUTCOME_ID]));
   const slippagePercent = (new BN(averagePrice).minus(price)).div(price).times(100).toFixed(2);
   const ratePerCash = new BN(estimateCash).div(new BN(inputDisplayAmount)).toFixed(6);
   const displayShares = convertOnChainSharesToDisplayShareAmount(shares, amm.cash.decimals);
-  const remainingShares = String(new BN(displayShares).minus(new BN(inputDisplayAmount)).toFixed(6));
+  const remainingShares = String(new BN(displayShares || "0").minus(new BN(inputDisplayAmount)).toFixed(6));
 
   const endTime = new Date().getTime();
   console.log('seconds to estimate', (endTime - startTime) / 1000)
