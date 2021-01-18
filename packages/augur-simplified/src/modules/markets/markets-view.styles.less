@@ -46,6 +46,7 @@
   .HoverDropShadow;
 
   border-radius: @size-8;
+  max-width: @size-405;
 
   > div,
   > section > div {
@@ -60,19 +61,30 @@
     background: var(--simple-light-bg);
     display: grid;
     height: 100%;
-    grid-template-columns: @size-50 auto 1fr;
+    grid-template-columns: @size-46 @size-60 1fr;
     padding: @size-24;
     grid-template-rows: @size-30 auto auto auto;
+    max-width: @size-405;
 
     > div:first-of-type {
       display: flex;
       margin-right: @size-6;
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    > div:nth-of-type(2) {
+      grid-column: 2 / span 2;
+      grid-row: 1;
+      width: fit-content;
     }
 
     > div:nth-of-type(3) {
       align-items: center;
       justify-content: flex-end;
       display: flex;
+      grid-row: 1;
+      grid-column: 3;
     }
 
     > a,
