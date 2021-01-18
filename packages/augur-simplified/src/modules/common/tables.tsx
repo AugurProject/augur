@@ -151,16 +151,20 @@ export const AllPositionTable = ({ page }) => {
       }[])
     : [];
 
-  const positionVis = sliceByPage(positions, page, POSITIONS_LIQUIDITY_LIMIT).map((position) => {
-      return (
-        <PositionTable
-          market={position.ammExchange.market}
-          ammExchange={position.ammExchange}
-          positions={position.positions}
-          claimableWinnings={position.claimableWinnings}
-        />
-      );
-    });
+  const positionVis = sliceByPage(
+    positions,
+    page,
+    POSITIONS_LIQUIDITY_LIMIT
+  ).map((position) => {
+    return (
+      <PositionTable
+        market={position.ammExchange.market}
+        ammExchange={position.ammExchange}
+        positions={position.positions}
+        claimableWinnings={position.claimableWinnings}
+      />
+    );
+  });
 
   return <>{positionVis}</>;
 };
@@ -172,6 +176,10 @@ export const PositionTable = ({
   claimableWinnings,
   singleMarket,
 }: PositionsTableProps) => {
+  const [page, setPage] = useState(1);
+  const splicePositions = singleMarket
+    ? sliceByPage(positions, page, POSITIONS_LIQUIDITY_LIMIT)
+    : positions;
   return (
     <div className={Styles.PositionTable}>
       {!singleMarket && (
@@ -179,15 +187,23 @@ export const PositionTable = ({
       )}
       <PositionHeader />
       {positions.length === 0 && <span>No positions to show</span>}
-      {positions &&
-        positions
+      {splicePositions &&
+        splicePositions
           .filter((p) => p.visible)
           .map((position, id) => <PositionRow key={id} position={position} />)}
       {!singleMarket && (
         <PositionFooter market={market} claimableWinnings={claimableWinnings} />
       )}
       {singleMarket && positions.length !== 0 && (
-        <div className={Styles.PaginationFooter} />
+        <div className={Styles.PaginationFooter}>
+          <Pagination
+            page={page}
+            itemCount={PositionHeader.length}
+            itemsPerPage={POSITIONS_LIQUIDITY_LIMIT}
+            action={(page) => setPage(page)}
+            updateLimit={() => null}
+          />
+        </div>
       )}
     </div>
   );
@@ -267,15 +283,19 @@ export const AllLiquidityTable = ({ page }) => {
         lpTokens: lpTokens[ammId],
       }))
     : [];
-  const liquiditiesViz = sliceByPage(liquidities, page, POSITIONS_LIQUIDITY_LIMIT).map((liquidity) => {
-      return (
-        <LiquidityTable
-          market={liquidity.market}
-          ammExchange={liquidity.ammExchange}
-          lpTokens={liquidity.lpTokens}
-        />
-      );
-    });
+  const liquiditiesViz = sliceByPage(
+    liquidities,
+    page,
+    POSITIONS_LIQUIDITY_LIMIT
+  ).map((liquidity) => {
+    return (
+      <LiquidityTable
+        market={liquidity.market}
+        ammExchange={liquidity.ammExchange}
+        lpTokens={liquidity.lpTokens}
+      />
+    );
+  });
 
   return <>{liquiditiesViz}</>;
 };
@@ -584,10 +604,18 @@ export const TransactionsTable = ({ transactions }: TransactionsProps) => {
 
   return (
     <div className={Styles.TransactionsTable}>
-      <TransactionsHeader {...{ selectedType, setSelectedType }} />
-      {sliceByPage(filteredTransactions, page, TX_PAGE_LIMIT).map((transaction) => (
+      <TransactionsHeader
+        selectedType={selectedType}
+        setSelectedType={(type) => {
+          setPage(1);
+          setSelectedType(type);
+        }}
+      />
+      {sliceByPage(filteredTransactions, page, TX_PAGE_LIMIT).map(
+        (transaction) => (
           <TransactionRow key={transaction.id} transaction={transaction} />
-        ))}
+        )
+      )}
       {filteredTransactions.length > 0 && (
         <div className={Styles.PaginationFooter}>
           <Pagination

@@ -97,11 +97,6 @@ export const Pagination = ({
   const totalPages =
     itemsPerPage === 1 ? 1 : Math.ceil(itemCount / (itemsPerPage || 10)) || 1;
 
-  useEffect(() => {
-    document.getElementById('mainContent')?.scrollTo(0, 0);
-    window.scrollTo(0, 1);
-  }, [page])
-
   return (
     <div className={Styles.Pagination}>
       {showPagination && (

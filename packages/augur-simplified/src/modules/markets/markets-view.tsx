@@ -235,6 +235,11 @@ const MarketsView = () => {
   const [filteredMarkets, setFilteredMarkets] = useState([]);
 
   useEffect(() => {
+    document.getElementById('mainContent')?.scrollTo(0, 0);
+    window.scrollTo(0, 1);
+  }, [page])
+
+  useEffect(() => {
     if (Object.values(markets).length > 0) setLoading(false);
     setPage(1);
     applyFiltersAndSort(Object.values(markets), setFilteredMarkets, {
