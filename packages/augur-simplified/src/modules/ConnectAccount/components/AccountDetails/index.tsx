@@ -176,7 +176,6 @@ const AccountDetails = ({
   const [connectorName, setConnectorName] = useState(formatConnectorName(connector));
 
   useEffect(() => {
-    console.log('RENDER!~')
     setConnectorName(formatConnectorName(connector));
   }, [account, connector, transactions]);
 
