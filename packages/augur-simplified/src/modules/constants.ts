@@ -111,7 +111,7 @@ export const ERROR_AMOUNT = 'Amount is not valid';
 export const CONNECT_ACCOUNT = 'Connect Account';
 export const SET_PRICES = 'Set Prices';
 
-export const SETTINGS_SLIPPAGE = "0.5"
+export const SETTINGS_SLIPPAGE = "1"
 // graph market status
 export const MARKET_STATUS = {
   TRADING: 'TRADING',
