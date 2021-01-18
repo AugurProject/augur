@@ -399,7 +399,7 @@ export async function doTrade(
     );
 
     const inputOnChainCashAmount = convertDisplayCashAmountToOnChainCashAmount(new BN(inputDisplayAmount || "0"), new BN(amm.cash.decimals))
-    const onChainMinShares = convertDisplayShareAmountToOnChainShareAmount(minAmount, amm.cash.decimals);
+    const onChainMinShares = convertDisplayShareAmountToOnChainShareAmount(minAmount, amm.cash.decimals).decimalPlaces(0);
     return augurClient.amm.doEnterPosition(
       amm.marketId,
       amm.cash.shareToken,
@@ -421,7 +421,7 @@ export async function doTrade(
     } else {
       longShares = new BN(inputOnChainSharesAmount);
     }
-    const onChainMinAmount = convertDisplayCashAmountToOnChainCashAmount(new BN(minAmount), new BN(amm.cash.decimals));
+    const onChainMinAmount = convertDisplayCashAmountToOnChainCashAmount(new BN(minAmount), new BN(amm.cash.decimals)).decimalPlaces(0);
     console.log(
       'doExitPosition:',
       amm.marketId,
