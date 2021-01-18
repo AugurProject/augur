@@ -132,7 +132,7 @@ export const PositionFooter = ({
           />
         </>
       )}
-      {!isMobile && <SecondaryButton text="trade" />}
+      {!isMobile && <MarketLink id={market?.marketId} ammId={market?.amm?.id}><SecondaryButton text="trade" /></MarketLink>}
     </div>
   );
 };
