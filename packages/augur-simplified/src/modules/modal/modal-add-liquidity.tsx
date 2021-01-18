@@ -463,7 +463,7 @@ const ModalAddLiquidity = ({
           )}
           <AmountInput
             updateInitialAmount={(amount) => updateAmount(amount)}
-            initialAmount={modalType === REMOVE ? '' : amount}
+            initialAmount={''}
             maxValue={userMaxAmount}
             showCurrencyDropdown={!currency}
             chosenCash={modalType === REMOVE ? SHARES : chosenCash}
