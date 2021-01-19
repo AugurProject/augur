@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Styles from 'modules/common/pagination.styles.less';
 import { DirectionButton } from './buttons';
 
