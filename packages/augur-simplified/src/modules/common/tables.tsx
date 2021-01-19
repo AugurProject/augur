@@ -229,14 +229,14 @@ const LiquidityRow = ({ liquidity, amm }: { liquidity: LPTokenBalance, amm: AmmE
   const [earnedFees, setEarnedFees] = useState(null);
   useEffect(() => {
     let isMounted = true;
-    const getInitValue = async (balance: string, amm: AmmExchange) => {
+    const getCurrentValue = async (balance: string, amm: AmmExchange) => {
       const value = await getLPCurrentValue(balance, amm);
       if (isMounted) {
         setInitValue(value);
         setEarnedFees(createBigNumber(value).minus(createBigNumber(liquidity.initCostUsd)));
       }
     }
-    getInitValue(liquidity.balance, amm);
+    getCurrentValue(liquidity.balance, amm);
     return () => isMounted = false;
   }, [])
   return (
