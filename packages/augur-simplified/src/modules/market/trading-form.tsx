@@ -286,8 +286,8 @@ const getEnterBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
   const prepend = cash?.name === USDC ? '$' : '';
   const avg = breakdown === null ? "-" : `${prepend}${breakdown?.averagePrice || "$0.00"}`;
   const sharevalue = breakdown === null ? "-" : breakdown?.outputValue || "0.00";
-  const winnings = breakdown === null ? "-" : `${prepend}${breakdown?.maxProfit || "$0.00"}`;
-  const fees = breakdown === null ? "-" : breakdown?.tradeFees || "$0.00"
+  const winnings = breakdown === null ? "-" : `${prepend}${breakdown?.maxProfit || "0.00"}`;
+  const fees = breakdown === null ? "-" : breakdown?.tradeFees || "0.00"
   return [
     {
       label: 'average price',
@@ -312,10 +312,10 @@ const getEnterBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
 
 const getExitBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
   const prepend = cash?.name === USDC ? '$' : '';
-  const avg = breakdown === null ? "-" : `${prepend}${breakdown?.averagePrice || "$0.00"}`;
+  const avg = breakdown === null ? "-" : `${prepend}${breakdown?.averagePrice || "0.00"}`;
   const cashValue = breakdown === null ? "-" : `${prepend}${breakdown?.outputValue || "0.00"}`;
   const remaining = breakdown === null ? "-" : breakdown?.remainingShares || "0.00";
-  const fees = breakdown === null ? "-" : breakdown?.tradeFees || "$0.00"
+  const fees = breakdown === null ? "-" : breakdown?.tradeFees || "0.00"
   return [
     {
       label: 'Average Price',
@@ -384,7 +384,7 @@ const TradingForm = ({
   const [buttonError, updateButtonError] = useState('');
   const [isApprovedTrade, setIsApprovedTrade] = useState(true);
   const [isApprovedCash, setIsApprovedCash] = useState(true);
-  const [breakdown, setBreakdown] = useState<EstimateTradeResult>(null);
+  const [breakdown, setBreakdown] = useState<EstimateTradeResult>(undefined);
   const [amount, setAmount] = useState<string>('');
   const [tradeEstimates, setTradeEstimates] = useState<TradeEstimates>({})
 
