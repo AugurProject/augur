@@ -1,11 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Styles from 'modules/common/tables.styles.less';
 import { EthIcon, UsdIcon } from './icons';
 import {
   PrimaryButton,
   SecondaryButton,
   TinyButton,
-} from 'modules/common/buttons';
+} from '../common/buttons';
 import classNames from 'classnames';
 import {
   POSITIONS,
@@ -14,8 +14,8 @@ import {
   ADD,
   REMOVE,
   SWAP,
-} from 'modules/constants';
-import { Pagination } from 'modules/common/pagination';
+} from '../constants';
+import { Pagination } from '../common/pagination';
 import { SmallDropdown } from './selection';
 import {
   AmmExchange,
@@ -32,6 +32,8 @@ import { MODAL_ADD_LIQUIDITY, USDC } from '../constants';
 import { useAppStatusStore } from '../stores/app-status';
 import { AddressLink, MarketLink } from '../routes/helpers/links';
 import { sliceByPage } from './pagination';
+import { getLPCurrentValue } from '../../utils/contract-calls';
+import { createBigNumber } from '../../utils/create-big-number';
 
 interface PositionsTableProps {
   market: MarketInfo;
@@ -222,17 +224,27 @@ const LiquidityHeader = () => {
   );
 };
 
-const LiquidityRow = ({ liquidity }: { liquidity: LPTokenBalance }) => {
+const LiquidityRow = ({ liquidity, amm }: { liquidity: LPTokenBalance, amm: AmmExchange }) => {
+  const [currValue, setInitValue] = useState(null);
+  const [earnedFees, setEarnedFees] = useState(null);
+  useEffect(() => {
+    let isMounted = true;
+    const getCurrentValue = async (balance: string, amm: AmmExchange) => {
+      const value = await getLPCurrentValue(balance, amm);
+      if (isMounted) {
+        setInitValue(value);
+        setEarnedFees(createBigNumber(value).minus(createBigNumber(liquidity.initCostUsd)));
+      }
+    }
+    getCurrentValue(liquidity.balance, amm);
+    return () => isMounted = false;
+  }, [])
   return (
     <ul className={Styles.LiquidityRow}>
       <li>{formatDai(liquidity.balance).formatted}</li>
       <li>{formatDai(liquidity.initCostUsd).full}</li>
-      <li>{liquidity.usdValue ? formatDai(liquidity.usdValue).full : '-'}</li>
-      <li>
-        {
-          '-' /*liquidity.feesEarned ? formatDai(liquidity.feesEarned).full : '-'*/
-        }
-      </li>
+      <li>{currValue ? formatDai(currValue).full : '-'}</li>
+      <li>{currValue ? formatDai(earnedFees).full : '-'}</li>
     </ul>
   );
 };
@@ -336,7 +348,7 @@ export const LiquidityTable = ({
           />
         </span>
       )}
-      {lpTokens && <LiquidityRow liquidity={lpTokens} />}
+      {lpTokens && <LiquidityRow liquidity={lpTokens} amm={ammExchange} />}
       {lpTokens && <LiquidityFooter market={market} />}
     </div>
   );

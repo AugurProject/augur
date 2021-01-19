@@ -46,11 +46,15 @@ interface GraphAddLiquidity extends GraphTransaction {
   ammExchange: GraphAmmExchange,
   cashValue: string,
   lpTokens: string,
+  yesShareCashValue: string,
+  noShareCashValue: string
 }
 
 interface GraphRemoveLiquidity extends GraphTransaction {
   ammExchange: GraphAmmExchange,
   cashValue: string,
+  yesShareCashValue: string,
+  noShareCashValue: string
 }
 
 interface GraphAmmExchange {
