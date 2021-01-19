@@ -203,7 +203,7 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
         if (isETH) {
           tx = await approveERC1155Contract(shareToken, `To Sell (${approvingName})`, WethWrapperForAMMExchange, loginAccount);
         } else {
-          tx = await approveERC20Contract(cash.address, `To Sell (${approvingName})`, AMMFactory, loginAccount);
+          tx = await approveERC1155Contract(shareToken, `To Sell (${approvingName})`, AMMFactory, loginAccount);
         }
         tx.marketDescription = marketDescription;
         addTransaction(tx);
