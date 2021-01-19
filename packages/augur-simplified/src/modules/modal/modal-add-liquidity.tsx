@@ -329,7 +329,6 @@ const ModalAddLiquidity = ({
     }
   }, [
     errorMessage,
-    buttonError,
     modalType,
     outcomes[YES_OUTCOME_ID]?.price,
     outcomes[NO_OUTCOME_ID]?.price,
