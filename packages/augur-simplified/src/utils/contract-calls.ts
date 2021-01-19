@@ -1,6 +1,6 @@
 import BigNumber, { BigNumber as BN } from 'bignumber.js'
 import { RemoveLiquidityRate, ParaShareToken } from '@augurproject/sdk-lite'
-import { TradingDirection, AmmExchange, AmmExchanges, AmmMarketShares, AmmTransaction, Cashes, CurrencyBalance, PositionBalance, TransactionTypes, UserBalances, MarketInfos, LPTokens, EstimateEnterTradeResult, EstimateExitTradeResult, Cash, AddLiquidityBreakdown, LiquidityBreakdown, AmmOutcome } from '../modules/types'
+import { TradingDirection, AmmExchange, AmmExchanges, AmmMarketShares, AmmTransaction, Cashes, CurrencyBalance, PositionBalance, TransactionTypes, UserBalances, MarketInfos, LPTokens, EstimateTradeResult, Cash, AddLiquidityBreakdown, LiquidityBreakdown, AmmOutcome } from '../modules/types'
 import ethers from 'ethers';
 import { Contract } from '@ethersproject/contracts'
 import {
@@ -237,7 +237,7 @@ export const estimateEnterTrade = async (
   amm: AmmExchange,
   inputDisplayAmount: string,
   outputYesShares: boolean = true,
-): Promise<EstimateEnterTradeResult | null> => {
+): Promise<EstimateTradeResult | null> => {
   const startTime = new Date().getTime()
   const breakdownWithFeeRaw = await estimateMiddlewareTrade(TradingDirection.ENTRY, amm, inputDisplayAmount, outputYesShares);
   const breakdownWithoutFeeRaw = await estimateMiddlewareTrade(TradingDirection.ENTRY, amm, inputDisplayAmount, outputYesShares, false);
@@ -258,7 +258,7 @@ export const estimateEnterTrade = async (
   console.log('seconds to estimate', (endTime - startTime) / 1000)
 
   return {
-    outputShares: String(estimatedShares),
+    outputValue: String(estimatedShares),
     tradeFees,
     averagePrice,
     maxProfit,
@@ -272,7 +272,7 @@ export const estimateExitTrade = async (
   inputDisplayAmount: string,
   outputYesShares: boolean = true,
   userBalances: string[] = [],
-): Promise<EstimateExitTradeResult | null> => {
+): Promise<EstimateTradeResult | null> => {
 
   const startTime = new Date().getTime()
   const breakdownWithFeeRaw = await estimateMiddlewareTrade(TradingDirection.EXIT, amm, inputDisplayAmount, outputYesShares, true, userBalances);
@@ -280,7 +280,7 @@ export const estimateExitTrade = async (
 
   const estimateCash = convertOnChainCashAmountToDisplayCashAmount(breakdownWithFeeRaw, amm.cash.decimals);
   const estimateCashWithoutFees = convertOnChainCashAmountToDisplayCashAmount(breakdownWithoutFeeRaw, amm.cash.decimals);
-  const estimateFees = String(new BN(estimateCashWithoutFees).minus(new BN(estimateCash)));
+  const tradeFees = String(new BN(estimateCashWithoutFees).minus(new BN(estimateCash)));
   console.log('exit, breakdown estimateCash', String(estimateCash))
   const averagePrice = new BN(estimateCash).div(new BN(inputDisplayAmount)).toFixed(2);
   const price = outputYesShares ? amm.priceYes : amm.priceNo;
@@ -294,8 +294,8 @@ export const estimateExitTrade = async (
   console.log('seconds to estimate', (endTime - startTime) / 1000)
 
   return {
-    outputCash: String(estimateCash),
-    estimateFees,
+    outputValue: String(estimateCash),
+    tradeFees,
     averagePrice,
     slippagePercent,
     ratePerCash,
@@ -347,7 +347,7 @@ export const estimateMiddlewareTrade = async (
       includeFee
     ).catch(e => console.log('Error get enter position', e));
 
-    return String(breakdown);
+    return breakdown;
   }
 
   if (tradeDirection === TradingDirection.EXIT) {
@@ -369,7 +369,7 @@ export const estimateMiddlewareTrade = async (
       longShares,
       includeFee
     ).catch(e => console.log('Error get Exit Position', e));
-    return String(breakdown);
+    return breakdown;
   }
 
   return null;
