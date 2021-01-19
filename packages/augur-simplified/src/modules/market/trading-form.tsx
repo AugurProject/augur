@@ -418,19 +418,20 @@ const TradingForm = ({
   const [selectedOutcome, setSelectedOutcome] = useState(
     initialSelectedOutcome
   );
-  const [breakdown, setBreakdown] = useState<EstimateTradeResult>(null);
+  const [breakdown, setBreakdown] = useState<EstimateTradeResult>(undefined);
   const [amount, setAmount] = useState<string>('');
   const [tradeEstimates, setTradeEstimates] = useState<TradeEstimates>({});
 
   const ammCash = amm?.cash;
   const outcomes = amm?.ammOutcomes || [];
   const isApprovedCash = !!approvals?.liquidity?.add[ammCash?.name];
+  const isBuy = orderType === BUY;
   const isApprovedTrade =
-    orderType === BUY
+    isBuy
       ? !!approvals?.trade?.enter[ammCash?.name]
       : !!approvals?.trade?.exit[ammCash?.name];
   const approvalAction = isApprovedCash
-    ? orderType === BUY
+    ? isBuy
       ? ApprovalAction.ENTER_POSITION
       : ApprovalAction.EXIT_POSITION
     : ApprovalAction.ADD_LIQUIDITY;
@@ -454,7 +455,7 @@ const TradingForm = ({
         userBalances = marketShares?.outcomeSharesRaw;
       }
       const breakdown =
-        orderType === BUY
+        isBuy
           ? await estimateEnterTrade(amm, amount, outputYesShares)
           : await estimateExitTrade(amm, amount, outputYesShares, userBalances);
       if (breakdown && breakdown.outputValue !== '0') {
@@ -473,8 +474,8 @@ const TradingForm = ({
 
     if (amount && Number(amount) > 0) {
       getEstimate();
-    } else if (breakdown !== null) {
-      setBreakdown(null);
+    } else if (breakdown !== undefined) {
+      setBreakdown(undefined);
     }
 
     return () => {
@@ -483,14 +484,14 @@ const TradingForm = ({
   }, [orderType, selectedOutcomeId, amount, outcomeSharesRaw]);
 
   const userBalance = useMemo(() => {
-    return orderType === BUY
+    return isBuy
       ? amm?.cash?.name
         ? balances[amm?.cash?.name]?.balance
         : '0'
       : marketShares?.outcomeShares
-      ? marketShares?.outcomeShares[selectedOutcome.id]
+      ? marketShares?.outcomeShares[selectedOutcomeId]
       : '0';
-  }, [orderType, amm?.cash?.name, amm?.id, selectedOutcome.id, balances]);
+  }, [orderType, amm?.cash?.name, amm?.id, selectedOutcomeId, balances]);
 
   const canMakeTrade: CanTradeProps = useMemo(() => {
     let actionText = buttonError || orderType;
@@ -524,8 +525,8 @@ const TradingForm = ({
     const percentageOff = new BN(1).minus(new BN(slippage).div(100));
     const worstCaseOutput = String(new BN(minOutput).times(percentageOff));
     const direction =
-      orderType === BUY ? TradingDirection.ENTRY : TradingDirection.EXIT;
-    const outputYesShares = selectedOutcome.id === YES_OUTCOME_ID;
+      isBuy ? TradingDirection.ENTRY : TradingDirection.EXIT;
+    const outputYesShares = selectedOutcomeId === YES_OUTCOME_ID;
     let userBalances = [];
     if (marketShares) {
       userBalances = marketShares.outcomeShares;
@@ -571,7 +572,7 @@ const TradingForm = ({
             setOrderType(BUY);
             setBreakdown(null);
           }}
-          className={classNames({ [Styles.Selected]: BUY === orderType })}
+          className={classNames({ [Styles.Selected]: isBuy })}
         >
           {BUY}
         </span>
@@ -580,7 +581,7 @@ const TradingForm = ({
             setBreakdown(null);
             setOrderType(SELL);
           }}
-          className={classNames({ [Styles.Selected]: SELL === orderType })}
+          className={classNames({ [Styles.Selected]: !isBuy })}
         >
           {SELL}
         </span>
@@ -603,14 +604,14 @@ const TradingForm = ({
           dontFilterInvalid
         />
         <AmountInput
-          chosenCash={orderType === BUY ? ammCash?.name : SHARES}
+          chosenCash={isBuy ? ammCash?.name : SHARES}
           updateInitialAmount={setAmount}
           initialAmount={''}
           maxValue={userBalance}
           rate={tradeEstimates?.ratePerCash}
         />
         <InfoNumbers
-          infoNumbers={formatBreakdown(orderType === BUY, breakdown, ammCash)}
+          infoNumbers={formatBreakdown(isBuy, breakdown, ammCash)}
         />
         {isLogged && !isApprovedTrade && (
           <ApprovalButton
