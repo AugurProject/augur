@@ -110,11 +110,12 @@ const Outcome = ({
         <div onClick={() => input.current && input.current.focus()}>
           <span>{currency === USDC ? '$0.' : '0.'}</span>
           <input
-            value={customVal}
+            value={parseInt(customVal)}
             onChange={(v) => {
               setCustomVal(v.target.value);
               setEditableValue(v.target.value && v.target.value !== '0' ? `.${v.target.value}` : v.target.value);
             }}
+            type='number'
             placeholder={PLACEHOLDER}
             ref={input}
           />

@@ -218,7 +218,6 @@ const ModalAddLiquidity = ({
   const userMaxAmount = modalType === REMOVE ? shareBalance : userTokenBalance;
 
   const [amount, updateAmount] = useState(userMaxAmount);
-  const [errorMessage, setErrorMessage] = useState<string>('');
 
   const percentFormatted = useMemo(() => {
     const feeOption = TRADING_FEE_OPTIONS.find(
@@ -309,8 +308,7 @@ const ModalAddLiquidity = ({
     }
   }
   const InputFormError = useMemo(() => {
-    if (errorMessage) return errorMessage;
-    if (!amount || amount === '0') return ENTER_AMOUNT;
+    if (!amount || amount === '0' || amount === '') return ENTER_AMOUNT;
     if (!account) return CONNECT_ACCOUNT;
     if (new BN(amount).gt(new BN(userMaxAmount))) return INSUFFICIENT_BALANCE;
     if (modalType === CREATE) {
@@ -328,7 +326,6 @@ const ModalAddLiquidity = ({
       }
     }
   }, [
-    errorMessage,
     modalType,
     outcomes[YES_OUTCOME_ID]?.price,
     outcomes[NO_OUTCOME_ID]?.price,
@@ -362,10 +359,8 @@ const ModalAddLiquidity = ({
           amount
         );
         if (!results) {
-          setErrorMessage('Estimation error');
           return defaultAddLiquidityBreakdown;
         }
-        setErrorMessage('');
         setBreakdown(getRemoveLiquidityBreakdown(results, cash));
       },
       liquidityDetailsFooter: {
@@ -472,10 +467,8 @@ const ModalAddLiquidity = ({
           properties.priceYes
         );
         if (!results) {
-          setErrorMessage('Estimation error');
           return defaultAddLiquidityBreakdown;
         }
-        setErrorMessage('');
         setBreakdown(getAddAdditionBreakdown(results));
         setEstimatedLpAmount(results.lpTokens);
       },
@@ -494,7 +487,6 @@ const ModalAddLiquidity = ({
         if (!properties) {
           return defaultAddLiquidityBreakdown;
         }
-        setErrorMessage('');
         const hasLiquidity =
           amm !== null && amm?.id !== undefined && amm?.liquidity !== '0';
         doAmmLiquidity(
@@ -594,10 +586,8 @@ const ModalAddLiquidity = ({
           properties.priceYes
         );
         if (!results) {
-          setErrorMessage('Estimation error');
           return defaultAddLiquidityBreakdown;
         }
-        setErrorMessage('');
         setBreakdown(getAddAdditionBreakdown(results));
       },
       approvalButtonText: `approve ${chosenCash}`,
@@ -718,7 +708,7 @@ const ModalAddLiquidity = ({
               )}
               <AmountInput
                 updateInitialAmount={(amount) => updateAmount(amount)}
-                initialAmount={''}
+                initialAmount={amount}
                 maxValue={userMaxAmount}
                 showCurrencyDropdown={!currency}
                 chosenCash={modalType === REMOVE ? SHARES : chosenCash}
