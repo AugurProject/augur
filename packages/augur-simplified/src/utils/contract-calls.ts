@@ -818,7 +818,8 @@ const populateInitLPValues = async (lptokens: LPTokens, ammExchanges: AmmExchang
     // sum up enters/exits transaction usd cash values
     const initialCashValueUsd = accumLpSharesAmounts(amm.transactions, account);
     lptoken.initCostUsd = initialCashValueUsd;
-    lptoken.usdValue = await getLPCurrentValue(lptoken.balance, amm);
+    // call `getLPCurrentValue` from Viz
+    lptoken.usdValue = "0"; //await getLPCurrentValue(lptoken.balance, amm);
     lptoken.feesEarned = String(new BN(lptoken.usdValue).minus(new BN(lptoken.initCostUsd)));
   }
 
@@ -842,9 +843,14 @@ const getInitPositionValues = (trades: UserTrades, amm: AmmExchange, isYesOutcom
   // sum up enters shares
   const sharesEntered = accumSharesPrice(trades.enters, isYesOutcome);
   const sharesExited = accumSharesPrice(trades.exits, isYesOutcome);
+  // get shares from LP activity
+  const sharesLiquidity = accumLpSharesPrice(amm.transactions, isYesOutcome);
 
-  const totalShares = sharesEntered.shares.minus(sharesExited.shares);
-  const avgPrice = totalShares.gt(0) ? sharesEntered.price.minus(sharesExited.price).div(sharesEntered.count.minus(sharesExited.count)) : new BN(0);
+  const sharesPositive = sharesLiquidity.shares.plus(sharesEntered.shares);
+  const sharesPositivePrice = sharesLiquidity.price.plus(sharesEntered.price).div(sharesLiquidity.count.plus(sharesEntered.count));
+  const sharesPositiveCount = sharesLiquidity.count.plus(sharesEntered.count);
+  const totalShares = sharesPositive.minus(sharesExited.shares);
+  const avgPrice = totalShares.gt(0) ? sharesPositivePrice.minus(sharesExited.price).div(sharesPositiveCount.minus(sharesExited.count)) : new BN(0);
   const formattedShares = new BN(convertOnChainSharesToDisplayShareAmount(totalShares, amm.cash.decimals));
   const cost = formattedShares.gt(0) ? formattedShares.times(avgPrice).times(new BN(cashPrice)) : new BN(0);
 
@@ -856,6 +862,26 @@ const accumSharesPrice = (trades: AmmTransaction[], isYesOutcome: boolean): { sh
     isYesOutcome ?
       { shares: p.shares.plus(new BN(t.yesShares)), price: p.price.plus(new BN(t.price)), count: p.count.plus(1) } :
       { shares: p.shares.plus(new BN(t.noShares)), price: p.price.plus(new BN(t.price)), count: p.count.plus(1) },
+    { shares: new BN(0), price: new BN(0), count: new BN(0) });
+
+  return { shares: result.shares, price: result.price, count: result.count };
+}
+
+const accumLpSharesPrice = (transactions: AmmTransaction[], isYesOutcome: boolean): { shares: BigNumber, price: BigNumber, count: BigNumber } => {
+  const result = transactions.reduce((p, t) => {
+    const yesShares = new BN(t.yesShares);
+    const noShares = new BN(t.noShares);
+    if (isYesOutcome) {
+      const netYesShares = noShares.minus(yesShares)
+      if (netYesShares.lte(new BN(0))) return p;
+      const price = netYesShares.div(new BN(t.yesShareCashValue));
+      return { shares: p.shares.plus(netYesShares), price: p.price.plus(price), count: p.count.plus(1) }
+    }
+    const netNoShares = yesShares.minus(noShares)
+    if (netNoShares.lte(new BN(0))) return p;
+    const price = netNoShares.div(new BN(t.noShareCashValue));
+    return { shares: p.shares.plus(netNoShares), price: p.price.plus(price), count: p.count.plus(1) }
+  },
     { shares: new BN(0), price: new BN(0), count: new BN(0) });
 
   return { shares: result.shares, price: result.price, count: result.count };

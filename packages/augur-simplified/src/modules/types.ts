@@ -127,6 +127,8 @@ export interface AmmTransaction {
   tokenAmount: string,
   cashValueUsd?: string,
   lpTokens?: string,
+  yesShareCashValue?: string,
+  noShareCashValue?: string
 }
 
 export interface Trade {
