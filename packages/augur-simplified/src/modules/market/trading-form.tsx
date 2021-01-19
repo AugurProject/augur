@@ -5,7 +5,7 @@ import { BUY, SELL, YES_NO, USDC, ETH } from 'modules/constants';
 import { BuySellButton } from '../common/buttons';
 import { useAppStatusStore } from '../stores/app-status';
 import { CloseIcon, UsdIcon, EthIcon } from 'modules/common/icons';
-import { AmmExchange, AmmOutcome, Cash, EstimateEnterTradeResult, EstimateExitTradeResult, TradingDirection } from '../types';
+import { AmmExchange, AmmOutcome, Cash, EstimateTradeResult, TradingDirection } from '../types';
 import { formatDai, formatEther, formatPercent } from '../../utils/format-number';
 import { ApprovalButton, TinyButton } from '../common/buttons';
 import {
@@ -282,11 +282,12 @@ export const InfoNumbers = ({ infoNumbers }: InfoNumbersProps) => {
   );
 };
 
-const getEnterBreakdown = (breakdown: EstimateEnterTradeResult, cash: Cash) => {
-  const avg = breakdown?.averagePrice || "$0.00";
-  const sharevalue = breakdown?.outputShares || "0.00";
-  const winnings = breakdown?.maxProfit || "$0.00"
-  const fees = breakdown?.tradeFees || "$0.00"
+const getEnterBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
+  const prepend = cash?.name === USDC ? '$' : '';
+  const avg = breakdown === null ? "-" : `${prepend}${breakdown?.averagePrice || "0.00"}`;
+  const sharevalue = breakdown === null ? "-" : breakdown?.outputValue || "0.00";
+  const winnings = breakdown === null ? "-" : `${prepend}${breakdown?.maxProfit || "0.00"}`;
+  const fees = breakdown === null ? "-" : breakdown?.tradeFees || "0.00"
   return [
     {
       label: 'average price',
@@ -295,7 +296,7 @@ const getEnterBreakdown = (breakdown: EstimateEnterTradeResult, cash: Cash) => {
       tooltipKey: 'averagePrice',
     },
     {
-      label: 'shares bought',
+      label: 'shares purchasing',
       value: sharevalue,
     },
     {
@@ -309,11 +310,12 @@ const getEnterBreakdown = (breakdown: EstimateEnterTradeResult, cash: Cash) => {
   ];
 };
 
-const getExitBreakdown = (breakdown: EstimateExitTradeResult, cash: Cash) => {
-  const avg = breakdown?.averagePrice || "$0.00";
-  const cashValue = breakdown?.outputCash || "0.00";
-  const remaining = breakdown?.remainingShares || "0.00";
-  const fees = breakdown?.estimateFees || "$0.00"
+const getExitBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
+  const prepend = cash?.name === USDC ? '$' : '';
+  const avg = breakdown === null ? "-" : `${prepend}${breakdown?.averagePrice || "0.00"}`;
+  const cashValue = breakdown === null ? "-" : `${prepend}${breakdown?.outputValue || "0.00"}`;
+  const remaining = breakdown === null ? "-" : breakdown?.remainingShares || "0.00";
+  const fees = breakdown === null ? "-" : breakdown?.tradeFees || "0.00"
   return [
     {
       label: 'Average Price',
@@ -335,6 +337,10 @@ const getExitBreakdown = (breakdown: EstimateExitTradeResult, cash: Cash) => {
     },
   ];
 };
+
+const formatBreakdown = (isBuy: boolean, breakdown: EstimateTradeResult, cash: Cash) => {
+  return isBuy ? getEnterBreakdown(breakdown, cash) : getExitBreakdown(breakdown, cash);
+}
 
 interface TradeEstimates {
   slippagePercent?: string;
@@ -378,8 +384,8 @@ const TradingForm = ({
   const [buttonError, updateButtonError] = useState('');
   const [isApprovedTrade, setIsApprovedTrade] = useState(true);
   const [isApprovedCash, setIsApprovedCash] = useState(true);
-  const [breakdown, setBreakdown] = useState(getEnterBreakdown(null, amm?.cash));
-  const [amount, setAmount] = useState<string>("");
+  const [breakdown, setBreakdown] = useState<EstimateTradeResult>(undefined);
+  const [amount, setAmount] = useState<string>('');
   const [tradeEstimates, setTradeEstimates] = useState<TradeEstimates>({})
 
   const ammCash = amm?.cash;
@@ -413,18 +419,13 @@ const TradingForm = ({
       const outputYesShares = selectedOutcome.id === YES_OUTCOME_ID;
       if (orderType === BUY) {
         const breakdown = await estimateEnterTrade(amm, amount, outputYesShares);
-        if (breakdown && breakdown.outputShares !== "0") {
-          const { slippagePercent, ratePerCash: rate, outputShares } = breakdown;
+        if (isMounted) setBreakdown(breakdown);
+        if (breakdown && breakdown.outputValue !== "0") {
+          const { slippagePercent, ratePerCash: rate, outputValue } = breakdown;
           if (isMounted) {
-            setBreakdown(getEnterBreakdown(breakdown, amm?.cash))
             const ratePerCash = `1 ${amm?.cash?.name} = ${rate}`;
-            setTradeEstimates({ slippagePercent, ratePerCash, outputAmount: outputShares })
+            setTradeEstimates({ slippagePercent, ratePerCash, outputAmount: outputValue })
             updateButtonError('');
-          }
-        } else {
-          if (isMounted) {
-            updateButtonError(INSUFFICIENT_LIQUIDITY);
-            setBreakdown(getEnterBreakdown(null, amm?.cash))
           }
         }
       } else {
@@ -435,20 +436,13 @@ const TradingForm = ({
           userBalances = hasShares.outcomeSharesRaw;
         }
         const breakdown = await estimateExitTrade(amm, amount, outputYesShares, userBalances);
-        if (breakdown && breakdown.outputCash !== "0") {
-          const { slippagePercent, ratePerCash: rate, outputCash } = breakdown;
-
+        if (isMounted) setBreakdown(breakdown);
+        if (breakdown && breakdown.outputValue !== "0") {
+          const { slippagePercent, ratePerCash: rate, outputValue } = breakdown;
           if (isMounted) {
-            setBreakdown(getExitBreakdown(breakdown, amm?.cash))
             const ratePerCash = `1 ${amm?.cash?.name} = ${rate}`;
-            setTradeEstimates({ slippagePercent, ratePerCash, outputAmount: outputCash })
+            setTradeEstimates({ slippagePercent, ratePerCash, outputAmount: outputValue })
             updateButtonError('');
-          }
-        } else {
-          updateButtonError(INSUFFICIENT_LIQUIDITY);
-          if (isMounted) {
-            setBreakdown(getExitBreakdown(null, amm?.cash))
-            updateButtonError(INSUFFICIENT_LIQUIDITY);
           }
         }
       }
@@ -456,7 +450,7 @@ const TradingForm = ({
     if (orderType && selectedOutcome.id && amount && Number(amount) > 0) {
       getEstimate();
     } else {
-      orderType === BUY ? setBreakdown(getEnterBreakdown(null, amm?.cash)) : setBreakdown(getExitBreakdown(null, amm?.cash));
+      orderType === BUY ? setBreakdown(undefined) : setBreakdown(undefined);
     }
     return () => {
       isMounted = false;
@@ -481,6 +475,9 @@ const TradingForm = ({
       disabled = true;
     } else if (new BN(amount).gt(new BN(userBalance))) {
       actionText = INSUFFICIENT_BALANCE;
+      disabled = true;
+    } else if (breakdown === null) {
+      actionText = INSUFFICIENT_LIQUIDITY;
       disabled = true;
     } else if (new BN(slippage || SETTINGS_SLIPPAGE).lt(new BN(tradeEstimates?.slippagePercent))) {
       actionText = OVER_SLIPPAGE;
@@ -532,7 +529,7 @@ const TradingForm = ({
         <span
           onClick={() => {
             setOrderType(BUY)
-            setBreakdown(getEnterBreakdown(null, ammCash))
+            setBreakdown(null)
           }}
           className={classNames({ [Styles.Selected]: BUY === orderType })}
         >
@@ -540,7 +537,7 @@ const TradingForm = ({
         </span>
         <span
           onClick={() => {
-            setBreakdown(getExitBreakdown(null, ammCash))
+            setBreakdown(null)
             setOrderType(SELL)
           }}
           className={classNames({ [Styles.Selected]: SELL === orderType })}
@@ -573,7 +570,7 @@ const TradingForm = ({
           rate={tradeEstimates?.ratePerCash}
           updateAmountError={updateButtonError}
         />
-        <InfoNumbers infoNumbers={breakdown} />
+        <InfoNumbers infoNumbers={formatBreakdown(orderType === BUY, breakdown, ammCash) } />
         {loginAccount && !isApprovedCash && (
           <ApprovalButton amm={amm} cash={ammCash} actionType={ApprovalAction.ADD_LIQUIDITY} />
         )}

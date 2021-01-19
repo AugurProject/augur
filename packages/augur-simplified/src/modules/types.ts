@@ -875,20 +875,12 @@ export interface TradeInfo {
   userBalances?: string[]
 }
 
-export interface EstimateEnterTradeResult {
+export interface EstimateTradeResult {
   averagePrice: string;
-  outputShares: string;
+  outputValue: string;
   maxProfit: string;
   tradeFees: string;
-  slippagePercent: string;
-  ratePerCash: string;
-}
-
-export interface EstimateExitTradeResult {
-  averagePrice: string;
-  outputCash: string;
-  remainingShares: string;
-  estimateFees: string;
+  remainingShares?: string;
   slippagePercent: string;
   ratePerCash: string;
 }
