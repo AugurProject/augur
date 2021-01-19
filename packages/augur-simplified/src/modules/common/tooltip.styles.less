@@ -74,13 +74,15 @@ div.Tooltip {
 
       &::after {
         border-top: @size-8 solid var(--simple-light-bg);
-        bottom: -@size-8;
+        bottom: -@size-7;
       }
 
       &.type-light::after {
         border-left-width: @size-8;
         border-right-width: @size-8;
         border-top-width: @size-8;
+        -webkit-filter: drop-shadow(0 @size-2 0 var(--simple-border));
+        filter: drop-shadow(0 @size-2 0 var(--simple-border));
       }
 
       &::before {
@@ -101,18 +103,19 @@ div.Tooltip {
     }
 
     &.place-bottom {
-      box-shadow: 0 1px @size-4 0 rgba(0, 0, 0, 0.5);
-      margin-top: -@size-14;
+      margin-top: @size-10;
 
       &::after {
         border-bottom-color: var(--simple-light-bg);
-        top: -@size-8;
+        top: -@size-7;
       }
 
       &.type-light::after {
         border-bottom-width: @size-8;
         border-left-width: @size-8;
         border-right-width: @size-8;
+        -webkit-filter: drop-shadow(0 -@size-2 0 var(--simple-border));
+        filter: drop-shadow(0 -@size-2 0 var(--simple-border));
       }
 
       &::before {
@@ -138,13 +141,15 @@ div.Tooltip {
 
       &::after {
         border-left-color: var(--simple-light-bg);
-        right: -@size-8;
+        right: -@size-7;
       }
 
       &.type-light::after {
         border-bottom-width: @size-8;
         border-left-width: @size-8;
         border-top-width: @size-8;
+        -webkit-filter: drop-shadow(@size-2 0 0 var(--simple-border));
+        filter: drop-shadow(@size-2 0 0 var(--simple-border));
       }
 
       &::before {
@@ -170,13 +175,15 @@ div.Tooltip {
 
       &::after {
         border-right-color: var(--simple-light-bg);
-        left: -@size-8;
+        left: -@size-7;
       }
 
       &.type-light::after {
         border-bottom-width: @size-8;
         border-right-width: @size-8;
         border-top-width: @size-8;
+        -webkit-filter: drop-shadow(-@size-2 0 0 var(--simple-border));
+        filter: drop-shadow(-@size-2 0 0 var(--simple-border));
       }
 
       &::before {
