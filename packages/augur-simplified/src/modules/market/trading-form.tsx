@@ -60,7 +60,8 @@ const Outcome = ({
   setEditableValue,
   ammCash,
   showAsButton,
-  invalidSelected
+  invalidSelected,
+  currency
 }) => {
   const [customVal, setCustomVal] = useState('');
   const formattedPrice = formatDai(outcome.price);
@@ -82,7 +83,7 @@ const Outcome = ({
       <span>{outcome.name}</span>
       {editable ? (
         <div>
-          <span>$</span>
+          <span>{currency === USDC ? '$0.' : '0.'}</span>
           <input
             value={customVal}
             onChange={v => {
@@ -206,6 +207,7 @@ interface OutcomesGridProps {
   ammCash: Cash;
   showAsButtons?: boolean;
   dontFilterInvalid?: boolean;
+  currency: string;
 }
 export const OutcomesGrid = ({
   outcomes,
@@ -218,7 +220,8 @@ export const OutcomesGrid = ({
   setEditableValue,
   ammCash,
   showAsButtons,
-  dontFilterInvalid
+  dontFilterInvalid,
+  currency
 }: OutcomesGridProps) => {
   return (
     <div
@@ -232,6 +235,7 @@ export const OutcomesGrid = ({
         .filter(outcome => dontFilterInvalid ? true : !outcome.isInvalid)
         .reverse().map((outcome, index) => (
           <Outcome
+            currency={currency}
             key={outcome.id}
             selected={
               selectedOutcome &&
@@ -558,6 +562,7 @@ const TradingForm = ({
           orderType={orderType}
           ammCash={ammCash}
           dontFilterInvalid
+          currency={orderType === BUY ? ammCash?.name : SHARES}
         />
         <AmountInput
           chosenCash={orderType === BUY ? ammCash?.name : SHARES}
