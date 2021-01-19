@@ -300,7 +300,9 @@ const shapeAddLiquidityTransactions = (transactions: GraphAddLiquidity[], cash: 
   return transactions.map(e => {
     const properties = formatTransaction(e, cash);
     const subheader = `Add ${cash.name} Liquidity`;
-    const cashValueUsd = String(convertOnChainCashAmountToDisplayCashAmount(new BN(e.cashValue), new BN(cash.decimals)));
+    // TODO: cashValue seems to be off on graph data, work around is to add up yes/no share cashValues
+    const totalCashValue = new BN(e.noShareCashValue).plus(e.yesShareCashValue);
+    const cashValueUsd = String(convertOnChainSharesToDisplayShareAmount(totalCashValue, new BN(cash.decimals)).times(cash.usdPrice));
     const lpTokens = String(convertOnChainSharesToDisplayShareAmount(new BN(e.lpTokens), new BN(cash.decimals)));
     return { ...e, tx_type: TransactionTypes.ADD_LIQUIDITY, sender: e.sender.id, subheader, ...properties, price: null, cashValueUsd, lpTokens }
   });
