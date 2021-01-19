@@ -208,12 +208,10 @@ export const AmountInput = ({
           />
         )}
       </div>
-      {showRate && (
-        <span className={Styles.RateLabel}>
-          <span>Rate</span>
-          {rate}
-        </span>
-      )}
+      <span className={Styles.RateLabel}>
+        <span>Rate</span>
+        {rate}
+      </span>
     </div>
   );
 };
@@ -577,7 +575,11 @@ const TradingForm = ({
           updateInitialAmount={setAmount}
           initialAmount={''}
           maxValue={userBalance}
-          rate={!isNaN(breakdown?.ratePerCash) && `1 ${amm?.cash?.name} = ${isNaN(breakdown?.ratePerCash) ? '??' : breakdown?.ratePerCash} Shares`}
+          rate={
+            !isNaN(breakdown?.ratePerCash) ?
+              `1 ${amm?.cash?.name} = ${isNaN(breakdown?.ratePerCash) ? '??' : breakdown?.ratePerCash} Shares` :
+              `1 ${amm?.cash?.name} = ?? Shares`
+          }
         />
         <InfoNumbers infoNumbers={formatBreakdown(isBuy, breakdown, ammCash)} />
         {isLogged && !isApprovedTrade && (
