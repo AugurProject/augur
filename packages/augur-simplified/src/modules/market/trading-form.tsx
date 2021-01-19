@@ -65,7 +65,7 @@ export const DefaultMarketOutcomes = [
 const PLACEHOLDER = '0';
 
 export const isInvalidNumber = (number) => {
-  return number !== '' && (isNaN(number) || Number(number) < 0);
+  return number !== '' && (isNaN(number) || Number(number) < 0 || Number(number) === 0);
 }
 
 const Outcome = ({

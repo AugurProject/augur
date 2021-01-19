@@ -96,24 +96,20 @@ const fakeYesNoOutcomes = [
   {
     id: 0,
     name: 'Invalid',
-    price: '0',
+    price: '',
     isInvalid: true,
   },
   {
     id: 1,
     name: 'No',
-    price: '0',
+    price: '',
   },
   {
     id: 2,
     name: 'Yes',
-    price: '0',
+    price: '',
   },
 ];
-
-const checkIfAmountIsValid = (amount) => {
-  return amount !== '' && (isInvalidNumber(amount) || Number(amount) === 0);
-}
 
 const getRemoveLiquidityBreakdown = (
   breakdown: LiquidityBreakdown,
@@ -276,7 +272,7 @@ const ModalAddLiquidity = ({
   const priceErrors = outcomes.filter(
     (outcome) => !outcome.isInvalid && isInvalidNumber(outcome.price)
   );
-  if (checkIfAmountIsValid(amount)) {
+  if (isInvalidNumber(amount)) {
     buttonError = ERROR_AMOUNT;
   } else if (priceErrors.length > 0) {
     buttonError = 'Price is not valid';
@@ -554,7 +550,7 @@ const ModalAddLiquidity = ({
         const priceErrorsWithEmptyString = outcomes.filter(
           (outcome) => !outcome.isInvalid && (isInvalidNumber(outcome.price) || outcome.price === '')
         );
-        if (priceErrorsWithEmptyString.length > 0 || checkIfAmountIsValid(amount)) {
+        if (priceErrorsWithEmptyString.length > 0 || isInvalidNumber(amount)) {
           return defaultAddLiquidityBreakdown;
         }
         const feeSelected = TRADING_FEE_OPTIONS.find(
