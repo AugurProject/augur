@@ -329,7 +329,7 @@ const getEnterBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
   return [
     {
       label: 'Average Price',
-      value: breakdown?.averagePrice
+      value: !isNaN(breakdown?.averagePrice)
         ? `${prepend}${breakdown.averagePrice}`
         : '-',
       tooltipText: 'tooltip copy',
@@ -337,15 +337,15 @@ const getEnterBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
     },
     {
       label: 'Shares Purchasing',
-      value: breakdown?.outputValue ? breakdown.outputValue : '-',
+      value: !isNaN(breakdown?.outputValue) ? breakdown.outputValue : '-',
     },
     {
       label: 'Max Winnings',
-      value: breakdown?.maxProfit ? `${prepend}${breakdown.maxProfit}` : '-',
+      value: !isNaN(breakdown?.maxProfit) ? `${prepend}${breakdown.maxProfit}` : '-',
     },
     {
       label: 'Estimated Fees',
-      value: breakdown?.tradeFees ? breakdown.tradeFees : '-',
+      value: !isNaN(breakdown?.tradeFees) ? breakdown.tradeFees : '-',
     },
   ];
 };
@@ -355,7 +355,7 @@ const getExitBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
   return [
     {
       label: 'Average Price',
-      value: breakdown?.averagePrice
+      value: !isNaN(breakdown?.averagePrice)
         ? `${prepend}${breakdown.averagePrice}`
         : '-',
       tooltipText: 'tooltip copy',
@@ -363,17 +363,17 @@ const getExitBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
     },
     {
       label: `Amount You'll Recieve`,
-      value: breakdown?.outputValue
+      value: !isNaN(breakdown?.outputValue)
         ? `${prepend}${breakdown.outputValue}`
         : '-',
     },
     {
       label: 'Remaining Shares',
-      value: breakdown?.remainingShares ? breakdown.remainingShares : '-',
+      value: !isNaN(breakdown?.remainingShares) ? breakdown.remainingShares : '-',
     },
     {
       label: 'Estimated Fees',
-      value: breakdown?.tradeFees ? breakdown.tradeFees : '-',
+      value: !isNaN(breakdown?.tradeFees) ? breakdown.tradeFees : '-',
     },
   ];
 };
@@ -387,12 +387,6 @@ const formatBreakdown = (
     ? getEnterBreakdown(breakdown, cash)
     : getExitBreakdown(breakdown, cash);
 
-interface TradeEstimates {
-  slippagePercent?: string;
-  ratePerCash?: string;
-  outputAmount?: string;
-}
-
 interface TradingFormProps {
   amm: AmmExchange;
   marketType?: string;
@@ -402,11 +396,7 @@ interface TradingFormProps {
 interface CanTradeProps {
   disabled: boolean;
   actionText: string;
-}
-
-interface CanTradeProps {
-  disabled: boolean;
-  actionText: string;
+  subText?: string | null;
 }
 
 const TradingForm = ({
@@ -429,8 +419,6 @@ const TradingForm = ({
   );
   const [breakdown, setBreakdown] = useState<EstimateTradeResult>(null);
   const [amount, setAmount] = useState<string>('');
-  const [tradeEstimates, setTradeEstimates] = useState<TradeEstimates>({});
-
   const ammCash = amm?.cash;
   const outcomes = amm?.ammOutcomes || [];
   const isApprovedCash = !!approvals?.liquidity?.add[ammCash?.name];
@@ -464,17 +452,6 @@ const TradingForm = ({
       const breakdown = isBuy
         ? await estimateEnterTrade(amm, amount, outputYesShares)
         : await estimateExitTrade(amm, amount, outputYesShares, userBalances);
-      if (breakdown && breakdown.outputValue !== '0') {
-        const { slippagePercent, ratePerCash: rate, outputValue } = breakdown;
-        if (isMounted) {
-          const ratePerCash = `1 ${amm?.cash?.name} = ${rate}`;
-          setTradeEstimates({
-            slippagePercent,
-            ratePerCash,
-            outputAmount: outputValue,
-          });
-        }
-      }
       if (isMounted) setBreakdown(breakdown);
     };
 
@@ -514,7 +491,7 @@ const TradingForm = ({
       disabled = true;
     } else if (
       new BN(slippage || SETTINGS_SLIPPAGE).lt(
-        new BN(tradeEstimates?.slippagePercent)
+        new BN(breakdown?.slippagePercent)
       )
     ) {
       actionText = OVER_SLIPPAGE;
@@ -527,10 +504,10 @@ const TradingForm = ({
       actionText,
       subText,
     };
-  }, [orderType, amount, buttonError, userBalance, tradeEstimates?.slippagePercent, slippage]);
+  }, [orderType, amount, buttonError, userBalance, breakdown?.slippagePercent, slippage]);
 
   const makeTrade = () => {
-    const minOutput = tradeEstimates?.outputAmount;
+    const minOutput = breakdown?.outputValue;
     const percentageOff = new BN(1).minus(new BN(slippage).div(100));
     const worstCaseOutput = String(new BN(minOutput).times(percentageOff));
     const direction = isBuy ? TradingDirection.ENTRY : TradingDirection.EXIT;
@@ -617,7 +594,7 @@ const TradingForm = ({
           updateInitialAmount={setAmount}
           initialAmount={''}
           maxValue={userBalance}
-          rate={tradeEstimates?.ratePerCash}
+          rate={!isNaN(breakdown?.ratePerCash) && `1 ${amm?.cash?.name} = ${isNaN(breakdown?.ratePerCash) ? '??' : breakdown?.ratePerCash} Shares`}
         />
         <InfoNumbers infoNumbers={formatBreakdown(isBuy, breakdown, ammCash)} />
         {isLogged && !isApprovedTrade && (
