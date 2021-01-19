@@ -385,7 +385,7 @@ const TradingForm = ({
   const [isApprovedTrade, setIsApprovedTrade] = useState(true);
   const [isApprovedCash, setIsApprovedCash] = useState(true);
   const [breakdown, setBreakdown] = useState<EstimateTradeResult>(null);
-  const [amount, setAmount] = useState<string>("");
+  const [amount, setAmount] = useState<string>('');
   const [tradeEstimates, setTradeEstimates] = useState<TradeEstimates>({})
 
   const ammCash = amm?.cash;
