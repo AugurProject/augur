@@ -79,30 +79,35 @@ contract AMMExchange is IAMMExchange, ERC20 {
     function addLiquidityInternal(address _user, uint256 _cash, uint256 _ratioFactor, bool _keepLong, address _recipient) internal returns (uint256) {
         require(_ratioFactor <= 10**18, "Ratio should be an amount relative to 10**18 (e.g 9 * 10**17 == .9)");
         require(_ratioFactor >= 10**17, "Ratio of 1:10 is the minimum");
+
         uint256 _setsToBuy = _cash.div(numTicks);
-        factory.transferCash(augurMarket, shareToken, fee, _user, address(this), _cash);
         uint256 _longShares = _setsToBuy;
         uint256 _shortShares = _setsToBuy;
-        uint256 _longSharesToUser = 0;
-        uint256 _shortSharesToUser = 0;
 
         if (_ratioFactor != 10**18) {
             if (_keepLong) {
                 _longShares = _setsToBuy * _ratioFactor / 10**18;
-                _longSharesToUser = _setsToBuy.sub(_longShares);
             } else {
                 _shortShares = _setsToBuy * _ratioFactor / 10**18;
-                _shortSharesToUser = _setsToBuy.sub(_shortShares);
             }
         }
-
         uint256 _lpTokens = rateAddLiquidity(_longShares, _shortShares);
+
+        factory.transferCash(augurMarket, shareToken, fee, _user, address(this), _cash);
         shareToken.publicBuyCompleteSets(augurMarket, _setsToBuy);
+
         if (_ratioFactor != 10**18) {
+            uint256 _longSharesToUser = 0;
+            uint256 _shortSharesToUser = 0;
+            if (_keepLong) {
+                _longSharesToUser = _setsToBuy.sub(_longShares);
+            } else {
+                _shortSharesToUser = _setsToBuy.sub(_shortShares);
+            }
             shareTransfer(address(this), _recipient, _shortSharesToUser, _shortSharesToUser, _longSharesToUser);
         }
-        _mint(_recipient, _lpTokens);
 
+        _mint(_recipient, _lpTokens);
         emit AddLiquidity(_recipient, _cash, _shortShares, _longShares, _lpTokens);
 
         return _lpTokens;
@@ -111,9 +116,14 @@ contract AMMExchange is IAMMExchange, ERC20 {
     // returns how many LP tokens you get for providing the given number of sets
     function rateAddLiquidity(uint256 _longs, uint256 _shorts) public view returns (uint256) {
         (uint256 _noBalance, uint256 _yesBalance) = yesNoShareBalances(address(this));
+        uint256 _cashBalance = cash.balanceOf(address(this));
 
-        uint256 _priorLiquidityConstant = SafeMathUint256.sqrt(_yesBalance * _noBalance);
-        uint256 _newLiquidityConstant = SafeMathUint256.sqrt((_yesBalance + _longs) * (_noBalance + _shorts));
+        uint256 _normalizedCashBalance = _cashBalance.div(numTicks);
+        uint256 _longBalance = _yesBalance + _normalizedCashBalance;
+        uint256 _shortBalance = _noBalance + _normalizedCashBalance;
+
+        uint256 _priorLiquidityConstant = SafeMathUint256.sqrt(_longBalance * _shortBalance);
+        uint256 _newLiquidityConstant = SafeMathUint256.sqrt((_longBalance + _longs) * (_shortBalance + _shorts));
 
         if (_priorLiquidityConstant == 0) {
             return _newLiquidityConstant;

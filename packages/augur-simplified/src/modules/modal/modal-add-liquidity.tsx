@@ -51,7 +51,7 @@ import {
   getAmmLiquidity,
   getRemoveLiquidity,
 } from '../../utils/contract-calls';
-import { useAppStatusStore } from '../stores/app-status';
+import { useAppStatusStore, AppStatusStore } from '../stores/app-status';
 import { BigNumber as BN } from 'bignumber.js';
 import { createBigNumber } from '../../utils/create-big-number';
 
@@ -160,9 +160,7 @@ interface ModalAddLiquidityProps {
 export const updateTxStatus = (txResponse, updateTransaction) => {
   if (txResponse.confirmations > 0) {
     // TODO temp workaround
-    const tx =
-      window.appStatus.transactions ||
-      JSON.parse(window.localStorage.getItem('transactions'));
+    const tx = AppStatusStore.get().transactions;
     const updateTxState = tx.find(
       (tx) => tx.hash === txResponse.transactionHash
     );
@@ -188,7 +186,7 @@ const ModalAddLiquidity = ({
   const account = loginAccount?.account;
 
   let amm = market?.amm;
-  const mustSetPrices =
+  const mustSetPrices = liquidityModalType === CREATE ||
     !amm || amm?.liquidity === undefined || amm?.liquidity === '0';
   const modalType = liquidityModalType;
 
@@ -228,9 +226,9 @@ const ModalAddLiquidity = ({
     );
     const feePercent = LIQUIDITY_STRINGS[modalType].setFees
       ? feeOption.value
-      : amm?.feeDecimal;
+      : amm?.feeInPercent;
     return formatPercent(feePercent).full;
-  }, [tradingFeeSelection, amm?.feeDecimal, modalType]);
+  }, [tradingFeeSelection, amm?.feeInPercent, modalType]);
 
   const userPercentOfPool = useMemo(() => {
     let userPercent = '100';

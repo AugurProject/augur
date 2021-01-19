@@ -126,6 +126,8 @@ export const GET_MARKETS = blockNumber => {
         cash
         cashValue
         lpTokens
+        noShareCashValue
+        yesShareCashValue
       }
       removeLiquidity {
         id
@@ -138,6 +140,8 @@ export const GET_MARKETS = blockNumber => {
         noShares
         cash
         cashValue
+        noShareCashValue
+        yesShareCashValue
       }
     }
   }

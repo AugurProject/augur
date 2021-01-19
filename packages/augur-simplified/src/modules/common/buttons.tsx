@@ -9,6 +9,7 @@ import { AmmExchange, Cash } from '../types';
 
 interface ButtonProps {
   text?: string;
+  subText?: string | null;
   className?: string;
   disabled?: boolean;
   action?: Function;
@@ -22,6 +23,7 @@ interface ButtonProps {
 
 const Button = ({
   text,
+  subText,
   className,
   disabled,
   action,
@@ -51,6 +53,7 @@ const Button = ({
     >
       {error && error !== '' ? error : text}
       {icon && icon}
+      {subText && <span>{subText}</span>}
     </a>
   ) : (
     <button
@@ -68,6 +71,7 @@ const Button = ({
     >
       {error && error !== '' ? error : text}
       {icon && icon}
+      {subText && <span>{subText}</span>}
     </button>
   );
 };
@@ -199,7 +203,7 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
         if (isETH) {
           tx = await approveERC1155Contract(shareToken, `To Sell (${approvingName})`, WethWrapperForAMMExchange, loginAccount);
         } else {
-          tx = await approveERC20Contract(cash.address, `To Sell (${approvingName})`, AMMFactory, loginAccount);
+          tx = await approveERC1155Contract(shareToken, `To Sell (${approvingName})`, AMMFactory, loginAccount);
         }
         tx.marketDescription = marketDescription;
         addTransaction(tx);
@@ -227,7 +231,7 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
         if (isETH) {
           approvalCheck = await isERC1155ContractApproved(shareToken, WethWrapperForAMMExchange, loginAccount, transactions, updateTransaction);
         } else {
-          approvalCheck = await checkAllowance(cash.address, AMMFactory, loginAccount, transactions, updateTransaction);
+          approvalCheck = await isERC1155ContractApproved(shareToken, AMMFactory, loginAccount, transactions, updateTransaction);
         }
         setIsApproved(approvalCheck);
       }

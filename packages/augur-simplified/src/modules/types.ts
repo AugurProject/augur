@@ -116,8 +116,7 @@ export interface AmmTransaction {
   sender: string,
   timestamp: string,
   tx_hash: string,
-  price: string | null,
-
+  price?: string,
   value: string,
   subheader: string,
   date: string,
@@ -127,6 +126,9 @@ export interface AmmTransaction {
   tokenAmount: string,
   cashValueUsd?: string,
   lpTokens?: string,
+  yesShareCashValue?: string,
+  noShareCashValue?: string
+  cashValue?: string, // for add/remove liquidity
 }
 
 export interface Trade {
@@ -167,6 +169,7 @@ export interface AmmExchange {
   volumeTotalUSD: string,
   feeDecimal: string,
   feeRaw: string,
+  feeInPercent: string,
   cash: Cash,
   sharetoken: string,
   transactions: AmmTransaction[],
@@ -873,20 +876,12 @@ export interface TradeInfo {
   userBalances?: string[]
 }
 
-export interface EstimateEnterTradeResult {
+export interface EstimateTradeResult {
   averagePrice: string;
-  outputShares: string;
+  outputValue: string;
   maxProfit: string;
   tradeFees: string;
-  slippagePercent: string;
-  ratePerCash: string;
-}
-
-export interface EstimateExitTradeResult {
-  averagePrice: string;
-  outputCash: string;
-  remainingShares: string;
-  estimateFees: string;
+  remainingShares?: string;
   slippagePercent: string;
   ratePerCash: string;
 }

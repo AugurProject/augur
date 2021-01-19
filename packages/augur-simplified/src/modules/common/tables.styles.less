@@ -99,7 +99,7 @@
 
   @media @breakpoint-mobile-tablet {
     grid-template-columns: repeat(5, 1fr);
-    
+
     > li:nth-of-type(4) {
       display: none;
     }
@@ -125,7 +125,7 @@
 // liquidity table
 
 .LiquidityRowHeader {
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: minmax(@size-96, 1fr) repeat(3, 1fr);
 }
 
 .LiquidityRow {
@@ -160,8 +160,14 @@
   }
 
   @media @breakpoint-mobile-tablet {
+    padding: @size-20 @size-16;
+
     > button {
       flex: 1;
+
+      &:nth-of-type(2) {
+        margin-left: @size-8;
+      }
     }
   }
 }
@@ -303,7 +309,7 @@ div.PositionsLiquidityViewSwitcher {
   > span {
     .EmptyMessage;
 
-    border-radius: @size-8;
+    border-radius: 0;
   }
 }
 

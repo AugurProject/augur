@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Styles from 'modules/common/pagination.styles.less';
 import { DirectionButton } from './buttons';
 
@@ -96,11 +96,6 @@ export const Pagination = ({
 }: PaginationProps) => {
   const totalPages =
     itemsPerPage === 1 ? 1 : Math.ceil(itemCount / (itemsPerPage || 10)) || 1;
-
-  useEffect(() => {
-    document.getElementById('mainContent')?.scrollTo(0, 0);
-    window.scrollTo(0, 1);
-  }, [page])
 
   return (
     <div className={Styles.Pagination}>
