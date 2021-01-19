@@ -275,6 +275,8 @@ export const estimateExitTrade = async (
   //const startTime = new Date().getTime()
   const breakdownWithFeeRaw = await estimateMiddlewareTrade(TradingDirection.EXIT, amm, inputDisplayAmount, outputYesShares, true, userBalances);
 
+  if (!breakdownWithFeeRaw) return null;
+
   const estimateCash = convertOnChainCashAmountToDisplayCashAmount(breakdownWithFeeRaw, amm.cash.decimals);
   const tradeFees = String(estimateCash.times(new BN(amm.feeDecimal)));
   //console.log('exit, breakdown estimateCash', String(estimateCash))

@@ -227,7 +227,7 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
         if (isETH) {
           approvalCheck = await isERC1155ContractApproved(shareToken, WethWrapperForAMMExchange, loginAccount, transactions, updateTransaction);
         } else {
-          approvalCheck = await checkAllowance(cash.address, AMMFactory, loginAccount, transactions, updateTransaction);
+          approvalCheck = await isERC1155ContractApproved(shareToken, AMMFactory, loginAccount, transactions, updateTransaction);
         }
         setIsApproved(approvalCheck);
       }
