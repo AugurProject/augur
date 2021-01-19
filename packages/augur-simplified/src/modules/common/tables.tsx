@@ -155,13 +155,14 @@ export const AllPositionTable = ({ page }) => {
     positions,
     page,
     POSITIONS_LIQUIDITY_LIMIT
-  ).map((position) => {
+  ).map((position, index) => {
     return (
       <PositionTable
         market={position.ammExchange.market}
         ammExchange={position.ammExchange}
         positions={position.positions}
         claimableWinnings={position.claimableWinnings}
+        key={index}
       />
     );
   });
