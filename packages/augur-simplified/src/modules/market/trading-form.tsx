@@ -112,8 +112,8 @@ const Outcome = ({
           <input
             value={parseInt(customVal)}
             onChange={(v) => {
-              setCustomVal(v.target.value);
-              setEditableValue(v.target.value && v.target.value !== '0' ? `.${v.target.value}` : v.target.value);
+              setCustomVal(`${v.target.value}`);
+              setEditableValue(v.target.value && v.target.value !== '0' ? `.${v.target.value}` : `${v.target.value}`);
             }}
             type='number'
             placeholder={PLACEHOLDER}
