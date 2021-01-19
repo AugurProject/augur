@@ -297,6 +297,7 @@ export const estimateExitTrade = async (
     outputValue: String(estimateCash),
     tradeFees,
     averagePrice,
+    maxProfit: null,
     slippagePercent,
     ratePerCash,
     remainingShares,
@@ -444,6 +445,20 @@ export async function doTrade(
   }
 
   return null;
+}
+
+export const claimWinnings = (account: string, library: Web3Provider, marketIds: string[], paraShareToken) => {
+  const contract = getContract(paraShareToken, ParaShareToken.ABI, library, account);
+  return contract
+    .claimTradingProceeds(marketIds, account, ethers.utils.formatBytes32String('11'))
+    .then((response: TransactionResponse) => {
+      // TODO: handle response
+    })
+    .catch((error: Error) => {
+      // TODO: handle error
+      console.debug('Failed to claim winnings', error)
+      throw error
+    })
 }
 
 interface UserTrades {
