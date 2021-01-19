@@ -370,12 +370,13 @@ const getExitBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
 
 const formatBreakdown = (
   isBuy: boolean,
-  breakdown: EstimateTradeResult,
+  breakdown: EstimateTradeResult | typeof INSUFFICIENT_LIQUIDITY,
   cash: Cash
 ) => {
+  const breakdownToUse = breakdown === INSUFFICIENT_LIQUIDITY ? null : breakdown;
   return isBuy
-    ? getEnterBreakdown(breakdown, cash)
-    : getExitBreakdown(breakdown, cash);
+    ? getEnterBreakdown(breakdownToUse, cash)
+    : getExitBreakdown(breakdownToUse, cash);
 };
 
 interface TradeEstimates {
@@ -418,7 +419,7 @@ const TradingForm = ({
   const [selectedOutcome, setSelectedOutcome] = useState(
     initialSelectedOutcome
   );
-  const [breakdown, setBreakdown] = useState<EstimateTradeResult>(undefined);
+  const [breakdown, setBreakdown] = useState<EstimateTradeResult | typeof INSUFFICIENT_LIQUIDITY>(undefined);
   const [amount, setAmount] = useState<string>('');
   const [tradeEstimates, setTradeEstimates] = useState<TradeEstimates>({});
 
@@ -469,7 +470,7 @@ const TradingForm = ({
           });
         }
       }
-      if (isMounted) setBreakdown(breakdown);
+      if (isMounted) setBreakdown(breakdown === null ? INSUFFICIENT_LIQUIDITY : breakdown);
     };
 
     if (amount && Number(amount) > 0) {
