@@ -874,12 +874,12 @@ const accumLpSharesPrice = (transactions: AmmTransaction[], isYesOutcome: boolea
     if (isYesOutcome) {
       const netYesShares = noShares.minus(yesShares)
       if (netYesShares.lte(new BN(0))) return p;
-      const price = netYesShares.div(new BN(t.yesShareCashValue));
+      const price = (new BN(t.cash).minus(new BN(t.cashValue))).div(netYesShares);
       return { shares: p.shares.plus(netYesShares), price: p.price.plus(price), count: p.count.plus(1) }
     }
     const netNoShares = yesShares.minus(noShares)
     if (netNoShares.lte(new BN(0))) return p;
-    const price = netNoShares.div(new BN(t.noShareCashValue));
+    const price = (new BN(t.cash).minus(new BN(t.cashValue))).div(netNoShares);
     return { shares: p.shares.plus(netNoShares), price: p.price.plus(price), count: p.count.plus(1) }
   },
     { shares: new BN(0), price: new BN(0), count: new BN(0) });

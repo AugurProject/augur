@@ -116,8 +116,7 @@ export interface AmmTransaction {
   sender: string,
   timestamp: string,
   tx_hash: string,
-  price: string | null,
-
+  price?: string,
   value: string,
   subheader: string,
   date: string,
@@ -129,6 +128,7 @@ export interface AmmTransaction {
   lpTokens?: string,
   yesShareCashValue?: string,
   noShareCashValue?: string
+  cashValue?: string, // for add/remove liquidity
 }
 
 export interface Trade {
