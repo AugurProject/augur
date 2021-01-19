@@ -77,20 +77,25 @@ const TRADING_FEE_OPTIONS = [
     value: 2,
   },
 ];
-const defaultAddLiquidityBreakdown = [
-  {
-    label: 'yes shares',
-    value: `0`,
-  },
-  {
-    label: 'no shares',
-    value: '0',
-  },
-  {
-    label: 'liquidity shares',
-    value: '0',
-  },
-];
+// const defaultAddLiquidityBreakdown = [
+//   {
+//     label: 'yes shares',
+//     value: `0`,
+//   },
+//   {
+//     label: 'no shares',
+//     value: '0',
+//   },
+//   {
+//     label: 'liquidity shares',
+//     value: '0',
+//   },
+// ];
+const defaultAddLiquidityBreakdown = {
+  yesShares: '0',
+  noShares: '0',
+  lpTokens: '0',
+}
 
 const fakeYesNoOutcomes = [
   {
@@ -191,13 +196,12 @@ const ModalAddLiquidity = ({
   );
   const [showBackView, setShowBackView] = useState(false);
   const [chosenCash, updateCash] = useState<string>(currency ? currency : USDC);
-  let isApproved = true;
-  // needs to be set by currency picker if amm is null
   const [breakdown, setBreakdown] = useState(defaultAddLiquidityBreakdown);
   const [estimatedLpAmount, setEstimatedLpAmount] = useState<string>('0');
   const [tradingFeeSelection, setTradingFeeSelection] = useState<number>(
     TRADING_FEE_OPTIONS[2].id
   );
+  let isApproved = true;
 
   const cash = useMemo(() => {
     return cashes && chosenCash
@@ -213,7 +217,7 @@ const ModalAddLiquidity = ({
     balances.lpTokens[amm?.id]?.balance;
   const userMaxAmount = modalType === REMOVE ? shareBalance : userTokenBalance;
 
-  const [amount, updateAmount] = useState(userMaxAmount);
+  const [amount, updateAmount] = useState(modalType === CREATE ? userMaxAmount : '');
 
   const percentFormatted = useMemo(() => {
     const feeOption = TRADING_FEE_OPTIONS.find(
@@ -279,7 +283,50 @@ const ModalAddLiquidity = ({
   }
 
   useEffect(() => {
-    LIQUIDITY_METHODS[modalType].receiveBreakdown();
+    const priceErrorsWithEmptyString = outcomes.filter(
+      (outcome) => !outcome.isInvalid && (isInvalidNumber(outcome.price) || outcome.price === '')
+    );
+    if (priceErrorsWithEmptyString.length > 0 || isInvalidNumber(amount)) {
+      return setBreakdown(defaultAddLiquidityBreakdown);
+    }
+    const feeSelected = TRADING_FEE_OPTIONS.find(
+      (t) => t.id === tradingFeeSelection
+    );
+    const fee = market?.amm?.feeRaw
+      ? market?.amm?.feeRaw
+      : String(feeSelected ? feeSelected.value : '0');
+    const properties = checkConvertLiquidityProperties(
+      account,
+      market.marketId,
+      amount,
+      fee,
+      outcomes,
+      cash,
+      amm
+    );
+    if (!properties) {
+      return setBreakdown(defaultAddLiquidityBreakdown);
+    }
+    async function getResults() {
+      const results = await getAmmLiquidity(
+        properties.account,
+        properties.amm,
+        properties.marketId,
+        properties.cash,
+        properties.fee,
+        properties.amount,
+        properties.priceNo,
+        properties.priceYes
+      );
+      if (!results) {
+        return setBreakdown(defaultAddLiquidityBreakdown);
+      }
+      setBreakdown(results);
+    }
+
+    getResults();
+  
+    //LIQUIDITY_METHODS[modalType].receiveBreakdown();
   }, [
     account,
     amount,
@@ -349,7 +396,7 @@ const ModalAddLiquidity = ({
         if (!results) {
           return defaultAddLiquidityBreakdown;
         }
-        setBreakdown(getRemoveLiquidityBreakdown(results, cash));
+        //setBreakdown(getRemoveLiquidityBreakdown(results, cash));
       },
       liquidityDetailsFooter: {
         breakdown: [
@@ -420,7 +467,7 @@ const ModalAddLiquidity = ({
       },
       confirmReceiveOverview: {
         breakdown: [
-          ...breakdown,
+          //...breakdown,
           {
             label: 'Fees Earned',
             value: '-',
@@ -457,7 +504,7 @@ const ModalAddLiquidity = ({
         if (!results) {
           return defaultAddLiquidityBreakdown;
         }
-        setBreakdown(getAddAdditionBreakdown(results));
+        //setBreakdown(getAddAdditionBreakdown(results));
         setEstimatedLpAmount(results.lpTokens);
       },
       approvalButtonText: `approve ${chosenCash}`,
@@ -538,45 +585,21 @@ const ModalAddLiquidity = ({
       currencyName: `${chosenCash}`,
       footerText:
         "By adding initial liquidity you'll earn your set trading fee percentage of all trades on this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.",
+      breakdown: [
+        {
+          label: 'yes shares',
+          value: `${breakdown.yesShares}`,
+        },
+        {
+          label: 'no shares',
+          value: `${breakdown.noShares}`,
+        },
+        {
+          label: 'liquidity shares',
+          value: `${breakdown.lpTokens}`,
+        },
+      ],
       receiveBreakdown: async () => {
-        const priceErrorsWithEmptyString = outcomes.filter(
-          (outcome) => !outcome.isInvalid && (isInvalidNumber(outcome.price) || outcome.price === '')
-        );
-        if (priceErrorsWithEmptyString.length > 0 || isInvalidNumber(amount)) {
-          return defaultAddLiquidityBreakdown;
-        }
-        const feeSelected = TRADING_FEE_OPTIONS.find(
-          (t) => t.id === tradingFeeSelection
-        );
-        const fee = market?.amm?.feeRaw
-          ? market?.amm?.feeRaw
-          : String(feeSelected ? feeSelected.value : '0');
-        const properties = checkConvertLiquidityProperties(
-          account,
-          market.marketId,
-          amount,
-          fee,
-          outcomes,
-          cash,
-          amm
-        );
-        if (!properties) {
-          return defaultAddLiquidityBreakdown;
-        }
-        const results = await getAmmLiquidity(
-          properties.account,
-          properties.amm,
-          properties.marketId,
-          properties.cash,
-          properties.fee,
-          properties.amount,
-          properties.priceNo,
-          properties.priceYes
-        );
-        if (!results) {
-          return defaultAddLiquidityBreakdown;
-        }
-        setBreakdown(getAddAdditionBreakdown(results));
       },
       approvalButtonText: `approve ${chosenCash}`,
       confirmAction: async () => {
@@ -741,7 +764,7 @@ const ModalAddLiquidity = ({
           <span className={Styles.SmallLabel}>
             {LIQUIDITY_STRINGS[modalType].receiveTitle}
           </span>
-          <InfoNumbers infoNumbers={breakdown} />
+          <InfoNumbers infoNumbers={LIQUIDITY_METHODS[modalType].breakdown} />
 
           <ApprovalButton
             amm={amm}
