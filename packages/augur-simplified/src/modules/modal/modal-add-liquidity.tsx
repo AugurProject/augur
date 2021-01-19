@@ -176,7 +176,7 @@ const ModalAddLiquidity = ({
   const account = loginAccount?.account;
 
   let amm = market?.amm;
-  const mustSetPrices =
+  const mustSetPrices = liquidityModalType === CREATE ||
     !amm || amm?.liquidity === undefined || amm?.liquidity === '0';
   const modalType = liquidityModalType;
 
