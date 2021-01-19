@@ -132,6 +132,7 @@ const ModalConnectWallet = ({
   transactions,
 }: ModalConnectWalletProps) => {
   const {
+    loginAccount,
     actions: { removeTransaction, closeModal, setModal },
     modal: { type },
   } = useAppStatusStore();
@@ -233,7 +234,7 @@ const ModalConnectWallet = ({
             action: () => wallet.connector !== connector && !wallet.href && tryActivation(wallet.connector),
             id: `connect-${key}`,
             key,
-            selected: wallet?.connector === connector,
+            selected: loginAccount?.account && wallet?.connector === connector,
             href: wallet.href,
             text: wallet.name,
             icon: (
