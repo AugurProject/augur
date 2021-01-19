@@ -198,6 +198,7 @@ doRemoveLiquidity       | none                  | amm: wrapper
 doEnterPosition         | cash: factory         | none
 doExitPosition          | share: factory        | share: wrapper
 doSwap                  | share: factory        | share: factory
+claim winnings          | none                  | share: wrapper
 */
 
 // wraps useApproveCallback in the context of a swap
