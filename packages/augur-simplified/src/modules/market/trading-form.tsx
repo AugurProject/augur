@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Styles from 'modules/market/trading-form.styles.less';
 import classNames from 'classnames';
 import { useAppStatusStore } from '../stores/app-status';
@@ -64,6 +64,10 @@ export const DefaultMarketOutcomes = [
 
 const PLACEHOLDER = '0';
 
+export const isInvalidNumber = (number) => {
+  return number !== '' && (isNaN(number) || Number(number) < 0 || Number(number) === 0);
+}
+
 const Outcome = ({
   outcome,
   marketType,
@@ -76,8 +80,15 @@ const Outcome = ({
   ammCash,
   showAsButton,
   invalidSelected,
+  currency,
 }) => {
   const [customVal, setCustomVal] = useState('');
+  const input = useRef(null);
+  useEffect(() => {
+    if (outcome.price !== '0' && outcome.price && outcome.price !== '') {
+      setCustomVal(outcome.price.split('.')[1]);
+    }
+  }, [outcome.price]);
   const formattedPrice = formatDai(outcome.price);
   return (
     <div
@@ -96,15 +107,17 @@ const Outcome = ({
     >
       <span>{outcome.name}</span>
       {editable ? (
-        <div>
-          <span>$</span>
+        <div onClick={() => input.current && input.current.focus()}>
+          <span>{currency === USDC ? '$0.' : '0.'}</span>
           <input
-            value={customVal}
+            value={parseInt(customVal)}
             onChange={(v) => {
-              setCustomVal(v.target.value);
-              setEditableValue(v.target.value);
+              setCustomVal(`${v.target.value}`);
+              setEditableValue(v.target.value && v.target.value !== '0' ? `.${v.target.value}` : `${v.target.value}`);
             }}
+            type='number'
             placeholder={PLACEHOLDER}
+            ref={input}
           />
         </div>
       ) : (
@@ -231,6 +244,7 @@ interface OutcomesGridProps {
   ammCash: Cash;
   showAsButtons?: boolean;
   dontFilterInvalid?: boolean;
+  currency: string;
 }
 export const OutcomesGrid = ({
   outcomes,
@@ -244,6 +258,7 @@ export const OutcomesGrid = ({
   ammCash,
   showAsButtons,
   dontFilterInvalid,
+  currency,
 }: OutcomesGridProps) => {
   return (
     <div
@@ -258,6 +273,7 @@ export const OutcomesGrid = ({
         .reverse()
         .map((outcome, index) => (
           <Outcome
+            currency={currency}
             key={outcome.id}
             selected={
               selectedOutcome &&
@@ -571,6 +587,7 @@ const TradingForm = ({
           orderType={orderType}
           ammCash={ammCash}
           dontFilterInvalid
+          currency={orderType === BUY ? ammCash?.name : SHARES}
         />
         <AmountInput
           chosenCash={isBuy ? ammCash?.name : SHARES}
