@@ -9,6 +9,7 @@ import { AmmExchange, Cash } from '../types';
 
 interface ButtonProps {
   text?: string;
+  subText?: string | null;
   className?: string;
   disabled?: boolean;
   action?: Function;
@@ -22,6 +23,7 @@ interface ButtonProps {
 
 const Button = ({
   text,
+  subText,
   className,
   disabled,
   action,
@@ -51,6 +53,7 @@ const Button = ({
     >
       {error && error !== '' ? error : text}
       {icon && icon}
+      {subText && <span>{subText}</span>}
     </a>
   ) : (
     <button
@@ -68,6 +71,7 @@ const Button = ({
     >
       {error && error !== '' ? error : text}
       {icon && icon}
+      {subText && <span>{subText}</span>}
     </button>
   );
 };

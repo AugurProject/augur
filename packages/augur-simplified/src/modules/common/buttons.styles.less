@@ -25,6 +25,10 @@
     max-height: @size-16;
   }
 
+  > span {
+    .text-12-semi-bold;
+  }
+
   &.TextAndIcon {
     > svg,
     > div {
@@ -210,12 +214,15 @@
 
 .BuySellButton {
   .Button;
+  .text-20-bold;
 
   background: var(--simple-primary-text);
   color: var(--simple-light-bg);
   min-height: @size-68;
   height: @size-68;
   max-height: @size-68;
+  flex-flow: column nowrap;
+  padding: 0 @size-16;
 
   &:hover {
     background-color: var(--simple-primary-text-85);
