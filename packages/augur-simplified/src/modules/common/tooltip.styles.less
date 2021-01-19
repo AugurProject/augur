@@ -81,6 +81,8 @@ div.Tooltip {
         border-left-width: @size-8;
         border-right-width: @size-8;
         border-top-width: @size-8;
+        -webkit-filter: drop-shadow(0 @size-1 0 var(--simple-border));
+        filter: drop-shadow(0 @size-1 0 var(--simple-border));
       }
 
       &::before {
@@ -101,8 +103,7 @@ div.Tooltip {
     }
 
     &.place-bottom {
-      box-shadow: 0 1px @size-4 0 rgba(0, 0, 0, 0.5);
-      margin-top: -@size-14;
+      margin-top: @size-10;
 
       &::after {
         border-bottom-color: var(--simple-light-bg);
@@ -113,6 +114,8 @@ div.Tooltip {
         border-bottom-width: @size-8;
         border-left-width: @size-8;
         border-right-width: @size-8;
+        -webkit-filter: drop-shadow(0 -@size-1 0 var(--simple-border));
+        filter: drop-shadow(0 -@size-1 0 var(--simple-border));
       }
 
       &::before {
@@ -145,6 +148,8 @@ div.Tooltip {
         border-bottom-width: @size-8;
         border-left-width: @size-8;
         border-top-width: @size-8;
+        -webkit-filter: drop-shadow(@size-1 0 0 var(--simple-border));
+        filter: drop-shadow(@size-1 0 0 var(--simple-border));
       }
 
       &::before {
@@ -177,6 +182,8 @@ div.Tooltip {
         border-bottom-width: @size-8;
         border-right-width: @size-8;
         border-top-width: @size-8;
+        -webkit-filter: drop-shadow(-@size-1 0 0 var(--simple-border));
+        filter: drop-shadow(-@size-1 0 0 var(--simple-border));
       }
 
       &::before {
