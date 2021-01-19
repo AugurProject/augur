@@ -19,8 +19,15 @@ import {
   SET_PRICES,
   TX_STATUS,
   INSUFFICIENT_BALANCE,
+  ONE,
+  ERROR_AMOUNT,
 } from '../constants';
-import { OutcomesGrid, AmountInput, InfoNumbers } from '../market/trading-form';
+import {
+  OutcomesGrid,
+  AmountInput,
+  InfoNumbers,
+  isInvalidNumber,
+} from '../market/trading-form';
 import { ApprovalButton, BuySellButton } from '../common/buttons';
 import { ErrorBlock, generateTooltip } from '../common/labels';
 import {
@@ -46,6 +53,7 @@ import {
 } from '../../utils/contract-calls';
 import { useAppStatusStore } from '../stores/app-status';
 import { BigNumber as BN } from 'bignumber.js';
+import { createBigNumber } from '../../utils/create-big-number';
 
 const TRADING_FEE_OPTIONS = [
   {
@@ -102,6 +110,10 @@ const fakeYesNoOutcomes = [
     price: '0',
   },
 ];
+
+const checkIfAmountIsValid = (amount) => {
+  return amount !== '' && (isInvalidNumber(amount) || Number(amount) === 0);
+}
 
 const getRemoveLiquidityBreakdown = (
   breakdown: LiquidityBreakdown,
@@ -185,7 +197,6 @@ const ModalAddLiquidity = ({
   );
   const [showBackView, setShowBackView] = useState(false);
   const [chosenCash, updateCash] = useState<string>(currency ? currency : USDC);
-  const [buttonError, updateButtonError] = useState('');
   let isApproved = true;
   // needs to be set by currency picker if amm is null
   const [breakdown, setBreakdown] = useState(defaultAddLiquidityBreakdown);
@@ -263,6 +274,16 @@ const ModalAddLiquidity = ({
     cash?.decimals,
     modalType,
   ]);
+
+  let buttonError = '';
+  const priceErrors = outcomes.filter(
+    (outcome) => !outcome.isInvalid && isInvalidNumber(outcome.price)
+  );
+  if (checkIfAmountIsValid(amount)) {
+    buttonError = ERROR_AMOUNT;
+  } else if (priceErrors.length > 0) {
+    buttonError = 'Price is not valid';
+  }
 
   useEffect(() => {
     LIQUIDITY_METHODS[modalType].receiveBreakdown();
@@ -541,6 +562,12 @@ const ModalAddLiquidity = ({
       footerText:
         "By adding initial liquidity you'll earn your set trading fee percentage of all trades on this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.",
       receiveBreakdown: async () => {
+        const priceErrorsWithEmptyString = outcomes.filter(
+          (outcome) => !outcome.isInvalid && (isInvalidNumber(outcome.price) || outcome.price === '')
+        );
+        if (priceErrorsWithEmptyString.length > 0 || checkIfAmountIsValid(amount)) {
+          return defaultAddLiquidityBreakdown;
+        }
         const feeSelected = TRADING_FEE_OPTIONS.find(
           (t) => t.id === tradingFeeSelection
         );
@@ -653,6 +680,20 @@ const ModalAddLiquidity = ({
       },
     },
   };
+
+  const setPrices = (price, index) => {
+    const newOutcomes = outcomes;
+    newOutcomes[index].price = price;
+    if (price !== '' && !isNaN(price) && price !== '0') {
+      let newValue = ONE.minus(createBigNumber(price)).toString();
+      if (newOutcomes[index].id === YES_OUTCOME_ID) {
+        newOutcomes[NO_OUTCOME_ID].price = newValue;
+      } else {
+        newOutcomes[YES_OUTCOME_ID].price = newValue;
+      }
+    }
+    setOutcomes([...newOutcomes]);
+  };
   return (
     <section
       className={classNames(Styles.ModalAddLiquidity, {
@@ -685,7 +726,7 @@ const ModalAddLiquidity = ({
                 showCurrencyDropdown={!currency}
                 chosenCash={modalType === REMOVE ? SHARES : chosenCash}
                 updateCash={updateCash}
-                updateAmountError={updateButtonError}
+                updateAmountError={() => null}
               />
             </>
           )}
@@ -717,11 +758,7 @@ const ModalAddLiquidity = ({
                 orderType={BUY}
                 nonSelectable
                 editable={mustSetPrices}
-                setEditableValue={(price, index) => {
-                  const newOutcomes = outcomes;
-                  newOutcomes[index].price = price;
-                  setOutcomes(newOutcomes);
-                }}
+                setEditableValue={(price, index) => setPrices(price, index)}
                 ammCash={cash}
               />
             </>
