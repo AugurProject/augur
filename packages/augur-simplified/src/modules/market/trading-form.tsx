@@ -284,7 +284,7 @@ export const InfoNumbers = ({ infoNumbers }: InfoNumbersProps) => {
 
 const getEnterBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
   const prepend = cash?.name === USDC ? '$' : '';
-  const avg = breakdown === null ? "-" : `${prepend}${breakdown?.averagePrice || "$0.00"}`;
+  const avg = breakdown === null ? "-" : `${prepend}${breakdown?.averagePrice || "0.00"}`;
   const sharevalue = breakdown === null ? "-" : breakdown?.outputValue || "0.00";
   const winnings = breakdown === null ? "-" : `${prepend}${breakdown?.maxProfit || "0.00"}`;
   const fees = breakdown === null ? "-" : breakdown?.tradeFees || "0.00"
@@ -296,7 +296,7 @@ const getEnterBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
       tooltipKey: 'averagePrice',
     },
     {
-      label: 'shares bought',
+      label: 'shares purchasing',
       value: sharevalue,
     },
     {
@@ -450,7 +450,7 @@ const TradingForm = ({
     if (orderType && selectedOutcome.id && amount && Number(amount) > 0) {
       getEstimate();
     } else {
-      orderType === BUY ? setBreakdown(null) : setBreakdown(null);
+      orderType === BUY ? setBreakdown(undefined) : setBreakdown(undefined);
     }
     return () => {
       isMounted = false;
