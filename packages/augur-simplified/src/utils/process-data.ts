@@ -221,6 +221,10 @@ const shapeAmmExchange = (amm: GraphAmmExchange, past: GraphAmmExchange, cashes:
     }
   ];
 
+  // TODO: feeDecimal is off by one on graph data, calculating manually update if fixed
+  const feeDecimal = String(new BN(amm.fee).div(1000));
+  const feeInPercent = String(new BN(feeDecimal).times(100));
+
   return {
     id: amm.id,
     marketId,
@@ -242,8 +246,9 @@ const shapeAmmExchange = (amm: GraphAmmExchange, past: GraphAmmExchange, cashes:
     volumeNo,
     volumeYesUSD,
     volumeNoUSD,
-    feeDecimal: amm.feePercent,
+    feeDecimal,
     feeRaw: amm.fee,
+    feeInPercent,
     volumeTotal,
     volume24hrTotalUSD,
     volumeTotalUSD,

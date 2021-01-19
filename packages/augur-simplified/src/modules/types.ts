@@ -169,6 +169,7 @@ export interface AmmExchange {
   volumeTotalUSD: string,
   feeDecimal: string,
   feeRaw: string,
+  feeInPercent: string,
   cash: Cash,
   sharetoken: string,
   transactions: AmmTransaction[],
