@@ -44,7 +44,7 @@ import {
   getAmmLiquidity,
   getRemoveLiquidity,
 } from '../../utils/contract-calls';
-import { useAppStatusStore } from '../stores/app-status';
+import { useAppStatusStore, AppStatusStore } from '../stores/app-status';
 import { BigNumber as BN } from 'bignumber.js';
 
 const TRADING_FEE_OPTIONS = [
@@ -148,9 +148,7 @@ interface ModalAddLiquidityProps {
 export const updateTxStatus = (txResponse, updateTransaction) => {
   if (txResponse.confirmations > 0) {
     // TODO temp workaround
-    const tx =
-      window.appStatus.transactions ||
-      JSON.parse(window.localStorage.getItem('transactions'));
+    const tx = AppStatusStore.get().transactions;
     const updateTxState = tx.find(
       (tx) => tx.hash === txResponse.transactionHash
     );
