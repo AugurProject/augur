@@ -794,7 +794,7 @@ const getPositionUsdValues = (trades: UserTrades, rawBalance: string, balance: s
   }
 }
 
-const getLPCurrentValue = async (displayBalance: string, amm: AmmExchange): Promise<string> => {
+export const getLPCurrentValue = async (displayBalance: string, amm: AmmExchange): Promise<string> => {
   const usdPrice = amm.cash?.usdPrice ? amm.cash?.usdPrice : "0";
   const { marketId, cash, feeRaw, priceNo, priceYes } = amm;
   const estimate = await getRemoveLiquidity(marketId, cash, feeRaw, displayBalance)
