@@ -369,6 +369,21 @@ const ModalAddLiquidity = ({
     }
   }
 
+  const addCreateBreakdown = [
+    {
+      label: 'yes shares',
+      value: `${breakdown.yesShares}`,
+    },
+    {
+      label: 'no shares',
+      value: `${breakdown.noShares}`,
+    },
+    {
+      label: 'liquidity shares',
+      value: `${breakdown.lpTokens}`,
+    },
+  ]
+
   const LIQUIDITY_METHODS = {
     [REMOVE]: {
       footerText:
@@ -477,36 +492,37 @@ const ModalAddLiquidity = ({
     },
     [ADD]: {
       footerText: `By adding liquidity you'll earn ${percentFormatted} of all trades on this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.`,
-      receiveBreakdown: async () => {
-        const fee = amm.feeRaw;
-        const properties = checkConvertLiquidityProperties(
-          account,
-          market.marketId,
-          amount,
-          fee,
-          outcomes,
-          cash,
-          amm
-        );
-        if (!properties) {
-          return defaultAddLiquidityBreakdown;
-        }
-        const results = await getAmmLiquidity(
-          properties.account,
-          properties.amm,
-          properties.marketId,
-          properties.cash,
-          properties.fee,
-          properties.amount,
-          properties.priceNo,
-          properties.priceYes
-        );
-        if (!results) {
-          return defaultAddLiquidityBreakdown;
-        }
-        //setBreakdown(getAddAdditionBreakdown(results));
-        setEstimatedLpAmount(results.lpTokens);
-      },
+      breakdown: addCreateBreakdown,
+      // receiveBreakdown: async () => {
+      //   const fee = amm.feeRaw;
+      //   const properties = checkConvertLiquidityProperties(
+      //     account,
+      //     market.marketId,
+      //     amount,
+      //     fee,
+      //     outcomes,
+      //     cash,
+      //     amm
+      //   );
+      //   if (!properties) {
+      //     return defaultAddLiquidityBreakdown;
+      //   }
+      //   const results = await getAmmLiquidity(
+      //     properties.account,
+      //     properties.amm,
+      //     properties.marketId,
+      //     properties.cash,
+      //     properties.fee,
+      //     properties.amount,
+      //     properties.priceNo,
+      //     properties.priceYes
+      //   );
+      //   if (!results) {
+      //     return defaultAddLiquidityBreakdown;
+      //   }
+      //   //setBreakdown(getAddAdditionBreakdown(results));
+      //   setEstimatedLpAmount(results.lpTokens);
+      // },
       approvalButtonText: `approve ${chosenCash}`,
       confirmAction: async () => {
         const fee = amm.feeRaw;
@@ -520,7 +536,7 @@ const ModalAddLiquidity = ({
           amm
         );
         if (!properties) {
-          return defaultAddLiquidityBreakdown;
+          setBreakdown(defaultAddLiquidityBreakdown);
         }
         const hasLiquidity =
           amm !== null && amm?.id !== undefined && amm?.liquidity !== '0';
@@ -565,7 +581,7 @@ const ModalAddLiquidity = ({
         ],
       },
       confirmReceiveOverview: {
-        breakdown: breakdown,
+        breakdown: addCreateBreakdown,
       },
       marketLiquidityDetails: {
         breakdown: [
@@ -585,22 +601,7 @@ const ModalAddLiquidity = ({
       currencyName: `${chosenCash}`,
       footerText:
         "By adding initial liquidity you'll earn your set trading fee percentage of all trades on this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.",
-      breakdown: [
-        {
-          label: 'yes shares',
-          value: `${breakdown.yesShares}`,
-        },
-        {
-          label: 'no shares',
-          value: `${breakdown.noShares}`,
-        },
-        {
-          label: 'liquidity shares',
-          value: `${breakdown.lpTokens}`,
-        },
-      ],
-      receiveBreakdown: async () => {
-      },
+      breakdown: addCreateBreakdown,
       approvalButtonText: `approve ${chosenCash}`,
       confirmAction: async () => {
         const feeSelected = TRADING_FEE_OPTIONS.find(
@@ -619,7 +620,7 @@ const ModalAddLiquidity = ({
           amm
         );
         if (!properties) {
-          return defaultAddLiquidityBreakdown;
+          setBreakdown(defaultAddLiquidityBreakdown);
         }
         await doAmmLiquidity(
           properties.account,
@@ -662,7 +663,7 @@ const ModalAddLiquidity = ({
         ],
       },
       confirmReceiveOverview: {
-        breakdown: breakdown,
+        breakdown: addCreateBreakdown,
       },
       marketLiquidityDetails: {
         breakdown: [
