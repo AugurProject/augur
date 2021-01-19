@@ -181,6 +181,7 @@ export const AmountInput = ({
       >
         <span>{prepend}</span>
         <input
+          type="number"
           onChange={(e) => {
             updateAmount(e.target.value);
             updateInitialAmount(e.target.value);
