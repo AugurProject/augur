@@ -217,9 +217,9 @@ const ModalAddLiquidity = ({
     );
     const feePercent = LIQUIDITY_STRINGS[modalType].setFees
       ? feeOption.value
-      : amm?.feeDecimal;
+      : amm?.feeInPercent;
     return formatPercent(feePercent).full;
-  }, [tradingFeeSelection, amm?.feeDecimal, modalType]);
+  }, [tradingFeeSelection, amm?.feeInPercent, modalType]);
 
   const userPercentOfPool = useMemo(() => {
     let userPercent = '100';

@@ -546,7 +546,7 @@ const TradingForm = ({
         </span>
         <div>
           <span>fee</span>
-          <span>{formatPercent(amm?.feeDecimal).full}</span>
+          <span>{formatPercent(amm?.feeInPercent).full}</span>
         </div>
         {isMobile && (
           <div onClick={() => setShowTradingForm(false)}>{CloseIcon}</div>
