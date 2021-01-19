@@ -490,7 +490,7 @@ const TradingForm = ({
       actionText = ENTER_AMOUNT;
       disabled = true;
     } else if (new BN(amount).gt(new BN(userBalance))) {
-      actionText = `Insufficient ${ammCash.name} Balance`;
+      actionText = `Insufficient ${isBuy ? ammCash.name : 'Share'} Balance`;
       disabled = true;
     } else if (breakdown === null) {
       actionText = INSUFFICIENT_LIQUIDITY;
