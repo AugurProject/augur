@@ -303,32 +303,24 @@ const ModalAddLiquidity = ({
       }
     }
   }
-  const InputFormError = useMemo(() => {
-    if (!amount || amount === '0' || amount === '') return ENTER_AMOUNT;
-    if (!account) return CONNECT_ACCOUNT;
-    if (new BN(amount).gt(new BN(userMaxAmount))) return INSUFFICIENT_BALANCE;
-    if (modalType === CREATE) {
-      const yesPrice = outcomes[YES_OUTCOME_ID].price;
-      const noPrice = outcomes[NO_OUTCOME_ID].price;
-      if (
-        yesPrice === '0' ||
-        !yesPrice ||
-        noPrice === '0' ||
-        !noPrice ||
-        noPrice === '0.00' ||
-        yesPrice === '0.00'
-      ) {
-        return SET_PRICES;
-      }
+  let inputFormError = '';
+  if (!account) inputFormError = CONNECT_ACCOUNT;
+  else if (!amount || amount === '0' || amount === '') inputFormError = ENTER_AMOUNT;
+  else if (new BN(amount).gt(new BN(userMaxAmount))) inputFormError = INSUFFICIENT_BALANCE;
+  else if (modalType === CREATE) {
+    const yesPrice = outcomes[YES_OUTCOME_ID].price;
+    const noPrice = outcomes[NO_OUTCOME_ID].price;
+    if (
+      yesPrice === '0' ||
+      !yesPrice ||
+      noPrice === '0' ||
+      !noPrice ||
+      noPrice === '0.00' ||
+      yesPrice === '0.00'
+    ) {
+      inputFormError = SET_PRICES;
     }
-  }, [
-    modalType,
-    outcomes[YES_OUTCOME_ID]?.price,
-    outcomes[NO_OUTCOME_ID]?.price,
-    amount,
-    account,
-    userMaxAmount,
-  ]);
+  }
 
   const LIQUIDITY_METHODS = {
     [REMOVE]: {
@@ -763,14 +755,14 @@ const ModalAddLiquidity = ({
 
           <BuySellButton
             action={() => setShowBackView(true)}
-            disabled={!isApproved || Boolean(InputFormError)}
+            disabled={!isApproved || inputFormError !== ''}
             error={buttonError}
             text={
-              !InputFormError
+              inputFormError === ''
                 ? buttonError
                   ? buttonError
                   : LIQUIDITY_STRINGS[modalType].actionButtonText
-                : InputFormError
+                : inputFormError
             }
           />
           {LIQUIDITY_STRINGS[modalType].liquidityDetailsFooter && (
