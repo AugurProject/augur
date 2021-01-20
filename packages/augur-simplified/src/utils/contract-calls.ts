@@ -873,8 +873,8 @@ const getInitPositionValues = (trades: UserTrades, amm: AmmExchange, isYesOutcom
 const accumSharesPrice = (trades: AmmTransaction[], isYesOutcome: boolean, account: string): { shares: BigNumber, cashAmount: BigNumber } => {
   const result = trades.filter(t => isSameAddress(t.sender, account) && isYesOutcome ? t.yesShares !== "0" : t.noShares !== "0").reduce((p, t) =>
     isYesOutcome ?
-      { shares: p.shares.plus(new BN(t.yesShares)), cashAmount: p.cashAmount.plus((new BN(t.yesShares).times(new BN(t.price)))) } :
-      { shares: p.shares.plus(new BN(t.noShares)), cashAmount: p.cashAmount.plus((new BN(t.noShares).times(new BN(t.price)))) },
+      { shares: p.shares.plus(new BN(t.yesShares)), cashAmount: p.cashAmount.plus((new BN(t.yesShares).times(t.price))) } :
+      { shares: p.shares.plus(new BN(t.noShares)), cashAmount: p.cashAmount.plus((new BN(t.noShares).times(t.price))) },
     { shares: new BN(0), cashAmount: new BN(0) });
 
   return { shares: result.shares, cashAmount: result.cashAmount };
@@ -884,14 +884,15 @@ const accumLpSharesPrice = (transactions: AmmTransaction[], isYesOutcome: boolea
   const result = transactions.filter(t => isSameAddress(t.sender, account) && (t.tx_type === TransactionTypes.ADD_LIQUIDITY || t.tx_type === TransactionTypes.REMOVE_LIQUIDITY)).reduce((p, t) => {
     const yesShares = new BN(t.yesShares);
     const noShares = new BN(t.noShares);
+    const shareCost = new BN(t.cash).minus(t.cashValue);
     if (isYesOutcome) {
       const netYesShares = noShares.minus(yesShares)
       if (netYesShares.lte(new BN(0))) return p;
-      return { shares: p.shares.plus(netYesShares), cashAmount: p.cashAmount.plus(t.yesShareCashValue) }
+      return { shares: p.shares.plus(netYesShares), cashAmount: p.cashAmount.plus(shareCost) }
     }
     const netNoShares = yesShares.minus(noShares)
     if (netNoShares.lte(new BN(0))) return p;
-    return { shares: p.shares.plus(netNoShares), cashAmount: p.cashAmount.plus(t.noShareCashValue) }
+    return { shares: p.shares.plus(netNoShares), cashAmount: p.cashAmount.plus(shareCost) }
   },
     { shares: new BN(0), cashAmount: new BN(0)});
 
