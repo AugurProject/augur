@@ -60,6 +60,7 @@ export {
 } from "./mappings/paraDeployer";
 
 export {
+  wethWrapperHandleAddLiquidity,
   wethWrapperHandleEnterPosition,
   wethWrapperHandleExitPosition
 } from './mappings/wethWrapperForAMMExchange';
