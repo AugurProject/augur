@@ -167,14 +167,14 @@
   }
 
   &.Selected,
-  &:not(.Selected):hover {
+  &:not(.Selected):hover:not(.Invalid) {
     .SelectedBorders;
 
     background: var(--simple-no-15);
   }
 
   &.Selected {
-    &.Invalid {
+    &.Invalid:not(.loggedOut) {
       background: var(--simple-invalid-15);
       color: var(--simple-primary-text);
       border: @size-1 solid var(--simple-invalid);
@@ -182,7 +182,7 @@
   }
 
   &:not(.Selected):hover {
-    &.Invalid {
+    &.Invalid:not(.loggedOut) {
       background: transparent;
       color: var(--simple-primary-text);
       border: @size-1 solid var(--simple-invalid);

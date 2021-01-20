@@ -615,6 +615,7 @@ const ModalAddLiquidity = ({
                 chosenCash={modalType === REMOVE ? SHARES : chosenCash}
                 updateCash={updateCash}
                 updateAmountError={() => null}
+                ammCash={amm?.cash}
               />
             </>
           )}

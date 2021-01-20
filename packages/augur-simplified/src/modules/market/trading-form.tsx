@@ -10,9 +10,11 @@ import {
   TradingDirection,
 } from '../types';
 import {
+  formatCash,
   formatDai,
-  formatEther,
   formatPercent,
+  formatSimpleShares,
+  formatUSD,
 } from '../../utils/format-number';
 import { ApprovalButton, TinyButton, BuySellButton } from '../common/buttons';
 import {
@@ -88,6 +90,7 @@ const Outcome = ({
 }) => {
   const [customVal, setCustomVal] = useState('');
   const input = useRef(null);
+  const { isLogged } = useAppStatusStore();
   useEffect(() => {
     if (outcome.price !== '0' && outcome.price && outcome.price !== '') {
       setCustomVal(outcome.price.split('.')[1]);
@@ -107,6 +110,7 @@ const Outcome = ({
         [Styles.showAsButton]: showAsButton,
         [Styles.Invalid]: outcome.isInvalid,
         [Styles.InvalidSelected]: invalidSelected,
+        [Styles.loggedOut]: !isLogged,
       })}
     >
       <span>{outcome.name}</span>
@@ -154,6 +158,7 @@ interface AmountInputProps {
   rate?: string;
   amountError?: string;
   updateAmountError?: Function;
+  ammCash: Cash;
 }
 
 export const AmountInput = ({
@@ -164,6 +169,7 @@ export const AmountInput = ({
   updateCash,
   chosenCash,
   rate,
+  ammCash,
   updateAmountError = () => {},
 }: AmountInputProps) => {
   const { isLogged } = useAppStatusStore();
@@ -196,7 +202,7 @@ export const AmountInput = ({
     >
       <span>amount</span>
       <span onClick={setMax}>
-        {isLogged && `balance: ${formatEther(maxValue).formatted}`}
+        {isLogged && `balance: ${formatCash(maxValue, ammCash).full}`}
       </span>
       <div
         className={classNames(Styles.AmountInputDropdown, {
@@ -335,59 +341,56 @@ export const InfoNumbers = ({ infoNumbers }: InfoNumbersProps) => {
 };
 
 const getEnterBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
-  const prepend = cash?.name === USDC ? '$' : '';
   return [
     {
       label: 'Average Price',
-      value: !isNaN(breakdown?.averagePrice)
-        ? `${prepend}${breakdown.averagePrice}`
+      value: !isNaN(Number(breakdown?.averagePrice))
+        ? formatUSD(breakdown.averagePrice).formatted
         : '-',
       tooltipText: AVG_PRICE_TIP,
       tooltipKey: 'averagePrice',
     },
     {
       label: 'Shares Purchasing',
-      value: !isNaN(breakdown?.outputValue) ? breakdown.outputValue : '-',
+      value: !isNaN(Number(breakdown?.outputValue)) ? formatSimpleShares(breakdown.outputValue).full : '-',
     },
     {
       label: 'Max Winnings',
-      value: !isNaN(breakdown?.maxProfit)
-        ? `${prepend}${breakdown.maxProfit}`
+      value: !isNaN(Number(breakdown?.maxProfit)) ? formatCash(breakdown.maxProfit, cash).full
         : '-',
     },
     {
       label: 'Estimated Fees',
-      value: !isNaN(breakdown?.tradeFees) ? breakdown.tradeFees : '-',
+      value: !isNaN(Number(breakdown?.tradeFees)) ? formatSimpleShares(breakdown.tradeFees).full : '-',
     },
   ];
 };
 
 const getExitBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
-  const prepend = cash?.name === USDC ? '$' : '';
   return [
     {
       label: 'Average Price',
-      value: !isNaN(breakdown?.averagePrice)
-        ? `${prepend}${breakdown.averagePrice}`
+      value: !isNaN(Number(breakdown?.averagePrice))
+        ? formatUSD(breakdown.averagePrice).formatted
         : '-',
       tooltipText: AVG_PRICE_TIP,
       tooltipKey: 'averagePrice',
     },
     {
       label: `Amount You'll Recieve`,
-      value: !isNaN(breakdown?.outputValue)
-        ? `${prepend}${breakdown.outputValue}`
+      value: !isNaN(Number(breakdown?.outputValue))
+        ? formatCash(breakdown.outputValue, cash).full
         : '-',
     },
     {
       label: 'Remaining Shares',
-      value: !isNaN(breakdown?.remainingShares)
-        ? breakdown.remainingShares
+      value: !isNaN(Number(breakdown?.remainingShares))
+        ? formatSimpleShares(breakdown.remainingShares).full
         : '-',
     },
     {
       label: 'Estimated Fees',
-      value: !isNaN(breakdown?.tradeFees) ? breakdown.tradeFees : '-',
+      value: !isNaN(Number(breakdown?.tradeFees)) ? formatCash(breakdown.tradeFees, cash).full : '-',
     },
   ];
 };
@@ -618,9 +621,10 @@ const TradingForm = ({
           updateInitialAmount={setAmount}
           initialAmount={''}
           maxValue={userBalance}
+          ammCash={ammCash}
           rate={
             !isNaN(Number(breakdown?.ratePerCash))
-              ? `1 ${amm?.cash?.name} = ${breakdown?.ratePerCash} Shares`
+              ? `1 ${amm?.cash?.name} = ${formatSimpleShares(breakdown?.ratePerCash).full}`
               : null
           }
         />
