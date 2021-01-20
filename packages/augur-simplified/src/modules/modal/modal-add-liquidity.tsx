@@ -82,7 +82,7 @@ const defaultAddLiquidityBreakdown = {
   yesShares: '0',
   noShares: '0',
   lpTokens: '0',
-  cashAmount: '0'
+  cashAmount: '0',
 };
 
 const fakeYesNoOutcomes = [
@@ -287,7 +287,7 @@ const ModalAddLiquidity = ({
           properties.priceYes
         );
       }
-      
+
       if (!results) {
         return setBreakdown(defaultAddLiquidityBreakdown);
       }
@@ -296,7 +296,7 @@ const ModalAddLiquidity = ({
     }
 
     getResults();
-  }
+  };
 
   useEffect(() => {
     calculateBreakdown();
@@ -328,7 +328,7 @@ const ModalAddLiquidity = ({
       }
     }
   }
-  
+
   let inputFormError = '';
   if (!account) inputFormError = CONNECT_ACCOUNT;
   else if (!amount || amount === '0' || amount === '')
@@ -452,7 +452,18 @@ const ModalAddLiquidity = ({
       },
       confirmReceiveOverview: {
         breakdown: [
-          //...breakdown,
+          {
+            label: 'Trading fee',
+            value: `${percentFormatted}`,
+          },
+          {
+            label: 'your share of the liquidity pool',
+            value: `${userPercentOfPool}`,
+          },
+          {
+            label: 'your total fees earned',
+            value: '-',
+          },
           {
             label: 'Fees Earned',
             value: '-',
