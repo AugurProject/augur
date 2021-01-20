@@ -39,6 +39,16 @@
       }
     }
   }
+
+  @media @breakpoint-mobile-tablet {
+    width: 100%;
+
+    > div {
+      width: 100%;
+      height: calc(100% - 48px);
+      margin: 0 @size-16;
+    }
+  }
 }
 
 .ModalAddLiquidity {
@@ -112,6 +122,12 @@
       margin-top: @size-24;
     }
   }
+
+  @media @breakpoint-mobile-tablet {
+    width: unset;
+    height: unset;
+    max-height: unset;
+  }
 }
 
 .SmallLabel {
@@ -133,6 +149,11 @@
   min-height: @size-72;
   padding: 0 @size-24 0 @size-32;
   width: 100%;
+  margin: 0;
+  position: sticky;
+  top: 0;
+  background: var(--simple-light-bg);
+  z-index: @above-all-content;
 
   > span {
     .text-20-bold;
