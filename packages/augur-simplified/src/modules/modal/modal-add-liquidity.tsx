@@ -38,10 +38,7 @@ import {
 import { MultiButtonSelection } from '../common/selection';
 import classNames from 'classnames';
 import {
-  AddLiquidityBreakdown,
   AmmOutcome,
-  Cash,
-  LiquidityBreakdown,
   MarketInfo,
 } from '../types';
 import {
@@ -677,6 +674,7 @@ const ModalAddLiquidity = ({
                 chosenCash={modalType === REMOVE ? SHARES : chosenCash}
                 updateCash={updateCash}
                 updateAmountError={() => null}
+                ammCash={amm?.cash}
               />
             </>
           )}
