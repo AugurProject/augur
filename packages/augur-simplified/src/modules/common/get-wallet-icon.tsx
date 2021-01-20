@@ -1,12 +1,12 @@
 import React from 'react';
-import {fortmatic, injected, portis, walletconnect, walletlink} from 'modules/ConnectAccount/connectors';
-import Identicon from 'modules/ConnectAccount/components/Identicon';
-import WalletConnectIcon from 'modules/ConnectAccount/assets/walletConnectIcon.svg';
-import CoinbaseWalletIcon from 'modules/ConnectAccount/assets/coinbaseWalletIcon.svg';
-import FortmaticIcon from 'modules/ConnectAccount/assets/fortmaticIcon.png';
-import PortisIcon from 'modules/ConnectAccount/assets/portisIcon.png';
-import Styles from 'modules/common/get-wallet-icon.styles.less';
-import {TinyButton} from 'modules/common/buttons';
+import {fortmatic, injected, portis, walletconnect, walletlink} from '../ConnectAccount/connectors';
+import Identicon from '../ConnectAccount/components/Identicon';
+import WalletConnectIcon from '../ConnectAccount/assets/walletConnectIcon.svg';
+import CoinbaseWalletIcon from '../ConnectAccount/assets/coinbaseWalletIcon.svg';
+import FortmaticIcon from '../ConnectAccount/assets/fortmaticIcon.png';
+import PortisIcon from '../ConnectAccount/assets/portisIcon.png';
+import Styles from './get-wallet-icon.styles.less';
+import {TinyButton} from './buttons';
 import {AbstractConnector} from '@web3-react/abstract-connector';
 
 interface GetWalletIconProps {

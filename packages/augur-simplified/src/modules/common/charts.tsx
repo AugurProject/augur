@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react';
 import Highcharts from 'highcharts/highstock';
 import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
-import { createBigNumber } from 'utils/create-big-number';
-import Styles from 'modules/common/charts.styles.less';
+import { createBigNumber } from '../../utils/create-big-number';
+import Styles from './charts.styles.less';
 import classNames from 'classnames';
-import { formatDai } from 'utils/format-number';
-import { Checkbox } from 'modules/common/icons';
+import { formatDai } from '../../utils/format-number';
+import { Checkbox } from './icons';
 import { MarketInfo } from '../types';
 import { MultiButtonSelection } from './selection';
 

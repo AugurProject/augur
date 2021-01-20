@@ -1,6 +1,6 @@
 import React, { Component, useEffect, useState } from 'react';
 import classNames from 'classnames';
-import Styles from 'modules/common/selection.styles.less';
+import Styles from './selection.styles.less';
 import {
   CheckedRadioButton,
   EmptyCheckbox,
@@ -10,7 +10,7 @@ import {
   SimpleChevron,
   UsdIcon,
 } from './icons';
-import { USDC, ETH } from 'modules/constants';
+import { USDC, ETH } from '../constants';
 import { TinyButton } from './buttons';
 
 export interface NameValuePair {

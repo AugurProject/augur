@@ -1,4 +1,4 @@
-import logError from "utils/log-error";
+import logError from "./log-error";
 import { BigNumber } from "bignumber.js";
 
   export const createBigNumber = (value, ...args): BigNumber => {

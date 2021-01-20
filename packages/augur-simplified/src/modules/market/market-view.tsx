@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
-import Styles from 'modules/market/market-view.styles.less';
+import Styles from './market-view.styles.less';
 import classNames from 'classnames';
-import SimpleChartSection from 'modules/common/charts';
+import SimpleChartSection from '../common/charts';
 import {
   AddLiquidity,
   CategoryIcon,
   CategoryLabel,
   NetworkMismatchBanner,
   CurrencyLabel,
-} from 'modules/common/labels';
+  AddCurrencyLiquidity,
+  ReportingStateLabel
+} from '../common/labels';
 import {
   PositionsLiquidityViewSwitcher,
   TransactionsTable,
@@ -17,18 +19,16 @@ import {
 import TradingForm, {
   DefaultMarketOutcomes,
   OutcomesGrid,
-} from '../market/trading-form';
-import { useAppStatusStore } from 'modules/stores/app-status';
-import { YES_NO, BUY, MARKET_ID_PARAM_NAME, ETH } from 'modules/constants';
-import parseQuery from 'modules/routes/helpers/parse-query';
-import { USDC } from '../constants';
+} from './trading-form';
+import { useAppStatusStore } from '../stores/app-status';
+import { USDC, YES_NO, BUY, MARKET_ID_PARAM_NAME, ETH } from '../constants';
+import parseQuery from '../routes/helpers/parse-query';
 import { AmmExchange, MarketInfo } from '../types';
 import { formatDai } from '../../utils/format-number';
 import {
   getMarketEndtimeFull,
   getMarketEndtimeDate,
 } from '../../utils/date-utils';
-import { AddCurrencyLiquidity, ReportingStateLabel } from '../common/labels';
 import { getCurrentAmms } from '../stores/app-status-hooks';
 
 const getDetails = (market) => {

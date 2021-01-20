@@ -5,11 +5,11 @@ import {getEtherscanLink, shortenAddress} from '../../utils';
 import {injected, walletlink} from '../../connectors';
 import {SUPPORTED_WALLETS} from '../../constants';
 import {useActiveWeb3React} from '../../hooks';
-import Styles from 'modules/ConnectAccount/components/AccountDetails/index.less';
+import Styles from './index.less';
 import classNames from 'classnames';
-import {TinyButton} from 'modules/common/buttons';
-import {Spinner} from 'modules/common/spinner';
-import {GetWalletIcon} from 'modules/common/get-wallet-icon';
+import {TinyButton} from '../../../common/buttons';
+import {Spinner} from '../../../common/spinner';
+import {GetWalletIcon} from '../../../common/get-wallet-icon';
 import {AbstractConnector} from '@web3-react/abstract-connector';
 import { TX_STATUS } from '../../../constants';
 

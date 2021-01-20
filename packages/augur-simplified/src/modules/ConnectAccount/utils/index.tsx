@@ -3,7 +3,7 @@ import { ChainId } from "@uniswap/sdk"
 import { Contract, ethers } from "ethers"
 import { AddressZero } from '@ethersproject/constants'
 import { EthersProvider } from '@augurproject/ethersjs-provider'
-import {SUPPORTED_WALLETS} from 'modules/ConnectAccount/constants';
+import {SUPPORTED_WALLETS} from '../constants';
 import {WalletConnectConnector} from '@web3-react/walletconnect-connector';
 import {UnsupportedChainIdError} from '@web3-react/core';
 

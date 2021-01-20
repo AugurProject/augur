@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Styles from 'modules/portfolio/portfolio-view.styles.less';
-import { AppViewStats } from 'modules/common/labels';
+import Styles from './portfolio-view.styles.less';
+import { AppViewStats } from '../common/labels';
 import Activity from './activity';
 import { PositionsLiquidityViewSwitcher } from '../common/tables';
 import { useAppStatusStore } from '../stores/app-status';

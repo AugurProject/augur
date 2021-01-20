@@ -1,6 +1,6 @@
 import React, {ReactNode} from 'react';
 
-import Styles from 'modules/modal/modal.styles.less';
+import Styles from './modal.styles.less';
 import { CloseIcon } from '../common/icons';
 import { useAppStatusStore } from '../stores/app-status';
 

@@ -1,22 +1,22 @@
 import React, { useEffect } from 'react';
 import { ApolloProvider } from 'react-apollo';
-import { client, getMarketsData } from 'modules/apollo/client';
-import Styles from 'modules/App.styles.less';
-import Routes from 'modules/routes/routes';
-import TopNav from 'modules/common/top-nav';
-import 'assets/styles/shared.less';
+import { client, getMarketsData } from './apollo/client';
+import Styles from './App.styles.less';
+import Routes from './routes/routes';
+import TopNav from './common/top-nav';
+import '../assets/styles/shared.less';
 import {
   AppStatusProvider,
   useAppStatusStore,
 } from './stores/app-status';
-import { Sidebar } from 'modules/sidebar/sidebar';
+import { Sidebar } from './sidebar/sidebar';
 import { processGraphMarkets } from '../utils/process-data';
 import { getUserBalances } from '../utils/contract-calls';
 import { augurSdkLite } from '../utils/augurlitesdk';
-import { ConnectAccountProvider } from 'modules/ConnectAccount/connect-account-provider';
+import { ConnectAccountProvider } from './ConnectAccount/connect-account-provider';
 import classNames from 'classnames';
 import { TransactionDetails } from './types';
-import ModalView from 'modules/modal/modal-view';
+import ModalView from './modal/modal-view';
 
 function checkIsMobile(setIsMobile) {
   const isMobile =

@@ -4,12 +4,12 @@ import {Activity as NetworkIcon} from 'react-feather';
 import {ethers} from 'ethers';
 import {SecondaryButton} from '../common/buttons';
 import classNames from 'classnames';
-import ButtonStyles from 'modules/common/buttons.styles.less';
-import {GetWalletIcon} from 'modules/common/get-wallet-icon';
-import {useActiveWeb3React} from 'modules/ConnectAccount/hooks';
-import {MODAL_CONNECT_WALLET} from 'modules/constants';
-import {useAppStatusStore} from 'modules/stores/app-status';
-import {tryAutoLogin} from 'modules/ConnectAccount/utils';
+import ButtonStyles from '../common/buttons.styles.less';
+import {GetWalletIcon} from '../common/get-wallet-icon';
+import {useActiveWeb3React} from './hooks';
+import {MODAL_CONNECT_WALLET} from '../constants';
+import {useAppStatusStore} from '../stores/app-status';
+import {tryAutoLogin} from './utils';
 
 interface LoginButtonProps {
   action: Function;
@@ -60,7 +60,6 @@ const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode, transac
     if (account) {
       updateLoginAccount(activeWeb3);
     }
-    // eslint-disable-next-line
   }, [account, activeWeb3]);
 
   let buttonProps = {

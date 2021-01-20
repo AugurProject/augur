@@ -1,18 +1,18 @@
 import React, { useEffect, useState, useMemo, Fragment, useRef } from 'react';
 import { useLocation } from 'react-router';
-import Styles from 'modules/common/top-nav.styles.less';
-import ButtonStyles from 'modules/common/buttons.styles.less';
+import Styles from './top-nav.styles.less';
+import ButtonStyles from './buttons.styles.less';
 import { Link } from 'react-router-dom';
-import { MARKETS, PORTFOLIO, SIDEBAR_TYPES } from 'modules/constants';
-import makePath from 'modules/routes/helpers/make-path';
-import Logo from 'modules/common/logo';
-import parsePath from 'modules/routes/helpers/parse-path';
+import { MARKETS, PORTFOLIO, SIDEBAR_TYPES } from '../constants';
+import makePath from '../routes/helpers/make-path';
+import Logo from './logo';
+import parsePath from '../routes/helpers/parse-path';
 import classNames from 'classnames';
-import { GearIcon, ThreeLinesIcon } from 'modules/common/icons';
-import { useAppStatusStore } from 'modules/stores/app-status';
-import { useLocalStorage } from 'modules/stores/local-storage';
-import ConnectAccount from 'modules/ConnectAccount/index';
-import { SecondaryButton, TinyButton } from 'modules/common/buttons';
+import { GearIcon, ThreeLinesIcon } from './icons';
+import { useAppStatusStore } from '../stores/app-status';
+import { useLocalStorage } from '../stores/local-storage';
+import ConnectAccount from '../ConnectAccount/index';
+import { SecondaryButton, TinyButton } from './buttons';
 import { Toasts } from '../toasts/toasts';
 
 export const SettingsButton = () => {
