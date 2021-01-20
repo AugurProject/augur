@@ -14,10 +14,12 @@ import { useLocalStorage } from '../stores/local-storage';
 import ConnectAccount from '../ConnectAccount/index';
 import { SecondaryButton, TinyButton } from './buttons';
 import { Toasts } from '../toasts/toasts';
+import {ToggleSwitch} from 'modules/common/toggle-switch';
+import {generateTooltip} from 'modules/common/labels';
 
 export const SettingsButton = () => {
   const {
-    settings: { slippage },
+    settings: { slippage, showInvalidMarkets },
     actions: { updateSettings },
   } = useAppStatusStore();
   const [open, setOpened] = useState(false);
@@ -74,7 +76,10 @@ export const SettingsButton = () => {
             <h2>Settings</h2>
           </li>
           <li>
-            <label>Slippage Tolerance</label>
+            <label>
+              Slippage Tolerance
+              {generateTooltip('The maximum percentage the price can change and still have your transaction succeed.', 'slippageToleranceInfo')}
+            </label>
             <ul>
               <li>
                 <TinyButton
@@ -135,6 +140,16 @@ export const SettingsButton = () => {
                 </div>
               </li>
             </ul>
+          </li>
+          <li>
+            <label>
+              Show Invalid Markets
+              {generateTooltip('Filters out markets which are likely to resolve to "Invalid" based upon the current trading price of the "Invalid" outcome.', 'showInvalidMarketsInfo')}
+            </label>
+            <ToggleSwitch
+              toggle={showInvalidMarkets}
+              setToggle={() => updateSettings({showInvalidMarkets: !showInvalidMarkets})}
+            />
           </li>
         </ul>
       )}
