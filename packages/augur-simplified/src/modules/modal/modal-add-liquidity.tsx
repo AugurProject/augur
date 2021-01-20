@@ -77,25 +77,13 @@ const TRADING_FEE_OPTIONS = [
     value: 2,
   },
 ];
-// const defaultAddLiquidityBreakdown = [
-//   {
-//     label: 'yes shares',
-//     value: `0`,
-//   },
-//   {
-//     label: 'no shares',
-//     value: '0',
-//   },
-//   {
-//     label: 'liquidity shares',
-//     value: '0',
-//   },
-// ];
+
 const defaultAddLiquidityBreakdown = {
   yesShares: '0',
   noShares: '0',
   lpTokens: '0',
-}
+  cashAmount: '0'
+};
 
 const fakeYesNoOutcomes = [
   {
@@ -116,42 +104,6 @@ const fakeYesNoOutcomes = [
   },
 ];
 
-const getRemoveLiquidityBreakdown = (
-  breakdown: LiquidityBreakdown,
-  cash: Cash
-) => {
-  return [
-    {
-      label: 'yes shares',
-      value: breakdown.yesShares,
-    },
-    {
-      label: 'no shares',
-      value: breakdown.noShares,
-    },
-    {
-      label: `${cash?.name || 'collateral'}`,
-      value: breakdown.cashAmount,
-    },
-  ];
-};
-
-const getAddAdditionBreakdown = (breakdown: AddLiquidityBreakdown) => {
-  return [
-    {
-      label: 'yes shares',
-      value: breakdown.yesShares,
-    },
-    {
-      label: 'no shares',
-      value: breakdown.noShares,
-    },
-    {
-      label: 'liquidity shares',
-      value: breakdown.lpTokens,
-    },
-  ];
-};
 interface ModalAddLiquidityProps {
   market: MarketInfo;
   liquidityModalType: string;
@@ -187,8 +139,11 @@ const ModalAddLiquidity = ({
   const account = loginAccount?.account;
 
   let amm = market?.amm;
-  const mustSetPrices = liquidityModalType === CREATE ||
-    !amm || amm?.liquidity === undefined || amm?.liquidity === '0';
+  const mustSetPrices =
+    liquidityModalType === CREATE ||
+    !amm ||
+    amm?.liquidity === undefined ||
+    amm?.liquidity === '0';
   const modalType = liquidityModalType;
 
   const [outcomes, setOutcomes] = useState<AmmOutcome[]>(
@@ -217,7 +172,9 @@ const ModalAddLiquidity = ({
     balances.lpTokens[amm?.id]?.balance;
   const userMaxAmount = modalType === REMOVE ? shareBalance : userTokenBalance;
 
-  const [amount, updateAmount] = useState(modalType === CREATE ? userMaxAmount : '');
+  const [amount, updateAmount] = useState(
+    modalType === CREATE || modalType === REMOVE ? userMaxAmount : ''
+  );
 
   const percentFormatted = useMemo(() => {
     const feeOption = TRADING_FEE_OPTIONS.find(
@@ -282,9 +239,11 @@ const ModalAddLiquidity = ({
     buttonError = 'Price is not valid';
   }
 
-  useEffect(() => {
+  const calculateBreakdown = () => {
     const priceErrorsWithEmptyString = outcomes.filter(
-      (outcome) => !outcome.isInvalid && (isInvalidNumber(outcome.price) || outcome.price === '')
+      (outcome) =>
+        !outcome.isInvalid &&
+        (isInvalidNumber(outcome.price) || outcome.price === '')
     );
     if (priceErrorsWithEmptyString.length > 0 || isInvalidNumber(amount)) {
       return setBreakdown(defaultAddLiquidityBreakdown);
@@ -308,25 +267,43 @@ const ModalAddLiquidity = ({
       return setBreakdown(defaultAddLiquidityBreakdown);
     }
     async function getResults() {
-      const results = await getAmmLiquidity(
-        properties.account,
-        properties.amm,
-        properties.marketId,
-        properties.cash,
-        properties.fee,
-        properties.amount,
-        properties.priceNo,
-        properties.priceYes
-      );
+      let results = defaultAddLiquidityBreakdown;
+      if (modalType === REMOVE) {
+        results = await getRemoveLiquidity(
+          properties.marketId,
+          cash,
+          fee,
+          amount
+        );
+      } else {
+        results = await getAmmLiquidity(
+          properties.account,
+          properties.amm,
+          properties.marketId,
+          properties.cash,
+          properties.fee,
+          properties.amount,
+          properties.priceNo,
+          properties.priceYes
+        );
+      }
+      
       if (!results) {
         return setBreakdown(defaultAddLiquidityBreakdown);
       }
       setBreakdown(results);
+      setEstimatedLpAmount(results.lpTokens);
     }
 
     getResults();
-  
-    //LIQUIDITY_METHODS[modalType].receiveBreakdown();
+  }
+
+  useEffect(() => {
+    calculateBreakdown();
+  }, []);
+
+  useEffect(() => {
+    calculateBreakdown();
   }, [
     account,
     amount,
@@ -335,6 +312,7 @@ const ModalAddLiquidity = ({
     outcomes[YES_OUTCOME_ID]?.price,
     outcomes[NO_OUTCOME_ID]?.price,
   ]);
+
   if (account && approvals) {
     if (modalType === REMOVE) {
       if (approvals?.liquidity?.remove[cash?.name]) {
@@ -350,10 +328,13 @@ const ModalAddLiquidity = ({
       }
     }
   }
+  
   let inputFormError = '';
   if (!account) inputFormError = CONNECT_ACCOUNT;
-  else if (!amount || amount === '0' || amount === '') inputFormError = ENTER_AMOUNT;
-  else if (new BN(amount).gt(new BN(userMaxAmount))) inputFormError = INSUFFICIENT_BALANCE;
+  else if (!amount || amount === '0' || amount === '')
+    inputFormError = ENTER_AMOUNT;
+  else if (new BN(amount).gt(new BN(userMaxAmount)))
+    inputFormError = INSUFFICIENT_BALANCE;
   else if (modalType === CREATE) {
     const yesPrice = outcomes[YES_OUTCOME_ID].price;
     const noPrice = outcomes[NO_OUTCOME_ID].price;
@@ -382,37 +363,26 @@ const ModalAddLiquidity = ({
       label: 'liquidity shares',
       value: `${breakdown.lpTokens}`,
     },
-  ]
+  ];
 
   const LIQUIDITY_METHODS = {
     [REMOVE]: {
       footerText:
         'Need some copy here explaining why the user may recieve some shares when they remove their liquidity and they would need to sell these if possible.',
-      receiveBreakdown: async () => {
-        const fee = String(amm.feeRaw);
-        const properties = checkConvertLiquidityProperties(
-          account,
-          market.marketId,
-          amount,
-          fee,
-          outcomes,
-          cash,
-          amm
-        );
-        if (!properties) {
-          return defaultAddLiquidityBreakdown;
-        }
-        const results = await getRemoveLiquidity(
-          properties.marketId,
-          cash,
-          fee,
-          amount
-        );
-        if (!results) {
-          return defaultAddLiquidityBreakdown;
-        }
-        //setBreakdown(getRemoveLiquidityBreakdown(results, cash));
-      },
+      breakdown: [
+        {
+          label: 'yes shares',
+          value: `${breakdown.yesShares}`,
+        },
+        {
+          label: 'no shares',
+          value: `${breakdown.noShares}`,
+        },
+        {
+          label: `${cash?.name || 'collateral'}`,
+          value: `${breakdown.cashAmount}`,
+        },
+      ],
       liquidityDetailsFooter: {
         breakdown: [
           {
@@ -431,7 +401,7 @@ const ModalAddLiquidity = ({
       },
       confirmAction: async () => {
         if (!account || !market.marketId || !amount || !cash)
-          return defaultAddLiquidityBreakdown;
+          setBreakdown(defaultAddLiquidityBreakdown);
         const fee = String(amm.feeRaw);
         const properties = checkConvertLiquidityProperties(
           account,
@@ -443,7 +413,7 @@ const ModalAddLiquidity = ({
           amm
         );
         if (!properties) {
-          return defaultAddLiquidityBreakdown;
+          setBreakdown(defaultAddLiquidityBreakdown);
         }
         doRemoveAmmLiquidity(
           properties.marketId,
@@ -493,36 +463,6 @@ const ModalAddLiquidity = ({
     [ADD]: {
       footerText: `By adding liquidity you'll earn ${percentFormatted} of all trades on this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.`,
       breakdown: addCreateBreakdown,
-      // receiveBreakdown: async () => {
-      //   const fee = amm.feeRaw;
-      //   const properties = checkConvertLiquidityProperties(
-      //     account,
-      //     market.marketId,
-      //     amount,
-      //     fee,
-      //     outcomes,
-      //     cash,
-      //     amm
-      //   );
-      //   if (!properties) {
-      //     return defaultAddLiquidityBreakdown;
-      //   }
-      //   const results = await getAmmLiquidity(
-      //     properties.account,
-      //     properties.amm,
-      //     properties.marketId,
-      //     properties.cash,
-      //     properties.fee,
-      //     properties.amount,
-      //     properties.priceNo,
-      //     properties.priceYes
-      //   );
-      //   if (!results) {
-      //     return defaultAddLiquidityBreakdown;
-      //   }
-      //   //setBreakdown(getAddAdditionBreakdown(results));
-      //   setEstimatedLpAmount(results.lpTokens);
-      // },
       approvalButtonText: `approve ${chosenCash}`,
       confirmAction: async () => {
         const fee = amm.feeRaw;
