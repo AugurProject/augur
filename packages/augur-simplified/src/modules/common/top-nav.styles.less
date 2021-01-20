@@ -154,9 +154,11 @@
   .SimpleBorder;
   .FixedBoxShadow;
 
-  background: white;
+  background: var(--simple-light-bg);
+  border-radius: @size-16;
   position: absolute;
-  top: 81px;
+  top: @size-72;
+  right: @size-88;
   display: grid;
   padding: @size-24;
   grid-gap: @size-24;
@@ -169,6 +171,7 @@
   @media @breakpoint-mobile-tablet {
     top: auto;
     bottom: 73px;
+    right: unset;
   }
 
   > li {
@@ -184,6 +187,13 @@
 
       color: var(--simple-primary-text);
       margin-bottom: @size-12;
+      display: flex;
+      align-items: center;
+      line-height: @size-22;
+
+      > span {
+        margin-left: @size-5;
+      }
     }
 
     > ul {
