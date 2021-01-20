@@ -145,6 +145,7 @@ export const AmountInput = ({
   rate,
   updateAmountError = () => {},
 }: AmountInputProps) => {
+  const { isLogged } = useAppStatusStore();
   const currencyName = chosenCash;
   const [amount, updateAmount] = useState(initialAmount);
   const icon = currencyName === USDC ? UsdIcon : EthIcon;
@@ -179,7 +180,7 @@ export const AmountInput = ({
           [Styles.showCurrencyDropdown]: showCurrencyDropdown,
         })}
       >
-        <span>{prepend}</span>
+        {isLogged && <span>{prepend}</span>}
         <input
           type="number"
           onChange={(e) => {
@@ -188,14 +189,15 @@ export const AmountInput = ({
             errorCheck(e.target.value);
           }}
           value={amount}
-          placeholder="0"
+          placeholder={isLogged ? "0" : "Connect Wallet to Trade"}
+          disabled={!isLogged}
         />
-        {!!currencyName && currencyName !== SHARES && !showCurrencyDropdown && (
+        {isLogged && !!currencyName && currencyName !== SHARES && !showCurrencyDropdown && (
           <span className={Styles.CurrencyLabel}>
             {icon} {label}
           </span>
         )}
-        {currencyName === SHARES && !showCurrencyDropdown && (
+        {isLogged && currencyName === SHARES && !showCurrencyDropdown && (
           <span className={Styles.SharesLabel}>
             Shares
             <TinyButton action={setMax} text="Max" />
@@ -576,8 +578,8 @@ const TradingForm = ({
           initialAmount={''}
           maxValue={userBalance}
           rate={
-            !isNaN(breakdown?.ratePerCash) ?
-              `1 ${amm?.cash?.name} = ${isNaN(breakdown?.ratePerCash) ? '??' : breakdown?.ratePerCash} Shares` :
+            !isNaN(Number(breakdown?.ratePerCash)) ?
+              `1 ${amm?.cash?.name} = ${breakdown?.ratePerCash} Shares` :
               `1 ${amm?.cash?.name} = ?? Shares`
           }
         />
