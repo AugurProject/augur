@@ -1,10 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from 'modules/App';
-import reportWebVitals from './reportWebVitals';
 import { HashRouter } from 'react-router-dom';
-import { windowRef } from 'utils/window-ref';
-import { AppStatusProvider } from 'modules/stores/app-status';
+
+import App from './modules/App';
+import { AppStatusProvider } from './modules/stores/app-status';
+
+import reportWebVitals from './reportWebVitals';
+import { windowRef } from './utils/window-ref';
 
 windowRef.appStatus = {};
 

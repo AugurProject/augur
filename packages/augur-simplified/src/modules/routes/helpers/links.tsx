@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import makePath from 'modules/routes/helpers/make-path';
-import makeQuery from 'modules/routes/helpers/make-query';
-import { MARKET, MARKETS, MARKET_ID_PARAM_NAME } from 'modules/constants';
-import { useAppStatusStore } from 'modules/stores/app-status';
+import makePath from './make-path';
+import makeQuery from './make-query';
+import { MARKET, MARKETS, MARKET_ID_PARAM_NAME } from '../../constants';
+import { useAppStatusStore } from '../../stores/app-status';
 
 interface MarketLinkProps {
   id: string;

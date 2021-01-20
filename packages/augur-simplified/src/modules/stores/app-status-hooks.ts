@@ -5,8 +5,8 @@ import {
   APP_STATE_KEYS,
   DEFAULT_APP_STATUS_STATE,
 } from './constants';
-import { windowRef } from 'utils/window-ref';
-import { shapeUserActvity } from 'utils/process-data';
+import { windowRef } from '../../utils/window-ref';
+import { shapeUserActvity } from '../../utils/process-data';
 import {
   MarketInfo,
   ParaDeploys,

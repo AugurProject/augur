@@ -10,10 +10,10 @@ import {
   SELL,
   USDC,
   DEFAULT_MARKET_VIEW_SETTINGS,
-} from 'modules/constants';
-import { createBigNumber } from 'utils/create-big-number';
-import { formatDai } from 'utils/format-number';
-import { SETTINGS_SLIPPAGE } from '../constants';
+  SETTINGS_SLIPPAGE,
+} from '../constants';
+import { createBigNumber } from '../../utils/create-big-number';
+import { formatDai } from '../../utils/format-number';
 import { AppStatusState } from '../types';
 
 export const STUBBED_APP_STATUS_ACTIONS = {

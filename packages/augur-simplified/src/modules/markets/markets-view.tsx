@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import Styles from 'modules/markets/markets-view.styles.less';
-import { MarketLink } from 'modules/routes/helpers/links';
+import Styles from './markets-view.styles.less';
+import { MarketLink } from '../routes/helpers/links';
 import {
   ValueLabel,
   AppViewStats,
   CategoryLabel,
   CategoryIcon,
-} from 'modules/common/labels';
-import { formatDai, formatPercent } from 'utils/format-number';
-import { FilterIcon } from 'modules/common/icons';
+  CurrencyTipIcon,
+  NetworkMismatchBanner,
+  ReportingStateLabel,
+} from '../common/labels';
+import { formatDai, formatPercent } from '../../utils/format-number';
+import { FilterIcon } from '../common/icons';
 import classNames from 'classnames';
-import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
-import { SquareDropdown } from 'modules/common/selection';
-import { Pagination } from 'modules/common/pagination';
-import { useAppStatusStore } from 'modules/stores/app-status';
+import { PrimaryButton, SecondaryButton } from '../common/buttons';
+import { SquareDropdown } from '../common/selection';
+import { useAppStatusStore } from '../stores/app-status';
 import { AmmExchange, MarketInfo } from '../types';
 import {
   SIDEBAR_TYPES,
@@ -37,12 +39,7 @@ import {
   TWENTY_FOUR_HOUR_VOLUME,
   CREATE,
 } from '../constants';
-import {
-  CurrencyTipIcon,
-  NetworkMismatchBanner,
-  ReportingStateLabel,
-} from '../common/labels';
-import { sliceByPage } from '../common/pagination';
+import { sliceByPage, Pagination } from '../common/pagination';
 
 const PAGE_LIMIT = 21;
 

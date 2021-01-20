@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect, useState } from 'react';
-import Styles from 'modules/common/buttons.styles.less';
+import Styles from './buttons.styles.less';
 import classNames from 'classnames';
 import { Arrow } from './icons';
 import { approveERC20Contract, approveERC1155Contract, checkAllowance, isERC1155ContractApproved} from '../hooks/use-approval-callback';

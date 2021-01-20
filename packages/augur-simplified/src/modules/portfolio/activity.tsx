@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import Styles from 'modules/portfolio/activity.styles.less';
-import { UsdIcon } from 'modules/common/icons';
-import { Pagination } from 'modules/common/pagination';
+import Styles from './activity.styles.less';
+import { UsdIcon } from '../common/icons';
 import { useAppStatusStore } from '../stores/app-status';
 import { ActivityItem } from '../types';
 import { ReceiptLink } from '../routes/helpers/links';
-import { sliceByPage } from '../common/pagination';
+import { Pagination, sliceByPage } from '../common/pagination';
 
 
 const ActivityCard = ({ activity }: { activity: ActivityItem }) => (
