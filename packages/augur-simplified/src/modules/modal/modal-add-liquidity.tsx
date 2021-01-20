@@ -163,7 +163,6 @@ const ModalAddLiquidity = ({
       ? Object.values(cashes).find((c) => c.name === chosenCash)
       : Object.values(cashes)[0];
   }, [chosenCash]);
-
   const userTokenBalance = cash?.name ? balances[cash?.name]?.balance : '0';
   const shareBalance =
     balances &&
@@ -184,7 +183,7 @@ const ModalAddLiquidity = ({
       ? feeOption.value
       : amm?.feeInPercent;
     return formatPercent(feePercent).full;
-  }, [tradingFeeSelection, amm?.feeInPercent, modalType]);
+  }, [tradingFeeSelection, amm?.feeInPercent]);
 
   const userPercentOfPool = useMemo(() => {
     let userPercent = '100';
@@ -226,7 +225,6 @@ const ModalAddLiquidity = ({
     estimatedLpAmount,
     amm?.id,
     cash?.decimals,
-    modalType,
   ]);
 
   let buttonError = '';
@@ -365,6 +363,60 @@ const ModalAddLiquidity = ({
     },
   ];
 
+  const confirmAction = async () => {
+    const feeSelected = TRADING_FEE_OPTIONS.find(
+      (t) => t.id === tradingFeeSelection
+    );
+    const fee = market?.amm?.feeRaw
+      ? market?.amm?.feeRaw
+      : String(feeSelected ? feeSelected.value : '0');
+    const properties = checkConvertLiquidityProperties(
+      account,
+      market.marketId,
+      amount,
+      fee,
+      outcomes,
+      cash,
+      amm
+    );
+    if (!properties) {
+      setBreakdown(defaultAddLiquidityBreakdown);
+    }
+    await doAmmLiquidity(
+      properties.account,
+      properties.amm,
+      properties.marketId,
+      properties.cash,
+      properties.fee,
+      properties.amount,
+      modalType === ADD
+        ? amm !== null && amm?.id !== undefined && amm?.liquidity !== '0'
+        : false,
+      properties.priceNo,
+      properties.priceYes
+    )
+      .then((response) => {
+        const { hash } = response;
+        addTransaction({
+          hash,
+          chainId: loginAccount.chainId,
+          from: account,
+          seen: false,
+          status: TX_STATUS.PENDING,
+          addedTime: new Date().getTime(),
+          message: `Add Liquidity`,
+          marketDescription: market.description,
+        });
+        response
+          .wait()
+          .then((response) => updateTxStatus(response, updateTransaction));
+      })
+      .catch((e) => {
+        // TODO: handle error
+      });
+    closeModal();
+  };
+
   const LIQUIDITY_METHODS = {
     [REMOVE]: {
       footerText:
@@ -399,49 +451,7 @@ const ModalAddLiquidity = ({
           },
         ],
       },
-      confirmAction: async () => {
-        if (!account || !market.marketId || !amount || !cash)
-          setBreakdown(defaultAddLiquidityBreakdown);
-        const fee = String(amm.feeRaw);
-        const properties = checkConvertLiquidityProperties(
-          account,
-          market.marketId,
-          amount,
-          fee,
-          outcomes,
-          cash,
-          amm
-        );
-        if (!properties) {
-          setBreakdown(defaultAddLiquidityBreakdown);
-        }
-        doRemoveAmmLiquidity(
-          properties.marketId,
-          properties.cash,
-          properties.fee,
-          properties.amount
-        )
-          .then((response) => {
-            const { hash } = response;
-            addTransaction({
-              hash,
-              chainId: loginAccount.chainId,
-              seen: false,
-              status: TX_STATUS.PENDING,
-              from: account,
-              addedTime: new Date().getTime(),
-              message: `Remove Liquidity`,
-              marketDescription: market.description,
-            });
-            response
-              .wait()
-              .then((response) => updateTxStatus(response, updateTransaction));
-          })
-          .catch((e) => {
-            //TODO: handle errors here
-          });
-        closeModal();
-      },
+      confirmAction: () => confirmAction(),
       confirmOverview: {
         breakdown: [
           {
@@ -475,54 +485,7 @@ const ModalAddLiquidity = ({
       footerText: `By adding liquidity you'll earn ${percentFormatted} of all trades on this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.`,
       breakdown: addCreateBreakdown,
       approvalButtonText: `approve ${chosenCash}`,
-      confirmAction: async () => {
-        const fee = amm.feeRaw;
-        const properties = checkConvertLiquidityProperties(
-          account,
-          market.marketId,
-          amount,
-          fee,
-          outcomes,
-          cash,
-          amm
-        );
-        if (!properties) {
-          setBreakdown(defaultAddLiquidityBreakdown);
-        }
-        const hasLiquidity =
-          amm !== null && amm?.id !== undefined && amm?.liquidity !== '0';
-        doAmmLiquidity(
-          properties.account,
-          properties.amm,
-          properties.marketId,
-          properties.cash,
-          properties.fee,
-          properties.amount,
-          hasLiquidity,
-          properties.priceNo,
-          properties.priceYes
-        )
-          .then((response) => {
-            const { hash } = response;
-            addTransaction({
-              hash,
-              chainId: loginAccount.chainId,
-              from: account,
-              seen: false,
-              status: TX_STATUS.PENDING,
-              addedTime: new Date().getTime(),
-              message: `Add Liquidity`,
-              marketDescription: market.description,
-            });
-            response
-              .wait()
-              .then((response) => updateTxStatus(response, updateTransaction));
-          })
-          .catch((e) => {
-            // TODO: handle error here
-          });
-        closeModal();
-      },
+      confirmAction: () => confirmAction(),
       confirmOverview: {
         breakdown: [
           {
@@ -554,57 +517,7 @@ const ModalAddLiquidity = ({
         "By adding initial liquidity you'll earn your set trading fee percentage of all trades on this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.",
       breakdown: addCreateBreakdown,
       approvalButtonText: `approve ${chosenCash}`,
-      confirmAction: async () => {
-        const feeSelected = TRADING_FEE_OPTIONS.find(
-          (t) => t.id === tradingFeeSelection
-        );
-        const fee = market?.amm?.feeRaw
-          ? market?.amm?.feeRaw
-          : String(feeSelected ? feeSelected.value : '0');
-        const properties = checkConvertLiquidityProperties(
-          account,
-          market.marketId,
-          amount,
-          fee,
-          outcomes,
-          cash,
-          amm
-        );
-        if (!properties) {
-          setBreakdown(defaultAddLiquidityBreakdown);
-        }
-        await doAmmLiquidity(
-          properties.account,
-          properties.amm,
-          properties.marketId,
-          properties.cash,
-          properties.fee,
-          properties.amount,
-          false,
-          properties.priceNo,
-          properties.priceYes
-        )
-          .then((response) => {
-            const { hash } = response;
-            addTransaction({
-              hash,
-              chainId: loginAccount.chainId,
-              from: account,
-              seen: false,
-              status: TX_STATUS.PENDING,
-              addedTime: new Date().getTime(),
-              message: `Add Liquidity`,
-              marketDescription: market.description,
-            });
-            response
-              .wait()
-              .then((response) => updateTxStatus(response, updateTransaction));
-          })
-          .catch((e) => {
-            // TODO: handle error
-          });
-        closeModal();
-      },
+      confirmAction: () => confirmAction(),
       confirmOverview: {
         breakdown: [
           {
