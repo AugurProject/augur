@@ -29,9 +29,9 @@ contract IAMMExchange is IERC20 {
 
     // Removes shares from the liquidity pool.
     // If _minSetsSold > 0 then also sell complete sets through burning and through swapping in the pool.
-    function removeLiquidity(uint256 _poolTokensToSell, uint256 _minSetsSold) external returns (uint256 _shortShare, uint256 _longShare, uint256 _cashShare, uint256 _setsSold);
+    function removeLiquidity(uint256 _poolTokensToSell) external returns (uint256 _shortShare, uint256 _longShare, uint256 _cashShare);
     // Tells you how many shares you receive, how much cash you receive, and how many complete sets you burn for cash.
-    function rateRemoveLiquidity(uint256 _poolTokensToSell, uint256 _minSetsSold) public view returns (uint256 _shortShare, uint256 _longShare, uint256 _cashShare, uint256 _setsSold);
+    function rateRemoveLiquidity(uint256 _poolTokensToSell) public view returns (uint256 _shortShare, uint256 _longShare, uint256 _cashShare);
 
     function enterPosition(uint256 _cashCost, bool _buyLong, uint256 _minShares) public returns (uint256);
     // Tells you how many shares you get for given cash.

@@ -30,7 +30,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
     event ExitPosition(address sender, uint256 shortShares, uint256 longShares, uint256 cashPayout);
     event SwapPosition(address sender, uint256 inputShares, uint256 outputShares, bool inputLong);
     event AddLiquidity(address sender, uint256 cash, uint256 shortShares, uint256 longShares, uint256 lpTokens);
-    event RemoveLiquidity(address sender, uint256 cash, uint256 shortShares, uint256 longShares, uint256 completeSetsSold);
+    event RemoveLiquidity(address sender, uint256 cash, uint256 shortShares, uint256 longShares);
 
 
     function initialize(IMarket _market, ParaShareToken _shareToken, uint256 _fee) public {
@@ -116,44 +116,40 @@ contract AMMExchange is IAMMExchange, ERC20 {
     // returns how many LP tokens you get for providing the given number of sets
     function rateAddLiquidity(uint256 _longs, uint256 _shorts) public view returns (uint256) {
         (uint256 _noBalance, uint256 _yesBalance) = yesNoShareBalances(address(this));
-        uint256 _cashBalance = cash.balanceOf(address(this));
+        uint256 _cashBalance = cash.balanceOf(address(this)).div(numTicks);
 
-        uint256 _normalizedCashBalance = _cashBalance.div(numTicks);
-        uint256 _longBalance = _yesBalance + _normalizedCashBalance;
-        uint256 _shortBalance = _noBalance + _normalizedCashBalance;
+        uint256 _prior = 0;
+        if (_noBalance + _yesBalance != 0) {
+            _prior = (2 * _noBalance * _yesBalance) / (_noBalance + _yesBalance) + _cashBalance;
+        }
+        uint256 _valueAdded = (
+            ((_noBalance * _longs) + (_yesBalance * _shorts) + (2 * _shorts * _longs))
+            / (_noBalance + _yesBalance + _shorts + _longs)
+        );
 
-        uint256 _priorLiquidityConstant = SafeMathUint256.sqrt(_longBalance * _shortBalance);
-        uint256 _newLiquidityConstant = SafeMathUint256.sqrt((_longBalance + _longs) * (_shortBalance + _shorts));
-
-        if (_priorLiquidityConstant == 0) {
-            return _newLiquidityConstant;
+        if (_prior == 0) {
+            return _valueAdded;
         } else {
-            uint256 _totalSupply = totalSupply;
-            return _totalSupply.mul(_newLiquidityConstant).div(_priorLiquidityConstant).sub(_totalSupply);
+            return _valueAdded.mul(totalSupply).div(_prior);
         }
     }
 
     // Removes shares from the liquidity pool.
-    // If _minSetsSold > 0 then also sell complete sets through burning and through swapping in the pool.
-    function removeLiquidity(uint256 _poolTokensToSell, uint256 _minSetsSold) external returns (uint256 _shortShare, uint256 _longShare, uint256 _cashShare, uint256 _setsSold){
-        (_shortShare, _longShare, _cashShare, _setsSold) = rateRemoveLiquidity(_poolTokensToSell, _minSetsSold);
+    function removeLiquidity(uint256 _poolTokensToSell) external returns (uint256 _shortShare, uint256 _longShare, uint256 _cashShare){
+        (_shortShare, _longShare, _cashShare) = rateRemoveLiquidity(_poolTokensToSell);
 
-        require(_setsSold == 0 || _setsSold >= _minSetsSold, "AugurCP: Would not receive the minimum number of sets");
-
+        require(_poolTokensToSell <= balanceOf(msg.sender), "AugurCP: Trying to sell more LP tokens than owned");
         _burn(msg.sender, _poolTokensToSell);
 
         shareTransfer(address(this), msg.sender, _shortShare, _shortShare, _longShare);
-        (uint256 _creatorFee, uint256 _reportingFee) = shareToken.publicSellCompleteSets(augurMarket, _setsSold);
-        _cashShare -= _creatorFee + _reportingFee;
         cash.transfer(msg.sender, _cashShare);
 
-        emit RemoveLiquidity(msg.sender, _cashShare, _shortShare, _longShare, _setsSold);
-        // CONSIDER: convert min(poolInvalid, poolYes, poolNo) to DAI by selling complete sets. Selling complete sets incurs Augur fees, maybe we should let the user sell the sets themselves if they want to pay the fee?
+        emit RemoveLiquidity(msg.sender, _cashShare, _shortShare, _longShare);
     }
 
     // Tells you how many shares you receive, how much cash you receive, and how many complete sets you burn for cash.
     // Cash share does NOT include market fees from burning complete sets.
-    function rateRemoveLiquidity(uint256 _poolTokensToSell, uint256 _minSetsSold) public view returns (uint256 _shortShare, uint256 _longShare, uint256 _cashShare, uint256 _setsSold) {
+    function rateRemoveLiquidity(uint256 _poolTokensToSell) public view returns (uint256 _shortShare, uint256 _longShare, uint256 _cashShare) {
         uint256 _poolSupply = totalSupply;
         (uint256 _poolShort, uint256 _poolLong) = yesNoShareBalances(address(this));
         uint256 _poolCash = cash.balanceOf(address(this));
@@ -161,19 +157,6 @@ contract AMMExchange is IAMMExchange, ERC20 {
         _shortShare = _poolShort.mul(_poolTokensToSell).div(_poolSupply);
         _longShare = _poolLong.mul(_poolTokensToSell).div(_poolSupply);
         _cashShare = _poolCash.mul(_poolTokensToSell).div(_poolSupply);
-        _setsSold = 0;
-
-        if (_minSetsSold > 0) {
-            // First, how many complete sets you have
-            _setsSold = SafeMathUint256.min(_shortShare, _longShare);
-            _shortShare -= _setsSold;
-            _longShare -= _setsSold;
-            _cashShare += _setsSold.mul(numTicks);
-            // Then, how many you can make from the pool
-            // NOTE: This incurs the fee. This is intentional because the LP has a right to a portion of the pool, not a free swap after leaving the pool.
-            uint256 _cashFromExit = rateExitPosition(_shortShare, _longShare);
-            _cashShare += _cashFromExit; // extra cash from selling sets to the pool
-        }
     }
 
     function enterPosition(uint256 _cashCost, bool _buyLong, uint256 _minShares) public returns (uint256) {
@@ -241,7 +224,10 @@ contract AMMExchange is IAMMExchange, ERC20 {
 
     function rateExitPosition(uint256 _shortSharesToSell, uint256 _longSharesToSell) public view returns (uint256) {
         (uint256 _poolShort, uint256 _poolLong) = yesNoShareBalances(address(this));
+        return calcExitPosition(_poolShort, _poolLong, _shortSharesToSell, _longSharesToSell);
+    }
 
+    function calcExitPosition(uint256 _poolShort, uint256 _poolLong, uint256 _shortSharesToSell, uint256 _longSharesToSell) internal view returns (uint256) {
         // Figure out how many shares we're buying in our synthetic swap and use that to figure out the final balance of Yes/No (setsToSell)
         uint256 _setsToSell = _shortSharesToSell; // if short and long to sell are identical, sets to sell is equal to either
         if (_longSharesToSell > _shortSharesToSell) {
@@ -250,8 +236,9 @@ contract AMMExchange is IAMMExchange, ERC20 {
                 1,
                 -int256(_delta.add(_poolLong).add(_poolShort)),
                 int256(_delta.mul(_poolShort)),
-                _longSharesToSell
+                _delta
             );
+
             _setsToSell = _shortSharesToSell.add(_shortSharesToBuy);
         } else if (_shortSharesToSell > _longSharesToSell) {
             uint256 _delta = _shortSharesToSell.sub(_longSharesToSell);
@@ -259,7 +246,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
                 1,
                 -int256(_delta.add(_poolLong).add(_poolShort)),
                 int256(_delta.mul(_poolLong)),
-                _shortSharesToSell
+                _delta
             );
             _setsToSell = _longSharesToSell.add(_longSharesToBuy);
         }

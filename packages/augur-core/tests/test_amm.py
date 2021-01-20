@@ -5,11 +5,18 @@ from tests.reporting_utils import proceedToInitialReporting
 from pytest import raises, fixture, mark, skip
 from utils import nullAddress, stringToBytes
 
+def calc_ratio(yesPercent):
+    noPercent = 1 - yesPercent
+    return 10**18 * yesPercent / noPercent
+
+
 FEE = 10 # 10/1000 aka 1%
 ATTO = 10 ** 18
 INVALID = 0
 NO = 1
 YES = 2
+RATIO_50_50 = calc_ratio(0.5)
+RATIO_60_40 = calc_ratio(0.4)
 
 
 @fixture
@@ -42,13 +49,12 @@ def test_amm_add_with_liquidity(contractsFixture, market, cash, shareToken, fact
 
     setsToBuy = 10 * ATTO
     keepYes = True
-    ratioFactor = 10**18
 
     cost = setsToBuy * 10000
     cash.faucet(cost)
     cash.approve(factory.address, 10 ** 48)
 
-    ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, cost, ratioFactor, keepYes, account0)
+    ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, cost, RATIO_50_50, keepYes, account0)
     amm = contractsFixture.applySignature("AMMExchange", ammAddress[0])
 
     addLiquidityEvent = amm.getLogs('AddLiquidity')
@@ -62,12 +68,11 @@ def test_amm_add_with_liquidity2(contractsFixture, market, cash, shareToken, fac
 
     cost = 10**18
     keepYes = False
-    ratioFactor = 10**18
 
     cash.faucet(cost)
     cash.approve(factory.address, 10 ** 48)
 
-    ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, cost, ratioFactor, keepYes, account0)
+    ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, cost, RATIO_50_50, keepYes, account0)
     assert ammAddress != nullAddress
 
 def test_amm_initial_liquidity(contractsFixture, market, cash, shareToken, factory, amm, account0):
@@ -80,7 +85,7 @@ def test_amm_initial_liquidity(contractsFixture, market, cash, shareToken, facto
     cash.faucet(cost)
     cash.approve(factory.address, 10 ** 48)
 
-    amm.addInitialLiquidity(cost, 10**18, True, account0)
+    lpTokens = amm.addInitialLiquidity(cost, 10**18, True, account0)
 
     addLiquidityEvent = amm.getLogs('AddLiquidity')
     assert addLiquidityEvent[0].args.sender == account0
@@ -98,22 +103,22 @@ def test_amm_initial_liquidity(contractsFixture, market, cash, shareToken, facto
     assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == sets
 
     assert amm.balanceOf(account0) == sets # liquidity provider tokens should match the sets minted, when no fees in 50:50
+    assert lpTokens == sets # returned LP tokens should match actual LP tokens
 
-    removedSets = 10 * ATTO
-    remainingSets = sets - removedSets
-    amm.removeLiquidity(removedSets, 0)
+    removedLPTokens = lpTokens // 10
+    amm.removeLiquidity(removedLPTokens)
 
     assert cash.balanceOf(account0) == 0  # user did not receive cash, just shares
     assert cash.balanceOf(amm.address) == 0  # shares are just passed along to user; no cash suddenly appears
-    assert amm.balanceOf(account0) == remainingSets # LP tokens
+    assert amm.balanceOf(account0) == lpTokens - removedLPTokens
     # user receives 10 of each share
-    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == removedSets
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == removedSets
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == removedSets
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == sets * 0.1
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == sets * 0.1
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == sets * 0.1
     # AMM still has 90 of each share
-    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, amm.address) == remainingSets
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == remainingSets
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == remainingSets
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, amm.address) == sets * 0.9
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == sets * 0.9
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == sets * 0.9
 
 def test_amm_subsequent_liquidity(contractsFixture, market, cash, shareToken, factory, amm, account0):
     if not contractsFixture.paraAugur:
@@ -159,7 +164,7 @@ def test_amm_subsequent_liquidity(contractsFixture, market, cash, shareToken, fa
     finalCost = finalSets * 1000
     cash.faucet(finalCost)
     lpTokens = amm.addLiquidity(finalCost, account0)
-    assert lpTokens == 94996961155287803127 # less than finalSets due to captured fees raising the value of an LP token
+    assert lpTokens == 94996448049187125706 # less than finalSets due to captured fees raising the value of an LP token
 
 def test_amm_60_40_liquidity(contractsFixture, market, cash, shareToken, factory, amm, account0, kitchenSinkSnapshot):
     if not contractsFixture.paraAugur:
@@ -171,15 +176,12 @@ def test_amm_60_40_liquidity(contractsFixture, market, cash, shareToken, factory
     cash.faucet(cost)
     cash.approve(factory.address, 10 ** 48)
 
-    yesPercent = 0.4
-    noPercent = 1 - yesPercent
-    ratio = 10**18 * yesPercent / noPercent
     yesShares = 66666666666666675200 # approximately 2/3 aka 60%
     keptYesShares = sets - yesShares
 
-    lpTokens = amm.addInitialLiquidity(cost, ratio, True, account0)
+    lpTokens = amm.addInitialLiquidity(cost, RATIO_60_40, True, account0)
 
-    assert lpTokens == 81649658092772608498 # skewed ratio means fewer shares which means fewer LP tokens
+    assert lpTokens == 80000000000000006143 # skewed ratio means fewer shares which means fewer LP tokens
     assert amm.balanceOf(account0) == lpTokens
 
     # all cash was used to buy complete sets
@@ -194,14 +196,14 @@ def test_amm_60_40_liquidity(contractsFixture, market, cash, shareToken, factory
     assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == yesShares
     assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == sets
 
-    removedLPTokens = 8164965809277260850 # remove 1/10th of liquidity (rounded up)
+    removedLPTokens = 8000000000000000615 # remove 1/10th of liquidity (rounded up)
     recoveredInvalidShares = sets // 10
     recoveredNoShares = sets // 10
     recoveredYesShares = yesShares // 10
     remainingInvalidShares = sets - recoveredInvalidShares
     remainingNoShares = sets - recoveredNoShares
     remainingYesShares = yesShares - recoveredYesShares
-    amm.removeLiquidity(removedLPTokens, 0)
+    amm.removeLiquidity(removedLPTokens)
 
     assert cash.balanceOf(account0) == 0  # user did not receive cash, just shares
     assert cash.balanceOf(amm.address) == 0  # shares are just passed along to user; no cash suddenly appears
@@ -220,41 +222,7 @@ def test_amm_60_40_liquidity(contractsFixture, market, cash, shareToken, factory
     finalCost = finalSets * 1000
     cash.faucet(finalCost)
     lpTokens = amm.addLiquidity(finalCost, account0)
-    assert lpTokens == 81649658092772608499 # an atto off from initial, probably due to rounding
-
-def test_amm_remove_liquidity_selling(contractsFixture, market, cash, shareToken, factory, amm, account0):
-    if not contractsFixture.paraAugur:
-        return skip("Test is only for para augur")
-
-    numticks = market.getNumTicks()
-    ratio_50_50 = 10 ** 18
-
-    sets = 100 * ATTO
-    cost = sets * numticks
-
-    cash.faucet(cost)
-    cash.approve(factory.address, 10 ** 48)
-
-    amm.addInitialLiquidity(cost, ratio_50_50, True, account0)
-
-    removedSets = 10 * ATTO
-    remainingSets = sets - removedSets
-
-    amm.removeLiquidity(removedSets, 1) # 1 indicates selling at least one set
-
-    # user receives cash for complete sets
-    # some is removed for augur market fees from burning complete sets, but those are zero in these tests
-    assert cash.balanceOf(account0) == 9899000000000000000000  # user received cash for complete sets sold, less market fees
-    assert cash.balanceOf(amm.address) == 0  # shares/cash are just passed along to user; no cash suddenly appears
-
-    # user receives no shares because they sold them all for cash
-    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == 0
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == 0
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == 0
-    # AMM still has 90 of each share
-    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, amm.address) == remainingSets
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == remainingSets
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == remainingSets
+    assert lpTokens == 80000000000000006141 # 2 atto off from initial, probably due to rounding
 
 def test_amm_yes_position(contractsFixture, market, shareToken, cash, factory, amm, account0):
     if not contractsFixture.paraAugur:
@@ -263,12 +231,11 @@ def test_amm_yes_position(contractsFixture, market, shareToken, cash, factory, a
     numticks = market.getNumTicks()
     sets = 100 * ATTO
     liquidityCost = sets * numticks
-    ratio_50_50 = 10 ** 18
 
     cash.faucet(liquidityCost)
     cash.approve(factory.address, 10 ** 48)
 
-    amm.addInitialLiquidity(liquidityCost, ratio_50_50, True, account0)
+    amm.addInitialLiquidity(liquidityCost, RATIO_50_50, True, account0)
 
     yesPositionSets = 10 * ATTO
     yesPositionCost = yesPositionSets * numticks
@@ -301,7 +268,6 @@ def test_amm_yes_position(contractsFixture, market, shareToken, cash, factory, a
     amm.exitAll(payoutAll)
 
     assert cash.balanceOf(account0) == payoutAll
-
 
 def test_amm_no_position(contractsFixture, market, shareToken, cash, factory, amm, account0):
     if not contractsFixture.paraAugur:
@@ -385,12 +351,11 @@ def test_amm_fees_work(sessionFixture, market, shareToken, cash, factory, accoun
     assert cash.balanceOf(account0) == 0
 
     # Now remove liquidity and verify that LP tokens yield what they should.
-    (noRemoved, yesRemoved, cashRemoved, setsSold) = amm.removeLiquidity(lpTokens, 0)
+    (noRemoved, yesRemoved, cashRemoved) = amm.removeLiquidity(lpTokens)
 
     assert noRemoved == liquiditySets
     assert yesRemoved == liquiditySets - yesShares
     assert cashRemoved == tradeCash
-    assert setsSold == 0
 
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, amm.address) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == 0
@@ -509,63 +474,126 @@ def test_amm_fee_calc_10(sessionFixture, market, shareToken, cash, factory, acco
     assert trade( 90000, YES) == ( 98010000000000000000, 0.4555    )
     assert trade(100000, YES) == ( 99000000000000000000, 0.505     ) # 100 sets were added so this is the max that can be extracted... strictly unprofitable
 
-
-# TODO: Figure out if the returns are correct when selling LP tokens minted _after_ fees were generated.
-#       Right now it looks incorrect but it's possible (likely even) that the combined value of returned shares+cash are equal to the value put in when adding liquidity.
-#       I tried adding cash to the average of the shares. It ended up with ~10.07 avg shares and ~1003 cash.
-#           Need to calculate the actual value of the shares, not just their average quantities.
-@mark.skip("TODO")
-def test_amm_lp_fee_lp_withdraw(contractsFixture, market, shareToken, cash, factory, amm):
+def test_amm_multiuser_liquidity(contractsFixture, market, cash, factory, amm, account0, account1):
     if not contractsFixture.paraAugur:
         return skip("Test is only for para augur")
 
-    cost = 100000 * ATTO
-    sets = cost // market.getNumTicks()
-    cash.faucet(cost)
+    numticks = market.getNumTicks()
+
     cash.approve(factory.address, 10 ** 48)
-    shareToken.setApprovalForAll(amm.address, True)
-    lpTokens = amm.addInitialLiquidity(cost, 10**18, True, account0)
+    cash.approve(factory.address, 10 ** 48, sender=account1)
 
-    addedCash = 10000 * ATTO
-    invalidFromPosition = addedCash // market.getNumTicks()
-    cash.faucet(addedCash)
-    yesShares = amm.rateEnterPosition(addedCash, True)
-    amm.enterPosition(addedCash, True, yesShares)
+    cost0 = 10 * ATTO
+    sets0 = cost0 // numticks
+    cash.faucet(cost0)
+    amm.addInitialLiquidity(cost0, RATIO_50_50, True, account0)
 
-    moreSets = 10 * ATTO
-    moreCost = moreSets * market.getNumTicks()
-    cash.faucet(moreCost)
-    moreLPTokens = amm.addLiquidity(moreSets)
-    # TODO sell sets when removing liquidity OR perform a rateExitAll (or just exitAll) and compare
-    (invalidRemoved, noRemoved, yesRemoved, cashRemoved) = amm.removeLiquidity(moreLPTokens, 0)
+    cost1 = 5 * ATTO
+    sets1 = cost1 // numticks
+    cash.faucet(cost1, sender=account1)
+    lpTokens1 = amm.addLiquidity(cost1, account1, sender=account1)
 
-    print(moreSets)
-    print(invalidRemoved)
-    print(noRemoved)
-    print(yesRemoved)
-    print(cashRemoved)
+    assert amm.balanceOf(account1) == lpTokens1
 
-    # These LP tokens should not have generated any fees because no trading occurred after they were minted.
-    # assert invalidRemoved == moreSets
-    # assert noRemoved == moreSets
-    # assert yesRemoved == moreSets
-    # assert cashRemoved == 0
+    # Test is for verifying that this does not fail
+    [short, long, cashShare] = amm.rateRemoveLiquidity(lpTokens1, sender=account1)
+    assert short == sets1
+    assert long == sets1
+    assert cashShare == 0
 
-    # TODO need to calculate this by value, not totals, because individual values can differ.
-    # Now remove the rest of the LP tokens. The ones that are owed fees.
-    (invalidRemoved, noRemoved, yesRemoved, cashRemoved) = amm.removeLiquidity(lpTokens, 0)
-    assert invalidRemoved == sets - invalidFromPosition
-    assert noRemoved == sets
-    assert yesRemoved == sets - yesShares
-    assert cashRemoved == addedCash
+    amm.removeLiquidity(lpTokens1, sender=account1, getReturnData=False)
 
-    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, amm.address) == 0
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == 0
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == 0
-    assert cash.balanceOf(amm.address) == 0
+def test_amm_villainous_fee_extraction(contractsFixture, market, cash, shareToken, factory, amm, account0, account1):
+    if not contractsFixture.paraAugur:
+        return skip("Test is only for para augur")
 
+    numticks = market.getNumTicks()
+    sets = 100 * ATTO
+    initialLiquidityCost = sets * numticks
 
-def test_amm_claim_from_multiple_markets(sessionFixture, universe, market, factory, shareToken, cash, account0, account1):
+    cash.approve(factory.address, 10 ** 48, sender=account0)
+    cash.approve(factory.address, 10 ** 48, sender=account1)
+
+    cash.faucet(initialLiquidityCost)
+    amm.addInitialLiquidity(initialLiquidityCost, RATIO_50_50, True, account0)
+
+    # Enter long position
+    longPositionSets = 10 * ATTO
+    longPositionCost = longPositionSets * numticks
+    longSharesReceived = amm.rateEnterPosition(longPositionCost, True)
+    cash.faucet(longPositionCost)
+    amm.enterPosition(longPositionCost, True, longSharesReceived)
+
+    # Attacker creates and destroys LP tokens, trying to make a nefarious profit thereby
+    attacker = account1
+    attackSets = 100 * ATTO
+    attackLiquidityCost = attackSets * numticks
+    cash.faucet(attackLiquidityCost, sender=attacker)
+    lpTokens = amm.addLiquidity(attackLiquidityCost, attacker, sender=attacker)
+    totalLPSupply = amm.totalSupply()
+    shareToken.setApprovalForAll(factory.address, True, sender=attacker)
+
+    [shortFromLP, longFromLP] = amm.yesNoShareBalances(attacker)
+    [shortShare, longShare, cashShare] = amm.removeLiquidity(lpTokens, sender=attacker)
+
+    setsToKeep = min(shortFromLP + shortShare, longFromLP + longShare)
+    shortsToExit = shortFromLP + shortShare - setsToKeep
+    longsToExit = longFromLP + longShare - setsToKeep
+
+    cashFromPosition = amm.exitPosition(shortsToExit, longsToExit, 0, sender=attacker)
+
+    totalValue = cashShare + cashFromPosition + setsToKeep*numticks
+
+    print('lpTokens:', lpTokens)
+    print('totalLPSupply:', totalLPSupply)
+    print('shortFromLP:', shortFromLP)
+    print('longFromLP:', longFromLP)
+    print('shortShare:', shortShare)
+    print('longShare:', longShare)
+    print('setsToKeep:', setsToKeep)
+    print('shortsToExit:', shortsToExit)
+    print('longsToExit:', longsToExit)
+    print('cashShare:', cashShare)
+    print('cashFromPosition:', cashFromPosition)
+    print('totalValue:', totalValue)
+    print('attackLiquidityCost:', attackLiquidityCost)
+
+    assert lpTokens == 89961717239430689366
+    assert totalLPSupply == 189961717239430689366
+    assert shortFromLP == 0
+    assert longFromLP == 18810000000000000000
+    assert shortShare == 94715628545346900801
+    assert longShare == 76899618815967148760
+    assert cashShare == 4735781427267345040067
+    assert cashFromPosition == 541835402148283495230
+    assert attackLiquidityCost * 0.99 < totalValue <= attackLiquidityCost # no profit but little loss
+
+def test_amm_add_liquidity_ratio(contractsFixture, market, cash, factory, amm, account0, account1):
+    if not contractsFixture.paraAugur:
+        return skip("Test is only for para augur")
+
+    def calc_ratio():
+        [short, long] = amm.yesNoShareBalances(amm.address)
+        return short / long
+
+    numticks = market.getNumTicks()
+    sets = 100 * ATTO
+
+    cash.approve(factory.address, 10 ** 48)
+
+    initialLiquidityCost = sets * numticks
+    cash.faucet(initialLiquidityCost)
+    amm.addInitialLiquidity(initialLiquidityCost, RATIO_60_40, True, account0)
+    priorRatio = calc_ratio()
+
+    subsequentLiquidityCost = sets * numticks
+    cash.faucet(subsequentLiquidityCost)
+    amm.addLiquidity(subsequentLiquidityCost, account0)
+    latterRatio = calc_ratio()
+
+    assert priorRatio == latterRatio
+
+def test_amm_claim_from_multiple_markets(sessionFixture, universe, factory, shareToken, cash, account0, account1):
     if not sessionFixture.paraAugur:
         return skip("Test is only for para augur")
 
@@ -615,7 +643,7 @@ def test_amm_claim_from_multiple_markets(sessionFixture, universe, market, facto
 # 6. Verify specific enterPosition costs.
 
 
-def make_amm(sessionFixture, factory, market, shareToken, cash, account, fee=FEE, liquiditySets=0, liquidityRatio=10 ** 18):
+def make_amm(sessionFixture, factory, market, shareToken, cash, account, fee=FEE, liquiditySets=0, liquidityRatio=RATIO_50_50):
     ammAddress = factory.addAMM(market.address, shareToken.address, fee)
     amm = sessionFixture.applySignature("AMMExchange", ammAddress)
 

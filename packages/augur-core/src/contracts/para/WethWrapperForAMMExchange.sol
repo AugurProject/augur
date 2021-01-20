@@ -78,11 +78,11 @@ contract WethWrapperForAMMExchange {
         return liquidity;
     }
 
-    function removeLiquidity(IMarket _market, uint256 _fee, uint256 _poolTokensToSell, uint256 _minSetsSold) external returns (uint256 _shortShare, uint256 _longShare, uint256 _cashShare, uint256 _setsSold) {
+    function removeLiquidity(IMarket _market, uint256 _fee, uint256 _poolTokensToSell) external returns (uint256 _shortShare, uint256 _longShare, uint256 _cashShare) {
         IAMMExchange _amm = getAMM(_market, _fee);
         _amm.transferFrom(msg.sender, address(this), _poolTokensToSell);
 
-        (_shortShare, _longShare, _cashShare, _setsSold) = _amm.removeLiquidity(_poolTokensToSell, _minSetsSold);
+        (_shortShare, _longShare, _cashShare) = _amm.removeLiquidity(_poolTokensToSell);
 
         // The graph mappings assume this event is emitted immediately after the corresponding amm event.
         emit RemoveLiquidity(address(_amm), msg.sender);
