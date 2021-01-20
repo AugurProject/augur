@@ -38,10 +38,7 @@ import {
 import { MultiButtonSelection } from '../common/selection';
 import classNames from 'classnames';
 import {
-  AddLiquidityBreakdown,
   AmmOutcome,
-  Cash,
-  LiquidityBreakdown,
   MarketInfo,
 } from '../types';
 import {
@@ -383,7 +380,31 @@ const ModalAddLiquidity = ({
       setBreakdown(defaultAddLiquidityBreakdown);
     }
     if (modalType === REMOVE) {
-      
+      doRemoveAmmLiquidity(
+        properties.marketId,
+        properties.cash,
+        properties.fee,
+        properties.amount
+      )
+        .then((response) => {
+          const { hash } = response;
+          addTransaction({
+            hash,
+            chainId: loginAccount.chainId,
+            seen: false,
+            status: TX_STATUS.PENDING,
+            from: account,
+            addedTime: new Date().getTime(),
+            message: `Remove Liquidity`,
+            marketDescription: market.description,
+          });
+          response
+            .wait()
+            .then((response) => updateTxStatus(response, updateTransaction));
+        })
+        .catch((e) => {
+          //TODO: handle errors here
+        });
     } else {
       await doAmmLiquidity(
         properties.account,
@@ -423,6 +444,7 @@ const ModalAddLiquidity = ({
 
   const LIQUIDITY_METHODS = {
     [REMOVE]: {
+      ...LIQUIDITY_STRINGS[REMOVE],
       footerText:
         'Need some copy here explaining why the user may recieve some shares when they remove their liquidity and they would need to sell these if possible.',
       breakdown: [
@@ -455,7 +477,6 @@ const ModalAddLiquidity = ({
           },
         ],
       },
-      confirmAction: () => confirmAction(),
       confirmOverview: {
         breakdown: [
           {
@@ -486,10 +507,10 @@ const ModalAddLiquidity = ({
       },
     },
     [ADD]: {
+      ...LIQUIDITY_STRINGS[ADD],
       footerText: `By adding liquidity you'll earn ${percentFormatted} of all trades on this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.`,
       breakdown: addCreateBreakdown,
       approvalButtonText: `approve ${chosenCash}`,
-      confirmAction: () => confirmAction(),
       confirmOverview: {
         breakdown: [
           {
@@ -516,12 +537,12 @@ const ModalAddLiquidity = ({
       currencyName: `${chosenCash}`,
     },
     [CREATE]: {
+      ...LIQUIDITY_STRINGS[CREATE],
       currencyName: `${chosenCash}`,
       footerText:
         "By adding initial liquidity you'll earn your set trading fee percentage of all trades on this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.",
       breakdown: addCreateBreakdown,
       approvalButtonText: `approve ${chosenCash}`,
-      confirmAction: () => confirmAction(),
       confirmOverview: {
         breakdown: [
           {
@@ -571,19 +592,19 @@ const ModalAddLiquidity = ({
       {!showBackView ? (
         <>
           <Header
-            title={LIQUIDITY_STRINGS[modalType].header}
+            title={LIQUIDITY_METHODS[modalType].header}
             subtitle={{
               label: 'trading fee',
-              value: LIQUIDITY_STRINGS[modalType].showTradingFee
+              value: LIQUIDITY_METHODS[modalType].showTradingFee
                 ? percentFormatted
                 : null,
             }}
           />
-          {!LIQUIDITY_STRINGS[modalType].cantEditAmount && (
+          {!LIQUIDITY_METHODS[modalType].cantEditAmount && (
             <>
-              {LIQUIDITY_STRINGS[modalType].amountSubtitle && (
+              {LIQUIDITY_METHODS[modalType].amountSubtitle && (
                 <span className={Styles.SmallLabel}>
-                  {LIQUIDITY_STRINGS[modalType].amountSubtitle}
+                  {LIQUIDITY_METHODS[modalType].amountSubtitle}
                 </span>
               )}
               <AmountInput
@@ -597,7 +618,7 @@ const ModalAddLiquidity = ({
               />
             </>
           )}
-          {LIQUIDITY_STRINGS[modalType].setFees && (
+          {LIQUIDITY_METHODS[modalType].setFees && (
             <>
               <ErrorBlock text="Initial liquidity providers are required to set the starting prices before adding market liquidity." />
               <span className={Styles.SmallLabel}>
@@ -611,10 +632,10 @@ const ModalAddLiquidity = ({
               />
             </>
           )}
-          {!LIQUIDITY_STRINGS[modalType].hideCurrentOdds && (
+          {!LIQUIDITY_METHODS[modalType].hideCurrentOdds && (
             <>
               <span className={Styles.SmallLabel}>
-                {LIQUIDITY_STRINGS[modalType].setOddsTitle}
+                {LIQUIDITY_METHODS[modalType].setOddsTitle}
               </span>
               <OutcomesGrid
                 outcomes={outcomes}
@@ -631,7 +652,7 @@ const ModalAddLiquidity = ({
             </>
           )}
           <span className={Styles.SmallLabel}>
-            {LIQUIDITY_STRINGS[modalType].receiveTitle}
+            {LIQUIDITY_METHODS[modalType].receiveTitle}
           </span>
           <InfoNumbers infoNumbers={LIQUIDITY_METHODS[modalType].breakdown} />
 
@@ -653,14 +674,14 @@ const ModalAddLiquidity = ({
               inputFormError === ''
                 ? buttonError
                   ? buttonError
-                  : LIQUIDITY_STRINGS[modalType].actionButtonText
+                  : LIQUIDITY_METHODS[modalType].actionButtonText
                 : inputFormError
             }
           />
-          {LIQUIDITY_STRINGS[modalType].liquidityDetailsFooter && (
+          {LIQUIDITY_METHODS[modalType].liquidityDetailsFooter && (
             <div className={Styles.FooterText}>
               <span className={Styles.SmallLabel}>
-                {LIQUIDITY_STRINGS[modalType].liquidityDetailsFooter.title}
+                {LIQUIDITY_METHODS[modalType].liquidityDetailsFooter.title}
               </span>
               <InfoNumbers
                 infoNumbers={
@@ -684,7 +705,7 @@ const ModalAddLiquidity = ({
           </div>
           <section>
             <span className={Styles.SmallLabel}>
-              {LIQUIDITY_STRINGS[modalType].confirmOverview.title}
+              {LIQUIDITY_METHODS[modalType].confirmOverview.title}
             </span>
             <InfoNumbers
               infoNumbers={
@@ -695,7 +716,7 @@ const ModalAddLiquidity = ({
 
           <section>
             <span className={Styles.SmallLabel}>
-              {LIQUIDITY_STRINGS[modalType].confirmReceiveOverview.title}
+              {LIQUIDITY_METHODS[modalType].confirmReceiveOverview.title}
             </span>
             <InfoNumbers
               infoNumbers={
@@ -703,10 +724,10 @@ const ModalAddLiquidity = ({
               }
             />
           </section>
-          {LIQUIDITY_STRINGS[modalType].marketLiquidityDetails && (
+          {LIQUIDITY_METHODS[modalType].marketLiquidityDetails && (
             <section>
               <span className={Styles.SmallLabel}>
-                {LIQUIDITY_STRINGS[modalType].marketLiquidityDetails.title}
+                {LIQUIDITY_METHODS[modalType].marketLiquidityDetails.title}
               </span>
               <InfoNumbers
                 infoNumbers={
@@ -716,8 +737,8 @@ const ModalAddLiquidity = ({
             </section>
           )}
           <BuySellButton
-            text={LIQUIDITY_STRINGS[modalType].confirmButtonText}
-            action={LIQUIDITY_METHODS[modalType].confirmAction}
+            text={LIQUIDITY_METHODS[modalType].confirmButtonText}
+            action={() => confirmAction()}
           />
           <div className={Styles.FooterText}>
             Need some copy here explaining why the user will get shares and that
