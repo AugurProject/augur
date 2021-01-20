@@ -239,7 +239,7 @@ const ModalAddLiquidity = ({
     buttonError = 'Price is not valid';
   }
 
-  const calculateBreakdown = () => {
+  const getBreakdown = () => {
     const priceErrorsWithEmptyString = outcomes.filter(
       (outcome) =>
         !outcome.isInvalid &&
@@ -299,11 +299,11 @@ const ModalAddLiquidity = ({
   };
 
   useEffect(() => {
-    calculateBreakdown();
+    getBreakdown();
   }, []);
 
   useEffect(() => {
-    calculateBreakdown();
+    getBreakdown();
   }, [
     account,
     amount,
