@@ -382,38 +382,42 @@ const ModalAddLiquidity = ({
     if (!properties) {
       setBreakdown(defaultAddLiquidityBreakdown);
     }
-    await doAmmLiquidity(
-      properties.account,
-      properties.amm,
-      properties.marketId,
-      properties.cash,
-      properties.fee,
-      properties.amount,
-      modalType === ADD
-        ? amm !== null && amm?.id !== undefined && amm?.liquidity !== '0'
-        : false,
-      properties.priceNo,
-      properties.priceYes
-    )
-      .then((response) => {
-        const { hash } = response;
-        addTransaction({
-          hash,
-          chainId: loginAccount.chainId,
-          from: account,
-          seen: false,
-          status: TX_STATUS.PENDING,
-          addedTime: new Date().getTime(),
-          message: `Add Liquidity`,
-          marketDescription: market.description,
+    if (modalType === REMOVE) {
+      
+    } else {
+      await doAmmLiquidity(
+        properties.account,
+        properties.amm,
+        properties.marketId,
+        properties.cash,
+        properties.fee,
+        properties.amount,
+        modalType === ADD
+          ? amm !== null && amm?.id !== undefined && amm?.liquidity !== '0'
+          : false,
+        properties.priceNo,
+        properties.priceYes
+      )
+        .then((response) => {
+          const { hash } = response;
+          addTransaction({
+            hash,
+            chainId: loginAccount.chainId,
+            from: account,
+            seen: false,
+            status: TX_STATUS.PENDING,
+            addedTime: new Date().getTime(),
+            message: `Add Liquidity`,
+            marketDescription: market.description,
+          });
+          response
+            .wait()
+            .then((response) => updateTxStatus(response, updateTransaction));
+        })
+        .catch((e) => {
+          // TODO: handle error
         });
-        response
-          .wait()
-          .then((response) => updateTxStatus(response, updateTransaction));
-      })
-      .catch((e) => {
-        // TODO: handle error
-      });
+    }
     closeModal();
   };
 
