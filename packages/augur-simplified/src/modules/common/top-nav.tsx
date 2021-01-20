@@ -78,7 +78,7 @@ export const SettingsButton = () => {
           <li>
             <label>
               Slippage Tolerance
-              {generateTooltip('The maximum percentage the price can change and still have your transaction succeed', 'slippageToleranceInfo')}
+              {generateTooltip('The maximum percentage the price can change and still have your transaction succeed.', 'slippageToleranceInfo')}
             </label>
             <ul>
               <li>
@@ -144,7 +144,7 @@ export const SettingsButton = () => {
           <li>
             <label>
               Show Invalid Markets
-              {generateTooltip('Lorem ipsum dolor sit amet', 'showInvalidMarketsInfo')}
+              {generateTooltip('Filters out markets which are likely to resolve to "Invalid" based upon the current trading price of the "Invalid" outcome.', 'showInvalidMarketsInfo')}
             </label>
             <ToggleSwitch
               toggle={showInvalidMarkets}
