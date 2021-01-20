@@ -232,7 +232,7 @@ const LiquidityRow = ({ liquidity, amm }: { liquidity: LPTokenBalance, amm: AmmE
       const value = await getLPCurrentValue(balance, amm);
       if (isMounted) {
         setInitValue(value);
-        setEarnedFees(createBigNumber(value).minus(createBigNumber(liquidity.initCostUsd)));
+        value && setEarnedFees(createBigNumber(value).minus(createBigNumber(liquidity.initCostUsd)));
       }
     }
     getCurrentValue(liquidity.balance, amm);
