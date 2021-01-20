@@ -6,11 +6,12 @@ import {
   RemoveLiquidity,
 } from '../../generated/schema';
 import {
+  AddLiquidity as AddLiquidityEvent,
   EnterPosition as EnterPositionEvent,
   ExitPosition as ExitPositionEvent,
 } from '../../generated/WethWrapperForAMMExchange/WethWrapperForAMMExchange';
 
-export function wethWrapperHandleAddLiquidity(event: EnterPositionEvent): void {
+export function wethWrapperHandleAddLiquidity(event: AddLiquidityEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.minus(BigInt.fromI32(1)).toString();
   let addLiquidity = AddLiquidity.load(id);
 

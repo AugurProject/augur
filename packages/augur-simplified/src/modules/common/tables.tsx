@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import Styles from 'modules/common/tables.styles.less';
+import Styles from './tables.styles.less';
 import { EthIcon, UsdIcon } from './icons';
 import {
   PrimaryButton,
   SecondaryButton,
   TinyButton,
-} from '../common/buttons';
+} from './buttons';
 import classNames from 'classnames';
 import {
   POSITIONS,
@@ -15,7 +15,6 @@ import {
   REMOVE,
   SWAP,
 } from '../constants';
-import { Pagination } from '../common/pagination';
 import { SmallDropdown } from './selection';
 import {
   AmmExchange,
@@ -31,7 +30,7 @@ import { formatDai } from '../../utils/format-number';
 import { MODAL_ADD_LIQUIDITY, USDC } from '../constants';
 import { useAppStatusStore } from '../stores/app-status';
 import { AddressLink, MarketLink } from '../routes/helpers/links';
-import { sliceByPage } from './pagination';
+import { sliceByPage, Pagination } from './pagination';
 import { getLPCurrentValue } from '../../utils/contract-calls';
 import { createBigNumber } from '../../utils/create-big-number';
 

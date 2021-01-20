@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 
-import Styles from 'modules/modal/modal.styles.less';
+import Styles from './modal.styles.less';
 import { Header } from './common';
 import {
   YES_NO,

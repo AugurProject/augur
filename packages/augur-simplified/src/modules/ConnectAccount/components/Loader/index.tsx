@@ -1,5 +1,5 @@
 import React from 'react'
-import Styles from 'modules/ConnectAccount/components/Loader/index.less';
+import Styles from './index.less';
 
 export default function Loader({
   darkMode,
