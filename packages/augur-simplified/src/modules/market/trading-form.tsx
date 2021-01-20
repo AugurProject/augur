@@ -63,6 +63,7 @@ export const DefaultMarketOutcomes = [
 ];
 
 const PLACEHOLDER = '0';
+const AVG_PRICE_TIP = 'The difference between the market price and estimated price due to trade size.';
 
 export const isInvalidNumber = (number) => {
   return (
@@ -165,6 +166,7 @@ export const AmountInput = ({
   rate,
   updateAmountError = () => {},
 }: AmountInputProps) => {
+  const { isLogged } = useAppStatusStore();
   const currencyName = chosenCash;
   const [amount, updateAmount] = useState(initialAmount);
   const icon = currencyName === USDC ? UsdIcon : EthIcon;
@@ -188,10 +190,14 @@ export const AmountInput = ({
   useEffect(() => errorCheck(amount), [amount, maxValue]);
   return (
     <div
-      className={classNames(Styles.AmountInput, { [Styles.Rate]: Boolean(rate) })}
+      className={classNames(Styles.AmountInput, {
+        [Styles.Rate]: Boolean(rate),
+      })}
     >
       <span>amount</span>
-      <span onClick={setMax}>balance: {formatEther(maxValue).formatted}</span>
+      <span onClick={setMax}>
+        {isLogged && `balance: ${formatEther(maxValue).formatted}`}
+      </span>
       <div
         className={classNames(Styles.AmountInputDropdown, {
           [Styles.Edited]: amount !== '',
@@ -336,7 +342,7 @@ const getEnterBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
       value: !isNaN(breakdown?.averagePrice)
         ? `${prepend}${breakdown.averagePrice}`
         : '-',
-      tooltipText: 'tooltip copy',
+      tooltipText: AVG_PRICE_TIP,
       tooltipKey: 'averagePrice',
     },
     {
@@ -364,7 +370,7 @@ const getExitBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
       value: !isNaN(breakdown?.averagePrice)
         ? `${prepend}${breakdown.averagePrice}`
         : '-',
-      tooltipText: 'tooltip copy',
+      tooltipText: AVG_PRICE_TIP,
       tooltipKey: 'averagePrice',
     },
     {
@@ -612,8 +618,10 @@ const TradingForm = ({
           updateInitialAmount={setAmount}
           initialAmount={''}
           maxValue={userBalance}
-          rate={!isNaN(Number(breakdown?.ratePerCash)) ?
-            `1 ${amm?.cash?.name} = ${breakdown?.ratePerCash} Shares` : null
+          rate={
+            !isNaN(Number(breakdown?.ratePerCash))
+              ? `1 ${amm?.cash?.name} = ${breakdown?.ratePerCash} Shares`
+              : null
           }
         />
         <InfoNumbers infoNumbers={formatBreakdown(isBuy, breakdown, ammCash)} />
