@@ -12,9 +12,9 @@ import {
   SCALAR,
   TEN,
   ZERO,
-} from 'modules/constants';
-import addCommas from 'utils/add-commas-to-number';
-import getPrecision from 'utils/get-number-precision';
+} from '../modules/constants';
+import addCommas from './add-commas-to-number';
+import getPrecision from './get-number-precision';
 import { FormattedNumber, FormattedNumberOptions } from '../modules/types';
 import { BigNumber, createBigNumber } from './create-big-number';
 

@@ -1,24 +1,26 @@
 import React, { useState } from 'react';
-import Styles from 'modules/sidebar/sidebar.styles.less';
-import { CloseIcon } from 'modules/common/icons';
-import { useAppStatusStore } from 'modules/stores/app-status';
-import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
-import { RadioBarGroup } from 'modules/common/selection';
-import {MARKETS, PORTFOLIO, SIDEBAR_TYPES, DEFAULT_MARKET_VIEW_SETTINGS} from 'modules/constants';
-import Logo from 'modules/common/logo';
+import Styles from './sidebar.styles.less';
+import { CloseIcon } from '../common/icons';
+import { useAppStatusStore } from '../stores/app-status';
+import { PrimaryButton, SecondaryButton } from '../common/buttons';
+import { RadioBarGroup } from '../common/selection';
+import Logo from '../common/logo';
 import classNames from 'classnames';
-import makePath from 'modules/routes/helpers/make-path';
-import parsePath from 'modules/routes/helpers/parse-path';
+import makePath from '../routes/helpers/make-path';
+import parsePath from '../routes/helpers/parse-path';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router';
-import { SettingsButton } from 'modules/common/top-nav';
+import { SettingsButton } from '../common/top-nav';
 import {
+  MARKETS,
+  PORTFOLIO,
+  SIDEBAR_TYPES,
+  DEFAULT_MARKET_VIEW_SETTINGS,
   categoryItems,
   currencyItems,
   marketStatusItems,
   sortByItems,
-} from 'modules/constants';
-
+} from '../constants';
 
 interface SideBarHeaderProps {
   header?: string;
@@ -43,7 +45,9 @@ const FilterSideBar = () => {
     actions: { updateMarketsViewSettings, setSidebar },
   } = useAppStatusStore();
   const [localSettings, setLocalSettings] = useState(marketsViewSettings);
-  const filtersAreReset = JSON.stringify(localSettings) === JSON.stringify(DEFAULT_MARKET_VIEW_SETTINGS);
+  const filtersAreReset =
+    JSON.stringify(localSettings) ===
+    JSON.stringify(DEFAULT_MARKET_VIEW_SETTINGS);
 
   return (
     <>
@@ -130,7 +134,9 @@ const NavigationSideBar = () => {
           </li>
         </ol>
       </div>
-      <div className={Styles.NavigationFooter}><SettingsButton /></div>
+      <div className={Styles.NavigationFooter}>
+        <SettingsButton />
+      </div>
     </>
   );
 };

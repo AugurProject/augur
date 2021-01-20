@@ -1,9 +1,9 @@
 import React from 'react';
-import { AugurTextLogo, v2AugurLogo } from 'modules/common/icons';
+import { AugurTextLogo, v2AugurLogo } from './icons';
 
-import Styles from 'modules/common/logo.styles.less';
-import { useAppStatusStore } from 'modules/stores/app-status';
-import { MarketsLink } from 'modules/routes/helpers/links';
+import Styles from './logo.styles.less';
+import { useAppStatusStore } from '../stores/app-status';
+import { MarketsLink } from '../routes/helpers/links';
 
 export const Logo = () => {
   const { isMobile } = useAppStatusStore();

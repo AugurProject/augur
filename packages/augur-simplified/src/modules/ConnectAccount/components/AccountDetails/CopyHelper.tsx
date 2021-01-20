@@ -1,7 +1,7 @@
 import React from 'react'
 import { CheckCircle, Copy } from 'react-feather'
 import { useCopyClipboard } from '../../hooks'
-import {TinyButton} from 'modules/common/buttons';
+import {TinyButton} from '../../../common/buttons';
 
 interface CopyHelperProps {
   darkMode: boolean;

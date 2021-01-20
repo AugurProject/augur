@@ -1,5 +1,5 @@
 import { MarketTypeName } from '@augurproject/sdk-lite';
-import { createBigNumber } from 'utils/create-big-number';
+import { createBigNumber } from '../utils/create-big-number';
 import {
   CryptoIcon,
   EntertainmentIcon,

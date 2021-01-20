@@ -2,7 +2,7 @@ import { AugurLite } from '@augurproject/sdk-lite';
 import { NetworkId } from '@augurproject/utils';
 import { ethers } from 'ethers';
 import { getProviderOrSigner } from '../modules/ConnectAccount/utils';
-import { createBigNumber } from '../utils/create-big-number';
+import { createBigNumber } from './create-big-number';
 import { Web3Provider } from '@ethersproject/providers'
 
 export class SDKLite {

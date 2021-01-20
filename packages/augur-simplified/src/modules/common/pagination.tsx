@@ -1,5 +1,5 @@
 import React from 'react';
-import Styles from 'modules/common/pagination.styles.less';
+import Styles from './pagination.styles.less';
 import { DirectionButton } from './buttons';
 
 interface PaginationProps {

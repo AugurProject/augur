@@ -1,6 +1,6 @@
 import { AmmTransaction, Trades, AmmExchange, Cash, Cashes, MarketOutcome, TransactionTypes, MarketInfo, ActivityData, ProcessedData } from "../modules/types";
 import { BigNumber as BN } from 'bignumber.js'
-import { getDayFormat, getDayTimestamp, getTimeFormat } from "../utils/date-utils";
+import { getDayFormat, getDayTimestamp, getTimeFormat } from "./date-utils";
 import { convertAttoValueToDisplayValue } from "@augurproject/sdk";
 import { convertOnChainCashAmountToDisplayCashAmount, formatDai, formatEther, formatShares, convertOnChainSharesToDisplayShareAmount, isSameAddress } from "./format-number";
 import { BUY, OUTCOME_INVALID_NAME, OUTCOME_NO_NAME, OUTCOME_YES_NAME, SEC_IN_YEAR, SELL, USDC } from "../modules/constants";

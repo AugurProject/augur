@@ -342,7 +342,7 @@
   .SimpleBorder;
 
   display: flex;
-  padding: @size-24;
+  padding: @size-24 @size-24 @size-40;
   background: var(--light-background-color);
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -364,8 +364,16 @@
     cursor: pointer;
   }
 
+  > span.RateLabel {
+    display: none;
+  }
+
   &.Rate {
     padding-bottom: @size-12;
+
+    > span.RateLabel {
+      display: block;
+    }
   }
 }
 
@@ -396,6 +404,7 @@
   margin-top: @size-12;
   margin-left: auto;
   grid-column: 1 / span 2;
+  height: @size-16;
 
   > span {
     .text-14-semi-bold;

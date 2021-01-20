@@ -1,20 +1,20 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Header, ModalStructure} from './common';
-import Styles from 'modules/modal/modal.styles.less';
-import {SecondaryButton, TextButton, WalletButton} from 'modules/common/buttons';
+import Styles from './modal.styles.less';
+import {SecondaryButton, TextButton, WalletButton} from '../common/buttons';
 import {UnsupportedChainIdError, useWeb3React} from '@web3-react/core';
 import {AbstractConnector} from '@web3-react/abstract-connector';
-import {SUPPORTED_WALLETS} from 'modules/ConnectAccount/constants';
+import {SUPPORTED_WALLETS} from '../ConnectAccount/constants';
 import {WalletConnectConnector} from '@web3-react/walletconnect-connector';
-import {injected, portis} from 'modules/ConnectAccount/connectors';
+import {injected, portis} from '../ConnectAccount/connectors';
 import {isMobile} from 'react-device-detect';
-import MetamaskIcon from 'modules/ConnectAccount/assets/metamask.png';
-import {ErrorBlock} from 'modules/common/labels';
-import Loader from 'modules/ConnectAccount/components/Loader';
-import AccountDetails from 'modules/ConnectAccount/components/AccountDetails';
-import {useAppStatusStore} from 'modules/stores/app-status';
+import MetamaskIcon from '../ConnectAccount/assets/metamask.png';
+import {ErrorBlock} from '../common/labels';
+import Loader from '../ConnectAccount/components/Loader';
+import AccountDetails from '../ConnectAccount/components/AccountDetails';
+import {useAppStatusStore} from '../stores/app-status';
 import classNames from 'classnames';
-import {MODAL_CONNECT_WALLET} from 'modules/constants';
+import {MODAL_CONNECT_WALLET} from '../constants';
 
 const WALLET_VIEWS = {
   OPTIONS: 'options',

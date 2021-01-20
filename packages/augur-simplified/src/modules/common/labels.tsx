@@ -1,14 +1,14 @@
 import React, { useMemo } from 'react';
-import Styles from 'modules/common/labels.styles.less';
+import Styles from './labels.styles.less';
 import { useLocation } from 'react-router';
 import classNames from 'classnames';
-import { formatDai } from 'utils/format-number';
-import { createBigNumber } from 'utils/create-big-number';
-import { CATEGORIES_ICON_MAP } from 'modules/common/category-icons-map';
-import { useAppStatusStore } from 'modules/stores/app-status';
+import { formatDai } from '../../utils/format-number';
+import { createBigNumber } from '../../utils/create-big-number';
+import { CATEGORIES_ICON_MAP } from './category-icons-map';
+import { useAppStatusStore } from '../stores/app-status';
 import parsePath from '../routes/helpers/parse-path';
 import ReactTooltip from 'react-tooltip';
-import TooltipStyles from 'modules/common/tooltip.styles.less';
+import TooltipStyles from './tooltip.styles.less';
 import {
   HelpIcon,
   USDCIcon,
