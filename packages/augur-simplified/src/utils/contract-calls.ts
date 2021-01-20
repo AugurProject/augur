@@ -777,7 +777,8 @@ const getPositionUsdValues = (trades: UserTrades, rawBalance: string, balance: s
       const result = getInitPositionValues(trades, amm, false);
       avgPrice = formatDai(result.avgPrice).formatted;
       initCostUsd = result.initCostUsd;
-      totalChangeUsd = formatDai(new BN(usdValue).minus(new BN(initCostUsd))).full;
+      const usdChange = String(new BN(usdValue).minus(new BN(initCostUsd)).toFixed(4));
+      totalChangeUsd = formatDai(usdChange).full;
       visible = true;
     } else if (outcome === String(YES_OUTCOME_ID)) {
       usdValue = String(new BN(balance).times(new BN(priceYes)));
@@ -785,8 +786,9 @@ const getPositionUsdValues = (trades: UserTrades, rawBalance: string, balance: s
       change24hrPositionUsd = past24hrPriceYes ? String(new BN(usdValue).times(new BN(past24hrUsdValue))) : null;
       const result = getInitPositionValues(trades, amm, true);
       avgPrice = formatDai(result.avgPrice).formatted;
-      initCostUsd = result.initCostUsd;
-      totalChangeUsd = formatDai(new BN(usdValue).minus(new BN(initCostUsd))).full;
+      initCostUsd = result.initCostUsd
+      const usdChange = String(new BN(usdValue).minus(new BN(initCostUsd)).toFixed(4));
+      totalChangeUsd = formatDai(usdChange).full;
       visible = true;
     }
   }
@@ -859,46 +861,41 @@ const getInitPositionValues = (trades: UserTrades, amm: AmmExchange, isYesOutcom
   const sharesExited = accumSharesPrice(trades.exits, isYesOutcome);
   // get shares from LP activity
   const sharesLiquidity = accumLpSharesPrice(amm.transactions, isYesOutcome);
-
-  const sharesPositive = sharesLiquidity.shares.plus(sharesEntered.shares);
-  const sharesPositivePrice = sharesLiquidity.price.plus(sharesEntered.price).div(sharesLiquidity.count.plus(sharesEntered.count));
-  const sharesPositiveCount = sharesLiquidity.count.plus(sharesEntered.count);
-  const totalShares = sharesPositive.minus(sharesExited.shares);
-  const avgPrice = totalShares.gt(0) ? sharesPositivePrice.minus(sharesExited.price).div(sharesPositiveCount.minus(sharesExited.count)) : new BN(0);
-  const formattedShares = new BN(convertOnChainSharesToDisplayShareAmount(totalShares, amm.cash.decimals));
-  const cost = formattedShares.gt(0) ? formattedShares.times(avgPrice).times(new BN(cashPrice)) : new BN(0);
-
+  const allInputShareAmounts = sharesLiquidity.shares.plus(sharesEntered.shares);
+  const allInputCashAmounts =  sharesLiquidity.cashAmount.plus(sharesEntered.cashAmount);
+  const netShareAmounts = allInputShareAmounts.minus(sharesExited.shares);
+  const netCashAmounts = allInputCashAmounts.minus(sharesExited.cashAmount);
+  const cost = convertOnChainSharesToDisplayShareAmount(netCashAmounts, amm.cash.decimals).times(new BN(cashPrice));
+  const avgPrice = netShareAmounts.gt(0) ? netCashAmounts.div(netShareAmounts) : new BN(0);
   return { avgPrice: String(avgPrice), initCostUsd: String(cost) }
 }
 
-const accumSharesPrice = (trades: AmmTransaction[], isYesOutcome: boolean): { shares: BigNumber, price: BigNumber, count: BigNumber } => {
-  const result = trades.reduce((p, t) =>
+const accumSharesPrice = (trades: AmmTransaction[], isYesOutcome: boolean): { shares: BigNumber, cashAmount: BigNumber } => {
+  const result = trades.filter(t => isYesOutcome ? t.yesShares !== "0" : t.noShares !== "0").reduce((p, t) =>
     isYesOutcome ?
-      { shares: p.shares.plus(new BN(t.yesShares)), price: p.price.plus(new BN(t.price)), count: p.count.plus(1) } :
-      { shares: p.shares.plus(new BN(t.noShares)), price: p.price.plus(new BN(t.price)), count: p.count.plus(1) },
-    { shares: new BN(0), price: new BN(0), count: new BN(0) });
+      { shares: p.shares.plus(new BN(t.yesShares)), cashAmount: p.cashAmount.plus((new BN(t.yesShares).times(new BN(t.price)))) } :
+      { shares: p.shares.plus(new BN(t.noShares)), cashAmount: p.cashAmount.plus((new BN(t.noShares).times(new BN(t.price)))) },
+    { shares: new BN(0), cashAmount: new BN(0) });
 
-  return { shares: result.shares, price: result.price, count: result.count };
+  return { shares: result.shares, cashAmount: result.cashAmount };
 }
 
-const accumLpSharesPrice = (transactions: AmmTransaction[], isYesOutcome: boolean): { shares: BigNumber, price: BigNumber, count: BigNumber } => {
-  const result = transactions.reduce((p, t) => {
+const accumLpSharesPrice = (transactions: AmmTransaction[], isYesOutcome: boolean): { shares: BigNumber, cashAmount: BigNumber } => {
+  const result = transactions.filter(t => t.tx_type === TransactionTypes.ADD_LIQUIDITY || t.tx_type === TransactionTypes.REMOVE_LIQUIDITY).reduce((p, t) => {
     const yesShares = new BN(t.yesShares);
     const noShares = new BN(t.noShares);
     if (isYesOutcome) {
       const netYesShares = noShares.minus(yesShares)
       if (netYesShares.lte(new BN(0))) return p;
-      const price = (new BN(t.cash).minus(new BN(t.cashValue))).div(netYesShares);
-      return { shares: p.shares.plus(netYesShares), price: p.price.plus(price), count: p.count.plus(1) }
+      return { shares: p.shares.plus(netYesShares), cashAmount: p.cashAmount.plus(t.yesShareCashValue) }
     }
     const netNoShares = yesShares.minus(noShares)
     if (netNoShares.lte(new BN(0))) return p;
-    const price = (new BN(t.cash).minus(new BN(t.cashValue))).div(netNoShares);
-    return { shares: p.shares.plus(netNoShares), price: p.price.plus(price), count: p.count.plus(1) }
+    return { shares: p.shares.plus(netNoShares), cashAmount: p.cashAmount.plus(t.noShareCashValue) }
   },
-    { shares: new BN(0), price: new BN(0), count: new BN(0) });
+    { shares: new BN(0), cashAmount: new BN(0)});
 
-  return { shares: result.shares, price: result.price, count: result.count };
+  return { shares: result.shares, cashAmount: result.cashAmount };
 }
 
 const getEthBalance = async (provider: Web3Provider, cashes: Cashes, account: string): Promise<CurrencyBalance> => {
