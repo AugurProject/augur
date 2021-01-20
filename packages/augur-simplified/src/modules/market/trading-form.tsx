@@ -88,6 +88,7 @@ const Outcome = ({
 }) => {
   const [customVal, setCustomVal] = useState('');
   const input = useRef(null);
+  const { isLogged } = useAppStatusStore();
   useEffect(() => {
     if (outcome.price !== '0' && outcome.price && outcome.price !== '') {
       setCustomVal(outcome.price.split('.')[1]);
@@ -107,6 +108,7 @@ const Outcome = ({
         [Styles.showAsButton]: showAsButton,
         [Styles.Invalid]: outcome.isInvalid,
         [Styles.InvalidSelected]: invalidSelected,
+        [Styles.loggedOut]: !isLogged,
       })}
     >
       <span>{outcome.name}</span>
@@ -336,10 +338,11 @@ export const InfoNumbers = ({ infoNumbers }: InfoNumbersProps) => {
 
 const getEnterBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
   const prepend = cash?.name === USDC ? '$' : '';
+  console.log("getEnterBreakdown cash:", cash);
   return [
     {
       label: 'Average Price',
-      value: !isNaN(breakdown?.averagePrice)
+      value: !isNaN(Number(breakdown?.averagePrice))
         ? `${prepend}${breakdown.averagePrice}`
         : '-',
       tooltipText: AVG_PRICE_TIP,
@@ -347,27 +350,28 @@ const getEnterBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
     },
     {
       label: 'Shares Purchasing',
-      value: !isNaN(breakdown?.outputValue) ? breakdown.outputValue : '-',
+      value: !isNaN(Number(breakdown?.outputValue)) ? breakdown.outputValue : '-',
     },
     {
       label: 'Max Winnings',
-      value: !isNaN(breakdown?.maxProfit)
+      value: !isNaN(Number(breakdown?.maxProfit))
         ? `${prepend}${breakdown.maxProfit}`
         : '-',
     },
     {
       label: 'Estimated Fees',
-      value: !isNaN(breakdown?.tradeFees) ? breakdown.tradeFees : '-',
+      value: !isNaN(Number(breakdown?.tradeFees)) ? breakdown.tradeFees : '-',
     },
   ];
 };
 
 const getExitBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
   const prepend = cash?.name === USDC ? '$' : '';
+  console.log("getExitBreakdown cash:", cash);
   return [
     {
       label: 'Average Price',
-      value: !isNaN(breakdown?.averagePrice)
+      value: !isNaN(Number(breakdown?.averagePrice))
         ? `${prepend}${breakdown.averagePrice}`
         : '-',
       tooltipText: AVG_PRICE_TIP,
@@ -375,19 +379,19 @@ const getExitBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
     },
     {
       label: `Amount You'll Recieve`,
-      value: !isNaN(breakdown?.outputValue)
+      value: !isNaN(Number(breakdown?.outputValue))
         ? `${prepend}${breakdown.outputValue}`
         : '-',
     },
     {
       label: 'Remaining Shares',
-      value: !isNaN(breakdown?.remainingShares)
+      value: !isNaN(Number(breakdown?.remainingShares))
         ? breakdown.remainingShares
         : '-',
     },
     {
       label: 'Estimated Fees',
-      value: !isNaN(breakdown?.tradeFees) ? breakdown.tradeFees : '-',
+      value: !isNaN(Number(breakdown?.tradeFees)) ? breakdown.tradeFees : '-',
     },
   ];
 };
