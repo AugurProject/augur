@@ -130,6 +130,8 @@ const Outcome = ({
             type="number"
             placeholder={PLACEHOLDER}
             ref={input}
+             // @ts-ignore
+            onWheel={e => e?.target?.blur()}
           />
         </div>
       ) : (
@@ -222,6 +224,8 @@ export const AmountInput = ({
           }}
           value={amount}
           placeholder="0"
+          // @ts-ignore
+          onWheel={e => e?.target?.blur()}
         />
         {!!currencyName && currencyName !== SHARES && !showCurrencyDropdown && (
           <span className={Styles.CurrencyLabel}>
