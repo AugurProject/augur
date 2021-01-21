@@ -327,7 +327,7 @@ const formatTransaction = (tx: GraphEnter | GraphExit | GraphAddLiquidity | Grap
   const value = String(tokenAmount.times(cash.usdPrice));
   const date = getDayFormat(tx.timestamp);
   const time = timeSinceTimestamp(Number(tx.timestamp));
-  const currency = cash.symbol;
+  const currency = cash.name;
   const shares = tx.noShares !== "0" ? tx.noShares : tx.yesShares;
   const shareAmount = formatShares(convertOnChainSharesToDisplayShareAmount(new BN(shares), new BN(cash.decimals)), {
     decimals: 4,
