@@ -35,8 +35,8 @@ export const getCashFormat = (cash: Cash) => {
     symbol: '',
     displayDecimals: USUAL_NUMBER_DECIMAL_PLACES,
   };
-  if (CASH_LABEL_FORMATS[cash.name]?.symbol) {
-    out = CASH_LABEL_FORMATS[cash.name];
+  if (CASH_LABEL_FORMATS[cash?.name]?.symbol) {
+    out = CASH_LABEL_FORMATS[cash?.name];
   }
   return out;
 }
