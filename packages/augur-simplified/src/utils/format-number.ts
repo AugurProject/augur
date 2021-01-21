@@ -11,11 +11,12 @@ import {
   GWEI_CONVERSION,
   SCALAR,
   TEN,
+  USDC,
   ZERO,
 } from '../modules/constants';
 import addCommas from './add-commas-to-number';
 import getPrecision from './get-number-precision';
-import { FormattedNumber, FormattedNumberOptions } from '../modules/types';
+import { Cash, FormattedNumber, FormattedNumberOptions } from '../modules/types';
 import { BigNumber, createBigNumber } from './create-big-number';
 
 type NumStrBigNumber = number | BigNumber | string;
@@ -27,6 +28,32 @@ export const SHARES_NUMBER_OF_DECIMALS = 0;
 const SMALLEST_NUMBER_DECIMAL_PLACES = 8;
 const USUAL_NUMBER_DECIMAL_PLACES = 4;
 const YES_NO_TICK_SIZE = createBigNumber("0.001");
+
+export function formatCash(num: NumStrBigNumber, cash: Cash, opts: FormattedNumberOptions = {}): FormattedNumber {
+  return formatNumber(num, {
+    decimals: cash.displayDecimals,
+    decimalsRounded: cash.displayDecimals,
+    denomination: v => cash.name === USDC ? `$${v}` : `${v} ${cash.name}`,
+    positiveSign: false,
+    zeroStyled: false,
+    blankZero: false,
+    bigUnitPostfix: false,
+    ...opts,
+  });
+}
+
+export function formatSimpleShares(num: NumStrBigNumber, opts: FormattedNumberOptions = {}): FormattedNumber {
+  return formatShares(num, {
+    decimals: USUAL_NUMBER_DECIMAL_PLACES,
+    decimalsRounded: USUAL_NUMBER_DECIMAL_PLACES,
+    denomination: v => `${v} Shares`,
+    ...opts,
+  })
+}
+
+export function formatUSD(num: NumStrBigNumber, opts: FormattedNumberOptions = {}): FormattedNumber {
+  return formatDai(num, opts);
+}
 
 export function formatEther(
   num: NumStrBigNumber,

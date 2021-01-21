@@ -132,6 +132,7 @@ const ModalConnectWallet = ({
 }: ModalConnectWalletProps) => {
   const {
     isLogged,
+    isMobile,
     actions: { removeTransaction, closeModal, setModal },
     modal: { type },
   } = useAppStatusStore();
@@ -274,6 +275,28 @@ const ModalConnectWallet = ({
                 />
               ),
             };
+          } else {
+            if (wallet.mobile && wallet.connector !== portis) {
+              return {
+                action: () =>
+                  wallet.connector !== connector &&
+                  !wallet.href &&
+                  tryActivation(wallet.connector),
+                id: `connect-${key}`,
+                key,
+                selected: isLogged && wallet?.connector === connector,
+                href: wallet.href,
+                text: wallet.name,
+                icon: (
+                  <img
+                    src={
+                      require('modules/ConnectAccount/assets/' + wallet.iconName).default
+                    }
+                    alt={wallet.name}
+                  />
+                ),
+              };
+            }
           }
         } else {
           if (wallet.connector === injected) {

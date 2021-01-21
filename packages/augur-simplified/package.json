@@ -79,7 +79,6 @@
     "react-apollo": "^3.1.5",
     "react-app-polyfill": "^2.0.0",
     "react-dev-utils": "^11.0.1",
-    "react-device-detect": "^1.14.0",
     "react-dom": "^17.0.1",
     "react-feather": "^2.0.9",
     "react-refresh": "^0.8.3",

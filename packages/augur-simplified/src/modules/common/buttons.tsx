@@ -189,7 +189,7 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
     } else if (actionType === ApprovalAction.ENTER_POSITION) {
       try {
         setIsPendingTx(true);
-        const tx = await approveERC1155Contract(shareToken, `To Buy (${approvingName})`, AMMFactory, loginAccount);
+        const tx = await approveERC20Contract(cash?.address, `To Buy (${approvingName})`, AMMFactory, loginAccount);
         tx.marketDescription = marketDescription;
         addTransaction(tx);
       } catch (error) {
@@ -222,7 +222,7 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
         if (isETH) {
           setIsApproved(ApprovalState.APPROVED);
         } else {
-          approvalCheck = await isERC1155ContractApproved(shareToken, AMMFactory, loginAccount, transactions, updateTransaction);
+          approvalCheck = await checkAllowance(cash?.address, AMMFactory, loginAccount, transactions, updateTransaction);
           setIsApproved(approvalCheck);
         }
       }

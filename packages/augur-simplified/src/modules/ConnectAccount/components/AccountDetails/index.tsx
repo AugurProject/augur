@@ -96,7 +96,7 @@ const Transaction = ({label, link, status, chainId}) => (
 
 const Transactions = ({transactions, removeTransaction, chainId}) => {
   const [clear, setClear ] = useState(false);
-  const [userTransactions, setUserTransactions ] = useState(transactions);
+  const [userTransactions, setUserTransactions ] = useState(transactions.sort((a,b) => b.timestamp - a.timestamp));
 
   useEffect(() => {
     const handleClear = () => {
@@ -105,7 +105,7 @@ const Transactions = ({transactions, removeTransaction, chainId}) => {
         .filter(tx => [TX_STATUS.CONFIRMED, TX_STATUS.FAILURE].includes(tx.status))
         .map(tx => tx.hash);
 
-      setUserTransactions(userTransactions.filter(tx => !transactionsToRemove.includes(tx.hash)))
+      setUserTransactions(userTransactions.filter(tx => !transactionsToRemove.includes(tx.hash)).sort((a,b) => b.timestamp - a.timestamp))
       if (transactionsToRemove) {
         transactionsToRemove.forEach(tx => {
           removeTransaction(tx);

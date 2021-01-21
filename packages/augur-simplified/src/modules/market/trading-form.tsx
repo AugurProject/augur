@@ -10,9 +10,11 @@ import {
   TradingDirection,
 } from '../types';
 import {
+  formatCash,
   formatDai,
-  formatEther,
   formatPercent,
+  formatSimpleShares,
+  formatUSD,
 } from '../../utils/format-number';
 import { ApprovalButton, TinyButton, BuySellButton } from '../common/buttons';
 import {
@@ -88,6 +90,7 @@ const Outcome = ({
 }) => {
   const [customVal, setCustomVal] = useState('');
   const input = useRef(null);
+  const { isLogged } = useAppStatusStore();
   useEffect(() => {
     if (outcome.price !== '0' && outcome.price && outcome.price !== '') {
       setCustomVal(outcome.price.split('.')[1]);
@@ -107,6 +110,7 @@ const Outcome = ({
         [Styles.showAsButton]: showAsButton,
         [Styles.Invalid]: outcome.isInvalid,
         [Styles.InvalidSelected]: invalidSelected,
+        [Styles.loggedOut]: !isLogged,
       })}
     >
       <span>{outcome.name}</span>
@@ -126,6 +130,8 @@ const Outcome = ({
             type="number"
             placeholder={PLACEHOLDER}
             ref={input}
+             // @ts-ignore
+            onWheel={e => e?.target?.blur()}
           />
         </div>
       ) : (
@@ -154,6 +160,8 @@ interface AmountInputProps {
   rate?: string;
   amountError?: string;
   updateAmountError?: Function;
+  ammCash: Cash;
+  isBuy?: boolean;
 }
 
 export const AmountInput = ({
@@ -164,7 +172,9 @@ export const AmountInput = ({
   updateCash,
   chosenCash,
   rate,
+  ammCash,
   updateAmountError = () => {},
+  isBuy = true,
 }: AmountInputProps) => {
   const { isLogged } = useAppStatusStore();
   const currencyName = chosenCash;
@@ -196,7 +206,7 @@ export const AmountInput = ({
     >
       <span>amount</span>
       <span onClick={setMax}>
-        {isLogged && `balance: ${formatEther(maxValue).formatted}`}
+        {isLogged && `balance: ${isBuy ? formatCash(maxValue, ammCash).full : formatSimpleShares(maxValue).formatted}`}
       </span>
       <div
         className={classNames(Styles.AmountInputDropdown, {
@@ -214,6 +224,8 @@ export const AmountInput = ({
           }}
           value={amount}
           placeholder="0"
+          // @ts-ignore
+          onWheel={e => e?.target?.blur()}
         />
         {!!currencyName && currencyName !== SHARES && !showCurrencyDropdown && (
           <span className={Styles.CurrencyLabel}>
@@ -335,59 +347,56 @@ export const InfoNumbers = ({ infoNumbers }: InfoNumbersProps) => {
 };
 
 const getEnterBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
-  const prepend = cash?.name === USDC ? '$' : '';
   return [
     {
       label: 'Average Price',
-      value: !isNaN(breakdown?.averagePrice)
-        ? `${prepend}${breakdown.averagePrice}`
+      value: !isNaN(Number(breakdown?.averagePrice))
+        ? formatUSD(breakdown.averagePrice).formatted
         : '-',
       tooltipText: AVG_PRICE_TIP,
       tooltipKey: 'averagePrice',
     },
     {
       label: 'Shares Purchasing',
-      value: !isNaN(breakdown?.outputValue) ? breakdown.outputValue : '-',
+      value: !isNaN(Number(breakdown?.outputValue)) ? formatSimpleShares(breakdown.outputValue).full : '-',
     },
     {
       label: 'Max Winnings',
-      value: !isNaN(breakdown?.maxProfit)
-        ? `${prepend}${breakdown.maxProfit}`
+      value: !isNaN(Number(breakdown?.maxProfit)) ? formatCash(breakdown.maxProfit, cash).full
         : '-',
     },
     {
       label: 'Estimated Fees',
-      value: !isNaN(breakdown?.tradeFees) ? breakdown.tradeFees : '-',
+      value: !isNaN(Number(breakdown?.tradeFees)) ? formatSimpleShares(breakdown.tradeFees).full : '-',
     },
   ];
 };
 
 const getExitBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
-  const prepend = cash?.name === USDC ? '$' : '';
   return [
     {
       label: 'Average Price',
-      value: !isNaN(breakdown?.averagePrice)
-        ? `${prepend}${breakdown.averagePrice}`
+      value: !isNaN(Number(breakdown?.averagePrice))
+        ? formatUSD(breakdown.averagePrice).formatted
         : '-',
       tooltipText: AVG_PRICE_TIP,
       tooltipKey: 'averagePrice',
     },
     {
       label: `Amount You'll Recieve`,
-      value: !isNaN(breakdown?.outputValue)
-        ? `${prepend}${breakdown.outputValue}`
+      value: !isNaN(Number(breakdown?.outputValue))
+        ? formatCash(breakdown.outputValue, cash).full
         : '-',
     },
     {
       label: 'Remaining Shares',
-      value: !isNaN(breakdown?.remainingShares)
-        ? breakdown.remainingShares
+      value: !isNaN(Number(breakdown?.remainingShares))
+        ? formatSimpleShares(breakdown.remainingShares).full
         : '-',
     },
     {
       label: 'Estimated Fees',
-      value: !isNaN(breakdown?.tradeFees) ? breakdown.tradeFees : '-',
+      value: !isNaN(Number(breakdown?.tradeFees)) ? formatCash(breakdown.tradeFees, cash).full : '-',
     },
   ];
 };
@@ -435,16 +444,14 @@ const TradingForm = ({
   const [amount, setAmount] = useState<string>('');
   const ammCash = amm?.cash;
   const outcomes = amm?.ammOutcomes || [];
-  const isApprovedCash = !!approvals?.liquidity?.add[ammCash?.name];
   const isBuy = orderType === BUY;
   const isApprovedTrade = isBuy
     ? !!approvals?.trade?.enter[ammCash?.name]
     : !!approvals?.trade?.exit[ammCash?.name];
-  const approvalAction = isApprovedCash
-    ? isBuy
+  const approvalAction = !isApprovedTrade ? isBuy
       ? ApprovalAction.ENTER_POSITION
       : ApprovalAction.EXIT_POSITION
-    : ApprovalAction.ADD_LIQUIDITY;
+      : null;
   const selectedOutcomeId = selectedOutcome.id;
   const marketShares =
     balances?.marketShares && balances?.marketShares[amm?.id];
@@ -559,8 +566,8 @@ const TradingForm = ({
             from: loginAccount.account,
             addedTime: new Date().getTime(),
             message: `${
-              direction === TradingDirection.ENTRY ? 'Enter' : 'Exit'
-            } Trade`,
+              direction === TradingDirection.ENTRY ? 'Buy' : 'Sell'
+            } Shares`,
             marketDescription: amm?.market?.description,
           });
           response
@@ -618,11 +625,13 @@ const TradingForm = ({
           updateInitialAmount={setAmount}
           initialAmount={''}
           maxValue={userBalance}
+          ammCash={ammCash}
           rate={
             !isNaN(Number(breakdown?.ratePerCash))
-              ? `1 ${amm?.cash?.name} = ${breakdown?.ratePerCash} Shares`
+              ? `1 ${amm?.cash?.name} = ${formatSimpleShares(breakdown?.ratePerCash).full}`
               : null
           }
+          isBuy={orderType === BUY}
         />
         <InfoNumbers infoNumbers={formatBreakdown(isBuy, breakdown, ammCash)} />
         {isLogged && !isApprovedTrade && (
