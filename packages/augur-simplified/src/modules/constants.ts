@@ -54,6 +54,7 @@ export const ALL_CURRENCIES = 'All Currencies';
 export const CASH_LABEL_FORMATS = {
   ETH: { symbol: 'Ξ', prepend: true },
   USDC: { symbol: '$', prepend: true },
+  SHARES: { symbol: '', prepend: false },
 };
 
 // Portfolio table views

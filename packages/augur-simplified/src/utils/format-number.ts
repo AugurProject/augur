@@ -29,8 +29,19 @@ const SMALLEST_NUMBER_DECIMAL_PLACES = 8;
 const USUAL_NUMBER_DECIMAL_PLACES = 4;
 const YES_NO_TICK_SIZE = createBigNumber("0.001");
 
+export const getCashFormat = (cash: Cash) => {
+  let out = {
+    prepend: false,
+    symbol: '',
+  };
+  if (CASH_LABEL_FORMATS[cash.name]?.symbol) {
+    out = CASH_LABEL_FORMATS[cash.name];
+  }
+  return out;
+}
+
 export function formatCash(num: NumStrBigNumber, cash: Cash, opts: FormattedNumberOptions = {}): FormattedNumber {
-  const { prepend, symbol } = CASH_LABEL_FORMATS[cash.name];
+  const { prepend, symbol } = getCashFormat(cash);
   return formatNumber(num, {
     decimals: cash.displayDecimals,
     decimalsRounded: cash.displayDecimals,
@@ -52,8 +63,18 @@ export function formatSimpleShares(num: NumStrBigNumber, opts: FormattedNumberOp
   })
 }
 
-export function formatUSD(num: NumStrBigNumber, opts: FormattedNumberOptions = {}): FormattedNumber {
-  return formatDai(num, opts);
+export function formatCashPrice(num: NumStrBigNumber, cash: Cash, opts: FormattedNumberOptions = {}): FormattedNumber {
+  const { prepend, symbol } = CASH_LABEL_FORMATS[cash.name];
+  return formatNumber(num, {
+    decimals: 2,
+    decimalsRounded: 2,
+    denomination: v => prepend ? `${symbol}${v}` : `${v} ${symbol}`,
+    positiveSign: false,
+    zeroStyled: false,
+    blankZero: false,
+    bigUnitPostfix: false,
+    ...opts,
+  });
 }
 
 export function formatEther(

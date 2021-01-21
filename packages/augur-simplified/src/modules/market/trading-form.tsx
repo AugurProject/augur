@@ -11,10 +11,11 @@ import {
 } from '../types';
 import {
   formatCash,
+  formatCashPrice,
   formatDai,
   formatPercent,
   formatSimpleShares,
-  formatUSD,
+  getCashFormat,
 } from '../../utils/format-number';
 import { ApprovalButton, TinyButton, BuySellButton } from '../common/buttons';
 import {
@@ -87,11 +88,11 @@ const Outcome = ({
   ammCash,
   showAsButton,
   invalidSelected,
-  currency,
 }) => {
   const [customVal, setCustomVal] = useState('');
   const input = useRef(null);
   const { isLogged } = useAppStatusStore();
+  const { prepend, symbol } = getCashFormat(ammCash);
   useEffect(() => {
     if (outcome.price !== '0' && outcome.price && outcome.price !== '') {
       setCustomVal(outcome.price.split('.')[1]);
@@ -117,7 +118,7 @@ const Outcome = ({
       <span>{outcome.name}</span>
       {editable ? (
         <div onClick={() => input.current && input.current.focus()}>
-          <span>{currency === USDC ? '$0.' : '0.'}</span>
+          <span>{`${prepend && symbol}0.`}</span>
           <input
             value={parseInt(customVal)}
             onChange={(v) => {
@@ -139,9 +140,7 @@ const Outcome = ({
         <>
           {!outcome.isInvalid && (
             <span>
-              {ammCash?.name === USDC
-                ? formattedPrice.full
-                : formattedPrice.formatted}
+              {formatCashPrice(formattedPrice.fullPrecision, ammCash).full}
             </span>
           )}
           {outcome.isInvalid && LinkIcon}
@@ -182,7 +181,7 @@ export const AmountInput = ({
   const [amount, updateAmount] = useState(initialAmount);
   const icon = currencyName === USDC ? UsdIcon : EthIcon;
   const label = currencyName === USDC ? USDC : ETH;
-  const prepend = currencyName === USDC ? '$' : '';
+  const { symbol, prepend } = getCashFormat(ammCash);
   const setMax = () => {
     updateAmount(maxValue);
     updateInitialAmount(maxValue);
@@ -220,7 +219,7 @@ export const AmountInput = ({
           [Styles.showCurrencyDropdown]: showCurrencyDropdown,
         })}
       >
-        <span>{prepend}</span>
+        <span>{prepend && symbol}</span>
         <input
           type="number"
           onChange={(e) => {
@@ -361,7 +360,7 @@ const getEnterBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
     {
       label: 'Average Price',
       value: !isNaN(Number(breakdown?.averagePrice))
-        ? formatCash(breakdown.averagePrice, cash, { decimals: 2 }).full
+        ? formatCashPrice(breakdown.averagePrice, cash).full
         : '-',
       tooltipText: AVG_PRICE_TIP,
       tooltipKey: 'averagePrice',
@@ -392,7 +391,7 @@ const getExitBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
     {
       label: 'Average Price',
       value: !isNaN(Number(breakdown?.averagePrice))
-        ? formatCash(breakdown.averagePrice, cash, { decimals: 2 }).full
+        ? formatCashPrice(breakdown.averagePrice, cash).full
         : '-',
       tooltipText: AVG_PRICE_TIP,
       tooltipKey: 'averagePrice',
