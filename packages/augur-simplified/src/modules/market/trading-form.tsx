@@ -645,7 +645,7 @@ const TradingForm = ({
           ammCash={ammCash}
           rate={
             !isNaN(Number(breakdown?.ratePerCash))
-              ? `1 ${amm?.cash?.name} = ${
+              ? `1 ${amm?.cash?.name} (${getCashFormat(ammCash).symbol}) = ${
                   formatSimpleShares(breakdown?.ratePerCash).full
                 }`
               : null

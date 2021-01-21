@@ -33,6 +33,7 @@ export const getCashFormat = (cash: Cash) => {
   let out = {
     prepend: false,
     symbol: '',
+    displayDecimals: USUAL_NUMBER_DECIMAL_PLACES,
   };
   if (CASH_LABEL_FORMATS[cash.name]?.symbol) {
     out = CASH_LABEL_FORMATS[cash.name];
@@ -41,10 +42,10 @@ export const getCashFormat = (cash: Cash) => {
 }
 
 export function formatCash(num: NumStrBigNumber, cash: Cash, opts: FormattedNumberOptions = {}): FormattedNumber {
-  const { prepend, symbol } = getCashFormat(cash);
+  const { prepend, symbol, displayDecimals } = getCashFormat(cash);
   return formatNumber(num, {
-    decimals: cash.displayDecimals,
-    decimalsRounded: cash.displayDecimals,
+    decimals: displayDecimals,
+    decimalsRounded: displayDecimals,
     denomination: v => prepend ? `${symbol}${v}` : `${v} ${symbol}`,
     positiveSign: false,
     zeroStyled: false,
@@ -64,7 +65,7 @@ export function formatSimpleShares(num: NumStrBigNumber, opts: FormattedNumberOp
 }
 
 export function formatCashPrice(num: NumStrBigNumber, cash: Cash, opts: FormattedNumberOptions = {}): FormattedNumber {
-  const { prepend, symbol } = CASH_LABEL_FORMATS[cash.name];
+  const { prepend, symbol } = getCashFormat(cash);
   return formatNumber(num, {
     decimals: 2,
     decimalsRounded: 2,
