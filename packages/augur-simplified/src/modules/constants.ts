@@ -51,6 +51,12 @@ export const USDC = 'USDC';
 export const SHARES = 'SHARES';
 export const ALL_CURRENCIES = 'All Currencies';
 
+export const CASH_LABEL_FORMATS = {
+  ETH: { symbol: 'Ξ', prepend: true, displayDecimals: 4 },
+  USDC: { symbol: '$', prepend: true, displayDecimals: 2 },
+  SHARES: { symbol: '', prepend: false, displayDecimals: 4 },
+};
+
 // Portfolio table views
 export const POSITIONS = 'positions';
 export const LIQUIDITY = 'liquidity';

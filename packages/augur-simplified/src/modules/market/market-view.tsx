@@ -131,10 +131,9 @@ const MarketView = ({ defaultMarket = null }) => {
             orderType={BUY}
             ammCash={amm?.cash}
             showAsButtons
-            currency={amm?.name}
           />
         )}
-        <SimpleChartSection {...{ market }} />
+        <SimpleChartSection {...{ market, cash: amm?.cash }} />
         <PositionsLiquidityViewSwitcher ammExchange={amm} />
         {isMobile && (
           <article className={Styles.MobileLiquidSection}>

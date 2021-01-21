@@ -11,8 +11,8 @@ import {
   GWEI_CONVERSION,
   SCALAR,
   TEN,
-  USDC,
   ZERO,
+  CASH_LABEL_FORMATS,
 } from '../modules/constants';
 import addCommas from './add-commas-to-number';
 import getPrecision from './get-number-precision';
@@ -29,11 +29,24 @@ const SMALLEST_NUMBER_DECIMAL_PLACES = 8;
 const USUAL_NUMBER_DECIMAL_PLACES = 4;
 const YES_NO_TICK_SIZE = createBigNumber("0.001");
 
+export const getCashFormat = (cash: Cash) => {
+  let out = {
+    prepend: false,
+    symbol: '',
+    displayDecimals: USUAL_NUMBER_DECIMAL_PLACES,
+  };
+  if (CASH_LABEL_FORMATS[cash?.name]?.symbol) {
+    out = CASH_LABEL_FORMATS[cash?.name];
+  }
+  return out;
+}
+
 export function formatCash(num: NumStrBigNumber, cash: Cash, opts: FormattedNumberOptions = {}): FormattedNumber {
+  const { prepend, symbol, displayDecimals } = getCashFormat(cash);
   return formatNumber(num, {
-    decimals: cash.displayDecimals,
-    decimalsRounded: cash.displayDecimals,
-    denomination: v => cash.name === USDC ? `$${v}` : `${v} ${cash.name}`,
+    decimals: displayDecimals,
+    decimalsRounded: displayDecimals,
+    denomination: v => prepend ? `${symbol}${v}` : `${v} ${symbol}`,
     positiveSign: false,
     zeroStyled: false,
     blankZero: false,
@@ -46,13 +59,23 @@ export function formatSimpleShares(num: NumStrBigNumber, opts: FormattedNumberOp
   return formatShares(num, {
     decimals: USUAL_NUMBER_DECIMAL_PLACES,
     decimalsRounded: USUAL_NUMBER_DECIMAL_PLACES,
-    denomination: v => `${v} Shares`,
+    denomination: v => `${v}`,
     ...opts,
   })
 }
 
-export function formatUSD(num: NumStrBigNumber, opts: FormattedNumberOptions = {}): FormattedNumber {
-  return formatDai(num, opts);
+export function formatCashPrice(num: NumStrBigNumber, cash: Cash, opts: FormattedNumberOptions = {}): FormattedNumber {
+  const { prepend, symbol } = getCashFormat(cash);
+  return formatNumber(num, {
+    decimals: 2,
+    decimalsRounded: 2,
+    denomination: v => prepend ? `${symbol}${v}` : `${v} ${symbol}`,
+    positiveSign: false,
+    zeroStyled: false,
+    blankZero: false,
+    bigUnitPostfix: false,
+    ...opts,
+  });
 }
 
 export function formatEther(
