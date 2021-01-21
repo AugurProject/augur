@@ -169,7 +169,7 @@ const ModalAddLiquidity = ({
     balances.lpTokens[amm?.id]?.balance;
   const userMaxAmount = modalType === REMOVE ? shareBalance : userTokenBalance;
 
-  const [amount, updateAmount] = useState('');
+  const [amount, updateAmount] = useState(modalType === REMOVE ? userMaxAmount : '');
 
   const percentFormatted = useMemo(() => {
     const feeOption = TRADING_FEE_OPTIONS.find(
