@@ -741,7 +741,7 @@ const ModalAddLiquidity = ({
             )}
             <BuySellButton
               text={LIQUIDITY_STRINGS[modalType].confirmButtonText}
-              action={LIQUIDITY_METHODS[modalType].confirmAction}
+              action={confirmAction}
             />
             <div className={Styles.FooterText}>
               Need some copy here explaining why the user will get shares and
