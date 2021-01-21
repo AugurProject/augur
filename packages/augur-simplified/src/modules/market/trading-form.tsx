@@ -440,16 +440,14 @@ const TradingForm = ({
   const [amount, setAmount] = useState<string>('');
   const ammCash = amm?.cash;
   const outcomes = amm?.ammOutcomes || [];
-  const isApprovedCash = !!approvals?.liquidity?.add[ammCash?.name];
   const isBuy = orderType === BUY;
   const isApprovedTrade = isBuy
     ? !!approvals?.trade?.enter[ammCash?.name]
     : !!approvals?.trade?.exit[ammCash?.name];
-  const approvalAction = isApprovedCash
-    ? isBuy
+  const approvalAction = !isApprovedTrade ? isBuy
       ? ApprovalAction.ENTER_POSITION
       : ApprovalAction.EXIT_POSITION
-    : ApprovalAction.ADD_LIQUIDITY;
+      : null;
   const selectedOutcomeId = selectedOutcome.id;
   const marketShares =
     balances?.marketShares && balances?.marketShares[amm?.id];
