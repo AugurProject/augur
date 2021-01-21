@@ -68,7 +68,7 @@ export const SettingsButton = () => {
   });
 
   return (
-    <Fragment key="settingsButton">
+    <div className={Styles.SettingsMenuWrapper}>
       <SecondaryButton action={() => setOpened(!open)} icon={GearIcon} />
       {open && (
         <ul className={Styles.SettingsMenu} ref={settingsRef}>
@@ -153,7 +153,7 @@ export const SettingsButton = () => {
           </li>
         </ul>
       )}
-    </Fragment>
+    </div>
   );
 };
 
