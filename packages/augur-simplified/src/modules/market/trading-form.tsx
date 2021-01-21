@@ -361,25 +361,25 @@ const getEnterBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
     {
       label: 'Average Price',
       value: !isNaN(Number(breakdown?.averagePrice))
-        ? formatUSD(breakdown.averagePrice).formatted
+        ? formatCash(breakdown.averagePrice, cash, { decimals: 2 }).full
         : '-',
       tooltipText: AVG_PRICE_TIP,
       tooltipKey: 'averagePrice',
     },
     {
-      label: 'Shares Purchasing',
+      label: 'Estimated Shares',
       value: !isNaN(Number(breakdown?.outputValue))
         ? formatSimpleShares(breakdown.outputValue).full
         : '-',
     },
     {
-      label: 'Max Winnings',
+      label: 'Max Profit',
       value: !isNaN(Number(breakdown?.maxProfit))
         ? formatCash(breakdown.maxProfit, cash).full
         : '-',
     },
     {
-      label: 'Estimated Fees',
+      label: 'Estimated Fees (Shares)',
       value: !isNaN(Number(breakdown?.tradeFees))
         ? formatSimpleShares(breakdown.tradeFees).full
         : '-',
@@ -392,7 +392,7 @@ const getExitBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
     {
       label: 'Average Price',
       value: !isNaN(Number(breakdown?.averagePrice))
-        ? formatUSD(breakdown.averagePrice).formatted
+        ? formatCash(breakdown.averagePrice, cash, { decimals: 2 }).full
         : '-',
       tooltipText: AVG_PRICE_TIP,
       tooltipKey: 'averagePrice',
@@ -410,7 +410,7 @@ const getExitBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
         : '-',
     },
     {
-      label: 'Estimated Fees',
+      label: `Estimated Fees (${cash.name})`,
       value: !isNaN(Number(breakdown?.tradeFees))
         ? formatCash(breakdown.tradeFees, cash).full
         : '-',
