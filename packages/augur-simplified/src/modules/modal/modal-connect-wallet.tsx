@@ -191,7 +191,8 @@ const ModalConnectWallet = ({
             })
             .then(() => {
               activate(connector);
-              setWalletView(WALLET_VIEWS.ACCOUNT);
+              closeModal();
+              // setWalletView(WALLET_VIEWS.ACCOUNT);
             });
       });
     },
@@ -200,11 +201,6 @@ const ModalConnectWallet = ({
 
   // close on connection, when logged out before
   useEffect(() => {
-    if (account && !previousAccount) {
-      // closeModal();
-      // toggleModal();
-    }
-
     if (autoLogin && !account) {
       const option = SUPPORTED_WALLETS['METAMASK'];
       tryActivation(option.connector);
