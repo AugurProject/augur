@@ -4,7 +4,7 @@ import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
 import { createBigNumber } from '../../utils/create-big-number';
 import Styles from './charts.styles.less';
 import classNames from 'classnames';
-import { formatCashPrice, formatDai } from '../../utils/format-number';
+import { formatCashPrice } from '../../utils/format-number';
 import { Checkbox } from './icons';
 import { MarketInfo } from '../types';
 import { MultiButtonSelection } from './selection';
