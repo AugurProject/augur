@@ -113,6 +113,7 @@ const Outcome = ({
         [Styles.Invalid]: outcome.isInvalid,
         [Styles.InvalidSelected]: invalidSelected,
         [Styles.loggedOut]: !isLogged,
+        [Styles.disabled]: !isLogged && outcome.isInvalid
       })}
     >
       <span>{outcome.name}</span>
