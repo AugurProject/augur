@@ -446,7 +446,7 @@ export async function doTrade(
 }
 
 export const claimWinnings = (account: string, library: Web3Provider, marketIds: string[], cash: Cash): Promise<TransactionResponse | null> => {
-  if (cash?.shareToken) return null;
+  if (!cash?.shareToken) return null;
   const contract = getContract(cash.shareToken, ParaShareToken.ABI, library, account);
   return contract
     .claimMarketsProceeds(marketIds, account, ethers.utils.formatBytes32String('11'));
