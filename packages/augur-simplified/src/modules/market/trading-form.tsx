@@ -65,7 +65,8 @@ export const DefaultMarketOutcomes = [
 ];
 
 const PLACEHOLDER = '0';
-const AVG_PRICE_TIP = 'The difference between the market price and estimated price due to trade size.';
+const AVG_PRICE_TIP =
+  'The difference between the market price and estimated price due to trade size.';
 
 export const isInvalidNumber = (number) => {
   return (
@@ -130,8 +131,8 @@ const Outcome = ({
             type="number"
             placeholder={PLACEHOLDER}
             ref={input}
-             // @ts-ignore
-            onWheel={e => e?.target?.blur()}
+            // @ts-ignore
+            onWheel={(e) => e?.target?.blur()}
           />
         </div>
       ) : (
@@ -206,7 +207,12 @@ export const AmountInput = ({
     >
       <span>amount</span>
       <span onClick={setMax}>
-        {isLogged && `balance: ${isBuy ? formatCash(maxValue, ammCash).full : formatSimpleShares(maxValue).formatted}`}
+        {isLogged &&
+          `balance: ${
+            isBuy
+              ? formatCash(maxValue, ammCash).full
+              : formatSimpleShares(maxValue).formatted
+          }`}
       </span>
       <div
         className={classNames(Styles.AmountInputDropdown, {
@@ -225,7 +231,7 @@ export const AmountInput = ({
           value={amount}
           placeholder="0"
           // @ts-ignore
-          onWheel={e => e?.target?.blur()}
+          onWheel={(e) => e?.target?.blur()}
         />
         {!!currencyName && currencyName !== SHARES && !showCurrencyDropdown && (
           <span className={Styles.CurrencyLabel}>
@@ -331,7 +337,11 @@ interface InfoNumbersProps {
 
 export const InfoNumbers = ({ infoNumbers }: InfoNumbersProps) => {
   return (
-    <div className={Styles.OrderInfo}>
+    <div
+      className={classNames(Styles.OrderInfo, {
+        [Styles.Populated]: infoNumbers[0]?.value !== '-',
+      })}
+    >
       {infoNumbers.map((infoNumber) => (
         <div key={infoNumber.label}>
           <span>
@@ -358,16 +368,21 @@ const getEnterBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
     },
     {
       label: 'Shares Purchasing',
-      value: !isNaN(Number(breakdown?.outputValue)) ? formatSimpleShares(breakdown.outputValue).full : '-',
+      value: !isNaN(Number(breakdown?.outputValue))
+        ? formatSimpleShares(breakdown.outputValue).full
+        : '-',
     },
     {
       label: 'Max Winnings',
-      value: !isNaN(Number(breakdown?.maxProfit)) ? formatCash(breakdown.maxProfit, cash).full
+      value: !isNaN(Number(breakdown?.maxProfit))
+        ? formatCash(breakdown.maxProfit, cash).full
         : '-',
     },
     {
       label: 'Estimated Fees',
-      value: !isNaN(Number(breakdown?.tradeFees)) ? formatSimpleShares(breakdown.tradeFees).full : '-',
+      value: !isNaN(Number(breakdown?.tradeFees))
+        ? formatSimpleShares(breakdown.tradeFees).full
+        : '-',
     },
   ];
 };
@@ -396,7 +411,9 @@ const getExitBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
     },
     {
       label: 'Estimated Fees',
-      value: !isNaN(Number(breakdown?.tradeFees)) ? formatCash(breakdown.tradeFees, cash).full : '-',
+      value: !isNaN(Number(breakdown?.tradeFees))
+        ? formatCash(breakdown.tradeFees, cash).full
+        : '-',
     },
   ];
 };
@@ -448,10 +465,11 @@ const TradingForm = ({
   const isApprovedTrade = isBuy
     ? !!approvals?.trade?.enter[ammCash?.name]
     : !!approvals?.trade?.exit[ammCash?.name];
-  const approvalAction = !isApprovedTrade ? isBuy
+  const approvalAction = !isApprovedTrade
+    ? isBuy
       ? ApprovalAction.ENTER_POSITION
       : ApprovalAction.EXIT_POSITION
-      : null;
+    : null;
   const selectedOutcomeId = selectedOutcome.id;
   const marketShares =
     balances?.marketShares && balances?.marketShares[amm?.id];
@@ -628,7 +646,9 @@ const TradingForm = ({
           ammCash={ammCash}
           rate={
             !isNaN(Number(breakdown?.ratePerCash))
-              ? `1 ${amm?.cash?.name} = ${formatSimpleShares(breakdown?.ratePerCash).full}`
+              ? `1 ${amm?.cash?.name} = ${
+                  formatSimpleShares(breakdown?.ratePerCash).full
+                }`
               : null
           }
           isBuy={orderType === BUY}
