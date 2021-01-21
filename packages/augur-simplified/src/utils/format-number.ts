@@ -31,9 +31,9 @@ const YES_NO_TICK_SIZE = createBigNumber("0.001");
 
 export function formatCash(num: NumStrBigNumber, cash: Cash, opts: FormattedNumberOptions = {}): FormattedNumber {
   return formatNumber(num, {
-    decimals: cash.displayDecimals,
-    decimalsRounded: cash.displayDecimals,
-    denomination: v => cash.name === USDC ? `$${v}` : `${v} ${cash.name}`,
+    decimals: cash?.displayDecimals,
+    decimalsRounded: cash?.displayDecimals,
+    denomination: v => cash?.name === USDC ? `$${v}` : `${v} ${cash?.name}`,
     positiveSign: false,
     zeroStyled: false,
     blankZero: false,
