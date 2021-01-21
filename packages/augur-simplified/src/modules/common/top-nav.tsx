@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, Fragment, useRef } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { useLocation } from 'react-router';
 import Styles from './top-nav.styles.less';
 import ButtonStyles from './buttons.styles.less';
@@ -68,7 +68,7 @@ export const SettingsButton = () => {
   });
 
   return (
-    <Fragment key="settingsButton">
+    <div className={Styles.SettingsMenuWrapper}>
       <SecondaryButton action={() => setOpened(!open)} icon={GearIcon} />
       {open && (
         <ul className={Styles.SettingsMenu} ref={settingsRef}>
@@ -153,7 +153,7 @@ export const SettingsButton = () => {
           </li>
         </ul>
       )}
-    </Fragment>
+    </div>
   );
 };
 

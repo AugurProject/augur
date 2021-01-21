@@ -150,6 +150,10 @@
   }
 }
 
+.SettingsMenuWrapper {
+  position: relative;
+}
+
 .SettingsMenu {
   .SimpleBorder;
   .FixedBoxShadow;
@@ -157,8 +161,8 @@
   background: var(--simple-light-bg);
   border-radius: @size-16;
   position: absolute;
-  top: @size-72;
-  right: @size-88;
+  top: @size-60;
+  right: 0;
   display: grid;
   padding: @size-24;
   grid-gap: @size-24;
@@ -170,8 +174,8 @@
 
   @media @breakpoint-mobile-tablet {
     top: auto;
-    bottom: 73px;
-    right: unset;
+    bottom: 61px;
+    right: 0;
   }
 
   > li {

@@ -7,7 +7,6 @@ import { AbstractConnector } from '@web3-react/abstract-connector';
 import { SUPPORTED_WALLETS } from '../ConnectAccount/constants';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { injected, portis } from '../ConnectAccount/connectors';
-import { isMobile } from 'react-device-detect';
 import MetamaskIcon from '../ConnectAccount/assets/metamask.png';
 import { ErrorBlock } from '../common/labels';
 import Loader from '../ConnectAccount/components/Loader';
@@ -191,7 +190,7 @@ const ModalConnectWallet = ({
             })
             .then(() => {
               activate(connector);
-              setWalletView(WALLET_VIEWS.ACCOUNT);
+              closeModal();
             });
       });
     },
@@ -200,11 +199,6 @@ const ModalConnectWallet = ({
 
   // close on connection, when logged out before
   useEffect(() => {
-    if (account && !previousAccount) {
-      // closeModal();
-      // toggleModal();
-    }
-
     if (autoLogin && !account) {
       const option = SUPPORTED_WALLETS['METAMASK'];
       tryActivation(option.connector);
