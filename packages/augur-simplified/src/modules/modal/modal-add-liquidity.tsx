@@ -610,6 +610,7 @@ const ModalAddLiquidity = ({
                   </span>
                 )}
                 <AmountInput
+                  ammCash={cash}
                   updateInitialAmount={(amount) => updateAmount(amount)}
                   initialAmount={amount}
                   maxValue={userMaxAmount}
