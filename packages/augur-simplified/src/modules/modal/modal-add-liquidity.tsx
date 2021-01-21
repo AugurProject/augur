@@ -39,6 +39,7 @@ import { MultiButtonSelection } from '../common/selection';
 import classNames from 'classnames';
 import {
   AmmOutcome,
+  LiquidityBreakdown,
   MarketInfo,
 } from '../types';
 import {
@@ -75,7 +76,7 @@ const TRADING_FEE_OPTIONS = [
   },
 ];
 
-const defaultAddLiquidityBreakdown = {
+const defaultAddLiquidityBreakdown: LiquidityBreakdown = {
   yesShares: '0',
   noShares: '0',
   lpTokens: '0',
@@ -609,13 +610,13 @@ const ModalAddLiquidity = ({
               )}
               <AmountInput
                 updateInitialAmount={(amount) => updateAmount(amount)}
-                initialAmount={amount}
+                initialAmount={''}
                 maxValue={userMaxAmount}
                 showCurrencyDropdown={!currency}
                 chosenCash={modalType === REMOVE ? SHARES : chosenCash}
                 updateCash={updateCash}
                 updateAmountError={() => null}
-                ammCash={amm?.cash}
+                ammCash={cash}
               />
             </>
           )}

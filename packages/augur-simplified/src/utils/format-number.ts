@@ -11,6 +11,7 @@ import {
   GWEI_CONVERSION,
   SCALAR,
   TEN,
+  USDC,
   ZERO,
 } from '../modules/constants';
 import addCommas from './add-commas-to-number';
@@ -32,7 +33,7 @@ export function formatCash(num: NumStrBigNumber, cash: Cash, opts: FormattedNumb
   return formatNumber(num, {
     decimals: cash.displayDecimals,
     decimalsRounded: cash.displayDecimals,
-    denomination: v => cash.usdPrice === "1" ? `$${v}` : `${v} ${cash.name}`,
+    denomination: v => cash.name === USDC ? `$${v}` : `${v} ${cash.name}`,
     positiveSign: false,
     zeroStyled: false,
     blankZero: false,
