@@ -159,6 +159,7 @@ interface AmountInputProps {
   amountError?: string;
   updateAmountError?: Function;
   ammCash: Cash;
+  isBuy?: boolean;
 }
 
 export const AmountInput = ({
@@ -171,6 +172,7 @@ export const AmountInput = ({
   rate,
   ammCash,
   updateAmountError = () => {},
+  isBuy = true,
 }: AmountInputProps) => {
   const { isLogged } = useAppStatusStore();
   const currencyName = chosenCash;
@@ -202,7 +204,7 @@ export const AmountInput = ({
     >
       <span>amount</span>
       <span onClick={setMax}>
-        {isLogged && `balance: ${formatCash(maxValue, ammCash).full}`}
+        {isLogged && `balance: ${isBuy ? formatCash(maxValue, ammCash).full : formatSimpleShares(maxValue).formatted}`}
       </span>
       <div
         className={classNames(Styles.AmountInputDropdown, {
@@ -627,6 +629,7 @@ const TradingForm = ({
               ? `1 ${amm?.cash?.name} = ${formatSimpleShares(breakdown?.ratePerCash).full}`
               : null
           }
+          isBuy={orderType === BUY}
         />
         <InfoNumbers infoNumbers={formatBreakdown(isBuy, breakdown, ammCash)} />
         {isLogged && !isApprovedTrade && (
