@@ -81,6 +81,10 @@
   }
 
   &.showBackView {
+    > div:first-of-type {
+      cursor: pointer;
+    }
+    
     > main {
       > div:first-of-type {
         .text-20-bold;
@@ -175,6 +179,8 @@
   width: 100%;
   margin: 0;
   z-index: @above-all-content;
+  height: @size-72;
+  max-height: @size-72;
 
   > span {
     .text-20-bold;
