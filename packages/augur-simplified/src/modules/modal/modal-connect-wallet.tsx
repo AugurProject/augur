@@ -7,7 +7,6 @@ import { AbstractConnector } from '@web3-react/abstract-connector';
 import { SUPPORTED_WALLETS } from '../ConnectAccount/constants';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { injected, portis } from '../ConnectAccount/connectors';
-import { isMobile } from 'react-device-detect';
 import MetamaskIcon from '../ConnectAccount/assets/metamask.png';
 import { ErrorBlock } from '../common/labels';
 import Loader from '../ConnectAccount/components/Loader';
@@ -217,10 +216,6 @@ const ModalConnectWallet = ({
   useEffect(() => {
     setPendingError(false);
     setWalletView(WALLET_VIEWS.ACCOUNT);
-    // fortmatic.on(OVERLAY_READY, () => {
-    //   // closeModal();
-    //   toggleModal();
-    // });
   }, [toggleModal]);
 
   // close modal when a connection is successful
