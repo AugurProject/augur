@@ -249,7 +249,7 @@ const ModalAddLiquidity = ({
     );
     const fee = market?.amm?.feeRaw
       ? market?.amm?.feeRaw
-      : String(feeSelected ? feeSelected.value : '0');
+      : String(feeSelected ? String(new BN(feeSelected.value).times(10)) : '0');
     const properties = checkConvertLiquidityProperties(
       account,
       market.marketId,
