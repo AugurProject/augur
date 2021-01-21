@@ -25,6 +25,8 @@
     background: var(--simple-light-bg);
 
     > section {
+      border-radius: @size-16;
+
       > * {
         margin-left: @size-24;
         margin-right: @size-24;
@@ -33,10 +35,14 @@
       > div[class*="Header"] {
         margin: 0;
         padding: @size-24;
+        border-top-left-radius: @size-16;
+        border-top-right-radius: @size-16;
       }
 
       > div[class*="FooterText"] {
         margin: 0;
+        border-bottom-left-radius: @size-16;
+        border-bottom-right-radius: @size-16;
       }
     }
   }
@@ -59,7 +65,6 @@
   width: 395px;
   max-height: calc(100vh - 100px);
   overflow-y: auto;
-  border-radius: @size-8;
 
   > button:first-of-type {
     margin-bottom: @size-8;
@@ -143,6 +148,8 @@
 }
 
 .Header {
+  border-top-left-radius: @size-16;
+  border-top-right-radius: @size-16;
   display: flex;
   align-items: center;
   flex: 1;
