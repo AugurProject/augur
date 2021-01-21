@@ -5,6 +5,7 @@ import utc from 'dayjs/plugin/utc';
 import { Cash } from '../types';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ErrorPolicy, FetchPolicy } from 'apollo-client';
+import { ETH } from '../constants';
 
 dayjs.extend(utc);
 
@@ -41,17 +42,16 @@ export function augurV2Client(uri: string) {
 }
 
 export async function getMarketsData(paraConfig, updateBlocknumber, updateMarkets) {
-  const { networkId } = paraConfig;
-  const cashes = jsonConfig[Number(networkId)].Cashes;
-  const config = getConfig(networkId);
+  const cashes = getCashesInfo(paraConfig)
+  const clientConfig = getClientConfig(paraConfig);
   let response = null;
   let responseUsd = null;
   try {
-    const block = await getPastDayBlockNumber(config);
+    const block = await getPastDayBlockNumber(clientConfig.blockClient);
     updateBlocknumber(block);
 
     const query = GET_MARKETS(block);
-    response = await augurV2Client(config.augurClient).query({ query });
+    response = await augurV2Client(clientConfig.augurClient).query({ query });
     responseUsd = await getCashTokenData(cashes);
   } catch (e) {
     console.error(e);
@@ -67,23 +67,17 @@ export async function getMarketsData(paraConfig, updateBlocknumber, updateMarket
   }
 }
 
-async function getPastDayBlockNumber(config) {
+async function getPastDayBlockNumber(blockClient) {
   // @ts-ignore
   const utcCurrentTime = dayjs.utc();
   let block = null;
   try {
     const utcOneDayBack = utcCurrentTime.subtract(1, 'day').unix();
-    block = await getBlockFromTimestamp(utcOneDayBack, config.blockClient);
+    block = await getBlockFromTimestamp(utcOneDayBack, blockClient);
   } catch (e) {
     console.error('get past day block number', e);
   }
   return block;
-}
-const DEFAULT_NETWORK = '1';
-
-function getConfig(networkId) {
-  const network = networkId || DEFAULT_NETWORK;
-  return jsonConfig[String(network)];
 }
 
 /**
@@ -121,7 +115,7 @@ const getCashTokenData = async (cashes: Cash[]): Promise<{ [address: string]: Ca
           // TOOD remove this, used only form kovan testing
           tokenData = {
             ...cash,
-            usdPrice: cash?.address.toLowerCase() === "0x7290c2b7D5Fc91a112d462fe06aBBB8948668f56".toLowerCase() ? '1050' : '1'
+            usdPrice: cash?.name === ETH ? '1300' : '1'
           }
         }
         return tokenData
@@ -134,53 +128,84 @@ const getCashTokenData = async (cashes: Cash[]): Promise<{ [address: string]: Ca
   return (bulkResults || []).reduce((p, a) => ({ ...p, [a.address]: a }), {})
 }
 
-const jsonConfig = {
+
+const getClientConfig = (paraDeploys): { augurClient: string, blockClient: string } => {
+  const { networkId } = paraDeploys;
+  const clientConfig = {
+    '1': {
+      augurClient:
+        'https://api.thegraph.com/subgraphs/name/augurproject/augur-v2-staging',
+      blockClient:
+        'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks',
+      network: 'mainnet',
+    },
+    '42': {
+      augurClient:
+        'https://api.thegraph.com/subgraphs/name/augurproject/augur-v2-staging',
+      blockClient:
+        'https://api.thegraph.com/subgraphs/name/blocklytics/kovan-blocks',
+      network: 'kovan',
+    },
+  }
+  return clientConfig[Number(networkId)];
+
+}
+
+
+const paraCashes = {
   '1': {
     networkId: '1',
     Cashes: [
       {
-        address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-        name: 'wrapped ETH',
-        symbol: 'wETH',
+        name: 'ETH',
+        displayDecimals: 4,
       },
       {
-        address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-        name: 'DAI',
-        symbol: 'DAI',
+        name: 'USDC',
+        displayDecimals: 2,
       },
     ],
-    augurClient:
-      'https://api.thegraph.com/subgraphs/name/augurproject/augur-v2-staging',
-    blockClient:
-      'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks',
     network: 'mainnet',
   },
   '42': {
     networkId: '42',
     Cashes: [
       {
-        address: '0x7290c2b7d5fc91a112d462fe06abbb8948668f56',
-        shareToken: '0x4397472B541f64C5c8BFB390a574bAE87a964d17',
         name: 'ETH',
-        symbol: 'ETH',
-        asset: 'eth.svg',
-        decimals: 18,
         displayDecimals: 4,
       },
       {
-        address: '0x1997d08b1a9aed5143b995e929707400625d5f6c',
-        shareToken: '0x0968E4c21d8bF774E74b409E2426B28e7BF11269',
         name: 'USDC',
-        symbol: 'USDC',
-        asset: 'usdt.svg',
-        decimals: 6,
         displayDecimals: 2,
       },
     ],
-    augurClient:
-      'https://api.thegraph.com/subgraphs/name/augurproject/augur-v2-staging',
-    blockClient:
-      'https://api.thegraph.com/subgraphs/name/blocklytics/kovan-blocks',
     network: 'kovan',
   },
 };
+
+const getCashesInfo = (paraConfig: { networkId: string, paraDeploys: { [address: string]: { name: string, decimals: number, addresses: { Cash: string, ShareToken: string } } } }): Cash[] => {
+  const { networkId, paraDeploys } = paraConfig;
+  const paraValues = Object.values(paraDeploys);
+  const keysValues = paraValues.reduce((p, v) => ({...p, [v.name]: v}), {});
+  const cashes = paraCashes[String(networkId)].Cashes;
+  // fill in address and shareToken
+  cashes.forEach(c => {
+    if (c.name === ETH) {
+      const ethPara = keysValues["WETH"];
+      if (!ethPara) throw new Error('WETH not found in para deploy configuration');
+      c.address = ethPara.addresses.Cash.toLowerCase();
+      c.shareToken = ethPara.addresses.ShareToken.toLowerCase();
+      c.decimals = ethPara.decimals;
+    } else {
+      // TODO: will need to be changed, in mainnet deploy this will prob be 'USDC'
+      const stablecoinPara = keysValues["USDT"];
+      if (!stablecoinPara) throw new Error('USDT/USDC not found in para deploy configuration');
+      c.address = stablecoinPara.addresses.Cash.toLowerCase();
+      c.shareToken = stablecoinPara.addresses.ShareToken.toLowerCase();
+      c.decimals = stablecoinPara.decimals;
+    }
+  });
+
+  return cashes;
+}
+

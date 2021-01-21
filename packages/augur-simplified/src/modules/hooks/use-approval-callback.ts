@@ -207,8 +207,8 @@ export const useApproveCallbackForTrade = (ammExchange: AmmExchange, isEnter: bo
   const { AMMFactory, WethWrapperForAMMExchange } = addresses;
   const { cash } = ammExchange;
   const { shareToken } = cash;
-  const approvingName = cash.symbol;
-  const isETH = cash.symbol === ETH;
+  const approvingName = cash.name;
+  const isETH = cash.name === ETH;
 
   const [approveShareWrapperStatus, approveShareWrapper] = useApproveERC1155Callback(shareToken, approvingName, WethWrapperForAMMExchange);
   const [approveShareFactoryStatus, approveShareFactory] = useApproveERC1155Callback(shareToken, approvingName, AMMFactory);
@@ -229,8 +229,8 @@ export const useApproveCallbackForLiquidity = (ammExchange: AmmExchange, isAdd: 
   const { paraConfig: { addresses } } = useAppStatusStore()
   const { AMMFactory, WethWrapperForAMMExchange } = addresses;
   const { cash } = ammExchange;
-  const approvingName = cash.symbol;
-  const isETH = cash.symbol === ETH;
+  const approvingName = cash.name;
+  const isETH = cash.name === ETH;
 
   const [approveCashFactoryStatus, approveCashFactory] = useApproveCallback(cash?.address, approvingName, AMMFactory);
   const [approveAmmWrapperStatus, approveAmmWrapper] = useApproveCallback(ammExchange.id, approvingName, WethWrapperForAMMExchange);
