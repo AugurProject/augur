@@ -11,7 +11,7 @@ import {
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers'
 import { convertDisplayCashAmountToOnChainCashAmount, convertDisplayShareAmountToOnChainShareAmount, convertOnChainCashAmountToDisplayCashAmount, formatDai, formatEther, convertOnChainSharesToDisplayShareAmount, isSameAddress } from './format-number';
 import { augurSdkLite } from './augurlitesdk';
-import { ETH, RESOLVED, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_NO_OUTCOMES_NAMES, YES_OUTCOME_ID } from '../modules/constants';
+import { ETH, RESOLVED, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_NO_OUTCOMES_NAMES, YES_OUTCOME_ID, INVALID_OUTCOME_ID } from '../modules/constants';
 import { getProviderOrSigner } from '../modules/ConnectAccount/utils';
 
 const isValidPrice = (price: string): boolean => {
@@ -762,28 +762,29 @@ const getPositionUsdValues = (trades: UserTrades, rawBalance: string, balance: s
   // need to get this from outcome
   const outcomeName = YES_NO_OUTCOMES_NAMES[Number(outcome)];
   const maxUsdValue = String(new BN(balance).times(new BN(amm.cash.usdPrice)));
-  if (balance !== "0") {
+  if (balance !== "0" && outcome !== String(INVALID_OUTCOME_ID)) {
+    let result = null;
     if (outcome === String(NO_OUTCOME_ID)) {
       usdValue = String(new BN(balance).times(new BN(priceNo)));
       past24hrUsdValue = past24hrPriceNo ? String(new BN(balance).times(new BN(past24hrPriceNo))) : null;
       change24hrPositionUsd = past24hrPriceNo ? String(new BN(usdValue).times(new BN(past24hrUsdValue))) : null;
-      const result = getInitPositionValues(trades, amm, false, account);
-      avgPrice = formatDai(result.avgPrice).formatted;
-      initCostUsd = result.initCostUsd;
-      const usdChange = String(new BN(usdValue).minus(new BN(initCostUsd)).toFixed(4));
-      totalChangeUsd = formatDai(usdChange).full;
-      visible = true;
+      result = getInitPositionValues(trades, amm, false, account);
     } else if (outcome === String(YES_OUTCOME_ID)) {
       usdValue = String(new BN(balance).times(new BN(priceYes)));
       past24hrUsdValue = past24hrPriceYes ? String(new BN(balance).times(new BN(past24hrPriceYes))) : null;
       change24hrPositionUsd = past24hrPriceYes ? String(new BN(usdValue).times(new BN(past24hrUsdValue))) : null;
-      const result = getInitPositionValues(trades, amm, true, account);
-      avgPrice = formatDai(result.avgPrice).formatted;
-      initCostUsd = result.initCostUsd
-      const usdChange = String(new BN(usdValue).minus(new BN(initCostUsd)).toFixed(4));
-      totalChangeUsd = formatDai(usdChange).full;
-      visible = true;
+      result = getInitPositionValues(trades, amm, true, account);
     }
+    avgPrice = formatDai(result.avgPrice).formatted;
+    initCostUsd = result.initCostUsd;
+    let usdChangedValue = new BN(usdValue).minus(new BN(initCostUsd));
+    // if difference below threashold use absolute value
+    if (usdChangedValue.lt(new BN("0.0000"))) {
+      usdChangedValue = usdChangedValue.abs();
+    }
+    totalChangeUsd = formatDai(usdChangedValue).formatted;
+    visible = true;
+
   }
 
   return {

@@ -541,6 +541,7 @@
     > div:first-of-type {
       flex: unset;
       grid-template-columns: auto auto 1fr auto;
+      padding: @size-10 @size-16 @size-11;
 
       > div:last-of-type {
         .SimpleBorder;
@@ -548,6 +549,10 @@
         margin-left: @size-24;
         padding: @size-12 @size-16;
       }
+    }
+
+    > div:nth-of-type(2) {
+      padding: 0 @size-16 @size-24;
     }
   }
 }
