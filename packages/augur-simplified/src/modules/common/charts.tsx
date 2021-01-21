@@ -4,7 +4,7 @@ import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
 import { createBigNumber } from '../../utils/create-big-number';
 import Styles from './charts.styles.less';
 import classNames from 'classnames';
-import { formatDai } from '../../utils/format-number';
+import { formatCashPrice, formatDai } from '../../utils/format-number';
 import { Checkbox } from './icons';
 import { MarketInfo } from '../types';
 import { MultiButtonSelection } from './selection';
@@ -149,6 +149,7 @@ export const PriceHistoryChart = ({
   market,
   selectedOutcomes,
   rangeSelection,
+  cash
 }) => {
   const container = useRef(null);
   // eslint-disable-next-line
@@ -164,6 +165,7 @@ export const PriceHistoryChart = ({
       getOptions({
         maxPrice,
         minPrice,
+        cash
       }),
     [maxPrice, minPrice]
   );
@@ -220,6 +222,7 @@ export const SelectOutcomeButton = ({
   outcome: { outcomeIdx, label, lastPrice },
   toggleSelected,
   isSelected,
+  cash,
 }) => {
   return (
     <button
@@ -230,12 +233,12 @@ export const SelectOutcomeButton = ({
     >
       <span>{Checkbox}</span>
       {label}
-      <b>{formatDai(createBigNumber(lastPrice)).full}</b>
+      <b>{formatCashPrice(createBigNumber(lastPrice), cash).full}</b>
     </button>
   );
 };
 
-export const SimpleChartSection = ({ market }) => {
+export const SimpleChartSection = ({ market, cash }) => {
   const formattedOutcomes = getFormattedOutcomes({ market });
   // eslint-disable-next-line
   const [selectedOutcomes, setSelectedOutcomes] = useState(
@@ -259,12 +262,13 @@ export const SimpleChartSection = ({ market }) => {
         setSelection={(id) => setRangeSelection(id)}
       />
       <PriceHistoryChart
-        {...{ market, formattedOutcomes, selectedOutcomes, rangeSelection }}
+        {...{ market, formattedOutcomes, selectedOutcomes, rangeSelection, cash }}
       />
       <div>
         {formattedOutcomes.map((outcome) => (
           <SelectOutcomeButton
             key={`${outcome.id}_${outcome.name}`}
+            cash={cash}
             outcome={outcome}
             toggleSelected={toggleOutcome}
             isSelected={selectedOutcomes[outcome.outcomeIdx]}
@@ -349,6 +353,7 @@ const handleSeries = (
 const getOptions = ({
   maxPrice = createBigNumber(1),
   minPrice = createBigNumber(0),
+  cash,
 }) => ({
   lang: {
     noData: 'Select an outcome below',
@@ -412,7 +417,7 @@ const getOptions = ({
       this.points.forEach((point) => {
         out += `<li><span style="color:${point.color}">&#9679;</span><b>${
           point.series.name
-        }</b><span>${formatDai(createBigNumber(point.y)).full}</span></li>`;
+        }</b><span>${formatCashPrice(createBigNumber(point.y), cash).full}</span></li>`;
       });
       out += '</ul>';
       return out;

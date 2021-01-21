@@ -642,7 +642,6 @@ const ModalAddLiquidity = ({
               <OutcomesGrid
                 outcomes={outcomes}
                 selectedOutcome={null}
-                currency={chosenCash}
                 setSelectedOutcome={() => null}
                 marketType={YES_NO}
                 orderType={BUY}

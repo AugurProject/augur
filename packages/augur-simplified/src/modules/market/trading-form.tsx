@@ -271,7 +271,6 @@ interface OutcomesGridProps {
   ammCash: Cash;
   showAsButtons?: boolean;
   dontFilterInvalid?: boolean;
-  currency: string;
 }
 export const OutcomesGrid = ({
   outcomes,
@@ -285,7 +284,6 @@ export const OutcomesGrid = ({
   ammCash,
   showAsButtons,
   dontFilterInvalid,
-  currency,
 }: OutcomesGridProps) => {
   return (
     <div
@@ -300,7 +298,6 @@ export const OutcomesGrid = ({
         .reverse()
         .map((outcome, index) => (
           <Outcome
-            currency={currency}
             key={outcome.id}
             selected={
               selectedOutcome &&
@@ -635,7 +632,6 @@ const TradingForm = ({
           orderType={orderType}
           ammCash={ammCash}
           dontFilterInvalid
-          currency={orderType === BUY ? ammCash?.name : SHARES}
         />
         <AmountInput
           chosenCash={isBuy ? ammCash?.name : SHARES}
