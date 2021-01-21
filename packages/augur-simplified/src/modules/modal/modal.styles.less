@@ -23,22 +23,6 @@
     min-width: @size-288;
     margin: 0 @size-16;
     background: var(--simple-light-bg);
-
-    > section {
-      > * {
-        margin-left: @size-24;
-        margin-right: @size-24;
-      }
-
-      > div[class*="Header"] {
-        margin: 0;
-        padding: @size-24;
-      }
-
-      > div[class*="FooterText"] {
-        margin: 0;
-      }
-    }
   }
 
   @media @breakpoint-mobile-tablet {
@@ -53,6 +37,8 @@
 }
 
 .ModalAddLiquidity {
+  .Container;
+
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -61,66 +47,74 @@
   overflow-y: auto;
   border-radius: @size-8;
 
-  > button:first-of-type {
-    margin-bottom: @size-8;
-    margin-top: @size-24;
-  }
+  > main {
+    > button:first-of-type {
+      margin-bottom: @size-8;
+      margin-top: @size-24;
+    }
 
-  > div:nth-of-type(2) {
-    margin-top: @size-24;
+    > div:first-of-type {
+      margin-top: @size-24;
+    }
+
+    > button:last-of-type {
+      margin-bottom: @size-24;
+    }
+
+    > span {
+      margin-bottom: @size-12;
+      margin-top: @size-24;
+    }
+
+    > div[class*='ErrorBlock'] {
+      margin-top: @size-8;
+    }
   }
 
   &.Remove {
-    > div:nth-of-type(2) {
+    > main > div:first-of-type {
+      margin-top: 0;
+    }
+    
+    > main > div:nth-of-type(2) {
       margin-top: 0;
     }
   }
 
-  > button:last-of-type {
-    margin-bottom: @size-24;
-  }
-
-  > span {
-    margin-bottom: @size-12;
-    margin-top: @size-24;
-  }
-
-  > div[class*="ErrorBlock"] {
-    margin-top: @size-8;
-  }
-
   &.showBackView {
-    > div:first-of-type {
-      .text-20-bold;
+    > main {
+      > div:first-of-type {
+        .text-20-bold;
 
-      cursor: pointer;
-      padding: @size-24 @size-32;
-      border-bottom: @size-1 solid var(--simple-border);
-      color: var(--simple-secondary-text);
-    }
-
-    > div:nth-of-type(2) {
-      margin-top: @size-24;
-    }
-
-    > section {
-      border-bottom: @size-1 solid var(--simple-border);
-      margin-bottom: @size-24;
-      padding-bottom: @size-24;
-
-      > div {
-        margin-top: @size-12;
+        cursor: pointer;
+        padding: @size-24 @size-32;
+        border-bottom: @size-1 solid var(--simple-border);
+        color: var(--simple-secondary-text);
       }
 
-      &:last-of-type {
-        border-bottom: 0;
-        padding-bottom: 0;
-        margin-bottom: 0;
+      > div:nth-of-type(2) {
+        margin-top: @size-24;
       }
-    }
 
-    > section:first-of-type {
-      margin-top: @size-24;
+      > section {
+        border-bottom: @size-1 solid var(--simple-border);
+        margin-bottom: @size-24;
+        padding-bottom: @size-24;
+
+        > div {
+          margin-top: @size-12;
+        }
+
+        &:last-of-type {
+          border-bottom: 0;
+          padding-bottom: 0;
+          margin-bottom: 0;
+        }
+      }
+
+      > section:first-of-type {
+        margin-top: @size-24;
+      }
     }
   }
 
@@ -142,6 +136,28 @@
   }
 }
 
+.Container {
+  > div[class*='Header'] {
+    margin: 0;
+    padding: @size-24;
+  }
+
+  > main {
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+
+    > div[class*='FooterText'] {
+      margin: 0;
+    }
+
+    > * {
+      margin-left: @size-24;
+      margin-right: @size-24;
+    }
+  }
+}
+
 .Header {
   display: flex;
   align-items: center;
@@ -151,9 +167,6 @@
   padding: 0 @size-24 0 @size-32;
   width: 100%;
   margin: 0;
-  position: sticky;
-  top: 0;
-  background: var(--simple-light-bg);
   z-index: @above-all-content;
 
   > span {
@@ -270,15 +283,5 @@
 
   &.Account {
     padding: 0;
-  }
-}
-
-.ModalStructure {
-  max-height: calc(100vh - @size-32);
-  display: flex;
-  flex-direction: column;
-
-  > main {
-    overflow-y: auto;
   }
 }

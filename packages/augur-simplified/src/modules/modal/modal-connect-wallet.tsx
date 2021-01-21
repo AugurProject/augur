@@ -1,20 +1,20 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Header, ModalStructure} from './common';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Header } from './common';
 import Styles from './modal.styles.less';
-import {SecondaryButton, TextButton, WalletButton} from '../common/buttons';
-import {UnsupportedChainIdError, useWeb3React} from '@web3-react/core';
-import {AbstractConnector} from '@web3-react/abstract-connector';
-import {SUPPORTED_WALLETS} from '../ConnectAccount/constants';
-import {WalletConnectConnector} from '@web3-react/walletconnect-connector';
-import {injected, portis} from '../ConnectAccount/connectors';
-import {isMobile} from 'react-device-detect';
+import { SecondaryButton, TextButton, WalletButton } from '../common/buttons';
+import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
+import { AbstractConnector } from '@web3-react/abstract-connector';
+import { SUPPORTED_WALLETS } from '../ConnectAccount/constants';
+import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
+import { injected, portis } from '../ConnectAccount/connectors';
+import { isMobile } from 'react-device-detect';
 import MetamaskIcon from '../ConnectAccount/assets/metamask.png';
-import {ErrorBlock} from '../common/labels';
+import { ErrorBlock } from '../common/labels';
 import Loader from '../ConnectAccount/components/Loader';
 import AccountDetails from '../ConnectAccount/components/AccountDetails';
-import {useAppStatusStore} from '../stores/app-status';
+import { useAppStatusStore } from '../stores/app-status';
 import classNames from 'classnames';
-import {MODAL_CONNECT_WALLET} from '../constants';
+import { MODAL_CONNECT_WALLET } from '../constants';
 
 const WALLET_VIEWS = {
   OPTIONS: 'options',
@@ -330,73 +330,72 @@ const ModalConnectWallet = ({
     setWalletList(getWalletButtons());
   }, [getWalletButtons]);
 
-  const header = (
-    <Header
-      title={
-        walletView !== WALLET_VIEWS.ACCOUNT ? (
-          <span
-            className={Styles.HeaderLink}
-            onClick={() => {
-              setPendingError(false);
-              setWalletView(WALLET_VIEWS.ACCOUNT);
-            }}
-          >
-            Back
-          </span>
-        ) : account && walletView === WALLET_VIEWS.ACCOUNT ? (
-          'Account'
-        ) : (
-          'Connect a wallet'
-        )
-      }
-    />
-  );
-
-  const main = (
-    <div
-      className={classNames(Styles.ModalConnectWallet, {
-        [Styles.Account]: account && walletView === WALLET_VIEWS.ACCOUNT,
-      })}
-    >
-      {error ? (
-        <ErrorBlock
-          text={
-            error instanceof UnsupportedChainIdError
-              ? 'Please connect to the appropriate Ethereum network.'
-              : 'Error connecting. Try refreshing the page.'
-          }
-        />
-      ) : account && walletView === WALLET_VIEWS.ACCOUNT ? (
-        <AccountDetails
-          toggleWalletModal={() => toggleModal()}
-          openOptions={() => setWalletView(WALLET_VIEWS.OPTIONS)}
-          darkMode={darkMode}
-          transactions={transactions}
-          removeTransaction={removeTransaction}
-        />
-      ) : walletView === WALLET_VIEWS.PENDING ? (
-        <PendingWalletView
-          connector={pendingWallet}
-          error={pendingError}
-          setPendingError={setPendingError}
-          tryActivation={tryActivation}
-        />
-      ) : (
-        <>
-          {walletList && <WalletList walletList={walletList} />}
-          <div className={Styles.LearnMore}>
-            New to Ethereum?{' '}
-            <TextButton
-              href="https://ethereum.org/wallets/"
-              text="Learn more about wallets"
+  return (
+    <section>
+      <Header
+        title={
+          walletView !== WALLET_VIEWS.ACCOUNT ? (
+            <span
+              className={Styles.HeaderLink}
+              onClick={() => {
+                setPendingError(false);
+                setWalletView(WALLET_VIEWS.ACCOUNT);
+              }}
+            >
+              Back
+            </span>
+          ) : account && walletView === WALLET_VIEWS.ACCOUNT ? (
+            'Account'
+          ) : (
+            'Connect a wallet'
+          )
+        }
+      />
+      <main>
+        <div
+          className={classNames(Styles.ModalConnectWallet, {
+            [Styles.Account]: account && walletView === WALLET_VIEWS.ACCOUNT,
+          })}
+        >
+          {error ? (
+            <ErrorBlock
+              text={
+                error instanceof UnsupportedChainIdError
+                  ? 'Please connect to the appropriate Ethereum network.'
+                  : 'Error connecting. Try refreshing the page.'
+              }
             />
-          </div>
-        </>
-      )}
-    </div>
+          ) : account && walletView === WALLET_VIEWS.ACCOUNT ? (
+            <AccountDetails
+              toggleWalletModal={() => toggleModal()}
+              openOptions={() => setWalletView(WALLET_VIEWS.OPTIONS)}
+              darkMode={darkMode}
+              transactions={transactions}
+              removeTransaction={removeTransaction}
+            />
+          ) : walletView === WALLET_VIEWS.PENDING ? (
+            <PendingWalletView
+              connector={pendingWallet}
+              error={pendingError}
+              setPendingError={setPendingError}
+              tryActivation={tryActivation}
+            />
+          ) : (
+            <>
+              {walletList && <WalletList walletList={walletList} />}
+              <div className={Styles.LearnMore}>
+                New to Ethereum?{' '}
+                <TextButton
+                  href="https://ethereum.org/wallets/"
+                  text="Learn more about wallets"
+                />
+              </div>
+            </>
+          )}
+        </div>
+      </main>
+    </section>
   );
-
-  return <ModalStructure header={header} main={main} />;
 };
 
 export default ModalConnectWallet;

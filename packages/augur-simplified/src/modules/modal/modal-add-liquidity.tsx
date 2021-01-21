@@ -662,150 +662,157 @@ const ModalAddLiquidity = ({
                 : null,
             }}
           />
-          {!LIQUIDITY_STRINGS[modalType].cantEditAmount && (
-            <>
-              {LIQUIDITY_STRINGS[modalType].amountSubtitle && (
+          <main>
+            {!LIQUIDITY_STRINGS[modalType].cantEditAmount && (
+              <>
+                {LIQUIDITY_STRINGS[modalType].amountSubtitle && (
+                  <span className={Styles.SmallLabel}>
+                    {LIQUIDITY_STRINGS[modalType].amountSubtitle}
+                  </span>
+                )}
+                <AmountInput
+                  updateInitialAmount={(amount) => updateAmount(amount)}
+                  initialAmount={amount}
+                  maxValue={userMaxAmount}
+                  showCurrencyDropdown={!currency}
+                  chosenCash={modalType === REMOVE ? SHARES : chosenCash}
+                  updateCash={updateCash}
+                  updateAmountError={() => null}
+                />
+              </>
+            )}
+            {LIQUIDITY_STRINGS[modalType].setFees && (
+              <>
+                <ErrorBlock text="Initial liquidity providers are required to set the starting prices before adding market liquidity." />
                 <span className={Styles.SmallLabel}>
-                  {LIQUIDITY_STRINGS[modalType].amountSubtitle}
+                  Set trading fee
+                  {generateTooltip('Set trading fee', 'tradingFeeInfo')}
                 </span>
-              )}
-              <AmountInput
-                updateInitialAmount={(amount) => updateAmount(amount)}
-                initialAmount={amount}
-                maxValue={userMaxAmount}
-                showCurrencyDropdown={!currency}
-                chosenCash={modalType === REMOVE ? SHARES : chosenCash}
-                updateCash={updateCash}
-                updateAmountError={() => null}
-              />
-            </>
-          )}
-          {LIQUIDITY_STRINGS[modalType].setFees && (
-            <>
-              <ErrorBlock text="Initial liquidity providers are required to set the starting prices before adding market liquidity." />
-              <span className={Styles.SmallLabel}>
-                Set trading fee
-                {generateTooltip('Set trading fee', 'tradingFeeInfo')}
-              </span>
-              <MultiButtonSelection
-                options={TRADING_FEE_OPTIONS}
-                selection={tradingFeeSelection}
-                setSelection={(id) => setTradingFeeSelection(id)}
-              />
-            </>
-          )}
-          {!LIQUIDITY_STRINGS[modalType].hideCurrentOdds && (
-            <>
-              <span className={Styles.SmallLabel}>
-                {LIQUIDITY_STRINGS[modalType].setOddsTitle}
-              </span>
-              <OutcomesGrid
-                outcomes={outcomes}
-                selectedOutcome={null}
-                currency={chosenCash}
-                setSelectedOutcome={() => null}
-                marketType={YES_NO}
-                orderType={BUY}
-                nonSelectable
-                editable={mustSetPrices}
-                setEditableValue={(price, index) => setPrices(price, index)}
-                ammCash={cash}
-              />
-            </>
-          )}
-          <span className={Styles.SmallLabel}>
-            {LIQUIDITY_STRINGS[modalType].receiveTitle}
-          </span>
-          <InfoNumbers infoNumbers={LIQUIDITY_METHODS[modalType].breakdown} />
+                <MultiButtonSelection
+                  options={TRADING_FEE_OPTIONS}
+                  selection={tradingFeeSelection}
+                  setSelection={(id) => setTradingFeeSelection(id)}
+                />
+              </>
+            )}
+            {!LIQUIDITY_STRINGS[modalType].hideCurrentOdds && (
+              <>
+                <span className={Styles.SmallLabel}>
+                  {LIQUIDITY_STRINGS[modalType].setOddsTitle}
+                </span>
+                <OutcomesGrid
+                  outcomes={outcomes}
+                  selectedOutcome={null}
+                  currency={chosenCash}
+                  setSelectedOutcome={() => null}
+                  marketType={YES_NO}
+                  orderType={BUY}
+                  nonSelectable
+                  editable={mustSetPrices}
+                  setEditableValue={(price, index) => setPrices(price, index)}
+                  ammCash={cash}
+                />
+              </>
+            )}
+            <span className={Styles.SmallLabel}>
+              {LIQUIDITY_STRINGS[modalType].receiveTitle}
+            </span>
+            <InfoNumbers infoNumbers={LIQUIDITY_METHODS[modalType].breakdown} />
 
-          <ApprovalButton
-            amm={amm}
-            cash={cash}
-            actionType={
-              modalType !== REMOVE
-                ? ApprovalAction.ADD_LIQUIDITY
-                : ApprovalAction.REMOVE_LIQUIDITY
-            }
-          />
+            <ApprovalButton
+              amm={amm}
+              cash={cash}
+              actionType={
+                modalType !== REMOVE
+                  ? ApprovalAction.ADD_LIQUIDITY
+                  : ApprovalAction.REMOVE_LIQUIDITY
+              }
+            />
 
-          <BuySellButton
-            action={() => setShowBackView(true)}
-            disabled={!isApproved || inputFormError !== ''}
-            error={buttonError}
-            text={
-              inputFormError === ''
-                ? buttonError
+            <BuySellButton
+              action={() => setShowBackView(true)}
+              disabled={!isApproved || inputFormError !== ''}
+              error={buttonError}
+              text={
+                inputFormError === ''
                   ? buttonError
-                  : LIQUIDITY_STRINGS[modalType].actionButtonText
-                : inputFormError
-            }
-          />
-          {LIQUIDITY_STRINGS[modalType].liquidityDetailsFooter && (
+                    ? buttonError
+                    : LIQUIDITY_STRINGS[modalType].actionButtonText
+                  : inputFormError
+              }
+            />
+            {LIQUIDITY_STRINGS[modalType].liquidityDetailsFooter && (
+              <div className={Styles.FooterText}>
+                <span className={Styles.SmallLabel}>
+                  {LIQUIDITY_STRINGS[modalType].liquidityDetailsFooter.title}
+                </span>
+                <InfoNumbers
+                  infoNumbers={
+                    LIQUIDITY_METHODS[modalType].liquidityDetailsFooter
+                      .breakdown
+                  }
+                />
+              </div>
+            )}
             <div className={Styles.FooterText}>
-              <span className={Styles.SmallLabel}>
-                {LIQUIDITY_STRINGS[modalType].liquidityDetailsFooter.title}
-              </span>
-              <InfoNumbers
-                infoNumbers={
-                  LIQUIDITY_METHODS[modalType].liquidityDetailsFooter.breakdown
-                }
-              />
+              {LIQUIDITY_METHODS[modalType].footerText}
             </div>
-          )}
-          <div className={Styles.FooterText}>
-            {LIQUIDITY_METHODS[modalType].footerText}
-          </div>
+          </main>
         </>
       ) : (
         <>
           <div className={Styles.Header} onClick={() => setShowBackView(false)}>
             Back
           </div>
-          <div className={Styles.MarketTitle}>
-            <span>Market</span>
-            <span>{market.description}</span>
-          </div>
-          <section>
-            <span className={Styles.SmallLabel}>
-              {LIQUIDITY_STRINGS[modalType].confirmOverview.title}
-            </span>
-            <InfoNumbers
-              infoNumbers={
-                LIQUIDITY_METHODS[modalType].confirmOverview.breakdown
-              }
-            />
-          </section>
-
-          <section>
-            <span className={Styles.SmallLabel}>
-              {LIQUIDITY_STRINGS[modalType].confirmReceiveOverview.title}
-            </span>
-            <InfoNumbers
-              infoNumbers={
-                LIQUIDITY_METHODS[modalType].confirmReceiveOverview.breakdown
-              }
-            />
-          </section>
-          {LIQUIDITY_STRINGS[modalType].marketLiquidityDetails && (
+          <main>
+            <div className={Styles.MarketTitle}>
+              <span>Market</span>
+              <span>{market.description}</span>
+            </div>
             <section>
               <span className={Styles.SmallLabel}>
-                {LIQUIDITY_STRINGS[modalType].marketLiquidityDetails.title}
+                {LIQUIDITY_STRINGS[modalType].confirmOverview.title}
               </span>
               <InfoNumbers
                 infoNumbers={
-                  LIQUIDITY_METHODS[modalType].marketLiquidityDetails.breakdown
+                  LIQUIDITY_METHODS[modalType].confirmOverview.breakdown
                 }
               />
             </section>
-          )}
-          <BuySellButton
-            text={LIQUIDITY_STRINGS[modalType].confirmButtonText}
-            action={LIQUIDITY_METHODS[modalType].confirmAction}
-          />
-          <div className={Styles.FooterText}>
-            Need some copy here explaining why the user will get shares and that
-            they may recieve some shares when they remove their liquidity.
-          </div>
+
+            <section>
+              <span className={Styles.SmallLabel}>
+                {LIQUIDITY_STRINGS[modalType].confirmReceiveOverview.title}
+              </span>
+              <InfoNumbers
+                infoNumbers={
+                  LIQUIDITY_METHODS[modalType].confirmReceiveOverview.breakdown
+                }
+              />
+            </section>
+            {LIQUIDITY_STRINGS[modalType].marketLiquidityDetails && (
+              <section>
+                <span className={Styles.SmallLabel}>
+                  {LIQUIDITY_STRINGS[modalType].marketLiquidityDetails.title}
+                </span>
+                <InfoNumbers
+                  infoNumbers={
+                    LIQUIDITY_METHODS[modalType].marketLiquidityDetails
+                      .breakdown
+                  }
+                />
+              </section>
+            )}
+            <BuySellButton
+              text={LIQUIDITY_STRINGS[modalType].confirmButtonText}
+              action={LIQUIDITY_METHODS[modalType].confirmAction}
+            />
+            <div className={Styles.FooterText}>
+              Need some copy here explaining why the user will get shares and
+              that they may recieve some shares when they remove their
+              liquidity.
+            </div>
+          </main>
         </>
       )}
     </section>
