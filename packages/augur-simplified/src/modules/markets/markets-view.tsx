@@ -40,6 +40,7 @@ import {
   CREATE,
 } from '../constants';
 import { sliceByPage, Pagination } from '../common/pagination';
+import {TopBanner} from 'modules/common/top-banner';
 
 const PAGE_LIMIT = 21;
 
@@ -222,6 +223,7 @@ const applyFiltersAndSort = (
 const MarketsView = () => {
   const {
     isMobile,
+    isLogged,
     marketsViewSettings,
     actions: { setSidebar, updateMarketsViewSettings },
     processed: { markets },
@@ -273,7 +275,7 @@ const MarketsView = () => {
   return (
     <div className={Styles.MarketsView}>
       <NetworkMismatchBanner />
-      <AppViewStats showCashAmounts />
+      {isLogged ? <AppViewStats showCashAmounts /> : <TopBanner />}
       {isMobile && (
         <SecondaryButton
           text={`filters${changedFilters ? ` (${changedFilters})` : ``}`}

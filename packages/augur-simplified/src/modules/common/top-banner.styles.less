@@ -1,0 +1,33 @@
+@import (reference) '~assets/styles/shared';
+
+.TopBanner {
+  height: @size-148;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: @size-16;
+  text-align: center;
+  background-position: left center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url("../../assets/images/top-banner.png"); // 1264px // 1023px // 959px
+
+  > h1 {
+    .text-36-semi-bold;
+
+    color: var(--simple-light-bg);
+  }
+
+  @media @breakpoint-mobile-tablet {
+    height: @size-85;
+
+    > h1 {
+      .text-24-semi-bold;
+    }
+  }
+
+  @media @breakpoint-mobile {
+    background-position: -@size-144 center;
+  }
+}
