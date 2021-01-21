@@ -445,18 +445,11 @@ export async function doTrade(
   return null;
 }
 
-export const claimWinnings = (account: string, library: Web3Provider, marketIds: string[], paraShareToken) => {
-  const contract = getContract(paraShareToken, ParaShareToken.ABI, library, account);
+export const claimWinnings = (account: string, library: Web3Provider, marketIds: string[], cash: Cash): Promise<TransactionResponse | null> => {
+  if (cash?.shareToken) return null;
+  const contract = getContract(cash.shareToken, ParaShareToken.ABI, library, account);
   return contract
-    .claimTradingProceeds(marketIds, account, ethers.utils.formatBytes32String('11'))
-    .then((response: TransactionResponse) => {
-      // TODO: handle response
-    })
-    .catch((error: Error) => {
-      // TODO: handle error
-      console.debug('Failed to claim winnings', error)
-      throw error
-    })
+    .claimMarketsProceeds(marketIds, account, ethers.utils.formatBytes32String('11'));
 }
 
 interface UserTrades {
@@ -862,7 +855,7 @@ const getInitPositionValues = (trades: UserTrades, amm: AmmExchange, isYesOutcom
   // get shares from LP activity
   const sharesLiquidity = accumLpSharesPrice(amm.transactions, isYesOutcome, account);
   const allInputShareAmounts = sharesLiquidity.shares.plus(sharesEntered.shares);
-  const allInputCashAmounts =  sharesLiquidity.cashAmount.plus(sharesEntered.cashAmount);
+  const allInputCashAmounts = sharesLiquidity.cashAmount.plus(sharesEntered.cashAmount);
   const netShareAmounts = allInputShareAmounts.minus(sharesExited.shares);
   const netCashAmounts = allInputCashAmounts.minus(sharesExited.cashAmount);
   const cost = convertOnChainSharesToDisplayShareAmount(netCashAmounts, amm.cash.decimals).times(new BN(cashPrice));
@@ -894,7 +887,7 @@ const accumLpSharesPrice = (transactions: AmmTransaction[], isYesOutcome: boolea
     if (netNoShares.lte(new BN(0))) return p;
     return { shares: p.shares.plus(netNoShares), cashAmount: p.cashAmount.plus(shareCost) }
   },
-    { shares: new BN(0), cashAmount: new BN(0)});
+    { shares: new BN(0), cashAmount: new BN(0) });
 
   return { shares: result.shares, cashAmount: result.cashAmount };
 }
