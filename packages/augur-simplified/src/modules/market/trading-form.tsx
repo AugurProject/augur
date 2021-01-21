@@ -11,10 +11,11 @@ import {
 } from '../types';
 import {
   formatCash,
+  formatCashPrice,
   formatDai,
   formatPercent,
   formatSimpleShares,
-  formatUSD,
+  getCashFormat,
 } from '../../utils/format-number';
 import { ApprovalButton, TinyButton, BuySellButton } from '../common/buttons';
 import {
@@ -65,7 +66,8 @@ export const DefaultMarketOutcomes = [
 ];
 
 const PLACEHOLDER = '0';
-const AVG_PRICE_TIP = 'The difference between the market price and estimated price due to trade size.';
+const AVG_PRICE_TIP =
+  'The difference between the market price and estimated price due to trade size.';
 
 export const isInvalidNumber = (number) => {
   return (
@@ -86,11 +88,11 @@ const Outcome = ({
   ammCash,
   showAsButton,
   invalidSelected,
-  currency,
 }) => {
   const [customVal, setCustomVal] = useState('');
   const input = useRef(null);
   const { isLogged } = useAppStatusStore();
+  const { prepend, symbol } = getCashFormat(ammCash);
   useEffect(() => {
     if (outcome.price !== '0' && outcome.price && outcome.price !== '') {
       setCustomVal(outcome.price.split('.')[1]);
@@ -116,7 +118,7 @@ const Outcome = ({
       <span>{outcome.name}</span>
       {editable ? (
         <div onClick={() => input.current && input.current.focus()}>
-          <span>{currency === USDC ? '$0.' : '0.'}</span>
+          <span>{`${prepend && symbol}0.`}</span>
           <input
             value={parseInt(customVal)}
             onChange={(v) => {
@@ -130,17 +132,15 @@ const Outcome = ({
             type="number"
             placeholder={PLACEHOLDER}
             ref={input}
-             // @ts-ignore
-            onWheel={e => e?.target?.blur()}
+            // @ts-ignore
+            onWheel={(e) => e?.target?.blur()}
           />
         </div>
       ) : (
         <>
           {!outcome.isInvalid && (
             <span>
-              {ammCash?.name === USDC
-                ? formattedPrice.full
-                : formattedPrice.formatted}
+              {formatCashPrice(formattedPrice.fullPrecision, ammCash).full}
             </span>
           )}
           {outcome.isInvalid && LinkIcon}
@@ -181,7 +181,7 @@ export const AmountInput = ({
   const [amount, updateAmount] = useState(initialAmount);
   const icon = currencyName === USDC ? UsdIcon : EthIcon;
   const label = currencyName === USDC ? USDC : ETH;
-  const prepend = currencyName === USDC ? '$' : '';
+  const { symbol, prepend } = getCashFormat(ammCash);
   const setMax = () => {
     updateAmount(maxValue);
     updateInitialAmount(maxValue);
@@ -206,7 +206,12 @@ export const AmountInput = ({
     >
       <span>amount</span>
       <span onClick={setMax}>
-        {isLogged && `balance: ${isBuy ? formatCash(maxValue, ammCash).full : formatSimpleShares(maxValue).formatted}`}
+        {isLogged &&
+          `balance: ${
+            isBuy
+              ? formatCash(maxValue, ammCash).full
+              : formatSimpleShares(maxValue).formatted
+          }`}
       </span>
       <div
         className={classNames(Styles.AmountInputDropdown, {
@@ -214,7 +219,7 @@ export const AmountInput = ({
           [Styles.showCurrencyDropdown]: showCurrencyDropdown,
         })}
       >
-        <span>{prepend}</span>
+        <span>{prepend && symbol}</span>
         <input
           type="number"
           onChange={(e) => {
@@ -225,7 +230,7 @@ export const AmountInput = ({
           value={amount}
           placeholder="0"
           // @ts-ignore
-          onWheel={e => e?.target?.blur()}
+          onWheel={(e) => e?.target?.blur()}
         />
         {!!currencyName && currencyName !== SHARES && !showCurrencyDropdown && (
           <span className={Styles.CurrencyLabel}>
@@ -266,7 +271,6 @@ interface OutcomesGridProps {
   ammCash: Cash;
   showAsButtons?: boolean;
   dontFilterInvalid?: boolean;
-  currency: string;
 }
 export const OutcomesGrid = ({
   outcomes,
@@ -280,7 +284,6 @@ export const OutcomesGrid = ({
   ammCash,
   showAsButtons,
   dontFilterInvalid,
-  currency,
 }: OutcomesGridProps) => {
   return (
     <div
@@ -295,7 +298,6 @@ export const OutcomesGrid = ({
         .reverse()
         .map((outcome, index) => (
           <Outcome
-            currency={currency}
             key={outcome.id}
             selected={
               selectedOutcome &&
@@ -331,7 +333,11 @@ interface InfoNumbersProps {
 
 export const InfoNumbers = ({ infoNumbers }: InfoNumbersProps) => {
   return (
-    <div className={Styles.OrderInfo}>
+    <div
+      className={classNames(Styles.OrderInfo, {
+        [Styles.Populated]: infoNumbers[0]?.value !== '-',
+      })}
+    >
       {infoNumbers.map((infoNumber) => (
         <div key={infoNumber.label}>
           <span>
@@ -351,23 +357,28 @@ const getEnterBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
     {
       label: 'Average Price',
       value: !isNaN(Number(breakdown?.averagePrice))
-        ? formatUSD(breakdown.averagePrice).formatted
+        ? formatCashPrice(breakdown.averagePrice, cash).full
         : '-',
       tooltipText: AVG_PRICE_TIP,
       tooltipKey: 'averagePrice',
     },
     {
-      label: 'Shares Purchasing',
-      value: !isNaN(Number(breakdown?.outputValue)) ? formatSimpleShares(breakdown.outputValue).full : '-',
-    },
-    {
-      label: 'Max Winnings',
-      value: !isNaN(Number(breakdown?.maxProfit)) ? formatCash(breakdown.maxProfit, cash).full
+      label: 'Estimated Shares',
+      value: !isNaN(Number(breakdown?.outputValue))
+        ? formatSimpleShares(breakdown.outputValue).full
         : '-',
     },
     {
-      label: 'Estimated Fees',
-      value: !isNaN(Number(breakdown?.tradeFees)) ? formatSimpleShares(breakdown.tradeFees).full : '-',
+      label: 'Max Profit',
+      value: !isNaN(Number(breakdown?.maxProfit))
+        ? formatCash(breakdown.maxProfit, cash).full
+        : '-',
+    },
+    {
+      label: 'Estimated Fees (Shares)',
+      value: !isNaN(Number(breakdown?.tradeFees))
+        ? formatSimpleShares(breakdown.tradeFees).full
+        : '-',
     },
   ];
 };
@@ -377,7 +388,7 @@ const getExitBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
     {
       label: 'Average Price',
       value: !isNaN(Number(breakdown?.averagePrice))
-        ? formatUSD(breakdown.averagePrice).formatted
+        ? formatCashPrice(breakdown.averagePrice, cash).full
         : '-',
       tooltipText: AVG_PRICE_TIP,
       tooltipKey: 'averagePrice',
@@ -395,8 +406,10 @@ const getExitBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
         : '-',
     },
     {
-      label: 'Estimated Fees',
-      value: !isNaN(Number(breakdown?.tradeFees)) ? formatCash(breakdown.tradeFees, cash).full : '-',
+      label: `Estimated Fees (${cash.name})`,
+      value: !isNaN(Number(breakdown?.tradeFees))
+        ? formatCash(breakdown.tradeFees, cash).full
+        : '-',
     },
   ];
 };
@@ -448,10 +461,11 @@ const TradingForm = ({
   const isApprovedTrade = isBuy
     ? !!approvals?.trade?.enter[ammCash?.name]
     : !!approvals?.trade?.exit[ammCash?.name];
-  const approvalAction = !isApprovedTrade ? isBuy
+  const approvalAction = !isApprovedTrade
+    ? isBuy
       ? ApprovalAction.ENTER_POSITION
       : ApprovalAction.EXIT_POSITION
-      : null;
+    : null;
   const selectedOutcomeId = selectedOutcome.id;
   const marketShares =
     balances?.marketShares && balances?.marketShares[amm?.id];
@@ -618,7 +632,6 @@ const TradingForm = ({
           orderType={orderType}
           ammCash={ammCash}
           dontFilterInvalid
-          currency={orderType === BUY ? ammCash?.name : SHARES}
         />
         <AmountInput
           chosenCash={isBuy ? ammCash?.name : SHARES}
@@ -628,7 +641,9 @@ const TradingForm = ({
           ammCash={ammCash}
           rate={
             !isNaN(Number(breakdown?.ratePerCash))
-              ? `1 ${amm?.cash?.name} = ${formatSimpleShares(breakdown?.ratePerCash).full}`
+              ? `1 ${amm?.cash?.name} (${getCashFormat(ammCash).symbol}) = ${
+                  formatSimpleShares(breakdown?.ratePerCash).full
+                }`
               : null
           }
           isBuy={orderType === BUY}
