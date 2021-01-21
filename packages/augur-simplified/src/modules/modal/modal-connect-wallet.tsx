@@ -211,10 +211,6 @@ const ModalConnectWallet = ({
   useEffect(() => {
     setPendingError(false);
     setWalletView(WALLET_VIEWS.ACCOUNT);
-    // fortmatic.on(OVERLAY_READY, () => {
-    //   // closeModal();
-    //   toggleModal();
-    // });
   }, [toggleModal]);
 
   // close modal when a connection is successful
