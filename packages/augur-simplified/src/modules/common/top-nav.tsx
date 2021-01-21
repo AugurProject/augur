@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, Fragment, useRef } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { useLocation } from 'react-router';
 import Styles from './top-nav.styles.less';
 import ButtonStyles from './buttons.styles.less';
