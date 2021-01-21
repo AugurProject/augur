@@ -192,7 +192,6 @@ const ModalConnectWallet = ({
             .then(() => {
               activate(connector);
               closeModal();
-              // setWalletView(WALLET_VIEWS.ACCOUNT);
             });
       });
     },
