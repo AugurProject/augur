@@ -23,10 +23,12 @@
     min-width: @size-288;
     margin: 0 @size-16;
     background: var(--simple-light-bg);
+    overflow: hidden;
   }
 
   @media @breakpoint-mobile-tablet {
     width: 100%;
+    height: 100%;
 
     > div {
       width: 100%;
@@ -81,6 +83,10 @@
   }
 
   &.showBackView {
+    > div:first-of-type {
+      cursor: pointer;
+    }
+
     > main {
       > div:first-of-type {
         .text-20-bold;
@@ -112,6 +118,12 @@
       }
 
       > section:first-of-type {
+        margin-top: @size-24;
+      }
+    }
+
+    &.Remove { 
+      > main > div:first-of-type {
         margin-top: @size-24;
       }
     }
@@ -169,6 +181,8 @@
   width: 100%;
   margin: 0;
   z-index: @above-all-content;
+  height: @size-72;
+  max-height: @size-72;
 
   > span {
     .text-20-bold;
@@ -215,7 +229,7 @@
   background-color: var(--light-background-color);
   border-top: @size-1 solid var(--simple-border);
   line-height: @size-22;
-  border-radius: @size-8;
+  border-radius: @size-16;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 
