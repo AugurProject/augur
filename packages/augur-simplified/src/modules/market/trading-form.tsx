@@ -562,8 +562,8 @@ const TradingForm = ({
             from: loginAccount.account,
             addedTime: new Date().getTime(),
             message: `${
-              direction === TradingDirection.ENTRY ? 'Enter' : 'Exit'
-            } Trade`,
+              direction === TradingDirection.ENTRY ? 'Buy' : 'Sell'
+            } Shares`,
             marketDescription: amm?.market?.description,
           });
           response
