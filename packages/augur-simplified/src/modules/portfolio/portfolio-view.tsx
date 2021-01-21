@@ -7,22 +7,28 @@ import { useAppStatusStore } from '../stores/app-status';
 import { PrimaryButton } from '../common/buttons';
 import { NetworkMismatchBanner } from '../common/labels';
 import { EthIcon, UsdIcon } from '../common/icons';
+import { keyedObjToArray } from '../stores/app-status-hooks';
+import { ETH, USDC } from '../constants';
+import { formatCashPrice } from '../../utils/format-number';
 
 const TABLES = 'TABLES';
 const ACTIVITY = 'ACTIVITY';
 
 export const ClaimWinningsSection = () => {
-  const { isLogged } = useAppStatusStore();
+  const { isLogged, processed: { cashes } } = useAppStatusStore();
+  const keyedCash = keyedObjToArray(cashes);
+  const ethCash = keyedCash.find(c => c?.name === ETH);
+  const usdcCash = keyedCash.find(c => c?.name === USDC);
   // userInfo: { balances: { claimableWinnings }}
   // console.log(isLogged, claimableWinnings);
   return (
     <div className={Styles.ClaimableWinningsSection}>
       {isLogged && (
-        <PrimaryButton text="Claim Winnings ($24.00)" icon={UsdIcon} />
+        <PrimaryButton text={`Claim Winnings (${formatCashPrice("24.00", usdcCash).full})`} icon={UsdIcon} />
       )}
       {isLogged && (
         <PrimaryButton
-          text="Approve to Claim Winnings (0.87 ETH)"
+          text={`Approve to Claim Winnings (${formatCashPrice("0.87", ethCash).full})`}
           icon={EthIcon}
         />
       )}

@@ -610,6 +610,7 @@ const ModalAddLiquidity = ({
                   </span>
                 )}
                 <AmountInput
+                  ammCash={cash}
                   updateInitialAmount={(amount) => updateAmount(amount)}
                   initialAmount={amount}
                   maxValue={userMaxAmount}
@@ -642,7 +643,6 @@ const ModalAddLiquidity = ({
                 <OutcomesGrid
                   outcomes={outcomes}
                   selectedOutcome={null}
-                  currency={chosenCash}
                   setSelectedOutcome={() => null}
                   marketType={YES_NO}
                   orderType={BUY}
@@ -657,7 +657,6 @@ const ModalAddLiquidity = ({
               {LIQUIDITY_STRINGS[modalType].receiveTitle}
             </span>
             <InfoNumbers infoNumbers={LIQUIDITY_METHODS[modalType].breakdown} />
-
             <ApprovalButton
               amm={amm}
               cash={cash}

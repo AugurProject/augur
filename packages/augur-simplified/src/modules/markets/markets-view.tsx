@@ -10,7 +10,7 @@ import {
   NetworkMismatchBanner,
   ReportingStateLabel,
 } from '../common/labels';
-import { formatDai, formatPercent } from '../../utils/format-number';
+import { formatCashPrice, formatDai, formatPercent } from '../../utils/format-number';
 import { FilterIcon } from '../common/icons';
 import classNames from 'classnames';
 import { PrimaryButton, SecondaryButton } from '../common/buttons';
@@ -76,7 +76,7 @@ const OutcomesTable = ({ amm }: { amm: AmmExchange }) => {
             <div key={`${outcome.name}-${amm?.marketId}-${outcome.id}`}>
               <span>{outcome.name.toLowerCase()}</span>
               <span>
-                {amm?.liquidity !== '0' ? formatDai(outcome.price).full : '-'}
+                {amm?.liquidity !== '0' ? formatCashPrice(outcome.price, amm?.cash).full : '-'}
               </span>
             </div>
           ))}
