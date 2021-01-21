@@ -543,6 +543,10 @@ export class ExchangeETH extends ExchangeCommon implements ExchangeContractInter
     return true
   }
 
+  async rateAddLiquidity(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, recipient: string): Promise<BigNumber> {
+    return this.wrapper.callStatic.addLiquidity(market, fee.toFixed(), recipient, { value: cash.toFixed() });
+  }
+
   async rateAddAMMWithLiquidity(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, ratio: BigNumber, keepLong: Boolean, recipient: string): Promise<BigNumber> {
     return this.wrapper.callStatic.addAMMWithLiquidity(market, fee.toFixed(), ratio.toFixed(), keepLong, recipient);
   }
