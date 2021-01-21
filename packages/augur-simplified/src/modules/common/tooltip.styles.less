@@ -64,6 +64,7 @@ div.Tooltip {
 :global {
   div.__react_component_tooltip {
     transition: none;
+    border-radius: @size-4;
 
     &.show {
       opacity: 1;
@@ -74,7 +75,7 @@ div.Tooltip {
 
       &::after {
         border-top: @size-8 solid var(--simple-light-bg);
-        bottom: -@size-7;
+        bottom: -@size-8;
       }
 
       &.type-light::after {
@@ -107,7 +108,7 @@ div.Tooltip {
 
       &::after {
         border-bottom-color: var(--simple-light-bg);
-        top: -@size-7;
+        top: -@size-8;
       }
 
       &.type-light::after {
@@ -141,7 +142,7 @@ div.Tooltip {
 
       &::after {
         border-left-color: var(--simple-light-bg);
-        right: -@size-7;
+        right: -@size-8;
       }
 
       &.type-light::after {
@@ -175,7 +176,7 @@ div.Tooltip {
 
       &::after {
         border-right-color: var(--simple-light-bg);
-        left: -@size-7;
+        left: -@size-8;
       }
 
       &.type-light::after {
