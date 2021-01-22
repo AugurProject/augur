@@ -24,11 +24,11 @@ export const ClaimWinningsSection = () => {
   return (
     <div className={Styles.ClaimableWinningsSection}>
       {isLogged && (
-        <PrimaryButton text={`Claim Winnings (${formatCashPrice("24.00", usdcCash).full})`} icon={UsdIcon} />
+        <PrimaryButton text={`Claim Winnings (${formatCashPrice("24.00", usdcCash?.name).full})`} icon={UsdIcon} />
       )}
       {isLogged && (
         <PrimaryButton
-          text={`Approve to Claim Winnings (${formatCashPrice("0.87", ethCash).full})`}
+          text={`Approve to Claim Winnings (${formatCashPrice("0.87", ethCash?.name).full})`}
           icon={EthIcon}
         />
       )}

@@ -161,7 +161,7 @@ export const PositionFooter = ({
         <>
           <span>{`${fee}% fee charged on settlement`}</span>
           <PrimaryButton
-            text={`Claim Winnings (${formatCash(claimableWinnings?.claimableBalance, amm?.cash).full})`}
+            text={`Claim Winnings (${formatCash(claimableWinnings?.claimableBalance, amm?.cash?.name).full})`}
             action={claim}
           />
         </>

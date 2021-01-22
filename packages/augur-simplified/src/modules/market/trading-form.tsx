@@ -92,7 +92,7 @@ const Outcome = ({
   const [customVal, setCustomVal] = useState('');
   const input = useRef(null);
   const { isLogged } = useAppStatusStore();
-  const { prepend, symbol } = getCashFormat(ammCash);
+  const { prepend, symbol } = getCashFormat(ammCash?.name);
   useEffect(() => {
     if (outcome.price !== '0' && outcome.price && outcome.price !== '') {
       setCustomVal(outcome.price.split('.')[1]);
@@ -141,7 +141,7 @@ const Outcome = ({
         <>
           {!outcome.isInvalid && (
             <span>
-              {formatCashPrice(formattedPrice.fullPrecision, ammCash).full}
+              {formatCashPrice(formattedPrice.fullPrecision, ammCash?.name).full}
             </span>
           )}
           {outcome.isInvalid && LinkIcon}
@@ -182,7 +182,7 @@ export const AmountInput = ({
   const [amount, updateAmount] = useState(initialAmount);
   const icon = currencyName === USDC ? UsdIcon : EthIcon;
   const label = currencyName === USDC ? USDC : ETH;
-  const { symbol, prepend } = getCashFormat(ammCash);
+  const { symbol, prepend } = getCashFormat(chosenCash);
   const setMax = () => {
     updateAmount(maxValue);
     updateInitialAmount(maxValue);
@@ -210,7 +210,7 @@ export const AmountInput = ({
         {isLogged &&
           `balance: ${
             isBuy
-              ? formatCash(maxValue, ammCash).full
+              ? formatCash(maxValue, ammCash?.name).full
               : formatSimpleShares(maxValue).formatted
           }`}
       </span>
@@ -358,7 +358,7 @@ const getEnterBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
     {
       label: 'Average Price',
       value: !isNaN(Number(breakdown?.averagePrice))
-        ? formatCashPrice(breakdown.averagePrice, cash).full
+        ? formatCashPrice(breakdown.averagePrice, cash?.name).full
         : '-',
       tooltipText: AVG_PRICE_TIP,
       tooltipKey: 'averagePrice',
@@ -372,7 +372,7 @@ const getEnterBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
     {
       label: 'Max Profit',
       value: !isNaN(Number(breakdown?.maxProfit))
-        ? formatCash(breakdown.maxProfit, cash).full
+        ? formatCash(breakdown.maxProfit, cash?.name).full
         : '-',
     },
     {
@@ -389,7 +389,7 @@ const getExitBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
     {
       label: 'Average Price',
       value: !isNaN(Number(breakdown?.averagePrice))
-        ? formatCashPrice(breakdown.averagePrice, cash).full
+        ? formatCashPrice(breakdown.averagePrice, cash?.name).full
         : '-',
       tooltipText: AVG_PRICE_TIP,
       tooltipKey: 'averagePrice',
@@ -397,7 +397,7 @@ const getExitBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
     {
       label: `Amount You'll Recieve`,
       value: !isNaN(Number(breakdown?.outputValue))
-        ? formatCash(breakdown.outputValue, cash).full
+        ? formatCash(breakdown.outputValue, cash?.name).full
         : '-',
     },
     {
@@ -409,7 +409,7 @@ const getExitBreakdown = (breakdown: EstimateTradeResult, cash: Cash) => {
     {
       label: `Estimated Fees (${cash.name})`,
       value: !isNaN(Number(breakdown?.tradeFees))
-        ? formatCash(breakdown.tradeFees, cash).full
+        ? formatCash(breakdown.tradeFees, cash?.name).full
         : '-',
     },
   ];
@@ -642,7 +642,7 @@ const TradingForm = ({
           ammCash={ammCash}
           rate={
             !isNaN(Number(breakdown?.ratePerCash))
-              ? `1 ${amm?.cash?.name} (${getCashFormat(ammCash).symbol}) = ${
+              ? `1 ${amm?.cash?.name} (${getCashFormat(ammCash?.name).symbol}) = ${
                   formatSimpleShares(breakdown?.ratePerCash).full
                 }`
               : null

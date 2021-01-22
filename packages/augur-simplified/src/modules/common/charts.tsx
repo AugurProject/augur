@@ -233,7 +233,7 @@ export const SelectOutcomeButton = ({
     >
       <span>{Checkbox}</span>
       {label}
-      <b>{formatCashPrice(createBigNumber(lastPrice), cash).full}</b>
+      <b>{formatCashPrice(createBigNumber(lastPrice), cash?.name).full}</b>
     </button>
   );
 };
@@ -417,7 +417,7 @@ const getOptions = ({
       this.points.forEach((point) => {
         out += `<li><span style="color:${point.color}">&#9679;</span><b>${
           point.series.name
-        }</b><span>${formatCashPrice(createBigNumber(point.y), cash).full}</span></li>`;
+        }</b><span>${formatCashPrice(createBigNumber(point.y), cash?.name).full}</span></li>`;
       });
       out += '</ul>';
       return out;
