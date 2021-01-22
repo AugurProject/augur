@@ -292,7 +292,7 @@ export const LIQUIDITY_STRINGS = {
     header: 'add liquidity',
     showTradingFee: false,
     setOdds: true,
-    setOddsTitle: 'Set the price between (0.0 to 1.0)',
+    setOddsTitle: 'Set the price (between 0.0 to 1.0)',
     editableOutcomes: true,
     setFees: true,
     receiveTitle: "You'll receive",
