@@ -145,7 +145,22 @@ const ModalAddLiquidity = ({
   const modalType = liquidityModalType;
 
   const [outcomes, setOutcomes] = useState<AmmOutcome[]>(
-    (amm && modalType !== CREATE) ? amm.ammOutcomes : fakeYesNoOutcomes
+    (amm && modalType !== CREATE) ? amm.ammOutcomes : [{
+      id: 0,
+      name: 'Invalid',
+      price: '',
+      isInvalid: true,
+    },
+    {
+      id: 1,
+      name: 'No',
+      price: '',
+    },
+    {
+      id: 2,
+      name: 'Yes',
+      price: '',
+    },]
   );
   const [showBackView, setShowBackView] = useState(false);
   const [chosenCash, updateCash] = useState<string>(currency ? currency : USDC);
