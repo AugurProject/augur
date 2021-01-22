@@ -8,6 +8,7 @@ import {
   PoliticsIcon,
   SportsIcon,
 } from './common/category-icons';
+import { EthIcon, UsdIcon } from './common/icons';
 
 // # Market Types
 export const YES_NO = MarketTypeName.YesNo;
@@ -52,9 +53,9 @@ export const SHARES = 'SHARES';
 export const ALL_CURRENCIES = 'All Currencies';
 
 export const CASH_LABEL_FORMATS = {
-  ETH: { symbol: 'Ξ', prepend: true, displayDecimals: 4 },
-  USDC: { symbol: '$', prepend: true, displayDecimals: 2 },
-  SHARES: { symbol: '', prepend: false, displayDecimals: 4 },
+  ETH: { symbol: 'Ξ', prepend: true, displayDecimals: 4, icon: EthIcon },
+  USDC: { symbol: '$', prepend: true, displayDecimals: 2, icon: UsdIcon },
+  SHARES: { symbol: '', prepend: false, displayDecimals: 4, icon: null },
 };
 
 // Portfolio table views

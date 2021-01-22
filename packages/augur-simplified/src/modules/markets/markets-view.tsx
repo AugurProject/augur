@@ -77,7 +77,7 @@ const OutcomesTable = ({ amm }: { amm: AmmExchange }) => {
             <div key={`${outcome.name}-${amm?.marketId}-${outcome.id}`}>
               <span>{outcome.name.toLowerCase()}</span>
               <span>
-                {amm?.liquidity !== '0' ? formatCashPrice(outcome.price, amm?.cash).full : '-'}
+                {amm?.liquidity !== '0' ? formatCashPrice(outcome.price, amm?.cash?.name).full : '-'}
               </span>
             </div>
           ))}
