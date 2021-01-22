@@ -215,14 +215,12 @@ export function formatBestPrice(
   });
 }
 
-export function formatDaiPrice(
+export function formatSimplePrice(
   num: NumStrBigNumber,
-  opts: FormattedNumberOptions = {}
 ): FormattedNumber {
   return formatDai(num, {
-    decimals: 3,
-    decimalsRounded: 3,
-    ...opts,
+    decimals: 2,
+    decimalsRounded: 2,
   });
 }
 

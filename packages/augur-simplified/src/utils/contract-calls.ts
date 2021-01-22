@@ -783,8 +783,8 @@ const getPositionUsdValues = (trades: UserTrades, rawBalance: string, balance: s
     avgPrice = trimDecimalValue(result.avgPrice);
     initCostUsd = result.initCostUsd;
     let usdChangedValue = new BN(usdValue).minus(new BN(initCostUsd));
-    // if difference below threashold use absolute value
-    if (usdChangedValue.lt(new BN("0.0000"))) {
+    // ignore negative dust difference
+    if (usdChangedValue.lt(new BN("0")) && usdChangedValue.gt(new BN("-0.001"))) {
       usdChangedValue = usdChangedValue.abs();
     }
     totalChangeUsd = trimDecimalValue(usdChangedValue);

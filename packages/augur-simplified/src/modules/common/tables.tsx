@@ -27,7 +27,7 @@ import {
   Winnings,
   TransactionTypes,
 } from '../types';
-import { formatDai, formatCash } from '../../utils/format-number';
+import { formatDai, formatCash, formatSimplePrice, formatSimpleShares } from '../../utils/format-number';
 import { MODAL_ADD_LIQUIDITY, USDC } from '../constants';
 import { useAppStatusStore } from '../stores/app-status';
 import { AddressLink, MarketLink } from '../routes/helpers/links';
@@ -106,8 +106,8 @@ const PositionRow = ({ position }: { position: PositionBalance }) => {
   return (
     <ul className={Styles.PositionRow}>
       <li>{position.outcomeName}</li>
-      <li>{position.quantity}</li>
-      <li>{position.avgPrice}</li>
+      <li>{formatSimpleShares(position.quantity).formattedValue}</li>
+      <li>{formatSimplePrice(position.avgPrice).formattedValue}</li>
       <li>{formatDai(position.initCostUsd).full}</li>
       <li>{formatDai(position.usdValue).full}</li>
       <li>{formatDai(position.totalChangeUsd).full}</li>
