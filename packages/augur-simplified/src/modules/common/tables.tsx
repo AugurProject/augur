@@ -189,14 +189,14 @@ export const AllPositionTable = ({ page }) => {
     positions,
     page,
     POSITIONS_LIQUIDITY_LIMIT
-  ).map((position, index) => {
+  ).map((position) => {
     return (
       <PositionTable
+        key={`${position.ammExchange.market.marketId}-PositionsTable`}
         market={position.ammExchange.market}
         ammExchange={position.ammExchange}
         positions={position.positions}
         claimableWinnings={position.claimableWinnings}
-        key={index}
       />
     );
   });
@@ -335,6 +335,7 @@ export const AllLiquidityTable = ({ page }) => {
   ).map((liquidity) => {
     return (
       <LiquidityTable
+        key={`${liquidity.market.marketId}-liquidityTable`}
         market={liquidity.market}
         ammExchange={liquidity.ammExchange}
         lpTokens={liquidity.lpTokens}
