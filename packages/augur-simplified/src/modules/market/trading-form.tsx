@@ -220,7 +220,7 @@ export const AmountInput = ({
           [Styles.showCurrencyDropdown]: showCurrencyDropdown,
         })}
       >
-        <span>{prepend && symbol}</span>
+        <span>{chosenCash !== SHARES && prepend && symbol}</span>
         <input
           type="number"
           onChange={(e) => {
@@ -233,12 +233,12 @@ export const AmountInput = ({
           // @ts-ignore
           onWheel={(e) => e?.target?.blur()}
         />
-        {!!currencyName && currencyName !== SHARES && !showCurrencyDropdown && (
+        {!!currencyName && chosenCash !== SHARES && !showCurrencyDropdown && (
           <span className={Styles.CurrencyLabel}>
             {icon} {label}
           </span>
         )}
-        {currencyName === SHARES && !showCurrencyDropdown && (
+        {chosenCash === SHARES && !showCurrencyDropdown && (
           <span className={Styles.SharesLabel}>
             Shares
             <TinyButton action={setMax} text="Max" />
