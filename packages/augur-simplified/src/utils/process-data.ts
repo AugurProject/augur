@@ -651,14 +651,14 @@ const getActivityType = (
         ? convertOnChainSharesToDisplayShareAmount(tx.yesShares, cash.decimals)
         : convertOnChainSharesToDisplayShareAmount(tx.noShares, cash.decimals);
       const shareType = tx.yesShares !== '0' ? 'Yes' : 'No';
-      const fmtCash = formatCashPrice(tx.price, cash.name);
+      const formattedPrice = formatCashPrice(tx.price, cash.name);
       subheader = `${
         formatSimpleShares(String(shares)).full
-      } Shares of ${shareType} @ ${fmtCash.full}`;
+      } Shares of ${shareType} @ ${formattedPrice.full}`;
       // when design wants to add usd value
       // const usdValue = `${String(new BN(price).times(new BN(shares)).times(new BN(cash.usdPrice)))}`;
       value = `${
-        formatCash(String(new BN(fmtCash.formatted).times(new BN(shares))), cash.name).full
+        formatCash(String(new BN(formattedPrice.formatted).times(new BN(shares))), cash.name).full
       }`;
       type = tx.tx_type === TransactionTypes.ENTER ? BUY : SELL;
       break;
