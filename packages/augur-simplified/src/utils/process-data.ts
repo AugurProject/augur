@@ -530,52 +530,33 @@ const calculateTotalShareVolumeInUsd = (
   const normalizedYes = new BN(volumeNo || 0).times(new BN(priceNo));
   const normalizedNo = new BN(volumeYes || 0).times(new BN(priceYes));
   return String(normalizedYes.plus(normalizedNo).times(new BN(priceUsd)));
-};
+}
 
-const calculateVolumeInUsd = (
-  volumeShare: string,
-  priceShare: number,
-  priceUsd: string
-): string => {
-  if (!volumeShare || !priceUsd || !priceShare) return '0';
-  return String(
-    new BN(volumeShare).times(new BN(priceShare)).times(new BN(priceUsd))
-  );
-};
+const calculateVolumeInUsd = (volumeShare: string, priceShare: number, priceUsd: string): string => {
+  if (!volumeShare || !priceUsd || !priceShare) return "0"
+  return String(new BN(volumeShare).times(new BN(priceShare)).times(new BN(priceUsd)))
+}
 
-const calculateLiquidityInUsd = (
-  volumeOrLiquidity: string,
-  priceUsd: string
-): string => {
-  if (!volumeOrLiquidity || !priceUsd) return '0';
-  return String(new BN(volumeOrLiquidity).times(new BN(priceUsd)));
-};
+const calculateLiquidityInUsd = (volumeOrLiquidity: string, priceUsd: string): string => {
+  if (!volumeOrLiquidity || !priceUsd) return "0"
+  return String(new BN(volumeOrLiquidity).times(new BN(priceUsd)))
+}
 
-const calculatePastVolumeInUsd = (
-  volume: string,
-  pastVolume: string,
-  priceShare: number,
-  priceUsd: string
-): string => {
-  if (!volume || !pastVolume || !priceShare || !priceUsd) return '0';
-  return String(
-    new BN(volume)
-      .minus(new BN(pastVolume))
-      .times(priceShare)
-      .times(new BN(priceUsd))
-  );
-};
+const hasZeroValue = (value) => value === "0" || !value;
+const calculatePastVolumeInUsd = (volume: string = "0", pastVolume: string = "0", priceShare: number = 0, priceUsd: string = "0"): string => {
+  if (hasZeroValue(priceShare) || hasZeroValue(priceUsd)) return "0"
+  return String(new BN(volume)
+    .minus(new BN(pastVolume))
+    .times(new BN(priceShare))
+    .times(new BN(priceUsd)))
+}
 
-const calculatePastLiquidityInUsd = (
-  volume: string,
-  pastVolume: string,
-  priceUsd: string
-): string => {
-  if (!volume || !pastVolume || !priceUsd) return '0';
-  return String(
-    new BN(volume).minus(new BN(pastVolume)).times(new BN(priceUsd))
-  );
-};
+const calculatePastLiquidityInUsd = (volume: string, pastVolume: string, priceUsd: string): string => {
+  if (!volume || !pastVolume || !priceUsd) return "0"
+  return String(new BN(volume)
+    .minus(new BN(pastVolume))
+    .times(new BN(priceUsd)))
+}
 
 // TODO: this needs to chagne when categoricals come along. We'll need to change up graph data processing
 const calculateTradePrice = (

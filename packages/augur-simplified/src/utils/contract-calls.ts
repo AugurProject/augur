@@ -427,9 +427,10 @@ export async function doTrade(
       amm.marketId,
       amm.cash.shareToken,
       amm.feeRaw,
-      String(shortShares),
-      String(longShares),
-      String(onChainMinAmount)
+      'invalidShares', String(invalidShares),
+      'short', String(shortShares),
+      'long', String(longShares),
+      'min amount', String(onChainMinAmount)
     );
 
     return augurClient.amm.doExitPosition(
