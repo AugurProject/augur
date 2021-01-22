@@ -31,7 +31,7 @@ import { MODAL_ADD_LIQUIDITY, USDC } from '../constants';
 import { useAppStatusStore } from '../stores/app-status';
 import { AddressLink, MarketLink } from '../routes/helpers/links';
 import { sliceByPage, Pagination } from './pagination';
-import { claimWinnings, getLPCurrentValue } from '../../utils/contract-calls';
+import { claimMarketWinnings, claimWinnings, getLPCurrentValue } from '../../utils/contract-calls';
 import { createBigNumber } from '../../utils/create-big-number';
 
 interface PositionsTableProps {
@@ -128,7 +128,7 @@ export const PositionFooter = ({
     const amm = market?.amm;
     const account = loginAccount?.account;
     if (amm && account) {
-      claimWinnings(account, loginAccount?.library, [market.marketId], market?.amm?.cash).then(() => {
+      claimMarketWinnings(account, loginAccount?.library, market.marketId, market?.amm?.cash).then(() => {
         // handle transaction response here
       })
         .catch(e => {

@@ -452,6 +452,13 @@ export const claimWinnings = (account: string, library: Web3Provider, marketIds:
     .claimMarketsProceeds(marketIds, account, ethers.utils.formatBytes32String('11'));
 }
 
+export const claimMarketWinnings = (account: string, library: Web3Provider, marketId: string, cash: Cash): Promise<TransactionResponse | null> => {
+  if (!cash?.shareToken) return null;
+  const contract = getContract(cash.shareToken, ParaShareToken.ABI, library, account);
+  return contract
+    .claimTradingProceeds(marketId, account, ethers.utils.formatBytes32String('11'));
+}
+
 interface UserTrades {
   enters: AmmTransaction[],
   exits: AmmTransaction[]
@@ -684,13 +691,13 @@ export const getUserBalances = async (
   return { ...userBalances, ...userPositions, totalAccountValue, availableFundsUsd }
 }
 
-const populateClaimableWinnings = (finalizedMarkets: MarketInfos, finalizedAmmExchanges: AmmExchange[], marketShares: AmmMarketShares): void => {
+const populateClaimableWinnings = (finalizedMarkets: MarketInfos = {}, finalizedAmmExchanges: AmmExchange[] = [], marketShares: AmmMarketShares = {}): void => {
   finalizedAmmExchanges.reduce((p, amm) => {
     const market = finalizedMarkets[amm.marketId];
     const winningOutcome = market.outcomes.find(o => o.payoutNumerator !== "0");
     if (winningOutcome) {
       const outcomeBalances = marketShares[amm.id];
-      const userShares = outcomeBalances.positions.find(p => p.outcomeId === winningOutcome.id);
+      const userShares = outcomeBalances?.positions.find(p => p.outcomeId === winningOutcome.id);
       if (userShares && new BN(userShares?.rawBalance).gt(0)) {
         // for yesNo and categoricals user would get 1 cash for each share
         // TODO: figure out scalars when the time comes
