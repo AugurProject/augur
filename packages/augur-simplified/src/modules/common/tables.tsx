@@ -14,6 +14,7 @@ import {
   ADD,
   REMOVE,
   SWAP,
+  TX_STATUS,
 } from '../constants';
 import { SmallDropdown } from './selection';
 import {
@@ -26,13 +27,14 @@ import {
   Winnings,
   TransactionTypes,
 } from '../types';
-import { formatDai } from '../../utils/format-number';
+import { formatDai, formatCash } from '../../utils/format-number';
 import { MODAL_ADD_LIQUIDITY, USDC } from '../constants';
 import { useAppStatusStore } from '../stores/app-status';
 import { AddressLink, MarketLink } from '../routes/helpers/links';
 import { sliceByPage, Pagination } from './pagination';
-import { claimMarketWinnings, claimWinnings, getLPCurrentValue } from '../../utils/contract-calls';
+import { claimMarketWinnings, getLPCurrentValue } from '../../utils/contract-calls';
 import { createBigNumber } from '../../utils/create-big-number';
+import { updateTxStatus } from '../modal/modal-add-liquidity';
 
 interface PositionsTableProps {
   market: MarketInfo;
@@ -119,17 +121,34 @@ interface PositionFooterProps {
 }
 export const PositionFooter = ({
   claimableWinnings,
-  market,
+  market: { fee, marketId, amm },
 }: PositionFooterProps) => {
-  const { isMobile, loginAccount } = useAppStatusStore();
+  const { isMobile, loginAccount, actions: { addTransaction, updateTransaction } } = useAppStatusStore();
   if (isMobile && !claimableWinnings) return null;
-
+  const account = loginAccount?.account;
   const claim = () => {
-    const amm = market?.amm;
-    const account = loginAccount?.account;
+    
     if (amm && account) {
-      claimMarketWinnings(account, loginAccount?.library, market.marketId, market?.amm?.cash).then(() => {
+      claimMarketWinnings(account, loginAccount?.library, marketId, amm?.cash).then((response) => {
         // handle transaction response here
+        if (response) {
+          const { hash } = response;
+          addTransaction({
+            hash,
+            chainId: loginAccount?.chainId,
+            seen: false,
+            status: TX_STATUS.PENDING,
+            from: account,
+            addedTime: new Date().getTime(),
+            message: `Claim Winnings`,
+            marketDescription: amm?.market?.description,
+          });
+          response
+            .wait()
+            .then((response) => {
+              updateTxStatus(response, updateTransaction);
+            });
+        }
       })
         .catch(e => {
           // handle error here
@@ -140,14 +159,14 @@ export const PositionFooter = ({
     <div className={Styles.PositionFooter}>
       {claimableWinnings && (
         <>
-          <span>{`${market.fee}% fee charged on settlement`}</span>
+          <span>{`${fee}% fee charged on settlement`}</span>
           <PrimaryButton
-            text={`${claimableWinnings?.claimableBalance} in Winnings to claim`}
+            text={`Claim Winnings (${formatCash(claimableWinnings?.claimableBalance, amm?.cash).full})`}
             action={claim}
           />
         </>
       )}
-      {!isMobile && <MarketLink id={market?.marketId} ammId={market?.amm?.id}><SecondaryButton text="trade" /></MarketLink>}
+      {!isMobile && <MarketLink id={marketId} ammId={amm?.id}><SecondaryButton text="trade" /></MarketLink>}
     </div>
   );
 };
@@ -170,14 +189,14 @@ export const AllPositionTable = ({ page }) => {
     positions,
     page,
     POSITIONS_LIQUIDITY_LIMIT
-  ).map((position, index) => {
+  ).map((position) => {
     return (
       <PositionTable
+        key={`${position.ammExchange.market.marketId}-PositionsTable`}
         market={position.ammExchange.market}
         ammExchange={position.ammExchange}
         positions={position.positions}
         claimableWinnings={position.claimableWinnings}
-        key={index}
       />
     );
   });
@@ -316,6 +335,7 @@ export const AllLiquidityTable = ({ page }) => {
   ).map((liquidity) => {
     return (
       <LiquidityTable
+        key={`${liquidity.market.marketId}-liquidityTable`}
         market={liquidity.market}
         ammExchange={liquidity.ammExchange}
         lpTokens={liquidity.lpTokens}
