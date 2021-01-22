@@ -130,7 +130,6 @@ export const PositionFooter = ({
     
     if (amm && account) {
       claimMarketWinnings(account, loginAccount?.library, marketId, amm?.cash).then((response) => {
-        console.log("on claim response", response);
         // handle transaction response here
         if (response) {
           const { hash } = response;
@@ -141,12 +140,14 @@ export const PositionFooter = ({
             status: TX_STATUS.PENDING,
             from: account,
             addedTime: new Date().getTime(),
-            message: `claim`,
+            message: `Claim Winnings`,
             marketDescription: amm?.market?.description,
           });
           response
             .wait()
-            .then((response) => updateTxStatus(response, updateTransaction));
+            .then((response) => {
+              updateTxStatus(response, updateTransaction);
+            });
         }
       })
         .catch(e => {

@@ -435,8 +435,8 @@ const getActivityType = (tx: AmmTransaction, cash: Cash): {
 export const shapeUserActvity = (account: string, markets: { [id: string]: MarketInfo }, ammExchanges: { [id: string]: AmmExchange }): ActivityData[] => {
   if (!ammExchanges || !account) return [];
   const exchanges = Object.values(ammExchanges)
-  if (!exchanges || exchanges.length === 0) return []
-
+  if (!exchanges || exchanges.length === 0) return [];
+  
   const transactions = exchanges.reduce((p, exchange) => {
     const cashName = exchange.cash?.name;
     const userTx: AmmTransaction[] = exchange.transactions.filter(t => isSameAddress(t.sender, account));
