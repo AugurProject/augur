@@ -632,37 +632,38 @@ const getActivityType = (
   let type = null;
   let subheader = null;
   let value = null;
-  // const formatter = cash.name === USDC ? formatDai : formatEther;
-  if (tx.tx_type === TransactionTypes.ADD_LIQUIDITY) {
-    type = 'Add Liquidity';
-    // when design wants to add usd value
-    //const usdValue = `${String(new BN(tx.value).times(new BN(cash.usdPrice)))}`;
-    value = `${formatCash(tx.value, cash.name).full}`;
-    // subheader = null;
-  } else if (tx.tx_type === TransactionTypes.REMOVE_LIQUIDITY) {
-    type = 'Remove Liquidity';
-    // when design wants to add usd value
-    //const usdValue = `${String(new BN(tx.value).times(new BN(cash.usdPrice)))}`;
-    value = `${formatCash(tx.value, cash.name).full}`;
-    // subheader = null;
-  } else {
-    const shares =
+  switch(tx.tx_type) {
+    case(TransactionTypes.ADD_LIQUIDITY): {
+      type = 'Add Liquidity';
+      // when design wants to add usd value for this or remove use below:
+      //const usdValue = `${String(new BN(tx.value).times(new BN(cash.usdPrice)))}`;
+      value = `${formatCash(tx.value, cash.name).full}`;
+      break;
+    }
+    case (TransactionTypes.REMOVE_LIQUIDITY): {
+      type = 'Remove Liquidity';
+      value = `${formatCash(tx.value, cash.name).full}`;
+      break;
+    }
+    default: {
+      const shares =
       tx.yesShares !== '0'
         ? convertOnChainSharesToDisplayShareAmount(tx.yesShares, cash.decimals)
         : convertOnChainSharesToDisplayShareAmount(tx.noShares, cash.decimals);
-    const shareType = tx.yesShares !== '0' ? 'Yes' : 'No';
-    const price = Number(tx.price).toFixed(2);
-    subheader = `${
-      formatSimpleShares(String(shares)).full
-    } Shares of ${shareType} @ ${formatCashPrice(price, cash.name).full}`;
-    // when design wants to add usd value
-    // const usdValue = `${String(new BN(price).times(new BN(shares)).times(new BN(cash.usdPrice)))}`;
-    value = `${
-      formatCash(String(new BN(price).times(new BN(shares))), cash.name).full
-    }`;
-    type = tx.tx_type === TransactionTypes.ENTER ? BUY : SELL;
+      const shareType = tx.yesShares !== '0' ? 'Yes' : 'No';
+      const fmtCash = formatCashPrice(tx.price, cash.name);
+      subheader = `${
+        formatSimpleShares(String(shares)).full
+      } Shares of ${shareType} @ ${fmtCash.full}`;
+      // when design wants to add usd value
+      // const usdValue = `${String(new BN(price).times(new BN(shares)).times(new BN(cash.usdPrice)))}`;
+      value = `${
+        formatCash(String(new BN(fmtCash.formatted).times(new BN(shares))), cash.name).full
+      }`;
+      type = tx.tx_type === TransactionTypes.ENTER ? BUY : SELL;
+      break;
+    }
   }
-
   return {
     type,
     value,
