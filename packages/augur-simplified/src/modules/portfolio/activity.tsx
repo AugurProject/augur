@@ -4,25 +4,21 @@ import { useAppStatusStore } from '../stores/app-status';
 import { ActivityItem } from '../types';
 import { ReceiptLink } from '../routes/helpers/links';
 import { Pagination, sliceByPage } from '../common/pagination';
-import { getCashFormat, formatCash } from '../../utils/format-number';
+import { getCashFormat } from '../../utils/format-number';
 
-const ActivityCard = ({ activity }: { activity: ActivityItem }) => {
-  const cleanValue = formatCash(activity.value.trim().replaceAll(` ${activity.currency}`, ''), activity.currency).full;
-  const { icon } = getCashFormat(activity.currency);
-  return (
-    <div className={Styles.ActivityCard}>
-      <div>{activity.type}</div>
-      <div>{cleanValue}</div>
-      <div>{icon}</div>
-      <span>{activity.description}</span>
-      <div>{activity.subheader}</div>
-      <div>{activity.time}</div>
-      <ReceiptLink hash={activity.txHash} />
-    </div>
-  );
-};
+const ActivityCard = ({ activity }: { activity: ActivityItem }) => (
+  <div className={Styles.ActivityCard}>
+    <div>{activity.type}</div>
+    <div>{activity.value}</div>
+    <div>{getCashFormat(activity.currency).icon}</div>
+    <span>{activity.description}</span>
+    <div>{activity.subheader}</div>
+    <div>{activity.time}</div>
+    <ReceiptLink hash={activity.txHash} />
+  </div>
+);
 
-const ACTIVITY_PAGE_LIMIT = 10; 
+const ACTIVITY_PAGE_LIMIT = 10;
 export const Activity = () => {
   const {
     isLogged,
@@ -35,19 +31,21 @@ export const Activity = () => {
       {isLogged && activity.length > 0 ? (
         <>
           <div>
-            {sliceByPage(activity, page, ACTIVITY_PAGE_LIMIT).map((activityGroup) => (
-              <div key={activityGroup.date}>
-                <span>{activityGroup.date}</span>
-                <div>
-                  {activityGroup.activity.map((activityItem) => (
-                    <ActivityCard
-                      key={activityItem.id}
-                      activity={activityItem}
-                    />
-                  ))}
+            {sliceByPage(activity, page, ACTIVITY_PAGE_LIMIT).map(
+              (activityGroup) => (
+                <div key={activityGroup.date}>
+                  <span>{activityGroup.date}</span>
+                  <div>
+                    {activityGroup.activity.map((activityItem) => (
+                      <ActivityCard
+                        key={activityItem.id}
+                        activity={activityItem}
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              )
+            )}
           </div>
           <Pagination
             page={page}
@@ -57,7 +55,9 @@ export const Activity = () => {
             updateLimit={() => null}
           />
         </>
-      ) : <span>No activity to show</span>}
+      ) : (
+        <span>No activity to show</span>
+      )}
     </div>
   );
 };
