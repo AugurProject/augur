@@ -28,15 +28,15 @@ export const SettingsButton = () => {
   const isSelectedArray = useMemo(() => {
     let output = [false, false, false, false];
     switch (slippage) {
-      case '0.1': {
+      case '0.5': {
         output[0] = true;
         break;
       }
-      case '0.5': {
+      case '1': {
         output[1] = true;
         break;
       }
-      case '1': {
+      case '2': {
         output[2] = true;
         break;
       }
@@ -83,17 +83,9 @@ export const SettingsButton = () => {
             <ul>
               <li>
                 <TinyButton
-                  text="0.1%"
-                  action={() => updateSettings({ slippage: '0.1' })}
-                  selected={isSelectedArray[0]}
-                  className={ButtonStyles.TinyTransparentButton}
-                />
-              </li>
-              <li>
-                <TinyButton
                   text="0.5%"
                   action={() => updateSettings({ slippage: '0.5' })}
-                  selected={isSelectedArray[1]}
+                  selected={isSelectedArray[0]}
                   className={ButtonStyles.TinyTransparentButton}
                 />
               </li>
@@ -101,6 +93,14 @@ export const SettingsButton = () => {
                 <TinyButton
                   text="1%"
                   action={() => updateSettings({ slippage: '1' })}
+                  selected={isSelectedArray[1]}
+                  className={ButtonStyles.TinyTransparentButton}
+                />
+              </li>
+              <li>
+                <TinyButton
+                  text="2%"
+                  action={() => updateSettings({ slippage: '2' })}
                   selected={isSelectedArray[2]}
                   className={ButtonStyles.TinyTransparentButton}
                 />
