@@ -59,20 +59,20 @@
     align-items: center;
   }
 
-  > div:nth-of-type(1) {
+  > div.type {
     .text-10-semi-bold;
 
     color: var(--simple-primary-text);
     text-transform: uppercase;
   }
 
-  > div:nth-of-type(2) {
+  > div.value {
     .text-12-semi-bold;
 
     color: var(--simple-primary-text);
   }
 
-  > div:nth-of-type(3) {
+  > div.icon {
     > svg {
       width: @size-16;
       height: @size-16;
@@ -80,7 +80,7 @@
     }
   }
 
-  > span {
+  > span.description {
     .text-12;
 
     color: var(--simple-primary-text);
@@ -88,7 +88,7 @@
     margin: @size-8 0;
   }
 
-  > div:nth-of-type(4) {
+  > div.subheader {
     .text-12-semi-bold;
 
     grid-column: 1 / span 3;
@@ -96,8 +96,7 @@
     margin-bottom: @size-4;
   }
 
-  > div:nth-of-type(5),
-  > div:nth-of-type(6) {
+  > div.time {
     .text-12-semi-bold;
 
     color: var(--simple-secondary-text);
