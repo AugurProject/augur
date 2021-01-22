@@ -634,17 +634,17 @@ const getActivityType = (
   let value = null;
   // const formatter = cash.name === USDC ? formatDai : formatEther;
   if (tx.tx_type === TransactionTypes.ADD_LIQUIDITY) {
-    type = 'Add';
+    type = 'Add Liquidity';
     // when design wants to add usd value
     //const usdValue = `${String(new BN(tx.value).times(new BN(cash.usdPrice)))}`;
     value = `${formatCash(tx.value, cash.name).full}`;
-    subheader = `Added ${formatCash(tx.value, cash.name).full} to Market Liquidity.`;
+    // subheader = null;
   } else if (tx.tx_type === TransactionTypes.REMOVE_LIQUIDITY) {
-    type = 'Remove';
+    type = 'Remove Liquidity';
     // when design wants to add usd value
     //const usdValue = `${String(new BN(tx.value).times(new BN(cash.usdPrice)))}`;
     value = `${formatCash(tx.value, cash.name).full}`;
-    subheader = `${tx.shareAmount} LP tokens`;
+    // subheader = null;
   } else {
     const shares =
       tx.yesShares !== '0'

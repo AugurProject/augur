@@ -8,12 +8,12 @@ import { getCashFormat } from '../../utils/format-number';
 
 const ActivityCard = ({ activity }: { activity: ActivityItem }) => (
   <div className={Styles.ActivityCard}>
-    <div>{activity.type}</div>
-    <div>{activity.value}</div>
-    <div>{getCashFormat(activity.currency).icon}</div>
-    <span>{activity.description}</span>
-    <div>{activity.subheader}</div>
-    <div>{activity.time}</div>
+    <div className={Styles.type}>{activity.type}</div>
+    <div className={Styles.value}>{activity.value}</div>
+    <div className={Styles.icon}>{getCashFormat(activity.currency).icon}</div>
+    <span className={Styles.description}>{activity.description}</span>
+    {activity.subheader && <div className={Styles.subheader}>{activity.subheader}</div>}
+    <div className={Styles.time}>{activity.time}</div>
     <ReceiptLink hash={activity.txHash} />
   </div>
 );
