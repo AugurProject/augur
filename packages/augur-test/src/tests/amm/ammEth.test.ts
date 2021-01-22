@@ -212,12 +212,25 @@ describe('AMM Middleware for ETH', () => {
     test('exit position', async () => {
       const middleware = makeAMMMiddleware(bob);
 
+      const ammAddress = await middleware.exchangeAddress(market.address, wethParaShare.address, fee);
+      const totalSupply = await middleware.supplyOfLiquidityTokens(market.address, wethParaShare.address, fee);
+      const [ noShares, yesShares]  = await wethParaShare.balanceOfBatch_([
+        ammAddress,
+        ammAddress,
+        ],
+        [
+          NO,
+          YES
+        ]);
+
+      const ammCashBalance = await bob.augur.contracts.weth.balanceOf_(ammAddress);
+
       const longShares = await wethParaShare.balanceOf_(bob.account.address, YES); // from enter position test
 
       console.log('Estimating exit position rate');
       const sharesToExit = longShares.idiv(4);
-      const withFee = await middleware.getExitPosition(market.address, wethParaShare.address, fee, bn(0), sharesToExit, INCLUDE_FEE)
-      const withoutFee = await middleware.getExitPosition(market.address, wethParaShare.address, fee, bn(0), sharesToExit, EXCLUDE_FEE)
+      const withFee = await middleware.getExitPosition(totalSupply, noShares, yesShares,  ammCashBalance, fee, bn(0), sharesToExit, INCLUDE_FEE)
+      const withoutFee = await middleware.getExitPosition(totalSupply, noShares, yesShares, ammCashBalance, fee, bn(0), sharesToExit, EXCLUDE_FEE)
 
       console.log('Verifying that no-fee estimation is correct relative to fee estimation.');
       expect(withFee.toNumber()).toEqual(withoutFee.times(0.99).toNumber());

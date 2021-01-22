@@ -196,17 +196,23 @@ export class AMM {
     return this.intermediary(paraShareToken).exitPosition(market, paraShareToken, fee, shortShares, longShares, minCash);
   }
 
-  async getExitPosition(market: string, paraShareToken: string, fee: BigNumber, shortShares: BigNumber, longShares: BigNumber, includeFee: Boolean): Promise<BigNumber> {
-    const exchange = await this.intermediary(paraShareToken).calculateExchangeAddress(market, paraShareToken, fee);
-    let { yes: poolLong, no: poolShort } = await this.intermediary(paraShareToken).shareBalances(market, paraShareToken, fee, exchange);
-
+  async getExitPosition(
+    totalSupply:BigNumber,
+    noBalance:BigNumber,
+    yesBalance:BigNumber,
+    cashBalance:BigNumber,
+    fee: BigNumber,
+    shortShares: BigNumber,
+    longShares: BigNumber,
+    includeFee: Boolean,
+  ): Promise<BigNumber> {
     let setsToSell = new BigNumber(shortShares); // if they are identical, sets to sell is equal to either
     if (longShares.gt(shortShares)) {
       const delta = longShares.minus(shortShares);
       const shortShareToBuy = AMM.quadratic(
         new BigNumber(1),
-        AMM.neg(delta.plus(poolLong).plus(poolShort)),
-        delta.times(poolShort),
+        AMM.neg(delta.plus(yesBalance).plus(noBalance)),
+        delta.times(noBalance),
         longShares
       );
       setsToSell = shortShares.plus(shortShareToBuy);
@@ -214,14 +220,16 @@ export class AMM {
       const delta = shortShares.minus(longShares);
       const longSharesToBuy = AMM.quadratic(
         new BigNumber(1),
-        AMM.neg(delta.plus(poolLong).plus(poolShort)),
-        delta.times(poolLong),
+        AMM.neg(delta.plus(yesBalance).plus(noBalance)),
+        delta.times(yesBalance),
         shortShares
       );
       setsToSell = longShares.plus(longSharesToBuy);
     }
 
     const cash = setsToSell.times(NUMTICKS);
+    if(cash.gte(cashBalance)) throw new Error('AMM does not have enough cash to complete exit.');
+
     return includeFee
       ? AMM.applyFee(cash, fee)
       : cash;
