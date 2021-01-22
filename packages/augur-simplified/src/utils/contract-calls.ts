@@ -11,7 +11,7 @@ import {
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers'
 import { convertDisplayCashAmountToOnChainCashAmount, convertDisplayShareAmountToOnChainShareAmount, convertOnChainCashAmountToDisplayCashAmount, formatDai, formatEther, convertOnChainSharesToDisplayShareAmount, isSameAddress } from './format-number';
 import { augurSdkLite } from './augurlitesdk';
-import { ETH, RESOLVED, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_NO_OUTCOMES_NAMES, YES_OUTCOME_ID, INVALID_OUTCOME_ID } from '../modules/constants';
+import { ETH, RESOLVED, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_NO_OUTCOMES_NAMES, YES_OUTCOME_ID, INVALID_OUTCOME_ID, MARKET_STATUS } from '../modules/constants';
 import { getProviderOrSigner } from '../modules/ConnectAccount/utils';
 
 const isValidPrice = (price: string): boolean => {
@@ -452,6 +452,13 @@ export const claimWinnings = (account: string, library: Web3Provider, marketIds:
     .claimMarketsProceeds(marketIds, account, ethers.utils.formatBytes32String('11'));
 }
 
+export const claimMarketWinnings = (account: string, library: Web3Provider, marketId: string, cash: Cash): Promise<TransactionResponse | null> => {
+  if (!cash?.shareToken) return null;
+  const contract = getContract(cash.shareToken, ParaShareToken.ABI, library, account);
+  return contract
+    .claimTradingProceeds(marketId, account, ethers.utils.formatBytes32String('11'));
+}
+
 interface UserTrades {
   enters: AmmTransaction[],
   exits: AmmTransaction[]
@@ -495,7 +502,7 @@ export const getUserBalances = async (
   //const lpAbi = AMMFactoryAbi;
   const lpAbi = ERC20ABI;
   // finalized markets
-  const finalizedMarkets = Object.values(markets).filter(m => m.reportingState === RESOLVED);
+  const finalizedMarkets = Object.values(markets).filter(m => m.reportingState === MARKET_STATUS.FINALIZED);
   const finalizedMarketIds = finalizedMarkets.map(f => f.marketId);
   const finalizedAmmExchanges = Object.values(ammExchanges).filter(a => finalizedMarketIds.includes(a.marketId));
 
@@ -684,25 +691,21 @@ export const getUserBalances = async (
   return { ...userBalances, ...userPositions, totalAccountValue, availableFundsUsd }
 }
 
-const populateClaimableWinnings = (finalizedMarkets: MarketInfos, finalizedAmmExchanges: AmmExchange[], marketShares: AmmMarketShares): void => {
+const populateClaimableWinnings = (finalizedMarkets: MarketInfos = {}, finalizedAmmExchanges: AmmExchange[] = [], marketShares: AmmMarketShares = {}): void => {
   finalizedAmmExchanges.reduce((p, amm) => {
     const market = finalizedMarkets[amm.marketId];
     const winningOutcome = market.outcomes.find(o => o.payoutNumerator !== "0");
     if (winningOutcome) {
       const outcomeBalances = marketShares[amm.id];
-      const userShares = outcomeBalances[Number(winningOutcome.id)]
-      if (userShares && new BN(userShares.rawBalance).gt(0)) {
+      const userShares = outcomeBalances?.positions.find(p => p.outcomeId === winningOutcome.id);
+      if (userShares && new BN(userShares?.rawBalance).gt(0)) {
         // for yesNo and categoricals user would get 1 cash for each share
         // TODO: figure out scalars when the time comes
-        const claimableBalance = String(new BN(userShares.maxUsdValue).minus(new BN(userShares.initCostUsd)));
-        const userBalances = Object.keys(outcomeBalances).reduce((p, id) => {
-          p[Number(id)] = outcomeBalances[Number(id)].rawBalance;
-          return p;
-        }, [])
+        const claimableBalance = String(new BN(userShares.maxUsdValue).minus(new BN(userShares.initCostUsd)).toFixed(4));
         marketShares[amm.id].claimableWinnings = {
           claimableBalance,
           sharetoken: amm.cash.shareToken,
-          userBalances,
+          userBalances: outcomeBalances.outcomeSharesRaw,
         }
       }
     }

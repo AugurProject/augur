@@ -31,7 +31,7 @@ import { MODAL_ADD_LIQUIDITY, USDC } from '../constants';
 import { useAppStatusStore } from '../stores/app-status';
 import { AddressLink, MarketLink } from '../routes/helpers/links';
 import { sliceByPage, Pagination } from './pagination';
-import { getLPCurrentValue } from '../../utils/contract-calls';
+import { claimMarketWinnings, claimWinnings, getLPCurrentValue } from '../../utils/contract-calls';
 import { createBigNumber } from '../../utils/create-big-number';
 
 interface PositionsTableProps {
@@ -79,8 +79,8 @@ const PositionHeader = () => {
             owned
           </>
         ) : (
-          'quantity owned'
-        )}
+            'quantity owned'
+          )}
       </li>
       <li>
         {isMobile ? (
@@ -90,8 +90,8 @@ const PositionHeader = () => {
             price
           </>
         ) : (
-          'avg. price paid'
-        )}
+            'avg. price paid'
+          )}
       </li>
       <li>init. value</li>
       <li>cur.{isMobile ? <br /> : ' '}value</li>
@@ -121,8 +121,21 @@ export const PositionFooter = ({
   claimableWinnings,
   market,
 }: PositionFooterProps) => {
-  const { isMobile } = useAppStatusStore();
+  const { isMobile, loginAccount } = useAppStatusStore();
   if (isMobile && !claimableWinnings) return null;
+
+  const claim = () => {
+    const amm = market?.amm;
+    const account = loginAccount?.account;
+    if (amm && account) {
+      claimMarketWinnings(account, loginAccount?.library, market.marketId, market?.amm?.cash).then(() => {
+        // handle transaction response here
+      })
+        .catch(e => {
+          // handle error here
+        })
+    }
+  }
   return (
     <div className={Styles.PositionFooter}>
       {claimableWinnings && (
@@ -130,6 +143,7 @@ export const PositionFooter = ({
           <span>{`${market.fee}% fee charged on settlement`}</span>
           <PrimaryButton
             text={`${claimableWinnings?.claimableBalance} in Winnings to claim`}
+            action={claim}
           />
         </>
       )}
@@ -146,10 +160,10 @@ export const AllPositionTable = ({ page }) => {
   } = useAppStatusStore();
   const positions = marketShares
     ? ((Object.values(marketShares) as unknown[]) as {
-        ammExchange: AmmExchange;
-        positions: PositionBalance[];
-        claimableWinnings: Winnings;
-      }[])
+      ammExchange: AmmExchange;
+      positions: PositionBalance[];
+      claimableWinnings: Winnings;
+    }[])
     : [];
 
   const positionVis = sliceByPage(
@@ -290,10 +304,10 @@ export const AllLiquidityTable = ({ page }) => {
   const { ammExchanges } = processed;
   const liquidities = lpTokens
     ? Object.keys(lpTokens).map((ammId) => ({
-        ammExchange: ammExchanges[ammId],
-        market: ammExchanges[ammId].market,
-        lpTokens: lpTokens[ammId],
-      }))
+      ammExchange: ammExchanges[ammId],
+      market: ammExchanges[ammId].market,
+      lpTokens: lpTokens[ammId],
+    }))
     : [];
   const liquiditiesViz = sliceByPage(
     liquidities,
@@ -393,17 +407,17 @@ export const PositionsLiquidityViewSwitcher = ({
 
   const positions = marketShares
     ? ((Object.values(marketShares) as unknown[]) as {
-        ammExchange: AmmExchange;
-        positions: PositionBalance[];
-        claimableWinnings: Winnings;
-      }[])
+      ammExchange: AmmExchange;
+      positions: PositionBalance[];
+      claimableWinnings: Winnings;
+    }[])
     : [];
   const liquidities = lpTokens
     ? Object.keys(lpTokens).map((ammId) => ({
-        ammExchange: ammExchanges[ammId],
-        market: ammExchanges[ammId].market,
-        lpTokens: lpTokens[ammId],
-      }))
+      ammExchange: ammExchanges[ammId],
+      market: ammExchanges[ammId].market,
+      lpTokens: lpTokens[ammId],
+    }))
     : [];
   return (
     <div className={Styles.PositionsLiquidityViewSwitcher}>
@@ -514,41 +528,41 @@ const TransactionsHeader = ({ selectedType, setSelectedType }) => {
             defaultValue={ALL}
           />
         ) : (
-          <>
-            <span
-              className={classNames({
-                [Styles.Selected]: selectedType === ALL,
-              })}
-              onClick={() => setSelectedType(ALL)}
-            >
-              all
+            <>
+              <span
+                className={classNames({
+                  [Styles.Selected]: selectedType === ALL,
+                })}
+                onClick={() => setSelectedType(ALL)}
+              >
+                all
             </span>
-            <span
-              className={classNames({
-                [Styles.Selected]: selectedType === SWAP,
-              })}
-              onClick={() => setSelectedType(SWAP)}
-            >
-              swaps
+              <span
+                className={classNames({
+                  [Styles.Selected]: selectedType === SWAP,
+                })}
+                onClick={() => setSelectedType(SWAP)}
+              >
+                swaps
             </span>
-            <span
-              className={classNames({
-                [Styles.Selected]: selectedType === ADD,
-              })}
-              onClick={() => setSelectedType(ADD)}
-            >
-              adds
+              <span
+                className={classNames({
+                  [Styles.Selected]: selectedType === ADD,
+                })}
+                onClick={() => setSelectedType(ADD)}
+              >
+                adds
             </span>
-            <span
-              className={classNames({
-                [Styles.Selected]: selectedType === REMOVE,
-              })}
-              onClick={() => setSelectedType(REMOVE)}
-            >
-              removes
+              <span
+                className={classNames({
+                  [Styles.Selected]: selectedType === REMOVE,
+                })}
+                onClick={() => setSelectedType(REMOVE)}
+              >
+                removes
             </span>
-          </>
-        )}
+            </>
+          )}
       </li>
       <li>total value</li>
       <li>token amount</li>
