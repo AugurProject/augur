@@ -619,7 +619,7 @@ const ModalAddLiquidity = ({
               <>
                 <span className={Styles.SmallLabel}>
                   Set trading fee
-                  {generateTooltip('Set trading fee', 'tradingFeeInfo')}
+                  {generateTooltip('Fees earned for providing liquidity.', 'tradingFeeInfo')}
                 </span>
                 <MultiButtonSelection
                   options={TRADING_FEE_OPTIONS}
