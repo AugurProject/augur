@@ -29,7 +29,7 @@ import {
   isInvalidNumber,
 } from '../market/trading-form';
 import { ApprovalButton, BuySellButton } from '../common/buttons';
-import { ErrorBlock, generateTooltip } from '../common/labels';
+import { generateTooltip } from '../common/labels';
 import {
   convertDisplayShareAmountToOnChainShareAmount,
   formatPercent,
@@ -617,7 +617,6 @@ const ModalAddLiquidity = ({
             )}
             {LIQUIDITY_STRINGS[modalType].setFees && (
               <>
-                <ErrorBlock text="Initial liquidity providers are required to set the starting prices before adding market liquidity." />
                 <span className={Styles.SmallLabel}>
                   Set trading fee
                   {generateTooltip('Set trading fee', 'tradingFeeInfo')}
