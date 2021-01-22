@@ -83,25 +83,6 @@ const defaultAddLiquidityBreakdown: LiquidityBreakdown = {
   cashAmount: '0',
 };
 
-const fakeYesNoOutcomes = [
-  {
-    id: 0,
-    name: 'Invalid',
-    price: '',
-    isInvalid: true,
-  },
-  {
-    id: 1,
-    name: 'No',
-    price: '',
-  },
-  {
-    id: 2,
-    name: 'Yes',
-    price: '',
-  },
-];
-
 interface ModalAddLiquidityProps {
   market: MarketInfo;
   liquidityModalType: string;
