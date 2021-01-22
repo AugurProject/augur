@@ -14,6 +14,7 @@ import {
   ADD,
   REMOVE,
   SWAP,
+  TX_STATUS,
 } from '../constants';
 import { SmallDropdown } from './selection';
 import {
@@ -33,6 +34,7 @@ import { AddressLink, MarketLink } from '../routes/helpers/links';
 import { sliceByPage, Pagination } from './pagination';
 import { claimMarketWinnings, getLPCurrentValue } from '../../utils/contract-calls';
 import { createBigNumber } from '../../utils/create-big-number';
+import { updateTxStatus } from '../modal/modal-add-liquidity';
 
 interface PositionsTableProps {
   market: MarketInfo;
@@ -121,14 +123,31 @@ export const PositionFooter = ({
   claimableWinnings,
   market: { fee, marketId, amm },
 }: PositionFooterProps) => {
-  const { isMobile, loginAccount } = useAppStatusStore();
+  const { isMobile, loginAccount, actions: { addTransaction, updateTransaction } } = useAppStatusStore();
   if (isMobile && !claimableWinnings) return null;
   const account = loginAccount?.account;
   const claim = () => {
     
     if (amm && account) {
-      claimMarketWinnings(account, loginAccount?.library, marketId, amm?.cash).then(() => {
+      claimMarketWinnings(account, loginAccount?.library, marketId, amm?.cash).then((response) => {
+        console.log("on claim response", response);
         // handle transaction response here
+        if (response) {
+          const { hash } = response;
+          addTransaction({
+            hash,
+            chainId: loginAccount?.chainId,
+            seen: false,
+            status: TX_STATUS.PENDING,
+            from: account,
+            addedTime: new Date().getTime(),
+            message: `claim`,
+            marketDescription: amm?.market?.description,
+          });
+          response
+            .wait()
+            .then((response) => updateTxStatus(response, updateTransaction));
+        }
       })
         .catch(e => {
           // handle error here
