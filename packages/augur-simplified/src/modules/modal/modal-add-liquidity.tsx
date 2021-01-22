@@ -83,25 +83,6 @@ const defaultAddLiquidityBreakdown: LiquidityBreakdown = {
   cashAmount: '0',
 };
 
-const fakeYesNoOutcomes = [
-  {
-    id: 0,
-    name: 'Invalid',
-    price: '',
-    isInvalid: true,
-  },
-  {
-    id: 1,
-    name: 'No',
-    price: '',
-  },
-  {
-    id: 2,
-    name: 'Yes',
-    price: '',
-  },
-];
-
 interface ModalAddLiquidityProps {
   market: MarketInfo;
   liquidityModalType: string;
@@ -145,7 +126,22 @@ const ModalAddLiquidity = ({
   const modalType = liquidityModalType;
 
   const [outcomes, setOutcomes] = useState<AmmOutcome[]>(
-    amm ? amm.ammOutcomes : fakeYesNoOutcomes
+    (amm && modalType !== CREATE) ? amm.ammOutcomes : [{
+      id: 0,
+      name: 'Invalid',
+      price: '',
+      isInvalid: true,
+    },
+    {
+      id: 1,
+      name: 'No',
+      price: '',
+    },
+    {
+      id: 2,
+      name: 'Yes',
+      price: '',
+    },]
   );
   const [showBackView, setShowBackView] = useState(false);
   const [chosenCash, updateCash] = useState<string>(currency ? currency : USDC);
@@ -171,7 +167,7 @@ const ModalAddLiquidity = ({
 
   const [amount, updateAmount] = useState(modalType === REMOVE ? userMaxAmount : '');
 
-  const percentFormatted = useMemo(() => {
+  const feePercentFormatted = useMemo(() => {
     const feeOption = TRADING_FEE_OPTIONS.find(
       (t) => t.id === tradingFeeSelection
     );
@@ -180,6 +176,17 @@ const ModalAddLiquidity = ({
       : amm?.feeInPercent;
     return formatPercent(feePercent).full;
   }, [tradingFeeSelection, amm?.feeInPercent]);
+
+  const onChainFee = useMemo(() => {
+    const feeOption = TRADING_FEE_OPTIONS.find(
+      (t) => t.id === tradingFeeSelection
+    );
+    const feePercent = LIQUIDITY_STRINGS[modalType].setFees
+      ? feeOption.value
+      : amm?.feeInPercent;
+
+      return String(new BN(feePercent).times(new BN(10)));
+  }, [tradingFeeSelection, amm?.feeRaw])
 
   const userPercentOfPool = useMemo(() => {
     let userPercent = '100';
@@ -242,17 +249,12 @@ const ModalAddLiquidity = ({
     if (priceErrorsWithEmptyString.length > 0 || isInvalidNumber(amount)) {
       return setBreakdown(defaultAddLiquidityBreakdown);
     }
-    const feeSelected = TRADING_FEE_OPTIONS.find(
-      (t) => t.id === tradingFeeSelection
-    );
-    const fee = market?.amm?.feeRaw
-      ? market?.amm?.feeRaw
-      : String(feeSelected ? String(new BN(feeSelected.value).times(10)) : '0');
+
     const properties = checkConvertLiquidityProperties(
       account,
       market.marketId,
       amount,
-      fee,
+      onChainFee,
       outcomes,
       cash,
       amm
@@ -266,7 +268,7 @@ const ModalAddLiquidity = ({
         results = await getRemoveLiquidity(
           properties.marketId,
           cash,
-          fee,
+          onChainFee,
           amount
         );
       } else {
@@ -360,17 +362,11 @@ const ModalAddLiquidity = ({
   ];
 
   const confirmAction = async () => {
-    const feeSelected = TRADING_FEE_OPTIONS.find(
-      (t) => t.id === tradingFeeSelection
-    );
-    const fee = market?.amm?.feeRaw
-      ? market?.amm?.feeRaw
-      : String(feeSelected ? feeSelected.value : '0');
     const properties = checkConvertLiquidityProperties(
       account,
       market.marketId,
       amount,
-      fee,
+      onChainFee,
       outcomes,
       cash,
       amm
@@ -464,7 +460,7 @@ const ModalAddLiquidity = ({
         breakdown: [
           {
             label: 'Trading fee',
-            value: `${percentFormatted}`,
+            value: `${feePercentFormatted}`,
           },
           {
             label: 'your share of the liquidity pool',
@@ -488,7 +484,7 @@ const ModalAddLiquidity = ({
         breakdown: [
           {
             label: 'Trading fee',
-            value: `${percentFormatted}`,
+            value: `${feePercentFormatted}`,
           },
           {
             label: 'your share of the liquidity pool',
@@ -507,7 +503,7 @@ const ModalAddLiquidity = ({
     },
     [ADD]: {
       ...LIQUIDITY_STRINGS[ADD],
-      footerText: `By adding liquidity you'll earn ${percentFormatted} of all trades on this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.`,
+      footerText: `By adding liquidity you'll earn ${feePercentFormatted} of all trades on this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.`,
       breakdown: addCreateBreakdown,
       approvalButtonText: `approve ${chosenCash}`,
       confirmOverview: {
@@ -525,7 +521,7 @@ const ModalAddLiquidity = ({
         breakdown: [
           {
             label: 'trading fee',
-            value: `${percentFormatted}`,
+            value: `${feePercentFormatted}`,
           },
           {
             label: 'your share of the pool',
@@ -557,7 +553,7 @@ const ModalAddLiquidity = ({
         breakdown: [
           {
             label: 'trading fee',
-            value: `${percentFormatted}`,
+            value: `${feePercentFormatted}`,
           },
           {
             label: 'your share of the pool',
@@ -595,7 +591,7 @@ const ModalAddLiquidity = ({
             subtitle={{
               label: 'trading fee',
               value: LIQUIDITY_METHODS[modalType].showTradingFee
-                ? percentFormatted
+                ? feePercentFormatted
                 : null,
             }}
           />
