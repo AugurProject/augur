@@ -182,32 +182,39 @@
   grid-template-columns: 1fr auto auto;
   align-items: center;
   display: grid;
+  grid-gap: @size-12;
 
   > span {
     .text-14-bold;
 
     color: var(--simple-warning);
+    grid-column: 1;
+    grid-row: 1;
   }
 
-  > button,
+  > button {
+    grid-row: 1;
+  }
+
   > a {
     &:last-of-type {
       grid-column: 3 / span 1;
+      grid-row: 1;
     }
   }
 
   @media @breakpoint-mobile-tablet {
     grid-template-columns: 1fr;
+    grid-gap: @size-8;
     padding: @size-16;
 
     > span {
       display: flex;
       justify-content: center;
       order: 2;
-      margin-top: @size-8;
+      grid-row: 2;
     }
 
-    > button,
     > a {
       &:last-of-type {
         grid-column: 1 / span 3;

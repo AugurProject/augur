@@ -26,12 +26,12 @@ import {
   Winnings,
   TransactionTypes,
 } from '../types';
-import { formatDai } from '../../utils/format-number';
+import { formatDai, formatCash } from '../../utils/format-number';
 import { MODAL_ADD_LIQUIDITY, USDC } from '../constants';
 import { useAppStatusStore } from '../stores/app-status';
 import { AddressLink, MarketLink } from '../routes/helpers/links';
 import { sliceByPage, Pagination } from './pagination';
-import { claimMarketWinnings, claimWinnings, getLPCurrentValue } from '../../utils/contract-calls';
+import { claimMarketWinnings, getLPCurrentValue } from '../../utils/contract-calls';
 import { createBigNumber } from '../../utils/create-big-number';
 
 interface PositionsTableProps {
@@ -119,16 +119,15 @@ interface PositionFooterProps {
 }
 export const PositionFooter = ({
   claimableWinnings,
-  market,
+  market: { fee, marketId, amm },
 }: PositionFooterProps) => {
   const { isMobile, loginAccount } = useAppStatusStore();
   if (isMobile && !claimableWinnings) return null;
-
+  const account = loginAccount?.account;
   const claim = () => {
-    const amm = market?.amm;
-    const account = loginAccount?.account;
+    
     if (amm && account) {
-      claimMarketWinnings(account, loginAccount?.library, market.marketId, market?.amm?.cash).then(() => {
+      claimMarketWinnings(account, loginAccount?.library, marketId, amm?.cash).then(() => {
         // handle transaction response here
       })
         .catch(e => {
@@ -140,14 +139,14 @@ export const PositionFooter = ({
     <div className={Styles.PositionFooter}>
       {claimableWinnings && (
         <>
-          <span>{`${market.fee}% fee charged on settlement`}</span>
+          <span>{`${fee}% fee charged on settlement`}</span>
           <PrimaryButton
-            text={`${claimableWinnings?.claimableBalance} in Winnings to claim`}
+            text={`Claim Winnings (${formatCash(claimableWinnings?.claimableBalance, amm?.cash).full})`}
             action={claim}
           />
         </>
       )}
-      {!isMobile && <MarketLink id={market?.marketId} ammId={market?.amm?.id}><SecondaryButton text="trade" /></MarketLink>}
+      {!isMobile && <MarketLink id={marketId} ammId={amm?.id}><SecondaryButton text="trade" /></MarketLink>}
     </div>
   );
 };

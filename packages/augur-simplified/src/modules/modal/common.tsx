@@ -1,4 +1,4 @@
-import React, {ReactNode} from 'react';
+import React from 'react';
 
 import Styles from './modal.styles.less';
 import { CloseIcon } from '../common/icons';
