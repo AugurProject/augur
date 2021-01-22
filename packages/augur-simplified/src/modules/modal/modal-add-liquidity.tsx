@@ -14,7 +14,6 @@ import {
   CREATE,
   ADD,
   REMOVE,
-  LIQUIDITY_STRINGS,
   CONNECT_ACCOUNT,
   SET_PRICES,
   TX_STATUS,
@@ -37,11 +36,7 @@ import {
 } from '../../utils/format-number';
 import { MultiButtonSelection } from '../common/selection';
 import classNames from 'classnames';
-import {
-  AmmOutcome,
-  LiquidityBreakdown,
-  MarketInfo,
-} from '../types';
+import { AmmOutcome, LiquidityBreakdown, MarketInfo } from '../types';
 import {
   checkConvertLiquidityProperties,
   doAmmLiquidity,
@@ -126,22 +121,26 @@ const ModalAddLiquidity = ({
   const modalType = liquidityModalType;
 
   const [outcomes, setOutcomes] = useState<AmmOutcome[]>(
-    (amm && modalType !== CREATE) ? amm.ammOutcomes : [{
-      id: 0,
-      name: 'Invalid',
-      price: '',
-      isInvalid: true,
-    },
-    {
-      id: 1,
-      name: 'No',
-      price: '',
-    },
-    {
-      id: 2,
-      name: 'Yes',
-      price: '',
-    },]
+    amm && modalType !== CREATE
+      ? amm.ammOutcomes
+      : [
+          {
+            id: 0,
+            name: 'Invalid',
+            price: '',
+            isInvalid: true,
+          },
+          {
+            id: 1,
+            name: 'No',
+            price: '',
+          },
+          {
+            id: 2,
+            name: 'Yes',
+            price: '',
+          },
+        ]
   );
   const [showBackView, setShowBackView] = useState(false);
   const [chosenCash, updateCash] = useState<string>(currency ? currency : USDC);
@@ -165,15 +164,16 @@ const ModalAddLiquidity = ({
     balances.lpTokens[amm?.id]?.balance;
   const userMaxAmount = modalType === REMOVE ? shareBalance : userTokenBalance;
 
-  const [amount, updateAmount] = useState(modalType === REMOVE ? userMaxAmount : '');
+  const [amount, updateAmount] = useState(
+    modalType === REMOVE ? userMaxAmount : ''
+  );
 
   const feePercentFormatted = useMemo(() => {
     const feeOption = TRADING_FEE_OPTIONS.find(
       (t) => t.id === tradingFeeSelection
     );
-    const feePercent = LIQUIDITY_STRINGS[modalType].setFees
-      ? feeOption.value
-      : amm?.feeInPercent;
+    const feePercent =
+      modalType === CREATE ? feeOption.value : amm?.feeInPercent;
     return formatPercent(feePercent).full;
   }, [tradingFeeSelection, amm?.feeInPercent]);
 
@@ -181,12 +181,11 @@ const ModalAddLiquidity = ({
     const feeOption = TRADING_FEE_OPTIONS.find(
       (t) => t.id === tradingFeeSelection
     );
-    const feePercent = LIQUIDITY_STRINGS[modalType].setFees
-      ? feeOption.value
-      : amm?.feeInPercent;
+    const feePercent =
+      modalType === CREATE ? feeOption.value : amm?.feeInPercent;
 
-      return String(new BN(feePercent).times(new BN(10)));
-  }, [tradingFeeSelection, amm?.feeRaw])
+    return String(new BN(feePercent).times(new BN(10)));
+  }, [tradingFeeSelection, amm?.feeRaw]);
 
   const userPercentOfPool = useMemo(() => {
     let userPercent = '100';
@@ -437,11 +436,19 @@ const ModalAddLiquidity = ({
     closeModal();
   };
 
-  const LIQUIDITY_METHODS = {
+  const LIQUIDITY_STRINGS = {
     [REMOVE]: {
-      ...LIQUIDITY_STRINGS[REMOVE],
+      header: 'remove all liquidity',
+      showTradingFee: false,
+      cantEditAmount: true,
+      hideCurrentOdds: true,
+      receiveTitle: 'What you will recieve',
+      approvalButtonText: 'approve shares spend',
+      actionButtonText: 'Remove all liquidity',
+      confirmButtonText: 'confirm remove',
+      currencyName: SHARES,
       footerText:
-        'Need some copy here explaining why the user may recieve some shares when they remove their liquidity and they would need to sell these if possible.',
+        'Removing liquidity returns shares; these shares may be sold for USDC.',
       breakdown: [
         {
           label: 'yes shares',
@@ -456,7 +463,8 @@ const ModalAddLiquidity = ({
           value: `${breakdown.cashAmount}`,
         },
       ],
-      liquidityDetailsFooter: {
+      liquidityDetails: {
+        title: 'Market Liquidity Details',
         breakdown: [
           {
             label: 'Trading fee',
@@ -473,6 +481,7 @@ const ModalAddLiquidity = ({
         ],
       },
       confirmOverview: {
+        title: 'What you are Removing',
         breakdown: [
           {
             label: 'liquidity shares',
@@ -481,6 +490,7 @@ const ModalAddLiquidity = ({
         ],
       },
       confirmReceiveOverview: {
+        title: 'What you will recieve',
         breakdown: [
           {
             label: 'Trading fee',
@@ -502,11 +512,18 @@ const ModalAddLiquidity = ({
       },
     },
     [ADD]: {
-      ...LIQUIDITY_STRINGS[ADD],
+      header: 'add liquidity',
+      showTradingFee: true,
+      setOdds: true,
+      setOddsTitle: 'Current Odds',
+      receiveTitle: "You'll receive",
+      actionButtonText: 'Add',
+      confirmButtonText: 'confirm add',
       footerText: `By adding liquidity you'll earn ${feePercentFormatted} of all trades on this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.`,
       breakdown: addCreateBreakdown,
       approvalButtonText: `approve ${chosenCash}`,
       confirmOverview: {
+        title: 'What you are depositing',
         breakdown: [
           {
             label: 'amount',
@@ -515,9 +532,11 @@ const ModalAddLiquidity = ({
         ],
       },
       confirmReceiveOverview: {
+        title: 'What you will receive',
         breakdown: addCreateBreakdown,
       },
       marketLiquidityDetails: {
+        title: 'Market liquidity details',
         breakdown: [
           {
             label: 'trading fee',
@@ -532,13 +551,23 @@ const ModalAddLiquidity = ({
       currencyName: `${chosenCash}`,
     },
     [CREATE]: {
-      ...LIQUIDITY_STRINGS[CREATE],
+      header: 'add liquidity',
+      showTradingFee: false,
+      setOdds: true,
+      setOddsTitle: 'Set the price (between 0.0 to 1.0)',
+      editableOutcomes: true,
+      setFees: true,
+      receiveTitle: "You'll receive",
+      actionButtonText: 'Add',
+      confirmButtonText: 'confirm market liquidity',
       currencyName: `${chosenCash}`,
       footerText:
         "By adding initial liquidity you'll earn your set trading fee percentage of all trades on this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.",
       breakdown: addCreateBreakdown,
       approvalButtonText: `approve ${chosenCash}`,
       confirmOverview: {
+        title: 'What you are depositing',
+
         breakdown: [
           {
             label: 'amount',
@@ -547,9 +576,13 @@ const ModalAddLiquidity = ({
         ],
       },
       confirmReceiveOverview: {
+        title: 'What you will receive',
+
         breakdown: addCreateBreakdown,
       },
       marketLiquidityDetails: {
+        title: 'Market liquidity details',
+
         breakdown: [
           {
             label: 'trading fee',
@@ -587,10 +620,10 @@ const ModalAddLiquidity = ({
       {!showBackView ? (
         <>
           <Header
-            title={LIQUIDITY_METHODS[modalType].header}
+            title={LIQUIDITY_STRINGS[modalType].header}
             subtitle={{
               label: 'trading fee',
-              value: LIQUIDITY_METHODS[modalType].showTradingFee
+              value: LIQUIDITY_STRINGS[modalType].showTradingFee
                 ? feePercentFormatted
                 : null,
             }}
@@ -619,7 +652,10 @@ const ModalAddLiquidity = ({
               <>
                 <span className={Styles.SmallLabel}>
                   Set trading fee
-                  {generateTooltip('Fees earned for providing liquidity.', 'tradingFeeInfo')}
+                  {generateTooltip(
+                    'Fees earned for providing liquidity.',
+                    'tradingFeeInfo'
+                  )}
                 </span>
                 <MultiButtonSelection
                   options={TRADING_FEE_OPTIONS}
@@ -646,10 +682,22 @@ const ModalAddLiquidity = ({
                 />
               </>
             )}
+            {LIQUIDITY_STRINGS[modalType].liquidityDetails && (
+              <div className={Styles.LineBreak}>
+                <span className={Styles.SmallLabel}>
+                  {LIQUIDITY_STRINGS[modalType].liquidityDetails.title}
+                </span>
+                <InfoNumbers
+                  infoNumbers={
+                    LIQUIDITY_STRINGS[modalType].liquidityDetails.breakdown
+                  }
+                />
+              </div>
+            )}
             <span className={Styles.SmallLabel}>
               {LIQUIDITY_STRINGS[modalType].receiveTitle}
             </span>
-            <InfoNumbers infoNumbers={LIQUIDITY_METHODS[modalType].breakdown} />
+            <InfoNumbers infoNumbers={LIQUIDITY_STRINGS[modalType].breakdown} />
             <ApprovalButton
               amm={amm}
               cash={cash}
@@ -672,21 +720,8 @@ const ModalAddLiquidity = ({
                   : inputFormError
               }
             />
-            {LIQUIDITY_STRINGS[modalType].liquidityDetailsFooter && (
-              <div className={Styles.FooterText}>
-                <span className={Styles.SmallLabel}>
-                  {LIQUIDITY_STRINGS[modalType].liquidityDetailsFooter.title}
-                </span>
-                <InfoNumbers
-                  infoNumbers={
-                    LIQUIDITY_METHODS[modalType].liquidityDetailsFooter
-                      .breakdown
-                  }
-                />
-              </div>
-            )}
             <div className={Styles.FooterText}>
-              {LIQUIDITY_METHODS[modalType].footerText}
+              {LIQUIDITY_STRINGS[modalType].footerText}
             </div>
           </main>
         </>
@@ -706,7 +741,7 @@ const ModalAddLiquidity = ({
               </span>
               <InfoNumbers
                 infoNumbers={
-                  LIQUIDITY_METHODS[modalType].confirmOverview.breakdown
+                  LIQUIDITY_STRINGS[modalType].confirmOverview.breakdown
                 }
               />
             </section>
@@ -717,7 +752,7 @@ const ModalAddLiquidity = ({
               </span>
               <InfoNumbers
                 infoNumbers={
-                  LIQUIDITY_METHODS[modalType].confirmReceiveOverview.breakdown
+                  LIQUIDITY_STRINGS[modalType].confirmReceiveOverview.breakdown
                 }
               />
             </section>
@@ -728,7 +763,7 @@ const ModalAddLiquidity = ({
                 </span>
                 <InfoNumbers
                   infoNumbers={
-                    LIQUIDITY_METHODS[modalType].marketLiquidityDetails
+                    LIQUIDITY_STRINGS[modalType].marketLiquidityDetails
                       .breakdown
                   }
                 />
