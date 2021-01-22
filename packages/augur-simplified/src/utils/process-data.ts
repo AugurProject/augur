@@ -357,11 +357,12 @@ const calculateLiquidityInUsd = (volumeOrLiquidity: string, priceUsd: string): s
   return String(new BN(volumeOrLiquidity).times(new BN(priceUsd)))
 }
 
-const calculatePastVolumeInUsd = (volume: string, pastVolume: string, priceShare: number, priceUsd: string): string => {
-  if (!volume || !pastVolume || !priceShare || !priceUsd) return "0"
+const hasZeroValue = (value) => value === "0" || !value;
+const calculatePastVolumeInUsd = (volume: string = "0", pastVolume: string = "0", priceShare: number = 0, priceUsd: string = "0"): string => {
+  if (hasZeroValue(priceShare) || hasZeroValue(priceUsd)) return "0"
   return String(new BN(volume)
     .minus(new BN(pastVolume))
-    .times(priceShare)
+    .times(new BN(priceShare))
     .times(new BN(priceUsd)))
 }
 
