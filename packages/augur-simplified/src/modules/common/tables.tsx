@@ -110,7 +110,7 @@ const PositionRow = ({ position }: { position: PositionBalance }) => {
       <li>{position.avgPrice}</li>
       <li>{formatDai(position.initCostUsd).full}</li>
       <li>{formatDai(position.usdValue).full}</li>
-      <li>{position.totalChangeUsd}</li>
+      <li>{formatDai(position.totalChangeUsd).full}</li>
     </ul>
   );
 };
@@ -127,7 +127,7 @@ export const PositionFooter = ({
   if (isMobile && !claimableWinnings) return null;
   const account = loginAccount?.account;
   const claim = () => {
-    
+
     if (amm && account) {
       claimMarketWinnings(account, loginAccount?.library, marketId, amm?.cash).then((response) => {
         // handle transaction response here

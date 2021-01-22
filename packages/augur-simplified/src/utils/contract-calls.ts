@@ -9,15 +9,17 @@ import {
   ContractCallContext,
 } from '@augurproject/ethereum-multicall';
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers'
-import { convertDisplayCashAmountToOnChainCashAmount, convertDisplayShareAmountToOnChainShareAmount, convertOnChainCashAmountToDisplayCashAmount, formatDai, formatEther, convertOnChainSharesToDisplayShareAmount, isSameAddress } from './format-number';
+import { convertDisplayCashAmountToOnChainCashAmount, convertDisplayShareAmountToOnChainShareAmount, convertOnChainCashAmountToDisplayCashAmount, convertOnChainSharesToDisplayShareAmount, isSameAddress } from './format-number';
 import { augurSdkLite } from './augurlitesdk';
 import { ETH, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_NO_OUTCOMES_NAMES, YES_OUTCOME_ID, INVALID_OUTCOME_ID, MARKET_STATUS } from '../modules/constants';
 import { getProviderOrSigner } from '../modules/ConnectAccount/utils';
+import { createBigNumber } from './create-big-number';
 
 const isValidPrice = (price: string): boolean => {
   return price !== null && price !== undefined && price !== "0" && price !== "0.00";
 }
 
+const trimDecimalValue = (value: string | BigNumber) => createBigNumber(value).toFixed(6);
 interface LiquidityProperties {
   account: string,
   amm: AmmExchange,
@@ -113,7 +115,7 @@ export async function getAmmLiquidity(
     }
     // TODO: Get amounts of yes and no shares from estimate
     // middleware changes might be needed
-    const lpTokens = String(formatEther(convertOnChainSharesToDisplayShareAmount(String(lpTokensValue), cash.decimals)).formattedValue);
+    const lpTokens = trimDecimalValue(convertOnChainSharesToDisplayShareAmount(String(lpTokensValue), cash.decimals));
     return {
       lpTokens,
       cashAmount: "0",
@@ -726,10 +728,9 @@ const normalizeNoInvalidPositionsBalances = (ammMarketShares: AmmMarketShares, a
         const { priceNo, past24hrPriceNo } = amm;
         position.balance = minNoInvalidBalance;
         position.rawBalance = minNoInvalidRawBalance;
-        position.quantity = formatEther(position.balance).formatted;
+        position.quantity = trimDecimalValue(position.balance);
         position.usdValue = String(new BN(minNoInvalidBalance).times(new BN(priceNo)));
         position.past24hrUsdValue = past24hrPriceNo ? String(new BN(minNoInvalidBalance).times(new BN(past24hrPriceNo))) : null;
-
       }
     })
   })
@@ -760,7 +761,7 @@ const getPositionUsdValues = (trades: UserTrades, rawBalance: string, balance: s
   let avgPrice = "0";
   let initCostUsd = "0";
   let totalChangeUsd = "0";
-  let quantity = formatEther(balance).formatted;
+  let quantity = trimDecimalValue(balance);
   const outcomeId = Number(outcome);
   let visible = false;
   // need to get this from outcome
@@ -779,14 +780,14 @@ const getPositionUsdValues = (trades: UserTrades, rawBalance: string, balance: s
       change24hrPositionUsd = past24hrPriceYes ? String(new BN(usdValue).times(new BN(past24hrUsdValue))) : null;
       result = getInitPositionValues(trades, amm, true, account);
     }
-    avgPrice = formatDai(result.avgPrice).formatted;
+    avgPrice = trimDecimalValue(result.avgPrice);
     initCostUsd = result.initCostUsd;
     let usdChangedValue = new BN(usdValue).minus(new BN(initCostUsd));
     // if difference below threashold use absolute value
     if (usdChangedValue.lt(new BN("0.0000"))) {
       usdChangedValue = usdChangedValue.abs();
     }
-    totalChangeUsd = formatDai(usdChangedValue).formatted;
+    totalChangeUsd = trimDecimalValue(usdChangedValue);
     visible = true;
 
   }
