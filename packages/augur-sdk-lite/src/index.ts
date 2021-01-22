@@ -15,3 +15,8 @@ export * from './templates/constants';
 export * from './templates/types'
 export * from '@augurproject/utils';
 
+export { ExchangeContractIntermediary } from './api/exchangeIntermediaries';
+export { ExchangeERC20 } from './api/exchangeIntermediaries';
+export { ExchangeETH } from './api/exchangeIntermediaries';
+export { RemoveLiquidityRate } from './api/exchangeIntermediaries';
+export { ShareBalances } from './api/exchangeIntermediaries';

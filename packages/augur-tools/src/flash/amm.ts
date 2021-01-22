@@ -256,7 +256,8 @@ export function addAMMScripts(flash: FlashSession) {
 
       const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
       const amm = ammMiddleware(this.provider, this.config);
-      const lpTokens = await amm.getAddLiquidity(recipient, null, false, market, paraShareToken, fee, cash, yesPercent, noPercent);
+      const ZERO = new BigNumber(0);
+      const { lpTokens } = await amm.getAddLiquidity(ZERO, ZERO, ZERO, cash, yesPercent, noPercent);
 
       console.log(`LP Tokens you would acquire: ${lpTokens}`);
     }
