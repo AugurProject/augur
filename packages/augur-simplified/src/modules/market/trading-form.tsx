@@ -573,6 +573,7 @@ const TradingForm = ({
       .then((response) => {
         if (response) {
           const { hash } = response;
+          setAmount('');
           addTransaction({
             hash,
             chainId: loginAccount.chainId,
