@@ -16,7 +16,7 @@ import {
 } from '../modules/constants';
 import addCommas from './add-commas-to-number';
 import getPrecision from './get-number-precision';
-import { Cash, FormattedNumber, FormattedNumberOptions } from '../modules/types';
+import { FormattedNumber, FormattedNumberOptions } from '../modules/types';
 import { BigNumber, createBigNumber } from './create-big-number';
 
 type NumStrBigNumber = number | BigNumber | string;
@@ -34,6 +34,7 @@ export const getCashFormat = (cashName: string) => {
     prepend: false,
     symbol: '',
     displayDecimals: USUAL_NUMBER_DECIMAL_PLACES,
+    icon: null,
   };
   if (CASH_LABEL_FORMATS[cashName]?.symbol) {
     out = CASH_LABEL_FORMATS[cashName];
