@@ -41,7 +41,7 @@ import {
   checkConvertLiquidityProperties,
   doAmmLiquidity,
   doRemoveAmmLiquidity,
-  getAmmLiquidity,
+  estimateAddLiquidity,
   getRemoveLiquidity,
 } from '../../utils/contract-calls';
 import { useAppStatusStore, AppStatusStore } from '../stores/app-status';
@@ -271,7 +271,7 @@ const ModalAddLiquidity = ({
           amount
         );
       } else {
-        results = await getAmmLiquidity(
+        results = await estimateAddLiquidity(
           properties.account,
           properties.amm,
           properties.marketId,

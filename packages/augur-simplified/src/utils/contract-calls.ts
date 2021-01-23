@@ -1,5 +1,5 @@
 import BigNumber, { BigNumber as BN } from 'bignumber.js'
-import { RemoveLiquidityRate, ParaShareToken } from '@augurproject/sdk-lite'
+import { RemoveLiquidityRate, ParaShareToken, AddLiquidityRate } from '@augurproject/sdk-lite'
 import { TradingDirection, AmmExchange, AmmExchanges, AmmMarketShares, AmmTransaction, Cashes, CurrencyBalance, PositionBalance, TransactionTypes, UserBalances, MarketInfos, LPTokens, EstimateTradeResult, Cash, AddLiquidityBreakdown, LiquidityBreakdown, AmmOutcome } from '../modules/types'
 import ethers from 'ethers';
 import { Contract } from '@ethersproject/contracts'
@@ -56,7 +56,7 @@ const convertPriceToPercent = (price: string) => {
   return String(new BN(price).times(100));
 }
 
-export async function getAmmLiquidity(
+export async function estimateAddLiquidity(
   account: string,
   amm: AmmExchange,
   marketId: string,
@@ -96,7 +96,7 @@ export async function getAmmLiquidity(
   const poolYesPercent = new BN(convertPriceToPercent(priceNo));
   const poolNoPercent = new BN(convertPriceToPercent(priceYes));
 
-  const addLiquidityResults = await augurClient.amm.getAddLiquidity(
+  const addLiquidityResults: AddLiquidityRate = await augurClient.amm.getAddLiquidity(
     new BN(amm?.totalSupply || "0"),
     new BN(amm?.liquidityNo || "0"),
     new BN(amm?.liquidityYes || "0"),
@@ -107,18 +107,16 @@ export async function getAmmLiquidity(
   );
 
   if (addLiquidityResults) {
-    let lpTokensValue = String(addLiquidityResults);
-    if (Array.isArray(addLiquidityResults)) {
-      lpTokensValue = String(addLiquidityResults[1]);
-    }
-    // TODO: Get amounts of yes and no shares from estimate
-    // middleware changes might be needed
-    const lpTokens = trimDecimalValue(convertOnChainSharesToDisplayShareAmount(String(lpTokensValue), cash.decimals));
+    const lpTokens = trimDecimalValue(convertOnChainSharesToDisplayShareAmount(String(addLiquidityResults.lpTokens), cash.decimals));
+    const noShares = trimDecimalValue(convertOnChainSharesToDisplayShareAmount(String(addLiquidityResults.short), cash.decimals));
+    const yesShares = trimDecimalValue(convertOnChainSharesToDisplayShareAmount(String(addLiquidityResults.long), cash.decimals));
+    const cashAmount = trimDecimalValue(convertOnChainSharesToDisplayShareAmount(String(addLiquidityResults.cash), cash.decimals));
+
     return {
       lpTokens,
-      cashAmount: "0",
-      yesShares: "0",
-      noShares: "0",
+      cashAmount,
+      yesShares,
+      noShares,
     }
   }
 
