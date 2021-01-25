@@ -113,7 +113,7 @@ const Outcome = ({
         [Styles.Invalid]: outcome.isInvalid,
         [Styles.InvalidSelected]: invalidSelected,
         [Styles.loggedOut]: !isLogged,
-        [Styles.disabled]: !isLogged && outcome.isInvalid
+        [Styles.disabled]: !isLogged && outcome.isInvalid,
       })}
     >
       <span>{outcome.name}</span>
@@ -141,7 +141,10 @@ const Outcome = ({
         <>
           {!outcome.isInvalid && (
             <span>
-              {formatCashPrice(formattedPrice.fullPrecision, ammCash?.name).full}
+              {
+                formatCashPrice(formattedPrice.fullPrecision, ammCash?.name)
+                  .full
+              }
             </span>
           )}
           {outcome.isInvalid && LinkIcon}
@@ -478,6 +481,12 @@ const TradingForm = ({
       : '';
 
   useEffect(() => {
+    if (!isMobile) {
+      setShowTradingForm(false);
+    }
+  }, [isMobile]);
+
+  useEffect(() => {
     let isMounted = true;
 
     const getEstimate = async () => {
@@ -644,9 +653,9 @@ const TradingForm = ({
           ammCash={ammCash}
           rate={
             !isNaN(Number(breakdown?.ratePerCash))
-              ? `1 ${amm?.cash?.name} (${getCashFormat(ammCash?.name).symbol}) = ${
-                  formatSimpleShares(breakdown?.ratePerCash).full
-                }`
+              ? `1 ${amm?.cash?.name} (${
+                  getCashFormat(ammCash?.name).symbol
+                }) = ${formatSimpleShares(breakdown?.ratePerCash).full}`
               : null
           }
           isBuy={orderType === BUY}
