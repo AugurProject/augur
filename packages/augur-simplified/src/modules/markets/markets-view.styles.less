@@ -197,13 +197,16 @@
     }
 
     > section {
-      grid-template-columns: 1fr;
+      grid-template-columns: 1fr 1fr;
     }
   }
 
   .MarketCard {
+    max-width: 100%;
 
-    > a > div {
+    > div {
+      max-width: 100%;
+
       > span {
         margin-bottom: @size-16;
         height: unset;
@@ -239,6 +242,14 @@
   .OutcomesTable {
     grid-row: 3;
     grid-column: 1 / span 3;
+  }
+}
+
+@media @breakpoint-mobile {
+  .MarketsView {
+    > section {
+      grid-template-columns: 1fr;
+    }
   }
 }
 

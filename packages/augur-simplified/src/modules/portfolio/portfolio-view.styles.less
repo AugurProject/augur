@@ -22,12 +22,13 @@
     padding: @size-16 @size-16 @size-40;
     flex-flow: column nowrap;
 
-    > section:last-of-type { 
+    > section:last-of-type {
       display: none;
     }
 
     > section:first-of-type  {
       padding: 0;
+      max-width: 100%;
 
       > div[class*="PositionsLiquidityViewSwitcher"] {
         margin-top: @size-40;
@@ -37,7 +38,7 @@
         display: flex;
       }
     }
-    
+
   }
 }
 
@@ -50,7 +51,7 @@
     flex: 1;
 
     &:first-of-type:not(:last-of-type) {
-      margin-right: @size-8; 
+      margin-right: @size-8;
     }
   }
 
