@@ -227,9 +227,9 @@ export class AMM {
       setsToSell = longShares.plus(longSharesToBuy);
     }
 
-    const cash = setsToSell.times(NUMTICKS);
-    if(cash.gte(cashBalance)) throw new Error('AMM does not have enough cash to complete exit.');
+    if(setsToSell.gte(cashBalance)) throw new Error('AMM does not have enough cash to complete exit.');
 
+    const cash = setsToSell.times(NUMTICKS);
     return includeFee
       ? AMM.applyFee(cash, fee)
       : cash;
