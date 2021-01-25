@@ -1,5 +1,5 @@
 import BigNumber, { BigNumber as BN } from 'bignumber.js'
-import { RemoveLiquidityRate, ParaShareToken } from '@augurproject/sdk-lite'
+import { ParaShareToken, AddLiquidityRate } from '@augurproject/sdk-lite'
 import { TradingDirection, AmmExchange, AmmExchanges, AmmMarketShares, AmmTransaction, Cashes, CurrencyBalance, PositionBalance, TransactionTypes, UserBalances, MarketInfos, LPTokens, EstimateTradeResult, Cash, AddLiquidityBreakdown, LiquidityBreakdown, AmmOutcome } from '../modules/types'
 import ethers from 'ethers';
 import { Contract } from '@ethersproject/contracts'
@@ -9,15 +9,17 @@ import {
   ContractCallContext,
 } from '@augurproject/ethereum-multicall';
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers'
-import { convertDisplayCashAmountToOnChainCashAmount, convertDisplayShareAmountToOnChainShareAmount, convertOnChainCashAmountToDisplayCashAmount, formatDai, formatEther, convertOnChainSharesToDisplayShareAmount, isSameAddress } from './format-number';
+import { convertDisplayCashAmountToOnChainCashAmount, convertDisplayShareAmountToOnChainShareAmount, convertOnChainCashAmountToDisplayCashAmount, convertOnChainSharesToDisplayShareAmount, isSameAddress } from './format-number';
 import { augurSdkLite } from './augurlitesdk';
 import { ETH, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_NO_OUTCOMES_NAMES, YES_OUTCOME_ID, INVALID_OUTCOME_ID, MARKET_STATUS } from '../modules/constants';
 import { getProviderOrSigner } from '../modules/ConnectAccount/utils';
+import { createBigNumber } from './create-big-number';
 
 const isValidPrice = (price: string): boolean => {
   return price !== null && price !== undefined && price !== "0" && price !== "0.00";
 }
 
+const trimDecimalValue = (value: string | BigNumber) => createBigNumber(value).toFixed(6);
 interface LiquidityProperties {
   account: string,
   amm: AmmExchange,
@@ -54,7 +56,7 @@ const convertPriceToPercent = (price: string) => {
   return String(new BN(price).times(100));
 }
 
-export async function getAmmLiquidity(
+export async function estimateAddLiquidity(
   account: string,
   amm: AmmExchange,
   marketId: string,
@@ -94,31 +96,27 @@ export async function getAmmLiquidity(
   const poolYesPercent = new BN(convertPriceToPercent(priceNo));
   const poolNoPercent = new BN(convertPriceToPercent(priceYes));
 
-  const addLiquidityResults = await augurClient.amm.getAddLiquidity(
-    account,
-    ammAddress,
-    hasLiquidity,
-    marketId,
-    sharetoken,
-    new BN(fee),
+  const addLiquidityResults: AddLiquidityRate = await augurClient.amm.getAddLiquidity(
+    new BN(amm?.totalSupply || "0"),
+    new BN(amm?.liquidityNo || "0"),
+    new BN(amm?.liquidityYes || "0"),
+    new BN(amm?.liquidityCash || "0"),
     new BN(amount),
     poolYesPercent,
     poolNoPercent
   );
 
   if (addLiquidityResults) {
-    let lpTokensValue = String(addLiquidityResults);
-    if (Array.isArray(addLiquidityResults)) {
-      lpTokensValue = String(addLiquidityResults[1]);
-    }
-    // TODO: Get amounts of yes and no shares from estimate
-    // middleware changes might be needed
-    const lpTokens = String(formatEther(convertOnChainSharesToDisplayShareAmount(String(lpTokensValue), cash.decimals)).formattedValue);
+    const lpTokens = trimDecimalValue(convertOnChainSharesToDisplayShareAmount(String(addLiquidityResults.lpTokens), cash.decimals));
+    const noShares = trimDecimalValue(convertOnChainSharesToDisplayShareAmount(String(addLiquidityResults.short), cash.decimals));
+    const yesShares = trimDecimalValue(convertOnChainSharesToDisplayShareAmount(String(addLiquidityResults.long), cash.decimals));
+    const cashAmount = trimDecimalValue(convertOnChainSharesToDisplayShareAmount(String(addLiquidityResults.cash), cash.decimals));
+
     return {
       lpTokens,
-      cashAmount: "0",
-      yesShares: "0",
-      noShares: "0",
+      cashAmount,
+      yesShares,
+      noShares,
     }
   }
 
@@ -192,13 +190,16 @@ export async function getRemoveLiquidity(
   }
   const balance = convertDisplayShareAmountToOnChainShareAmount(lpTokenBalance, cash?.decimals);
   //console.log('estimate remove liquidity', 'marketId', marketId, 'paraSharetoken', cash?.shareToken, 'fee', fee, 'lp tokens', lpTokenBalance, 'raw balance', String(balance));
-  const results: RemoveLiquidityRate = await augurClient.amm.getRemoveLiquidity(
+  const results = await augurClient.amm.getRemoveLiquidity(
     marketId,
     cash.shareToken,
     new BN(String(fee)),
     new BN(String(balance)),
     alsoSell
-  );
+  ).catch(e => console.log(e));
+
+  if (!results) return null
+
   //console.log('results.cash', String(results.cash), cash?.decimals, 'lpTokenBalance', lpTokenBalance, 'balance', String(balance));
   const shortShares = String(convertOnChainSharesToDisplayShareAmount(results.short, cash?.decimals));
   const longShares = String(convertOnChainSharesToDisplayShareAmount(results.long, cash?.decimals));
@@ -239,7 +240,7 @@ export const estimateEnterTrade = async (
   outputYesShares: boolean = true,
 ): Promise<EstimateTradeResult | null> => {
   //const startTime = new Date().getTime();
-  const breakdownWithFeeRaw = await estimateMiddlewareTrade(TradingDirection.ENTRY, amm, inputDisplayAmount, outputYesShares);
+  const breakdownWithFeeRaw = await estimateEnterPosition(TradingDirection.ENTRY, amm, inputDisplayAmount, outputYesShares).catch(e => console.log(e));
 
   if (!breakdownWithFeeRaw) return null;
 
@@ -272,8 +273,38 @@ export const estimateExitTrade = async (
   userBalances: string[] = [],
 ): Promise<EstimateTradeResult | null> => {
 
-  //const startTime = new Date().getTime()
-  const breakdownWithFeeRaw = await estimateMiddlewareTrade(TradingDirection.EXIT, amm, inputDisplayAmount, outputYesShares, true, userBalances);
+  const augurClient = augurSdkLite.get();
+  const ammId = amm?.id;
+  if (!augurClient || !ammId) {
+    console.error('estimateExitTrade: augurClient is null or amm address');
+    return null;
+  }
+
+  let longShares = new BN('0');
+  let shortShares = new BN('0');
+  let invalidShares = new BN(userBalances[0]);
+  if (!outputYesShares) {
+    let shortOnChainShares = convertDisplayShareAmountToOnChainShareAmount(new BN(inputDisplayAmount), new BN(amm?.cash?.decimals));
+    shortShares = BN.minimum(invalidShares, shortOnChainShares);
+  } else {
+    longShares = convertDisplayShareAmountToOnChainShareAmount(new BN(inputDisplayAmount), new BN(amm?.cash?.decimals));
+  }
+
+  const liqNo = convertDisplayShareAmountToOnChainShareAmount(new BN(amm?.liquidityNo || "0"), new BN(amm?.cash?.decimals))
+  const liqYes = convertDisplayShareAmountToOnChainShareAmount(new BN(amm?.liquidityYes || "0"), new BN(amm?.cash?.decimals))
+  const liqCash = convertDisplayShareAmountToOnChainShareAmount(new BN(amm?.liquidityCash || "0"), new BN(amm?.cash?.decimals))
+
+  console.log("amount of cash", amm?.liquidityCash);
+  const breakdownWithFeeRaw = await augurClient.amm.getExitPosition(
+    new BN(amm?.totalSupply || "0"),
+    liqNo,
+    liqYes,
+    liqCash,
+    new BN(amm?.feeRaw),
+    shortShares,
+    longShares,
+    true)
+    .catch(e => console.log(e));
 
   if (!breakdownWithFeeRaw) return null;
 
@@ -302,13 +333,11 @@ export const estimateExitTrade = async (
   }
 }
 
-export const estimateMiddlewareTrade = async (
+export const estimateEnterPosition = async (
   tradeDirection: TradingDirection,
   amm: AmmExchange,
   inputDisplayAmount: string,
   outputYesShares: boolean = true,
-  includeFee: boolean = true,
-  userBalances: string[] = [],
 ): Promise<string | null> => {
   const augurClient = augurSdkLite.get();
   const ammId = amm?.id;
@@ -316,7 +345,7 @@ export const estimateMiddlewareTrade = async (
     console.error('estimateTrade: augurClient is null or amm address');
     return null;
   }
-
+  const includeFee = true;
   let breakdown = null;
   const { cash, marketId, feeRaw } = amm;
   if (tradeDirection === TradingDirection.ENTRY) {
@@ -346,28 +375,6 @@ export const estimateMiddlewareTrade = async (
       includeFee
     ).catch(e => console.log('Error get enter position', e));
 
-    return breakdown;
-  }
-
-  if (tradeDirection === TradingDirection.EXIT) {
-    let longShares = new BN('0');
-    let shortShares = new BN('0');
-    let invalidShares = new BN(userBalances[0]);
-    if (!outputYesShares) {
-      let shortOnChainShares = convertDisplayShareAmountToOnChainShareAmount(new BN(inputDisplayAmount), new BN(cash.decimals));
-      shortShares = BN.minimum(invalidShares, shortOnChainShares);
-    } else {
-      longShares = convertDisplayShareAmountToOnChainShareAmount(new BN(inputDisplayAmount), new BN(cash.decimals));
-    }
-
-    breakdown = await augurClient.amm.getExitPosition(
-      marketId,
-      cash.shareToken,
-      new BN(feeRaw),
-      shortShares,
-      longShares,
-      includeFee
-    ).catch(e => console.log('Error get Exit Position', e));
     return breakdown;
   }
 
@@ -427,9 +434,10 @@ export async function doTrade(
       amm.marketId,
       amm.cash.shareToken,
       amm.feeRaw,
-      String(shortShares),
-      String(longShares),
-      String(onChainMinAmount)
+      'invalidShares', String(invalidShares),
+      'short', String(shortShares),
+      'long', String(longShares),
+      'min amount', String(onChainMinAmount)
     );
 
     return augurClient.amm.doExitPosition(
@@ -725,10 +733,9 @@ const normalizeNoInvalidPositionsBalances = (ammMarketShares: AmmMarketShares, a
         const { priceNo, past24hrPriceNo } = amm;
         position.balance = minNoInvalidBalance;
         position.rawBalance = minNoInvalidRawBalance;
-        position.quantity = formatEther(position.balance).formatted;
+        position.quantity = trimDecimalValue(position.balance);
         position.usdValue = String(new BN(minNoInvalidBalance).times(new BN(priceNo)));
         position.past24hrUsdValue = past24hrPriceNo ? String(new BN(minNoInvalidBalance).times(new BN(past24hrPriceNo))) : null;
-
       }
     })
   })
@@ -759,7 +766,7 @@ const getPositionUsdValues = (trades: UserTrades, rawBalance: string, balance: s
   let avgPrice = "0";
   let initCostUsd = "0";
   let totalChangeUsd = "0";
-  let quantity = formatEther(balance).formatted;
+  let quantity = trimDecimalValue(balance);
   const outcomeId = Number(outcome);
   let visible = false;
   // need to get this from outcome
@@ -778,14 +785,14 @@ const getPositionUsdValues = (trades: UserTrades, rawBalance: string, balance: s
       change24hrPositionUsd = past24hrPriceYes ? String(new BN(usdValue).times(new BN(past24hrUsdValue))) : null;
       result = getInitPositionValues(trades, amm, true, account);
     }
-    avgPrice = formatDai(result.avgPrice).formatted;
+    avgPrice = trimDecimalValue(result.avgPrice);
     initCostUsd = result.initCostUsd;
     let usdChangedValue = new BN(usdValue).minus(new BN(initCostUsd));
-    // if difference below threashold use absolute value
-    if (usdChangedValue.lt(new BN("0.0000"))) {
+    // ignore negative dust difference
+    if (usdChangedValue.lt(new BN("0")) && usdChangedValue.gt(new BN("-0.001"))) {
       usdChangedValue = usdChangedValue.abs();
     }
-    totalChangeUsd = formatDai(usdChangedValue).formatted;
+    totalChangeUsd = trimDecimalValue(usdChangedValue);
     visible = true;
 
   }

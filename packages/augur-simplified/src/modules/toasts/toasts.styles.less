@@ -23,9 +23,11 @@
   animation-duration: 300ms;
   transition: all;
   position: fixed;
-  top: @size-96;
+  top: unset;
+  bottom: @size-32;
+  margin-left: @size-36;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     align-items: center;
     height: @size-48;
     min-height: @size-48;
@@ -37,6 +39,7 @@
     bottom: @size-8;
     grid-template-columns: 0fr 1fr 0fr 0fr;
     grid-template-rows: 1fr;
+    margin-left: 0;
   }
 
   > span {
@@ -84,7 +87,7 @@
     padding: 0;
     overflow-y: hidden;
 
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-tablet {
       line-height: @size-16;
     }
   }
@@ -99,7 +102,7 @@
     padding: 0;
     margin: 0;
 
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-tablet {
       display: none;
     }
   }
@@ -119,9 +122,10 @@
     grid-row: 1;
     outline-style: none;
 
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-tablet {
       grid-column: 4;
       grid-row: 1;
+      margin-left: @size-4;
     }
 
     > svg {
@@ -139,8 +143,9 @@
     grid-row: 3;
     text-transform: capitalize;
     text-decoration: none;
+    white-space: nowrap;
 
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-tablet {
       grid-column: 3;
       grid-row: 1;
       align-self: inherit;

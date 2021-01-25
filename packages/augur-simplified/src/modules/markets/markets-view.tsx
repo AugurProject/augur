@@ -10,13 +10,17 @@ import {
   NetworkMismatchBanner,
   ReportingStateLabel,
 } from '../common/labels';
-import { formatCashPrice, formatDai, formatPercent } from '../../utils/format-number';
+import {
+  formatCashPrice,
+  formatDai,
+  formatPercent,
+} from '../../utils/format-number';
 import { FilterIcon } from '../common/icons';
 import classNames from 'classnames';
 import { PrimaryButton, SecondaryButton } from '../common/buttons';
 import { SquareDropdown } from '../common/selection';
 import { useAppStatusStore } from '../stores/app-status';
-import { AmmExchange, MarketInfo } from '../types';
+import { AmmExchange, AmmOutcome, MarketInfo } from '../types';
 import {
   SIDEBAR_TYPES,
   ALL_CURRENCIES,
@@ -40,7 +44,7 @@ import {
   CREATE,
 } from '../constants';
 import { sliceByPage, Pagination } from '../common/pagination';
-import {TopBanner} from 'modules/common/top-banner';
+import { TopBanner } from 'modules/common/top-banner';
 
 const PAGE_LIMIT = 21;
 
@@ -66,24 +70,30 @@ const LoadingMarketCard = () => {
   );
 };
 
-const OutcomesTable = ({ amm }: { amm: AmmExchange }) => {
-  return (
-    <div className={Styles.OutcomesTable}>
-      {amm &&
-        amm?.ammOutcomes &&
-        amm.ammOutcomes
-          .filter((outcome) => !outcome.isInvalid)
-          .map((outcome) => (
-            <div key={`${outcome.name}-${amm?.marketId}-${outcome.id}`}>
-              <span>{outcome.name.toLowerCase()}</span>
-              <span>
-                {amm?.liquidity !== '0' ? formatCashPrice(outcome.price, amm?.cash).full : '-'}
-              </span>
-            </div>
-          ))}
-    </div>
-  );
+export const outcomesToDisplay = (ammOutcomes: AmmOutcome[]) => {
+  if (!ammOutcomes || ammOutcomes.length === 0) return [];
+  const invalid = ammOutcomes.slice(0, 1);
+  const yes = ammOutcomes.slice(2, 3);
+  const no = ammOutcomes.slice(1, 2);
+  return invalid.concat(yes).concat(no).concat(ammOutcomes.slice(3));
 };
+
+const OutcomesTable = ({ amm }: { amm: AmmExchange }) => (
+  <div className={Styles.OutcomesTable}>
+    {outcomesToDisplay(amm.ammOutcomes)
+      .filter((outcome) => !outcome.isInvalid)
+      .map((outcome) => (
+        <div key={`${outcome.name}-${amm?.marketId}-${outcome.id}`}>
+          <span>{outcome.name.toLowerCase()}</span>
+          <span>
+            {amm?.liquidity !== '0'
+              ? formatCashPrice(outcome.price, amm?.cash?.name).full
+              : '-'}
+          </span>
+        </div>
+      ))}
+  </div>
+);
 
 const MarketCard = ({ market }: { market: MarketInfo }) => {
   const { categories, description, marketId, amm, reportingState } = market;
@@ -236,7 +246,7 @@ const MarketsView = () => {
   useEffect(() => {
     document.getElementById('mainContent')?.scrollTo(0, 0);
     window.scrollTo(0, 1);
-  }, [page])
+  }, [page]);
 
   useEffect(() => {
     if (Object.values(markets).length > 0) setLoading(false);
@@ -322,9 +332,11 @@ const MarketsView = () => {
       )}
       {!loading && filteredMarkets.length > 0 && (
         <section>
-          {sliceByPage(filteredMarkets, page, PAGE_LIMIT).map((market, index) => (
+          {sliceByPage(filteredMarkets, page, PAGE_LIMIT).map(
+            (market, index) => (
               <MarketCard key={`${market.marketId}-${index}`} market={market} />
-            ))}
+            )
+          )}
         </section>
       )}
       {filteredMarkets.length === 0 && (

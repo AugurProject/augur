@@ -16,7 +16,7 @@ import {
 } from '../modules/constants';
 import addCommas from './add-commas-to-number';
 import getPrecision from './get-number-precision';
-import { Cash, FormattedNumber, FormattedNumberOptions } from '../modules/types';
+import { FormattedNumber, FormattedNumberOptions } from '../modules/types';
 import { BigNumber, createBigNumber } from './create-big-number';
 
 type NumStrBigNumber = number | BigNumber | string;
@@ -29,20 +29,21 @@ const SMALLEST_NUMBER_DECIMAL_PLACES = 8;
 const USUAL_NUMBER_DECIMAL_PLACES = 4;
 const YES_NO_TICK_SIZE = createBigNumber("0.001");
 
-export const getCashFormat = (cash: Cash) => {
+export const getCashFormat = (cashName: string) => {
   let out = {
     prepend: false,
     symbol: '',
     displayDecimals: USUAL_NUMBER_DECIMAL_PLACES,
+    icon: null,
   };
-  if (CASH_LABEL_FORMATS[cash?.name]?.symbol) {
-    out = CASH_LABEL_FORMATS[cash?.name];
+  if (CASH_LABEL_FORMATS[cashName]?.symbol) {
+    out = CASH_LABEL_FORMATS[cashName];
   }
   return out;
 }
 
-export function formatCash(num: NumStrBigNumber, cash: Cash, opts: FormattedNumberOptions = {}): FormattedNumber {
-  const { prepend, symbol, displayDecimals } = getCashFormat(cash);
+export function formatCash(num: NumStrBigNumber, cashName: string, opts: FormattedNumberOptions = {}): FormattedNumber {
+  const { prepend, symbol, displayDecimals } = getCashFormat(cashName);
   return formatNumber(num, {
     decimals: displayDecimals,
     decimalsRounded: displayDecimals,
@@ -56,16 +57,20 @@ export function formatCash(num: NumStrBigNumber, cash: Cash, opts: FormattedNumb
 }
 
 export function formatSimpleShares(num: NumStrBigNumber, opts: FormattedNumberOptions = {}): FormattedNumber {
-  return formatShares(num, {
+  return formatNumber(num, {
     decimals: USUAL_NUMBER_DECIMAL_PLACES,
     decimalsRounded: USUAL_NUMBER_DECIMAL_PLACES,
     denomination: v => `${v}`,
+    positiveSign: false,
+    zeroStyled: false,
+    blankZero: false,
+    bigUnitPostfix: false,
     ...opts,
   })
 }
 
-export function formatCashPrice(num: NumStrBigNumber, cash: Cash, opts: FormattedNumberOptions = {}): FormattedNumber {
-  const { prepend, symbol } = getCashFormat(cash);
+export function formatCashPrice(num: NumStrBigNumber, cashName: string, opts: FormattedNumberOptions = {}): FormattedNumber {
+  const { prepend, symbol } = getCashFormat(cashName);
   return formatNumber(num, {
     decimals: 2,
     decimalsRounded: 2,
@@ -214,14 +219,12 @@ export function formatBestPrice(
   });
 }
 
-export function formatDaiPrice(
+export function formatSimplePrice(
   num: NumStrBigNumber,
-  opts: FormattedNumberOptions = {}
 ): FormattedNumber {
   return formatDai(num, {
-    decimals: 3,
-    decimalsRounded: 3,
-    ...opts,
+    decimals: 2,
+    decimalsRounded: 2,
   });
 }
 
@@ -703,5 +706,5 @@ export function convertDisplayCashAmountToOnChainCashAmount(
 }
 
 export const isSameAddress = (address1: string, address2: string) => {
-  return address1.toLowerCase() === address2.toLowerCase()
+  return (address1 && address2) ? address1.toLowerCase() === address2.toLowerCase() : false;
 }
