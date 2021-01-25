@@ -774,9 +774,7 @@ const ModalAddLiquidity = ({
               action={confirmAction}
             />
             <div className={Styles.FooterText}>
-              Need some copy here explaining why the user will get shares and
-              that they may recieve some shares when they remove their
-              liquidity.
+              Removing liquidity returns shares. These shares may be sold for {chosenCash}.
             </div>
           </main>
         </>

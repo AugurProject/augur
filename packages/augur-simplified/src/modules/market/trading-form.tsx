@@ -553,6 +553,7 @@ const TradingForm = ({
   ]);
 
   const makeTrade = () => {
+    setShowTradingForm(false);
     const minOutput = breakdown?.outputValue;
     const percentageOff = new BN(1).minus(new BN(slippage).div(100));
     const worstCaseOutput = String(new BN(minOutput).times(percentageOff));
