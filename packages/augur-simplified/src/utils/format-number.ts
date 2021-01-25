@@ -57,10 +57,14 @@ export function formatCash(num: NumStrBigNumber, cashName: string, opts: Formatt
 }
 
 export function formatSimpleShares(num: NumStrBigNumber, opts: FormattedNumberOptions = {}): FormattedNumber {
-  return formatShares(num, {
+  return formatNumber(num, {
     decimals: USUAL_NUMBER_DECIMAL_PLACES,
     decimalsRounded: USUAL_NUMBER_DECIMAL_PLACES,
     denomination: v => `${v}`,
+    positiveSign: false,
+    zeroStyled: false,
+    blankZero: false,
+    bigUnitPostfix: false,
     ...opts,
   })
 }
