@@ -555,7 +555,7 @@ export const getUserBalances = async (
         (k, shareToken) => {
           // TODO: might need to change when scalars come in
           const outcomeShareBalances = [0, 1, 2].map((outcome) => ({
-            reference: `${marketId}-${outcome}`,
+            reference: `${shareToken}-${marketId}-${outcome}`,
             contractAddress: shareToken,
             abi: ParaShareToken.ABI,
             calls: [
