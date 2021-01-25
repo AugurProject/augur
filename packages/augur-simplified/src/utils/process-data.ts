@@ -637,9 +637,9 @@ const getActivityType = (
         formatSimpleShares(String(shares)).full
       } Shares of ${shareType} @ ${formattedPrice.full}`;
       // when design wants to add usd value
-      // const usdValue = `${String(new BN(price).times(new BN(shares)).times(new BN(cash.usdPrice)))}`;
+      const cashValue = convertOnChainCashAmountToDisplayCashAmount(tx.cash, cash.decimals);
       value = `${
-        formatCash(String(new BN(formattedPrice.formatted).times(new BN(shares))), cash.name).full
+        formatCash(String(cashValue), cash.name).full
       }`;
       type = tx.tx_type === TransactionTypes.ENTER ? BUY : SELL;
       break;
