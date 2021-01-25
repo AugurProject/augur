@@ -404,7 +404,7 @@ const shapeEnterTransactions = (
     return {
       ...e,
       tx_type: TransactionTypes.ENTER,
-      sender: e.sender.id,
+      sender: e.sender?.id,
       subheader,
       ...properties,
     };
@@ -423,7 +423,7 @@ const shapeExitTransactions = (
     return {
       ...e,
       tx_type: TransactionTypes.EXIT,
-      sender: e.sender.id,
+      sender: e.sender?.id,
       subheader,
       ...properties,
     };
@@ -454,7 +454,7 @@ const shapeAddLiquidityTransactions = (
     return {
       ...e,
       tx_type: TransactionTypes.ADD_LIQUIDITY,
-      sender: e.sender.id,
+      sender: e.sender?.id,
       subheader,
       ...properties,
       price: null,
@@ -480,7 +480,7 @@ const shapeRemoveLiquidityTransactions = (
     return {
       ...e,
       tx_type: TransactionTypes.REMOVE_LIQUIDITY,
-      sender: e.sender.id,
+      sender: e.sender?.id,
       subheader,
       ...properties,
       price: null,
