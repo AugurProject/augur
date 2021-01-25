@@ -803,7 +803,7 @@ type SwapPosition @entity {
   ammExchange: AMMExchange!
 
   "The 'from' field of the swap tx."
-  sender: User!
+  sender: User
 
   "Number of yes shares recieved or sent in swap. Negative values are from the user's prospective."
   yesShares: BigInt!
@@ -823,7 +823,7 @@ type EnterPosition @entity {
   ammExchange: AMMExchange!
 
   "The 'from' field of the swap tx."
-  sender: User!
+  sender: User
 
   "Amount of cash user passed to enter the position."
   cash: BigInt!
@@ -848,7 +848,7 @@ type ExitPosition @entity {
   ammExchange: AMMExchange!
 
   "The 'from' field of the swap tx."
-  sender: User!
+  sender: User
 
   "Number of invalid shares user is exiting"
   invalidShares: BigInt!
@@ -876,7 +876,7 @@ type AddLiquidity @entity {
   ammExchange: AMMExchange!
 
   "The 'from' field of the swap tx."
-  sender: User!
+  sender: User
 
   "Number of no shares user is recieving"
   noShares: BigInt!
@@ -909,7 +909,7 @@ type RemoveLiquidity @entity {
   ammExchange: AMMExchange!
 
   "The 'from' field of the swap tx."
-  sender: User!
+  sender: User
 
   "Number of no shares user is redeeming"
   noShares: BigInt!
