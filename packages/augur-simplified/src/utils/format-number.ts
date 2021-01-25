@@ -706,5 +706,5 @@ export function convertDisplayCashAmountToOnChainCashAmount(
 }
 
 export const isSameAddress = (address1: string, address2: string) => {
-  return address1.toLowerCase() === address2.toLowerCase()
+  return (address1 && address2) ? address1.toLowerCase() === address2.toLowerCase() : false;
 }
