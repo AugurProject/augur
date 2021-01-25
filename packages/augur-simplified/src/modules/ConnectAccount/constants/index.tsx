@@ -17,11 +17,13 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   INJECTED: {
     connector: injected,
     name: 'Injected',
-    iconName: 'arrow-right.svg',
+    iconName: 'metamask.png',
     description: 'Injected web3 provider.',
     href: null,
     color: '#010101',
-    primary: true
+    primary: true,
+    mobile: true,
+    mobileOnly: true
   },
   METAMASK: {
     connector: injected,

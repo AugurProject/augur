@@ -247,6 +247,7 @@ export const TopNav = () => {
           updateLoginAccount={handleAccountUpdate}
           autoLogin={autoLogin}
           transactions={transactions}
+          darkMode={false}
         />
         {isMobile ? (
           <button
