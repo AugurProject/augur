@@ -233,7 +233,9 @@
       justify-content: center;
       align-items: center;
       margin-top: @size-8;
-
+      justify-content: flex-start;
+      display: flex;
+      margin-top: @size-8;
       > span {
         color: var(--simple-secondary-text-50);
       }
@@ -277,14 +279,25 @@
   }
 
   &.nonSelectable {
+    height: @size-80;
+    min-height: @size-80;
+    
     &.Yes {
       border-right-color: var(--simple-border);
     }
 
-    > span:last-of-type {
-      .text-20-bold;
-
+    > span:nth-of-type(2) {
       margin-top: @size-8;
+    }
+
+    > span:last-of-type,
+    > div > span,
+    > div > input {
+      .text-20-bold;
+    }
+
+    > span:first-of-type {
+      margin-top: 0;
     }
 
     &.Selected,
@@ -295,6 +308,8 @@
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
       color: var(--simple-secondary-text);
+      border-left: @size-1 solid transparent;
+      cursor: auto;
 
       &.Yes {
         .SimpleBorder;

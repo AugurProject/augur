@@ -47,6 +47,7 @@ import {
 import { useAppStatusStore, AppStatusStore } from '../stores/app-status';
 import { BigNumber as BN } from 'bignumber.js';
 import { createBigNumber } from '../../utils/create-big-number';
+import { BackIcon } from '../common/icons';
 
 const TRADING_FEE_OPTIONS = [
   {
@@ -728,6 +729,7 @@ const ModalAddLiquidity = ({
       ) : (
         <>
           <div className={Styles.Header} onClick={() => setShowBackView(false)}>
+            {BackIcon}
             Back
           </div>
           <main>
