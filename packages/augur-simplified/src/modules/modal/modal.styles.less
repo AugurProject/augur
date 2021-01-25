@@ -180,6 +180,8 @@
 }
 
 .Header {
+  .text-20-bold;
+
   border-top-left-radius: @size-16;
   border-top-right-radius: @size-16;
   display: flex;
@@ -193,6 +195,7 @@
   z-index: @above-all-content;
   height: @size-72;
   max-height: @size-72;
+  color: var(--simple-secondary-text);
 
   > span {
     .text-20-bold;
@@ -229,6 +232,20 @@
     border: 0;
     cursor: pointer;
     display: flex;
+  }
+
+  > svg {
+    margin-right: @size-8;
+  }
+
+  &:hover {
+    color: var(--simple-primary-text);
+
+    > svg {
+      > path {
+        fill: var(--simple-primary-text);
+      }
+    }
   }
 }
 
