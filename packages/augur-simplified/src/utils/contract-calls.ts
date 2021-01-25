@@ -1,5 +1,5 @@
 import BigNumber, { BigNumber as BN } from 'bignumber.js'
-import { RemoveLiquidityRate, ParaShareToken, AddLiquidityRate } from '@augurproject/sdk-lite'
+import { ParaShareToken, AddLiquidityRate } from '@augurproject/sdk-lite'
 import { TradingDirection, AmmExchange, AmmExchanges, AmmMarketShares, AmmTransaction, Cashes, CurrencyBalance, PositionBalance, TransactionTypes, UserBalances, MarketInfos, LPTokens, EstimateTradeResult, Cash, AddLiquidityBreakdown, LiquidityBreakdown, AmmOutcome } from '../modules/types'
 import ethers from 'ethers';
 import { Contract } from '@ethersproject/contracts'
@@ -290,12 +290,16 @@ export const estimateExitTrade = async (
     longShares = convertDisplayShareAmountToOnChainShareAmount(new BN(inputDisplayAmount), new BN(amm?.cash?.decimals));
   }
 
+  const liqNo = convertDisplayShareAmountToOnChainShareAmount(new BN(amm?.liquidityNo || "0"), new BN(amm?.cash?.decimals))
+  const liqYes = convertDisplayShareAmountToOnChainShareAmount(new BN(amm?.liquidityYes || "0"), new BN(amm?.cash?.decimals))
+  const liqCash = convertDisplayShareAmountToOnChainShareAmount(new BN(amm?.liquidityCash || "0"), new BN(amm?.cash?.decimals))
+
   console.log("amount of cash", amm?.liquidityCash);
   const breakdownWithFeeRaw = await augurClient.amm.getExitPosition(
     new BN(amm?.totalSupply || "0"),
-    new BN(amm?.liquidityNo || "0"),
-    new BN(amm?.liquidityYes || "0"),
-    new BN(amm?.liquidityCash || "0"),
+    liqNo,
+    liqYes,
+    liqCash,
     new BN(amm?.feeRaw),
     shortShares,
     longShares,
@@ -334,8 +338,6 @@ export const estimateEnterPosition = async (
   amm: AmmExchange,
   inputDisplayAmount: string,
   outputYesShares: boolean = true,
-  includeFee: boolean = true,
-  userBalances: string[] = [],
 ): Promise<string | null> => {
   const augurClient = augurSdkLite.get();
   const ammId = amm?.id;
@@ -343,7 +345,7 @@ export const estimateEnterPosition = async (
     console.error('estimateTrade: augurClient is null or amm address');
     return null;
   }
-
+  const includeFee = true;
   let breakdown = null;
   const { cash, marketId, feeRaw } = amm;
   if (tradeDirection === TradingDirection.ENTRY) {
