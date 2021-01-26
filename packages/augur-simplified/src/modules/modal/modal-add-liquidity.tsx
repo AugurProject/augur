@@ -407,7 +407,7 @@ const ModalAddLiquidity = ({
     } else {
       await doAmmLiquidity(
         properties.account,
-        properties.amm,
+        modalType === CREATE ? undefined : properties.amm,
         properties.marketId,
         properties.cash,
         properties.fee,
