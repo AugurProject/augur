@@ -68,7 +68,7 @@ export class DB {
   private syncableDatabases: { [dbName: string]: BaseSyncableDB } = {};
   private disputeDatabase: DisputeDatabase;
   private currentOrdersDatabase: ParsedOrderEventDB;
-  marketDatabase: MarketDB;
+  private _marketDatabase: MarketDB;
   private parsedOrderEventDatabase: ParsedOrderEventDB;
   private zeroXOrders: ZeroXOrders;
   getterCache: GetterCache;
@@ -146,7 +146,7 @@ export class DB {
     },
     { EventName: 'TokensMinted', indexes: [] },
     { EventName: 'TokensTransferred', indexes: [] },
-    { EventName: 'ReportingFeeChanged', indexes: ['universe'] }, // TODO: add Rollup
+    { EventName: 'ReportingFeeChanged', indexes: ['universe'] },
     { EventName: 'TradingProceedsClaimed', indexes: ['timestamp', 'market'] },
     {
       EventName: 'UniverseCreated',
@@ -219,6 +219,7 @@ export class DB {
     this.syncStatus = new SyncStatus(this.networkId, this.uploadBlockNumber, this);
     this.warpCheckpoints = new WarpSyncCheckpointsDB(this.networkId, this);
     this.getterCache = GetterCache.create(this, this.networkId, this.augur);
+    await this.getterCache.reset();
 
     // Create SyncableDBs for generic event types & UserSyncableDBs for user-specific event types
     for (const genericEventDBDescription of this.genericEventDBDescriptions) {
@@ -258,6 +259,7 @@ export class DB {
       ],
       this.augur
     );
+    await this.disputeDatabase.reset();
     this.currentOrdersDatabase = new ParsedOrderEventDB(
       this,
       this.networkId,
@@ -265,7 +267,10 @@ export class DB {
       ['OrderEvent'],
       this.augur
     );
-    this.marketDatabase = new MarketDB(this, this.networkId, this.augur);
+
+    this._marketDatabase = new MarketDB(this, this.networkId, this.augur);
+    await this._marketDatabase.reset();
+
     this.parsedOrderEventDatabase = new ParsedOrderEventDB(
       this,
       this.networkId,
@@ -313,6 +318,10 @@ export class DB {
     return this;
   }
 
+  get marketDatabase(): MarketDB {
+    return this._marketDatabase;
+  }
+
   // Remove databases and unregister event handlers.
   async delete() {
     for (const db of Object.values(this.syncableDatabases)) {
@@ -324,7 +333,7 @@ export class DB {
 
     this.disputeDatabase = undefined;
     this.currentOrdersDatabase = undefined;
-    this.marketDatabase = undefined;
+    this._marketDatabase = undefined;
     this.parsedOrderEventDatabase = undefined;
     this.getterCache = undefined;
 
@@ -437,7 +446,7 @@ export class DB {
     await this.parsedOrderEventDatabase.sync(highestAvailableBlockNumber);
 
     // The Market DB syncs after the derived DBs, as it depends on a derived DB
-    await this.marketDatabase.sync(highestAvailableBlockNumber);
+    await this._marketDatabase.sync(0);
   }
 
   async prune(timestamp: number) {

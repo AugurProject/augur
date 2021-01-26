@@ -170,4 +170,9 @@ export class DerivedDB extends RollbackTable {
   protected processDoc(log: ParsedLog): ParsedLog {
     return log;
   }
+
+  async reset() {
+    await this.syncStatus.setHighestSyncBlock(this.dbName, 0, false);
+    await this.stateDB.dexieDB[this.dbName].clear();
+  }
 }
