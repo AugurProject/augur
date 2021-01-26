@@ -223,7 +223,7 @@
   }
 }
 
-div.PositionsLiquidityViewSwitcher {
+.PositionsLiquidityViewSwitcher {
   flex-direction: column;
 
   > span:first-of-type {
@@ -343,6 +343,20 @@ div.PositionsLiquidityViewSwitcher {
     > div:first-of-type {
       > button {
         margin-left: auto;
+      }
+    }
+  }
+}
+
+@media @breakpoint-mobile {
+  .PositionsLiquidityViewSwitcher {
+    > div:first-of-type {
+      > span {
+        .text-18-bold;
+
+        &:first-of-type {
+          margin-right: @size-16;
+        }
       }
     }
   }

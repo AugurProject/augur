@@ -31,8 +31,8 @@
     height: 100%;
 
     > div {
-      width: 100%;
-      height: calc(100% - 48px);
+      max-width: 100%;
+      max-height: calc(100% - 48px);
       margin: 0 @size-16;
     }
   }
@@ -76,7 +76,7 @@
     > main > div:first-of-type {
       margin-top: 0;
     }
-    
+
     > main > div:nth-of-type(2) {
       margin-top: 0;
     }
@@ -122,7 +122,7 @@
       }
     }
 
-    &.Remove { 
+    &.Remove {
       > main > div:first-of-type {
         margin-top: @size-24;
       }

@@ -47,6 +47,7 @@ const shortenAddress = (address: string, chars = 4): string => {
 
 const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode, transactions }) => {
   const {
+    isMobile,
     actions: { setModal },
   } = useAppStatusStore();
   const { account, activate, connector, error } = useWeb3React();
@@ -78,7 +79,7 @@ const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode, transac
   if (account) {
     buttonProps = {
       ...buttonProps,
-      text: shortenAddress(account),
+      text: isMobile ? shortenAddress(account, 3) : shortenAddress(account),
       icon: connector && (
         <GetWalletIcon
           connector={connector}
