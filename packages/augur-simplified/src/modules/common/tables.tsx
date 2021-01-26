@@ -248,7 +248,7 @@ const LiquidityHeader = () => {
   const { isMobile } = useAppStatusStore();
   return (
     <ul className={Styles.LiquidityHeader}>
-      <li>liquidity shares{isMobile ? <br /> : ' '}owned</li>
+      <li>LP tokens{isMobile ? <br /> : ' '}owned</li>
       <li>init.{isMobile ? <br /> : ' '}value</li>
       <li>cur.{isMobile ? <br /> : ' '}value</li>
       <li>fees{isMobile ? <br /> : ' '}earned</li>

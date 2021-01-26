@@ -96,11 +96,15 @@ export async function estimateAddLiquidity(
   const poolYesPercent = new BN(convertPriceToPercent(priceNo));
   const poolNoPercent = new BN(convertPriceToPercent(priceYes));
 
+  const liqNo = convertDisplayShareAmountToOnChainShareAmount(new BN(amm?.liquidityNo || "0"), new BN(amm?.cash?.decimals))
+  const liqYes = convertDisplayShareAmountToOnChainShareAmount(new BN(amm?.liquidityYes || "0"), new BN(amm?.cash?.decimals))
+  const liqCash = convertDisplayShareAmountToOnChainShareAmount(new BN(amm?.liquidityCash || "0"), new BN(amm?.cash?.decimals))
+
   const addLiquidityResults: AddLiquidityRate = await augurClient.amm.getAddLiquidity(
     new BN(amm?.totalSupply || "0"),
-    new BN(amm?.liquidityNo || "0"),
-    new BN(amm?.liquidityYes || "0"),
-    new BN(amm?.liquidityCash || "0"),
+    liqNo,
+    liqYes,
+    liqCash,
     new BN(amount),
     poolYesPercent,
     poolNoPercent
