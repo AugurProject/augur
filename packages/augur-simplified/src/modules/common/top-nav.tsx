@@ -3,7 +3,7 @@ import { useLocation } from 'react-router';
 import Styles from './top-nav.styles.less';
 import ButtonStyles from './buttons.styles.less';
 import { Link } from 'react-router-dom';
-import { MARKETS, PORTFOLIO, SIDEBAR_TYPES } from '../constants';
+import { MARKETS, PORTFOLIO, SIDEBAR_TYPES, TX_STATUS } from '../constants';
 import makePath from '../routes/helpers/make-path';
 import Logo from './logo';
 import parsePath from '../routes/helpers/parse-path';
@@ -16,6 +16,7 @@ import { SecondaryButton, TinyButton } from './buttons';
 import { Toasts } from '../toasts/toasts';
 import {ToggleSwitch} from 'modules/common/toggle-switch';
 import {generateTooltip} from 'modules/common/labels';
+import { updateTxStatus } from '../modal/modal-add-liquidity';
 
 export const SettingsButton = () => {
   const {
@@ -161,41 +162,72 @@ export const TopNav = () => {
   const location = useLocation();
   const path = parsePath(location.pathname)[0];
   const {
+    blocknumber,
     paraConfig: { networkId },
     loginAccount,
     transactions,
     isLogged,
     isMobile,
-    actions: { setSidebar, updateLoginAccount, logout, addTransaction },
+    actions: { setSidebar, updateLoginAccount, logout, addTransaction, updateTransaction },
   } = useAppStatusStore();
-  const [user, setUser] = useLocalStorage('user', null);
+  const [lastUser, setLastUser] = useLocalStorage('lastUser', null);
+
+  const getSavedUserInfo = () => {
+    return JSON.parse(window.localStorage.getItem(loginAccount?.account)) || null;
+  }
+
+  const setSavedUserInfo = (state) => {
+    window.localStorage.setItem(loginAccount?.account, JSON.stringify(state));
+  }
+
+  useEffect(() => {
+    if (blocknumber && transactions) {
+      transactions
+        .filter(tx => tx?.status === TX_STATUS.PENDING)
+        .forEach(tx => {
+          const isTransactionMined = async(transactionHash, provider) => {
+            const txReceipt = await provider.getTransactionReceipt(transactionHash);
+            if (txReceipt && txReceipt.blockNumber) {
+                return txReceipt;
+            }
+          }
+          isTransactionMined(tx.hash, loginAccount.library)
+            .then(response => {
+              if (response?.confirmations > 0) {
+                updateTxStatus(response, updateTransaction)
+              }
+            });
+        });
+    }
+  }, [transactions, blocknumber]);
 
   useEffect(() => {
     if (
       loginAccount?.library?.provider?.isMetaMask &&
-      user?.account !== loginAccount?.account &&
       loginAccount?.account
     ) {
-      setUser({ account: loginAccount.account });
-    } else if (!loginAccount?.active && !!user?.account) {
-      setUser({});
+      setLastUser(loginAccount.account);
+      const firstLogin = window.localStorage.getItem(loginAccount.account) === null;
+      if (firstLogin) {
+        setSavedUserInfo({ account: loginAccount.account })
+      }
+    } else if (!loginAccount?.active) {
+      setLastUser(null);
     }
-  }, [loginAccount, user, setUser]);
+  }, [loginAccount]);
 
-  const autoLogin = user?.account || null;
+  const autoLogin = lastUser || null;
 
   const handleAccountUpdate = (activeWeb3) => {
     if (activeWeb3) {
-      const savedTransactions =
-        JSON.parse(window.localStorage.getItem('transactions')) || [];
-
+      const savedTransactions = getSavedUserInfo()?.transactions;
       if (
         transactions &&
         transactions.length === 0 &&
         savedTransactions &&
         savedTransactions.length > 0
       ) {
-        savedTransactions.map((tx) => addTransaction(tx));
+        savedTransactions.forEach((tx) => addTransaction(tx));
       }
 
       if (String(networkId) !== String(activeWeb3.chainId)) {
@@ -204,8 +236,6 @@ export const TopNav = () => {
         if (loginAccount.account !== activeWeb3.account) {
           // Cleanup old user state
           logout();
-          window.localStorage.setItem('transactions', JSON.stringify([]));
-
           updateLoginAccount(activeWeb3);
         }
       } else {

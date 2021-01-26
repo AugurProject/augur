@@ -125,6 +125,41 @@
       }
     }
   }
+
+  &.Pending {
+    background-color: var(--color-brand);
+    border: @size-1 solid var(--color-brand);
+    color: var(--color-brand-secondary);
+
+    > div::before {
+      background:
+        linear-gradient(  0deg, transparent 50%, white 100%)   0%   0%,
+        linear-gradient( 90deg, white  0%, white 100%) 100%   0%,
+        linear-gradient(180deg, white  0%, white 100%) 100% 100%,
+        linear-gradient(270deg, white 0%, white 100%)   0% 100%
+      ;
+      background-repeat: no-repeat;
+      background-size: 50% 50%;
+    }
+
+    > div::after {
+      background-color: var(--color-brand);
+    }
+
+    &:not(:disabled):not(.Disabled) {
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: var(--color-brand);
+        border: @size-1 solid var(--color-brand);
+        color: var(--color-brand-secondary);
+      }
+
+      &:focus {
+        border: @size-1 solid var(--color-focused);
+      }
+    }
+  }
 }
 
 .TinyButton {

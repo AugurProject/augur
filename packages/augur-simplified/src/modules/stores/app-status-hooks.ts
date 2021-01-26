@@ -82,6 +82,16 @@ const middleware = (dispatch, action) => {
   }
 };
 
+const updateUserStorageData = (userAccount, updatedState) => {
+  const userData = JSON.parse(window.localStorage.getItem(userAccount)) || null;
+  if (userData) {
+    window.localStorage.setItem(
+      userAccount,
+      JSON.stringify({ ...userData, transactions: updatedState[TRANSACTIONS]})
+    );
+  }
+}
+
 export const getRelatedMarkets = (
   market: MarketInfo,
   markets: Array<MarketInfo>
@@ -235,6 +245,7 @@ export function AppStatusReducer(state, action) {
       break;
     }
     case UPDATE_TRANSACTION: {
+      const userAccount = action.updates.from;
       const transactionIndex = updatedState[TRANSACTIONS].findIndex(transaction => transaction.hash === action.hash);
       if (transactionIndex >= 0) {
         updatedState[TRANSACTIONS][transactionIndex] = {
@@ -242,33 +253,28 @@ export function AppStatusReducer(state, action) {
           ...action.updates,
           timestamp: now,
         };
-        window.localStorage.setItem(
-          'transactions',
-          JSON.stringify(updatedState[TRANSACTIONS])
-        );
+        updateUserStorageData(userAccount, updatedState);
       }
       break;
     }
     case ADD_TRANSACTION: {
+      const userAccount = action.transaction.from;
+
       updatedState[TRANSACTIONS] = [
         ...updatedState[TRANSACTIONS],
         { ...action.transaction, timestamp: now },
       ];
-      window.localStorage.setItem(
-        'transactions',
-        JSON.stringify(updatedState[TRANSACTIONS])
-      );
+      updateUserStorageData(userAccount, updatedState);
       break;
     }
     case REMOVE_TRANSACTION: {
+      const userAccount = state?.loginAccount?.account;
+
       if (action.hash) {
         updatedState[TRANSACTIONS] = updatedState[TRANSACTIONS].filter(
           (tx) => tx.hash !== action.hash
         );
-        window.localStorage.setItem(
-          'transactions',
-          JSON.stringify(updatedState[TRANSACTIONS])
-        );
+        updateUserStorageData(userAccount, updatedState);
       }
       break;
     }
