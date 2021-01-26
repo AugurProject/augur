@@ -521,7 +521,7 @@ const TradingForm = ({
         : marketShares?.outcomeShares
         ? marketShares?.outcomeShares[selectedOutcomeId]
         : '0';
-    }, [orderType, amm?.cash?.name, amm?.id, selectedOutcomeId, balances])
+    }, [orderType, amm?.cash?.name, amm?.id, selectedOutcomeId, balances, amm?.liquidity])
   );
 
   const canMakeTrade: CanTradeProps = useMemo(() => {

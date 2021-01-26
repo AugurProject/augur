@@ -10,7 +10,7 @@ import { EthIcon, UsdIcon } from '../common/icons';
 import { keyedObjToArray } from '../stores/app-status-hooks';
 import { ETH, USDC } from '../constants';
 import { formatCashPrice } from '../../utils/format-number';
-import { claimWinnings, claimMarketWinnings } from '../../utils/contract-calls';
+import { claimMarketWinnings } from '../../utils/contract-calls';
 
 const TABLES = 'TABLES';
 const ACTIVITY = 'ACTIVITY';
@@ -23,7 +23,7 @@ export const ClaimWinningsSection = () => {
         exit: { ETH: ethApproval },
       },
     },
-    userInfo: { balances: { claimableWinnings }},
+    // userInfo: { balances: { claimableWinnings }},
     processed: { cashes },
   } = useAppStatusStore();
   const keyedCash = keyedObjToArray(cashes);
