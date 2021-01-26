@@ -18,7 +18,7 @@ const ActivityCard = ({ activity }: { activity: ActivityItem }) => (
   </div>
 );
 
-const ACTIVITY_PAGE_LIMIT = 10;
+const ACTIVITY_PAGE_LIMIT = 5;
 export const Activity = () => {
   const {
     isLogged,

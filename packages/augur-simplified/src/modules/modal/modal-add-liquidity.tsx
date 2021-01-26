@@ -363,6 +363,8 @@ const ModalAddLiquidity = ({
     },
   ];
 
+  const invalidCashAmount = formatCash(0, cash?.name).full;
+
   const confirmAction = async () => {
     const properties = checkConvertLiquidityProperties(
       account,
@@ -518,7 +520,7 @@ const ModalAddLiquidity = ({
       receiveTitle: "You'll receive",
       actionButtonText: 'Add',
       confirmButtonText: 'confirm add',
-      footerText: `By adding liquidity you'll earn ${feePercentFormatted} of all trades on this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.`,
+      footerText: `By adding liquidity you'll earn ${feePercentFormatted} of all trades on this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity. ${invalidCashAmount} will be added to the invalid balancer pool.`,
       breakdown: addCreateBreakdown,
       approvalButtonText: `approve ${chosenCash}`,
       confirmOverview: {
