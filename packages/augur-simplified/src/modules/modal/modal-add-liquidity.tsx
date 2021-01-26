@@ -351,15 +351,15 @@ const ModalAddLiquidity = ({
   const addCreateBreakdown = [
     {
       label: 'yes shares',
-      value: `${breakdown.yesShares}`,
+      value: `${formatSimpleShares(breakdown.yesShares).formatted}`,
     },
     {
       label: 'no shares',
-      value: `${breakdown.noShares}`,
+      value: `${formatSimpleShares(breakdown.noShares).formatted}`,
     },
     {
       label: 'LP tokens',
-      value: `${breakdown.lpTokens}`,
+      value: `${formatSimpleShares(breakdown.lpTokens).formatted}`,
     },
   ];
 
