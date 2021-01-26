@@ -451,7 +451,7 @@ const ModalAddLiquidity = ({
       confirmButtonText: 'confirm remove',
       currencyName: SHARES,
       footerText:
-        'Removing liquidity returns shares; these shares may be sold for USDC.',
+        `Removing liquidity returns shares; these shares may be sold for ${chosenCash}.`,
       breakdown: [
         {
           label: 'yes shares',
@@ -773,9 +773,11 @@ const ModalAddLiquidity = ({
               text={LIQUIDITY_STRINGS[modalType].confirmButtonText}
               action={confirmAction}
             />
-            <div className={Styles.FooterText}>
-              Removing liquidity returns shares. These shares may be sold for {chosenCash}.
-            </div>
+            {LIQUIDITY_STRINGS[modalType].footerText && (
+              <div className={Styles.FooterText}>
+                {LIQUIDITY_STRINGS[modalType].footerText}
+              </div>
+            )}
           </main>
         </>
       )}

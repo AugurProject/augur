@@ -542,7 +542,6 @@ const TradingForm = ({
         new BN(breakdown?.slippagePercent)
       )
     ) {
-      actionText = OVER_SLIPPAGE;
       subText = '(Adjust slippage Tolerance in Settings)';
       disabled = true;
     }
@@ -648,7 +647,7 @@ const TradingForm = ({
         <AmountInput
           chosenCash={isBuy ? ammCash?.name : SHARES}
           updateInitialAmount={setAmount}
-          initialAmount={''}
+          initialAmount={amount}
           maxValue={userBalance}
           ammCash={ammCash}
           rate={
