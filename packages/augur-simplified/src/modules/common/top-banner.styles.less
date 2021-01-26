@@ -10,7 +10,7 @@
   text-align: center;
   background-position: center center;
   background-repeat: no-repeat;
-  background-size: auto;
+  background-size: cover;
   background-image: url("../../assets/images/top-banner-desktop.png"); // 1264px // 1023px // 959px
 
   > h1 {
@@ -20,11 +20,18 @@
   }
 
   @media @breakpoint-mobile-tablet {
+    border-radius: @size-6;
     height: @size-85;
     background-image: url("../../assets/images/top-banner-mobile.png");
 
     > h1 {
       .text-24-semi-bold;
+    }
+  }
+
+  @media @breakpoint-mobile {
+    > h1 {
+      .text-16-semi-bold;
     }
   }
 }
