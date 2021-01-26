@@ -155,4 +155,8 @@ export class GetterCache extends AbstractTable {
             this.augur.off(eventName);
         })
     }
+
+    async reset() {
+      return this.table.clear();
+    }
 }
