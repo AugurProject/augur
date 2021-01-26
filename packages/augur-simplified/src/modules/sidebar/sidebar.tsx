@@ -113,6 +113,7 @@ const FilterSideBar = () => {
 
 const NavigationSideBar = () => {
   const {
+    isLogged,
     actions: { setSidebar },
   } = useAppStatusStore();
   const location = useLocation();
@@ -127,11 +128,13 @@ const NavigationSideBar = () => {
               Markets
             </Link>
           </li>
-          <li className={classNames({ [Styles.Active]: path === PORTFOLIO })}>
-            <Link onClick={() => setSidebar(null)} to={makePath(PORTFOLIO)}>
-              Portfolio
-            </Link>
-          </li>
+          {isLogged && (
+            <li className={classNames({ [Styles.Active]: path === PORTFOLIO })}>
+              <Link onClick={() => setSidebar(null)} to={makePath(PORTFOLIO)}>
+                Portfolio
+              </Link>
+            </li>
+          )}
         </ol>
       </div>
       <div className={Styles.NavigationFooter}>
