@@ -83,7 +83,7 @@ const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode, transac
         <GetWalletIcon
           connector={connector}
           account={account}
-          showPortisButton={true}
+          showPortisButton={false}
         />
       ),
     }
