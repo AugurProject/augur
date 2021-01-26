@@ -243,17 +243,6 @@ export const PositionTable = ({
           .filter((p) => p.visible)
           .map((position, id) => <PositionRow key={id} position={position} />)}
       <PositionFooter showTradeButton={!singleMarket} market={market} claimableWinnings={claimableWinnings} />
-      {singleMarket && positions.length !== 0 && (
-        <div className={Styles.PaginationFooter}>
-          <Pagination
-            page={page}
-            itemCount={PositionHeader.length}
-            itemsPerPage={POSITIONS_LIQUIDITY_LIMIT}
-            action={(page) => setPage(page)}
-            updateLimit={() => null}
-          />
-        </div>
-      )}
     </div>
   );
 };
