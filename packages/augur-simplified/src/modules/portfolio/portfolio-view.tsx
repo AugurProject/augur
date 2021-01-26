@@ -10,25 +10,42 @@ import { EthIcon, UsdIcon } from '../common/icons';
 import { keyedObjToArray } from '../stores/app-status-hooks';
 import { ETH, USDC } from '../constants';
 import { formatCashPrice } from '../../utils/format-number';
+import { claimWinnings, claimMarketWinnings } from '../../utils/contract-calls';
 
 const TABLES = 'TABLES';
 const ACTIVITY = 'ACTIVITY';
 
 export const ClaimWinningsSection = () => {
-  const { isLogged, processed: { cashes } } = useAppStatusStore();
+  const {
+    isLogged,
+    approvals: {
+      trade: {
+        exit: { ETH: ethApproval },
+      },
+    },
+    userInfo: { balances: { claimableWinnings }},
+    processed: { cashes },
+  } = useAppStatusStore();
   const keyedCash = keyedObjToArray(cashes);
-  const ethCash = keyedCash.find(c => c?.name === ETH);
-  const usdcCash = keyedCash.find(c => c?.name === USDC);
+  const ethCash = keyedCash.find((c) => c?.name === ETH);
+  const usdcCash = keyedCash.find((c) => c?.name === USDC);
   // userInfo: { balances: { claimableWinnings }}
-  // console.log(isLogged, claimableWinnings);
+  // console.log(isLogged, claimableWinnings, ethApproval);
   return (
     <div className={Styles.ClaimableWinningsSection}>
       {isLogged && (
-        <PrimaryButton text={`Claim Winnings (${formatCashPrice("24.00", usdcCash?.name).full})`} icon={UsdIcon} />
+        <PrimaryButton
+          text={`Claim Winnings (${
+            formatCashPrice('24.00', usdcCash?.name).full
+          })`}
+          icon={UsdIcon}
+        />
       )}
       {isLogged && (
         <PrimaryButton
-          text={`Approve to Claim Winnings (${formatCashPrice("0.87", ethCash?.name).full})`}
+          text={`${ethApproval ? '' : 'Approve to '}Claim Winnings (${
+            formatCashPrice('0.87', ethCash?.name).full
+          })`}
           icon={EthIcon}
         />
       )}
