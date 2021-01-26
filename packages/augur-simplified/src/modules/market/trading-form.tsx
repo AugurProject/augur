@@ -510,7 +510,7 @@ const TradingForm = ({
     return () => {
       isMounted = false;
     };
-  }, [orderType, selectedOutcomeId, amount, outcomeSharesRaw]);
+  }, [orderType, selectedOutcomeId, amount, outcomeSharesRaw, amm?.liquidity]);
 
   const userBalance = String(
     useMemo(() => {
@@ -521,7 +521,7 @@ const TradingForm = ({
         : marketShares?.outcomeShares
         ? marketShares?.outcomeShares[selectedOutcomeId]
         : '0';
-    }, [orderType, amm?.cash?.name, amm?.id, selectedOutcomeId, balances, amm?.liquidity])
+    }, [orderType, amm?.cash?.name, amm?.id, selectedOutcomeId, balances])
   );
 
   const canMakeTrade: CanTradeProps = useMemo(() => {
