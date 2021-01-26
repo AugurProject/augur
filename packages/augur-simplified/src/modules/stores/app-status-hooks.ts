@@ -82,12 +82,22 @@ const middleware = (dispatch, action) => {
   }
 };
 
-const updateUserStorageData = (userAccount, updatedState) => {
+const updateUserStorageDataTx = (userAccount, updatedState) => {
   const userData = JSON.parse(window.localStorage.getItem(userAccount)) || null;
   if (userData) {
     window.localStorage.setItem(
       userAccount,
       JSON.stringify({ ...userData, transactions: updatedState[TRANSACTIONS]})
+    );
+  }
+}
+
+const updateUserStorageDataSettings = (userAccount, updatedState) => {
+  const userData = JSON.parse(window.localStorage.getItem(userAccount)) || null;
+  if (userData) {
+    window.localStorage.setItem(
+      userAccount,
+      JSON.stringify({ ...userData, settings: updatedState[SETTINGS]})
     );
   }
 }
@@ -234,10 +244,15 @@ export function AppStatusReducer(state, action) {
       break;
     }
     case UPDATE_SETTINGS: {
+      const userAccount = state[LOGIN_ACCOUNT]?.account;
       updatedState[SETTINGS] = {
         ...state[SETTINGS],
         ...action[SETTINGS],
       };
+
+      if (userAccount) {
+        updateUserStorageDataSettings(userAccount, updatedState);
+      }
       break;
     }
     case UPDATE_USER_BALANCES: {
@@ -253,7 +268,7 @@ export function AppStatusReducer(state, action) {
           ...action.updates,
           timestamp: now,
         };
-        updateUserStorageData(userAccount, updatedState);
+        updateUserStorageDataTx(userAccount, updatedState);
       }
       break;
     }
@@ -264,7 +279,7 @@ export function AppStatusReducer(state, action) {
         ...updatedState[TRANSACTIONS],
         { ...action.transaction, timestamp: now },
       ];
-      updateUserStorageData(userAccount, updatedState);
+      updateUserStorageDataTx(userAccount, updatedState);
       break;
     }
     case REMOVE_TRANSACTION: {
@@ -274,7 +289,7 @@ export function AppStatusReducer(state, action) {
         updatedState[TRANSACTIONS] = updatedState[TRANSACTIONS].filter(
           (tx) => tx.hash !== action.hash
         );
-        updateUserStorageData(userAccount, updatedState);
+        updateUserStorageDataTx(userAccount, updatedState);
       }
       break;
     }

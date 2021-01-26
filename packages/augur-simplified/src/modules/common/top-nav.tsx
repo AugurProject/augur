@@ -168,7 +168,7 @@ export const TopNav = () => {
     transactions,
     isLogged,
     isMobile,
-    actions: { setSidebar, updateLoginAccount, logout, addTransaction, updateTransaction },
+    actions: { setSidebar, updateLoginAccount, logout, addTransaction, updateTransaction, updateSettings },
   } = useAppStatusStore();
   const [lastUser, setLastUser] = useLocalStorage('lastUser', null);
 
@@ -228,6 +228,11 @@ export const TopNav = () => {
         savedTransactions.length > 0
       ) {
         savedTransactions.forEach((tx) => addTransaction(tx));
+      }
+
+      const userSettings = getSavedUserInfo()?.settings;
+      if (userSettings) {
+        updateSettings(userSettings);
       }
 
       if (String(networkId) !== String(activeWeb3.chainId)) {
