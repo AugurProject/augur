@@ -16,7 +16,7 @@ export interface WalletInfo {
 export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   INJECTED: {
     connector: injected,
-    name: 'Injected',
+    name: 'Mobile Web3 provider',
     iconName: 'metamask.png',
     description: 'Injected web3 provider.',
     href: null,
