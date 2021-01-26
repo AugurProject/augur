@@ -269,7 +269,6 @@ export class DB {
     );
 
     this._marketDatabase = new MarketDB(this, this.networkId, this.augur);
-    console.log('initializeDB-checkpoint-1');
     await this._marketDatabase.reset();
 
     this.parsedOrderEventDatabase = new ParsedOrderEventDB(
