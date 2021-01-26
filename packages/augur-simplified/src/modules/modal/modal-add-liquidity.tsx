@@ -356,7 +356,7 @@ const ModalAddLiquidity = ({
       value: `${breakdown.noShares}`,
     },
     {
-      label: 'liquidity shares',
+      label: 'LP tokens',
       value: `${breakdown.lpTokens}`,
     },
   ];
@@ -485,7 +485,7 @@ const ModalAddLiquidity = ({
         title: 'What you are Removing',
         breakdown: [
           {
-            label: 'liquidity shares',
+            label: 'LP tokens',
             value: `${amount}`,
           },
         ],
