@@ -243,8 +243,8 @@ const ModalConnectWallet = ({
             !window['web3'] &&
             !window['ethereum'] &&
             wallet.mobile &&
-            wallet.name !== 'MetaMask' &&
-            wallet.name !==  'Mobile Web3 provider' &&
+            wallet.name !== SUPPORTED_WALLETS['METAMASK'].name &&
+            wallet.name !==  SUPPORTED_WALLETS['INJECTED'].name &&
             wallet.connector !== portis
           ) {
             return {
@@ -270,7 +270,7 @@ const ModalConnectWallet = ({
           } else {
             if (
               (wallet.name === 'MetaMask' && !isMetamask) ||
-              (wallet.name === 'Mobile Web3 provider' && !isMetamask)
+              (wallet.name === SUPPORTED_WALLETS['INJECTED'].name && !isMetamask)
             ) {
               return null;
             }
@@ -302,7 +302,7 @@ const ModalConnectWallet = ({
         } else {
           if (wallet.connector === injected) {
             if (!(window['web3'] || window['ethereum'])) {
-              if (wallet.name === 'MetaMask') {
+              if (wallet.name === SUPPORTED_WALLETS['METAMASK'].name) {
                 return {
                   id: `connect-${key}`,
                   key,
@@ -315,8 +315,8 @@ const ModalConnectWallet = ({
                 return null;
               }
             } else if (
-              (wallet.name === 'MetaMask' && !isMetamask) ||
-              (wallet.name === 'Mobile Web3 provider' && !isMetamask)
+              (wallet.name === SUPPORTED_WALLETS['METAMASK'].name && !isMetamask) ||
+              (wallet.name === SUPPORTED_WALLETS['INJECTED'].name && !isMetamask)
             ) {
               return null;
             }
