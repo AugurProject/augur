@@ -1,4 +1,4 @@
-import { Address, BigDecimal, BigInt, log } from '@graphprotocol/graph-ts';
+import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
 import {
   EnterPosition as EnterPositionEvent,
   ExitPosition as ExitPositionEvent,
@@ -19,12 +19,12 @@ import { getOrCreateUser } from '../utils/helpers';
 import { updateAMM } from '../utils/helpers/amm';
 import { ERC20 } from '../../generated/templates/Cash/ERC20';
 
-export function updateVolumeValues(address: Address, cash: BigInt, noShares: BigInt, yesShares: BigInt): void {
+export function updateVolumeValues(address: Address, noShares: BigInt, yesShares: BigInt): void {
   let ammExchange = AMMExchange.load(
     address.toHexString()
   );
 
-  let cash = ERC20.bind(Address.fromString(ammExchange.cash));
+  let cash: ERC20 = ERC20.bind(Address.fromString(ammExchange.cash));
   let decimals = BigInt.fromI32(10 ).pow(cash.decimals() as u8).toBigDecimal();
 
   let market = Market.load(ammExchange.market);
@@ -53,13 +53,14 @@ export function handleAddLiquidity(event: AddLiquidityEvent): void {
 
   // Will be zero if ratio is 50-50.
   let netShares = addLiquidity.noShares.minus(addLiquidity.yesShares).abs();
+  const noShares = addLiquidity.noShares.toBigDecimal();
+  const yesShares = addLiquidity.yesShares.toBigDecimal();
+  const totalShares = noShares.plus(yesShares);
+  let priceOfNoShares = yesShares.div(totalShares);
+  let priceOfYesShares = noShares.div(totalShares);
+
   let priceOfGainedShares: BigDecimal;
-  let totalShares = addLiquidity.noShares.plus(addLiquidity.yesShares);
-
-  let priceOfNoShares = addLiquidity.noShares.toBigDecimal().div(totalShares.toBigDecimal());
-  let priceOfYesShares = addLiquidity.yesShares.toBigDecimal().div(totalShares.toBigDecimal());
-
-  if(addLiquidity.yesShares.gt(addLiquidity.noShares)) {
+  if(yesShares.gt(noShares)) {
     priceOfGainedShares = priceOfYesShares;
   } else {
     priceOfGainedShares = priceOfNoShares;
@@ -68,8 +69,8 @@ export function handleAddLiquidity(event: AddLiquidityEvent): void {
   // Cash value is the cost of the lp tokens received accounting for shares returned to user.
   addLiquidity.cashValue = addLiquidity.cash.toBigDecimal().minus(priceOfGainedShares.times(netShares.toBigDecimal())).truncate(0);
 
-  addLiquidity.noShareCashValue = priceOfNoShares.times(addLiquidity.noShares.toBigDecimal());
-  addLiquidity.yesShareCashValue = priceOfYesShares.times(addLiquidity.yesShares.toBigDecimal());
+  addLiquidity.noShareCashValue = priceOfNoShares.times(noShares);
+  addLiquidity.yesShareCashValue = priceOfYesShares.times(yesShares);
 
   addLiquidity.save();
 
@@ -86,15 +87,13 @@ export function handleRemoveLiquidity(event: RemoveLiquidityEvent): void {
   removeLiquidity.cash = event.params.cash;
   removeLiquidity.noShares = event.params.shortShares;
   removeLiquidity.yesShares = event.params.longShares;
-  removeLiquidity.completeSetsSold = event.params.completeSetsSold
   removeLiquidity.sender = event.params.sender.toHexString();
 
-  let totalNo = removeLiquidity.noShares.plus(removeLiquidity.completeSetsSold);
-  let totalYes = removeLiquidity.yesShares.plus(removeLiquidity.completeSetsSold);
-  let totalShares = totalNo.plus(totalYes);
-
-  removeLiquidity.noShareCashValue = totalNo.toBigDecimal().div(totalShares.toBigDecimal()).times(removeLiquidity.noShares.toBigDecimal());
-  removeLiquidity.yesShareCashValue = totalYes.toBigDecimal().div(totalShares.toBigDecimal()).times(removeLiquidity.yesShares.toBigDecimal());
+  const noShares = removeLiquidity.noShares.toBigDecimal();
+  const yesShares = removeLiquidity.yesShares.toBigDecimal();
+  const shareCashValue = noShares.times(yesShares).div(noShares.plus(yesShares));
+  removeLiquidity.noShareCashValue = shareCashValue;
+  removeLiquidity.yesShareCashValue = shareCashValue;
 
   // Cash value is the cost of the lp tokens received accounting for shares returned to user.
   removeLiquidity.cashValue = removeLiquidity.cash.toBigDecimal().plus(removeLiquidity.noShareCashValue).plus(removeLiquidity.yesShareCashValue).truncate(0);
@@ -122,11 +121,11 @@ export function handleEnterPosition(event: EnterPositionEvent): void {
   enterPosition.price = event.params.cash.toBigDecimal().div(event.params.outputShares.toBigDecimal().times(numTicks))
 
   if(event.params.buyLong) {
-    updateVolumeValues(event.address, event.params.cash, BigInt.fromI32(0), event.params.outputShares);
+    updateVolumeValues(event.address, BigInt.fromI32(0), event.params.outputShares);
     enterPosition.noShares = BigInt.fromI32(0);
     enterPosition.yesShares = event.params.outputShares;
   } else {
-    updateVolumeValues(event.address, event.params.cash, event.params.outputShares, BigInt.fromI32(0));
+    updateVolumeValues(event.address, event.params.outputShares, BigInt.fromI32(0));
     enterPosition.noShares = event.params.outputShares;
     enterPosition.yesShares = BigInt.fromI32(0);
   }
@@ -162,7 +161,6 @@ export function handleExitPosition(event: ExitPositionEvent): void {
 
   updateVolumeValues(
     event.address,
-    event.params.cashPayout.times(BigInt.fromI32(-1)),
     event.params.shortShares,
     event.params.longShares
   );
@@ -183,14 +181,12 @@ export function handleSwapPosition(event: SwapPositionEvent): void {
   if (event.params.inputLong) {
     updateVolumeValues(
       event.address,
-      BigInt.fromI32(0),
       event.params.outputShares,
       event.params.inputShares.times(BigInt.fromI32(-1))
     );
   } else {
     updateVolumeValues(
       event.address,
-      BigInt.fromI32(0),
       event.params.inputShares.times(BigInt.fromI32(-1)),
       event.params.outputShares
     );
