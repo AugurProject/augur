@@ -122,10 +122,12 @@ const PositionRow = ({ position }: { position: PositionBalance }) => {
 interface PositionFooterProps {
   claimableWinnings?: Winnings;
   market: MarketInfo;
+  showTradeButton?: boolean;
 }
 export const PositionFooter = ({
   claimableWinnings,
   market: { fee, marketId, amm },
+  showTradeButton
 }: PositionFooterProps) => {
   const {
     isMobile,
@@ -161,6 +163,7 @@ export const PositionFooter = ({
         });
     }
   };
+  if (!claimableWinnings && !showTradeButton) return null;
   return (
     <div className={Styles.PositionFooter}>
       {claimableWinnings && (
@@ -175,7 +178,7 @@ export const PositionFooter = ({
           />
         </>
       )}
-      {!isMobile && (
+      {!isMobile && showTradeButton && (
         <MarketLink id={marketId} ammId={amm?.id}>
           <SecondaryButton text="trade" />
         </MarketLink>
@@ -239,7 +242,7 @@ export const PositionTable = ({
         splicePositions
           .filter((p) => p.visible)
           .map((position, id) => <PositionRow key={id} position={position} />)}
-      <PositionFooter market={market} claimableWinnings={claimableWinnings} />
+      <PositionFooter showTradeButton={!singleMarket} market={market} claimableWinnings={claimableWinnings} />
       {singleMarket && positions.length !== 0 && (
         <div className={Styles.PaginationFooter}>
           <Pagination
