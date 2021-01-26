@@ -36,12 +36,12 @@ export interface ExchangeContractIntermediary {
     recipient: string): Promise<BigNumber>
 
   removeLiquidity(
-    market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber,
-    minSetsSold: BigNumber): Promise<TransactionResponse>
+    market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber
+  ): Promise<TransactionResponse>
 
   rateRemoveLiquidity(
-    market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber,
-    minSetsSold: BigNumber): Promise<RemoveLiquidityRate>
+    market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber
+  ): Promise<RemoveLiquidityRate>
 
   swap(
     market: string, paraShareToken: string, fee: BigNumber,

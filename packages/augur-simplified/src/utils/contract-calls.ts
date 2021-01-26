@@ -185,7 +185,6 @@ export async function getRemoveLiquidity(
   cash: Cash,
   fee: string,
   lpTokenBalance: string,
-  alsoSell: boolean = false,
 ): Promise<LiquidityBreakdown | null> {
   const augurClient = augurSdkLite.get();
   if (!augurClient || !marketId || !cash?.shareToken || !fee || !cash?.decimals) {
@@ -199,7 +198,6 @@ export async function getRemoveLiquidity(
     cash.shareToken,
     new BN(String(fee)),
     new BN(String(balance)),
-    alsoSell
   ).catch(e => console.log(e));
 
   if (!results) return null
@@ -221,7 +219,6 @@ export function doRemoveAmmLiquidity(
   cash: Cash,
   fee: string,
   lpTokenBalance: string,
-  alsoSell: boolean = false
 ): Promise<TransactionResponse | null> {
   const augurClient = augurSdkLite.get();
   if (!augurClient || !marketId || !cash?.shareToken || !fee) {
@@ -234,7 +231,6 @@ export function doRemoveAmmLiquidity(
     cash.shareToken,
     new BN(fee),
     new BN(balance),
-    alsoSell
   );
 }
 

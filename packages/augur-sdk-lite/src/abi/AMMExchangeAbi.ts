@@ -793,11 +793,6 @@ export const AMMExchangeAbi = [
         "internalType": "uint256",
         "name": "_poolTokensToSell",
         "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_minSetsSold",
-        "type": "uint256"
       }
     ],
     "name": "rateRemoveLiquidity",
@@ -815,11 +810,6 @@ export const AMMExchangeAbi = [
       {
         "internalType": "uint256",
         "name": "_cashShare",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_setsSold",
         "type": "uint256"
       }
     ],
@@ -860,11 +850,6 @@ export const AMMExchangeAbi = [
         "internalType": "uint256",
         "name": "_poolTokensToSell",
         "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_minSetsSold",
-        "type": "uint256"
       }
     ],
     "name": "removeLiquidity",
@@ -882,11 +867,6 @@ export const AMMExchangeAbi = [
       {
         "internalType": "uint256",
         "name": "_cashShare",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_setsSold",
         "type": "uint256"
       }
     ],
