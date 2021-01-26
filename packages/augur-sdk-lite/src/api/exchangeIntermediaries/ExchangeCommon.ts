@@ -15,7 +15,6 @@ export interface RemoveLiquidityRate {
   short: BigNumber
   long: BigNumber
   cash: BigNumber
-  sets: BigNumber
 }
 
 export abstract class ExchangeCommon {
@@ -45,15 +44,14 @@ export abstract class ExchangeCommon {
     return new BigNumber(lpTokens.toString());
   }
 
-  async rateRemoveLiquidity(market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber, minSetsSold: BigNumber): Promise<RemoveLiquidityRate> {
+  async rateRemoveLiquidity(market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber): Promise<RemoveLiquidityRate> {
     const exchangeAddress = await this.calculateExchangeAddress(market, paraShareToken, fee);
     const amm = this.exchangeContract(exchangeAddress);
-    const { _shortShare, _longShare, _cashShare, _setsSold } = await amm.rateRemoveLiquidity(lpTokens.toFixed(), minSetsSold.toFixed());
+    const { _shortShare, _longShare, _cashShare } = await amm.rateRemoveLiquidity(lpTokens.toFixed());
     return {
       short: new BigNumber(_shortShare.toString()),
       long: new BigNumber(_longShare.toString()),
       cash: new BigNumber(_cashShare.toString()),
-      sets: new BigNumber(_setsSold.toString()),
     }
   }
 

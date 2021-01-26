@@ -150,7 +150,7 @@ export const eventDescriptions: { [signatureHash: string]: EventDescription } = 
 	'0xd92dda7384b5f0fa573be9bbf63d63ac81a5bbb08ebc31f00c0f066e50239609': {"name":"AddLiquidity","signature":"AddLiquidity(address,uint256,uint256,uint256,uint256)","signatureHash":"0xd92dda7384b5f0fa573be9bbf63d63ac81a5bbb08ebc31f00c0f066e50239609","parameters":[{"indexed":false,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"cash","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"shortShares","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"longShares","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"lpTokens","type":"uint256"}]},
 	'0x46bba48d6dbbf776b68a85bd1717fe039734230c00b94a581cfb5de1bf57e003': {"name":"EnterPosition","signature":"EnterPosition(address,uint256,uint256,bool,uint256)","signatureHash":"0x46bba48d6dbbf776b68a85bd1717fe039734230c00b94a581cfb5de1bf57e003","parameters":[{"indexed":false,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"cash","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"outputShares","type":"uint256"},{"indexed":false,"internalType":"bool","name":"buyLong","type":"bool"},{"indexed":false,"internalType":"uint256","name":"priorShares","type":"uint256"}]},
 	'0xc8e60626e3688330bf9707179915c42362e48ae21b6303ebe7ff85dd0a2c92e3': {"name":"ExitPosition","signature":"ExitPosition(address,uint256,uint256,uint256)","signatureHash":"0xc8e60626e3688330bf9707179915c42362e48ae21b6303ebe7ff85dd0a2c92e3","parameters":[{"indexed":false,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"shortShares","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"longShares","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"cashPayout","type":"uint256"}]},
-	'0x0c7095efab4844307a2d270e6feda743289e3f8bd8a4fa71bc0006ef39bb7793': {"name":"RemoveLiquidity","signature":"RemoveLiquidity(address,uint256,uint256,uint256,uint256)","signatureHash":"0x0c7095efab4844307a2d270e6feda743289e3f8bd8a4fa71bc0006ef39bb7793","parameters":[{"indexed":false,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"cash","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"shortShares","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"longShares","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"completeSetsSold","type":"uint256"}]},
+	'0x59c3a0b60c6ab7deb62e1440c9e72441db6db7dfe514dba8cb18e60c0d896efa': {"name":"RemoveLiquidity","signature":"RemoveLiquidity(address,uint256,uint256,uint256)","signatureHash":"0x59c3a0b60c6ab7deb62e1440c9e72441db6db7dfe514dba8cb18e60c0d896efa","parameters":[{"indexed":false,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"cash","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"shortShares","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"longShares","type":"uint256"}]},
 	'0xb6c699f6b5288bc206eaee35c3e0fe3ffa35ef715f8ebbaa9d0157df3f57c31a': {"name":"SwapPosition","signature":"SwapPosition(address,uint256,uint256,bool)","signatureHash":"0xb6c699f6b5288bc206eaee35c3e0fe3ffa35ef715f8ebbaa9d0157df3f57c31a","parameters":[{"indexed":false,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"inputShares","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"outputShares","type":"uint256"},{"indexed":false,"internalType":"bool","name":"inputLong","type":"bool"}]},
 	'0x94e3a39e6f82d8b385b8be50484f591a3be1b8cb8324c3e3f40abbebc5b2b8be': {"name":"AMMCreated","signature":"AMMCreated(address,address,address,uint256)","signatureHash":"0x94e3a39e6f82d8b385b8be50484f591a3be1b8cb8324c3e3f40abbebc5b2b8be","parameters":[{"indexed":false,"internalType":"contract IAMMExchange","name":"amm","type":"address"},{"indexed":false,"internalType":"contract IMarket","name":"market","type":"address"},{"indexed":false,"internalType":"contract ParaShareToken","name":"shareToken","type":"address"},{"indexed":false,"internalType":"uint256","name":"fee","type":"uint256"}]},
 	'0xcf387c24607bb8f2113f15487a6be6a6ea89f7359d98d64f32407a168fa24576': {"name":"CompleteSetsPurchased","signature":"CompleteSetsPurchased(address,address,address,uint256,uint256,address)","signatureHash":"0xcf387c24607bb8f2113f15487a6be6a6ea89f7359d98d64f32407a168fa24576","parameters":[{"indexed":true,"internalType":"address","name":"universe","type":"address"},{"indexed":true,"internalType":"address","name":"market","type":"address"},{"indexed":true,"internalType":"address","name":"account","type":"address"},{"indexed":false,"internalType":"uint256","name":"numCompleteSets","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"},{"indexed":false,"internalType":"address","name":"para","type":"address"}]},
@@ -8198,11 +8198,11 @@ export class AMMExchange<TBigNumber> extends Contract<TBigNumber> {
 		return <TBigNumber>result[0]
 	}
 
-	public rateRemoveLiquidity_ = async (poolTokensToSell: TBigNumber, minSetsSold: TBigNumber, options?: { sender?: string }): Promise<{_shortShare: TBigNumber, _longShare: TBigNumber, _cashShare: TBigNumber, _setsSold: TBigNumber}> => {
+	public rateRemoveLiquidity_ = async (poolTokensToSell: TBigNumber, options?: { sender?: string }): Promise<{_shortShare: TBigNumber, _longShare: TBigNumber, _cashShare: TBigNumber}> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"_poolTokensToSell","type":"uint256"},{"internalType":"uint256","name":"_minSetsSold","type":"uint256"}],"name":"rateRemoveLiquidity","outputs":[{"internalType":"uint256","name":"_shortShare","type":"uint256"},{"internalType":"uint256","name":"_longShare","type":"uint256"},{"internalType":"uint256","name":"_cashShare","type":"uint256"},{"internalType":"uint256","name":"_setsSold","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [poolTokensToSell, minSetsSold], options.sender)
-		return <{_shortShare: TBigNumber, _longShare: TBigNumber, _cashShare: TBigNumber, _setsSold: TBigNumber}>result
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"_poolTokensToSell","type":"uint256"}],"name":"rateRemoveLiquidity","outputs":[{"internalType":"uint256","name":"_shortShare","type":"uint256"},{"internalType":"uint256","name":"_longShare","type":"uint256"},{"internalType":"uint256","name":"_cashShare","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [poolTokensToSell], options.sender)
+		return <{_shortShare: TBigNumber, _longShare: TBigNumber, _cashShare: TBigNumber}>result
 	}
 
 	public rateSwap_ = async (inputShares: TBigNumber, inputLong: boolean, options?: { sender?: string }): Promise<TBigNumber> => {
@@ -8212,23 +8212,23 @@ export class AMMExchange<TBigNumber> extends Contract<TBigNumber> {
 		return <TBigNumber>result[0]
 	}
 
-	public removeLiquidity = async (poolTokensToSell: TBigNumber, minSetsSold: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+	public removeLiquidity = async (poolTokensToSell: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_poolTokensToSell","type":"uint256"},{"internalType":"uint256","name":"_minSetsSold","type":"uint256"}],"name":"removeLiquidity","outputs":[{"internalType":"uint256","name":"_shortShare","type":"uint256"},{"internalType":"uint256","name":"_longShare","type":"uint256"},{"internalType":"uint256","name":"_cashShare","type":"uint256"},{"internalType":"uint256","name":"_setsSold","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [poolTokensToSell, minSetsSold], 'removeLiquidity', options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_poolTokensToSell","type":"uint256"}],"name":"removeLiquidity","outputs":[{"internalType":"uint256","name":"_shortShare","type":"uint256"},{"internalType":"uint256","name":"_longShare","type":"uint256"},{"internalType":"uint256","name":"_cashShare","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [poolTokensToSell], 'removeLiquidity', options.sender)
 	}
 
-	public removeLiquidity_estimateGas = async (poolTokensToSell: TBigNumber, minSetsSold: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+	public removeLiquidity_estimateGas = async (poolTokensToSell: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_poolTokensToSell","type":"uint256"},{"internalType":"uint256","name":"_minSetsSold","type":"uint256"}],"name":"removeLiquidity","outputs":[{"internalType":"uint256","name":"_shortShare","type":"uint256"},{"internalType":"uint256","name":"_longShare","type":"uint256"},{"internalType":"uint256","name":"_cashShare","type":"uint256"},{"internalType":"uint256","name":"_setsSold","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [poolTokensToSell, minSetsSold], 'removeLiquidity', options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_poolTokensToSell","type":"uint256"}],"name":"removeLiquidity","outputs":[{"internalType":"uint256","name":"_shortShare","type":"uint256"},{"internalType":"uint256","name":"_longShare","type":"uint256"},{"internalType":"uint256","name":"_cashShare","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [poolTokensToSell], 'removeLiquidity', options.sender)
 	}
 
-	public removeLiquidity_ = async (poolTokensToSell: TBigNumber, minSetsSold: TBigNumber, options?: { sender?: string }): Promise<{_shortShare: TBigNumber, _longShare: TBigNumber, _cashShare: TBigNumber, _setsSold: TBigNumber}> => {
+	public removeLiquidity_ = async (poolTokensToSell: TBigNumber, options?: { sender?: string }): Promise<{_shortShare: TBigNumber, _longShare: TBigNumber, _cashShare: TBigNumber}> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_poolTokensToSell","type":"uint256"},{"internalType":"uint256","name":"_minSetsSold","type":"uint256"}],"name":"removeLiquidity","outputs":[{"internalType":"uint256","name":"_shortShare","type":"uint256"},{"internalType":"uint256","name":"_longShare","type":"uint256"},{"internalType":"uint256","name":"_cashShare","type":"uint256"},{"internalType":"uint256","name":"_setsSold","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		const result = await this.localCall(abi, [poolTokensToSell, minSetsSold], options.sender)
-		return <{_shortShare: TBigNumber, _longShare: TBigNumber, _cashShare: TBigNumber, _setsSold: TBigNumber}>result
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_poolTokensToSell","type":"uint256"}],"name":"removeLiquidity","outputs":[{"internalType":"uint256","name":"_shortShare","type":"uint256"},{"internalType":"uint256","name":"_longShare","type":"uint256"},{"internalType":"uint256","name":"_cashShare","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [poolTokensToSell], options.sender)
+		return <{_shortShare: TBigNumber, _longShare: TBigNumber, _cashShare: TBigNumber}>result
 	}
 
 	public shareBalances_ = async (owner: string, options?: { sender?: string }): Promise<{_invalid: TBigNumber, _no: TBigNumber, _yes: TBigNumber}> => {
@@ -11542,23 +11542,23 @@ export class WethWrapperForAMMExchange<TBigNumber> extends Contract<TBigNumber> 
 		return <string>result[0]
 	}
 
-	public removeLiquidity = async (market: string, fee: TBigNumber, poolTokensToSell: TBigNumber, minSetsSold: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+	public removeLiquidity = async (market: string, fee: TBigNumber, poolTokensToSell: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"uint256","name":"_fee","type":"uint256"},{"internalType":"uint256","name":"_poolTokensToSell","type":"uint256"},{"internalType":"uint256","name":"_minSetsSold","type":"uint256"}],"name":"removeLiquidity","outputs":[{"internalType":"uint256","name":"_shortShare","type":"uint256"},{"internalType":"uint256","name":"_longShare","type":"uint256"},{"internalType":"uint256","name":"_cashShare","type":"uint256"},{"internalType":"uint256","name":"_setsSold","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [market, fee, poolTokensToSell, minSetsSold], 'removeLiquidity', options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"uint256","name":"_fee","type":"uint256"},{"internalType":"uint256","name":"_poolTokensToSell","type":"uint256"}],"name":"removeLiquidity","outputs":[{"internalType":"uint256","name":"_shortShare","type":"uint256"},{"internalType":"uint256","name":"_longShare","type":"uint256"},{"internalType":"uint256","name":"_cashShare","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [market, fee, poolTokensToSell], 'removeLiquidity', options.sender)
 	}
 
-	public removeLiquidity_estimateGas = async (market: string, fee: TBigNumber, poolTokensToSell: TBigNumber, minSetsSold: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+	public removeLiquidity_estimateGas = async (market: string, fee: TBigNumber, poolTokensToSell: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"uint256","name":"_fee","type":"uint256"},{"internalType":"uint256","name":"_poolTokensToSell","type":"uint256"},{"internalType":"uint256","name":"_minSetsSold","type":"uint256"}],"name":"removeLiquidity","outputs":[{"internalType":"uint256","name":"_shortShare","type":"uint256"},{"internalType":"uint256","name":"_longShare","type":"uint256"},{"internalType":"uint256","name":"_cashShare","type":"uint256"},{"internalType":"uint256","name":"_setsSold","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [market, fee, poolTokensToSell, minSetsSold], 'removeLiquidity', options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"uint256","name":"_fee","type":"uint256"},{"internalType":"uint256","name":"_poolTokensToSell","type":"uint256"}],"name":"removeLiquidity","outputs":[{"internalType":"uint256","name":"_shortShare","type":"uint256"},{"internalType":"uint256","name":"_longShare","type":"uint256"},{"internalType":"uint256","name":"_cashShare","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [market, fee, poolTokensToSell], 'removeLiquidity', options.sender)
 	}
 
-	public removeLiquidity_ = async (market: string, fee: TBigNumber, poolTokensToSell: TBigNumber, minSetsSold: TBigNumber, options?: { sender?: string }): Promise<{_shortShare: TBigNumber, _longShare: TBigNumber, _cashShare: TBigNumber, _setsSold: TBigNumber}> => {
+	public removeLiquidity_ = async (market: string, fee: TBigNumber, poolTokensToSell: TBigNumber, options?: { sender?: string }): Promise<{_shortShare: TBigNumber, _longShare: TBigNumber, _cashShare: TBigNumber}> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"uint256","name":"_fee","type":"uint256"},{"internalType":"uint256","name":"_poolTokensToSell","type":"uint256"},{"internalType":"uint256","name":"_minSetsSold","type":"uint256"}],"name":"removeLiquidity","outputs":[{"internalType":"uint256","name":"_shortShare","type":"uint256"},{"internalType":"uint256","name":"_longShare","type":"uint256"},{"internalType":"uint256","name":"_cashShare","type":"uint256"},{"internalType":"uint256","name":"_setsSold","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		const result = await this.localCall(abi, [market, fee, poolTokensToSell, minSetsSold], options.sender)
-		return <{_shortShare: TBigNumber, _longShare: TBigNumber, _cashShare: TBigNumber, _setsSold: TBigNumber}>result
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"uint256","name":"_fee","type":"uint256"},{"internalType":"uint256","name":"_poolTokensToSell","type":"uint256"}],"name":"removeLiquidity","outputs":[{"internalType":"uint256","name":"_shortShare","type":"uint256"},{"internalType":"uint256","name":"_longShare","type":"uint256"},{"internalType":"uint256","name":"_cashShare","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [market, fee, poolTokensToSell], options.sender)
+		return <{_shortShare: TBigNumber, _longShare: TBigNumber, _cashShare: TBigNumber}>result
 	}
 
 	public shareToken_ = async (options?: { sender?: string }): Promise<string> => {

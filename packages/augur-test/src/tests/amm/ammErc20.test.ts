@@ -30,8 +30,6 @@ describe('AMM Middleware for ERC20', () => {
 
   const INCLUDE_FEE = true;
   const EXCLUDE_FEE = false;
-  const ALSO_SELL = true;
-  const DONT_SELL = false;
 
   function makeAMMMiddleware(user: TestContractAPI): AMM {
     const wethParaShareTokenAddress = config?.paraDeploys[config.addresses.WETH9]?.addresses.ShareToken;
@@ -218,37 +216,27 @@ describe('AMM Middleware for ERC20', () => {
       const lpTokens = await middleware.liquidityTokenBalance(market.address, usdtParaShare.address, fee, mary.account.address);
       const lpTokensToBurn = lpTokens.idiv(3);
 
-      console.log('Estimating removeLiquidity gains, with and without swapping shares for complete sets then burning them');
-      const alsoSell = await middleware.getRemoveLiquidity(market.address, usdtParaShare.address, fee, lpTokensToBurn, ALSO_SELL);
-      const dontSell = await middleware.getRemoveLiquidity(market.address, usdtParaShare.address, fee, lpTokensToBurn, DONT_SELL);
+      console.log('Estimating removeLiquidity gains, without swapping shares for complete sets then burning them');
+      const dontSell = await middleware.getRemoveLiquidity(market.address, usdtParaShare.address, fee, lpTokensToBurn);
 
-      expect(alsoSell).toEqual({
-        short: bn(7),
-        long: bn(0),
-        cash: bn(333386580),
-        // cash: bn(330044793), // includes augur core fees
-        sets: bn(330870)
-      });
       expect(dontSell).toEqual({
         short: bn(330877),
         long: bn(330870),
         cash: bn(2513610),
-        sets: bn(0)
       });
 
       console.log('Selling 1/3rd of LP tokens via removeLiquidity, then selling the resulting shares');
-      await middleware.doRemoveLiquidity(market.address, usdtParaShare.address, fee, lpTokensToBurn, ALSO_SELL);
+      await middleware.doRemoveLiquidity(market.address, usdtParaShare.address, fee, lpTokensToBurn);
 
       const postInvalid = await usdtParaShare.balanceOf_(mary.account.address, INVALID);
       const postNo = await usdtParaShare.balanceOf_(mary.account.address, NO);
       const postYes = await usdtParaShare.balanceOf_(mary.account.address, YES);
       const postCash = await mary.balanceOfUSDT();
 
-      expect(postInvalid.toNumber()).toEqual(alsoSell.short.toNumber());
-      expect(postNo.toNumber()).toEqual(alsoSell.short.toNumber());
-      expect(postYes.toNumber()).toEqual(alsoSell.long.toNumber());
-      expect(postCash.toNumber()).toEqual(330044793);
-      // expect(postCash.toNumber()).toEqual(alsoSell.cash.toNumber()); // excludes augur core fees
+      expect(postInvalid.toNumber()).toEqual(dontSell.short.toNumber());
+      expect(postNo.toNumber()).toEqual(dontSell.short.toNumber());
+      expect(postYes.toNumber()).toEqual(dontSell.long.toNumber());
+      expect(postCash.toNumber()).toEqual(dontSell.cash.toNumber()); // excludes augur core fees
     });
 
     test('remove all liquidity without selling shares', async () => {
@@ -267,20 +255,17 @@ describe('AMM Middleware for ERC20', () => {
       const ammYes = await usdtParaShare.balanceOf_(ammAddress, YES);
       const ammCash = await mary.balanceOfUSDT(ammAddress);
 
-      console.log('Estimating removeLiquidity gains, with swapping shares for complete sets then burning them');
-      const estimate = await middleware.getRemoveLiquidity(market.address, usdtParaShare.address, fee, lpTokens, DONT_SELL);
+      console.log('Estimating removeLiquidity gains, without swapping shares for complete sets then burning them');
+      const estimate = await middleware.getRemoveLiquidity(market.address, usdtParaShare.address, fee, lpTokens);
 
       expect(estimate).toEqual({
         short: ammNo,
         long: ammYes,
         cash: ammCash,
-        sets: bn(0)
       });
 
       console.log('Removing remaining liquidity without selling any received shares')
-      // NOTE: Can't sell shares because this is the last of the AMM's liquidity. There'll be nothing left to swap away for complete sets.
-      //       The final liquidity provider will need to sell complete sets themselves.
-      await middleware.doRemoveLiquidity(market.address, usdtParaShare.address, fee, lpTokens, DONT_SELL);
+      await middleware.doRemoveLiquidity(market.address, usdtParaShare.address, fee, lpTokens);
 
       const postInvalid = await usdtParaShare.balanceOf_(mary.account.address, INVALID);
       const postNo = await usdtParaShare.balanceOf_(mary.account.address, NO);

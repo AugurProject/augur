@@ -15,7 +15,7 @@ export interface AddLiquidityRate {
   long: BigNumber
   cash: BigNumber
   lpTokens: BigNumber
-};
+}
 
 // This class is used by the middleware.
 export class AMM {
@@ -137,16 +137,12 @@ export class AMM {
     }
   }
 
-  async doRemoveLiquidity(market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber, alsoSell: Boolean): Promise<TransactionResponse> {
-    const minSetsSold = alsoSell
-      ? (await this.getRemoveLiquidity(market, paraShareToken, fee, lpTokens, true)).sets
-      : new BigNumber(0);
-    return this.intermediary(paraShareToken).removeLiquidity(market, paraShareToken, fee, lpTokens, minSetsSold);
+  async doRemoveLiquidity(market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber): Promise<TransactionResponse> {
+    return this.intermediary(paraShareToken).removeLiquidity(market, paraShareToken, fee, lpTokens);
   }
 
-  async getRemoveLiquidity(market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber, alsoSell: Boolean): Promise<RemoveLiquidityRate> {
-    const minSetsSold = new BigNumber(alsoSell ? 1 : 0);
-    return this.intermediary(paraShareToken).rateRemoveLiquidity(market, paraShareToken, fee, lpTokens, minSetsSold);
+  async getRemoveLiquidity(market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber): Promise<RemoveLiquidityRate> {
+    return this.intermediary(paraShareToken).rateRemoveLiquidity(market, paraShareToken, fee, lpTokens);
   }
 
   async doSwap(market: string, paraShareToken: string, fee: BigNumber, inputShares: BigNumber, buyLong: Boolean, minShares: BigNumber): Promise<TransactionResponse> {
@@ -168,7 +164,7 @@ export class AMM {
   }
 
   async doEnterPosition(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, buyLong: Boolean, minShares: BigNumber): Promise<TransactionResponse> {
-    console.log("Enter Position:", market, paraShareToken, fee.toFixed(), cash.toFixed(), buyLong, minShares.toFixed());
+    console.log('Enter Position:', market, paraShareToken, fee.toFixed(), cash.toFixed(), buyLong, minShares.toFixed());
     return this.intermediary(paraShareToken).enterPosition(market, paraShareToken, fee, cash, buyLong, minShares);
   }
 
@@ -379,16 +375,3 @@ export class AMM {
     throw Error(`The AMM ${address} does not have enough shares to fulfill the request`);
   }
 }
-
-export interface ShareBalances {
-  invalid: BigNumber
-  no: BigNumber
-  yes: BigNumber
-}
-
-//     function addAMMWithLiquidity (
-//         IMarket _market,
-//         uint256 _fee,
-//         uint256 _ratioFactor,
-//         bool _keepLong,
-//         address _recipient

@@ -21497,12 +21497,6 @@
 					"internalType": "uint256",
 					"name": "longShares",
 					"type": "uint256"
-				},
-				{
-					"indexed": false,
-					"internalType": "uint256",
-					"name": "completeSetsSold",
-					"type": "uint256"
 				}
 			],
 			"name": "RemoveLiquidity",
@@ -22141,11 +22135,6 @@
 					"internalType": "uint256",
 					"name": "_poolTokensToSell",
 					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_minSetsSold",
-					"type": "uint256"
 				}
 			],
 			"name": "rateRemoveLiquidity",
@@ -22163,11 +22152,6 @@
 				{
 					"internalType": "uint256",
 					"name": "_cashShare",
-					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_setsSold",
 					"type": "uint256"
 				}
 			],
@@ -22208,11 +22192,6 @@
 					"internalType": "uint256",
 					"name": "_poolTokensToSell",
 					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_minSetsSold",
-					"type": "uint256"
 				}
 			],
 			"name": "removeLiquidity",
@@ -22230,11 +22209,6 @@
 				{
 					"internalType": "uint256",
 					"name": "_cashShare",
-					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_setsSold",
 					"type": "uint256"
 				}
 			],
@@ -30806,11 +30780,6 @@
 					"internalType": "uint256",
 					"name": "_poolTokensToSell",
 					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_minSetsSold",
-					"type": "uint256"
 				}
 			],
 			"name": "removeLiquidity",
@@ -30828,11 +30797,6 @@
 				{
 					"internalType": "uint256",
 					"name": "_cashShare",
-					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_setsSold",
 					"type": "uint256"
 				}
 			],

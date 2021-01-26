@@ -77,7 +77,7 @@ def test_amm_weth_60_40_liquidity(sessionFixture, market, weth, para_weth_share_
 
     lpTokens = weth_amm.addInitialLiquidity(market.address, FEE, ratio, True, account0, value=cost)
 
-    assert lpTokens == 81649658092772608498  # skewed ratio means fewer shares which means fewer LP tokens
+    assert lpTokens == 80000000000000006143  # skewed ratio means fewer shares which means fewer LP tokens
     assert amm.balanceOf(account0) == lpTokens
 
     # all cash was used to buy complete sets
@@ -95,14 +95,14 @@ def test_amm_weth_60_40_liquidity(sessionFixture, market, weth, para_weth_share_
     # Must approve the weth_amm to remove liquidity
     amm.approve(weth_amm.address, 10 ** 48)
 
-    removedLPTokens = 8164965809277260850  # remove 1/10th of liquidity (rounded up)
+    removedLPTokens = 8000000000000000615  # remove 1/10th of liquidity (rounded up)
     recoveredInvalidShares = sets // 10
     recoveredNoShares = sets // 10
     recoveredYesShares = yesShares // 10
     remainingInvalidShares = sets - recoveredInvalidShares
     remainingNoShares = sets - recoveredNoShares
     remainingYesShares = yesShares - recoveredYesShares
-    weth_amm.removeLiquidity(market.address, FEE, removedLPTokens, 0)
+    weth_amm.removeLiquidity(market.address, FEE, removedLPTokens)
 
     assert weth.balanceOf(account0) == 0  # user did not receive cash, just shares
     assert weth.balanceOf(amm.address) == 0  # shares are just passed along to user; no cash suddenly appears
@@ -110,8 +110,7 @@ def test_amm_weth_60_40_liquidity(sessionFixture, market, weth, para_weth_share_
     # user receives 10 of each share
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, INVALID, account0) == recoveredInvalidShares
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, account0) == recoveredNoShares
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES,
-                                                        account0) == recoveredYesShares + keptYesShares
+    assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, account0) == recoveredYesShares + keptYesShares
     # AMM still has 90 of each share
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, INVALID, amm.address) == remainingInvalidShares
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, amm.address) == remainingNoShares

@@ -17,6 +17,82 @@ export const WethWrapperForAMMExchangeAbi = [
     "type": "constructor"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "amm",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "AddLiquidity",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "amm",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "EnterPosition",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "amm",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "ExitPosition",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "amm",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "RemoveLiquidity",
+    "type": "event"
+  },
+  {
     "payable": true,
     "stateMutability": "payable",
     "type": "fallback"
@@ -137,6 +213,62 @@ export const WethWrapperForAMMExchangeAbi = [
     ],
     "payable": true,
     "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "contract IMarket[]",
+        "name": "_markets",
+        "type": "address[]"
+      },
+      {
+        "internalType": "address payable",
+        "name": "_shareHolder",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "_fingerprint",
+        "type": "bytes32"
+      }
+    ],
+    "name": "claimMarketsProceeds",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "contract IMarket",
+        "name": "_market",
+        "type": "address"
+      },
+      {
+        "internalType": "address payable",
+        "name": "_shareHolder",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "_fingerprint",
+        "type": "bytes32"
+      }
+    ],
+    "name": "claimTradingProceeds",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -305,11 +437,6 @@ export const WethWrapperForAMMExchangeAbi = [
         "internalType": "uint256",
         "name": "_poolTokensToSell",
         "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_minSetsSold",
-        "type": "uint256"
       }
     ],
     "name": "removeLiquidity",
@@ -327,11 +454,6 @@ export const WethWrapperForAMMExchangeAbi = [
       {
         "internalType": "uint256",
         "name": "_cashShare",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_setsSold",
         "type": "uint256"
       }
     ],
