@@ -33,6 +33,8 @@ import {
   convertDisplayShareAmountToOnChainShareAmount,
   formatPercent,
   convertOnChainSharesToDisplayShareAmount,
+  formatSimpleShares,
+  formatCash,
 } from '../../utils/format-number';
 import { MultiButtonSelection } from '../common/selection';
 import classNames from 'classnames';
@@ -349,15 +351,15 @@ const ModalAddLiquidity = ({
   const addCreateBreakdown = [
     {
       label: 'yes shares',
-      value: `${breakdown.yesShares}`,
+      value: `${formatSimpleShares(breakdown.yesShares).formatted}`,
     },
     {
       label: 'no shares',
-      value: `${breakdown.noShares}`,
+      value: `${formatSimpleShares(breakdown.noShares).formatted}`,
     },
     {
       label: 'LP tokens',
-      value: `${breakdown.lpTokens}`,
+      value: `${formatSimpleShares(breakdown.lpTokens).formatted}`,
     },
   ];
 
@@ -453,15 +455,15 @@ const ModalAddLiquidity = ({
       breakdown: [
         {
           label: 'yes shares',
-          value: `${breakdown.yesShares}`,
+          value: `${formatSimpleShares(breakdown.yesShares).formatted}`,
         },
         {
           label: 'no shares',
-          value: `${breakdown.noShares}`,
+          value: `${formatSimpleShares(breakdown.noShares).formatted}`,
         },
         {
           label: `${cash?.name || 'collateral'}`,
-          value: `${breakdown.cashAmount}`,
+          value: `${formatCash(breakdown.cashAmount, cash?.name).full}`,
         },
       ],
       liquidityDetails: {
@@ -494,20 +496,16 @@ const ModalAddLiquidity = ({
         title: 'What you will recieve',
         breakdown: [
           {
-            label: 'Trading fee',
-            value: `${feePercentFormatted}`,
+            label: 'yes shares',
+            value: `${formatSimpleShares(breakdown.yesShares).formatted}`,
           },
           {
-            label: 'your share of the liquidity pool',
-            value: `${userPercentOfPool}`,
+            label: 'no shares',
+            value: `${formatSimpleShares(breakdown.noShares).formatted}`,
           },
           {
-            label: 'your total fees earned',
-            value: '-',
-          },
-          {
-            label: 'Fees Earned',
-            value: '-',
+            label: `${cash?.name || 'collateral'}`,
+            value: `${formatCash(breakdown.cashAmount, cash?.name).full}`,
           },
         ],
       },
