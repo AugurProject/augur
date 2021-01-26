@@ -127,7 +127,6 @@ export const PositionFooter = ({
   if (isMobile && !claimableWinnings) return null;
   const account = loginAccount?.account;
   const claim = () => {
-
     if (amm && account) {
       claimMarketWinnings(account, loginAccount?.library, marketId, amm?.cash).then((response) => {
         // handle transaction response here

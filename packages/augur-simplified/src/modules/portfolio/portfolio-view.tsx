@@ -8,28 +8,111 @@ import { PrimaryButton } from '../common/buttons';
 import { NetworkMismatchBanner } from '../common/labels';
 import { EthIcon, UsdIcon } from '../common/icons';
 import { keyedObjToArray } from '../stores/app-status-hooks';
-import { ETH, USDC } from '../constants';
+import { ETH, TX_STATUS, USDC } from '../constants';
 import { formatCashPrice } from '../../utils/format-number';
-
+import { createBigNumber } from '../../utils/create-big-number';
+import { claimWinnings } from '../../utils/contract-calls';
+import { updateTxStatus } from '../modal/modal-add-liquidity';
 const TABLES = 'TABLES';
 const ACTIVITY = 'ACTIVITY';
 
+const calculateTotalWinnings = (claimbleMarketsPerCash) => {
+  let total = createBigNumber('0');
+  let marketIds = [];
+  claimbleMarketsPerCash.forEach(({ ammExchange: { marketId }, claimableWinnings: { claimableBalance }}) => {
+    total = total.plus(createBigNumber(claimableBalance));
+    marketIds.push(marketId);
+  });
+  return {
+    hasWinnings: !total.eq(0),
+    total,
+    marketIds,
+  };
+};
+
+const handleClaimAll = (loginAccount, cash, marketIds, addTransaction, updateTransaction) => {
+  const from = loginAccount?.account;
+  const library = loginAccount?.library;
+  const chainId = loginAccount?.chainId;
+  if (from) {
+    claimWinnings(from, library, marketIds, cash).then((response) => {
+      // handle transaction response here
+      if (response) {
+        const { hash } = response;
+        addTransaction({
+          hash,
+          chainId,
+          seen: false,
+          status: TX_STATUS.PENDING,
+          from,
+          addedTime: new Date().getTime(),
+          message: `Claim All ${cash.name} Winnings`,
+          marketDescription: '',
+        });
+        response
+          .wait()
+          .then((response) => {
+            updateTxStatus(response, updateTransaction);
+          });
+      }
+    }).catch(e => {
+      // handle error here
+    })
+  }
+}
+
 export const ClaimWinningsSection = () => {
-  const { isLogged, processed: { cashes } } = useAppStatusStore();
+  const {
+    isLogged,
+    approvals: {
+      trade: {
+        exit: { ETH: ethApproval },
+      },
+    },
+    loginAccount,
+    userInfo: {
+      balances: { marketShares },
+    },
+    processed: { cashes },
+    actions: { addTransaction, updateTransaction },
+  } = useAppStatusStore();
+  const claimableMarkets = marketShares
+    ? keyedObjToArray(marketShares).filter((m) => !!m?.claimableWinnings)
+    : [];
   const keyedCash = keyedObjToArray(cashes);
-  const ethCash = keyedCash.find(c => c?.name === ETH);
-  const usdcCash = keyedCash.find(c => c?.name === USDC);
-  // userInfo: { balances: { claimableWinnings }}
-  // console.log(isLogged, claimableWinnings);
+  const ethCash = keyedCash.find((c) => c?.name === ETH);
+  const usdcCash = keyedCash.find((c) => c?.name === USDC);
+  const claimableEthMarkets = claimableMarkets.filter(
+    (m) => m.claimableWinnings.sharetoken === ethCash.shareToken
+  );
+  const claimableUSDCMarkets = claimableMarkets.filter(
+    (m) => m.claimableWinnings.sharetoken === usdcCash.shareToken
+  );
+  const ETHTotals = calculateTotalWinnings(claimableEthMarkets);
+  const USDCTotals = calculateTotalWinnings(claimableUSDCMarkets);
+
   return (
     <div className={Styles.ClaimableWinningsSection}>
-      {isLogged && (
-        <PrimaryButton text={`Claim Winnings (${formatCashPrice("24.00", usdcCash?.name).full})`} icon={UsdIcon} />
-      )}
-      {isLogged && (
+      {isLogged && USDCTotals.hasWinnings && (
         <PrimaryButton
-          text={`Approve to Claim Winnings (${formatCashPrice("0.87", ethCash?.name).full})`}
+          text={`Claim Winnings (${
+            formatCashPrice(USDCTotals.total, usdcCash?.name).full
+          })`}
+          icon={UsdIcon}
+          action={() => {
+            handleClaimAll(loginAccount, usdcCash, USDCTotals.marketIds, addTransaction, updateTransaction)
+          }}
+        />
+      )}
+      {isLogged && ETHTotals.hasWinnings && (
+        <PrimaryButton
+          text={`${ethApproval ? '' : 'Approve to '}Claim Winnings (${
+            formatCashPrice(ETHTotals.total, ethCash?.name).full
+          })`}
           icon={EthIcon}
+          action={() => {
+            handleClaimAll(loginAccount, ethCash, USDCTotals.marketIds, addTransaction, updateTransaction)
+          }}
         />
       )}
     </div>

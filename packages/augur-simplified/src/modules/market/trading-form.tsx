@@ -510,7 +510,7 @@ const TradingForm = ({
     return () => {
       isMounted = false;
     };
-  }, [orderType, selectedOutcomeId, amount, outcomeSharesRaw]);
+  }, [orderType, selectedOutcomeId, amount, outcomeSharesRaw, amm?.liquidity]);
 
   const userBalance = String(
     useMemo(() => {

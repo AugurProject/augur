@@ -224,36 +224,47 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
     let isMounted = true;
     const checkIfApproved = async () => {
       let approvalCheck = UNKNOWN;
-      if (actionType === ENTER_POSITION) {
-        if (isETH) {
-          isMounted && setIsApproved(APPROVED);
-        } else {
-          approvalCheck = await checkAllowance(cash?.address, AMMFactory, loginAccount, transactions, updateTransaction);
-          isMounted && setIsApproved(approvalCheck);
+      if (isETH) {
+        switch (actionType) {
+          case (EXIT_POSITION): {
+            approvalCheck = await isERC1155ContractApproved(shareToken, WethWrapperForAMMExchange, loginAccount, transactions, updateTransaction);
+            break;
+          }
+          case (REMOVE_LIQUIDITY): {
+            approvalCheck = await checkAllowance(amm.id, WethWrapperForAMMExchange, loginAccount, transactions, updateTransaction);
+            break;
+          }
+          case (ENTER_POSITION):
+          case (ADD_LIQUIDITY): {
+            approvalCheck = APPROVED;
+            break;
+          }
+          default: {
+            break;
+          }
         }
-      } else if (actionType === EXIT_POSITION) {
-        if (isETH) {
-          approvalCheck = await isERC1155ContractApproved(shareToken, WethWrapperForAMMExchange, loginAccount, transactions, updateTransaction);
-        } else {
-          approvalCheck = await isERC1155ContractApproved(shareToken, AMMFactory, loginAccount, transactions, updateTransaction);
+        approvalCheck !== UNKNOWN && isMounted && setIsApproved(approvalCheck);
+      } else {
+        switch (actionType) {
+          case (EXIT_POSITION): {
+            approvalCheck = await isERC1155ContractApproved(shareToken, AMMFactory, loginAccount, transactions, updateTransaction);
+            break;
+          }
+          case (REMOVE_LIQUIDITY): {
+            approvalCheck = APPROVED;
+            break;
+          }
+          case (ENTER_POSITION):
+          case (ADD_LIQUIDITY): {
+            approvalCheck = await checkAllowance(cash?.address, AMMFactory, loginAccount, transactions, updateTransaction);
+            break;
+          }
+          default: {
+            break;
+          }
         }
-        isMounted && setIsApproved(approvalCheck);
-      } else if (actionType === ADD_LIQUIDITY) {
-        if (isETH) {
-          isMounted && setIsApproved(APPROVED);
-        } else {
-          approvalCheck = await checkAllowance(cash?.address, AMMFactory, loginAccount, transactions, updateTransaction)
-          isMounted && setIsApproved(approvalCheck);
-        }
-      } else if (actionType === REMOVE_LIQUIDITY) {
-        if (!isETH) {
-          isMounted && setIsApproved(APPROVED);
-        } else {
-          approvalCheck = await checkAllowance(amm.id, WethWrapperForAMMExchange, loginAccount, transactions, updateTransaction)
-          isMounted && setIsApproved(approvalCheck);
-        }
+        approvalCheck !== UNKNOWN && isMounted && setIsApproved(approvalCheck);
       }
-
       if (approvalCheck === PENDING) {
         isMounted && setIsPendingTx(true);
       } else if (approvalCheck === APPROVED) {
@@ -261,7 +272,7 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
       }
     }
 
-    if (isApproved !== APPROVED && loginAccount) {
+    if (isApproved !== APPROVED && loginAccount?.account) {
       checkIfApproved();
     } else {
       if (approvals
@@ -271,18 +282,26 @@ export const ApprovalButton = ({ amm, cash, actionType }: { amm?: AmmExchange, c
         || (actionType === REMOVE_LIQUIDITY && !approvals?.liquidity?.remove[marketCashType])
       )) {
         let newState = approvals;
-
-        if (actionType === ENTER_POSITION) {
-          newState.trade.enter[marketCashType] = true;
-        }
-        else if (actionType === EXIT_POSITION) {
-          newState.trade.exit[marketCashType] = true;
-        }
-        else if (actionType === ADD_LIQUIDITY) {
-          newState.liquidity.add[marketCashType] = true;
-        }
-        else if (actionType === REMOVE_LIQUIDITY) {
-          newState.liquidity.remove[marketCashType] = true;
+        switch (actionType) {
+          case (ENTER_POSITION): {
+            newState.trade.enter[marketCashType] = true;
+            break;
+          }
+          case (EXIT_POSITION): {
+            newState.trade.exit[marketCashType] = true;
+            break;
+          }
+          case (ADD_LIQUIDITY): {
+            newState.liquidity.add[marketCashType] = true;
+            break;
+          }
+          case (REMOVE_LIQUIDITY): {
+            newState.liquidity.remove[marketCashType] = true;
+            break;
+          }
+          default: {
+            break;
+          }
         }
         isMounted && setApprovals(newState);
       }
