@@ -7,9 +7,10 @@ import classNames from 'classnames';
 import ButtonStyles from '../common/buttons.styles.less';
 import {GetWalletIcon} from '../common/get-wallet-icon';
 import {useActiveWeb3React} from './hooks';
-import {MODAL_CONNECT_WALLET} from '../constants';
+import {MODAL_CONNECT_WALLET, TX_STATUS} from '../constants';
 import {useAppStatusStore} from '../stores/app-status';
 import {tryAutoLogin} from './utils';
+import { Spinner } from '../common/spinner';
 
 interface LoginButtonProps {
   action: Function;
@@ -52,6 +53,8 @@ const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode, transac
   } = useAppStatusStore();
   const { account, activate, connector, error } = useWeb3React();
   const activeWeb3 = useActiveWeb3React();
+  const pendingTransaction = transactions.filter(tx => tx.status === TX_STATUS.PENDING);
+  const hasPpendingTransaction = pendingTransaction.length > 0 || false;
 
   useEffect(() => {
     if (autoLogin && !account) tryAutoLogin(activate);
@@ -79,8 +82,11 @@ const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode, transac
   if (account) {
     buttonProps = {
       ...buttonProps,
-      text: isMobile ? shortenAddress(account, 3) : shortenAddress(account),
-      icon: connector && (
+      className: hasPpendingTransaction ? ButtonStyles.Pending : null,
+      text: hasPpendingTransaction ? `${pendingTransaction.length || 0} Pending`: isMobile ? shortenAddress(account, 3) : shortenAddress(account),
+      icon: hasPpendingTransaction
+        ? <Spinner />
+        : connector && (
         <GetWalletIcon
           connector={connector}
           account={account}
@@ -107,4 +113,3 @@ export default function ConnectAccount({ autoLogin, updateLoginAccount, darkMode
     <ConnectAccountButton autoLogin={autoLogin} updateLoginAccount={updateLoginAccount} darkMode={darkMode} transactions={transactions} />
   );
 }
-
