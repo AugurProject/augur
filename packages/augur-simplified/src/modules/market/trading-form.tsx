@@ -120,7 +120,7 @@ const Outcome = ({
         <div onClick={() => input.current && input.current.focus()}>
           <span>{`${prepend && symbol}0.`}</span>
           <input
-            value={parseInt(customVal)}
+            value={customVal}
             onChange={(v) => {
               setCustomVal(`${v.target.value}`);
               setEditableValue(
