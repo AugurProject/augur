@@ -930,7 +930,7 @@ type RemoveLiquidity @entity {
 
 type _Schema_
   @fulltext(
-    name: "marketDescriptionSearch",
+    name: "marketSearch",
     language: en
     algorithm: rank,
     include: [
@@ -938,6 +938,7 @@ type _Schema_
         entity: "Market",
         fields: [
           { name: "description" },
+          { namd: "longDescription" },
         ]
       }
     ]
