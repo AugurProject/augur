@@ -626,8 +626,7 @@ def test_amm_claim_from_multiple_markets(sessionFixture, universe, factory, shar
     market2 = do_it()
 
     balanceBeforeFinalization = cash.balanceOf(account0)
-    shareToken.claimTradingProceeds(market1.address, account0, stringToBytes(""))
-    shareToken.claimTradingProceeds(market2.address, account0, stringToBytes(""))
+    factory.claimMarketsProceeds([market1.address, market2.address], [shareToken.address, shareToken.address], account0, stringToBytes(""))
 
     # Should have more cash than before because both markets resolved in account0's favor.
     assert cash.balanceOf(account0) > balanceBeforeFinalization
