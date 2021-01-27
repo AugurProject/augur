@@ -760,7 +760,7 @@ const getTotalPositions = (ammMarketShares: AmmMarketShares): { change24hrPositi
 
 const getPositionUsdValues = (trades: UserTrades, rawBalance: string, balance: string, outcome: string, amm: AmmExchange, account: string): PositionBalance => {
   const { priceNo, priceYes, past24hrPriceNo, past24hrPriceYes } = amm;
-  let usdValue = "0";
+  let currUsdValue = "0";
   let past24hrUsdValue = null;
   let change24hrPositionUsd = null;
   let avgPrice = "0";
@@ -775,19 +775,19 @@ const getPositionUsdValues = (trades: UserTrades, rawBalance: string, balance: s
   if (balance !== "0" && outcome !== String(INVALID_OUTCOME_ID)) {
     let result = null;
     if (outcome === String(NO_OUTCOME_ID)) {
-      usdValue = String(new BN(balance).times(new BN(priceNo)));
+      currUsdValue = String(new BN(balance).times(new BN(priceNo)).times(new BN(amm.cash.usdPrice)));
       past24hrUsdValue = past24hrPriceNo ? String(new BN(balance).times(new BN(past24hrPriceNo))) : null;
-      change24hrPositionUsd = past24hrPriceNo ? String(new BN(usdValue).times(new BN(past24hrUsdValue))) : null;
+      change24hrPositionUsd = past24hrPriceNo ? String(new BN(currUsdValue).times(new BN(past24hrUsdValue))) : null;
       result = getInitPositionValues(trades, amm, false, account);
     } else if (outcome === String(YES_OUTCOME_ID)) {
-      usdValue = String(new BN(balance).times(new BN(priceYes)));
+      currUsdValue = String(new BN(balance).times(new BN(priceYes)).times(new BN(amm.cash.usdPrice)));
       past24hrUsdValue = past24hrPriceYes ? String(new BN(balance).times(new BN(past24hrPriceYes))) : null;
-      change24hrPositionUsd = past24hrPriceYes ? String(new BN(usdValue).times(new BN(past24hrUsdValue))) : null;
+      change24hrPositionUsd = past24hrPriceYes ? String(new BN(currUsdValue).times(new BN(past24hrUsdValue))) : null;
       result = getInitPositionValues(trades, amm, true, account);
     }
     avgPrice = trimDecimalValue(result.avgPrice);
     initCostUsd = result.initCostUsd;
-    let usdChangedValue = new BN(usdValue).minus(new BN(initCostUsd));
+    let usdChangedValue = new BN(currUsdValue).minus(new BN(initCostUsd));
     // ignore negative dust difference
     if (usdChangedValue.lt(new BN("0")) && usdChangedValue.gt(new BN("-0.001"))) {
       usdChangedValue = usdChangedValue.abs();
@@ -801,7 +801,7 @@ const getPositionUsdValues = (trades: UserTrades, rawBalance: string, balance: s
     balance,
     quantity,
     rawBalance,
-    usdValue,
+    usdValue: currUsdValue,
     past24hrUsdValue,
     change24hrPositionUsd,
     totalChangeUsd,
