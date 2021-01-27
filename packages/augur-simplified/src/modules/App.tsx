@@ -1,14 +1,12 @@
 import React, { useEffect } from 'react';
 import { ApolloProvider } from 'react-apollo';
 import { client, getMarketsData } from './apollo/client';
+import { HashRouter } from 'react-router-dom';
 import Styles from './App.styles.less';
 import Routes from './routes/routes';
 import TopNav from './common/top-nav';
 import '../assets/styles/shared.less';
-import {
-  AppStatusProvider,
-  useAppStatusStore,
-} from './stores/app-status';
+import { AppStatusProvider, useAppStatusStore } from './stores/app-status';
 import { Sidebar } from './sidebar/sidebar';
 import { processGraphMarkets } from '../utils/process-data';
 import { getUserBalances } from '../utils/contract-calls';
@@ -97,43 +95,49 @@ const AppBody = () => {
   useEffect(() => {
     const createClient = (provider, config, account) =>
       augurSdkLite.makeLiteClient(provider, config, account);
-    const fetchUserBalances = (library, account, ammExchanges, cashes, markets) =>
-      getUserBalances(
-        library,
-        account,
+    const fetchUserBalances = (
+      library,
+      account,
+      ammExchanges,
+      cashes,
+      markets
+    ) => getUserBalances(library, account, ammExchanges, cashes, markets);
+    if (loginAccount?.library && loginAccount?.account) {
+      if (!augurSdkLite.ready())
+        createClient(loginAccount.library, paraConfig, loginAccount?.account);
+      const { ammExchanges, cashes, markets } = processed;
+      fetchUserBalances(
+        loginAccount.library,
+        loginAccount.account,
         ammExchanges,
         cashes,
         markets
-      );
-    if (loginAccount?.library && loginAccount?.account) {
-      if (!augurSdkLite.ready()) createClient(loginAccount.library, paraConfig, loginAccount?.account);
-      const { ammExchanges, cashes, markets } = processed;
-      fetchUserBalances(loginAccount.library, loginAccount.account, ammExchanges, cashes, markets).then((userBalances) =>
-        updateUserBalances(userBalances)
-      );
+      ).then((userBalances) => updateUserBalances(userBalances));
     }
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [loginAccount, processed, paraConfig]);
 
   useEffect(() => {
     if (loginAccount?.account && blocknumber && transactions?.length > 0) {
-      transactions.filter(t => !t.confirmedTime)
+      transactions
+        .filter((t) => !t.confirmedTime)
         .forEach((t: TransactionDetails) => {
-          loginAccount.library
-            .getTransactionReceipt(t.hash)
-            .then(receipt => {
-              if (receipt) finalizeTransaction(t.hash)
-            })
-        })
+          loginAccount.library.getTransactionReceipt(t.hash).then((receipt) => {
+            if (receipt) finalizeTransaction(t.hash);
+          });
+        });
     }
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [loginAccount, blocknumber, transactions]);
 
   const sidebarOut = sidebarType && isMobile;
   return (
-    <div id="mainContent" className={classNames(Styles.App, {
-      [Styles.SidebarOut]: sidebarOut,
-    })}>
+    <div
+      id="mainContent"
+      className={classNames(Styles.App, {
+        [Styles.SidebarOut]: sidebarOut,
+      })}
+    >
       {modalShowing && <ModalView />}
       {sidebarOut && <Sidebar />}
       <TopNav />
@@ -144,13 +148,15 @@ const AppBody = () => {
 
 function App() {
   return (
-    <ConnectAccountProvider>
-      <ApolloProvider client={client}>
-        <AppStatusProvider>
-          <AppBody />
-        </AppStatusProvider>
-      </ApolloProvider>
-    </ConnectAccountProvider>
+    <HashRouter hashType="hashbang">
+      <AppStatusProvider>
+        <ConnectAccountProvider>
+          <ApolloProvider client={client}>
+            <AppBody />
+          </ApolloProvider>
+        </ConnectAccountProvider>
+      </AppStatusProvider>
+    </HashRouter>
   );
 }
 
