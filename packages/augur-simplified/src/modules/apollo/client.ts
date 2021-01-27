@@ -6,6 +6,7 @@ import { Cash } from '../types';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ErrorPolicy, FetchPolicy } from 'apollo-client';
 import { ETH } from '../constants';
+import { SEARCH_MARKETS } from './queries';
 
 dayjs.extend(utc);
 
@@ -64,6 +65,25 @@ export async function getMarketsData(paraConfig, updateBlocknumber, updateMarket
     }
 
     updateMarkets({ ...response.data, cashes: responseUsd });
+  }
+}
+
+export async function searchMarkets(paraConfig, searchString, cb) {
+  const clientConfig = getClientConfig(paraConfig);
+  let response = null;
+  if (searchString === '') return cb([]);
+  try {
+    const query = SEARCH_MARKETS(searchString);
+    response = await augurV2Client(clientConfig.augurClient).query({ query });
+  } catch (e) {
+    console.error(e);
+  }
+
+  if (response) {
+    if (response.errors) {
+      console.error(JSON.stringify(response.errors, null, 1));
+    }
+    cb([ ...response.data.marketSearch.map(market => market.id) ]);
   }
 }
 

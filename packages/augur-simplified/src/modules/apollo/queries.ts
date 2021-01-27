@@ -18,12 +18,11 @@ export const GET_BLOCK = timestamp => {
   return gql(queryString)
 };
 
-export const SEARCH_MARKETS = () => {
+export const SEARCH_MARKETS = (searchString) => {
   const queryString = `
   query {
-    marketSearch(text: "bob") {
+    marketSearch(text: "${searchString}:*") {
       id
-      description
     }
   }`
   return gql(queryString)

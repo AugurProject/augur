@@ -23,6 +23,10 @@
     width: 100%;
     grid-gap: @size-20;
     margin: @size-40 0;
+
+    > button {
+      margin-left: auto;
+    }
   }
 
   > button {
@@ -38,7 +42,16 @@
 
   > div:last-of-type:not(:first-of-type) {
     justify-content: center;
-    margin: @size-48 0 @size-8;
+  }
+
+  &.SearchOpen {
+    > ul {
+      margin-bottom: @size-16;
+    }
+
+    > div[class*='SearchInput'] {
+      margin-bottom: @size-24;
+    }
   }
 }
 
@@ -199,6 +212,22 @@
     > section {
       grid-template-columns: 1fr 1fr;
     }
+
+    > div:nth-of-type(2) {
+      display: flex;
+      margin: @size-16 0;
+
+      > button:first-of-type {
+        flex: 1;
+        margin-right: @size-8;
+      }
+    }
+
+    &.SearchOpen {
+      > div[class*='SearchInput'] {
+        margin-bottom: @size-16;
+      }
+    }
   }
 
   .MarketCard {
@@ -270,11 +299,11 @@
     }
 
     &:nth-of-type(1) {
-     grid-template-columns: @size-40 75px auto;
-     display: grid;
-     grid-template-rows: @size-32;
-     grid-gap: @size-8;
-     margin-bottom: @size-20;
+      grid-template-columns: @size-40 75px auto;
+      display: grid;
+      grid-template-rows: @size-32;
+      grid-gap: @size-8;
+      margin-bottom: @size-20;
 
       > div:last-of-type {
         width: @size-20;

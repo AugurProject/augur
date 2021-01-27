@@ -17,7 +17,11 @@ import {
 } from '../../utils/format-number';
 import { FilterIcon } from '../common/icons';
 import classNames from 'classnames';
-import { PrimaryButton, SecondaryButton } from '../common/buttons';
+import {
+  PrimaryButton,
+  SearchButton,
+  SecondaryButton,
+} from '../common/buttons';
 import { SquareDropdown } from '../common/selection';
 import { useAppStatusStore } from '../stores/app-status';
 import { AmmExchange, AmmOutcome, MarketInfo } from '../types';
@@ -45,6 +49,8 @@ import {
 } from '../constants';
 import { sliceByPage, Pagination } from '../common/pagination';
 import { TopBanner } from 'modules/common/top-banner';
+import { searchMarkets } from '../apollo/client';
+import { SearchInput } from '../common/inputs';
 
 const PAGE_LIMIT = 21;
 
@@ -163,71 +169,81 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
 const applyFiltersAndSort = (
   passedInMarkets,
   setFilteredMarkets,
-  { categories, sortBy, currency, reportingState }
+  paraConfig,
+  { filter, categories, sortBy, currency, reportingState }
 ) => {
-  let updatedFilteredMarkets = passedInMarkets;
-  updatedFilteredMarkets = updatedFilteredMarkets.filter(
-    (market: MarketInfo) => {
-      if (
-        categories !== ALL_MARKETS &&
-        categories !== OTHER &&
-        market.categories[0].toLowerCase() !== categories.toLowerCase()
-      ) {
-        return false;
-      }
-      if (
-        categories === OTHER &&
-        POPULAR_CATEGORIES_ICONS[market.categories[0].toLowerCase()]
-      ) {
-        return false;
-      }
-      if (currency !== ALL_CURRENCIES) {
-        if (!market.amm) {
-          return false;
-        } else if (market?.amm?.cash?.name !== currency) {
+  searchMarkets(paraConfig, filter, (searchedMarkets) => {
+    let updatedFilteredMarkets = passedInMarkets;
+
+    if (filter !== '') {
+      updatedFilteredMarkets = updatedFilteredMarkets.filter(
+        (market) => searchedMarkets.indexOf(market.marketId) !== -1
+      );
+    }
+
+    updatedFilteredMarkets = updatedFilteredMarkets.filter(
+      (market: MarketInfo) => {
+        if (
+          categories !== ALL_MARKETS &&
+          categories !== OTHER &&
+          market.categories[0].toLowerCase() !== categories.toLowerCase()
+        ) {
           return false;
         }
-      }
-      if (reportingState === OPEN) {
-        if (market.reportingState !== MARKET_STATUS.TRADING) {
+        if (
+          categories === OTHER &&
+          POPULAR_CATEGORIES_ICONS[market.categories[0].toLowerCase()]
+        ) {
           return false;
         }
-      } else if (reportingState === IN_SETTLEMENT) {
-        if (
-          market.reportingState !== MARKET_STATUS.REPORTING &&
-          market.reportingState !== MARKET_STATUS.DISPUTING
-        )
-          return false;
-      } else if (reportingState === RESOLVED) {
-        if (
-          market.reportingState !== MARKET_STATUS.FINALIZED &&
-          market.reportingState !== MARKET_STATUS.SETTLED
-        )
-          return false;
+        if (currency !== ALL_CURRENCIES) {
+          if (!market.amm) {
+            return false;
+          } else if (market?.amm?.cash?.name !== currency) {
+            return false;
+          }
+        }
+        if (reportingState === OPEN) {
+          if (market.reportingState !== MARKET_STATUS.TRADING) {
+            return false;
+          }
+        } else if (reportingState === IN_SETTLEMENT) {
+          if (
+            market.reportingState !== MARKET_STATUS.REPORTING &&
+            market.reportingState !== MARKET_STATUS.DISPUTING
+          )
+            return false;
+        } else if (reportingState === RESOLVED) {
+          if (
+            market.reportingState !== MARKET_STATUS.FINALIZED &&
+            market.reportingState !== MARKET_STATUS.SETTLED
+          )
+            return false;
+        }
+        return true;
+      }
+    );
+    updatedFilteredMarkets = updatedFilteredMarkets.sort((marketA, marketB) => {
+      if (sortBy === TOTAL_VOLUME) {
+        return marketB?.amm?.volumeTotalUSD - marketA?.amm?.volumeTotalUSD;
+      } else if (sortBy === TWENTY_FOUR_HOUR_VOLUME) {
+        return (
+          marketB?.amm?.volume24hrTotalUSD - marketA?.amm?.volume24hrTotalUSD
+        );
+      } else if (sortBy === LIQUIDITY) {
+        return marketB?.amm?.liquidityUSD - marketA?.amm?.liquidityUSD;
+      } else if (sortBy === ENDING_SOON) {
+        return marketA?.endTimestamp - marketB?.endTimestamp;
       }
       return true;
+    });
+    if (sortBy !== ENDING_SOON) {
+      updatedFilteredMarkets = updatedFilteredMarkets
+        .filter((m) => m.amm !== null)
+        .concat(updatedFilteredMarkets.filter((m) => m.amm === null));
     }
-  );
-  updatedFilteredMarkets = updatedFilteredMarkets.sort((marketA, marketB) => {
-    if (sortBy === TOTAL_VOLUME) {
-      return marketB?.amm?.volumeTotalUSD - marketA?.amm?.volumeTotalUSD;
-    } else if (sortBy === TWENTY_FOUR_HOUR_VOLUME) {
-      return (
-        marketB?.amm?.volume24hrTotalUSD - marketA?.amm?.volume24hrTotalUSD
-      );
-    } else if (sortBy === LIQUIDITY) {
-      return marketB?.amm?.liquidityUSD - marketA?.amm?.liquidityUSD;
-    } else if (sortBy === ENDING_SOON) {
-      return marketA?.endTimestamp - marketB?.endTimestamp;
-    }
-    return true;
+    setFilteredMarkets(updatedFilteredMarkets);
   });
-  if (sortBy !== ENDING_SOON) {
-    updatedFilteredMarkets = updatedFilteredMarkets
-      .filter((m) => m.amm !== null)
-      .concat(updatedFilteredMarkets.filter((m) => m.amm === null));
-  }
-  setFilteredMarkets(updatedFilteredMarkets);
 };
 
 const MarketsView = () => {
@@ -235,6 +251,7 @@ const MarketsView = () => {
     isMobile,
     isLogged,
     marketsViewSettings,
+    paraConfig,
     actions: { setSidebar, updateMarketsViewSettings },
     processed: { markets },
   } = useAppStatusStore();
@@ -242,6 +259,8 @@ const MarketsView = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [filteredMarkets, setFilteredMarkets] = useState([]);
+  const [filter, setFilter] = useState('');
+  const [showFilter, setShowFilter] = useState(false);
 
   useEffect(() => {
     document.getElementById('mainContent')?.scrollTo(0, 0);
@@ -251,22 +270,34 @@ const MarketsView = () => {
   useEffect(() => {
     if (Object.values(markets).length > 0) setLoading(false);
     setPage(1);
-    applyFiltersAndSort(Object.values(markets), setFilteredMarkets, {
-      categories,
-      sortBy,
-      currency,
-      reportingState,
-    });
-  }, [sortBy, categories, reportingState, currency]);
+    applyFiltersAndSort(
+      Object.values(markets),
+      setFilteredMarkets,
+      paraConfig,
+      {
+        filter,
+        categories,
+        sortBy,
+        currency,
+        reportingState,
+      }
+    );
+  }, [sortBy, filter, categories, reportingState, currency]);
 
   useEffect(() => {
     if (Object.values(markets).length > 0) setLoading(false);
-    applyFiltersAndSort(Object.values(markets), setFilteredMarkets, {
-      categories,
-      sortBy,
-      currency,
-      reportingState,
-    });
+    applyFiltersAndSort(
+      Object.values(markets),
+      setFilteredMarkets,
+      paraConfig,
+      {
+        filter,
+        categories,
+        sortBy,
+        currency,
+        reportingState,
+      }
+    );
   }, [markets]);
 
   useEffect(() => {
@@ -283,15 +314,27 @@ const MarketsView = () => {
   });
 
   return (
-    <div className={Styles.MarketsView}>
+    <div
+      className={classNames(Styles.MarketsView, {
+        [Styles.SearchOpen]: showFilter,
+      })}
+    >
       <NetworkMismatchBanner />
       {isLogged ? <AppViewStats showCashAmounts /> : <TopBanner />}
       {isMobile && (
-        <SecondaryButton
-          text={`filters${changedFilters ? ` (${changedFilters})` : ``}`}
-          icon={FilterIcon}
-          action={() => setSidebar(SIDEBAR_TYPES.FILTERS)}
-        />
+        <div>
+          <SecondaryButton
+            text={`filters${changedFilters ? ` (${changedFilters})` : ``}`}
+            icon={FilterIcon}
+            action={() => setSidebar(SIDEBAR_TYPES.FILTERS)}
+          />
+          <SearchButton
+            action={() => {
+              setFilter('');
+              setShowFilter(!showFilter);
+            }}
+          />
+        </div>
       )}
       <ul>
         <SquareDropdown
@@ -322,7 +365,20 @@ const MarketsView = () => {
           options={currencyItems}
           defaultValue={currency}
         />
+        <SearchButton
+          action={() => {
+            setFilter('');
+            setShowFilter(!showFilter);
+          }}
+        />
       </ul>
+      {showFilter && (
+        <SearchInput
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          clearValue={() => setFilter('')}
+        />
+      )}
       {loading && (
         <section>
           {new Array(PAGE_LIMIT).fill(null).map((m, index) => (
