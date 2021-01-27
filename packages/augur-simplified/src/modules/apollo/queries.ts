@@ -18,6 +18,16 @@ export const GET_BLOCK = timestamp => {
   return gql(queryString)
 };
 
+export const SEARCH_MARKETS = () => {
+  const queryString = `
+  query {
+    marketSearch(text: "bob") {
+      id
+      description
+    }
+  }`
+  return gql(queryString)
+}
 // Get all markets except CATEGORICAL
 // https://thegraph.com/explorer/subgraph/augurproject/augur-v2-staging
 export const GET_MARKETS = blockNumber => {
