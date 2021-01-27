@@ -47,6 +47,7 @@ const {
   BLOCKNUMBER,
   MODAL,
   IS_LOGGED,
+  SHOW_TRADING_FORM,
 } = APP_STATE_KEYS;
 
 const isAsync = (obj) => {
@@ -134,7 +135,7 @@ export const arrayToKeyedObjectByProp = (ArrayOfObj: any[], prop: string) =>
 export function AppStatusReducer(state, action) {
   const updatedState = { ...state };
   const now = new Date().getTime();
-  console.log("reducer", action);
+
   switch (action.type) {
     case SET_APPROVALS: {
       updatedState[APPROVALS] = action.approvals;
@@ -203,7 +204,7 @@ export function AppStatusReducer(state, action) {
       break;
     }
     case SET_SHOW_TRADING_FORM: {
-      updatedState['showTradingForm'] = action.showTradingForm;
+      updatedState[SHOW_TRADING_FORM] = action.showTradingForm;
       break;
     }
     case UPDATE_GRAPH_HEARTBEAT: {
@@ -298,7 +299,7 @@ export function AppStatusReducer(state, action) {
       break;
     }
     default:
-      console.log(`Error: ${action.type} not caught by Markets reducer`);
+      console.log(`Error: ${action.type} not caught by App Status reducer`);
   }
   windowRef.appStatus = updatedState;
   return updatedState;

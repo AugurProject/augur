@@ -116,6 +116,7 @@ export const APP_STATE_KEYS = {
   BLOCKNUMBER: 'blocknumber',
   MODAL: 'modal',
   IS_LOGGED: 'isLogged',
+  SHOW_TRADING_FORM: 'showTradingForm',
 };
 
 export const APP_STATUS_ACTIONS = {
