@@ -333,6 +333,7 @@ const MarketsView = () => {
               setFilter('');
               setShowFilter(!showFilter);
             }}
+            selected={showFilter}
           />
         </div>
       )}
@@ -366,6 +367,7 @@ const MarketsView = () => {
           defaultValue={currency}
         />
         <SearchButton
+          selected={showFilter}
           action={() => {
             setFilter('');
             setShowFilter(!showFilter);
