@@ -938,7 +938,7 @@ type _Schema_
         entity: "Market",
         fields: [
           { name: "description" },
-          { namd: "longDescription" },
+          { name: "longDescription" },
         ]
       }
     ]
