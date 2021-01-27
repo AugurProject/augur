@@ -41,16 +41,15 @@ export function augurV2Client(uri: string) {
   return client;
 }
 
-export async function getMarketsData(paraConfig, updateBlocknumber, updateMarkets) {
+export async function getMarketsData(paraConfig, updateHeartbeat) {
   const cashes = getCashesInfo(paraConfig)
   const clientConfig = getClientConfig(paraConfig);
   let response = null;
   let responseUsd = null;
+  let newBlock = null;
   try {
-    const block = await getPastDayBlockNumber(clientConfig.blockClient);
-    updateBlocknumber(block);
-
-    const query = GET_MARKETS(block);
+    newBlock = await getPastDayBlockNumber(clientConfig.blockClient);
+    const query = GET_MARKETS(newBlock);
     response = await augurV2Client(clientConfig.augurClient).query({ query });
     responseUsd = await getCashTokenData(cashes);
   } catch (e) {
@@ -58,12 +57,11 @@ export async function getMarketsData(paraConfig, updateBlocknumber, updateMarket
   }
 
   if (response) {
-    //console.log('response', JSON.stringify(response));
     if (response.errors) {
       console.error(JSON.stringify(response.errors, null, 1));
     }
 
-    updateMarkets({ ...response.data, cashes: responseUsd });
+    updateHeartbeat({ ...response.data, cashes: responseUsd }, newBlock);
   }
 }
 

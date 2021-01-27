@@ -12,9 +12,8 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   setIsMobile: isMobile => {},
   setApprovals: approvals => {},
   setSidebar: sidebarType => {},
-  updateGraphData: graphData => {},
   setShowTradingForm: showTradingForm => {},
-  updateProcessed: processed => {},
+  updateGraphHeartbeat: (processed, graphData, blocknumber) => {},
   updateLoginAccount: updateLoginAccount => {},
   updateMarketsViewSettings: settings => {},
   updateUserBalances: balances => {},
@@ -23,7 +22,6 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   addTransaction: transaction => {},
   removeTransaction: hash => {},
   logout: () => {},
-  updateBlocknumber: blocknumber => {},
   finalizeTransaction: hash => {},
   setModal: modal => {},
   closeModal: () => {},
@@ -139,6 +137,7 @@ export const APP_STATUS_ACTIONS = {
   SET_MODAL: 'SET_MODAL',
   CLOSE_MODAL: 'CLOSE_MODAL',
   LOGOUT: 'LOGOUT',
+  UPDATE_GRAPH_HEARTBEAT: 'UPDATE_GRAPH_HEARTBEAT',
 };
 
 export const fakePositionsData = [

@@ -38,28 +38,28 @@ const AppBody = () => {
     modal,
     actions: {
       setIsMobile,
-      updateGraphData,
-      updateProcessed,
+      updateGraphHeartbeat,
       updateUserBalances,
-      updateBlocknumber,
       finalizeTransaction,
     },
   } = useAppStatusStore();
   const modalShowing = Object.keys(modal).length !== 0;
 
   useEffect(() => {
-    // get data immediately, then setup interval
-    getMarketsData(paraConfig, updateBlocknumber, (data) => {
-      updateGraphData(data);
-      updateProcessed(processGraphMarkets(data));
-    });
     let isMounted = true;
+    // get data immediately, then setup interval
+    getMarketsData(paraConfig, (graphData, block) => {
+      isMounted &&
+        updateGraphHeartbeat(processGraphMarkets(graphData), graphData, block);
+    });
     const intervalId = setInterval(() => {
-      getMarketsData(paraConfig, updateBlocknumber, (data) => {
-        if (isMounted) {
-          updateGraphData(data);
-          updateProcessed(processGraphMarkets(data));
-        }
+      getMarketsData(paraConfig, (graphData, block) => {
+        isMounted &&
+          updateGraphHeartbeat(
+            processGraphMarkets(graphData),
+            graphData,
+            block
+          );
       });
     }, 15000);
     return () => {
