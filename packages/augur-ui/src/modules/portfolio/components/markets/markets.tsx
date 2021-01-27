@@ -59,6 +59,7 @@ interface MyMarketsProps {
   myMarkets: MarketData[];
   currentAugurTimestamp: number;
   disputingWindowEndTime: number;
+  disputingWindowStartTime: number;
   removePendingMarket: Function;
   retrySubmitMarket: Function;
   toggle: Function;
@@ -69,6 +70,7 @@ interface MyMarketsProps {
 class MyMarkets extends Component<MyMarketsProps> {
   static defaultProps = {
     disputingWindowEndTime: 0,
+    disputingWindowStartTime: 0,
     currentAugurTimestamp: 0,
   };
 
@@ -80,7 +82,7 @@ class MyMarkets extends Component<MyMarketsProps> {
   }
 
   renderRightContent(market) {
-    const { currentAugurTimestamp, disputingWindowEndTime } = this.props;
+    const { currentAugurTimestamp, disputingWindowEndTime, disputingWindowStartTime } = this.props;
 
     return (
       <>
@@ -91,6 +93,7 @@ class MyMarkets extends Component<MyMarketsProps> {
             currentTime={currentAugurTimestamp}
             endTimeFormatted={market.endTimeFormatted}
             reportingWindowEndTime={disputingWindowEndTime}
+            reportingWindowStartTime={disputingWindowStartTime}
             alignRight
           />
         )}

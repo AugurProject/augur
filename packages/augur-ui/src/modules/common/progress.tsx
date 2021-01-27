@@ -31,6 +31,7 @@ export interface MarketProgressProps {
   reportingState: string;
   endTimeFormatted: DateFormattedObject;
   reportingWindowEndTime: DateFormattedObject | number;
+  reportingWindowStartTime: DateFormattedObject | number;
   customLabel?: string;
   alignRight?: boolean;
   forkingMarket?: boolean;
@@ -105,6 +106,7 @@ const reportingStateToLabelTime = (
   reportingState: string,
   endTimeFormatted: DateFormattedObject,
   reportingEndTime: DateFormattedObject,
+  reportingStartTime: DateFormattedObject,
   alignRight: boolean,
   forkingMarket: boolean,
   forkingEndTime: number
@@ -129,7 +131,7 @@ const reportingStateToLabelTime = (
       break;
     case REPORTING_STATE.AWAITING_NEXT_WINDOW:
       label = 'Next Dispute';
-      time = reportingEndTime;
+      time = reportingStartTime;
       break;
     case REPORTING_STATE.FORKING:
       label = 'Forking';
@@ -159,16 +161,19 @@ export const MarketProgress = (props: MarketProgressProps) => {
     reportingState,
     endTimeFormatted,
     reportingWindowEndTime,
+    reportingWindowStartTime,
     customLabel,
     alignRight,
     forkingEndTime,
     forkingMarket
   } = props;
   const reportingEndTime = formatTime(reportingWindowEndTime);
+  const reportingStartTime = formatTime(reportingWindowStartTime);
   const { label, time } = reportingStateToLabelTime(
     reportingState,
     endTimeFormatted,
     reportingEndTime,
+    reportingStartTime,
     alignRight,
     forkingMarket,
     forkingEndTime,

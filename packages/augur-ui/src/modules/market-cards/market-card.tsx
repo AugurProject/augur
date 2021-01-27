@@ -303,6 +303,7 @@ export default class MarketCard extends React.Component<
               currentTime={currentAugurTimestamp}
               endTimeFormatted={endTimeFormatted}
               reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
+              reportingWindowStartTime={disputeInfo.disputeWindow.startTime}
               forkingMarket={isForking && forkingMarket === id}
               forkingEndTime={forkingEndTime}
             />
@@ -335,6 +336,7 @@ export default class MarketCard extends React.Component<
               currentTime={currentAugurTimestamp}
               endTimeFormatted={endTimeFormatted}
               reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
+              reportingWindowStartTime={disputeInfo.disputeWindow.startTime}
               forkingMarket={isForking && forkingMarket === id}
               forkingEndTime={forkingEndTime}
             />

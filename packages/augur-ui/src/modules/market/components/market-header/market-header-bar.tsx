@@ -52,6 +52,7 @@ export const MarketHeaderBar = ({
         currentTime={currentAugurTimestamp}
         endTimeFormatted={endTimeFormatted}
         reportingWindowEndTime={disputeInfo && disputeInfo.disputeWindow && disputeInfo.disputeWindow.endTime}
+        reportingWindowStartTime={disputeInfo && disputeInfo.disputeWindow && disputeInfo.disputeWindow.startTime}
       />
     )}
   </section>

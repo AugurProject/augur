@@ -1109,6 +1109,7 @@ export const ReportingCard = (props: ReportingCardProps) => {
           currentTime={currentAugurTimestamp}
           endTimeFormatted={endTimeFormatted}
           reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
+          reportingWindowStartTime={disputeInfo.disputeWindow.startTime}
         />
       )}
       <div

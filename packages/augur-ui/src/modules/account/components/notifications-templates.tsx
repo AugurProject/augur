@@ -186,6 +186,7 @@ const Counter = ({ market, type }: CounterProps) => {
             reportingState={reportingState}
             endTimeFormatted={endTimeFormatted}
             reportingWindowEndTime={disputeInfo.disputeWindow.endTime}
+            reportingWindowStartTime={disputeInfo.disputeWindow.startTime}
             customLabel={label}
           />
         </div>

@@ -69,6 +69,7 @@ export default class Favorites extends Component<FavoritesProps> {
           currentTime={currentAugurTimestamp}
           endTimeFormatted={market.endTimeFormatted}
           reportingWindowEndTime={market.disputeInfo && market.disputeInfo.disputeWindow && market.disputeInfo.disputeWindow.endTime || 0}
+          reportingWindowStartTime={market.disputeInfo && market.disputeInfo.disputeWindow && market.disputeInfo.disputeWindow.startTime || 0}
           alignRight
         />
         <FavoritesButton
