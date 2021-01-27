@@ -259,7 +259,7 @@ export class DB {
       ],
       this.augur
     );
-    await this.disputeDatabase.reset();
+
     this.currentOrdersDatabase = new ParsedOrderEventDB(
       this,
       this.networkId,
@@ -269,7 +269,6 @@ export class DB {
     );
 
     this._marketDatabase = new MarketDB(this, this.networkId, this.augur);
-    await this._marketDatabase.reset();
 
     this.parsedOrderEventDatabase = new ParsedOrderEventDB(
       this,
@@ -299,6 +298,10 @@ export class DB {
     } else {
       console.log()
     }
+
+    await this.disputeDatabase.reset();
+    await this._marketDatabase.reset();
+
 
     const universeCreatedLogCount = await this.UniverseCreated.count();
     if (universeCreatedLogCount > 0) {
@@ -446,7 +449,7 @@ export class DB {
     await this.parsedOrderEventDatabase.sync(highestAvailableBlockNumber);
 
     // The Market DB syncs after the derived DBs, as it depends on a derived DB
-    await this._marketDatabase.sync(0);
+    await this._marketDatabase.sync(highestAvailableBlockNumber);
   }
 
   async prune(timestamp: number) {
