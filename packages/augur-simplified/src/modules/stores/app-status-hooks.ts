@@ -19,8 +19,6 @@ const {
   SET_APPROVALS,
   SET_IS_MOBILE,
   SET_SIDEBAR,
-  UPDATE_GRAPH_DATA,
-  UPDATE_PROCESSED,
   SET_LOGIN_ACCOUNT,
   UPDATE_MARKETS_VIEW_SETTINGS,
   UPDATE_USER_BALANCES,
@@ -28,11 +26,11 @@ const {
   UPDATE_TRANSACTION,
   ADD_TRANSACTION,
   REMOVE_TRANSACTION,
-  UPDATE_BLOCKNUMBER,
   FINALIZE_TRANSACTION,
   SET_MODAL,
   CLOSE_MODAL,
   LOGOUT,
+  UPDATE_GRAPH_HEARTBEAT,
 } = APP_STATUS_ACTIONS;
 
 const {
@@ -49,6 +47,7 @@ const {
   BLOCKNUMBER,
   MODAL,
   IS_LOGGED,
+  SHOW_TRADING_FORM,
 } = APP_STATE_KEYS;
 
 const isAsync = (obj) => {
@@ -204,19 +203,11 @@ export function AppStatusReducer(state, action) {
       }
       break;
     }
-    case UPDATE_GRAPH_DATA: {
-      updatedState[GRAPH_DATA] = {
-        markets: arrayToKeyedObject(action[GRAPH_DATA].markets),
-        past: arrayToKeyedObject(action[GRAPH_DATA].past),
-        paraShareTokens: arrayToKeyedObject(action[GRAPH_DATA].paraShareTokens),
-      };
-      break;
-    }
     case SET_SHOW_TRADING_FORM: {
-      updatedState['showTradingForm'] = action.showTradingForm;
+      updatedState[SHOW_TRADING_FORM] = action.showTradingForm;
       break;
     }
-    case UPDATE_PROCESSED: {
+    case UPDATE_GRAPH_HEARTBEAT: {
       const { markets, cashes, ammExchanges } = action[PROCESSED];
       updatedState[PROCESSED] = {
         markets,
@@ -234,6 +225,12 @@ export function AppStatusReducer(state, action) {
           activity,
         };
       }
+      updatedState[GRAPH_DATA] = {
+        markets: arrayToKeyedObject(action[GRAPH_DATA].markets),
+        past: arrayToKeyedObject(action[GRAPH_DATA].past),
+        paraShareTokens: arrayToKeyedObject(action[GRAPH_DATA].paraShareTokens),
+      };
+      updatedState[BLOCKNUMBER] = action.blocknumber;
       break;
     }
     case UPDATE_MARKETS_VIEW_SETTINGS: {
@@ -293,10 +290,6 @@ export function AppStatusReducer(state, action) {
       }
       break;
     }
-    case UPDATE_BLOCKNUMBER: {
-      updatedState[BLOCKNUMBER] = action.blocknumber;
-      break;
-    }
     case FINALIZE_TRANSACTION: {
       updatedState[TRANSACTIONS].forEach((tx) => {
         if (tx.hash === action.hash) {
@@ -306,7 +299,7 @@ export function AppStatusReducer(state, action) {
       break;
     }
     default:
-      console.log(`Error: ${action.type} not caught by Markets reducer`);
+      console.log(`Error: ${action.type} not caught by App Status reducer`);
   }
   windowRef.appStatus = updatedState;
   return updatedState;
@@ -332,10 +325,6 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
       setSidebar: (sidebarType) => dispatch({ type: SET_SIDEBAR, sidebarType }),
       setIsMobile: (isMobile) => dispatch({ type: SET_IS_MOBILE, isMobile }),
       setApprovals: (approvals) => dispatch({ type: SET_APPROVALS, approvals }),
-      updateGraphData: (graphData) =>
-        dispatch({ type: UPDATE_GRAPH_DATA, graphData }),
-      updateProcessed: (processed) =>
-        dispatch({ type: UPDATE_PROCESSED, processed }),
       updateLoginAccount: (account) =>
         dispatch({ type: SET_LOGIN_ACCOUNT, account }),
       updateUserBalances: (userBalances: UserBalances) =>
@@ -348,8 +337,7 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
         dispatch({ type: ADD_TRANSACTION, transaction }),
       removeTransaction: (hash: string) =>
         dispatch({ type: REMOVE_TRANSACTION, hash }),
-      updateBlocknumber: (blocknumber) =>
-        dispatch({ type: UPDATE_BLOCKNUMBER, blocknumber }),
+      updateGraphHeartbeat: (processed, graphData, blocknumber) => dispatch({ type: UPDATE_GRAPH_HEARTBEAT, processed, graphData, blocknumber }), 
       finalizeTransaction: (hash) =>
         dispatch({ type: FINALIZE_TRANSACTION, hash }),
       setModal: (modal) => dispatch({ type: SET_MODAL, modal }),

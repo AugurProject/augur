@@ -38,28 +38,28 @@ const AppBody = () => {
     modal,
     actions: {
       setIsMobile,
-      updateGraphData,
-      updateProcessed,
+      updateGraphHeartbeat,
       updateUserBalances,
-      updateBlocknumber,
       finalizeTransaction,
     },
   } = useAppStatusStore();
   const modalShowing = Object.keys(modal).length !== 0;
 
   useEffect(() => {
-    // get data immediately, then setup interval
-    getMarketsData(paraConfig, updateBlocknumber, (data) => {
-      updateGraphData(data);
-      updateProcessed(processGraphMarkets(data));
-    });
     let isMounted = true;
+    // get data immediately, then setup interval
+    getMarketsData(paraConfig, (graphData, block) => {
+      isMounted &&
+        updateGraphHeartbeat(processGraphMarkets(graphData), graphData, block);
+    });
     const intervalId = setInterval(() => {
-      getMarketsData(paraConfig, updateBlocknumber, (data) => {
-        if (isMounted) {
-          updateGraphData(data);
-          updateProcessed(processGraphMarkets(data));
-        }
+      getMarketsData(paraConfig, (graphData, block) => {
+        isMounted &&
+          updateGraphHeartbeat(
+            processGraphMarkets(graphData),
+            graphData,
+            block
+          );
       });
     }, 15000);
     return () => {
@@ -93,6 +93,7 @@ const AppBody = () => {
   }, [showTradingForm, modalShowing]);
 
   useEffect(() => {
+    let isMounted = true;
     const createClient = (provider, config, account) =>
       augurSdkLite.makeLiteClient(provider, config, account);
     const fetchUserBalances = (
@@ -112,10 +113,14 @@ const AppBody = () => {
         ammExchanges,
         cashes,
         markets
-      ).then((userBalances) => updateUserBalances(userBalances));
+      ).then((userBalances) => isMounted && updateUserBalances(userBalances));
+    }
+
+    return () => {
+      isMounted = false;
     }
     // eslint-disable-next-line
-  }, [loginAccount, processed, paraConfig]);
+  }, [loginAccount?.account, loginAccount?.library, processed, paraConfig]);
 
   useEffect(() => {
     if (loginAccount?.account && blocknumber && transactions?.length > 0) {
