@@ -31,7 +31,7 @@ import {
 } from '../../utils/format-number';
 import { MODAL_ADD_LIQUIDITY, USDC } from '../constants';
 import { useAppStatusStore } from '../stores/app-status';
-import { AddressLink, MarketLink } from '../routes/helpers/links';
+import { AddressLink, MarketLink, ReceiptLink } from '../routes/helpers/links';
 import { sliceByPage, Pagination } from './pagination';
 import {
   claimMarketWinnings,
@@ -127,7 +127,7 @@ interface PositionFooterProps {
 export const PositionFooter = ({
   claimableWinnings,
   market: { fee, marketId, amm },
-  showTradeButton
+  showTradeButton,
 }: PositionFooterProps) => {
   const {
     isMobile,
@@ -227,6 +227,7 @@ export const PositionTable = ({
   claimableWinnings,
   singleMarket,
 }: PositionsTableProps) => {
+  // eslint-disable-next-line
   const [page, setPage] = useState(1);
   const splicePositions = singleMarket
     ? sliceByPage(positions, page, POSITIONS_LIQUIDITY_LIMIT)
@@ -242,7 +243,11 @@ export const PositionTable = ({
         splicePositions
           .filter((p) => p.visible)
           .map((position, id) => <PositionRow key={id} position={position} />)}
-      <PositionFooter showTradeButton={!singleMarket} market={market} claimableWinnings={claimableWinnings} />
+      <PositionFooter
+        showTradeButton={!singleMarket}
+        market={market}
+        claimableWinnings={claimableWinnings}
+      />
     </div>
   );
 };
@@ -613,8 +618,10 @@ const TX_PAGE_LIMIT = 10;
 
 const TransactionRow = ({ transaction }: TransactionProps) => {
   return (
-    <ul className={Styles.TransactionRow}>
-      <li>{transaction.subheader}</li>
+    <ul className={Styles.TransactionRow} key={transaction.id}>
+      <li>
+        <ReceiptLink hash={transaction.tx_hash} label={transaction.subheader} />
+      </li>
       <li>{formatDai(transaction.value).full}</li>
       <li>{transaction.tokenAmount}</li>
       <li>{transaction.shareAmount}</li>
