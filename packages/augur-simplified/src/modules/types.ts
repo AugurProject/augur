@@ -10,10 +10,13 @@ import type {
   MarketTradingHistory,
   Orders,
 } from '@augurproject/sdk-lite';
-import type { TransactionMetadataParams, EthersSigner } from '@augurproject/contract-dependencies-ethers';
+import type {
+  TransactionMetadataParams,
+  EthersSigner,
+} from '@augurproject/contract-dependencies-ethers';
 import type { BigNumber } from '../utils/create-big-number';
 import type { Template } from '@augurproject/templates';
-import { JsonRpcProvider } from "ethers/providers";
+import { JsonRpcProvider } from 'ethers/providers';
 
 export enum SizeTypes {
   SMALL = 'small',
@@ -25,8 +28,8 @@ export const TransactionTypes = {
   ENTER: 'ENTER',
   EXIT: 'EXIT',
   ADD_LIQUIDITY: 'ADD_LIQUIDITY',
-  REMOVE_LIQUIDITY: 'REMOVE_LIQUIDITY'
-}
+  REMOVE_LIQUIDITY: 'REMOVE_LIQUIDITY',
+};
 export interface TextLink {
   text: string;
   link?: string;
@@ -97,47 +100,47 @@ export interface CoreStats {
 export interface ParaDeploys {
   addresses: {
     [contract: string]: string;
-  },
+  };
   paraDeploys: {
     [cashAddress: string]: {
-      name: string,
+      name: string;
       addresses: {
         [contract: string]: string;
-      }
-    }
-  }
+      };
+    };
+  };
 }
 export interface AmmTransaction {
-  id: string,
-  tx_type: string,
-  cash: string,
-  noShares: string,
-  yesShares: string,
-  sender: string,
-  timestamp: string,
-  tx_hash: string,
-  price?: string,
-  value: string,
-  subheader: string,
-  date: string,
-  time: string,
-  currency: string,
-  shareAmount: string,
-  tokenAmount: string,
-  cashValueUsd?: string,
-  lpTokens?: string,
-  yesShareCashValue?: string,
-  noShareCashValue?: string
-  cashValue?: string, // for add/remove liquidity
+  id: string;
+  tx_type: string;
+  cash: string;
+  noShares: string;
+  yesShares: string;
+  sender: string;
+  timestamp: string;
+  tx_hash: string;
+  price?: string;
+  value: string;
+  subheader: string;
+  date: string;
+  time: string;
+  currency: string;
+  shareAmount: string;
+  tokenAmount: string;
+  cashValueUsd?: string;
+  lpTokens?: string;
+  yesShareCashValue?: string;
+  noShareCashValue?: string;
+  cashValue?: string; // for add/remove liquidity
 }
 
 export interface Trade {
-  price: number,
-  timestamp: number,
-  shares: string,
+  price: number;
+  timestamp: number;
+  shares: string;
 }
 export interface Trades {
-  [outcomeIdx: number]: Trade[]
+  [outcomeIdx: number]: Trade[];
 }
 
 export interface AmmExchangeOutcome {
@@ -146,84 +149,84 @@ export interface AmmExchangeOutcome {
   name: string;
 }
 export interface AmmExchange {
-  id: string,
-  marketId: string,
-  market: MarketInfo,
-  liquidity: string,
-  liquidityUSD: string,
-  liquidity24hrUSD: string,
-  liquidityNo: string,
-  liquidityYes: string,
-  liquidityInvalid: string,
-  liquidityCash: string,
-  priceYes: string,
-  priceNo: string,
-  percentageYes: string,
-  percentageNo: string,
-  volumeYes: string,
-  volumeNo: string,
-  volumeYesUSD: string,
-  volumeNoUSD: string,
-  volume24hrTotalUSD: string,
-  volumeTotal: string,
-  volumeTotalUSD: string,
-  feeDecimal: string,
-  feeRaw: string,
-  feeInPercent: string,
-  cash: Cash,
-  sharetoken: string,
-  transactions: AmmTransaction[],
-  trades: Trades,
-  past24hrPriceNo?: string,
-  past24hrPriceYes?: string,
-  totalSupply?: string,
-  apy?: string,
-  ammOutcomes: AmmOutcome[],
+  id: string;
+  marketId: string;
+  market: MarketInfo;
+  liquidity: string;
+  liquidityUSD: string;
+  liquidity24hrUSD: string;
+  liquidityNo: string;
+  liquidityYes: string;
+  liquidityInvalid: string;
+  liquidityCash: string;
+  priceYes: string;
+  priceNo: string;
+  percentageYes: string;
+  percentageNo: string;
+  volumeYes: string;
+  volumeNo: string;
+  volumeYesUSD: string;
+  volumeNoUSD: string;
+  volume24hrTotalUSD: string;
+  volumeTotal: string;
+  volumeTotalUSD: string;
+  feeDecimal: string;
+  feeRaw: string;
+  feeInPercent: string;
+  cash: Cash;
+  sharetoken: string;
+  transactions: AmmTransaction[];
+  trades: Trades;
+  past24hrPriceNo?: string;
+  past24hrPriceYes?: string;
+  totalSupply?: string;
+  apy?: string;
+  ammOutcomes: AmmOutcome[];
 }
 
 export interface Cashes {
-  [address: string]: Cash
+  [address: string]: Cash;
 }
 export interface MarketInfo {
-  marketId: string,
-  description: string,
-  endTimestamp: string,
-  creationTimestamp: string,
-  extraInfoRaw: string,
-  longDescription: string,
-  fee: string,
-  categories: string[],
-  outcomes: MarketOutcome[],
-  amm: AmmExchange | null,
-  reportingState: string
+  marketId: string;
+  description: string;
+  endTimestamp: string;
+  creationTimestamp: string;
+  extraInfoRaw: string;
+  longDescription: string;
+  fee: string;
+  categories: string[];
+  outcomes: MarketOutcome[];
+  amm: AmmExchange | null;
+  reportingState: string;
 }
 
 export interface MarketOutcome {
-  id: number,
-  isFinalNumerator?: boolean,
-  payoutNumerator?: string,
-  name: string,
+  id: number;
+  isFinalNumerator?: boolean;
+  payoutNumerator?: string;
+  name: string;
 }
 
 export interface AmmOutcome {
-  id: number,
-  name: string,
-  price: string,
-  isInvalid?: boolean,
+  id: number;
+  name: string;
+  price: string;
+  isInvalid?: boolean;
 }
 
 export interface Cash {
-  address: string,
-  shareToken: string,
-  name: string,
-  symbol: string,
-  asset: string,
-  decimals: number,
-  usdPrice?: string,
-  displayDecimals: number,
+  address: string;
+  shareToken: string;
+  name: string;
+  symbol: string;
+  asset: string;
+  decimals: number;
+  usdPrice?: string;
+  displayDecimals: number;
 }
 export interface AmmExchanges {
-  [id: string]: AmmExchange
+  [id: string]: AmmExchange;
 }
 export interface MarketInfos {
   [marketId: string]: MarketInfo;
@@ -340,8 +343,7 @@ export interface PendingOrdersType {
   [marketId: string]: UIOrder[];
 }
 
-export interface QuantityOrderBookOrder
-  extends MarketOrderBookOrder {
+export interface QuantityOrderBookOrder extends MarketOrderBookOrder {
   quantityScale: number;
   percent: number;
   mySize: string;
@@ -561,8 +563,8 @@ export interface Draft {
   updated: number;
   isValid: boolean;
   validations:
-  | NewMarketPropertiesValidations[]
-  | NewMarketPropertyValidations[];
+    | NewMarketPropertiesValidations[]
+    | NewMarketPropertyValidations[];
   currentStep: number;
   type: string;
   outcomes: string[];
@@ -816,7 +818,7 @@ export interface WindowApp extends Window {
     betslip?: any;
     trading?: any;
     pendingOrders?: any;
-  },
+  };
   appStatus?: any;
   markets?: any;
   betslip?: any;
@@ -873,7 +875,7 @@ export interface TradeInfo {
   inputDisplayAmount?: string;
   minDisplayAmount?: string;
   estimatedAmount?: string;
-  userBalances?: string[]
+  userBalances?: string[];
 }
 
 export interface EstimateTradeResult {
@@ -987,7 +989,6 @@ export interface Initialized3box {
   openComments?: boolean;
 }
 
-
 export interface ActivityData {
   date?: string;
   sortableMonthDay?: number;
@@ -1016,7 +1017,7 @@ export interface LPTokenBalance extends SimpleBalance {
   usdValue?: string;
 }
 export interface LPTokens {
-  [ammId: string]: LPTokenBalance
+  [ammId: string]: LPTokenBalance;
 }
 export interface CurrencyBalance extends SimpleBalance {
   usdValue: string;
@@ -1025,7 +1026,7 @@ export interface CurrencyBalance extends SimpleBalance {
 export interface Winnings {
   sharetoken: string;
   claimableBalance: string;
-  userBalances: string[]
+  userBalances: string[];
 }
 export interface PositionWinnings {
   [ammId: string]: Winnings;
@@ -1051,7 +1052,7 @@ export interface AmmMarketShares {
     claimableWinnings?: Winnings;
     outcomeShares: string[];
     outcomeSharesRaw: string[];
-  }
+  };
 }
 
 export interface UserBalances {
@@ -1069,14 +1070,29 @@ export interface UserBalances {
 
 export interface ProcessedData {
   markets: {
-    [marketIdKey: string]: MarketInfo
-  },
+    [marketIdKey: string]: MarketInfo;
+  };
   cashes: {
-    [address: string]: Cash
-  },
+    [address: string]: Cash;
+  };
   ammExchanges: {
-    [id: string]: AmmExchange
-  }
+    [id: string]: AmmExchange;
+  };
+}
+
+export interface GraphData {
+  markets: {
+    [marketIdKey: string]: MarketInfo;
+  };
+  past: {
+    [marketIdKey: string]: MarketInfo;
+  };
+  paraShareTokens: {
+    [tokenIdkey: string]: {
+      cash: Cash;
+      id: string;
+    };
+  };
 }
 
 interface Modal {
@@ -1084,8 +1100,8 @@ interface Modal {
 }
 
 export interface Settings {
-  slippage: string,
-  showInvalidMarkets: boolean,
+  slippage: string;
+  showInvalidMarkets: boolean;
 }
 export interface AppStatusState {
   approvals: {
@@ -1093,11 +1109,11 @@ export interface AppStatusState {
       add: {
         USDC: boolean;
         ETH: boolean;
-      },
+      };
       remove: {
         USDC: boolean;
         ETH: boolean;
-      }
+      };
     };
     trade: {
       enter: {
@@ -1107,15 +1123,22 @@ export interface AppStatusState {
       exit: {
         USDC: boolean;
         ETH: boolean;
-      }
+      };
     };
   };
   processed: ProcessedData;
+  graphData: GraphData;
   loginAccount: LoginAccount;
+  marketsViewSettings: {
+    categories: string;
+    reportingState: string;
+    sortBy: string;
+    currency: string;
+  };
   userInfo: {
     activity: ActivityData[];
     balances: UserBalances;
-  },
+  };
   transactions: TransactionDetails[];
   paraConfig: ParaDeploys;
   blocknumber: number;
