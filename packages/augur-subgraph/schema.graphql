@@ -927,3 +927,19 @@ type RemoveLiquidity @entity {
 
   yesShareCashValue: BigDecimal!
 }
+
+type _Schema_
+  @fulltext(
+    name: "marketSearch",
+    language: en
+    algorithm: rank,
+    include: [
+      {
+        entity: "Market",
+        fields: [
+          { name: "description" },
+          { namd: "longDescription" },
+        ]
+      }
+    ]
+  )
