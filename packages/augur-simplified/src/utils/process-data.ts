@@ -471,12 +471,13 @@ const shapeRemoveLiquidityTransactions = (
   return transactions.map((e) => {
     const properties = formatTransaction(e, cash);
     const subheader = `Remove ${cash.name} Liquidity`;
-    const cashValueUsd = String(
-      convertOnChainCashAmountToDisplayCashAmount(
+    const cashValue = String(
+      convertOnChainSharesToDisplayShareAmount(
         new BN(e.cashValue),
         new BN(cash.decimals)
       )
     );
+
     return {
       ...e,
       tx_type: TransactionTypes.REMOVE_LIQUIDITY,
@@ -484,7 +485,8 @@ const shapeRemoveLiquidityTransactions = (
       subheader,
       ...properties,
       price: null,
-      cashValueUsd,
+      cashValue,
+      value: cashValue,
     };
   });
 };
