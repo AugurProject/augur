@@ -1014,7 +1014,6 @@ export interface SimpleBalance {
 export interface LPTokenBalance extends SimpleBalance {
   initCostUsd?: string;
   usdValue?: string;
-  feesEarned?: string;
 }
 export interface LPTokens {
   [ammId: string]: LPTokenBalance

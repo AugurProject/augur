@@ -840,7 +840,6 @@ const populateInitLPValues = async (lptokens: LPTokens, ammExchanges: AmmExchang
     lptoken.initCostUsd = initialCashValueUsd;
     // call `getLPCurrentValue` from Viz
     lptoken.usdValue = "0"; //await getLPCurrentValue(lptoken.balance, amm);
-    lptoken.feesEarned = String(new BN(lptoken.usdValue).minus(new BN(lptoken.initCostUsd)));
   }
 
   return lptokens;

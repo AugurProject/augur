@@ -204,7 +204,6 @@ export const fakeLiquidityData = [
       {
         id: '0',
         liquiditySharesOwned: 300,
-        feesEarned: '$0.67',
         initialValue: '$201.00',
         currentValue: '$225.00',
       },
@@ -218,7 +217,6 @@ export const fakeLiquidityData = [
       {
         id: '1',
         liquiditySharesOwned: 300,
-        feesEarned: '$0.67',
         initialValue: '$201.00',
         currentValue: '$225.00',
       },
