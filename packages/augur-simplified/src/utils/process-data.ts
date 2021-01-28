@@ -186,7 +186,7 @@ const shapeMarketInfo = (
     description: market.description,
     longDescription: extraInfo.longDescription,
     categories: extraInfo?.categories || [],
-    endTimestamp: market.endTimestamp,
+    endTimestamp: Number(market.endTimestamp),
     creationTimestamp: market.timestamp,
     extraInfoRaw: market.extraInfoRaw,
     fee: String(feeAsPercent),
@@ -270,8 +270,8 @@ const shapeAmmExchange = (
     priceYes,
     cash.usdPrice
   );
-  const volume24hrTotalUSD = String(
-    new BN(volume24hrNoUSD).plus(new BN(volume24hrYesUSD))
+  const volume24hrTotalUSD = Number(
+    new BN(volume24hrNoUSD).plus(new BN(volume24hrYesUSD)).toFixed(2)
   );
   const liquidity24hrUSD = calculatePastLiquidityInUsd(
     liquidity,
@@ -350,7 +350,7 @@ const shapeAmmExchange = (
 };
 
 const calculateAmmApy = (
-  volumeTotalUSD: string,
+  volumeTotalUSD: number,
   amm: GraphAmmExchange,
   liquidityUSD: number,
   addLiquidity: GraphAddLiquidity[] = [],
@@ -362,7 +362,7 @@ const calculateAmmApy = (
     initValue
   );
 
-  if (liquidityUSD === 0 || volumeTotalUSD === '0' || startTimestamp === 0 || amm.fee === '0') return '0';
+  if (liquidityUSD === 0 || volumeTotalUSD === 0 || startTimestamp === 0 || amm.fee === '0') return '0';
 
   const fee = new BN(amm.fee).div(new BN(1000));
   const totalFeesInUsd = new BN(volumeTotalUSD).times(new BN(fee));
@@ -509,11 +509,11 @@ const calculateTotalShareVolumeInUsd = (
   priceNo: number,
   priceYes: number,
   priceUsd: string
-): string => {
-  if (!priceNo || !priceYes) return '0';
+): number => {
+  if (!priceNo || !priceYes) return 0;
   const normalizedYes = new BN(volumeNo || 0).times(new BN(priceNo));
   const normalizedNo = new BN(volumeYes || 0).times(new BN(priceYes));
-  return String(normalizedYes.plus(normalizedNo).times(new BN(priceUsd)));
+  return normalizedYes.plus(normalizedNo).times(new BN(priceUsd)).toNumber();
 }
 
 const calculateVolumeInUsd = (volumeShare: string, priceShare: number, priceUsd: string): string => {

@@ -167,9 +167,9 @@ export interface AmmExchange {
   volumeNo: string;
   volumeYesUSD: string;
   volumeNoUSD: string;
-  volume24hrTotalUSD: string;
+  volume24hrTotalUSD: number;
   volumeTotal: string;
-  volumeTotalUSD: string;
+  volumeTotalUSD: number;
   feeDecimal: string;
   feeRaw: string;
   feeInPercent: string;
@@ -190,7 +190,7 @@ export interface Cashes {
 export interface MarketInfo {
   marketId: string;
   description: string;
-  endTimestamp: string;
+  endTimestamp: number;
   creationTimestamp: string;
   extraInfoRaw: string;
   longDescription: string;
