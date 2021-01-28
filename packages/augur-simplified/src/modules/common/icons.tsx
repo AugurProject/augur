@@ -528,6 +528,22 @@ export const FailedX = (
   </svg>
 );
 
+export const WarningIcon = (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
+    fill="none"
+  >
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M10 0C4.47715 0 0 4.47715 0 10C0 15.5228 4.47715 20 10 20C15.5228 20 20 15.5228 20 10C20 4.47715 15.5228 0 10 0ZM11 12.9999L8.99998 12.9999V14.9999L11 14.9999V12.9999ZM11 4.99995H8.99998V10.9999H11V4.99995Z"
+      fill="#2AE7A8"
+    />
+  </svg>
+);
+
 export const XIcon = (
   <svg
     width="14"

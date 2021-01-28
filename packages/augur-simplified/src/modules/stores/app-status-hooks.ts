@@ -31,6 +31,8 @@ const {
   CLOSE_MODAL,
   LOGOUT,
   UPDATE_GRAPH_HEARTBEAT,
+  UPDATE_SEEN_POSITION_WARNING,
+  ADD_SEEN_POSITION_WARNINGS
 } = APP_STATUS_ACTIONS;
 
 const {
@@ -48,6 +50,7 @@ const {
   MODAL,
   IS_LOGGED,
   SHOW_TRADING_FORM,
+  SEEN_POSITION_WARNINGS
 } = APP_STATE_KEYS;
 
 const isAsync = (obj) => {
@@ -97,6 +100,16 @@ const updateUserStorageDataSettings = (userAccount, updatedState) => {
     window.localStorage.setItem(
       userAccount,
       JSON.stringify({ ...userData, settings: updatedState[SETTINGS]})
+    );
+  }
+}
+
+const updateUserStorageDataSeenPositionWarnings = (userAccount, updatedState) => {
+  const userData = JSON.parse(window.localStorage.getItem(userAccount)) || null;
+  if (userData) {
+    window.localStorage.setItem(
+      userAccount,
+      JSON.stringify({ ...userData, seenPositionWarnings: updatedState[SEEN_POSITION_WARNINGS]})
     );
   }
 }
@@ -298,6 +311,22 @@ export function AppStatusReducer(state, action) {
       });
       break;
     }
+    case UPDATE_SEEN_POSITION_WARNING: {
+      updatedState[SEEN_POSITION_WARNINGS][action.id] = action.seenPositionWarning;
+      const userAccount = state[LOGIN_ACCOUNT]?.account;
+      if (userAccount) {
+        updateUserStorageDataSeenPositionWarnings(userAccount, updatedState);
+      }
+      break;
+    }
+    case ADD_SEEN_POSITION_WARNINGS: {
+      updatedState[SEEN_POSITION_WARNINGS] = action.seenPositionWarnings;
+      const userAccount = state[LOGIN_ACCOUNT]?.account;
+      if (userAccount) {
+        updateUserStorageDataSeenPositionWarnings(userAccount, updatedState);
+      }
+      break;
+    }
     default:
       console.log(`Error: ${action.type} not caught by App Status reducer`);
   }
@@ -342,6 +371,8 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
         dispatch({ type: FINALIZE_TRANSACTION, hash }),
       setModal: (modal) => dispatch({ type: SET_MODAL, modal }),
       closeModal: () => dispatch({ type: CLOSE_MODAL }),
+      updateSeenPositionWarning: (id, seenPositionWarning) => dispatch({type: UPDATE_SEEN_POSITION_WARNING, id, seenPositionWarning}),
+      addSeenPositionWarnings: (seenPositionWarnings) => dispatch({type: ADD_SEEN_POSITION_WARNINGS, seenPositionWarnings}),
       logout: () => dispatch({ type: LOGOUT }),
     },
   };

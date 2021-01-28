@@ -33,6 +33,9 @@ export const MarketsLink = ({ children, id }: MarketLinkProps) => (
     {children}
   </Link>
 );
+export const createMarketAmmId = (id, ammId) => {
+  return `${id}${ammId ? '-' + ammId : ''}`;
+};
 
 export const MarketLink = ({
   id,
@@ -40,7 +43,7 @@ export const MarketLink = ({
   dontGoToMarket,
   children,
 }: MarketLinkProps) => {
-  const idString = `${id}${ammId ? '-' + ammId : ''}`;
+  const idString = createMarketAmmId(id, ammId);
   return (
     <>
       {!dontGoToMarket ? (

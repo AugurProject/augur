@@ -25,6 +25,8 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   finalizeTransaction: hash => {},
   setModal: modal => {},
   closeModal: () => {},
+  updateSeenPositionWarning: (id, seenPositionWarning) => {},
+  addSeenPositionWarnings: (seenPositionWarnings) => {}
 };
 
 export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
@@ -96,7 +98,8 @@ export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
   settings: {
     slippage: SETTINGS_SLIPPAGE,
     showInvalidMarkets: false,
-  }
+  },
+  seenPositionWarnings: {}
 };
 
 export const APP_STATE_KEYS = {
@@ -117,6 +120,7 @@ export const APP_STATE_KEYS = {
   MODAL: 'modal',
   IS_LOGGED: 'isLogged',
   SHOW_TRADING_FORM: 'showTradingForm',
+  SEEN_POSITION_WARNINGS: 'seenPositionWarnings'
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -139,6 +143,8 @@ export const APP_STATUS_ACTIONS = {
   CLOSE_MODAL: 'CLOSE_MODAL',
   LOGOUT: 'LOGOUT',
   UPDATE_GRAPH_HEARTBEAT: 'UPDATE_GRAPH_HEARTBEAT',
+  UPDATE_SEEN_POSITION_WARNING: 'UPDATE_SEEN_POSITION_WARNING',
+  ADD_SEEN_POSITION_WARNINGS: 'ADD_SEEN_POSITION_WARNINGS'
 };
 
 export const fakePositionsData = [
