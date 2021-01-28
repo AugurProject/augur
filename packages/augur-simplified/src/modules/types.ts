@@ -153,7 +153,7 @@ export interface AmmExchange {
   marketId: string;
   market: MarketInfo;
   liquidity: string;
-  liquidityUSD: string;
+  liquidityUSD: number;
   liquidity24hrUSD: string;
   liquidityNo: string;
   liquidityYes: string;

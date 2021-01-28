@@ -539,9 +539,9 @@ const calculateVolumeInUsd = (volumeShare: string, priceShare: number, priceUsd:
   return String(new BN(volumeShare).times(new BN(priceShare)).times(new BN(priceUsd)))
 }
 
-const calculateLiquidityInUsd = (volumeOrLiquidity: string, priceUsd: string): string => {
-  if (!volumeOrLiquidity || !priceUsd) return "0"
-  return String(new BN(volumeOrLiquidity).times(new BN(priceUsd)))
+const calculateLiquidityInUsd = (volumeOrLiquidity: string, priceUsd: string): number => {
+  if (!volumeOrLiquidity || !priceUsd) return 0;
+  return Number(new BN(volumeOrLiquidity).times(new BN(priceUsd)).toFixed(2))
 }
 
 const hasZeroValue = (value) => value === "0" || !value;
