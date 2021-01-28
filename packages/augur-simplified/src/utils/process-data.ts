@@ -499,7 +499,7 @@ const formatTransaction = (
     new BN(tx.cash),
     new BN(cash.decimals)
   ).abs();
-  const value = String(tokenAmount.times(cash.usdPrice));
+  const value = String(tokenAmount);
   const date = getDayFormat(tx.timestamp);
   const time = timeSinceTimestamp(Number(tx.timestamp));
   const currency = cash.name;

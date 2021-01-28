@@ -769,6 +769,7 @@ const getPositionUsdValues = (trades: UserTrades, rawBalance: string, balance: s
   let quantity = trimDecimalValue(balance);
   const outcomeId = Number(outcome);
   let visible = false;
+  let positionFromLiquidity = false;
   // need to get this from outcome
   const outcomeName = YES_NO_OUTCOMES_NAMES[Number(outcome)];
   const maxUsdValue = String(new BN(balance).times(new BN(amm.cash.usdPrice)));
@@ -794,7 +795,7 @@ const getPositionUsdValues = (trades: UserTrades, rawBalance: string, balance: s
     }
     totalChangeUsd = trimDecimalValue(usdChangedValue);
     visible = true;
-
+    positionFromLiquidity = result.positionFromLiquidity;
   }
 
   return {
@@ -811,6 +812,7 @@ const getPositionUsdValues = (trades: UserTrades, rawBalance: string, balance: s
     outcomeId,
     maxUsdValue,
     visible,
+    positionFromLiquidity
   }
 }
 
@@ -855,7 +857,7 @@ const accumLpSharesAmounts = (transactions: AmmTransaction[], account: string): 
 }
 
 // TODO: isYesOutcome is for convenience, down the road, outcome index will be used.
-const getInitPositionValues = (trades: UserTrades, amm: AmmExchange, isYesOutcome: boolean, account: string): { avgPrice: string, initCostUsd: string } => {
+const getInitPositionValues = (trades: UserTrades, amm: AmmExchange, isYesOutcome: boolean, account: string): { avgPrice: string, initCostUsd: string, positionFromLiquidity: boolean } => {
   // if cash price not available show zero for costs
   const cashPrice = amm.cash?.usdPrice ? amm.cash?.usdPrice : "0";
 
@@ -864,13 +866,14 @@ const getInitPositionValues = (trades: UserTrades, amm: AmmExchange, isYesOutcom
   const sharesExited = accumSharesPrice(trades.exits, isYesOutcome, account);
   // get shares from LP activity
   const sharesLiquidity = accumLpSharesPrice(amm.transactions, isYesOutcome, account);
+  const positionFromLiquidity = sharesLiquidity.shares.gt(new BN(0));
   const allInputShareAmounts = sharesLiquidity.shares.plus(sharesEntered.shares);
   const allInputCashAmounts = sharesLiquidity.cashAmount.plus(sharesEntered.cashAmount);
   const netShareAmounts = allInputShareAmounts.minus(sharesExited.shares);
   const netCashAmounts = allInputCashAmounts.minus(sharesExited.cashAmount);
   const cost = convertOnChainSharesToDisplayShareAmount(netCashAmounts, amm.cash.decimals).times(new BN(cashPrice));
   const avgPrice = netShareAmounts.gt(0) ? netCashAmounts.div(netShareAmounts) : new BN(0);
-  return { avgPrice: String(avgPrice), initCostUsd: String(cost) }
+  return { avgPrice: String(avgPrice), initCostUsd: String(cost), positionFromLiquidity }
 }
 
 const accumSharesPrice = (trades: AmmTransaction[], isYesOutcome: boolean, account: string): { shares: BigNumber, cashAmount: BigNumber } => {
