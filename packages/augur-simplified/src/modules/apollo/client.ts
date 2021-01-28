@@ -70,8 +70,9 @@ export async function searchMarkets(paraConfig, searchString, cb) {
   const clientConfig = getClientConfig(paraConfig);
   let response = null;
   if (searchString === '') return cb([]);
+  const searchQuery = searchString.trim().split(' ').join(' & ');
   try {
-    const query = SEARCH_MARKETS(searchString);
+    const query = SEARCH_MARKETS(searchQuery);
     response = await augurV2Client(clientConfig.augurClient).query({ query });
   } catch (e) {
     console.error(e);
@@ -81,7 +82,8 @@ export async function searchMarkets(paraConfig, searchString, cb) {
     if (response.errors) {
       console.error(JSON.stringify(response.errors, null, 1));
     }
-    cb([ ...response.data.marketSearch.map(market => market.id) ]);
+    if (response?.data?.marketSearch) cb([ ...response.data.marketSearch?.map(market => market.id) ]);
+    else cb([]);
   }
 }
 

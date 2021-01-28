@@ -931,7 +931,7 @@ type RemoveLiquidity @entity {
 type _Schema_
   @fulltext(
     name: "marketSearch",
-    language: en
+    language: simple
     algorithm: rank,
     include: [
       {
