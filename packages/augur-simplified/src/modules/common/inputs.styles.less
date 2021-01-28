@@ -1,0 +1,42 @@
+@import (reference) '~assets/styles/shared';
+
+.SearchInput {
+  .SimpleBorder;
+
+  background: var(--simple-light-bg);
+  color: var(--simple-primary-text);
+  display: flex;
+  align-items: center;
+  height: @size-56;
+
+  &:focus-within {
+    border: @size-1 solid var(--simple-secondary-text);
+  }
+
+  > div {
+    border-radius: @size-100;
+    background-color: var(--simple-alternate-background);
+    min-width: @size-32;
+    min-height: @size-32;
+    width: @size-32;
+    height: @size-32;
+    display: flex;
+    margin: 0 @size-12;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  > input {
+    background: var(--simple-light-bg);
+    color: var(--simple-primary-text);
+    border-radius: @size-8;
+    border: 0;
+
+    &:focus,
+    &:active {
+      outline: 0;
+      border: 0;
+    }
+  }
+}
