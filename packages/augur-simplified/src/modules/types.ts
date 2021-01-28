@@ -1105,28 +1105,6 @@ export interface Settings {
   showInvalidMarkets: boolean;
 }
 export interface AppStatusState {
-  approvals: {
-    liquidity: {
-      add: {
-        USDC: boolean;
-        ETH: boolean;
-      };
-      remove: {
-        USDC: boolean;
-        ETH: boolean;
-      };
-    };
-    trade: {
-      enter: {
-        USDC: boolean;
-        ETH: boolean;
-      };
-      exit: {
-        USDC: boolean;
-        ETH: boolean;
-      };
-    };
-  };
   processed: ProcessedData;
   graphData: GraphData;
   loginAccount: LoginAccount;

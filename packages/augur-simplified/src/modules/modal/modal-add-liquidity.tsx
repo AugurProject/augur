@@ -20,6 +20,7 @@ import {
   INSUFFICIENT_BALANCE,
   ONE,
   ERROR_AMOUNT,
+  ETH,
 } from '../constants';
 import {
   OutcomesGrid,
@@ -27,7 +28,7 @@ import {
   InfoNumbers,
   isInvalidNumber,
 } from '../market/trading-form';
-import { ApprovalButton, BuySellButton } from '../common/buttons';
+import { ApprovalButton, APPROVED, BuySellButton } from '../common/buttons';
 import { generateTooltip } from '../common/labels';
 import {
   convertDisplayShareAmountToOnChainShareAmount,
@@ -50,6 +51,7 @@ import { useAppStatusStore, AppStatusStore } from '../stores/app-status';
 import { BigNumber as BN } from 'bignumber.js';
 import { createBigNumber } from '../../utils/create-big-number';
 import { BackIcon } from '../common/icons';
+import { checkAllowance, isERC1155ContractApproved } from '../hooks/use-approval-callback';
 
 const TRADING_FEE_OPTIONS = [
   {
@@ -108,7 +110,8 @@ const ModalAddLiquidity = ({
 }: ModalAddLiquidityProps) => {
   const {
     userInfo: { balances },
-    approvals,
+    transactions,
+    paraConfig,
     processed: { cashes },
     loginAccount,
     actions: { closeModal, addTransaction, updateTransaction },
@@ -152,7 +155,56 @@ const ModalAddLiquidity = ({
   const [tradingFeeSelection, setTradingFeeSelection] = useState<number>(
     TRADING_FEE_OPTIONS[2].id
   );
-  let isApproved = true;
+
+  const [canAddLiquidity, setCanAddLiquidity] = useState(false);
+  const [canRemoveLiquidity, setCanRemoveLiquidity] = useState(false);
+
+  const ammCash = amm?.cash;
+  const isETH = ammCash?.name === ETH;
+  const { addresses } = paraConfig;
+  const { AMMFactory, WethWrapperForAMMExchange } = addresses;
+  const { shareToken } = ammCash;
+  const isApproved = modalType === REMOVE
+    ? canRemoveLiquidity
+    : canAddLiquidity;
+
+  useEffect(() => {
+    const checkCanCashAdd = async() => {
+      const approvalCheck = await checkAllowance(ammCash?.address, AMMFactory, loginAccount, transactions, updateTransaction)
+      if (approvalCheck === APPROVED) {
+        setCanAddLiquidity(true);
+      } else {
+        setCanAddLiquidity(false);
+      }
+    }
+
+    if (!canAddLiquidity) {
+      if (isETH) {
+        setCanAddLiquidity(true);
+      } else {
+        checkCanCashAdd();
+      }
+    }
+  }, [canAddLiquidity, setCanAddLiquidity, updateTransaction, transactions]);
+
+  useEffect(() => {
+    const checkCanEthRemove = async() => {
+      const approvalCheck = await isERC1155ContractApproved(shareToken, WethWrapperForAMMExchange, loginAccount, transactions, updateTransaction);
+      if (approvalCheck === APPROVED) {
+        setCanRemoveLiquidity(true);
+      } else {
+        setCanRemoveLiquidity(false);
+      }
+    }
+
+    if (!canRemoveLiquidity) {
+      if (isETH) {
+        checkCanEthRemove();
+      } else {
+        setCanRemoveLiquidity(true);
+      }
+    }
+  }, [canRemoveLiquidity, setCanRemoveLiquidity, updateTransaction, transactions]);
 
   const cash = useMemo(() => {
     return cashes && chosenCash
@@ -310,22 +362,6 @@ const ModalAddLiquidity = ({
     outcomes[YES_OUTCOME_ID]?.price,
     outcomes[NO_OUTCOME_ID]?.price,
   ]);
-
-  if (account && approvals) {
-    if (modalType === REMOVE) {
-      if (approvals?.liquidity?.remove[cash?.name]) {
-        isApproved = true;
-      } else {
-        isApproved = false;
-      }
-    } else if (modalType === ADD) {
-      if (approvals?.liquidity?.add[cash?.name]) {
-        isApproved = true;
-      } else {
-        isApproved = false;
-      }
-    }
-  }
 
   let inputFormError = '';
   if (!account) inputFormError = CONNECT_ACCOUNT;
@@ -699,7 +735,7 @@ const ModalAddLiquidity = ({
               {LIQUIDITY_STRINGS[modalType].receiveTitle}
             </span>
             <InfoNumbers infoNumbers={LIQUIDITY_STRINGS[modalType].breakdown} />
-            <ApprovalButton
+            {!isApproved && <ApprovalButton
               amm={amm}
               cash={cash}
               actionType={
@@ -707,7 +743,7 @@ const ModalAddLiquidity = ({
                   ? ApprovalAction.ADD_LIQUIDITY
                   : ApprovalAction.REMOVE_LIQUIDITY
               }
-            />
+            />}
 
             <BuySellButton
               action={() => setShowBackView(true)}
