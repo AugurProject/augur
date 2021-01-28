@@ -131,6 +131,19 @@
   }
 }
 
+.TwoTonePageGrid {
+  display: grid;
+  grid-template-columns: 1fr minmax(@size-434, @size-528);
+
+  > section {
+    &:first-of-type,
+    &:last-of-type {
+      max-width: 100%;
+      width: 100%;
+    }
+  }
+}
+
 .TableTitle {
   .text-20-bold;
 
