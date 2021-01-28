@@ -72,7 +72,7 @@ export async function searchMarkets(paraConfig, searchString, cb) {
   if (searchString === '') return cb([]);
   const searchQuery = searchString.trim().split(' ').join(' & ');
   try {
-    const query = SEARCH_MARKETS(searchQuery);
+    const query = SEARCH_MARKETS(`${searchQuery}:*`);
     response = await augurV2Client(clientConfig.augurClient).query({ query });
   } catch (e) {
     console.error(e);
