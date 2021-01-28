@@ -10,12 +10,13 @@
 
   div {
     :global {
+      width: 100% !important;
+
       .highcharts-tooltip {
         display: flex;
         flex-flow: column nowrap;
         align-items: center;
         justify-content: stretch;
-        
 
         > span {
           flex: 1 100%;
@@ -70,6 +71,8 @@
 
   svg {
     :global {
+      width: 100%;
+
       .highcharts-background {
         fill: transparent;
       }
@@ -254,7 +257,7 @@
     flex-flow: row wrap;
     grid-gap: @size-8;
   }
-  
+
   > ul {
     align-self: flex-end;
   }
@@ -263,7 +266,7 @@
 .SelectOutcomeButton {
   .RoundedButton;
   .text-14;
-  
+
   background: transparent;
   color: var(--simple-primary-text);
   height: @size-44;
@@ -325,7 +328,7 @@
     display: none;
     order: 7;
   }
-  
+
   &:nth-of-type(2) {
     // NO outcome
     order: 1;

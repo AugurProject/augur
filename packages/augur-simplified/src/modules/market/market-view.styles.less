@@ -2,6 +2,7 @@
 
 .MarketView {
   .TwoTonePage;
+  .TwoTonePageGrid;
 
   > section {
     &:first-of-type {
@@ -26,6 +27,10 @@
         margin-bottom: @size-32;
       }
     }
+  }
+
+  @media @breakpoint-mobile-tablet {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -164,7 +169,7 @@
 
 .MobileLiquidSection {
   margin-top: @size-40;
-  
+
   > button {
     width: 100%;
   }
