@@ -168,7 +168,7 @@ export const TopNav = () => {
     transactions,
     isLogged,
     isMobile,
-    actions: { setSidebar, updateLoginAccount, logout, addTransaction, updateTransaction, updateSettings },
+    actions: { addSeenPositionWarnings, setSidebar, updateLoginAccount, logout, addTransaction, updateTransaction, updateSettings },
   } = useAppStatusStore();
   const [lastUser, setLastUser] = useLocalStorage('lastUser', null);
 
@@ -233,6 +233,11 @@ export const TopNav = () => {
       const userSettings = getSavedUserInfo()?.settings;
       if (userSettings) {
         updateSettings(userSettings);
+      }
+
+      const seenPositionWarnings = getSavedUserInfo()?.seenPositionWarnings;
+      if (seenPositionWarnings) {
+        addSeenPositionWarnings(seenPositionWarnings);
       }
 
       if (String(networkId) !== String(activeWeb3.chainId)) {

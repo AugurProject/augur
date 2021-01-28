@@ -1127,6 +1127,9 @@ export interface AppStatusState {
   sidebarType: string;
   modal: Modal;
   settings: Settings;
+  seenPositionWarnings: {
+    [id: string]: boolean 
+  }
 }
 
 export interface TransactionDetails {
