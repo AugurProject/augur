@@ -9,6 +9,7 @@ interface IParaShareToken {
     function initialize(address _augur, address _originalShareToken) external;
     function approveUniverse(IParaUniverse _paraUniverse) external;
     function buyCompleteSets(IMarket _market, address _account, uint256 _amount) external returns (bool);
+    function claimTradingProceeds(IMarket _market, address _shareHolder, bytes32 _fingerprint) external returns (uint256[] memory _outcomeFees);
     function publicSellCompleteSets(IMarket _market, uint256 _amount) external returns (uint256 _creatorFee, uint256 _reportingFee);
     function publicBuyCompleteSets(IMarket _market, uint256 _amount) external returns (bool);
     function getTokenId(IMarket _market, uint256 _outcome) external pure returns (uint256 _tokenId);
