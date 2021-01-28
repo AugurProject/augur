@@ -10,7 +10,6 @@ import { AppStatusState } from '../types';
 
 export const STUBBED_APP_STATUS_ACTIONS = {
   setIsMobile: isMobile => {},
-  setApprovals: approvals => {},
   setSidebar: sidebarType => {},
   setShowTradingForm: showTradingForm => {},
   updateGraphHeartbeat: (processed, graphData, blocknumber) => {},
@@ -25,33 +24,13 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   finalizeTransaction: hash => {},
   setModal: modal => {},
   closeModal: () => {},
+  updateSeenPositionWarning: (id, seenPositionWarning) => {},
+  addSeenPositionWarnings: (seenPositionWarnings) => {}
 };
 
 export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
   isMobile: false,
   blocknumber: null,
-  approvals: {
-    trade: {
-      enter: {
-        USDC: false,
-        ETH: false,
-      },
-      exit: {
-        USDC: false,
-        ETH: false,
-      },
-    },
-    liquidity: {
-      add: {
-        USDC: false,
-        ETH: false
-      },
-      remove: {
-        USDC: false,
-        ETH: false
-      },
-    },
-  },
   sidebarType: null,
   loginAccount: null,
   isLogged: false,
@@ -96,11 +75,11 @@ export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
   settings: {
     slippage: SETTINGS_SLIPPAGE,
     showInvalidMarkets: false,
-  }
+  },
+  seenPositionWarnings: {}
 };
 
 export const APP_STATE_KEYS = {
-  APPROVALS: 'approvals',
   IS_MOBILE: 'isMobile',
   SIDEBAR_TYPE: 'sidebarType',
   LOGIN_ACCOUNT: 'loginAccount',
@@ -117,10 +96,10 @@ export const APP_STATE_KEYS = {
   MODAL: 'modal',
   IS_LOGGED: 'isLogged',
   SHOW_TRADING_FORM: 'showTradingForm',
+  SEEN_POSITION_WARNINGS: 'seenPositionWarnings'
 };
 
 export const APP_STATUS_ACTIONS = {
-  SET_APPROVALS: 'SET_APPROVALS',
   SET_IS_MOBILE: 'SET_IS_MOBILE',
   SET_SIDEBAR: 'SET_SIDEBAR',
   UPDATE_GRAPH_DATA: 'UPDATE_GRAPH_DATA',
@@ -139,6 +118,8 @@ export const APP_STATUS_ACTIONS = {
   CLOSE_MODAL: 'CLOSE_MODAL',
   LOGOUT: 'LOGOUT',
   UPDATE_GRAPH_HEARTBEAT: 'UPDATE_GRAPH_HEARTBEAT',
+  UPDATE_SEEN_POSITION_WARNING: 'UPDATE_SEEN_POSITION_WARNING',
+  ADD_SEEN_POSITION_WARNINGS: 'ADD_SEEN_POSITION_WARNINGS'
 };
 
 export const fakePositionsData = [

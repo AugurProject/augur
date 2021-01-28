@@ -4,7 +4,7 @@ import { AppViewStats } from '../common/labels';
 import Activity from './activity';
 import { PositionsLiquidityViewSwitcher } from '../common/tables';
 import { useAppStatusStore } from '../stores/app-status';
-import { PrimaryButton } from '../common/buttons';
+import { APPROVED, PrimaryButton } from '../common/buttons';
 import { NetworkMismatchBanner } from '../common/labels';
 import { EthIcon, UsdIcon } from '../common/icons';
 import { keyedObjToArray } from '../stores/app-status-hooks';
@@ -13,6 +13,7 @@ import { formatCashPrice } from '../../utils/format-number';
 import { createBigNumber } from '../../utils/create-big-number';
 import { claimWinnings } from '../../utils/contract-calls';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
+import { isERC1155ContractApproved } from '../hooks/use-approval-callback';
 const TABLES = 'TABLES';
 const ACTIVITY = 'ACTIVITY';
 
@@ -64,12 +65,9 @@ const handleClaimAll = (loginAccount, cash, marketIds, addTransaction, updateTra
 export const ClaimWinningsSection = () => {
   const {
     isLogged,
-    approvals: {
-      trade: {
-        exit: { ETH: ethApproval },
-      },
-    },
     loginAccount,
+    transactions,
+    paraConfig,
     userInfo: {
       balances: { marketShares },
     },
@@ -90,6 +88,24 @@ export const ClaimWinningsSection = () => {
   );
   const ETHTotals = calculateTotalWinnings(claimableEthMarkets);
   const USDCTotals = calculateTotalWinnings(claimableUSDCMarkets);
+  const { addresses } = paraConfig;
+  const { WethWrapperForAMMExchange } = addresses;
+  const [canClaimETH, setCanClaimETH] = useState(false);
+  const shareToken = Object.keys(paraConfig.paraDeploys).find(hash => paraConfig.paraDeploys[hash].name === 'WETH')
+
+  useEffect(() => {
+    const checkCanEthExit = async() => {
+      const approvalCheck = await isERC1155ContractApproved(shareToken, WethWrapperForAMMExchange, loginAccount, transactions, updateTransaction);
+      if (approvalCheck === APPROVED) {
+        setCanClaimETH(true);
+      } else {
+        setCanClaimETH(false);
+      }
+    }
+    if (!canClaimETH && ETHTotals.hasWinnings) {
+        checkCanEthExit();
+    }
+  }, [canClaimETH, setCanClaimETH, updateTransaction, transactions]);
 
   return (
     <div className={Styles.ClaimableWinningsSection}>
@@ -106,7 +122,7 @@ export const ClaimWinningsSection = () => {
       )}
       {isLogged && ETHTotals.hasWinnings && (
         <PrimaryButton
-          text={`${ethApproval ? '' : 'Approve to '}Claim Winnings (${
+          text={`${canClaimETH ? '' : 'Approve to '}Claim Winnings (${
             formatCashPrice(ETHTotals.total, ethCash?.name).full
           })`}
           icon={EthIcon}

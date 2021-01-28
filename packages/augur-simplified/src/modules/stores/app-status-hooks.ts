@@ -16,7 +16,6 @@ import {
 
 const {
   SET_SHOW_TRADING_FORM,
-  SET_APPROVALS,
   SET_IS_MOBILE,
   SET_SIDEBAR,
   SET_LOGIN_ACCOUNT,
@@ -31,10 +30,11 @@ const {
   CLOSE_MODAL,
   LOGOUT,
   UPDATE_GRAPH_HEARTBEAT,
+  UPDATE_SEEN_POSITION_WARNING,
+  ADD_SEEN_POSITION_WARNINGS
 } = APP_STATUS_ACTIONS;
 
 const {
-  APPROVALS,
   IS_MOBILE,
   SIDEBAR_TYPE,
   GRAPH_DATA,
@@ -48,6 +48,7 @@ const {
   MODAL,
   IS_LOGGED,
   SHOW_TRADING_FORM,
+  SEEN_POSITION_WARNINGS
 } = APP_STATE_KEYS;
 
 const isAsync = (obj) => {
@@ -101,6 +102,16 @@ const updateUserStorageDataSettings = (userAccount, updatedState) => {
   }
 }
 
+const updateUserStorageDataSeenPositionWarnings = (userAccount, updatedState) => {
+  const userData = JSON.parse(window.localStorage.getItem(userAccount)) || null;
+  if (userData) {
+    window.localStorage.setItem(
+      userAccount,
+      JSON.stringify({ ...userData, seenPositionWarnings: updatedState[SEEN_POSITION_WARNINGS]})
+    );
+  }
+}
+
 export const getRelatedMarkets = (
   market: MarketInfo,
   markets: Array<MarketInfo>
@@ -137,10 +148,6 @@ export function AppStatusReducer(state, action) {
   const now = new Date().getTime();
 
   switch (action.type) {
-    case SET_APPROVALS: {
-      updatedState[APPROVALS] = action.approvals;
-      break;
-    }
     case SET_IS_MOBILE: {
       updatedState[IS_MOBILE] = action[IS_MOBILE];
       break;
@@ -161,28 +168,6 @@ export function AppStatusReducer(state, action) {
       updatedState[IS_LOGGED] = false;
       updatedState[TRANSACTIONS] = [];
       updatedState[LOGIN_ACCOUNT] = null;
-      updatedState[APPROVALS] = {
-        trade: {
-          enter: {
-            USDC: false,
-            ETH: false,
-          },
-          exit: {
-            USDC: false,
-            ETH: false,
-          },
-        },
-        liquidity: {
-          add: {
-            USDC: false,
-            ETH: false
-          },
-          remove: {
-            USDC: false,
-            ETH: false
-          },
-        },
-      };
       updatedState[USER_INFO] = DEFAULT_APP_STATUS_STATE.userInfo
       break;
     }
@@ -298,6 +283,22 @@ export function AppStatusReducer(state, action) {
       });
       break;
     }
+    case UPDATE_SEEN_POSITION_WARNING: {
+      updatedState[SEEN_POSITION_WARNINGS][action.id] = action.seenPositionWarning;
+      const userAccount = state[LOGIN_ACCOUNT]?.account;
+      if (userAccount) {
+        updateUserStorageDataSeenPositionWarnings(userAccount, updatedState);
+      }
+      break;
+    }
+    case ADD_SEEN_POSITION_WARNINGS: {
+      updatedState[SEEN_POSITION_WARNINGS] = action.seenPositionWarnings;
+      const userAccount = state[LOGIN_ACCOUNT]?.account;
+      if (userAccount) {
+        updateUserStorageDataSeenPositionWarnings(userAccount, updatedState);
+      }
+      break;
+    }
     default:
       console.log(`Error: ${action.type} not caught by App Status reducer`);
   }
@@ -324,7 +325,6 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
         dispatch({ type: SET_SHOW_TRADING_FORM, showTradingForm }),
       setSidebar: (sidebarType) => dispatch({ type: SET_SIDEBAR, sidebarType }),
       setIsMobile: (isMobile) => dispatch({ type: SET_IS_MOBILE, isMobile }),
-      setApprovals: (approvals) => dispatch({ type: SET_APPROVALS, approvals }),
       updateLoginAccount: (account) =>
         dispatch({ type: SET_LOGIN_ACCOUNT, account }),
       updateUserBalances: (userBalances: UserBalances) =>
@@ -342,6 +342,8 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
         dispatch({ type: FINALIZE_TRANSACTION, hash }),
       setModal: (modal) => dispatch({ type: SET_MODAL, modal }),
       closeModal: () => dispatch({ type: CLOSE_MODAL }),
+      updateSeenPositionWarning: (id, seenPositionWarning) => dispatch({type: UPDATE_SEEN_POSITION_WARNING, id, seenPositionWarning}),
+      addSeenPositionWarnings: (seenPositionWarnings) => dispatch({type: ADD_SEEN_POSITION_WARNINGS, seenPositionWarnings}),
       logout: () => dispatch({ type: LOGOUT }),
     },
   };

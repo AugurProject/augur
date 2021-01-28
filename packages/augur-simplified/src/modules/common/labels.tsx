@@ -16,6 +16,8 @@ import {
   EthIcon,
   PlusIcon,
   UsdIcon,
+  WarningIcon,
+  XIcon,
 } from './icons';
 import {
   CREATE,
@@ -299,7 +301,11 @@ export const AddCurrencyLiquidity = ({
   return (
     <button
       className={classNames(Styles.AddCurrencyLiquidity)}
-      title={isLogged ? `Create this market in ${currency}` : `Connect an account to create this market in ${currency}`}
+      title={
+        isLogged
+          ? `Create this market in ${currency}`
+          : `Connect an account to create this market in ${currency}`
+      }
       onClick={() => {
         if (isLogged) {
           setModal({
@@ -372,5 +378,30 @@ export const generateTooltip = (tipText: string, key: string) => {
         <p>{tipText}</p>
       </ReactTooltip>
     </span>
+  );
+};
+
+interface WarningBannerProps {
+  title: string;
+  subtitle: string;
+  className: string;
+  onClose: Function;
+}
+
+export const WarningBanner = ({
+  title,
+  subtitle,
+  className,
+  onClose,
+}: WarningBannerProps) => {
+  return (
+    <section className={classNames(Styles.WarningBanner, className)}>
+      {WarningIcon}
+      <div>
+        <span>{title}</span>
+        <span>{subtitle}</span>
+      </div>
+      <div onClick={() => onClose()}>{XIcon}</div>
+    </section>
   );
 };

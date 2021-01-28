@@ -149,14 +149,18 @@ export const DirectionButton = ({
   </button>
 );
 
-const {
+export const {
   ADD_LIQUIDITY,
   REMOVE_LIQUIDITY,
   ENTER_POSITION,
   EXIT_POSITION,
 } = ApprovalAction;
 
-const { UNKNOWN, PENDING, APPROVED } = ApprovalState;
+export const {
+  UNKNOWN,
+  PENDING,
+  APPROVED,
+} = ApprovalState;
 
 export const ApprovalButton = ({
   amm,
@@ -172,10 +176,9 @@ export const ApprovalButton = ({
 
   const {
     loginAccount,
-    approvals,
     paraConfig,
     transactions,
-    actions: { addTransaction, setApprovals, updateTransaction },
+    actions: { addTransaction, updateTransaction }
   } = useAppStatusStore();
 
   const marketCashType = cash?.name;
@@ -332,64 +335,12 @@ export const ApprovalButton = ({
 
     if (isApproved !== APPROVED && loginAccount?.account) {
       checkIfApproved();
-    } else {
-      if (
-        approvals &&
-        ((actionType === ENTER_POSITION &&
-          !approvals?.trade?.enter[marketCashType]) ||
-          (actionType === EXIT_POSITION &&
-            !approvals?.trade?.exit[marketCashType]) ||
-          (actionType === ADD_LIQUIDITY &&
-            !approvals?.liquidity?.add[marketCashType]) ||
-          (actionType === REMOVE_LIQUIDITY &&
-            !approvals?.liquidity?.remove[marketCashType]))
-      ) {
-        let newState = approvals;
-        switch (actionType) {
-          case ENTER_POSITION: {
-            newState.trade.enter[marketCashType] = true;
-            break;
-          }
-          case EXIT_POSITION: {
-            newState.trade.exit[marketCashType] = true;
-            break;
-          }
-          case ADD_LIQUIDITY: {
-            newState.liquidity.add[marketCashType] = true;
-            break;
-          }
-          case REMOVE_LIQUIDITY: {
-            newState.liquidity.remove[marketCashType] = true;
-            break;
-          }
-          default: {
-            break;
-          }
-        }
-        isMounted && setApprovals(newState);
-      }
     }
     return () => {
       isMounted = false;
-    };
-  }, [
-    setApprovals,
-    loginAccount,
-    isApproved,
-    actionType,
-    amm,
-    paraConfig,
-    tokenAddress,
-    approvals,
-    transactions,
-    AMMFactory,
-    WethWrapperForAMMExchange,
-    cash?.address,
-    isETH,
-    marketCashType,
-    shareToken,
-    updateTransaction,
-  ]);
+    }
+  }, [loginAccount, isApproved, actionType, amm, paraConfig, tokenAddress, transactions, AMMFactory, WethWrapperForAMMExchange, cash?.address, isETH, marketCashType, shareToken, updateTransaction]);
+
 
   if (!loginAccount || isApproved === APPROVED) {
     return null;

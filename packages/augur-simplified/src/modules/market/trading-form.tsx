@@ -17,7 +17,7 @@ import {
   formatSimpleShares,
   getCashFormat,
 } from '../../utils/format-number';
-import { ApprovalButton, TinyButton, BuySellButton } from '../common/buttons';
+import { ApprovalButton, TinyButton, BuySellButton, APPROVED } from '../common/buttons';
 import {
   ApprovalAction,
   SHARES,
@@ -44,6 +44,7 @@ import {
 import { BigNumber as BN } from 'bignumber.js';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
 import { CloseIcon, UsdIcon, EthIcon, LinkIcon } from '../common/icons';
+import { checkAllowance, isERC1155ContractApproved } from '../hooks/use-approval-callback';
 
 export const DefaultMarketOutcomes = [
   {
@@ -447,7 +448,8 @@ const TradingForm = ({
     isMobile,
     isLogged,
     loginAccount,
-    approvals,
+    transactions,
+    paraConfig,
     actions: { addTransaction, updateTransaction, setShowTradingForm },
     settings: { slippage },
     userInfo: { balances },
@@ -461,9 +463,61 @@ const TradingForm = ({
   const ammCash = amm?.cash;
   const outcomes = amm?.ammOutcomes || [];
   const isBuy = orderType === BUY;
+  const isETH = ammCash?.name === ETH;
+  const { addresses } = paraConfig;
+  const { AMMFactory, WethWrapperForAMMExchange } = addresses;
+  const { shareToken } = ammCash;
+  const [canEnterPosition, setCanEnterPosition] = useState(false);
+  const [canExitPosition, setCanExitPosition] = useState(false);
   const isApprovedTrade = isBuy
-    ? !!approvals?.trade?.enter[ammCash?.name]
-    : !!approvals?.trade?.exit[ammCash?.name];
+    ? canEnterPosition
+    : canExitPosition;
+
+  useEffect(() => {
+    const checkCanEnterPosition = async() => {
+      const approvalCheck = await checkAllowance(ammCash?.address, AMMFactory, loginAccount, transactions, updateTransaction);
+      if (approvalCheck === APPROVED) {
+        setCanEnterPosition(true);
+      } else {
+        setCanEnterPosition(false);
+      }
+    }
+    if (!canEnterPosition) {
+      if (isETH) {
+        setCanEnterPosition(true);
+      } else {
+        checkCanEnterPosition();
+      }
+    }
+  }, [canEnterPosition, setCanEnterPosition, updateTransaction, transactions]);
+
+  useEffect(() => {
+    const checkCanEthExit = async() => {
+      const approvalCheck = await isERC1155ContractApproved(shareToken, WethWrapperForAMMExchange, loginAccount, transactions, updateTransaction);
+      if (approvalCheck === APPROVED) {
+        setCanExitPosition(true);
+      } else {
+        setCanExitPosition(false);
+      }
+    }
+    const checkCanCashExit = async() => {
+      const approvalCheck = await isERC1155ContractApproved(shareToken, AMMFactory, loginAccount, transactions, updateTransaction);
+      if (approvalCheck === APPROVED) {
+        setCanExitPosition(true);
+      } else {
+        setCanExitPosition(false);
+      }
+    }
+
+    if (!canExitPosition) {
+      if (isETH) {
+        checkCanEthExit();
+      } else {
+        checkCanCashExit();
+      }
+    }
+  }, [canExitPosition, setCanExitPosition, updateTransaction, transactions]);
+
   const approvalAction = !isApprovedTrade
     ? isBuy
       ? ApprovalAction.ENTER_POSITION
