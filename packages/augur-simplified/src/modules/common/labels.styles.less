@@ -153,11 +153,13 @@
 .AppStats {
   .SimpleBorder;
 
-  display: flex;
   padding: 0 @size-36;
   border-radius: @size-16;
   height: @size-150;
   background: var(--simple-light-bg);
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr;
 
   > div {
     border-right: @size-1 solid var(--simple-border);
@@ -181,6 +183,8 @@
   }
 
   &.CashAmounts {
+    display: flex;
+
     > div {
       padding-right: @size-36;
 
@@ -350,6 +354,7 @@
   }
 
   .AppStats {
+    display: flex;
     padding: 0 @size-14;
     height: @size-85;
     justify-content: center;

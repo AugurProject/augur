@@ -6,6 +6,21 @@
   > section:first-of-type {
     flex-flow: column nowrap;
 
+    > div[class*="AppStats"] > div {
+      grid-gap: 0;
+
+      > span {
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+        grid-column: span 2;
+
+        &:last-of-type {
+          .text-24-bold;
+        }
+      }
+    }
+
     > div[class*="PositionsLiquidityViewSwitcher"] {
       margin-top: @size-64;
     }
@@ -29,6 +44,24 @@
     > section:first-of-type  {
       padding: 0;
       max-width: 100%;
+
+      > div[class*="AppStats"] > div {
+        grid-gap: 0;
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: center;
+  
+        > span {
+          text-align: center;
+          justify-content: center;
+          align-items: center;
+          grid-column: span 2;
+  
+          &:last-of-type {
+            .text-14-bold;
+          }
+        }
+      }
 
       > div[class*="PositionsLiquidityViewSwitcher"] {
         margin-top: @size-40;
