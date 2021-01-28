@@ -163,7 +163,7 @@ const ModalAddLiquidity = ({
   const isETH = ammCash?.name === ETH;
   const { addresses } = paraConfig;
   const { AMMFactory, WethWrapperForAMMExchange } = addresses;
-  const { shareToken } = ammCash;
+  const shareToken = ammCash?.shareToken;
   const isApproved = modalType === REMOVE
     ? canRemoveLiquidity
     : canAddLiquidity;
