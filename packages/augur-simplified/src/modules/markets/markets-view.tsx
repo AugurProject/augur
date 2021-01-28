@@ -216,7 +216,7 @@ const applyFiltersAndSort = (
         marketB?.amm?.volume24hrTotalUSD - marketA?.amm?.volume24hrTotalUSD
       );
     } else if (sortBy === LIQUIDITY) {
-      return marketB?.amm?.liquidityUSD - marketA?.amm?.liquidityUSD;
+      return (marketB?.amm?.liquidityUSD || 0) > (marketA?.amm?.liquidityUSD || 0) ? 1 : -1;
     } else if (sortBy === ENDING_SOON) {
       return marketA?.endTimestamp - marketB?.endTimestamp;
     }
