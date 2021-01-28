@@ -21,7 +21,7 @@ export const GET_BLOCK = timestamp => {
 export const SEARCH_MARKETS = (searchString) => {
   const queryString = `
   query {
-    marketSearch(text: "${searchString}:*") {
+    marketSearch(text: "${searchString}") {
       id
     }
   }`
