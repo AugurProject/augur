@@ -72,6 +72,11 @@ const TRADING_FEE_OPTIONS = [
     label: '2%',
     value: 2,
   },
+  {
+    id: 4,
+    label: '3%',
+    value: 3,
+  },
 ];
 
 const defaultAddLiquidityBreakdown: LiquidityBreakdown = {
