@@ -281,9 +281,8 @@ const shapeAmmExchange = (
   const apy = calculateAmmApy(
     volumeTotalUSD,
     amm,
-    cash.usdPrice,
-    addLiquidity,
-    removeLiquidity
+    liquidityUSD,
+    addLiquidity
   );
 
   const priceNoFixed = priceNo.toFixed(2);
@@ -353,9 +352,8 @@ const shapeAmmExchange = (
 const calculateAmmApy = (
   volumeTotalUSD: string,
   amm: GraphAmmExchange,
-  cashUsd: string,
+  liquidityUSD: number,
   addLiquidity: GraphAddLiquidity[] = [],
-  removeLiquidity: GraphRemoveLiquidity[] = []
 ): string => {
   const initValue =
     addLiquidity.length > 0 ? Number(addLiquidity[0].timestamp) : 0;
@@ -363,31 +361,15 @@ const calculateAmmApy = (
     (p, t) => (Number(t.timestamp) < p ? Number(t.timestamp) : p),
     initValue
   );
-  const fee = amm.feePercent;
-  if (startTimestamp === 0 || fee === '0') return '0';
 
-  const totalFeeUsd = new BN(volumeTotalUSD).times(new BN(fee));
+  if (liquidityUSD === 0 || volumeTotalUSD === '0' || startTimestamp === 0 || amm.fee === '0') return '0';
 
-  const addCollateral = addLiquidity.reduce(
-    (p, t) => p.plus(new BN(t.cash)),
-    new BN('0')
-  );
-  // going to assume cash is taken out, ignoring shares values
-  const removedCollateral = removeLiquidity.reduce(
-    (p, t) => p.plus(new BN(t.cash)),
-    new BN('0')
-  );
-  const totalLiquidityAdded = addCollateral.minus(removedCollateral);
-  const initialLiquidityUsd = totalLiquidityAdded.times(cashUsd);
+  const fee = new BN(amm.fee).div(new BN(1000));
+  const totalFeesInUsd = new BN(volumeTotalUSD).times(new BN(fee));
   const currTimestamp = Math.floor(new Date().getTime() / 1000); // current time in unix timestamp
   const secondsPast = currTimestamp - startTimestamp;
-  const percentFeeLiquidity = totalFeeUsd
-    .minus(initialLiquidityUsd)
-    .div(initialLiquidityUsd);
-  const percentPerSecondForYear = percentFeeLiquidity
-    .div(new BN(secondsPast))
-    .times(SEC_IN_YEAR)
-    .abs();
+  const percentFeeLiquidity = (totalFeesInUsd.div(new BN(liquidityUSD))).div(secondsPast);
+  const percentPerSecondForYear = percentFeeLiquidity.times(SEC_IN_YEAR).abs().toFixed(4);
 
   return String(percentPerSecondForYear);
 };
