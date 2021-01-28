@@ -226,11 +226,6 @@ export const PositionTable = ({
   claimableWinnings,
   singleMarket,
 }: PositionsTableProps) => {
-  // eslint-disable-next-line
-  const [page, setPage] = useState(1);
-  const splicePositions = singleMarket
-    ? sliceByPage(positions, page, POSITIONS_LIQUIDITY_LIMIT)
-    : positions;
   return (
     <div className={Styles.PositionTable}>
       {!singleMarket && (
@@ -238,8 +233,8 @@ export const PositionTable = ({
       )}
       <PositionHeader />
       {positions.length === 0 && <span>No positions to show</span>}
-      {splicePositions &&
-        splicePositions
+      {positions &&
+        positions
           .filter((p) => p.visible)
           .map((position, id) => <PositionRow key={id} position={position} />)}
       <PositionFooter

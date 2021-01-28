@@ -235,7 +235,7 @@ const shapeAmmExchange = (
   const priceYes = Number(amm.percentageNo) / 100;
   const priceNo = Number(amm.percentageYes) / 100;
 
-  const { volumeNo, volumeYes, liquidity, addLiquidity, removeLiquidity } = amm;
+  const { volumeNo, volumeYes, liquidity, addLiquidity } = amm;
   const {
     volumeNo: pastVolumeNo,
     volumeYes: pastVolumeYes,
