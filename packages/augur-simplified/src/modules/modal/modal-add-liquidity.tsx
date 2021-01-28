@@ -159,8 +159,13 @@ const ModalAddLiquidity = ({
   const [canAddLiquidity, setCanAddLiquidity] = useState(false);
   const [canRemoveLiquidity, setCanRemoveLiquidity] = useState(false);
 
-  const ammCash = amm?.cash;
-  const isETH = ammCash?.name === ETH;
+  const cash = useMemo(() => {
+    return cashes && chosenCash
+      ? Object.values(cashes).find((c) => c.name === chosenCash)
+      : Object.values(cashes)[0];
+  }, [chosenCash]);
+
+  const isETH = cash?.name === ETH;
   const { addresses } = paraConfig;
   const { AMMFactory, WethWrapperForAMMExchange } = addresses;
   const shareToken = ammCash?.shareToken;
@@ -170,7 +175,7 @@ const ModalAddLiquidity = ({
 
   useEffect(() => {
     const checkCanCashAdd = async() => {
-      const approvalCheck = await checkAllowance(ammCash?.address, AMMFactory, loginAccount, transactions, updateTransaction)
+      const approvalCheck = await checkAllowance(cash?.address, AMMFactory, loginAccount, transactions, updateTransaction)
       if (approvalCheck === APPROVED) {
         setCanAddLiquidity(true);
       } else {
@@ -206,11 +211,7 @@ const ModalAddLiquidity = ({
     }
   }, [canRemoveLiquidity, setCanRemoveLiquidity, updateTransaction, transactions]);
 
-  const cash = useMemo(() => {
-    return cashes && chosenCash
-      ? Object.values(cashes).find((c) => c.name === chosenCash)
-      : Object.values(cashes)[0];
-  }, [chosenCash]);
+
   const userTokenBalance = cash?.name ? balances[cash?.name]?.balance : '0';
   const shareBalance =
     balances &&

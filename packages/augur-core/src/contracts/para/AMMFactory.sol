@@ -6,7 +6,7 @@ import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/para/ParaShareToken.sol';
 import 'ROOT/para/interfaces/IAMMFactory.sol';
 import 'ROOT/para/interfaces/IAMMExchange.sol';
-
+import 'ROOT/para/interfaces/IParaShareToken.sol';
 
 contract AMMFactory is IAMMFactory, CloneFactory2 {
     using SafeMathUint256 for uint256;
@@ -107,6 +107,22 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
             _amounts[2] = _yesAmount;
         }
         _para.unsafeBatchTransferFrom(_from, _to, _tokenIds, _amounts);
+    }
+
+    /**
+     * @notice Claims winnings for multiple markets/sharetoken pairs for a particular shareholder
+     * Note: the next two params work as pairs. e.g. we are claiming _markets[0] winnings from _shareTokens[0]
+     * @param _markets Array of markets to claim winnings for
+     * @param _shareTokens Array of share tokens contracts to claim winnings from
+     * @param _shareHolder The account to claim winnings for
+     * @param _fingerprint Fingerprint of the user to restrict affiliate fees
+     * @return Bool True
+     */
+    function claimMarketsProceeds(IMarket[] calldata _markets, IParaShareToken[] calldata _shareTokens , address payable _shareHolder, bytes32 _fingerprint) external returns (bool) {
+        for (uint256 i=0; i < _markets.length; i++) {
+            _shareTokens[i].claimTradingProceeds(_markets[i], _shareHolder, _fingerprint);
+        }
+        return true;
     }
 
     function calculateAMMAddress(IMarket _market, ParaShareToken _para, uint256 _fee) public view returns (address) {
