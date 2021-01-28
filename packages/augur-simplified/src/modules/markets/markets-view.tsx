@@ -225,15 +225,13 @@ const applyFiltersAndSort = (
     );
     updatedFilteredMarkets = updatedFilteredMarkets.sort((marketA, marketB) => {
       if (sortBy === TOTAL_VOLUME) {
-        return marketB?.amm?.volumeTotalUSD - marketA?.amm?.volumeTotalUSD;
+        return (marketB?.amm?.volumeTotalUSD || 0) > (marketA?.amm?.volumeTotalUSD || 0) ? 1 : -1;
       } else if (sortBy === TWENTY_FOUR_HOUR_VOLUME) {
-        return (
-          marketB?.amm?.volume24hrTotalUSD - marketA?.amm?.volume24hrTotalUSD
-        );
+        return (marketB?.amm?.volume24hrTotalUSD || 0) > (marketA?.amm?.volume24hrTotalUSD || 0) ? 1 : -1;
       } else if (sortBy === LIQUIDITY) {
         return (marketB?.amm?.liquidityUSD || 0) > (marketA?.amm?.liquidityUSD || 0) ? 1 : -1;
       } else if (sortBy === ENDING_SOON) {
-        return marketA?.endTimestamp - marketB?.endTimestamp;
+        return marketA?.endTimestamp < marketB?.endTimestamp ? 1 : -1;
       }
       return true;
     });
