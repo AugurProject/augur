@@ -14,7 +14,6 @@ export interface ShareBalances {
 export interface RemoveLiquidityRate {
   short: BigNumber
   long: BigNumber
-  cash: BigNumber
 }
 
 export abstract class ExchangeCommon {
@@ -47,12 +46,16 @@ export abstract class ExchangeCommon {
   async rateRemoveLiquidity(market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber): Promise<RemoveLiquidityRate> {
     const exchangeAddress = await this.calculateExchangeAddress(market, paraShareToken, fee);
     const amm = this.exchangeContract(exchangeAddress);
-    const { _shortShare, _longShare, _cashShare } = await amm.rateRemoveLiquidity(lpTokens.toFixed());
+    const { _shortShare, _longShare } = await amm.rateRemoveLiquidity(lpTokens.toFixed());
     return {
       short: new BigNumber(_shortShare.toString()),
       long: new BigNumber(_longShare.toString()),
-      cash: new BigNumber(_cashShare.toString()),
     }
+  }
+  async removeLiquidity(market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber): Promise<TransactionResponse> {
+    const exchangeAddress = await this.calculateExchangeAddress(market, paraShareToken, fee);
+    const amm = this.exchangeContract(exchangeAddress);
+    return amm.removeLiquidity(lpTokens.toFixed());
   }
 
   async swap(market: string, paraShareToken: string, fee: BigNumber, inputShares: BigNumber, buyLong: Boolean, minShares: BigNumber): Promise<TransactionResponse> {
@@ -60,13 +63,6 @@ export abstract class ExchangeCommon {
     const amm = this.exchangeContract(exchangeAddress);
     const inputLong = !buyLong;
     return amm.swap(inputShares.toFixed(), inputLong, minShares.toFixed());
-  }
-
-  async rateExitPosition(market: string, paraShareToken: string, fee: BigNumber, shortShares: BigNumber, longShares: BigNumber): Promise<BigNumber> {
-    const exchangeAddress = await this.calculateExchangeAddress(market, paraShareToken, fee);
-    const amm = this.exchangeContract(exchangeAddress);
-    const _cashPayout = await amm.rateExitPosition(shortShares.toFixed(), longShares.toFixed());
-    return new BigNumber(_cashPayout.toString());
   }
 
   async calculateExchangeAddress(market: string, paraShareToken: string, fee: BigNumber): Promise<string> {

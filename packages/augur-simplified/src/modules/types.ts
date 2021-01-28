@@ -1128,7 +1128,7 @@ export interface AppStatusState {
   modal: Modal;
   settings: Settings;
   seenPositionWarnings: {
-    [id: string]: boolean 
+    [id: string]: boolean
   }
 }
 
@@ -1151,7 +1151,6 @@ export interface TransactionDetails {
 export interface LiquidityBreakdown {
   yesShares: string;
   noShares: string;
-  cashAmount: string;
   lpTokens?: string;
 }
 export interface AddLiquidityBreakdown extends LiquidityBreakdown {

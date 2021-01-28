@@ -500,10 +500,6 @@ const ModalAddLiquidity = ({
           label: 'no shares',
           value: `${formatSimpleShares(breakdown.noShares).formatted}`,
         },
-        {
-          label: `${cash?.name || 'collateral'}`,
-          value: `${formatCash(breakdown.cashAmount, cash?.name).full}`,
-        },
       ],
       liquidityDetails: {
         title: 'Market Liquidity Details',
@@ -541,10 +537,6 @@ const ModalAddLiquidity = ({
           {
             label: 'no shares',
             value: `${formatSimpleShares(breakdown.noShares).formatted}`,
-          },
-          {
-            label: `${cash?.name || 'collateral'}`,
-            value: `${formatCash(breakdown.cashAmount, cash?.name).full}`,
           },
         ],
       },

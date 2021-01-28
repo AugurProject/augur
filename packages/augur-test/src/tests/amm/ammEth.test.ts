@@ -1,13 +1,7 @@
 import BigNumber from 'bignumber.js';
 
-import {TestContractAPI, ACCOUNTS, defaultSeedPath, loadSeed, makeSigner} from '@augurproject/tools';
+import {TestContractAPI, ACCOUNTS, defaultSeedPath, loadSeed} from '@augurproject/tools';
 import {
-  convertDisplayAmountToOnChainAmount,
-  convertDisplayPriceToOnChainPrice,
-  convertOnChainAmountToDisplayAmount,
-  convertOnChainPriceToDisplayPrice,
-  numTicksToTickSize,
-  numTicksToTickSizeWithDisplayPrices,
   SDKConfiguration,
 } from '@augurproject/utils';
 
@@ -27,6 +21,8 @@ describe('AMM Middleware for ETH', () => {
   let INVALID: BigNumber;
   let NO: BigNumber;
   let YES: BigNumber;
+  let numTicks;
+  let marketCreatorFeeDivisor;
 
   const INCLUDE_FEE = true;
   const EXCLUDE_FEE = false;
@@ -41,6 +37,15 @@ describe('AMM Middleware for ETH', () => {
   function makeWETHParaShareToken(user: TestContractAPI): ContractInterfaces.ParaShareToken {
     const wethParaShareAddress = config.paraDeploys[config.addresses.WETH9].addresses.ShareToken;
     return new ContractInterfaces.ParaShareToken(user.dependencies, wethParaShareAddress);
+  }
+
+  function makeParaUniverse(user: TestContractAPI): ContractInterfaces.ParaUniverse {
+    const address = config.paraDeploys[config.addresses.WETH9].addresses.Universe;
+    return new ContractInterfaces.ParaUniverse(user.dependencies, address);
+  }
+
+  async function getReportingFee(): Promise<BigNumber> {
+    return makeParaUniverse(john).getOrCacheReportingFeeDivisor_(); // since not executed, will not update cache
   }
 
   function makeExchange(user: TestContractAPI, market): ContractInterfaces.AMMExchange {
@@ -79,15 +84,15 @@ describe('AMM Middleware for ETH', () => {
     INVALID = await wethParaShare.getTokenId_(market.address, bn(0));
     NO = await wethParaShare.getTokenId_(market.address, bn(1));
     YES = await wethParaShare.getTokenId_(market.address, bn(2));
+    numTicks = await market.getNumTicks_();
+    marketCreatorFeeDivisor = await market.getMarketCreatorSettlementFeeDivisor_();
   });
 
   describe('getAddLiquidity method', () => {
     let middleware;
-    let numTicks;
     let ONE_ETH_DIV_BY_NUMTICKS;
     beforeAll(async () => {
       middleware = makeAMMMiddleware(mary);
-      numTicks = await market.getNumTicks_();
       ONE_ETH_DIV_BY_NUMTICKS = ONE_ETH.idiv(numTicks);
     });
 
@@ -96,7 +101,6 @@ describe('AMM Middleware for ETH', () => {
       const shortPercent = bn(100).minus(longPercent);
 
       const result = await middleware.getAddLiquidity(
-        bn(0),
         bn(0),
         bn(0),
         bn(0),
@@ -123,16 +127,15 @@ describe('AMM Middleware for ETH', () => {
         ONE_ETH_DIV_BY_NUMTICKS,
         ONE_ETH_DIV_BY_NUMTICKS,
         ONE_ETH,
-        ONE_ETH,
         longPercent,
         shortPercent
       );
 
       expect(result).toEqual({
         cash: ONE_ETH,
-        long:  bn(0),
-        lpTokens: ONE_ETH_DIV_BY_NUMTICKS.idiv(2),
-        short:  bn(0)
+        long: bn(0),
+        lpTokens: ONE_ETH_DIV_BY_NUMTICKS,
+        short: bn(0)
       });
     });
   });
@@ -170,7 +173,7 @@ describe('AMM Middleware for ETH', () => {
     test('liquidity minted lp tokens', async () => {
       const middleware = makeAMMMiddleware(mary);
       console.log('Verify the LP token supply');
-      const expectedLPTokens = ONE_ETH.idiv(await market.getNumTicks_());
+      const expectedLPTokens = ONE_ETH.idiv(numTicks);
       const actualLPTokens = await middleware.supplyOfLiquidityTokens(market.address, wethParaShare.address, fee);
       expect(actualLPTokens).toEqual(expectedLPTokens);
 
@@ -189,10 +192,11 @@ describe('AMM Middleware for ETH', () => {
       const withoutFee = await middleware.getEnterPosition(market.address, wethParaShare.address, fee, cash, buyLong, EXCLUDE_FEE);
 
       console.log('Verifying that no-fee estimation is correct relative to fee estimation.');
-      expect(withFee.toNumber()).toEqual(withoutFee.times(0.99).toNumber());
+      const mintedShares = cash.idiv(numTicks);
+      expect(withFee.toNumber()).toEqual(withoutFee.minus(mintedShares).times(0.99).plus(mintedShares).toNumber());
 
       console.log('Verifying that the entry estimation is correct, to a hardcoded value')
-      expect(withoutFee.toNumber()).toEqual(19900000000000000);
+      expect(withoutFee.toNumber()).toEqual(19900990099009900);
 
       console.log('Entering position');
       await middleware.doEnterPosition(market.address, wethParaShare.address, fee, cash, buyLong, withFee);
@@ -221,17 +225,18 @@ describe('AMM Middleware for ETH', () => {
           YES
         ]);
 
-      const ammCashBalance = await bob.augur.contracts.weth.balanceOf_(ammAddress);
-
       const longShares = await wethParaShare.balanceOf_(bob.account.address, YES); // from enter position test
 
       console.log('Estimating exit position rate');
       const sharesToExit = longShares.idiv(4);
-      const withFee = await middleware.getExitPosition(totalSupply, noShares, yesShares,  ammCashBalance, fee, bn(0), sharesToExit, INCLUDE_FEE)
-      const withoutFee = await middleware.getExitPosition(totalSupply, noShares, yesShares, ammCashBalance, fee, bn(0), sharesToExit, EXCLUDE_FEE)
+      const reportingFee = await getReportingFee();
+      const withFee = await middleware.getExitPosition(totalSupply, noShares, yesShares, fee, bn(0), sharesToExit, INCLUDE_FEE, marketCreatorFeeDivisor, reportingFee)
+      const withoutFee = await middleware.getExitPosition(totalSupply, noShares, yesShares, fee, bn(0), sharesToExit, EXCLUDE_FEE, marketCreatorFeeDivisor, reportingFee)
 
       console.log('Verifying that no-fee estimation is correct relative to fee estimation.');
-      expect(withFee.toNumber()).toEqual(withoutFee.times(0.99).toNumber());
+      // Approximating because exact calculation is complicated: involves swapped vs kept shares and market creator and reporting fees
+      expect(withFee.toNumber()).toBeLessThan(withoutFee.times(0.99).toNumber());
+      expect(withFee.toNumber()).toBeGreaterThan(withoutFee.times(0.928).toNumber());
 
       console.log('Approving Wrapper to use WETH ParaShareTokens for Bob');
       await wethParaShare.setApprovalForAll(config.addresses.WethWrapperForAMMExchange, true); // note that Bob is the actor here
@@ -282,7 +287,7 @@ describe('AMM Middleware for ETH', () => {
       expect(yes.toNumber()).toEqual(longShares.minus(swapAway).toNumber());
     });
 
-    test('remove liquidity then sell shares', async () => {
+    test('remove liquidity', async () => {
       const middleware = makeAMMMiddleware(mary);
 
       const lpTokens = await middleware.liquidityTokenBalance(market.address, wethParaShare.address, fee, mary.account.address);
@@ -295,12 +300,9 @@ describe('AMM Middleware for ETH', () => {
       const dontSell = await middleware.getRemoveLiquidity(market.address, wethParaShare.address, fee, lpTokensToBurn);
 
       expect(dontSell).toEqual({
-        short: bn('330877188895242774'),
-        long: bn('330870708333333333'),
-        cash: bn('2513592799490161290'),
+        short: bn('333374069166798453'),
+        long: bn('333367511571361245'),
       });
-
-      const preEth = await mary.getEthBalance();
 
       console.log('Selling 1/3rd of LP tokens via removeLiquidity, then selling the resulting shares');
       await middleware.doRemoveLiquidity(market.address, wethParaShare.address, fee, lpTokensToBurn);
@@ -308,15 +310,13 @@ describe('AMM Middleware for ETH', () => {
       const postInvalid = await wethParaShare.balanceOf_(mary.account.address, INVALID);
       const postNo = await wethParaShare.balanceOf_(mary.account.address, NO);
       const postYes = await wethParaShare.balanceOf_(mary.account.address, YES);
-      const postEth = await mary.getEthBalance();
 
       expect(postInvalid.toNumber()).toEqual(dontSell.short.toNumber());
       expect(postNo.toNumber()).toEqual(dontSell.short.toNumber());
       expect(postYes.toNumber()).toEqual(dontSell.long.toNumber());
-      expect(postEth.toNumber()).toBeGreaterThan(preEth.toNumber());
     });
 
-    test('remove all liquidity without selling shares', async () => {
+    test('remove all liquidity', async () => {
       const middleware = makeAMMMiddleware(mary);
 
       const lpTokens = await middleware.liquidityTokenBalance(market.address, wethParaShare.address, fee, mary.account.address);
@@ -324,13 +324,11 @@ describe('AMM Middleware for ETH', () => {
       const priorInvalid = await wethParaShare.balanceOf_(mary.account.address, INVALID);
       const priorNo = await wethParaShare.balanceOf_(mary.account.address, NO);
       const priorYes = await wethParaShare.balanceOf_(mary.account.address, YES);
-      const priorEth = await mary.getEthBalance();
 
       const ammAddress = await middleware.exchangeAddress(market.address, wethParaShare.address, fee);
       const ammInvalid = await wethParaShare.balanceOf_(ammAddress, INVALID);
       const ammNo = await wethParaShare.balanceOf_(ammAddress, NO);
       const ammYes = await wethParaShare.balanceOf_(ammAddress, YES);
-      const ammEth = await mary.balanceOfWETH(ammAddress);
 
       console.log('Estimating removeLiquidity gains, with swapping shares for complete sets then burning them');
       const estimate = await middleware.getRemoveLiquidity(market.address, wethParaShare.address, fee, lpTokens);
@@ -338,7 +336,6 @@ describe('AMM Middleware for ETH', () => {
       expect(estimate).toEqual({
         short: ammNo,
         long: ammYes,
-        cash: ammEth,
       });
 
       console.log('Removing remaining liquidity without selling any received shares')
@@ -347,12 +344,10 @@ describe('AMM Middleware for ETH', () => {
       const postInvalid = await wethParaShare.balanceOf_(mary.account.address, INVALID);
       const postNo = await wethParaShare.balanceOf_(mary.account.address, NO);
       const postYes = await wethParaShare.balanceOf_(mary.account.address, YES);
-      const postEth = await mary.getEthBalance();
 
       expect(postInvalid.toNumber()).toEqual(priorInvalid.plus(ammInvalid).toNumber());
       expect(postNo.toNumber()).toEqual(priorNo.plus(ammNo).toNumber());
       expect(postYes.toNumber()).toEqual(priorYes.plus(ammYes).toNumber());
-      expect(postEth.toNumber()).toBeGreaterThan(priorEth.toNumber());
     });
   });
 });

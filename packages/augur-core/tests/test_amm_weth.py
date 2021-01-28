@@ -92,9 +92,6 @@ def test_amm_weth_60_40_liquidity(sessionFixture, market, weth, para_weth_share_
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, amm.address) == yesShares
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, amm.address) == sets
 
-    # Must approve the weth_amm to remove liquidity
-    amm.approve(weth_amm.address, 10 ** 48)
-
     removedLPTokens = 8000000000000000615  # remove 1/10th of liquidity (rounded up)
     recoveredInvalidShares = sets // 10
     recoveredNoShares = sets // 10
@@ -102,7 +99,7 @@ def test_amm_weth_60_40_liquidity(sessionFixture, market, weth, para_weth_share_
     remainingInvalidShares = sets - recoveredInvalidShares
     remainingNoShares = sets - recoveredNoShares
     remainingYesShares = yesShares - recoveredYesShares
-    weth_amm.removeLiquidity(market.address, FEE, removedLPTokens)
+    amm.removeLiquidity(removedLPTokens)
 
     assert weth.balanceOf(account0) == 0  # user did not receive cash, just shares
     assert weth.balanceOf(amm.address) == 0  # shares are just passed along to user; no cash suddenly appears
@@ -122,7 +119,7 @@ def test_amm_weth_60_40_liquidity(sessionFixture, market, weth, para_weth_share_
     assert lpTokens > 0
 
 
-def test_amm_weth_yes_position(sessionFixture, market, para_weth_share_token, weth_amm, account0, amm, weth):
+def test_amm_weth_yes_position(sessionFixture, market, para_weth_share_token, weth_amm, account0, amm):
     if not sessionFixture.paraAugur:
         return skip("Test is only for para augur")
 
@@ -137,27 +134,23 @@ def test_amm_weth_yes_position(sessionFixture, market, para_weth_share_token, we
     yesPositionCost = yesPositionSets * numticks
 
     # Enter position
-    sharesReceived = amm.rateEnterPosition(yesPositionCost, True)
+    sharesReceived = weth_amm.enterPosition(market.address, FEE, True, 0, value=yesPositionCost)
     assert sharesReceived > yesPositionSets
     assert sharesReceived < 2 * yesPositionSets
-    weth_amm.enterPosition(market.address, FEE, True, sharesReceived, value=yesPositionCost)
 
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, INVALID, account0) == 0
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, account0) == 0
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, account0) == sharesReceived
 
-    assert weth.balanceOf(amm.address) == yesPositionCost
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, INVALID, amm.address) == sets
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, amm.address) == sets
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, amm.address) == sets - sharesReceived
+    assert para_weth_share_token.balanceOfMarketOutcome(market.address, INVALID, amm.address) == sets + yesPositionSets
+    assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, amm.address) == sets + yesPositionSets
+    assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, amm.address) == sets - (sharesReceived - yesPositionSets)
 
     # Exiting requires you to send shares to the weth-amm wrapper for it to pass along.
     para_weth_share_token.setApprovalForAll(weth_amm.address, True)
 
-    payoutAll = amm.rateExitAll()
-    assert payoutAll == 9795561209096775126300
-
-    weth_amm.exitAll(market.address, FEE, payoutAll)
+    payoutAll = weth_amm.exitAll(market.address, FEE, 0)
+    assert payoutAll == 9751022193891319200732
 
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, INVALID, weth_amm.address) == 0
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, weth_amm.address) == 0
@@ -167,7 +160,7 @@ def test_amm_weth_yes_position(sessionFixture, market, para_weth_share_token, we
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, account0) == 0
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, account0) == 0
 
-def test_amm_weth_yes_position(contractsFixture, sessionFixture, universe, market, para_weth_share_token, weth_amm, account0, account1, amm, weth):
+def test_amm_weth_yes_position2(contractsFixture, sessionFixture, market, factory, para_weth_share_token, weth_amm, account0, account1):
     if not sessionFixture.paraAugur:
         return skip("Test is only for para augur")
 
@@ -178,13 +171,13 @@ def test_amm_weth_yes_position(contractsFixture, sessionFixture, universe, marke
 
     para_weth_share_token.setApprovalForAll(weth_amm.address, True)
 
+    factory.addAMM(market.address, para_weth_share_token.address, FEE)
     weth_amm.addInitialLiquidity(market.address, FEE, ratio_50_50, True, account1, value=liquidityCost)
 
     yesPositionSets = 10 * ATTO
     yesPositionCost = yesPositionSets * numticks
-    sharesReceived = amm.rateEnterPosition(yesPositionCost, True)
 
-    weth_amm.enterPosition(market.address, FEE, False, sharesReceived, value=yesPositionCost)
+    weth_amm.enterPosition(market.address, FEE, False, 0, value=yesPositionCost)
 
     proceedToInitialReporting(contractsFixture, market)
 
@@ -200,7 +193,7 @@ def test_amm_weth_yes_position(contractsFixture, sessionFixture, universe, marke
     assert contractsFixture.ethBalance(account0) > balanceBeforeFinalization
 
 
-def test_amm_weth_claim_from_multiple_markets(sessionFixture, universe, factory, weth_amm, para_weth_share_token, cash, account0, account1):
+def test_amm_weth_claim_from_multiple_markets(sessionFixture, universe, factory, weth_amm, para_weth_share_token, account0, account1):
     if not sessionFixture.paraAugur:
         return skip("Test is only for para augur")
 
@@ -214,16 +207,13 @@ def test_amm_weth_claim_from_multiple_markets(sessionFixture, universe, factory,
         numticks = market.getNumTicks()
         liquidityCost = sets * numticks
 
-        ammAddress = factory.addAMM(market.address, para_weth_share_token.address, FEE)
-        amm = sessionFixture.applySignature("AMMExchange", ammAddress)
-
+        factory.addAMM(market.address, para_weth_share_token.address, FEE)
         weth_amm.addInitialLiquidity(market.address, FEE, ratio_50_50, True, account1, value=liquidityCost)
 
         yesPositionSets = 10 * ATTO
         yesPositionCost = yesPositionSets * numticks
-        sharesReceived = amm.rateEnterPosition(yesPositionCost, True)
 
-        weth_amm.enterPosition(market.address, FEE, True, sharesReceived, value=yesPositionCost)
+        weth_amm.enterPosition(market.address, FEE, True, 0, value=yesPositionCost)
 
         proceedToInitialReporting(sessionFixture, market)
 

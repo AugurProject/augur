@@ -57,10 +57,6 @@ export interface ExchangeContractIntermediary {
     shortShares: BigNumber, longShares: BigNumber,
     minCash: BigNumber): Promise<TransactionResponse>
 
-  rateExitPosition(
-    market: string, paraShareToken: string, fee: BigNumber,
-    shortShares: BigNumber, longShares: BigNumber): Promise<BigNumber>
-
   calculateExchangeAddress(
     market: string, paraShareToken: string, fee: BigNumber): Promise<string>
 

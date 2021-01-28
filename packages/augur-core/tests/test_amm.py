@@ -154,9 +154,8 @@ def test_amm_subsequent_liquidity(contractsFixture, market, cash, shareToken, fa
     # Now enter a position, causing fees to be collected and therefore the value of an LP token to rise
 
     cost = 1000 * 10 * ATTO
-    sharesReceived = amm.rateEnterPosition(cost, True)
     cash.faucet(cost)
-    amm.enterPosition(cost, True, sharesReceived)
+    amm.enterPosition(cost, True, 0)
 
     # Now test adding liquidity after entering position
 
@@ -164,7 +163,7 @@ def test_amm_subsequent_liquidity(contractsFixture, market, cash, shareToken, fa
     finalCost = finalSets * 1000
     cash.faucet(finalCost)
     lpTokens = amm.addLiquidity(finalCost, account0)
-    assert lpTokens == 94996448049187125706 # less than finalSets due to captured fees raising the value of an LP token
+    assert lpTokens == 95238095238095238064 # less than finalSets due to captured fees raising the value of an LP token
 
 def test_amm_60_40_liquidity(contractsFixture, market, cash, shareToken, factory, amm, account0, kitchenSinkSnapshot):
     if not contractsFixture.paraAugur:
@@ -241,31 +240,26 @@ def test_amm_yes_position(contractsFixture, market, shareToken, cash, factory, a
     yesPositionCost = yesPositionSets * numticks
 
     # Enter position
-    sharesReceived = amm.rateEnterPosition(yesPositionCost, True)
+    cash.faucet(yesPositionCost)
+    sharesReceived = amm.enterPosition(yesPositionCost, True, 0)
     assert sharesReceived > yesPositionSets
     assert sharesReceived < 2 * yesPositionSets
-    cash.faucet(yesPositionCost)
-    amm.enterPosition(yesPositionCost, True, sharesReceived)
 
     assert cash.balanceOf(account0) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == sharesReceived
 
-    assert cash.balanceOf(amm.address) == yesPositionCost
-    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, amm.address) == sets
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == sets
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == sets - sharesReceived
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, amm.address) == sets + yesPositionSets
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == sets + yesPositionSets
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == sets - (sharesReceived - yesPositionSets)
 
     # Exiting requires you to send shares.
     shareToken.setApprovalForAll(amm.address, True)
-
-    payoutAll = amm.rateExitAll()
-    assert payoutAll == 9795561209096775126300
-
     shareToken.setApprovalForAll(factory.address, True)
 
-    amm.exitAll(payoutAll)
+    payoutAll = amm.exitAll(0)
+    assert payoutAll == 9751022193891319200732
 
     assert cash.balanceOf(account0) == payoutAll
 
@@ -282,10 +276,9 @@ def test_amm_no_position(contractsFixture, market, shareToken, cash, factory, am
     sets = cost // market.getNumTicks()
 
     # Enter NO position
-    sharesReceived = amm.rateEnterPosition(cost, False)
-    assert sharesReceived > 10 * ATTO
     cash.faucet(cost)
-    amm.enterPosition(cost, False, sharesReceived)
+    sharesReceived = amm.enterPosition(cost, False, 0)
+    assert sharesReceived > 10 * ATTO
 
     assert cash.balanceOf(account0) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == sharesReceived
@@ -304,15 +297,14 @@ def test_amm_swap(contractsFixture, market, shareToken, cash, factory, amm, acco
     cost = 10000 * ATTO
     sets = cost // market.getNumTicks()
 
-    yesShares = amm.rateEnterPosition(cost, True)
     cash.faucet(cost)
-    amm.enterPosition(cost, True, yesShares)
+    yesShares = amm.enterPosition(cost, True, 0)
 
     noSharesReceived = amm.rateSwap(1 * ATTO, True) # trade away 1 Yes share
 
     # Entered Yes position earlier, which spent Cash for Yes shares, raising their value and therefore lowering the value of No shares.
     # Then sold 1e18 Yes shares for No shares, which are worth less than Yes shares.
-    assert noSharesReceived == 1204526098065458085
+    assert noSharesReceived == 1183695652173913044
 
     amm.swap(1 * ATTO, True, noSharesReceived)
 
@@ -334,38 +326,40 @@ def test_amm_fees_work(sessionFixture, market, shareToken, cash, factory, accoun
     cash.approve(factory.address, 10 ** 48)
     shareToken.setApprovalForAll(factory.address, True)
 
-    liquidityRatio = 10**18 # 50:50
     lpTokens = amm.rateAddLiquidity(liquiditySets, liquiditySets)
     assert lpTokens == liquiditySets
-    assert lpTokens == amm.addInitialLiquidity(liquidityCash, liquidityRatio, True, account0)
+    assert lpTokens == amm.addInitialLiquidity(liquidityCash, RATIO_50_50, True, account0)
 
     tradeCash = 10000 * ATTO
+    tradeSets = tradeCash // market.getNumTicks()
     cash.faucet(tradeCash)
-    yesShares = amm.rateEnterPosition(tradeCash, True)
-    amm.enterPosition(tradeCash, True, yesShares)
-    assert yesShares == 18943000000000000000
+    yesShares = amm.enterPosition(tradeCash, True, 0)
+    assert yesShares == 19063636363636363637
 
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == yesShares
     assert cash.balanceOf(account0) == 0
+    assert amm.balanceOf(account0) == amm.totalSupply()
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, amm.address) == liquiditySets + tradeSets
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == liquiditySets + tradeSets
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == liquiditySets - (yesShares - tradeSets)
 
     # Now remove liquidity and verify that LP tokens yield what they should.
-    (noRemoved, yesRemoved, cashRemoved) = amm.removeLiquidity(lpTokens)
+    (noRemoved, yesRemoved) = amm.removeLiquidity(lpTokens)
 
-    assert noRemoved == liquiditySets
-    assert yesRemoved == liquiditySets - yesShares
-    assert cashRemoved == tradeCash
+    assert noRemoved == liquiditySets + tradeSets
+    assert yesRemoved == liquiditySets - (yesShares - tradeSets)
 
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, amm.address) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == 0
     assert cash.balanceOf(amm.address) == 0
 
-    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == liquiditySets
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == liquiditySets
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == liquiditySets
-    assert cash.balanceOf(account0) == tradeCash
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == liquiditySets + tradeSets
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == liquiditySets + tradeSets
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == liquiditySets + tradeSets
+    assert cash.balanceOf(account0) == 0
 
 def test_amm_fee_calc_0(sessionFixture, market, shareToken, cash, factory, account0):
     if not sessionFixture.paraAugur:
@@ -383,43 +377,62 @@ def test_amm_fee_calc_0(sessionFixture, market, shareToken, cash, factory, accou
     NO = False
     def trade(tradeCash, yes):
         tradeCash *= ATTO
-        shares = amm.rateEnterPosition(tradeCash, yes)
-        target = 2 * tradeCash // numticks
+        setsToBuy = tradeCash // numticks
+        shares = setsToBuy + amm.rateSwap(setsToBuy, not yes) # considers both minted shares and swapped-for shares
+        target = setsToBuy * 2
         slippage = (target - shares) / target
-        return shares, slippage
+        return "{:23d}".format(shares), "{:12.10f}".format(slippage)
 
-    print(trade(1, YES))
-    print(trade(10, YES))
-    print(trade(100, YES))
-    print(trade(1000, YES))
-    print(trade(10000, YES))
-    print(trade(20000, YES))
-    print(trade(30000, YES))
-    print(trade(40000, YES))
-    print(trade(50000, YES))
-    print(trade(60000, YES))
-    print(trade(70000, YES))
-    print(trade(80000, YES))
-    print(trade(90000, YES))
-    print(trade(100000, YES))
+    def print_trade(tradeCash, yes):
+        shares, slippage = trade(tradeCash, yes)
+        direction = "YES" if yes else "NO"
+        print("assert trade( {:8d}, {} ) == ( '{}', '{}' )".format(tradeCash, direction, shares, slippage))
+
+    print("#               cash   type             shares                  slippage")
+    print_trade(1, YES)
+    print_trade(10, YES)
+    print_trade(100, YES)
+    print_trade(1000, YES)
+    print_trade(10000, YES)
+    print_trade(20000, YES)
+    print_trade(30000, YES)
+    print_trade(40000, YES)
+    print_trade(50000, YES)
+    print_trade(60000, YES)
+    print_trade(70000, YES)
+    print_trade(80000, YES)
+    print_trade(90000, YES)
+    print_trade(100000, YES)
+    print_trade(200000, YES)
+    print_trade(500000, YES)
+    print_trade(1000000, YES)
+    print_trade(2000000, YES)
+    print_trade(5000000, YES)
+    print_trade(10000000, YES)
 
     # Each cash is worth 1/numticks shares, but you get almost double per cash because you sell the side you don't want.
     # There's some slippage however, so you don't quite get double.
-    #             cash   type             shares         slippage
-    assert trade(     1, YES) == (     1999990000000000, 0.000005)
-    assert trade(    10, YES) == (    19999000000000000, 0.00005 )
-    assert trade(   100, YES) == (   199900000000000000, 0.0005  )
-    assert trade(  1000, YES) == (  1990000000000000000, 0.005   ) # numticks is 1000 so this is 2 sets worth of shares, minus slippage
-    assert trade( 10000, YES) == ( 19000000000000000000, 0.05    )
-    assert trade( 20000, YES) == ( 36000000000000000000, 0.1     )
-    assert trade( 30000, YES) == ( 51000000000000000000, 0.15    )
-    assert trade( 40000, YES) == ( 64000000000000000000, 0.2     )
-    assert trade( 50000, YES) == ( 75000000000000000000, 0.25    )
-    assert trade( 60000, YES) == ( 84000000000000000000, 0.3     )
-    assert trade( 70000, YES) == ( 91000000000000000000, 0.35    )
-    assert trade( 80000, YES) == ( 96000000000000000000, 0.4     )
-    assert trade( 90000, YES) == ( 99000000000000000000, 0.45    )
-    assert trade(100000, YES) == (100000000000000000000, 0.5     ) # 100 sets were added so this is the max that can be extracted... strictly unprofitable
+    #               cash   type             shares                  slippage
+    assert trade(        1, YES ) == ( '       1999990000100000', '0.0000050000' )
+    assert trade(       10, YES ) == ( '      19999000099990001', '0.0000499950' )
+    assert trade(      100, YES ) == ( '     199900099900099901', '0.0004995005' )
+    assert trade(     1000, YES ) == ( '    1990099009900990100', '0.0049504950' )
+    assert trade(    10000, YES ) == ( '   19090909090909090910', '0.0454545455' )
+    assert trade(    20000, YES ) == ( '   36666666666666666667', '0.0833333333' )
+    assert trade(    30000, YES ) == ( '   53076923076923076924', '0.1153846154' )
+    assert trade(    40000, YES ) == ( '   68571428571428571429', '0.1428571429' )
+    assert trade(    50000, YES ) == ( '   83333333333333333334', '0.1666666667' )
+    assert trade(    60000, YES ) == ( '   97500000000000000000', '0.1875000000' )
+    assert trade(    70000, YES ) == ( '  111176470588235294118', '0.2058823529' )
+    assert trade(    80000, YES ) == ( '  124444444444444444445', '0.2222222222' )
+    assert trade(    90000, YES ) == ( '  137368421052631578948', '0.2368421053' )
+    assert trade(   100000, YES ) == ( '  150000000000000000000', '0.2500000000' )
+    assert trade(   200000, YES ) == ( '  266666666666666666667', '0.3333333333' )
+    assert trade(   500000, YES ) == ( '  583333333333333333334', '0.4166666667' )
+    assert trade(  1000000, YES ) == ( ' 1090909090909090909091', '0.4545454545' )
+    assert trade(  2000000, YES ) == ( ' 2095238095238095238096', '0.4761904762' )
+    assert trade(  5000000, YES ) == ( ' 5098039215686274509804', '0.4901960784' )
+    assert trade( 10000000, YES ) == ( '10099009900990099009901', '0.4950495050' )
 
 def test_amm_fee_calc_10(sessionFixture, market, shareToken, cash, factory, account0):
     if not sessionFixture.paraAugur:
@@ -436,43 +449,61 @@ def test_amm_fee_calc_10(sessionFixture, market, shareToken, cash, factory, acco
     NO = False
     def trade(tradeCash, yes):
         tradeCash *= ATTO
-        shares = amm.rateEnterPosition(tradeCash, yes)
-        target = 2 * tradeCash // numticks
+        setsToBuy = tradeCash // numticks
+        shares = setsToBuy + amm.rateSwap(setsToBuy, not yes) # considers both minted shares and swapped-for shares
+        target = setsToBuy * 2
         slippage = (target - shares) / target
-        return shares, slippage
+        return "{:23d}".format(shares), "{:12.10f}".format(slippage)
 
-    print(trade(1, YES))
-    print(trade(10, YES))
-    print(trade(100, YES))
-    print(trade(1000, YES))
-    print(trade(10000, YES))
-    print(trade(20000, YES))
-    print(trade(30000, YES))
-    print(trade(40000, YES))
-    print(trade(50000, YES))
-    print(trade(60000, YES))
-    print(trade(70000, YES))
-    print(trade(80000, YES))
-    print(trade(90000, YES))
-    print(trade(100000, YES))
+    def print_trade(tradeCash, yes):
+        shares, slippage = trade(tradeCash, yes)
+        direction = "YES" if yes else "NO"
+        print("assert trade( {:8d}, {} ) == ( '{}', '{}' )".format(tradeCash, direction, shares, slippage))
+
+    print("#               cash   type             shares                  slippage")
+    print_trade(1, YES)
+    print_trade(10, YES)
+    print_trade(100, YES)
+    print_trade(1000, YES)
+    print_trade(10000, YES)
+    print_trade(20000, YES)
+    print_trade(30000, YES)
+    print_trade(40000, YES)
+    print_trade(50000, YES)
+    print_trade(60000, YES)
+    print_trade(70000, YES)
+    print_trade(80000, YES)
+    print_trade(90000, YES)
+    print_trade(100000, YES)
+    print_trade(200000, YES)
+    print_trade(500000, YES)
+    print_trade(1000000, YES)
+    print_trade(2000000, YES)
+    print_trade(5000000, YES)
+    print_trade(10000000, YES)
 
     # Each cash is worth 1/numticks shares, but you get almost double per cash because you sell the side you don't want.
     # There's some slippage however, so you don't quite get double.
-    #             cash   type             shares               slippage
-    assert trade(     1, YES) == (     1979990100000000, 0.01000495)
-    assert trade(    10, YES) == (    19799010000000000, 0.0100495 )
-    assert trade(   100, YES) == (   197901000000000000, 0.010495  )
-    assert trade(  1000, YES) == (  1970100000000000000, 0.01495   ) # numticks is 1000 so this is 2 sets worth of shares, minus slippage
-    assert trade( 10000, YES) == ( 18810000000000000000, 0.0595    )
-    assert trade( 20000, YES) == ( 35640000000000000000, 0.109     )
-    assert trade( 30000, YES) == ( 50490000000000000000, 0.1585    )
-    assert trade( 40000, YES) == ( 63360000000000000000, 0.208     )
-    assert trade( 50000, YES) == ( 74250000000000000000, 0.2575    )
-    assert trade( 60000, YES) == ( 83160000000000000000, 0.307     )
-    assert trade( 70000, YES) == ( 90090000000000000000, 0.3565    )
-    assert trade( 80000, YES) == ( 95040000000000000000, 0.406     )
-    assert trade( 90000, YES) == ( 98010000000000000000, 0.4555    )
-    assert trade(100000, YES) == ( 99000000000000000000, 0.505     ) # 100 sets were added so this is the max that can be extracted... strictly unprofitable
+    assert trade(        1, YES ) == ( '       1989990100099000', '0.0050049500' )
+    assert trade(       10, YES ) == ( '      19899010098990100', '0.0050494951' )
+    assert trade(      100, YES ) == ( '     198901098901098901', '0.0054945055' )
+    assert trade(     1000, YES ) == ( '    1980198019801980199', '0.0099009901' )
+    assert trade(    10000, YES ) == ( '   19000000000000000000', '0.0500000000' )
+    assert trade(    20000, YES ) == ( '   36500000000000000000', '0.0875000000' )
+    assert trade(    30000, YES ) == ( '   52846153846153846154', '0.1192307692' )
+    assert trade(    40000, YES ) == ( '   68285714285714285714', '0.1464285714' )
+    assert trade(    50000, YES ) == ( '   83000000000000000000', '0.1700000000' )
+    assert trade(    60000, YES ) == ( '   97125000000000000000', '0.1906250000' )
+    assert trade(    70000, YES ) == ( '  110764705882352941176', '0.2088235294' )
+    assert trade(    80000, YES ) == ( '  124000000000000000000', '0.2250000000' )
+    assert trade(    90000, YES ) == ( '  136894736842105263158', '0.2394736842' )
+    assert trade(   100000, YES ) == ( '  149500000000000000000', '0.2525000000' )
+    assert trade(   200000, YES ) == ( '  266000000000000000000', '0.3350000000' )
+    assert trade(   500000, YES ) == ( '  582500000000000000000', '0.4175000000' )
+    assert trade(  1000000, YES ) == ( ' 1090000000000000000000', '0.4550000000' )
+    assert trade(  2000000, YES ) == ( ' 2094285714285714285715', '0.4764285714' )
+    assert trade(  5000000, YES ) == ( ' 5097058823529411764705', '0.4902941176' )
+    assert trade( 10000000, YES ) == ( '10098019801980198019801', '0.4950990099' )
 
 def test_amm_multiuser_liquidity(contractsFixture, market, cash, factory, amm, account0, account1):
     if not contractsFixture.paraAugur:
@@ -496,10 +527,9 @@ def test_amm_multiuser_liquidity(contractsFixture, market, cash, factory, amm, a
     assert amm.balanceOf(account1) == lpTokens1
 
     # Test is for verifying that this does not fail
-    [short, long, cashShare] = amm.rateRemoveLiquidity(lpTokens1, sender=account1)
+    [short, long] = amm.rateRemoveLiquidity(lpTokens1, sender=account1)
     assert short == sets1
     assert long == sets1
-    assert cashShare == 0
 
     amm.removeLiquidity(lpTokens1, sender=account1, getReturnData=False)
 
@@ -520,9 +550,8 @@ def test_amm_villainous_fee_extraction(contractsFixture, market, cash, shareToke
     # Enter long position
     longPositionSets = 10 * ATTO
     longPositionCost = longPositionSets * numticks
-    longSharesReceived = amm.rateEnterPosition(longPositionCost, True)
     cash.faucet(longPositionCost)
-    amm.enterPosition(longPositionCost, True, longSharesReceived)
+    amm.enterPosition(longPositionCost, True, 0)
 
     # Attacker creates and destroys LP tokens, trying to make a nefarious profit thereby
     attacker = account1
@@ -534,7 +563,7 @@ def test_amm_villainous_fee_extraction(contractsFixture, market, cash, shareToke
     shareToken.setApprovalForAll(factory.address, True, sender=attacker)
 
     [shortFromLP, longFromLP] = amm.yesNoShareBalances(attacker)
-    [shortShare, longShare, cashShare] = amm.removeLiquidity(lpTokens, sender=attacker)
+    [shortShare, longShare] = amm.removeLiquidity(lpTokens, sender=attacker)
 
     setsToKeep = min(shortFromLP + shortShare, longFromLP + longShare)
     shortsToExit = shortFromLP + shortShare - setsToKeep
@@ -542,7 +571,7 @@ def test_amm_villainous_fee_extraction(contractsFixture, market, cash, shareToke
 
     cashFromPosition = amm.exitPosition(shortsToExit, longsToExit, 0, sender=attacker)
 
-    totalValue = cashShare + cashFromPosition + setsToKeep*numticks
+    totalValue = cashFromPosition + setsToKeep*numticks
 
     print('lpTokens:', lpTokens)
     print('totalLPSupply:', totalLPSupply)
@@ -553,19 +582,17 @@ def test_amm_villainous_fee_extraction(contractsFixture, market, cash, shareToke
     print('setsToKeep:', setsToKeep)
     print('shortsToExit:', shortsToExit)
     print('longsToExit:', longsToExit)
-    print('cashShare:', cashShare)
     print('cashFromPosition:', cashFromPosition)
     print('totalValue:', totalValue)
     print('attackLiquidityCost:', attackLiquidityCost)
 
-    assert lpTokens == 89961717239430689366
-    assert totalLPSupply == 189961717239430689366
+    assert lpTokens == 90909090909090909048
+    assert totalLPSupply == 190909090909090909048
     assert shortFromLP == 0
-    assert longFromLP == 18810000000000000000
-    assert shortShare == 94715628545346900801
-    assert longShare == 76899618815967148760
-    assert cashShare == 4735781427267345040067
-    assert cashFromPosition == 541835402148283495230
+    assert longFromLP == 17272727272727272800
+    assert shortShare == 99999999999999999975
+    assert longShare == 82727272727272727217
+    assert cashFromPosition == 21778 # very very little difference in long and short so little to swap away
     assert attackLiquidityCost * 0.99 < totalValue <= attackLiquidityCost # no profit but little loss
 
 def test_amm_add_liquidity_ratio(contractsFixture, market, cash, factory, amm, account0, account1):
@@ -606,10 +633,9 @@ def test_amm_claim_from_multiple_markets(sessionFixture, universe, factory, shar
 
         yesPositionSets = 10 * ATTO
         yesPositionCost = yesPositionSets * numticks
-        sharesReceived = amm.rateEnterPosition(yesPositionCost, True)
 
         cash.faucet(yesPositionCost)
-        amm.enterPosition(yesPositionCost, True, sharesReceived)
+        amm.enterPosition(yesPositionCost, True, 0)
 
         proceedToInitialReporting(sessionFixture, market)
 

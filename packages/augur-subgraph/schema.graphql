@@ -941,9 +941,6 @@ type RemoveLiquidity @entity {
   "Number of yes shares user is redeeming"
   yesShares: BigInt!
 
-  "Amount of cash user recieves for redeemed shares"
-  cash: BigInt!
-
   "Net cash value of the lp tokens burned"
   cashValue: BigDecimal!
 

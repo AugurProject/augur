@@ -98,13 +98,11 @@ export async function estimateAddLiquidity(
 
   const liqNo = amm?.liquidityNo ? convertDisplayShareAmountToOnChainShareAmount(new BN(amm?.liquidityNo || "0"), new BN(amm?.cash?.decimals)) : new BN(0);
   const liqYes = amm?.liquidityYes ? convertDisplayShareAmountToOnChainShareAmount(new BN(amm?.liquidityYes || "0"), new BN(amm?.cash?.decimals)) : new BN(0);
-  const liqCash = amm?.liquidityCash ? convertDisplayShareAmountToOnChainShareAmount(new BN(amm?.liquidityCash || "0"), new BN(amm?.cash?.decimals)) : new BN(0);
 
   const addLiquidityResults: AddLiquidityRate = await augurClient.amm.getAddLiquidity(
     new BN(amm?.totalSupply || "0"),
     liqNo,
     liqYes,
-    liqCash,
     new BN(amount),
     poolYesPercent,
     poolNoPercent
@@ -114,11 +112,9 @@ export async function estimateAddLiquidity(
     const lpTokens = trimDecimalValue(convertOnChainSharesToDisplayShareAmount(String(addLiquidityResults.lpTokens), cash.decimals));
     const noShares = trimDecimalValue(convertOnChainSharesToDisplayShareAmount(String(addLiquidityResults.short), cash.decimals));
     const yesShares = trimDecimalValue(convertOnChainSharesToDisplayShareAmount(String(addLiquidityResults.long), cash.decimals));
-    const cashAmount = trimDecimalValue(convertOnChainSharesToDisplayShareAmount(String(addLiquidityResults.cash), cash.decimals));
 
     return {
       lpTokens,
-      cashAmount,
       yesShares,
       noShares,
     }
@@ -205,12 +201,10 @@ export async function getRemoveLiquidity(
   //console.log('results.cash', String(results.cash), cash?.decimals, 'lpTokenBalance', lpTokenBalance, 'balance', String(balance));
   const shortShares = String(convertOnChainSharesToDisplayShareAmount(results.short, cash?.decimals));
   const longShares = String(convertOnChainSharesToDisplayShareAmount(results.long, cash?.decimals));
-  const cashAmount = String(convertOnChainCashAmountToDisplayCashAmount(results.cash, cash?.decimals));
 
   return {
     noShares: shortShares,
     yesShares: longShares,
-    cashAmount: cashAmount,
   };
 }
 
@@ -292,18 +286,20 @@ export const estimateExitTrade = async (
 
   const liqNo = convertDisplayShareAmountToOnChainShareAmount(new BN(amm?.liquidityNo || "0"), new BN(amm?.cash?.decimals))
   const liqYes = convertDisplayShareAmountToOnChainShareAmount(new BN(amm?.liquidityYes || "0"), new BN(amm?.cash?.decimals))
-  const liqCash = convertDisplayShareAmountToOnChainShareAmount(new BN(amm?.liquidityCash || "0"), new BN(amm?.cash?.decimals))
 
-  console.log("amount of cash", amm?.liquidityCash);
+  // TODO get these from the graph or node. these values will be wrong most of the time
+  const marketCreatorFeeDivisor = new BN(100);
+  const reportingFee = new BN(10000);
   const breakdownWithFeeRaw = await augurClient.amm.getExitPosition(
     new BN(amm?.totalSupply || "0"),
     liqNo,
     liqYes,
-    liqCash,
     new BN(amm?.feeRaw),
     shortShares,
     longShares,
-    true)
+    true,
+    marketCreatorFeeDivisor,
+    reportingFee)
     .catch(e => console.log(e));
 
   if (!breakdownWithFeeRaw) return null;
@@ -822,10 +818,9 @@ export const getLPCurrentValue = async (displayBalance: string, amm: AmmExchange
   const estimate = await getRemoveLiquidity(marketId, cash, feeRaw, displayBalance)
     .catch(error => console.error('estimation error', error));
   if (estimate) {
-    const displayCashValue = new BN(estimate.cashAmount).times(usdPrice);
     const displayNoValue = new BN(estimate.noShares).times(new BN(priceNo)).times(usdPrice);
     const displayYesValue = new BN(estimate.yesShares).times(new BN(priceYes)).times(usdPrice);
-    const totalValue = displayCashValue.plus(displayNoValue).plus(displayYesValue);
+    const totalValue = displayNoValue.plus(displayYesValue);
     return String(totalValue);
   }
   return null;
