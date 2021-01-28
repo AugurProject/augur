@@ -1043,6 +1043,7 @@ export interface PositionBalance extends SimpleBalance {
   totalChangeUsd: string;
   quantity: string;
   visible: boolean;
+  positionFromLiquidity: boolean;
 }
 
 export interface AmmMarketShares {
