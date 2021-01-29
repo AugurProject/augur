@@ -329,6 +329,28 @@ type VolumeChangeMarketEvent implements MarketEvent @entity {
   totalTrades: BigInt!
 }
 
+type TradingProceedsClaimed @entity {
+  id: ID!
+
+  shareToken: ShareToken!
+
+  universe: Universe!
+
+  sender: User!
+
+  market: Market!
+
+  outcome: BigInt!,
+
+  numShares: BigInt!,
+
+  numPayoutTokens: BigInt!,
+
+  fees: BigInt!
+
+  timestamp: BigInt!
+}
+
 type ShareToken @entity {
   id: ID!
 
@@ -346,6 +368,8 @@ type ShareToken @entity {
 
   "Market that this share is being traded on."
   market: Market!
+
+  tradingProceedsClaimed: [TradingProceedsClaimed]! @derivedFrom(field: "shareToken")
 }
 
 type ParaShareToken @entity {

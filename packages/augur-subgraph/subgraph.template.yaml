@@ -262,6 +262,24 @@ templates:
       abis:
         - name: ParaShareToken
           file: ./abis/ParaShareToken.json
+  - kind: ethereum/contract
+    name: ParaAugur
+    network: {{ ethereum.network }}
+    source:
+      abi: ParaAugur
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/index.ts
+      entities:
+        - ERC20
+      abis:
+        - name: ParaAugur
+          file: ./abis/ParaAugur.json
+      eventHandlers:
+        - event:  TradingProceedsClaimed(indexed address,indexed address,address,uint256,uint256,uint256,uint256,uint256,address)
+          handler: handleTradingProceedsClaimed
 
 # Markets
   # - MarketParticipantsDisavowed(indexed address,indexed address)
