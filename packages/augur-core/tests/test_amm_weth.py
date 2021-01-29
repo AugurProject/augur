@@ -228,7 +228,7 @@ def test_amm_weth_claim_from_multiple_markets(sessionFixture, universe, factory,
     market2 = do_it()
 
     balanceBeforeFinalization = sessionFixture.ethBalance(account0)
-    weth_amm.claimMarketsProceeds([market1.address, market2.address], account0, stringToBytes(""))
+    weth_amm.claimMarketsProceeds([market1.address, market2.address], [para_weth_share_token.address, para_weth_share_token.address], account0, stringToBytes(""))
 
     # Should have more eth than before because both markets resolved in account0's favor.
     assert sessionFixture.ethBalance(account0) > balanceBeforeFinalization
