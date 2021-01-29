@@ -5,7 +5,7 @@ import "ROOT/para/interfaces/IAMMExchange.sol";
 import "ROOT/para/interfaces/IAMMFactory.sol";
 import "ROOT/0x/erc20/contracts/src/WETH9.sol";
 import 'ROOT/para/ParaShareToken.sol';
-
+import 'ROOT/para/interfaces/IParaShareToken.sol';
 
 contract WethWrapperForAMMExchange {
     IAMMFactory public factory;
@@ -187,31 +187,34 @@ contract WethWrapperForAMMExchange {
      * @param _fingerprint Fingerprint of the user to restrict affiliate fees
      * @return Bool True
      */
-    function claimMarketsProceeds(IMarket[] calldata _markets, address payable _shareHolder, bytes32 _fingerprint) external returns (bool) {
-        require(shareToken.isApprovedForAll(_shareHolder, address(this)), "Weth wrapper contract must be approved to do share token transfers on behalf of the share holder.");
+    function claimMarketsProceeds(IMarket[] calldata _markets, IParaShareToken[] calldata _shareTokens, address payable _shareHolder, bytes32 _fingerprint) external returns (bool) {
         for (uint256 i=0; i < _markets.length; i++) {
-            // Not using shareTransfer method to save gas.
-            uint256 _INVALID = shareToken.getTokenId(_markets[i], 0);
-            uint256 _NO = shareToken.getTokenId(_markets[i], 1);
-            uint256 _YES = shareToken.getTokenId(_markets[i], 2);
+            if(address(_shareTokens[i]) == address(shareToken)) {
+                // Not using shareTransfer method to save gas.
+                uint256 _INVALID = shareToken.getTokenId(_markets[i], 0);
+                uint256 _NO = shareToken.getTokenId(_markets[i], 1);
+                uint256 _YES = shareToken.getTokenId(_markets[i], 2);
 
-            uint256[] memory _tokenIds = new uint256[](3);
-            _tokenIds[0] = _INVALID;
-            _tokenIds[1] = _NO;
-            _tokenIds[2] = _YES;
+                uint256[] memory _tokenIds = new uint256[](3);
+                _tokenIds[0] = _INVALID;
+                _tokenIds[1] = _NO;
+                _tokenIds[2] = _YES;
 
-            address[] memory _shareHolders = new address[](3);
-            _shareHolders[0] = _shareHolder;
-            _shareHolders[1] = _shareHolder;
-            _shareHolders[2] = _shareHolder;
+                address[] memory _shareHolders = new address[](3);
+                _shareHolders[0] = _shareHolder;
+                _shareHolders[1] = _shareHolder;
+                _shareHolders[2] = _shareHolder;
 
-            uint256[] memory _balances = shareToken.balanceOfBatch(_shareHolders, _tokenIds);
+                uint256[] memory _balances = shareToken.balanceOfBatch(_shareHolders, _tokenIds);
 
-            // Get all share tokens from _shareHolder.
-            shareToken.unsafeBatchTransferFrom(_shareHolder, address(this), _tokenIds, _balances);
+                // Get all share tokens from _shareHolder.
+                _shareTokens[i].unsafeBatchTransferFrom(_shareHolder, address(this), _tokenIds, _balances);
 
-            // Turn em' in.
-            shareToken.claimTradingProceeds(_markets[i], address(this), _fingerprint);
+                // Turn em' in.
+                shareToken.claimTradingProceeds(_markets[i], address(this), _fingerprint);
+            } else {
+                _shareTokens[i].claimTradingProceeds(_markets[i], _shareHolder, _fingerprint);
+            }
         }
 
         // Unwrap weth

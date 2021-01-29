@@ -11413,22 +11413,22 @@ export class WethWrapperForAMMExchange<TBigNumber> extends Contract<TBigNumber> 
 		return <TBigNumber>result[0]
 	}
 
-	public claimMarketsProceeds = async (markets: Array<string>, shareHolder: string, fingerprint: string, options?: { sender?: string }): Promise<Array<Event>> => {
+	public claimMarketsProceeds = async (markets: Array<string>, shareTokens: Array<string>, shareHolder: string, fingerprint: string, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket[]","name":"_markets","type":"address[]"},{"internalType":"address payable","name":"_shareHolder","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"}],"name":"claimMarketsProceeds","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [markets, shareHolder, fingerprint], 'claimMarketsProceeds', options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket[]","name":"_markets","type":"address[]"},{"internalType":"contract IParaShareToken[]","name":"_shareTokens","type":"address[]"},{"internalType":"address payable","name":"_shareHolder","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"}],"name":"claimMarketsProceeds","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [markets, shareTokens, shareHolder, fingerprint], 'claimMarketsProceeds', options.sender)
 	}
 
-	public claimMarketsProceeds_estimateGas = async (markets: Array<string>, shareHolder: string, fingerprint: string, options?: { sender?: string }): Promise<TBigNumber> => {
+	public claimMarketsProceeds_estimateGas = async (markets: Array<string>, shareTokens: Array<string>, shareHolder: string, fingerprint: string, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket[]","name":"_markets","type":"address[]"},{"internalType":"address payable","name":"_shareHolder","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"}],"name":"claimMarketsProceeds","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [markets, shareHolder, fingerprint], 'claimMarketsProceeds', options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket[]","name":"_markets","type":"address[]"},{"internalType":"contract IParaShareToken[]","name":"_shareTokens","type":"address[]"},{"internalType":"address payable","name":"_shareHolder","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"}],"name":"claimMarketsProceeds","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [markets, shareTokens, shareHolder, fingerprint], 'claimMarketsProceeds', options.sender)
 	}
 
-	public claimMarketsProceeds_ = async (markets: Array<string>, shareHolder: string, fingerprint: string, options?: { sender?: string }): Promise<boolean> => {
+	public claimMarketsProceeds_ = async (markets: Array<string>, shareTokens: Array<string>, shareHolder: string, fingerprint: string, options?: { sender?: string }): Promise<boolean> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket[]","name":"_markets","type":"address[]"},{"internalType":"address payable","name":"_shareHolder","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"}],"name":"claimMarketsProceeds","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		const result = await this.localCall(abi, [markets, shareHolder, fingerprint], options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket[]","name":"_markets","type":"address[]"},{"internalType":"contract IParaShareToken[]","name":"_shareTokens","type":"address[]"},{"internalType":"address payable","name":"_shareHolder","type":"address"},{"internalType":"bytes32","name":"_fingerprint","type":"bytes32"}],"name":"claimMarketsProceeds","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [markets, shareTokens, shareHolder, fingerprint], options.sender)
 		return <boolean>result[0]
 	}
 
