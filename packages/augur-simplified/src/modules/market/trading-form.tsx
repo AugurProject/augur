@@ -482,14 +482,14 @@ const TradingForm = ({
         setCanEnterPosition(false);
       }
     }
-    if (!canEnterPosition) {
+    if (isLogged && !canEnterPosition) {
       if (isETH) {
         setCanEnterPosition(true);
       } else {
         checkCanEnterPosition();
       }
     }
-  }, [canEnterPosition, setCanEnterPosition, updateTransaction, transactions]);
+  }, [isLogged, canEnterPosition, setCanEnterPosition, updateTransaction, transactions]);
 
   useEffect(() => {
     const checkCanEthExit = async() => {
@@ -509,14 +509,14 @@ const TradingForm = ({
       }
     }
 
-    if (!canExitPosition) {
+    if (isLogged && !canExitPosition) {
       if (isETH) {
         checkCanEthExit();
       } else {
         checkCanCashExit();
       }
     }
-  }, [canExitPosition, setCanExitPosition, updateTransaction, transactions]);
+  }, [isLogged, canExitPosition, setCanExitPosition, updateTransaction, transactions]);
 
   const approvalAction = !isApprovedTrade
     ? isBuy
