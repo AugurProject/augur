@@ -147,7 +147,6 @@ export const GET_MARKETS = blockNumber => {
         timestamp
         yesShares
         noShares
-        cash
         cashValue
         noShareCashValue
         yesShareCashValue
