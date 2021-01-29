@@ -102,6 +102,9 @@ type Market @entity {
   "Category array parsed from the extra info field. Could be null if not present in the JSON"
   categories: [String!]
 
+  "Category array parsed from the extra info field into a string. Could be null if not present in the JSON"
+  categoriesRaw: String
+
   "Scalar denomination parsed from the extra info field. Could be null if not present in the JSON"
   scalarDenomination: Boolean
 
