@@ -20,6 +20,7 @@
     "enableFaucets": true,
     "normalTime": true,
     "externalAddresses": {
+      "BFactory": "0x8f7F78080219d4066A8036ccD30D588B416a40DB",
       "Exchange": "0x4eacd0aF335451709e1e7B570B8Ea68EdEC8bc97",
       "WETH9": "0x7290c2b7D5Fc91a112d462fe06aBBB8948668f56",
       "Cash": "0x25e27c08B7B3f2159aC23e4711801e0F7aD270A3",
@@ -118,10 +119,12 @@
     "AccountLoader": "0x8953852710001CfF9884234D0c9d3c7f6e65881a",
     "OINexus": "0x8afae9ad3362Efa569E919e4907D2eB6758Ed0D7",
     "HotLoadingUniversal": "0xb16e90e03F86250688DE907083B5B141B6dF6789",
-    "AMMFactory": "0x8acb6537b2648Ed80559BC550214d7B7A4947132",
+    "AMMFactory": "0x630EeA85984FbD228Fe134f4F1e7bec5BcfeED44",
     "ERC20Proxy1155Nexus": "0xC0e95BEef0f4E943E9eD0D0C71BE43c07A864755",
     "ParaDeployer": "0x4DEb88CF839450464F4fB2Bc1d7e07d399CAa15b",
-    "WethWrapperForAMMExchange": "0x3D429FdC991a8441DF8449C2192245542851c7B2"
+    "WethWrapperForAMMExchange": "0x775eB9D79d324c3b2110F50C02841f7df2B2749b",
+    "BFactory": "0xD412d1617f1c32AE93352F5F0a0FE57157a3ec11",
+    "WrappedShareTokenFactoryFactory": "0x03667851462DA6558ecD0009826014C73192591D"
   },
   "server": {
     "httpPort": 9003,

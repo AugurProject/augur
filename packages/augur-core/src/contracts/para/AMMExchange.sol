@@ -1,4 +1,5 @@
 pragma solidity 0.5.15;
+pragma experimental ABIEncoderV2;
 
 import 'ROOT/ICash.sol';
 import 'ROOT/reporting/IMarket.sol';
@@ -8,6 +9,7 @@ import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/para/ParaShareToken.sol';
 import "ROOT/para/interfaces/IAMMFactory.sol";
 import "ROOT/para/interfaces/IAMMExchange.sol";
+import 'ROOT/para/interfaces/IParaShareToken.sol';
 import 'ROOT/libraries/token/SafeERC20.sol';
 
 
@@ -18,7 +20,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
 
     IAMMFactory public factory;
     IERC20 public cash;
-    ParaShareToken public shareToken;
+    IParaShareToken public shareToken;
     IMarket public augurMarket;
     uint256 public numTicks;
     uint256 public INVALID;
@@ -32,7 +34,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
     event AddLiquidity(address sender, uint256 cash, uint256 shortShares, uint256 longShares, uint256 lpTokens);
     event RemoveLiquidity(address sender, uint256 shortShares, uint256 longShares, uint256 lpTokensBurnt);
 
-    function initialize(IMarket _market, ParaShareToken _shareToken, uint256 _fee) public {
+    function initialize(IMarket _market, IParaShareToken _shareToken, uint256 _fee) public {
         require(cash == ICash(0)); // can only initialize once
         require(_fee <= 30); // fee must be [0,30] aka 0-3%
 
@@ -140,7 +142,6 @@ contract AMMExchange is IAMMExchange, ERC20 {
         _burn(msg.sender, _poolTokensToSell);
 
         shareTransfer(address(this), msg.sender, _shortShare, _shortShare, _longShare);
-
         emit RemoveLiquidity(msg.sender, _shortShare, _longShare, _poolTokensToSell);
     }
 

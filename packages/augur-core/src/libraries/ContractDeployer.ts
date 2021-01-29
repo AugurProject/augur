@@ -197,7 +197,10 @@ Deploying to: ${env}
         }
 
         await this.uploadERC20Proxy1155Contracts();
-        await this.uploadAMMContracts();
+        await this.uploadWrappedShareTokenFactoryFactory();
+        await this.uploadBFactory();
+
+        await this.uploadAMMContracts(this.contracts.get('BFactory').address, this.contracts.get('WrappedShareTokenFactoryFactory').address);
         await this.uploadAccountLoaderContract(this.augur.address, this.augurTrading.address);
 
         await this.initializeAllContracts();
@@ -335,6 +338,8 @@ Deploying to: ${env}
         mapping['OICash'] = this.contracts.get('OICash').address!;
         mapping['AugurWalletRegistry'] = this.contracts.get('AugurWalletRegistry').address!;
         mapping['AMMFactory'] = this.contracts.get('AMMFactory').address!;
+        mapping['WrappedShareTokenFactoryFactory'] = this.contracts.get('WrappedShareTokenFactoryFactory').address!;
+        mapping['BFactory'] = this.contracts.get('BFactory').address!;
 
         for (let contract of this.contracts) {
             if (/^I[A-Z].*/.test(contract.contractName)) continue;
@@ -354,6 +359,7 @@ Deploying to: ${env}
             if (contract.relativeFilePath.startsWith('para/')) continue;
             if (contract.relativeFilePath.startsWith('gov/')) continue;
             if (contract.relativeFilePath.startsWith('sidechain/')) continue;
+            if (contract.relativeFilePath.startsWith('balancer/')) continue;
 
             // 0x
             if (this.configuration.deploy.externalAddresses.Exchange && [
@@ -537,14 +543,34 @@ Deploying to: ${env}
         return nexus.address;
     }
 
-    // fee is thousandths of a percent; valid values are [0,1000]
-    async uploadAMMContracts(fee = 3): Promise<string> {
+    async uploadWrappedShareTokenFactoryFactory(): Promise<string> {
+        console.log('Uploading WrappedShareTokenFactoryFactory contract');
+        const metaFactory = this.contracts.get('WrappedShareTokenFactoryFactory');
+        metaFactory.address = await this.construct(metaFactory, []);
+        return metaFactory.address;
+    }
+
+    // fee is thousandths of a percent; valid values are [0,30], for max fee of 3%
+    async uploadAMMContracts(bFactory: string, wrappedShareTokenFactoryFactory: string): Promise<string> {
         console.log('Uploading AMM contracts');
-        const factory = this.contracts.get('AMMFactory');
+
         const masterProxy = this.contracts.get('AMMExchange');
         masterProxy.address = await this.construct(masterProxy, []);
-        factory.address = await this.construct(factory, [masterProxy.address]);
+
+        const factory = this.contracts.get('AMMFactory');
+        factory.address = await this.construct(factory, [
+            masterProxy.address,
+            bFactory,
+            wrappedShareTokenFactoryFactory
+        ]);
         return factory.address;
+    }
+
+    async uploadBFactory() {
+        console.log('Uploading balancer pool factory contracts');
+        const bFactory = this.contracts.get('BFactory');
+        bFactory.address = await this.construct(bFactory, []);
+        return bFactory.address;
     }
 
     async uploadWethAMMContract(ammFactory: string, wethParaShareToken: string): Promise<string> {
@@ -599,6 +625,7 @@ Deploying to: ${env}
         if (contract.relativeFilePath.startsWith('gov/')) return;
         if (contract.relativeFilePath.startsWith('sidechain/')) return;
         if (contract.relativeFilePath.startsWith('para/')) return;
+        if (contract.relativeFilePath.startsWith('balancer/')) return;
         if (contractName === 'LegacyReputationToken') return;
         if (contractName === 'Cash') return;
         if (contractName === 'USDC') return;
@@ -607,6 +634,7 @@ Deploying to: ${env}
         if (contractName === 'ERC20Proxy1155Nexus') return;
         if (contractName === 'AMMExchange') return;
         if (contractName === 'AMMFactory') return;
+        if (contractName === 'WrappedShareTokenFactoryFactory') return;
         if (contractName === 'AccountLoader') return;
         // 0x
         if ([
@@ -923,6 +951,7 @@ Deploying to: ${env}
         if (this.contracts.get('Time')) mapping['Time'] = this.contracts.get('Time').address;
 
         if (this.contracts.get('AMMFactory')) mapping['AMMFactory'] = this.contracts.get('AMMFactory').address;
+        if (this.contracts.get('WrappedShareTokenFactoryFactory')) mapping['WrappedShareTokenFactoryFactory'] = this.contracts.get('WrappedShareTokenFactoryFactory').address;
 
         for (const contract of this.contracts) {
             if (!contract.relativeFilePath.startsWith('trading/')) continue;

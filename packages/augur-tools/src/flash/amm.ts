@@ -7,7 +7,6 @@ import { FlashArguments, FlashSession } from './flash';
 import { AMM, SignerOrProvider } from '@augurproject/sdk-lite';
 import { updateConfig } from '@augurproject/artifacts';
 import {ContractAddresses, SDKConfiguration} from '@augurproject/utils';
-import {ExchangeERC20, ExchangeETH} from '@augurproject/sdk-lite';
 import {deployWethAMMContract} from '../libs/blockchain';
 
 const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
@@ -17,14 +16,28 @@ export function addAMMScripts(flash: FlashSession) {
     name: 'deploy-amm-factory',
     options: [
       {
-        name: 'skipWrapper',
+        name: 'skipETHWrapper',
+        abbr: 'E',
+        description: 'Do NOT deploy the eth wrapper.',
+        flag: true
+      },
+      {
+        name: 'skipShareWrapper',
         abbr: 'S',
+        description: 'Do NOT deploy the eth wrapper.',
+        flag: true
+      },
+      {
+        name: 'skipBFactory',
+        abbr: 'B',
         description: 'Do NOT deploy the eth wrapper.',
         flag: true
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      const deployWrapper = !Boolean(args.skipWrapper);
+      const deployETHWrapper = !Boolean(args.skipETHWrapper);
+      const deployShareWrapper = !Boolean(args.skipShareWrapper);
+      const deployBFactory = !Boolean(args.skipShareWrapper);
       if (this.noProvider()) return;
 
       console.log('Deploying: ', sanitizeConfig(this.config).deploy);
@@ -40,12 +53,24 @@ export function addAMMScripts(flash: FlashSession) {
         compilerOutput
       );
 
-      const factory = await contractDeployer.uploadAMMContracts();
+      const bFactory = deployBFactory
+        ? await contractDeployer.uploadBFactory()
+        : this.config.addresses.BFactory
+      if (!bFactory) return console.error('Must deploy BFactory: omit -skipBFactory (-B).');
+
+      const shareWrapper = deployShareWrapper
+        ? await contractDeployer.uploadWrappedShareTokenFactoryFactory()
+        : this.config.addresses.WrappedShareTokenFactoryFactory
+      if (!shareWrapper) return console.error('Must deploy WrappedShareTokenFactoryFactory: omit -skipShareWrapper (-S).');
+
+      const factory = await contractDeployer.uploadAMMContracts(bFactory, shareWrapper);
       const addresses: Partial<ContractAddresses> = {
-        AMMFactory: factory
+        AMMFactory: factory,
+        BFactory: bFactory,
+        WrappedShareTokenFactoryFactory: shareWrapper
       }
 
-      if (deployWrapper) {
+      if (deployETHWrapper) {
         const wrapper = await deployWethAMMContract(this.provider, this.accounts[0], compilerOutput, this.config);
         console.log(`Deployed Weth AMM to: ${wrapper}`);
         addresses.WethWrapperForAMMExchange = wrapper;

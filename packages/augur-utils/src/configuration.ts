@@ -210,6 +210,12 @@ export interface ContractAddresses extends TradingAddresses {
   // AMM
   AMMFactory?: string;
   WethWrapperForAMMExchange?: string;
+
+  // Wrapped Share Tokens
+  WrappedShareTokenFactoryFactory?: string;
+
+  // Balancer
+  BFactory?: string;
 }
 
 export interface ParaAddresses extends TradingAddresses {

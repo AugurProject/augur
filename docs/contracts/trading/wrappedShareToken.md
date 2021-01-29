@@ -1,68 +1,223 @@
 ---
-title: Erc 20 Proxy 1155
+title: Wrapped Share Token
 ---
 
 <div class="contracts">
 
 ## Contracts
 
-### `ERC20Proxy1155`
+### `ERC1155Receiver`
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ERC20Proxy1155.initialize(contract IERC20Proxy1155Nexus,uint256)"><code class="function-signature">initialize(contract IERC20Proxy1155Nexus _nexus, uint256 _tokenId)</code></a></li><li><a href="#ERC20Proxy1155.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li><a href="#ERC20Proxy1155.balanceOf(address)"><code class="function-signature">balanceOf(address _account)</code></a></li><li><a href="#ERC20Proxy1155.transfer(address,uint256)"><code class="function-signature">transfer(address _to, uint256 _amount)</code></a></li><li><a href="#ERC20Proxy1155.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address _from, address _to, uint256 _amount)</code></a></li><li><a href="#ERC20Proxy1155.approve(address,uint256)"><code class="function-signature">approve(address _spender, uint256 _amount)</code></a></li><li><a href="#ERC20Proxy1155.allowance(address,address)"><code class="function-signature">allowance(address _owner, address _spender)</code></a></li><li><a href="#ERC20Proxy1155.logApproval(address,address,uint256)"><code class="function-signature">logApproval(address _owner, address _spender, uint256 _amount)</code></a></li><li><a href="#ERC20Proxy1155.logTransfer(address,address,uint256)"><code class="function-signature">logTransfer(address _sender, address _recipient, uint256 _amount)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="erc20proxy1155#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ERC1155Receiver.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC1155Receiver.onERC1155Received(address,address,uint256,uint256,bytes)"><code class="function-signature">onERC1155Received(address operator, address from, uint256 id, uint256 value, bytes data)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC1155Receiver.onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"><code class="function-signature">onERC1155BatchReceived(address operator, address from, uint256[] ids, uint256[] values, bytes data)</code></a></li><li class="inherited"><a href="wrappedShareToken#ERC165.supportsInterface(bytes4)"><code class="function-signature">supportsInterface(bytes4 interfaceId)</code></a></li><li class="inherited"><a href="wrappedShareToken#ERC165._registerInterface(bytes4)"><code class="function-signature">_registerInterface(bytes4 interfaceId)</code></a></li></ul></div>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ERC20Proxy1155.initialize(contract IERC20Proxy1155Nexus,uint256)"></a><code class="function-signature">initialize(contract IERC20Proxy1155Nexus _nexus, uint256 _tokenId)</code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ERC20Proxy1155.totalSupply()"></a><code class="function-signature">totalSupply() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ERC1155Receiver.constructor()"></a><code class="function-signature">constructor()</code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ERC20Proxy1155.balanceOf(address)"></a><code class="function-signature">balanceOf(address _account) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+
+
+### `ERC165`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ERC165.constructor()"><code class="function-signature">constructor()</code></a></li><li><a href="#ERC165.supportsInterface(bytes4)"><code class="function-signature">supportsInterface(bytes4 interfaceId)</code></a></li><li><a href="#ERC165._registerInterface(bytes4)"><code class="function-signature">_registerInterface(bytes4 interfaceId)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ERC165.constructor()"></a><code class="function-signature">constructor()</code><span class="function-visibility">internal</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ERC20Proxy1155.transfer(address,uint256)"></a><code class="function-signature">transfer(address _to, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ERC165.supportsInterface(bytes4)"></a><code class="function-signature">supportsInterface(bytes4 interfaceId) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+See {IERC165-supportsInterface}.
+
+Time complexity O(1), guaranteed to always use less than 30 000 gas.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ERC165._registerInterface(bytes4)"></a><code class="function-signature">_registerInterface(bytes4 interfaceId)</code><span class="function-visibility">internal</span></h4>
+
+Registers the contract as an implementer of the interface defined by
+`interfaceId`. Support of the actual ERC165 interface is automatic and
+registering its interface id is not required.
+
+See {IERC165-supportsInterface}.
+
+Requirements:
+
+- `interfaceId` cannot be the ERC165 invalid interface (`0xffffffff`).
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ERC20Proxy1155.transferFrom(address,address,uint256)"></a><code class="function-signature">transferFrom(address _from, address _to, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+### `ERC20`
 
 
 
-
-
-<h4><a class="anchor" aria-hidden="true" id="ERC20Proxy1155.approve(address,uint256)"></a><code class="function-signature">approve(address _spender, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
-
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ERC20.balanceOf(address)"><code class="function-signature">balanceOf(address _account)</code></a></li><li><a href="#ERC20.transfer(address,uint256)"><code class="function-signature">transfer(address _recipient, uint256 _amount)</code></a></li><li><a href="#ERC20.allowance(address,address)"><code class="function-signature">allowance(address _owner, address _spender)</code></a></li><li><a href="#ERC20.approve(address,uint256)"><code class="function-signature">approve(address _spender, uint256 _amount)</code></a></li><li><a href="#ERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address _sender, address _recipient, uint256 _amount)</code></a></li><li><a href="#ERC20.increaseAllowance(address,uint256)"><code class="function-signature">increaseAllowance(address _spender, uint256 _addedValue)</code></a></li><li><a href="#ERC20.decreaseAllowance(address,uint256)"><code class="function-signature">decreaseAllowance(address _spender, uint256 _subtractedValue)</code></a></li><li><a href="#ERC20._transfer(address,address,uint256)"><code class="function-signature">_transfer(address _sender, address _recipient, uint256 _amount)</code></a></li><li><a href="#ERC20._mint(address,uint256)"><code class="function-signature">_mint(address _account, uint256 _amount)</code></a></li><li><a href="#ERC20._burn(address,uint256)"><code class="function-signature">_burn(address _account, uint256 _amount)</code></a></li><li><a href="#ERC20._approve(address,address,uint256)"><code class="function-signature">_approve(address _owner, address _spender, uint256 _amount)</code></a></li><li><a href="#ERC20._burnFrom(address,uint256)"><code class="function-signature">_burnFrom(address _account, uint256 _amount)</code></a></li><li><a href="#ERC20.onTokenTransfer(address,address,uint256)"><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="wrappedShareToken#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
 
 
 
+<h4><a class="anchor" aria-hidden="true" id="ERC20.balanceOf(address)"></a><code class="function-signature">balanceOf(address _account) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
 
-<h4><a class="anchor" aria-hidden="true" id="ERC20Proxy1155.allowance(address,address)"></a><code class="function-signature">allowance(address _owner, address _spender) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ERC20Proxy1155.logApproval(address,address,uint256)"></a><code class="function-signature">logApproval(address _owner, address _spender, uint256 _amount)</code><span class="function-visibility">public</span></h4>
+See {IERC20-balanceOf}.
 
 
 
+<h4><a class="anchor" aria-hidden="true" id="ERC20.transfer(address,uint256)"></a><code class="function-signature">transfer(address _recipient, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+See {IERC20-transfer}.
+
+Requirements:
+
+- `recipient` cannot be the zero address.
+- the caller must have a balance of at least `amount`.
 
 
-<h4><a class="anchor" aria-hidden="true" id="ERC20Proxy1155.logTransfer(address,address,uint256)"></a><code class="function-signature">logTransfer(address _sender, address _recipient, uint256 _amount)</code><span class="function-visibility">public</span></h4>
+
+<h4><a class="anchor" aria-hidden="true" id="ERC20.allowance(address,address)"></a><code class="function-signature">allowance(address _owner, address _spender) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+
+See {IERC20-allowance}.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ERC20.approve(address,uint256)"></a><code class="function-signature">approve(address _spender, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+See {IERC20-approve}.
+
+Requirements:
+
+- `spender` cannot be the zero address.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ERC20.transferFrom(address,address,uint256)"></a><code class="function-signature">transferFrom(address _sender, address _recipient, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+See {IERC20-transferFrom}.
+
+Emits an {Approval} event indicating the updated allowance. This is not
+required by the EIP. See the note at the beginning of {ERC20};
+
+Requirements:
+- `sender` and `recipient` cannot be the zero address.
+- `sender` must have a balance of at least `amount`.
+- the caller must have allowance for `sender`&#x27;s tokens of at least
+`amount`.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ERC20.increaseAllowance(address,uint256)"></a><code class="function-signature">increaseAllowance(address _spender, uint256 _addedValue) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+Atomically increases the allowance granted to `spender` by the caller.
+
+This is an alternative to {approve} that can be used as a mitigation for
+problems described in {IERC20-approve}.
+
+Emits an {Approval} event indicating the updated allowance.
+
+Requirements:
+
+- `spender` cannot be the zero address.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ERC20.decreaseAllowance(address,uint256)"></a><code class="function-signature">decreaseAllowance(address _spender, uint256 _subtractedValue) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+Atomically decreases the allowance granted to `spender` by the caller.
+
+This is an alternative to {approve} that can be used as a mitigation for
+problems described in {IERC20-approve}.
+
+Emits an {Approval} event indicating the updated allowance.
+
+Requirements:
+
+- `spender` cannot be the zero address.
+- `spender` must have allowance for the caller of at least
+`subtractedValue`.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ERC20._transfer(address,address,uint256)"></a><code class="function-signature">_transfer(address _sender, address _recipient, uint256 _amount)</code><span class="function-visibility">internal</span></h4>
+
+Moves tokens `amount` from `sender` to `recipient`.
+
+This is internal function is equivalent to {transfer}, and can be used to
+e.g. implement automatic token fees, slashing mechanisms, etc.
+
+Emits a {Transfer} event.
+
+Requirements:
+
+- `sender` cannot be the zero address.
+- `recipient` cannot be the zero address.
+- `sender` must have a balance of at least `amount`.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ERC20._mint(address,uint256)"></a><code class="function-signature">_mint(address _account, uint256 _amount)</code><span class="function-visibility">internal</span></h4>
+
+Creates `amount` tokens and assigns them to `account`, increasing
+the total supply.
+
+Emits a {Transfer} event with `from` set to the zero address.
+
+Requirements
+
+- `to` cannot be the zero address.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ERC20._burn(address,uint256)"></a><code class="function-signature">_burn(address _account, uint256 _amount)</code><span class="function-visibility">internal</span></h4>
+
+Destroys `amount` tokens from `account`, reducing the
+total supply.
+
+Emits a {Transfer} event with `to` set to the zero address.
+
+Requirements
+
+- `account` cannot be the zero address.
+- `account` must have at least `amount` tokens.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ERC20._approve(address,address,uint256)"></a><code class="function-signature">_approve(address _owner, address _spender, uint256 _amount)</code><span class="function-visibility">internal</span></h4>
+
+Sets `amount` as the allowance of `spender` over the `owner`s tokens.
+
+This is internal function is equivalent to [`approve`](#ERC20.approve(address,uint256)), and can be used to
+e.g. set automatic allowances for certain subsystems, etc.
+
+Emits an {Approval} event.
+
+Requirements:
+
+- `owner` cannot be the zero address.
+- `spender` cannot be the zero address.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ERC20._burnFrom(address,uint256)"></a><code class="function-signature">_burnFrom(address _account, uint256 _amount)</code><span class="function-visibility">internal</span></h4>
+
+Destroys `amount` tokens from `account`.`amount` is then deducted
+from the caller&#x27;s allowance.
+
+See {_burn} and {_approve}.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ERC20.onTokenTransfer(address,address,uint256)"></a><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code><span class="function-visibility">internal</span></h4>
 
 
 
@@ -470,7 +625,7 @@ title: Erc 20 Proxy 1155
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ICash.faucet(uint256)"><code class="function-signature">faucet(uint256 _amount)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.balanceOf(address)"><code class="function-signature">balanceOf(address owner)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.transfer(address,uint256)"><code class="function-signature">transfer(address to, uint256 amount)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address from, address to, uint256 amount)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.approve(address,uint256)"><code class="function-signature">approve(address spender, uint256 amount)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.allowance(address,address)"><code class="function-signature">allowance(address owner, address spender)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="erc20proxy1155#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ICash.faucet(uint256)"><code class="function-signature">faucet(uint256 _amount)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.balanceOf(address)"><code class="function-signature">balanceOf(address owner)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.transfer(address,uint256)"><code class="function-signature">transfer(address to, uint256 amount)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address from, address to, uint256 amount)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.approve(address,uint256)"><code class="function-signature">approve(address spender, uint256 amount)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.allowance(address,address)"><code class="function-signature">allowance(address owner, address spender)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="wrappedShareToken#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
 
 
 
@@ -486,7 +641,7 @@ title: Erc 20 Proxy 1155
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IDisputeWindow.invalidMarketsTotal()"><code class="function-signature">invalidMarketsTotal()</code></a></li><li><a href="#IDisputeWindow.validityBondTotal()"><code class="function-signature">validityBondTotal()</code></a></li><li><a href="#IDisputeWindow.incorrectDesignatedReportTotal()"><code class="function-signature">incorrectDesignatedReportTotal()</code></a></li><li><a href="#IDisputeWindow.initialReportBondTotal()"><code class="function-signature">initialReportBondTotal()</code></a></li><li><a href="#IDisputeWindow.designatedReportNoShowsTotal()"><code class="function-signature">designatedReportNoShowsTotal()</code></a></li><li><a href="#IDisputeWindow.designatedReporterNoShowBondTotal()"><code class="function-signature">designatedReporterNoShowBondTotal()</code></a></li><li><a href="#IDisputeWindow.initialize(contract IAugur,contract IUniverse,uint256,bool,uint256,uint256)"><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe, uint256 _disputeWindowId, bool _participationTokensEnabled, uint256 _duration, uint256 _startTime)</code></a></li><li><a href="#IDisputeWindow.trustedBuy(address,uint256)"><code class="function-signature">trustedBuy(address _buyer, uint256 _attotokens)</code></a></li><li><a href="#IDisputeWindow.getUniverse()"><code class="function-signature">getUniverse()</code></a></li><li><a href="#IDisputeWindow.getReputationToken()"><code class="function-signature">getReputationToken()</code></a></li><li><a href="#IDisputeWindow.getStartTime()"><code class="function-signature">getStartTime()</code></a></li><li><a href="#IDisputeWindow.getEndTime()"><code class="function-signature">getEndTime()</code></a></li><li><a href="#IDisputeWindow.getWindowId()"><code class="function-signature">getWindowId()</code></a></li><li><a href="#IDisputeWindow.isActive()"><code class="function-signature">isActive()</code></a></li><li><a href="#IDisputeWindow.isOver()"><code class="function-signature">isOver()</code></a></li><li><a href="#IDisputeWindow.onMarketFinalized()"><code class="function-signature">onMarketFinalized()</code></a></li><li><a href="#IDisputeWindow.redeem(address)"><code class="function-signature">redeem(address _account)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.balanceOf(address)"><code class="function-signature">balanceOf(address owner)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.transfer(address,uint256)"><code class="function-signature">transfer(address to, uint256 amount)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address from, address to, uint256 amount)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.approve(address,uint256)"><code class="function-signature">approve(address spender, uint256 amount)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.allowance(address,address)"><code class="function-signature">allowance(address owner, address spender)</code></a></li><li class="inherited"><a href="erc20proxy1155#ITyped.getTypeName()"><code class="function-signature">getTypeName()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="erc20proxy1155#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IDisputeWindow.invalidMarketsTotal()"><code class="function-signature">invalidMarketsTotal()</code></a></li><li><a href="#IDisputeWindow.validityBondTotal()"><code class="function-signature">validityBondTotal()</code></a></li><li><a href="#IDisputeWindow.incorrectDesignatedReportTotal()"><code class="function-signature">incorrectDesignatedReportTotal()</code></a></li><li><a href="#IDisputeWindow.initialReportBondTotal()"><code class="function-signature">initialReportBondTotal()</code></a></li><li><a href="#IDisputeWindow.designatedReportNoShowsTotal()"><code class="function-signature">designatedReportNoShowsTotal()</code></a></li><li><a href="#IDisputeWindow.designatedReporterNoShowBondTotal()"><code class="function-signature">designatedReporterNoShowBondTotal()</code></a></li><li><a href="#IDisputeWindow.initialize(contract IAugur,contract IUniverse,uint256,bool,uint256,uint256)"><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe, uint256 _disputeWindowId, bool _participationTokensEnabled, uint256 _duration, uint256 _startTime)</code></a></li><li><a href="#IDisputeWindow.trustedBuy(address,uint256)"><code class="function-signature">trustedBuy(address _buyer, uint256 _attotokens)</code></a></li><li><a href="#IDisputeWindow.getUniverse()"><code class="function-signature">getUniverse()</code></a></li><li><a href="#IDisputeWindow.getReputationToken()"><code class="function-signature">getReputationToken()</code></a></li><li><a href="#IDisputeWindow.getStartTime()"><code class="function-signature">getStartTime()</code></a></li><li><a href="#IDisputeWindow.getEndTime()"><code class="function-signature">getEndTime()</code></a></li><li><a href="#IDisputeWindow.getWindowId()"><code class="function-signature">getWindowId()</code></a></li><li><a href="#IDisputeWindow.isActive()"><code class="function-signature">isActive()</code></a></li><li><a href="#IDisputeWindow.isOver()"><code class="function-signature">isOver()</code></a></li><li><a href="#IDisputeWindow.onMarketFinalized()"><code class="function-signature">onMarketFinalized()</code></a></li><li><a href="#IDisputeWindow.redeem(address)"><code class="function-signature">redeem(address _account)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.balanceOf(address)"><code class="function-signature">balanceOf(address owner)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.transfer(address,uint256)"><code class="function-signature">transfer(address to, uint256 amount)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address from, address to, uint256 amount)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.approve(address,uint256)"><code class="function-signature">approve(address spender, uint256 amount)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.allowance(address,address)"><code class="function-signature">allowance(address owner, address spender)</code></a></li><li class="inherited"><a href="wrappedShareToken#ITyped.getTypeName()"><code class="function-signature">getTypeName()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="wrappedShareToken#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
 
 
 
@@ -688,6 +843,59 @@ MUST emit when the URI is updated for a token ID.
 
 
 
+### `IERC1155Receiver`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IERC1155Receiver.onERC1155Received(address,address,uint256,uint256,bytes)"><code class="function-signature">onERC1155Received(address operator, address from, uint256 id, uint256 value, bytes data)</code></a></li><li><a href="#IERC1155Receiver.onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"><code class="function-signature">onERC1155BatchReceived(address operator, address from, uint256[] ids, uint256[] values, bytes data)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC165.supportsInterface(bytes4)"><code class="function-signature">supportsInterface(bytes4 interfaceId)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IERC1155Receiver.onERC1155Received(address,address,uint256,uint256,bytes)"></a><code class="function-signature">onERC1155Received(address operator, address from, uint256 id, uint256 value, bytes data) <span class="return-arrow">→</span> <span class="return-type">bytes4</span></code><span class="function-visibility">external</span></h4>
+
+Handles the receipt of a single ERC1155 token type. This function is
+called at the end of a `safeTransferFrom` after the balance has been updated.
+To accept the transfer, this must return
+`bytes4(keccak256(&quot;onERC1155Received(address,address,uint256,uint256,bytes)&quot;))`
+(i.e. 0xf23a6e61, or its own function selector).
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IERC1155Receiver.onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"></a><code class="function-signature">onERC1155BatchReceived(address operator, address from, uint256[] ids, uint256[] values, bytes data) <span class="return-arrow">→</span> <span class="return-type">bytes4</span></code><span class="function-visibility">external</span></h4>
+
+Handles the receipt of a multiple ERC1155 token types. This function
+is called at the end of a `safeBatchTransferFrom` after the balances have
+been updated. To accept the transfer(s), this must return
+`bytes4(keccak256(&quot;onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)&quot;))`
+(i.e. 0xbc197c81, or its own function selector).
+
+
+
+
+
+
+### `IERC165`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IERC165.supportsInterface(bytes4)"><code class="function-signature">supportsInterface(bytes4 interfaceId)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IERC165.supportsInterface(bytes4)"></a><code class="function-signature">supportsInterface(bytes4 interfaceId) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+Returns true if this contract implements the interface defined by
+`interfaceId`. See the corresponding
+https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section]
+to learn more about how these ids are created.
+
+This function call must use less than 30 000 gas.
+
+
+
+
+
 ### `IERC20`
 
 
@@ -746,79 +954,33 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-### `IERC20Proxy1155`
+### `IFeePot`
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IERC20Proxy1155.initialize(contract IERC20Proxy1155Nexus,uint256)"><code class="function-signature">initialize(contract IERC20Proxy1155Nexus _nexus, uint256 _tokenId)</code></a></li><li><a href="#IERC20Proxy1155.logApproval(address,address,uint256)"><code class="function-signature">logApproval(address _owner, address _spender, uint256 _amount)</code></a></li><li><a href="#IERC20Proxy1155.logTransfer(address,address,uint256)"><code class="function-signature">logTransfer(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.balanceOf(address)"><code class="function-signature">balanceOf(address owner)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.transfer(address,uint256)"><code class="function-signature">transfer(address to, uint256 amount)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address from, address to, uint256 amount)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.approve(address,uint256)"><code class="function-signature">approve(address spender, uint256 amount)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.allowance(address,address)"><code class="function-signature">allowance(address owner, address spender)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="erc20proxy1155#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IFeePot.depositFees(uint256)"><code class="function-signature">depositFees(uint256 _amount)</code></a></li><li><a href="#IFeePot.withdrawableFeesOf(address)"><code class="function-signature">withdrawableFeesOf(address _owner)</code></a></li><li><a href="#IFeePot.redeem()"><code class="function-signature">redeem()</code></a></li><li><a href="#IFeePot.cash()"><code class="function-signature">cash()</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.balanceOf(address)"><code class="function-signature">balanceOf(address owner)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.transfer(address,uint256)"><code class="function-signature">transfer(address to, uint256 amount)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address from, address to, uint256 amount)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.approve(address,uint256)"><code class="function-signature">approve(address spender, uint256 amount)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.allowance(address,address)"><code class="function-signature">allowance(address owner, address spender)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="wrappedShareToken#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IERC20Proxy1155.initialize(contract IERC20Proxy1155Nexus,uint256)"></a><code class="function-signature">initialize(contract IERC20Proxy1155Nexus _nexus, uint256 _tokenId)</code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IERC20Proxy1155.logApproval(address,address,uint256)"></a><code class="function-signature">logApproval(address _owner, address _spender, uint256 _amount)</code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IFeePot.depositFees(uint256)"></a><code class="function-signature">depositFees(uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IERC20Proxy1155.logTransfer(address,address,uint256)"></a><code class="function-signature">logTransfer(address _sender, address _recipient, uint256 _amount)</code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IFeePot.withdrawableFeesOf(address)"></a><code class="function-signature">withdrawableFeesOf(address _owner) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-
-
-### `IERC20Proxy1155Nexus`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IERC20Proxy1155Nexus.calculateERC20(uint256)"><code class="function-signature">calculateERC20(uint256 _tokenId)</code></a></li><li><a href="#IERC20Proxy1155Nexus.newERC20(uint256)"><code class="function-signature">newERC20(uint256 _tokenId)</code></a></li><li><a href="#IERC20Proxy1155Nexus.newERC20s(uint256[])"><code class="function-signature">newERC20s(uint256[] _tokenIds)</code></a></li><li><a href="#IERC20Proxy1155Nexus.transfer(contract IERC20Proxy1155,address,address,uint256)"><code class="function-signature">transfer(contract IERC20Proxy1155 _proxy, address _caller, address _to, uint256 _amount)</code></a></li><li><a href="#IERC20Proxy1155Nexus.transferFrom(contract IERC20Proxy1155,address,address,address,uint256)"><code class="function-signature">transferFrom(contract IERC20Proxy1155 _proxy, address _caller, address _from, address _to, uint256 _amount)</code></a></li><li><a href="#IERC20Proxy1155Nexus.approve(contract IERC20Proxy1155,address,address,uint256)"><code class="function-signature">approve(contract IERC20Proxy1155 _proxy, address _caller, address _spender, uint256 _amount)</code></a></li><li><a href="#IERC20Proxy1155Nexus.allowance(contract IERC20Proxy1155,address,address)"><code class="function-signature">allowance(contract IERC20Proxy1155 _proxy, address _owner, address _spender)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IERC20Proxy1155Nexus.calculateERC20(uint256)"></a><code class="function-signature">calculateERC20(uint256 _tokenId) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IFeePot.redeem()"></a><code class="function-signature">redeem() <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IERC20Proxy1155Nexus.newERC20(uint256)"></a><code class="function-signature">newERC20(uint256 _tokenId) <span class="return-arrow">→</span> <span class="return-type">contract IERC20Proxy1155</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IERC20Proxy1155Nexus.newERC20s(uint256[])"></a><code class="function-signature">newERC20s(uint256[] _tokenIds) <span class="return-arrow">→</span> <span class="return-type">contract IERC20Proxy1155[]</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IERC20Proxy1155Nexus.transfer(contract IERC20Proxy1155,address,address,uint256)"></a><code class="function-signature">transfer(contract IERC20Proxy1155 _proxy, address _caller, address _to, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IERC20Proxy1155Nexus.transferFrom(contract IERC20Proxy1155,address,address,address,uint256)"></a><code class="function-signature">transferFrom(contract IERC20Proxy1155 _proxy, address _caller, address _from, address _to, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IERC20Proxy1155Nexus.approve(contract IERC20Proxy1155,address,address,uint256)"></a><code class="function-signature">approve(contract IERC20Proxy1155 _proxy, address _caller, address _spender, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IERC20Proxy1155Nexus.allowance(contract IERC20Proxy1155,address,address)"></a><code class="function-signature">allowance(contract IERC20Proxy1155 _proxy, address _owner, address _spender) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IFeePot.cash()"></a><code class="function-signature">cash() <span class="return-arrow">→</span> <span class="return-type">contract ICash</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -830,7 +992,7 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IInitialReporter.initialize(contract IAugur,contract IMarket,address)"><code class="function-signature">initialize(contract IAugur _augur, contract IMarket _market, address _designatedReporter)</code></a></li><li><a href="#IInitialReporter.report(address,bytes32,uint256[],uint256)"><code class="function-signature">report(address _reporter, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators, uint256 _initialReportStake)</code></a></li><li><a href="#IInitialReporter.designatedReporterShowed()"><code class="function-signature">designatedReporterShowed()</code></a></li><li><a href="#IInitialReporter.initialReporterWasCorrect()"><code class="function-signature">initialReporterWasCorrect()</code></a></li><li><a href="#IInitialReporter.getDesignatedReporter()"><code class="function-signature">getDesignatedReporter()</code></a></li><li><a href="#IInitialReporter.getReportTimestamp()"><code class="function-signature">getReportTimestamp()</code></a></li><li><a href="#IInitialReporter.migrateToNewUniverse(address)"><code class="function-signature">migrateToNewUniverse(address _designatedReporter)</code></a></li><li><a href="#IInitialReporter.returnRepFromDisavow()"><code class="function-signature">returnRepFromDisavow()</code></a></li><li class="inherited"><a href="erc20proxy1155#IOwnable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li class="inherited"><a href="erc20proxy1155#IOwnable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li><li class="inherited"><a href="erc20proxy1155#IReportingParticipant.getStake()"><code class="function-signature">getStake()</code></a></li><li class="inherited"><a href="erc20proxy1155#IReportingParticipant.getPayoutDistributionHash()"><code class="function-signature">getPayoutDistributionHash()</code></a></li><li class="inherited"><a href="erc20proxy1155#IReportingParticipant.liquidateLosing()"><code class="function-signature">liquidateLosing()</code></a></li><li class="inherited"><a href="erc20proxy1155#IReportingParticipant.redeem(address)"><code class="function-signature">redeem(address _redeemer)</code></a></li><li class="inherited"><a href="erc20proxy1155#IReportingParticipant.isDisavowed()"><code class="function-signature">isDisavowed()</code></a></li><li class="inherited"><a href="erc20proxy1155#IReportingParticipant.getPayoutNumerator(uint256)"><code class="function-signature">getPayoutNumerator(uint256 _outcome)</code></a></li><li class="inherited"><a href="erc20proxy1155#IReportingParticipant.getPayoutNumerators()"><code class="function-signature">getPayoutNumerators()</code></a></li><li class="inherited"><a href="erc20proxy1155#IReportingParticipant.getMarket()"><code class="function-signature">getMarket()</code></a></li><li class="inherited"><a href="erc20proxy1155#IReportingParticipant.getSize()"><code class="function-signature">getSize()</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IInitialReporter.initialize(contract IAugur,contract IMarket,address)"><code class="function-signature">initialize(contract IAugur _augur, contract IMarket _market, address _designatedReporter)</code></a></li><li><a href="#IInitialReporter.report(address,bytes32,uint256[],uint256)"><code class="function-signature">report(address _reporter, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators, uint256 _initialReportStake)</code></a></li><li><a href="#IInitialReporter.designatedReporterShowed()"><code class="function-signature">designatedReporterShowed()</code></a></li><li><a href="#IInitialReporter.initialReporterWasCorrect()"><code class="function-signature">initialReporterWasCorrect()</code></a></li><li><a href="#IInitialReporter.getDesignatedReporter()"><code class="function-signature">getDesignatedReporter()</code></a></li><li><a href="#IInitialReporter.getReportTimestamp()"><code class="function-signature">getReportTimestamp()</code></a></li><li><a href="#IInitialReporter.migrateToNewUniverse(address)"><code class="function-signature">migrateToNewUniverse(address _designatedReporter)</code></a></li><li><a href="#IInitialReporter.returnRepFromDisavow()"><code class="function-signature">returnRepFromDisavow()</code></a></li><li class="inherited"><a href="wrappedShareToken#IOwnable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li class="inherited"><a href="wrappedShareToken#IOwnable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li><li class="inherited"><a href="wrappedShareToken#IReportingParticipant.getStake()"><code class="function-signature">getStake()</code></a></li><li class="inherited"><a href="wrappedShareToken#IReportingParticipant.getPayoutDistributionHash()"><code class="function-signature">getPayoutDistributionHash()</code></a></li><li class="inherited"><a href="wrappedShareToken#IReportingParticipant.liquidateLosing()"><code class="function-signature">liquidateLosing()</code></a></li><li class="inherited"><a href="wrappedShareToken#IReportingParticipant.redeem(address)"><code class="function-signature">redeem(address _redeemer)</code></a></li><li class="inherited"><a href="wrappedShareToken#IReportingParticipant.isDisavowed()"><code class="function-signature">isDisavowed()</code></a></li><li class="inherited"><a href="wrappedShareToken#IReportingParticipant.getPayoutNumerator(uint256)"><code class="function-signature">getPayoutNumerator(uint256 _outcome)</code></a></li><li class="inherited"><a href="wrappedShareToken#IReportingParticipant.getPayoutNumerators()"><code class="function-signature">getPayoutNumerators()</code></a></li><li class="inherited"><a href="wrappedShareToken#IReportingParticipant.getMarket()"><code class="function-signature">getMarket()</code></a></li><li class="inherited"><a href="wrappedShareToken#IReportingParticipant.getSize()"><code class="function-signature">getSize()</code></a></li></ul></div>
 
 
 
@@ -888,7 +1050,7 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IMarket.initialize(contract IAugur,contract IUniverse,uint256,uint256,contract IAffiliateValidator,uint256,address,address,uint256,uint256)"><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, contract IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks)</code></a></li><li><a href="#IMarket.derivePayoutDistributionHash(uint256[])"><code class="function-signature">derivePayoutDistributionHash(uint256[] _payoutNumerators)</code></a></li><li><a href="#IMarket.doInitialReport(uint256[],string,uint256)"><code class="function-signature">doInitialReport(uint256[] _payoutNumerators, string _description, uint256 _additionalStake)</code></a></li><li><a href="#IMarket.getUniverse()"><code class="function-signature">getUniverse()</code></a></li><li><a href="#IMarket.getDisputeWindow()"><code class="function-signature">getDisputeWindow()</code></a></li><li><a href="#IMarket.getNumberOfOutcomes()"><code class="function-signature">getNumberOfOutcomes()</code></a></li><li><a href="#IMarket.getNumTicks()"><code class="function-signature">getNumTicks()</code></a></li><li><a href="#IMarket.getMarketCreatorSettlementFeeDivisor()"><code class="function-signature">getMarketCreatorSettlementFeeDivisor()</code></a></li><li><a href="#IMarket.getForkingMarket()"><code class="function-signature">getForkingMarket()</code></a></li><li><a href="#IMarket.getEndTime()"><code class="function-signature">getEndTime()</code></a></li><li><a href="#IMarket.getWinningPayoutDistributionHash()"><code class="function-signature">getWinningPayoutDistributionHash()</code></a></li><li><a href="#IMarket.getWinningPayoutNumerator(uint256)"><code class="function-signature">getWinningPayoutNumerator(uint256 _outcome)</code></a></li><li><a href="#IMarket.getWinningReportingParticipant()"><code class="function-signature">getWinningReportingParticipant()</code></a></li><li><a href="#IMarket.getReputationToken()"><code class="function-signature">getReputationToken()</code></a></li><li><a href="#IMarket.getFinalizationTime()"><code class="function-signature">getFinalizationTime()</code></a></li><li><a href="#IMarket.getInitialReporter()"><code class="function-signature">getInitialReporter()</code></a></li><li><a href="#IMarket.getDesignatedReportingEndTime()"><code class="function-signature">getDesignatedReportingEndTime()</code></a></li><li><a href="#IMarket.getValidityBondAttoCash()"><code class="function-signature">getValidityBondAttoCash()</code></a></li><li><a href="#IMarket.affiliateFeeDivisor()"><code class="function-signature">affiliateFeeDivisor()</code></a></li><li><a href="#IMarket.getNumParticipants()"><code class="function-signature">getNumParticipants()</code></a></li><li><a href="#IMarket.getDisputePacingOn()"><code class="function-signature">getDisputePacingOn()</code></a></li><li><a href="#IMarket.deriveMarketCreatorFeeAmount(uint256)"><code class="function-signature">deriveMarketCreatorFeeAmount(uint256 _amount)</code></a></li><li><a href="#IMarket.recordMarketCreatorFees(uint256,address,bytes32)"><code class="function-signature">recordMarketCreatorFees(uint256 _marketCreatorFees, address _sourceAccount, bytes32 _fingerprint)</code></a></li><li><a href="#IMarket.isContainerForReportingParticipant(contract IReportingParticipant)"><code class="function-signature">isContainerForReportingParticipant(contract IReportingParticipant _reportingParticipant)</code></a></li><li><a href="#IMarket.isFinalizedAsInvalid()"><code class="function-signature">isFinalizedAsInvalid()</code></a></li><li><a href="#IMarket.finalize()"><code class="function-signature">finalize()</code></a></li><li><a href="#IMarket.isFinalized()"><code class="function-signature">isFinalized()</code></a></li><li><a href="#IMarket.getOpenInterest()"><code class="function-signature">getOpenInterest()</code></a></li><li class="inherited"><a href="erc20proxy1155#IOwnable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li class="inherited"><a href="erc20proxy1155#IOwnable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IMarket.initialize(contract IAugur,contract IUniverse,uint256,uint256,contract IAffiliateValidator,uint256,address,address,uint256,uint256)"><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe, uint256 _endTime, uint256 _feePerCashInAttoCash, contract IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks)</code></a></li><li><a href="#IMarket.derivePayoutDistributionHash(uint256[])"><code class="function-signature">derivePayoutDistributionHash(uint256[] _payoutNumerators)</code></a></li><li><a href="#IMarket.doInitialReport(uint256[],string,uint256)"><code class="function-signature">doInitialReport(uint256[] _payoutNumerators, string _description, uint256 _additionalStake)</code></a></li><li><a href="#IMarket.getUniverse()"><code class="function-signature">getUniverse()</code></a></li><li><a href="#IMarket.getDisputeWindow()"><code class="function-signature">getDisputeWindow()</code></a></li><li><a href="#IMarket.getNumberOfOutcomes()"><code class="function-signature">getNumberOfOutcomes()</code></a></li><li><a href="#IMarket.getNumTicks()"><code class="function-signature">getNumTicks()</code></a></li><li><a href="#IMarket.getMarketCreatorSettlementFeeDivisor()"><code class="function-signature">getMarketCreatorSettlementFeeDivisor()</code></a></li><li><a href="#IMarket.getForkingMarket()"><code class="function-signature">getForkingMarket()</code></a></li><li><a href="#IMarket.getEndTime()"><code class="function-signature">getEndTime()</code></a></li><li><a href="#IMarket.getWinningPayoutDistributionHash()"><code class="function-signature">getWinningPayoutDistributionHash()</code></a></li><li><a href="#IMarket.getWinningPayoutNumerator(uint256)"><code class="function-signature">getWinningPayoutNumerator(uint256 _outcome)</code></a></li><li><a href="#IMarket.getWinningReportingParticipant()"><code class="function-signature">getWinningReportingParticipant()</code></a></li><li><a href="#IMarket.getReputationToken()"><code class="function-signature">getReputationToken()</code></a></li><li><a href="#IMarket.getFinalizationTime()"><code class="function-signature">getFinalizationTime()</code></a></li><li><a href="#IMarket.getInitialReporter()"><code class="function-signature">getInitialReporter()</code></a></li><li><a href="#IMarket.getDesignatedReportingEndTime()"><code class="function-signature">getDesignatedReportingEndTime()</code></a></li><li><a href="#IMarket.getValidityBondAttoCash()"><code class="function-signature">getValidityBondAttoCash()</code></a></li><li><a href="#IMarket.affiliateFeeDivisor()"><code class="function-signature">affiliateFeeDivisor()</code></a></li><li><a href="#IMarket.getNumParticipants()"><code class="function-signature">getNumParticipants()</code></a></li><li><a href="#IMarket.getDisputePacingOn()"><code class="function-signature">getDisputePacingOn()</code></a></li><li><a href="#IMarket.deriveMarketCreatorFeeAmount(uint256)"><code class="function-signature">deriveMarketCreatorFeeAmount(uint256 _amount)</code></a></li><li><a href="#IMarket.recordMarketCreatorFees(uint256,address,bytes32)"><code class="function-signature">recordMarketCreatorFees(uint256 _marketCreatorFees, address _sourceAccount, bytes32 _fingerprint)</code></a></li><li><a href="#IMarket.isContainerForReportingParticipant(contract IReportingParticipant)"><code class="function-signature">isContainerForReportingParticipant(contract IReportingParticipant _reportingParticipant)</code></a></li><li><a href="#IMarket.isFinalizedAsInvalid()"><code class="function-signature">isFinalizedAsInvalid()</code></a></li><li><a href="#IMarket.finalize()"><code class="function-signature">finalize()</code></a></li><li><a href="#IMarket.isFinalized()"><code class="function-signature">isFinalized()</code></a></li><li><a href="#IMarket.getOpenInterest()"><code class="function-signature">getOpenInterest()</code></a></li><li class="inherited"><a href="wrappedShareToken#IOwnable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li class="inherited"><a href="wrappedShareToken#IOwnable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li></ul></div>
 
 
 
@@ -1244,6 +1406,218 @@ MUST emit when the URI is updated for a token ID.
 
 
 
+### `IParaShareToken`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IParaShareToken.cash()"><code class="function-signature">cash()</code></a></li><li><a href="#IParaShareToken.augur()"><code class="function-signature">augur()</code></a></li><li><a href="#IParaShareToken.initialize(address,address)"><code class="function-signature">initialize(address _augur, address _originalShareToken)</code></a></li><li><a href="#IParaShareToken.approveUniverse(contract IParaUniverse)"><code class="function-signature">approveUniverse(contract IParaUniverse _paraUniverse)</code></a></li><li><a href="#IParaShareToken.buyCompleteSets(contract IMarket,address,uint256)"><code class="function-signature">buyCompleteSets(contract IMarket _market, address _account, uint256 _amount)</code></a></li><li><a href="#IParaShareToken.claimTradingProceeds(contract IMarket,address,bytes32)"><code class="function-signature">claimTradingProceeds(contract IMarket _market, address _shareHolder, bytes32 _fingerprint)</code></a></li><li><a href="#IParaShareToken.isApprovedForAll(address,address)"><code class="function-signature">isApprovedForAll(address account, address operator)</code></a></li><li><a href="#IParaShareToken.setApprovalForAll(address,bool)"><code class="function-signature">setApprovalForAll(address operator, bool approved)</code></a></li><li><a href="#IParaShareToken.publicSellCompleteSets(contract IMarket,uint256)"><code class="function-signature">publicSellCompleteSets(contract IMarket _market, uint256 _amount)</code></a></li><li><a href="#IParaShareToken.sellCompleteSets(contract IMarket,address,address,uint256,bytes32)"><code class="function-signature">sellCompleteSets(contract IMarket _market, address _holder, address _recipient, uint256 _amount, bytes32 _fingerprint)</code></a></li><li><a href="#IParaShareToken.publicBuyCompleteSets(contract IMarket,uint256)"><code class="function-signature">publicBuyCompleteSets(contract IMarket _market, uint256 _amount)</code></a></li><li><a href="#IParaShareToken.getTokenId(contract IMarket,uint256)"><code class="function-signature">getTokenId(contract IMarket _market, uint256 _outcome)</code></a></li><li><a href="#IParaShareToken.unsafeTransferFrom(address,address,uint256,uint256)"><code class="function-signature">unsafeTransferFrom(address _from, address _to, uint256 _id, uint256 _value)</code></a></li><li><a href="#IParaShareToken.balanceOf(address,uint256)"><code class="function-signature">balanceOf(address owner, uint256 id)</code></a></li><li><a href="#IParaShareToken.balanceOfBatch(address[],uint256[])"><code class="function-signature">balanceOfBatch(address[] owners, uint256[] ids)</code></a></li><li><a href="#IParaShareToken.unsafeBatchTransferFrom(address,address,uint256[],uint256[])"><code class="function-signature">unsafeBatchTransferFrom(address _from, address _to, uint256[] _ids, uint256[] _values)</code></a></li><li><a href="#IParaShareToken.getMarket(uint256)"><code class="function-signature">getMarket(uint256 _tokenId)</code></a></li><li><a href="#IParaShareToken.isMarketInitialized(contract IMarket)"><code class="function-signature">isMarketInitialized(contract IMarket _market)</code></a></li><li><a href="#IParaShareToken.initializeMarket(contract IMarket)"><code class="function-signature">initializeMarket(contract IMarket _market)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaShareToken.cash()"></a><code class="function-signature">cash() <span class="return-arrow">→</span> <span class="return-type">contract ICash</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaShareToken.augur()"></a><code class="function-signature">augur() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaShareToken.initialize(address,address)"></a><code class="function-signature">initialize(address _augur, address _originalShareToken)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaShareToken.approveUniverse(contract IParaUniverse)"></a><code class="function-signature">approveUniverse(contract IParaUniverse _paraUniverse)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaShareToken.buyCompleteSets(contract IMarket,address,uint256)"></a><code class="function-signature">buyCompleteSets(contract IMarket _market, address _account, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaShareToken.claimTradingProceeds(contract IMarket,address,bytes32)"></a><code class="function-signature">claimTradingProceeds(contract IMarket _market, address _shareHolder, bytes32 _fingerprint) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaShareToken.isApprovedForAll(address,address)"></a><code class="function-signature">isApprovedForAll(address account, address operator) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaShareToken.setApprovalForAll(address,bool)"></a><code class="function-signature">setApprovalForAll(address operator, bool approved)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaShareToken.publicSellCompleteSets(contract IMarket,uint256)"></a><code class="function-signature">publicSellCompleteSets(contract IMarket _market, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaShareToken.sellCompleteSets(contract IMarket,address,address,uint256,bytes32)"></a><code class="function-signature">sellCompleteSets(contract IMarket _market, address _holder, address _recipient, uint256 _amount, bytes32 _fingerprint) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaShareToken.publicBuyCompleteSets(contract IMarket,uint256)"></a><code class="function-signature">publicBuyCompleteSets(contract IMarket _market, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaShareToken.getTokenId(contract IMarket,uint256)"></a><code class="function-signature">getTokenId(contract IMarket _market, uint256 _outcome) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaShareToken.unsafeTransferFrom(address,address,uint256,uint256)"></a><code class="function-signature">unsafeTransferFrom(address _from, address _to, uint256 _id, uint256 _value)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaShareToken.balanceOf(address,uint256)"></a><code class="function-signature">balanceOf(address owner, uint256 id) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaShareToken.balanceOfBatch(address[],uint256[])"></a><code class="function-signature">balanceOfBatch(address[] owners, uint256[] ids) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaShareToken.unsafeBatchTransferFrom(address,address,uint256[],uint256[])"></a><code class="function-signature">unsafeBatchTransferFrom(address _from, address _to, uint256[] _ids, uint256[] _values)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaShareToken.getMarket(uint256)"></a><code class="function-signature">getMarket(uint256 _tokenId) <span class="return-arrow">→</span> <span class="return-type">contract IMarket</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaShareToken.isMarketInitialized(contract IMarket)"></a><code class="function-signature">isMarketInitialized(contract IMarket _market) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaShareToken.initializeMarket(contract IMarket)"></a><code class="function-signature">initializeMarket(contract IMarket _market)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+
+
+### `IParaUniverse`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IParaUniverse.getFeePot()"><code class="function-signature">getFeePot()</code></a></li><li><a href="#IParaUniverse.getReputationToken()"><code class="function-signature">getReputationToken()</code></a></li><li><a href="#IParaUniverse.originUniverse()"><code class="function-signature">originUniverse()</code></a></li><li><a href="#IParaUniverse.setMarketFinalized(contract IMarket,uint256)"><code class="function-signature">setMarketFinalized(contract IMarket _market, uint256 _totalSupply)</code></a></li><li><a href="#IParaUniverse.withdraw(address,uint256,address)"><code class="function-signature">withdraw(address _recipient, uint256 _amount, address _market)</code></a></li><li><a href="#IParaUniverse.deposit(address,uint256,address)"><code class="function-signature">deposit(address _sender, uint256 _amount, address _market)</code></a></li><li><a href="#IParaUniverse.decrementOpenInterest(uint256)"><code class="function-signature">decrementOpenInterest(uint256 _amount)</code></a></li><li><a href="#IParaUniverse.incrementOpenInterest(uint256)"><code class="function-signature">incrementOpenInterest(uint256 _amount)</code></a></li><li><a href="#IParaUniverse.recordMarketCreatorFees(contract IMarket,uint256,address)"><code class="function-signature">recordMarketCreatorFees(contract IMarket _market, uint256 _marketCreatorFees, address _sourceAccount)</code></a></li><li><a href="#IParaUniverse.getMarketOpenInterest(contract IMarket)"><code class="function-signature">getMarketOpenInterest(contract IMarket _market)</code></a></li><li><a href="#IParaUniverse.getOrCacheReportingFeeDivisor()"><code class="function-signature">getOrCacheReportingFeeDivisor()</code></a></li><li><a href="#IParaUniverse.getReportingFeeDivisor()"><code class="function-signature">getReportingFeeDivisor()</code></a></li><li><a href="#IParaUniverse.setOrigin(contract IUniverse)"><code class="function-signature">setOrigin(contract IUniverse _originUniverse)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaUniverse.getFeePot()"></a><code class="function-signature">getFeePot() <span class="return-arrow">→</span> <span class="return-type">contract IFeePot</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaUniverse.getReputationToken()"></a><code class="function-signature">getReputationToken() <span class="return-arrow">→</span> <span class="return-type">contract IV2ReputationToken</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaUniverse.originUniverse()"></a><code class="function-signature">originUniverse() <span class="return-arrow">→</span> <span class="return-type">contract IUniverse</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaUniverse.setMarketFinalized(contract IMarket,uint256)"></a><code class="function-signature">setMarketFinalized(contract IMarket _market, uint256 _totalSupply) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaUniverse.withdraw(address,uint256,address)"></a><code class="function-signature">withdraw(address _recipient, uint256 _amount, address _market) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaUniverse.deposit(address,uint256,address)"></a><code class="function-signature">deposit(address _sender, uint256 _amount, address _market) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaUniverse.decrementOpenInterest(uint256)"></a><code class="function-signature">decrementOpenInterest(uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaUniverse.incrementOpenInterest(uint256)"></a><code class="function-signature">incrementOpenInterest(uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaUniverse.recordMarketCreatorFees(contract IMarket,uint256,address)"></a><code class="function-signature">recordMarketCreatorFees(contract IMarket _market, uint256 _marketCreatorFees, address _sourceAccount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaUniverse.getMarketOpenInterest(contract IMarket)"></a><code class="function-signature">getMarketOpenInterest(contract IMarket _market) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaUniverse.getOrCacheReportingFeeDivisor()"></a><code class="function-signature">getOrCacheReportingFeeDivisor() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaUniverse.getReportingFeeDivisor()"></a><code class="function-signature">getReportingFeeDivisor() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaUniverse.setOrigin(contract IUniverse)"></a><code class="function-signature">setOrigin(contract IUniverse _originUniverse)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+
+
 ### `IReportingParticipant`
 
 
@@ -1312,7 +1686,7 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IReputationToken.migrateOutByPayout(uint256[],uint256)"><code class="function-signature">migrateOutByPayout(uint256[] _payoutNumerators, uint256 _attotokens)</code></a></li><li><a href="#IReputationToken.migrateIn(address,uint256)"><code class="function-signature">migrateIn(address _reporter, uint256 _attotokens)</code></a></li><li><a href="#IReputationToken.trustedReportingParticipantTransfer(address,address,uint256)"><code class="function-signature">trustedReportingParticipantTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li><a href="#IReputationToken.trustedMarketTransfer(address,address,uint256)"><code class="function-signature">trustedMarketTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li><a href="#IReputationToken.trustedUniverseTransfer(address,address,uint256)"><code class="function-signature">trustedUniverseTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li><a href="#IReputationToken.trustedDisputeWindowTransfer(address,address,uint256)"><code class="function-signature">trustedDisputeWindowTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li><a href="#IReputationToken.getUniverse()"><code class="function-signature">getUniverse()</code></a></li><li><a href="#IReputationToken.getTotalMigrated()"><code class="function-signature">getTotalMigrated()</code></a></li><li><a href="#IReputationToken.getTotalTheoreticalSupply()"><code class="function-signature">getTotalTheoreticalSupply()</code></a></li><li><a href="#IReputationToken.mintForReportingParticipant(uint256)"><code class="function-signature">mintForReportingParticipant(uint256 _amountMigrated)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.balanceOf(address)"><code class="function-signature">balanceOf(address owner)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.transfer(address,uint256)"><code class="function-signature">transfer(address to, uint256 amount)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address from, address to, uint256 amount)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.approve(address,uint256)"><code class="function-signature">approve(address spender, uint256 amount)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.allowance(address,address)"><code class="function-signature">allowance(address owner, address spender)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="erc20proxy1155#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IReputationToken.migrateOutByPayout(uint256[],uint256)"><code class="function-signature">migrateOutByPayout(uint256[] _payoutNumerators, uint256 _attotokens)</code></a></li><li><a href="#IReputationToken.migrateIn(address,uint256)"><code class="function-signature">migrateIn(address _reporter, uint256 _attotokens)</code></a></li><li><a href="#IReputationToken.trustedReportingParticipantTransfer(address,address,uint256)"><code class="function-signature">trustedReportingParticipantTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li><a href="#IReputationToken.trustedMarketTransfer(address,address,uint256)"><code class="function-signature">trustedMarketTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li><a href="#IReputationToken.trustedUniverseTransfer(address,address,uint256)"><code class="function-signature">trustedUniverseTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li><a href="#IReputationToken.trustedDisputeWindowTransfer(address,address,uint256)"><code class="function-signature">trustedDisputeWindowTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li><a href="#IReputationToken.getUniverse()"><code class="function-signature">getUniverse()</code></a></li><li><a href="#IReputationToken.getTotalMigrated()"><code class="function-signature">getTotalMigrated()</code></a></li><li><a href="#IReputationToken.getTotalTheoreticalSupply()"><code class="function-signature">getTotalTheoreticalSupply()</code></a></li><li><a href="#IReputationToken.mintForReportingParticipant(uint256)"><code class="function-signature">mintForReportingParticipant(uint256 _amountMigrated)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.balanceOf(address)"><code class="function-signature">balanceOf(address owner)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.transfer(address,uint256)"><code class="function-signature">transfer(address to, uint256 amount)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address from, address to, uint256 amount)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.approve(address,uint256)"><code class="function-signature">approve(address spender, uint256 amount)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.allowance(address,address)"><code class="function-signature">allowance(address owner, address spender)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="wrappedShareToken#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
 
 
 
@@ -1382,7 +1756,7 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IShareToken.initialize(contract IAugur)"><code class="function-signature">initialize(contract IAugur _augur)</code></a></li><li><a href="#IShareToken.initializeMarket(contract IMarket,uint256,uint256)"><code class="function-signature">initializeMarket(contract IMarket _market, uint256 _numOutcomes, uint256 _numTicks)</code></a></li><li><a href="#IShareToken.unsafeTransferFrom(address,address,uint256,uint256)"><code class="function-signature">unsafeTransferFrom(address _from, address _to, uint256 _id, uint256 _value)</code></a></li><li><a href="#IShareToken.unsafeBatchTransferFrom(address,address,uint256[],uint256[])"><code class="function-signature">unsafeBatchTransferFrom(address _from, address _to, uint256[] _ids, uint256[] _values)</code></a></li><li><a href="#IShareToken.claimTradingProceeds(contract IMarket,address,bytes32)"><code class="function-signature">claimTradingProceeds(contract IMarket _market, address _shareHolder, bytes32 _fingerprint)</code></a></li><li><a href="#IShareToken.getMarket(uint256)"><code class="function-signature">getMarket(uint256 _tokenId)</code></a></li><li><a href="#IShareToken.getOutcome(uint256)"><code class="function-signature">getOutcome(uint256 _tokenId)</code></a></li><li><a href="#IShareToken.getTokenId(contract IMarket,uint256)"><code class="function-signature">getTokenId(contract IMarket _market, uint256 _outcome)</code></a></li><li><a href="#IShareToken.getTokenIds(contract IMarket,uint256[])"><code class="function-signature">getTokenIds(contract IMarket _market, uint256[] _outcomes)</code></a></li><li><a href="#IShareToken.buyCompleteSets(contract IMarket,address,uint256)"><code class="function-signature">buyCompleteSets(contract IMarket _market, address _account, uint256 _amount)</code></a></li><li><a href="#IShareToken.buyCompleteSetsForTrade(contract IMarket,uint256,uint256,address,address)"><code class="function-signature">buyCompleteSetsForTrade(contract IMarket _market, uint256 _amount, uint256 _longOutcome, address _longRecipient, address _shortRecipient)</code></a></li><li><a href="#IShareToken.sellCompleteSets(contract IMarket,address,address,uint256,bytes32)"><code class="function-signature">sellCompleteSets(contract IMarket _market, address _holder, address _recipient, uint256 _amount, bytes32 _fingerprint)</code></a></li><li><a href="#IShareToken.sellCompleteSetsForTrade(contract IMarket,uint256,uint256,address,address,address,address,uint256,address,bytes32)"><code class="function-signature">sellCompleteSetsForTrade(contract IMarket _market, uint256 _outcome, uint256 _amount, address _shortParticipant, address _longParticipant, address _shortRecipient, address _longRecipient, uint256 _price, address _sourceAccount, bytes32 _fingerprint)</code></a></li><li><a href="#IShareToken.totalSupplyForMarketOutcome(contract IMarket,uint256)"><code class="function-signature">totalSupplyForMarketOutcome(contract IMarket _market, uint256 _outcome)</code></a></li><li><a href="#IShareToken.balanceOfMarketOutcome(contract IMarket,uint256,address)"><code class="function-signature">balanceOfMarketOutcome(contract IMarket _market, uint256 _outcome, address _account)</code></a></li><li><a href="#IShareToken.lowestBalanceOfMarketOutcomes(contract IMarket,uint256[],address)"><code class="function-signature">lowestBalanceOfMarketOutcomes(contract IMarket _market, uint256[] _outcomes, address _account)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC1155.safeTransferFrom(address,address,uint256,uint256,bytes)"><code class="function-signature">safeTransferFrom(address from, address to, uint256 id, uint256 value, bytes data)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC1155.safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)"><code class="function-signature">safeBatchTransferFrom(address from, address to, uint256[] ids, uint256[] values, bytes data)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC1155.setApprovalForAll(address,bool)"><code class="function-signature">setApprovalForAll(address operator, bool approved)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC1155.isApprovedForAll(address,address)"><code class="function-signature">isApprovedForAll(address owner, address operator)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC1155.balanceOf(address,uint256)"><code class="function-signature">balanceOf(address owner, uint256 id)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC1155.totalSupply(uint256)"><code class="function-signature">totalSupply(uint256 id)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC1155.balanceOfBatch(address[],uint256[])"><code class="function-signature">balanceOfBatch(address[] owners, uint256[] ids)</code></a></li><li class="inherited"><a href="erc20proxy1155#ITyped.getTypeName()"><code class="function-signature">getTypeName()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="erc20proxy1155#IERC1155.TransferSingle(address,address,address,uint256,uint256)"><code class="function-signature">TransferSingle(address operator, address from, address to, uint256 id, uint256 value)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC1155.TransferBatch(address,address,address,uint256[],uint256[])"><code class="function-signature">TransferBatch(address operator, address from, address to, uint256[] ids, uint256[] values)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC1155.ApprovalForAll(address,address,bool)"><code class="function-signature">ApprovalForAll(address owner, address operator, bool approved)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC1155.URI(string,uint256)"><code class="function-signature">URI(string value, uint256 id)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IShareToken.initialize(contract IAugur)"><code class="function-signature">initialize(contract IAugur _augur)</code></a></li><li><a href="#IShareToken.initializeMarket(contract IMarket,uint256,uint256)"><code class="function-signature">initializeMarket(contract IMarket _market, uint256 _numOutcomes, uint256 _numTicks)</code></a></li><li><a href="#IShareToken.unsafeTransferFrom(address,address,uint256,uint256)"><code class="function-signature">unsafeTransferFrom(address _from, address _to, uint256 _id, uint256 _value)</code></a></li><li><a href="#IShareToken.unsafeBatchTransferFrom(address,address,uint256[],uint256[])"><code class="function-signature">unsafeBatchTransferFrom(address _from, address _to, uint256[] _ids, uint256[] _values)</code></a></li><li><a href="#IShareToken.claimTradingProceeds(contract IMarket,address,bytes32)"><code class="function-signature">claimTradingProceeds(contract IMarket _market, address _shareHolder, bytes32 _fingerprint)</code></a></li><li><a href="#IShareToken.getMarket(uint256)"><code class="function-signature">getMarket(uint256 _tokenId)</code></a></li><li><a href="#IShareToken.getOutcome(uint256)"><code class="function-signature">getOutcome(uint256 _tokenId)</code></a></li><li><a href="#IShareToken.getTokenId(contract IMarket,uint256)"><code class="function-signature">getTokenId(contract IMarket _market, uint256 _outcome)</code></a></li><li><a href="#IShareToken.getTokenIds(contract IMarket,uint256[])"><code class="function-signature">getTokenIds(contract IMarket _market, uint256[] _outcomes)</code></a></li><li><a href="#IShareToken.buyCompleteSets(contract IMarket,address,uint256)"><code class="function-signature">buyCompleteSets(contract IMarket _market, address _account, uint256 _amount)</code></a></li><li><a href="#IShareToken.buyCompleteSetsForTrade(contract IMarket,uint256,uint256,address,address)"><code class="function-signature">buyCompleteSetsForTrade(contract IMarket _market, uint256 _amount, uint256 _longOutcome, address _longRecipient, address _shortRecipient)</code></a></li><li><a href="#IShareToken.sellCompleteSets(contract IMarket,address,address,uint256,bytes32)"><code class="function-signature">sellCompleteSets(contract IMarket _market, address _holder, address _recipient, uint256 _amount, bytes32 _fingerprint)</code></a></li><li><a href="#IShareToken.sellCompleteSetsForTrade(contract IMarket,uint256,uint256,address,address,address,address,uint256,address,bytes32)"><code class="function-signature">sellCompleteSetsForTrade(contract IMarket _market, uint256 _outcome, uint256 _amount, address _shortParticipant, address _longParticipant, address _shortRecipient, address _longRecipient, uint256 _price, address _sourceAccount, bytes32 _fingerprint)</code></a></li><li><a href="#IShareToken.totalSupplyForMarketOutcome(contract IMarket,uint256)"><code class="function-signature">totalSupplyForMarketOutcome(contract IMarket _market, uint256 _outcome)</code></a></li><li><a href="#IShareToken.balanceOfMarketOutcome(contract IMarket,uint256,address)"><code class="function-signature">balanceOfMarketOutcome(contract IMarket _market, uint256 _outcome, address _account)</code></a></li><li><a href="#IShareToken.lowestBalanceOfMarketOutcomes(contract IMarket,uint256[],address)"><code class="function-signature">lowestBalanceOfMarketOutcomes(contract IMarket _market, uint256[] _outcomes, address _account)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC1155.safeTransferFrom(address,address,uint256,uint256,bytes)"><code class="function-signature">safeTransferFrom(address from, address to, uint256 id, uint256 value, bytes data)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC1155.safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)"><code class="function-signature">safeBatchTransferFrom(address from, address to, uint256[] ids, uint256[] values, bytes data)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC1155.setApprovalForAll(address,bool)"><code class="function-signature">setApprovalForAll(address operator, bool approved)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC1155.isApprovedForAll(address,address)"><code class="function-signature">isApprovedForAll(address owner, address operator)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC1155.balanceOf(address,uint256)"><code class="function-signature">balanceOf(address owner, uint256 id)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC1155.totalSupply(uint256)"><code class="function-signature">totalSupply(uint256 id)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC1155.balanceOfBatch(address[],uint256[])"><code class="function-signature">balanceOfBatch(address[] owners, uint256[] ids)</code></a></li><li class="inherited"><a href="wrappedShareToken#ITyped.getTypeName()"><code class="function-signature">getTypeName()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="wrappedShareToken#IERC1155.TransferSingle(address,address,address,uint256,uint256)"><code class="function-signature">TransferSingle(address operator, address from, address to, uint256 id, uint256 value)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC1155.TransferBatch(address,address,address,uint256[],uint256[])"><code class="function-signature">TransferBatch(address operator, address from, address to, uint256[] ids, uint256[] values)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC1155.ApprovalForAll(address,address,bool)"><code class="function-signature">ApprovalForAll(address owner, address operator, bool approved)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC1155.URI(string,uint256)"><code class="function-signature">URI(string value, uint256 id)</code></a></li></ul></div>
 
 
 
@@ -2046,7 +2420,7 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IV2ReputationToken.parentUniverse()"><code class="function-signature">parentUniverse()</code></a></li><li><a href="#IV2ReputationToken.burnForMarket(uint256)"><code class="function-signature">burnForMarket(uint256 _amountToBurn)</code></a></li><li><a href="#IV2ReputationToken.mintForWarpSync(uint256,address)"><code class="function-signature">mintForWarpSync(uint256 _amountToMint, address _target)</code></a></li><li><a href="#IV2ReputationToken.getLegacyRepToken()"><code class="function-signature">getLegacyRepToken()</code></a></li><li><a href="#IV2ReputationToken.symbol()"><code class="function-signature">symbol()</code></a></li><li class="inherited"><a href="erc20proxy1155#IReputationToken.migrateOutByPayout(uint256[],uint256)"><code class="function-signature">migrateOutByPayout(uint256[] _payoutNumerators, uint256 _attotokens)</code></a></li><li class="inherited"><a href="erc20proxy1155#IReputationToken.migrateIn(address,uint256)"><code class="function-signature">migrateIn(address _reporter, uint256 _attotokens)</code></a></li><li class="inherited"><a href="erc20proxy1155#IReputationToken.trustedReportingParticipantTransfer(address,address,uint256)"><code class="function-signature">trustedReportingParticipantTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="erc20proxy1155#IReputationToken.trustedMarketTransfer(address,address,uint256)"><code class="function-signature">trustedMarketTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="erc20proxy1155#IReputationToken.trustedUniverseTransfer(address,address,uint256)"><code class="function-signature">trustedUniverseTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="erc20proxy1155#IReputationToken.trustedDisputeWindowTransfer(address,address,uint256)"><code class="function-signature">trustedDisputeWindowTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="erc20proxy1155#IReputationToken.getUniverse()"><code class="function-signature">getUniverse()</code></a></li><li class="inherited"><a href="erc20proxy1155#IReputationToken.getTotalMigrated()"><code class="function-signature">getTotalMigrated()</code></a></li><li class="inherited"><a href="erc20proxy1155#IReputationToken.getTotalTheoreticalSupply()"><code class="function-signature">getTotalTheoreticalSupply()</code></a></li><li class="inherited"><a href="erc20proxy1155#IReputationToken.mintForReportingParticipant(uint256)"><code class="function-signature">mintForReportingParticipant(uint256 _amountMigrated)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.balanceOf(address)"><code class="function-signature">balanceOf(address owner)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.transfer(address,uint256)"><code class="function-signature">transfer(address to, uint256 amount)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address from, address to, uint256 amount)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.approve(address,uint256)"><code class="function-signature">approve(address spender, uint256 amount)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.allowance(address,address)"><code class="function-signature">allowance(address owner, address spender)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="erc20proxy1155#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="erc20proxy1155#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IV2ReputationToken.parentUniverse()"><code class="function-signature">parentUniverse()</code></a></li><li><a href="#IV2ReputationToken.burnForMarket(uint256)"><code class="function-signature">burnForMarket(uint256 _amountToBurn)</code></a></li><li><a href="#IV2ReputationToken.mintForWarpSync(uint256,address)"><code class="function-signature">mintForWarpSync(uint256 _amountToMint, address _target)</code></a></li><li><a href="#IV2ReputationToken.getLegacyRepToken()"><code class="function-signature">getLegacyRepToken()</code></a></li><li><a href="#IV2ReputationToken.symbol()"><code class="function-signature">symbol()</code></a></li><li class="inherited"><a href="wrappedShareToken#IReputationToken.migrateOutByPayout(uint256[],uint256)"><code class="function-signature">migrateOutByPayout(uint256[] _payoutNumerators, uint256 _attotokens)</code></a></li><li class="inherited"><a href="wrappedShareToken#IReputationToken.migrateIn(address,uint256)"><code class="function-signature">migrateIn(address _reporter, uint256 _attotokens)</code></a></li><li class="inherited"><a href="wrappedShareToken#IReputationToken.trustedReportingParticipantTransfer(address,address,uint256)"><code class="function-signature">trustedReportingParticipantTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="wrappedShareToken#IReputationToken.trustedMarketTransfer(address,address,uint256)"><code class="function-signature">trustedMarketTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="wrappedShareToken#IReputationToken.trustedUniverseTransfer(address,address,uint256)"><code class="function-signature">trustedUniverseTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="wrappedShareToken#IReputationToken.trustedDisputeWindowTransfer(address,address,uint256)"><code class="function-signature">trustedDisputeWindowTransfer(address _source, address _destination, uint256 _attotokens)</code></a></li><li class="inherited"><a href="wrappedShareToken#IReputationToken.getUniverse()"><code class="function-signature">getUniverse()</code></a></li><li class="inherited"><a href="wrappedShareToken#IReputationToken.getTotalMigrated()"><code class="function-signature">getTotalMigrated()</code></a></li><li class="inherited"><a href="wrappedShareToken#IReputationToken.getTotalTheoreticalSupply()"><code class="function-signature">getTotalTheoreticalSupply()</code></a></li><li class="inherited"><a href="wrappedShareToken#IReputationToken.mintForReportingParticipant(uint256)"><code class="function-signature">mintForReportingParticipant(uint256 _amountMigrated)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.balanceOf(address)"><code class="function-signature">balanceOf(address owner)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.transfer(address,uint256)"><code class="function-signature">transfer(address to, uint256 amount)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address from, address to, uint256 amount)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.approve(address,uint256)"><code class="function-signature">approve(address spender, uint256 amount)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.allowance(address,address)"><code class="function-signature">allowance(address owner, address spender)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="wrappedShareToken#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
 
 
 
@@ -2075,6 +2449,28 @@ MUST emit when the URI is updated for a token ID.
 
 
 <h4><a class="anchor" aria-hidden="true" id="IV2ReputationToken.symbol()"></a><code class="function-signature">symbol() <span class="return-arrow">→</span> <span class="return-type">string</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+
+
+### `Initializable`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Initializable.endInitialization()"></a><code class="function-signature">endInitialization()</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Initializable.getInitialized()"></a><code class="function-signature">getInitialized() <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
 
 
@@ -2121,6 +2517,42 @@ MUST emit when the URI is updated for a token ID.
 
 
 <h4><a class="anchor" aria-hidden="true" id="Order.saveOrder(struct Order.Data,bytes32,contract IOrders)"></a><code class="function-signature">saveOrder(struct Order.Data _orderData, bytes32 _tradeGroupId, contract IOrders _orders) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+
+
+### `Ownable`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Ownable.constructor()"><code class="function-signature">constructor()</code></a></li><li><a href="#Ownable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li><a href="#Ownable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li><li><a href="#Ownable.onTransferOwnership(address,address)"><code class="function-signature">onTransferOwnership(address, address)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Ownable.constructor()"></a><code class="function-signature">constructor()</code><span class="function-visibility">public</span></h4>
+
+The Ownable constructor sets the original `owner` of the contract to the sender
+account.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Ownable.getOwner()"></a><code class="function-signature">getOwner() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Ownable.transferOwnership(address)"></a><code class="function-signature">transferOwnership(address _newOwner) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+Allows the current owner to transfer control of the contract to a newOwner.
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Ownable.onTransferOwnership(address,address)"></a><code class="function-signature">onTransferOwnership(address, address)</code><span class="function-visibility">internal</span></h4>
 
 
 
@@ -2216,117 +2648,267 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-### `CloneFactory2`
+### `TokenId`
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#CloneFactory2.createClone2(address,uint256)"><code class="function-signature">createClone2(address target, uint256 salt)</code></a></li><li><a href="#CloneFactory2.clone2Address(address,uint256,address)"><code class="function-signature">clone2Address(address target, uint256 salt, address creator)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#TokenId.getTokenId(address,uint256)"><code class="function-signature">getTokenId(address _market, uint256 _outcome)</code></a></li><li><a href="#TokenId.getTokenId(contract IMarket,uint256)"><code class="function-signature">getTokenId(contract IMarket _market, uint256 _outcome)</code></a></li><li><a href="#TokenId.getTokenIds(address,uint256[])"><code class="function-signature">getTokenIds(address _market, uint256[] _outcomes)</code></a></li><li><a href="#TokenId.getTokenIds(contract IMarket,uint256[])"><code class="function-signature">getTokenIds(contract IMarket _market, uint256[] _outcomes)</code></a></li><li><a href="#TokenId.unpackTokenId(uint256)"><code class="function-signature">unpackTokenId(uint256 _tokenId)</code></a></li></ul></div>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="CloneFactory2.createClone2(address,uint256)"></a><code class="function-signature">createClone2(address target, uint256 salt) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="TokenId.getTokenId(address,uint256)"></a><code class="function-signature">getTokenId(address _market, uint256 _outcome) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="CloneFactory2.clone2Address(address,uint256,address)"></a><code class="function-signature">clone2Address(address target, uint256 salt, address creator) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="TokenId.getTokenId(contract IMarket,uint256)"></a><code class="function-signature">getTokenId(contract IMarket _market, uint256 _outcome) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
 
 
 
 
 
+<h4><a class="anchor" aria-hidden="true" id="TokenId.getTokenIds(address,uint256[])"></a><code class="function-signature">getTokenIds(address _market, uint256[] _outcomes) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">internal</span></h4>
 
 
-### `ERC20Proxy1155Nexus`
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ERC20Proxy1155Nexus.constructor(address,contract IShareToken)"><code class="function-signature">constructor(address _proxyToClone, contract IShareToken _target1155)</code></a></li><li><a href="#ERC20Proxy1155Nexus.newERC20(uint256)"><code class="function-signature">newERC20(uint256 _tokenId)</code></a></li><li><a href="#ERC20Proxy1155Nexus.calculateERC20(uint256)"><code class="function-signature">calculateERC20(uint256 _tokenId)</code></a></li><li><a href="#ERC20Proxy1155Nexus.newERC20s(uint256[])"><code class="function-signature">newERC20s(uint256[] _tokenIds)</code></a></li><li><a href="#ERC20Proxy1155Nexus.transfer(contract IERC20Proxy1155,address,address,uint256)"><code class="function-signature">transfer(contract IERC20Proxy1155 _proxy, address _caller, address _to, uint256 _amount)</code></a></li><li><a href="#ERC20Proxy1155Nexus.transferFrom(contract IERC20Proxy1155,address,address,address,uint256)"><code class="function-signature">transferFrom(contract IERC20Proxy1155 _proxy, address _caller, address _from, address _to, uint256 _amount)</code></a></li><li><a href="#ERC20Proxy1155Nexus.approve(contract IERC20Proxy1155,address,address,uint256)"><code class="function-signature">approve(contract IERC20Proxy1155 _proxy, address _caller, address _spender, uint256 _amount)</code></a></li><li><a href="#ERC20Proxy1155Nexus.allowance(contract IERC20Proxy1155,address,address)"><code class="function-signature">allowance(contract IERC20Proxy1155 _proxy, address _owner, address _spender)</code></a></li><li><a href="#ERC20Proxy1155Nexus._transfer(contract IERC20Proxy1155,address,address,uint256)"><code class="function-signature">_transfer(contract IERC20Proxy1155 _proxy, address _from, address _to, uint256 _amount)</code></a></li><li><a href="#ERC20Proxy1155Nexus._approve(contract IERC20Proxy1155,address,address,uint256)"><code class="function-signature">_approve(contract IERC20Proxy1155 _proxy, address _owner, address _spender, uint256 _amount)</code></a></li><li><a href="#ERC20Proxy1155Nexus._gate(contract IERC20Proxy1155,uint256)"><code class="function-signature">_gate(contract IERC20Proxy1155 _proxy, uint256 _tokenId)</code></a></li><li><a href="#ERC20Proxy1155Nexus.getProxy(uint256)"><code class="function-signature">getProxy(uint256 _tokenId)</code></a></li><li><a href="#ERC20Proxy1155Nexus.getProxyAddress(uint256)"><code class="function-signature">getProxyAddress(uint256 _tokenId)</code></a></li><li><a href="#ERC20Proxy1155Nexus.isContract(address)"><code class="function-signature">isContract(address addr)</code></a></li><li class="inherited"><a href="erc20proxy1155#CloneFactory2.createClone2(address,uint256)"><code class="function-signature">createClone2(address target, uint256 salt)</code></a></li><li class="inherited"><a href="erc20proxy1155#CloneFactory2.clone2Address(address,uint256,address)"><code class="function-signature">clone2Address(address target, uint256 salt, address creator)</code></a></li></ul></div>
+<h4><a class="anchor" aria-hidden="true" id="TokenId.getTokenIds(contract IMarket,uint256[])"></a><code class="function-signature">getTokenIds(contract IMarket _market, uint256[] _outcomes) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">internal</span></h4>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ERC20Proxy1155Nexus.constructor(address,contract IShareToken)"></a><code class="function-signature">constructor(address _proxyToClone, contract IShareToken _target1155)</code><span class="function-visibility">public</span></h4>
 
 
+<h4><a class="anchor" aria-hidden="true" id="TokenId.unpackTokenId(uint256)"></a><code class="function-signature">unpackTokenId(uint256 _tokenId) <span class="return-arrow">→</span> <span class="return-type">address,uint256</span></code><span class="function-visibility">internal</span></h4>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ERC20Proxy1155Nexus.newERC20(uint256)"></a><code class="function-signature">newERC20(uint256 _tokenId) <span class="return-arrow">→</span> <span class="return-type">contract IERC20Proxy1155</span></code><span class="function-visibility">public</span></h4>
 
 
 
 
+### `WrappedShareToken`
 
-<h4><a class="anchor" aria-hidden="true" id="ERC20Proxy1155Nexus.calculateERC20(uint256)"></a><code class="function-signature">calculateERC20(uint256 _tokenId) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">public</span></h4>
 
 
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#WrappedShareToken.initialize(contract IParaShareToken,uint256,string)"><code class="function-signature">initialize(contract IParaShareToken _shareToken, uint256 _tokenId, string _symbol)</code></a></li><li><a href="#WrappedShareToken.wrapShares(address,uint256)"><code class="function-signature">wrapShares(address _recipient, uint256 _amountIn)</code></a></li><li><a href="#WrappedShareToken.trustedWrapShares(address,uint256)"><code class="function-signature">trustedWrapShares(address _recipient, uint256 _amountIn)</code></a></li><li><a href="#WrappedShareToken.unwrapShares(address,address,uint256)"><code class="function-signature">unwrapShares(address _holder, address _recipient, uint256 _amountOut)</code></a></li><li><a href="#WrappedShareToken.claimTradingProceeds(address)"><code class="function-signature">claimTradingProceeds(address _shareHolder)</code></a></li><li><a href="#WrappedShareToken.onERC1155Received(address,address,uint256,uint256,bytes)"><code class="function-signature">onERC1155Received(address operator, address from, uint256 id, uint256 value, bytes data)</code></a></li><li><a href="#WrappedShareToken.onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"><code class="function-signature">onERC1155BatchReceived(address operator, address from, uint256[] ids, uint256[] values, bytes data)</code></a></li><li><a href="#WrappedShareToken.onTokenTransfer(address,address,uint256)"><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code></a></li><li><a href="#WrappedShareToken.onTransferOwnership(address,address)"><code class="function-signature">onTransferOwnership(address, address)</code></a></li><li><a href="#WrappedShareToken.getMarket()"><code class="function-signature">getMarket()</code></a></li><li><a href="#WrappedShareToken.getOutcome()"><code class="function-signature">getOutcome()</code></a></li><li class="inherited"><a href="wrappedShareToken#ERC1155Receiver.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="wrappedShareToken#ERC165.supportsInterface(bytes4)"><code class="function-signature">supportsInterface(bytes4 interfaceId)</code></a></li><li class="inherited"><a href="wrappedShareToken#ERC165._registerInterface(bytes4)"><code class="function-signature">_registerInterface(bytes4 interfaceId)</code></a></li><li class="inherited"><a href="wrappedShareToken#Ownable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li class="inherited"><a href="wrappedShareToken#Ownable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li><li class="inherited"><a href="wrappedShareToken#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="wrappedShareToken#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li><li class="inherited"><a href="wrappedShareToken#ERC20.balanceOf(address)"><code class="function-signature">balanceOf(address _account)</code></a></li><li class="inherited"><a href="wrappedShareToken#ERC20.transfer(address,uint256)"><code class="function-signature">transfer(address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="wrappedShareToken#ERC20.allowance(address,address)"><code class="function-signature">allowance(address _owner, address _spender)</code></a></li><li class="inherited"><a href="wrappedShareToken#ERC20.approve(address,uint256)"><code class="function-signature">approve(address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="wrappedShareToken#ERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="wrappedShareToken#ERC20.increaseAllowance(address,uint256)"><code class="function-signature">increaseAllowance(address _spender, uint256 _addedValue)</code></a></li><li class="inherited"><a href="wrappedShareToken#ERC20.decreaseAllowance(address,uint256)"><code class="function-signature">decreaseAllowance(address _spender, uint256 _subtractedValue)</code></a></li><li class="inherited"><a href="wrappedShareToken#ERC20._transfer(address,address,uint256)"><code class="function-signature">_transfer(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="wrappedShareToken#ERC20._mint(address,uint256)"><code class="function-signature">_mint(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="wrappedShareToken#ERC20._burn(address,uint256)"><code class="function-signature">_burn(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="wrappedShareToken#ERC20._approve(address,address,uint256)"><code class="function-signature">_approve(address _owner, address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="wrappedShareToken#ERC20._burnFrom(address,uint256)"><code class="function-signature">_burnFrom(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="wrappedShareToken#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="wrappedShareToken#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ERC20Proxy1155Nexus.newERC20s(uint256[])"></a><code class="function-signature">newERC20s(uint256[] _tokenIds) <span class="return-arrow">→</span> <span class="return-type">contract IERC20Proxy1155[]</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="WrappedShareToken.initialize(contract IParaShareToken,uint256,string)"></a><code class="function-signature">initialize(contract IParaShareToken _shareToken, uint256 _tokenId, string _symbol)</code><span class="function-visibility">external</span></h4>
 
+sets values for
+transaction without giving individual approvals
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ERC20Proxy1155Nexus.transfer(contract IERC20Proxy1155,address,address,uint256)"></a><code class="function-signature">transfer(contract IERC20Proxy1155 _proxy, address _caller, address _to, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="WrappedShareToken.wrapShares(address,uint256)"></a><code class="function-signature">wrapShares(address _recipient, uint256 _amountIn)</code><span class="function-visibility">public</span></h4>
 
+A function that gets ERC1155s and mints ERC20s
+Requirements: User must have called setApprovalForAll for this contract
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ERC20Proxy1155Nexus.transferFrom(contract IERC20Proxy1155,address,address,address,uint256)"></a><code class="function-signature">transferFrom(contract IERC20Proxy1155 _proxy, address _caller, address _from, address _to, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
+<h4><a class="anchor" aria-hidden="true" id="WrappedShareToken.trustedWrapShares(address,uint256)"></a><code class="function-signature">trustedWrapShares(address _recipient, uint256 _amountIn)</code><span class="function-visibility">external</span></h4>
 
+Used by the WrappedShareTokenFactory to account for shares it has transferred
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ERC20Proxy1155Nexus.approve(contract IERC20Proxy1155,address,address,uint256)"></a><code class="function-signature">approve(contract IERC20Proxy1155 _proxy, address _caller, address _spender, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
 
+<h4><a class="anchor" aria-hidden="true" id="WrappedShareToken.unwrapShares(address,address,uint256)"></a><code class="function-signature">unwrapShares(address _holder, address _recipient, uint256 _amountOut)</code><span class="function-visibility">public</span></h4>
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ERC20Proxy1155Nexus.allowance(contract IERC20Proxy1155,address,address)"></a><code class="function-signature">allowance(contract IERC20Proxy1155 _proxy, address _owner, address _spender) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
 
+<h4><a class="anchor" aria-hidden="true" id="WrappedShareToken.claimTradingProceeds(address)"></a><code class="function-signature">claimTradingProceeds(address _shareHolder)</code><span class="function-visibility">public</span></h4>
 
+Claims proceeds for the the total balance and sends portion to the shareholder
+Caller must be approved to spend the shares out of the `_shareHolder` account
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ERC20Proxy1155Nexus._transfer(contract IERC20Proxy1155,address,address,uint256)"></a><code class="function-signature">_transfer(contract IERC20Proxy1155 _proxy, address _from, address _to, uint256 _amount)</code><span class="function-visibility">internal</span></h4>
 
+<h4><a class="anchor" aria-hidden="true" id="WrappedShareToken.onERC1155Received(address,address,uint256,uint256,bytes)"></a><code class="function-signature">onERC1155Received(address operator, address from, uint256 id, uint256 value, bytes data) <span class="return-arrow">→</span> <span class="return-type">bytes4</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ERC20Proxy1155Nexus._approve(contract IERC20Proxy1155,address,address,uint256)"></a><code class="function-signature">_approve(contract IERC20Proxy1155 _proxy, address _owner, address _spender, uint256 _amount)</code><span class="function-visibility">internal</span></h4>
 
+<h4><a class="anchor" aria-hidden="true" id="WrappedShareToken.onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"></a><code class="function-signature">onERC1155BatchReceived(address operator, address from, uint256[] ids, uint256[] values, bytes data) <span class="return-arrow">→</span> <span class="return-type">bytes4</span></code><span class="function-visibility">external</span></h4>
 
+Handles the receipt of a multiple ERC1155 token types. This function
+is called at the end of a `safeBatchTransferFrom` after the balances have
+been updated. To accept the transfer(s), this must return
+`bytes4(keccak256(&quot;onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)&quot;))`
+(i.e. 0xbc197c81, or its own function selector).
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ERC20Proxy1155Nexus._gate(contract IERC20Proxy1155,uint256)"></a><code class="function-signature">_gate(contract IERC20Proxy1155 _proxy, uint256 _tokenId)</code><span class="function-visibility">internal</span></h4>
 
+<h4><a class="anchor" aria-hidden="true" id="WrappedShareToken.onTokenTransfer(address,address,uint256)"></a><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code><span class="function-visibility">internal</span></h4>
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ERC20Proxy1155Nexus.getProxy(uint256)"></a><code class="function-signature">getProxy(uint256 _tokenId) <span class="return-arrow">→</span> <span class="return-type">contract IERC20Proxy1155</span></code><span class="function-visibility">public</span></h4>
 
+<h4><a class="anchor" aria-hidden="true" id="WrappedShareToken.onTransferOwnership(address,address)"></a><code class="function-signature">onTransferOwnership(address, address)</code><span class="function-visibility">internal</span></h4>
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ERC20Proxy1155Nexus.getProxyAddress(uint256)"></a><code class="function-signature">getProxyAddress(uint256 _tokenId) <span class="return-arrow">→</span> <span class="return-type">contract IERC20Proxy1155</span></code><span class="function-visibility">public</span></h4>
 
+<h4><a class="anchor" aria-hidden="true" id="WrappedShareToken.getMarket()"></a><code class="function-signature">getMarket() <span class="return-arrow">→</span> <span class="return-type">contract IMarket</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ERC20Proxy1155Nexus.isContract(address)"></a><code class="function-signature">isContract(address addr) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
 
+<h4><a class="anchor" aria-hidden="true" id="WrappedShareToken.getOutcome()"></a><code class="function-signature">getOutcome() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
 
+
+
+
+
+
+
+### `ContractExists`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ContractExists.exists(address)"><code class="function-signature">exists(address _address)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ContractExists.exists(address)"></a><code class="function-signature">exists(address _address) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+
+
+### `WrappedShareTokenFactory`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#WrappedShareTokenFactory.constructor(contract IParaShareToken)"><code class="function-signature">constructor(contract IParaShareToken _paraShareToken)</code></a></li><li><a href="#WrappedShareTokenFactory.getOrCreateWrappedShareToken(uint256,string)"><code class="function-signature">getOrCreateWrappedShareToken(uint256 _tokenId, string _symbol)</code></a></li><li><a href="#WrappedShareTokenFactory.getOrCreateWrappedShareTokens(uint256[],string[])"><code class="function-signature">getOrCreateWrappedShareTokens(uint256[] _tokenIds, string[] _symbols)</code></a></li><li><a href="#WrappedShareTokenFactory.wrapShares(uint256,string,address,uint256)"><code class="function-signature">wrapShares(uint256 _tokenId, string _symbol, address _account, uint256 _amount)</code></a></li><li><a href="#WrappedShareTokenFactory.unwrapShares(uint256,string,uint256)"><code class="function-signature">unwrapShares(uint256 _tokenId, string _symbol, uint256 _amount)</code></a></li><li><a href="#WrappedShareTokenFactory.unwrapAllShares(uint256,string)"><code class="function-signature">unwrapAllShares(uint256 _tokenId, string _symbol)</code></a></li><li><a href="#WrappedShareTokenFactory.wrapMultipleShares(uint256[],string[],address,uint256[])"><code class="function-signature">wrapMultipleShares(uint256[] _tokenIds, string[] _symbols, address _account, uint256[] _amounts)</code></a></li><li><a href="#WrappedShareTokenFactory.unwrapMultipleShares(uint256[],string[],uint256[])"><code class="function-signature">unwrapMultipleShares(uint256[] _tokenIds, string[] _symbols, uint256[] _amounts)</code></a></li><li><a href="#WrappedShareTokenFactory.publicBuyCompleteSets(contract IMarket,string[],uint256)"><code class="function-signature">publicBuyCompleteSets(contract IMarket _market, string[] _symbols, uint256 _amount)</code></a></li><li><a href="#WrappedShareTokenFactory.publicSellCompleteSets(contract IMarket,string[],uint256)"><code class="function-signature">publicSellCompleteSets(contract IMarket _market, string[] _symbols, uint256 _amount)</code></a></li><li><a href="#WrappedShareTokenFactory.calculateShareTokenAddress(uint256,string)"><code class="function-signature">calculateShareTokenAddress(uint256 _tokenId, string _symbol)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#WrappedShareTokenFactory.WrappedShareTokenCreated(contract IParaShareToken,uint256,address,string)"><code class="function-signature">WrappedShareTokenCreated(contract IParaShareToken shareToken, uint256 tokenId, address tokenAddress, string symbol)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="WrappedShareTokenFactory.constructor(contract IParaShareToken)"></a><code class="function-signature">constructor(contract IParaShareToken _paraShareToken)</code><span class="function-visibility">public</span></h4>
+
+sets value for {shareToken}
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="WrappedShareTokenFactory.getOrCreateWrappedShareToken(uint256,string)"></a><code class="function-signature">getOrCreateWrappedShareToken(uint256 _tokenId, string _symbol) <span class="return-arrow">→</span> <span class="return-type">contract WrappedShareToken</span></code><span class="function-visibility">public</span></h4>
+
+creates new ERC20 wrappers for a outcome of a market
+param _tokenId token id associated with a outcome of a market
+param _symbol symbol for the ERC20 wrapper
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="WrappedShareTokenFactory.getOrCreateWrappedShareTokens(uint256[],string[])"></a><code class="function-signature">getOrCreateWrappedShareTokens(uint256[] _tokenIds, string[] _symbols) <span class="return-arrow">→</span> <span class="return-type">contract WrappedShareToken[]</span></code><span class="function-visibility">public</span></h4>
+
+creates new ERC20 wrappers for multiple tokenIds
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="WrappedShareTokenFactory.wrapShares(uint256,string,address,uint256)"></a><code class="function-signature">wrapShares(uint256 _tokenId, string _symbol, address _account, uint256 _amount)</code><span class="function-visibility">public</span></h4>
+
+A function that wraps ERC1155s shareToken into ERC20s
+Requirements:
+-  msg.sender has setApprovalForAll to this contract
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="WrappedShareTokenFactory.unwrapShares(uint256,string,uint256)"></a><code class="function-signature">unwrapShares(uint256 _tokenId, string _symbol, uint256 _amount)</code><span class="function-visibility">public</span></h4>
+
+A function that burns ERC20s and gives back ERC1155s
+Requirements:
+- msg.sender has more than _amount of ERC20 tokens associated with _tokenId.
+- if the market has finalized then it is  advised that you call claim() on WrappedShareToken
+contract associated with the winning outcome
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="WrappedShareTokenFactory.unwrapAllShares(uint256,string)"></a><code class="function-signature">unwrapAllShares(uint256 _tokenId, string _symbol)</code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="WrappedShareTokenFactory.wrapMultipleShares(uint256[],string[],address,uint256[])"></a><code class="function-signature">wrapMultipleShares(uint256[] _tokenIds, string[] _symbols, address _account, uint256[] _amounts)</code><span class="function-visibility">public</span></h4>
+
+wraps multiple tokens 
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="WrappedShareTokenFactory.unwrapMultipleShares(uint256[],string[],uint256[])"></a><code class="function-signature">unwrapMultipleShares(uint256[] _tokenIds, string[] _symbols, uint256[] _amounts)</code><span class="function-visibility">public</span></h4>
+
+unwraps multiple tokens 
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="WrappedShareTokenFactory.publicBuyCompleteSets(contract IMarket,string[],uint256)"></a><code class="function-signature">publicBuyCompleteSets(contract IMarket _market, string[] _symbols, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="WrappedShareTokenFactory.publicSellCompleteSets(contract IMarket,string[],uint256)"></a><code class="function-signature">publicSellCompleteSets(contract IMarket _market, string[] _symbols, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="WrappedShareTokenFactory.calculateShareTokenAddress(uint256,string)"></a><code class="function-signature">calculateShareTokenAddress(uint256 _tokenId, string _symbol) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="WrappedShareTokenFactory.WrappedShareTokenCreated(contract IParaShareToken,uint256,address,string)"></a><code class="function-signature">WrappedShareTokenCreated(contract IParaShareToken shareToken, uint256 tokenId, address tokenAddress, string symbol)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+### `WrappedShareTokenFactoryFactory`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#WrappedShareTokenFactoryFactory.createWrappedShareTokenFactory(contract IParaShareToken)"><code class="function-signature">createWrappedShareTokenFactory(contract IParaShareToken _shareToken)</code></a></li><li><a href="#WrappedShareTokenFactoryFactory.getOrCreateWrappedShareTokenFactory(contract IParaShareToken)"><code class="function-signature">getOrCreateWrappedShareTokenFactory(contract IParaShareToken _shareToken)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#WrappedShareTokenFactoryFactory.WrappedShareTokenFactoryCreated(contract WrappedShareTokenFactory)"><code class="function-signature">WrappedShareTokenFactoryCreated(contract WrappedShareTokenFactory _wrappedShareTokenFactory)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="WrappedShareTokenFactoryFactory.createWrappedShareTokenFactory(contract IParaShareToken)"></a><code class="function-signature">createWrappedShareTokenFactory(contract IParaShareToken _shareToken) <span class="return-arrow">→</span> <span class="return-type">contract WrappedShareTokenFactory</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="WrappedShareTokenFactoryFactory.getOrCreateWrappedShareTokenFactory(contract IParaShareToken)"></a><code class="function-signature">getOrCreateWrappedShareTokenFactory(contract IParaShareToken _shareToken) <span class="return-arrow">→</span> <span class="return-type">contract WrappedShareTokenFactory</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="WrappedShareTokenFactoryFactory.WrappedShareTokenFactoryCreated(contract WrappedShareTokenFactory)"></a><code class="function-signature">WrappedShareTokenFactoryCreated(contract WrappedShareTokenFactory _wrappedShareTokenFactory)</code><span class="function-visibility"></span></h4>
 
 
 
