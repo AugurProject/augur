@@ -102,10 +102,10 @@ export const ClaimWinningsSection = () => {
         setCanClaimETH(false);
       }
     }
-    if (!canClaimETH && ETHTotals.hasWinnings) {
+    if (isLogged && !canClaimETH && ETHTotals.hasWinnings) {
         checkCanEthExit();
     }
-  }, [canClaimETH, setCanClaimETH, updateTransaction, transactions]);
+  }, [isLogged, canClaimETH, setCanClaimETH, updateTransaction, transactions]);
 
   return (
     <div className={Styles.ClaimableWinningsSection}>

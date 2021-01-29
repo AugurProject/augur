@@ -111,6 +111,7 @@ const ModalAddLiquidity = ({
   const {
     userInfo: { balances },
     transactions,
+    isLogged,
     paraConfig,
     processed: { cashes },
     loginAccount,
@@ -183,14 +184,14 @@ const ModalAddLiquidity = ({
       }
     }
 
-    if (!canAddLiquidity) {
+    if (isLogged && !canAddLiquidity) {
       if (isETH) {
         setCanAddLiquidity(true);
       } else {
         checkCanCashAdd();
       }
     }
-  }, [canAddLiquidity, setCanAddLiquidity, updateTransaction, transactions]);
+  }, [isLogged, canAddLiquidity, setCanAddLiquidity, updateTransaction, transactions]);
 
   useEffect(() => {
     const checkCanEthRemove = async() => {
@@ -202,14 +203,14 @@ const ModalAddLiquidity = ({
       }
     }
 
-    if (!canRemoveLiquidity) {
+    if (isLogged && !canRemoveLiquidity) {
       if (isETH) {
         checkCanEthRemove();
       } else {
         setCanRemoveLiquidity(true);
       }
     }
-  }, [canRemoveLiquidity, setCanRemoveLiquidity, updateTransaction, transactions]);
+  }, [isLogged, canRemoveLiquidity, setCanRemoveLiquidity, updateTransaction, transactions]);
 
 
   const userTokenBalance = cash?.name ? balances[cash?.name]?.balance : '0';
