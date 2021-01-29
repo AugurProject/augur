@@ -1,6 +1,7 @@
 import { log } from '@graphprotocol/graph-ts'
 import { ParaAugurDeployFinished} from "../../generated/ParaDeployer/ParaDeployer";
-import { ShareToken } from '../../generated/schema';
+import { ParaAugur as ParaAugurTemplate } from '../../generated/templates';
+
 import {
   getOrCreateParaShareToken,
   createAndSaveParaAugurDeployFinishedEvent
@@ -18,6 +19,8 @@ export function handleParaAugurDeployFinished(
   paraShareToken.cash = cash;
   paraShareToken.save();
   log.debug("Added ParaShareToken: {}", [paraShareToken.id]);
+
+  ParaAugurTemplate.create(event.params.paraAugur);
 
   createAndSaveParaAugurDeployFinishedEvent(event);
 }

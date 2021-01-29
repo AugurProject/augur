@@ -66,3 +66,6 @@ export {
   wethWrapperHandleRemoveLiquidity
 } from './mappings/wethWrapperForAMMExchange';
 
+export {
+  handleTradingProceedsClaimed
+} from './mappings/paraAugur';

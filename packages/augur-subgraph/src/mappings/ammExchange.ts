@@ -53,9 +53,9 @@ export function handleAddLiquidity(event: AddLiquidityEvent): void {
 
   // Will be zero if ratio is 50-50.
   let netShares = addLiquidity.noShares.minus(addLiquidity.yesShares).abs();
-  const noShares = addLiquidity.noShares.toBigDecimal();
-  const yesShares = addLiquidity.yesShares.toBigDecimal();
-  const totalShares = noShares.plus(yesShares);
+  let noShares = addLiquidity.noShares.toBigDecimal();
+  let yesShares = addLiquidity.yesShares.toBigDecimal();
+  let totalShares = noShares.plus(yesShares);
   let priceOfNoShares = yesShares.div(totalShares);
   let priceOfYesShares = noShares.div(totalShares);
 
@@ -89,9 +89,9 @@ export function handleRemoveLiquidity(event: RemoveLiquidityEvent): void {
   removeLiquidity.yesShares = event.params.longShares;
   removeLiquidity.sender = event.params.sender.toHexString();
 
-  const noShares = removeLiquidity.noShares.toBigDecimal();
-  const yesShares = removeLiquidity.yesShares.toBigDecimal();
-  const shareCashValue = noShares.times(yesShares).div(noShares.plus(yesShares));
+  let noShares = removeLiquidity.noShares.toBigDecimal();
+  let yesShares = removeLiquidity.yesShares.toBigDecimal();
+  let shareCashValue = noShares.times(yesShares).div(noShares.plus(yesShares));
   removeLiquidity.noShareCashValue = shareCashValue;
   removeLiquidity.yesShareCashValue = shareCashValue;
 
