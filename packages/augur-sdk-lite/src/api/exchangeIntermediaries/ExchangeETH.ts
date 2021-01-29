@@ -38,10 +38,6 @@ export class ExchangeETH extends ExchangeCommon implements ExchangeContractInter
     return this.wrapper.addLiquidity(market, fee.toFixed(), recipient, { value: cash.toFixed() })
   }
 
-  async removeLiquidity(market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber): Promise<TransactionResponse> {
-    return this.wrapper.removeLiquidity(market, fee.toFixed(), lpTokens.toFixed());
-  }
-
   async enterPosition(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, buyLong: Boolean, minShares: BigNumber): Promise<TransactionResponse> {
     return this.wrapper.enterPosition(market, fee.toFixed(), buyLong, minShares.toFixed(), { value: cash.toFixed()} );
   }

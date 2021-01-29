@@ -84,7 +84,6 @@ export function handleRemoveLiquidity(event: RemoveLiquidityEvent): void {
   removeLiquidity.tx_hash = event.transaction.hash.toHexString();
   removeLiquidity.timestamp = event.block.timestamp;
   removeLiquidity.ammExchange = event.address.toHexString();
-  removeLiquidity.cash = event.params.cash;
   removeLiquidity.noShares = event.params.shortShares;
   removeLiquidity.yesShares = event.params.longShares;
   removeLiquidity.sender = event.params.sender.toHexString();
@@ -96,7 +95,7 @@ export function handleRemoveLiquidity(event: RemoveLiquidityEvent): void {
   removeLiquidity.yesShareCashValue = shareCashValue;
 
   // Cash value is the cost of the lp tokens received accounting for shares returned to user.
-  removeLiquidity.cashValue = removeLiquidity.cash.toBigDecimal().plus(removeLiquidity.noShareCashValue).plus(removeLiquidity.yesShareCashValue).truncate(0);
+  removeLiquidity.cashValue = removeLiquidity.noShareCashValue.plus(removeLiquidity.yesShareCashValue).truncate(0);
   removeLiquidity.save();
 
   updateAMM(removeLiquidity.ammExchange);

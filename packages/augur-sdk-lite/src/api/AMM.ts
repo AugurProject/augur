@@ -78,10 +78,9 @@ export class AMM {
   }
 
   async getAddLiquidity(
-    totalSupply:BigNumber,
-    noBalance:BigNumber,
-    yesBalance:BigNumber,
-    cashBalance:BigNumber,
+    totalSupply: BigNumber,
+    noBalance: BigNumber,
+    yesBalance: BigNumber,
     cash: BigNumber = new BigNumber(0),
     longPercent = new BigNumber(50),
     shortPercent = new BigNumber(50)
@@ -116,7 +115,6 @@ export class AMM {
       totalSupply,
       noBalance,
       yesBalance,
-      cashBalance
     );
 
     let longSharesToUsers = new BigNumber(0);
@@ -169,66 +167,58 @@ export class AMM {
   }
 
   async getEnterPosition(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, buyLong: Boolean, includeFee: Boolean): Promise<BigNumber> {
-    const setsToBuy = cash.idiv(NUMTICKS);
     const exchange = await this.intermediary(paraShareToken).calculateExchangeAddress(market, paraShareToken, fee);
     let { yes: poolYes, no: poolNo } = await this.intermediary(paraShareToken).shareBalances(market, paraShareToken, fee, exchange);
-    poolNo = poolNo.minus(setsToBuy);
-    poolYes = poolYes.minus(setsToBuy);
-
-    if (poolNo.lt(0) || poolYes.lt(0)) {
-      AMM.throwExchangeLacksShares(exchange);
-    }
+    const setsToBuy = cash.idiv(NUMTICKS);
 
     let swappedForShares = buyLong
       ? AMM.calculateSwap(poolYes, poolNo, setsToBuy)
-      : AMM.calculateSwap(poolNo, poolYes, setsToBuy)
-    const outputShares = setsToBuy.plus(swappedForShares);
-    return includeFee
-      ? AMM.applyFee(outputShares, fee)
-      : outputShares;
+      : AMM.calculateSwap(poolNo, poolYes, setsToBuy);
+    if (includeFee) swappedForShares = AMM.applyFee(swappedForShares, fee)
+    return setsToBuy.plus(swappedForShares);
   }
 
-  async doExitPosition(market: string, paraShareToken: string, fee: BigNumber, shortShares: BigNumber, longShares: BigNumber, minCash: BigNumber): Promise<TransactionResponse> {
+  async doExitPosition(
+    market: string,
+    paraShareToken: string,
+    fee: BigNumber,
+    shortShares: BigNumber,
+    longShares: BigNumber,
+    minCash: BigNumber
+  ): Promise<TransactionResponse> {
     return this.intermediary(paraShareToken).exitPosition(market, paraShareToken, fee, shortShares, longShares, minCash);
   }
 
   async getExitPosition(
-    totalSupply:BigNumber,
-    noBalance:BigNumber,
-    yesBalance:BigNumber,
-    cashBalance:BigNumber,
+    totalSupply: BigNumber,
+    noBalance: BigNumber,
+    yesBalance: BigNumber,
     fee: BigNumber,
     shortShares: BigNumber,
     longShares: BigNumber,
     includeFee: Boolean,
+    marketCreatorFeeDivisor: BigNumber,
+    reportingFeeDivisor: BigNumber,
   ): Promise<BigNumber> {
     let setsToSell = new BigNumber(shortShares); // if they are identical, sets to sell is equal to either
-    if (longShares.gt(shortShares)) {
-      const delta = longShares.minus(shortShares);
-      const shortShareToBuy = AMM.quadratic(
-        new BigNumber(1),
-        AMM.neg(delta.plus(yesBalance).plus(noBalance)),
-        delta.times(noBalance),
-        longShares
-      );
-      setsToSell = shortShares.plus(shortShareToBuy);
-    } else if (shortShares.gt(longShares)) {
-      const delta = shortShares.minus(longShares);
-      const longSharesToBuy = AMM.quadratic(
-        new BigNumber(1),
-        AMM.neg(delta.plus(yesBalance).plus(noBalance)),
-        delta.times(yesBalance),
-        shortShares
-      );
-      setsToSell = longShares.plus(longSharesToBuy);
+
+    fee = includeFee ? fee : new BigNumber(0);
+
+    if (shortShares.gt(longShares)) {
+      setsToSell = longShares.plus(AMM.applyFee(AMM.calculateReverseSwap(noBalance, yesBalance, shortShares.minus(longShares)), fee));
+    } else if (longShares.gt(shortShares)) {
+      setsToSell = shortShares.plus(AMM.applyFee(AMM.calculateReverseSwap(yesBalance, noBalance, longShares.minus(shortShares)), fee));
     }
 
-    if(setsToSell.gte(cashBalance)) throw new Error('AMM does not have enough cash to complete exit.');
-
     const cash = setsToSell.times(NUMTICKS);
-    return includeFee
-      ? AMM.applyFee(cash, fee)
-      : cash;
+
+    if (includeFee) {
+      const creatorFee = AMM.calculateMarketCreatorFee(marketCreatorFeeDivisor, cash);
+      const reportingFee = cash.idiv(reportingFeeDivisor);
+      return cash.minus(creatorFee).minus(reportingFee);
+    } else {
+      return cash;
+    }
   }
 
   async exchangeAddress(market: string, paraShareToken: string, fee: BigNumber): Promise<string> {
@@ -284,24 +274,24 @@ export class AMM {
   }
 
   private getRateAddLiquidity(
-    longs:BigNumber,
-    shorts:BigNumber,
-    totalSupply:BigNumber,
-    noBalance:BigNumber,
-    yesBalance:BigNumber,
-    cashBalance:BigNumber
+    longs: BigNumber,
+    shorts: BigNumber,
+    totalSupply: BigNumber,
+    noBalance: BigNumber,
+    yesBalance: BigNumber,
   ) {
-    const normalizedCashBalance = cashBalance.div(NUMTICKS);
-    const longBalance = yesBalance.plus(normalizedCashBalance);
-    const shortBalance = noBalance.plus(normalizedCashBalance);
+    let prior = new BigNumber(0);
+    if (!noBalance.plus(yesBalance).eq(0)) {
+      prior = (noBalance.times(yesBalance).times(2)).idiv(noBalance.plus(yesBalance))
+    }
+    const valueAdded =
+      ((noBalance.times(longs)).plus(yesBalance.times(shorts)).plus(shorts.times(longs).times(2)))
+      .idiv(noBalance.plus(yesBalance).plus(shorts).plus(longs));
 
-    const priorLiquidityConstant = AMM.sqrt(longBalance.times(shortBalance));
-    const newLiquidityConstant = AMM.sqrt((longBalance.plus(longs).times(shortBalance.plus(shorts))));
-
-    if(priorLiquidityConstant.eq(0)) {
-      return newLiquidityConstant;
-    } else {
-      return totalSupply.times(newLiquidityConstant).div(priorLiquidityConstant).minus(totalSupply);
+    if (prior.eq(0)) {
+      return valueAdded;
+    } {
+      return valueAdded.times(totalSupply).div(prior);
     }
   }
 
@@ -319,8 +309,21 @@ export class AMM {
     return reserveA.minus(k.idiv(reserveB.plus(deltaB)));
   }
 
+  private static calculateReverseSwap(reserveA: BigNumber, reserveB: BigNumber, deltaB: BigNumber): BigNumber {
+    return AMM.quadratic(
+      new BigNumber(1),
+      deltaB.plus(reserveA).plus(reserveB).negated(),
+      deltaB.times(reserveB),
+      deltaB
+    );
+  }
+
   private static applyFee(amount: BigNumber, fee: BigNumber): BigNumber {
     return amount.times(new BigNumber(1000).minus(fee)).idiv(1000);
+  }
+
+  private static calculateMarketCreatorFee(feeDivisor: BigNumber, amount: BigNumber): BigNumber {
+    return feeDivisor.eq(0) ? new BigNumber(0) : amount.idiv(feeDivisor);
   }
 
   // From AMMExchange.sol

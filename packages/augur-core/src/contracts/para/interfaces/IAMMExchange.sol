@@ -29,20 +29,16 @@ contract IAMMExchange is IERC20 {
 
     // Removes shares from the liquidity pool.
     // If _minSetsSold > 0 then also sell complete sets through burning and through swapping in the pool.
-    function removeLiquidity(uint256 _poolTokensToSell) external returns (uint256 _shortShare, uint256 _longShare, uint256 _cashShare);
-    // Tells you how many shares you receive, how much cash you receive, and how many complete sets you burn for cash.
-    function rateRemoveLiquidity(uint256 _poolTokensToSell) public view returns (uint256 _shortShare, uint256 _longShare, uint256 _cashShare);
+    function removeLiquidity(uint256 _poolTokensToSell) external returns (uint256 _shortShare, uint256 _longShare);
+    // Tells you how many shares you receive from the pool.
+    function rateRemoveLiquidity(uint256 _poolTokensToSell) public view returns (uint256 _shortShare, uint256 _longShare);
 
     function enterPosition(uint256 _cashCost, bool _buyLong, uint256 _minShares) public returns (uint256);
-    // Tells you how many shares you get for given cash.
-    function rateEnterPosition(uint256 _cashToSpend, bool _buyYes) public view returns (uint256);
 
     // Sell as many of the given shares as possible, swapping yes<->no as-needed.
     function exitPosition(uint256 _shortShares, uint256 _longShares, uint256 _minCashPayout) public returns (uint256);
     // Exits as much of the position as possible.
 	function exitAll(uint256 _minCashPayout) external returns (uint256);
-    function rateExitPosition(uint256 _shortShares, uint256 _longShares) public view returns (uint256);
-    function rateExitAll() public view returns (uint256);
 
     function swap(uint256 _inputShares, bool _inputLong, uint256 _minOutputShares) external returns (uint256);
     // How many of the other shares you would get for your shares.

@@ -1,13 +1,7 @@
 import BigNumber from 'bignumber.js';
 
-import {TestContractAPI, ACCOUNTS, defaultSeedPath, loadSeed, makeSigner} from '@augurproject/tools';
+import {TestContractAPI, ACCOUNTS, defaultSeedPath, loadSeed} from '@augurproject/tools';
 import {
-  convertDisplayAmountToOnChainAmount,
-  convertDisplayPriceToOnChainPrice,
-  convertOnChainAmountToDisplayAmount,
-  convertOnChainPriceToDisplayPrice,
-  numTicksToTickSize,
-  numTicksToTickSizeWithDisplayPrices,
   SDKConfiguration,
 } from '@augurproject/utils';
 
@@ -27,6 +21,8 @@ describe('AMM Middleware for ERC20', () => {
   let INVALID: BigNumber;
   let NO: BigNumber;
   let YES: BigNumber;
+  let numTicks: BigNumber;
+  let marketCreatorFeeDivisor;
 
   const INCLUDE_FEE = true;
   const EXCLUDE_FEE = false;
@@ -39,6 +35,15 @@ describe('AMM Middleware for ERC20', () => {
   function makeUSDTParaShareToken(user: TestContractAPI): ContractInterfaces.ParaShareToken {
     const usdtParaShareAddress = config.paraDeploys[config.addresses.USDT].addresses.ShareToken;
     return new ContractInterfaces.ParaShareToken(user.dependencies, usdtParaShareAddress);
+  }
+
+  function makeParaUniverse(user: TestContractAPI): ContractInterfaces.ParaUniverse {
+    const address = config.paraDeploys[config.addresses.WETH9].addresses.Universe;
+    return new ContractInterfaces.ParaUniverse(user.dependencies, address);
+  }
+
+  async function getReportingFee(): Promise<BigNumber> {
+    return makeParaUniverse(john).getOrCacheReportingFeeDivisor_(); // since not executed, will not update cache
   }
 
   function bn(n: string | number | BigNumber): BigNumber {
@@ -72,6 +77,8 @@ describe('AMM Middleware for ERC20', () => {
     INVALID = await usdtParaShare.getTokenId_(market.address, bn(0));
     NO = await usdtParaShare.getTokenId_(market.address, bn(1));
     YES = await usdtParaShare.getTokenId_(market.address, bn(2));
+    numTicks = await market.getNumTicks_();
+    marketCreatorFeeDivisor = await market.getMarketCreatorSettlementFeeDivisor_();
   });
 
   describe('with a simple liquid AMM', () => {
@@ -126,10 +133,11 @@ describe('AMM Middleware for ERC20', () => {
       const withoutFee = await middleware.getEnterPosition(market.address, usdtParaShare.address, fee, cash, buyLong, EXCLUDE_FEE);
 
       console.log('Verifying that no-fee estimation is correct relative to fee estimation.');
-      expect(withFee.toNumber()).toEqual(withoutFee.times(0.99).toNumber());
+      const mintedShares = cash.idiv(numTicks);
+      expect(withFee.toNumber()).toEqual(withoutFee.minus(mintedShares).times(0.99).idiv(1).plus(mintedShares).toNumber());
 
       console.log('Verifying that the entry estimation is correct, to a hardcoded value')
-      expect(withoutFee.toNumber()).toEqual(19900);
+      expect(withoutFee.toNumber()).toEqual(19901);
 
       console.log('Entering position');
       await middleware.doEnterPosition(market.address, usdtParaShare.address, fee, cash, buyLong, withFee);
@@ -151,16 +159,19 @@ describe('AMM Middleware for ERC20', () => {
       const totalSupply = await middleware.supplyOfLiquidityTokens(market.address, usdtParaShare.address, fee);
       const noShares = await usdtParaShare.balanceOf_(ammAddress, NO);
       const yesShares = await usdtParaShare.balanceOf_(ammAddress, YES);
-      const ammCashBalance = await bob.augur.contracts.usdt.balanceOf_(ammAddress);
       const longShares = await usdtParaShare.balanceOf_(bob.account.address, YES); // from enter position test
 
       console.log('Estimating exit position rate');
       const sharesToExit = longShares.idiv(4);
-      const withFee = await middleware.getExitPosition(totalSupply, noShares, yesShares,  ammCashBalance, fee, bn(0), sharesToExit, INCLUDE_FEE)
-      const withoutFee = await middleware.getExitPosition(totalSupply, noShares, yesShares, ammCashBalance, fee, bn(0), sharesToExit, EXCLUDE_FEE)
+      const reportingFee = await getReportingFee();
+      const withFee = await middleware.getExitPosition(totalSupply, noShares, yesShares, fee, bn(0), sharesToExit, INCLUDE_FEE, marketCreatorFeeDivisor, reportingFee)
+      const withoutFee = await middleware.getExitPosition(totalSupply, noShares, yesShares, fee, bn(0), sharesToExit, EXCLUDE_FEE, marketCreatorFeeDivisor, reportingFee)
+
 
       console.log('Verifying that no-fee estimation is correct relative to fee estimation.');
-      expect(withFee.toNumber()).toEqual(withoutFee.times(0.99).toNumber());
+      // Approximating because exact calculation is complicated: involves swapped vs kept shares and market creator and reporting fees
+      expect(withFee.toNumber()).toBeLessThan(withoutFee.times(0.99).toNumber());
+      expect(withFee.toNumber()).toBeGreaterThan(withoutFee.times(0.928).toNumber());
 
       console.log('Approving AMM Factory to use USDT ParaShareTokens for Bob');
       expect(await bob.balanceOfUSDT().then(bn => bn.toNumber())).toEqual(0); // make sure cash is empty else the test gets nonsensical later
@@ -220,9 +231,8 @@ describe('AMM Middleware for ERC20', () => {
       const dontSell = await middleware.getRemoveLiquidity(market.address, usdtParaShare.address, fee, lpTokensToBurn);
 
       expect(dontSell).toEqual({
-        short: bn(330877),
-        long: bn(330870),
-        cash: bn(2513610),
+        short: bn(333373),
+        long: bn(333367),
       });
 
       console.log('Selling 1/3rd of LP tokens via removeLiquidity, then selling the resulting shares');
@@ -231,12 +241,10 @@ describe('AMM Middleware for ERC20', () => {
       const postInvalid = await usdtParaShare.balanceOf_(mary.account.address, INVALID);
       const postNo = await usdtParaShare.balanceOf_(mary.account.address, NO);
       const postYes = await usdtParaShare.balanceOf_(mary.account.address, YES);
-      const postCash = await mary.balanceOfUSDT();
 
       expect(postInvalid.toNumber()).toEqual(dontSell.short.toNumber());
       expect(postNo.toNumber()).toEqual(dontSell.short.toNumber());
       expect(postYes.toNumber()).toEqual(dontSell.long.toNumber());
-      expect(postCash.toNumber()).toEqual(dontSell.cash.toNumber()); // excludes augur core fees
     });
 
     test('remove all liquidity without selling shares', async () => {
@@ -247,13 +255,11 @@ describe('AMM Middleware for ERC20', () => {
       const priorInvalid = await usdtParaShare.balanceOf_(mary.account.address, INVALID);
       const priorNo = await usdtParaShare.balanceOf_(mary.account.address, NO);
       const priorYes = await usdtParaShare.balanceOf_(mary.account.address, YES);
-      const priorCash = await mary.balanceOfUSDT();
 
       const ammAddress = await middleware.exchangeAddress(market.address, usdtParaShare.address, fee);
       const ammInvalid = await usdtParaShare.balanceOf_(ammAddress, INVALID);
       const ammNo = await usdtParaShare.balanceOf_(ammAddress, NO);
       const ammYes = await usdtParaShare.balanceOf_(ammAddress, YES);
-      const ammCash = await mary.balanceOfUSDT(ammAddress);
 
       console.log('Estimating removeLiquidity gains, without swapping shares for complete sets then burning them');
       const estimate = await middleware.getRemoveLiquidity(market.address, usdtParaShare.address, fee, lpTokens);
@@ -261,7 +267,6 @@ describe('AMM Middleware for ERC20', () => {
       expect(estimate).toEqual({
         short: ammNo,
         long: ammYes,
-        cash: ammCash,
       });
 
       console.log('Removing remaining liquidity without selling any received shares')
@@ -270,12 +275,10 @@ describe('AMM Middleware for ERC20', () => {
       const postInvalid = await usdtParaShare.balanceOf_(mary.account.address, INVALID);
       const postNo = await usdtParaShare.balanceOf_(mary.account.address, NO);
       const postYes = await usdtParaShare.balanceOf_(mary.account.address, YES);
-      const postCash = await mary.balanceOfUSDT();
 
       expect(postInvalid.toNumber()).toEqual(priorInvalid.plus(ammInvalid).toNumber());
       expect(postNo.toNumber()).toEqual(priorNo.plus(ammNo).toNumber());
       expect(postYes.toNumber()).toEqual(priorYes.plus(ammYes).toNumber());
-      expect(postCash.toNumber()).toEqual(priorCash.plus(ammCash).toNumber());
     });
   });
 });

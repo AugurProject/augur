@@ -30,12 +30,11 @@ contract AMMExchange is IAMMExchange, ERC20 {
     event ExitPosition(address sender, uint256 shortShares, uint256 longShares, uint256 cashPayout);
     event SwapPosition(address sender, uint256 inputShares, uint256 outputShares, bool inputLong);
     event AddLiquidity(address sender, uint256 cash, uint256 shortShares, uint256 longShares, uint256 lpTokens);
-    event RemoveLiquidity(address sender, uint256 cash, uint256 shortShares, uint256 longShares);
-
+    event RemoveLiquidity(address sender, uint256 shortShares, uint256 longShares);
 
     function initialize(IMarket _market, ParaShareToken _shareToken, uint256 _fee) public {
         require(cash == ICash(0)); // can only initialize once
-        require(_fee <= 150); // fee must be [0,150] aka 0-15%
+        require(_fee <= 30); // fee must be [0,30] aka 0-3%
 
         factory = IAMMFactory(msg.sender);
         cash = _shareToken.cash();
@@ -116,11 +115,10 @@ contract AMMExchange is IAMMExchange, ERC20 {
     // returns how many LP tokens you get for providing the given number of sets
     function rateAddLiquidity(uint256 _longs, uint256 _shorts) public view returns (uint256) {
         (uint256 _noBalance, uint256 _yesBalance) = yesNoShareBalances(address(this));
-        uint256 _cashBalance = cash.balanceOf(address(this)).div(numTicks);
 
         uint256 _prior = 0;
         if (_noBalance + _yesBalance != 0) {
-            _prior = (2 * _noBalance * _yesBalance) / (_noBalance + _yesBalance) + _cashBalance;
+            _prior = (2 * _noBalance * _yesBalance) / (_noBalance + _yesBalance);
         }
         uint256 _valueAdded = (
             ((_noBalance * _longs) + (_yesBalance * _shorts) + (2 * _shorts * _longs))
@@ -135,37 +133,34 @@ contract AMMExchange is IAMMExchange, ERC20 {
     }
 
     // Removes shares from the liquidity pool.
-    function removeLiquidity(uint256 _poolTokensToSell) external returns (uint256 _shortShare, uint256 _longShare, uint256 _cashShare){
-        (_shortShare, _longShare, _cashShare) = rateRemoveLiquidity(_poolTokensToSell);
+    function removeLiquidity(uint256 _poolTokensToSell) external returns (uint256 _shortShare, uint256 _longShare){
+        (_shortShare, _longShare) = rateRemoveLiquidity(_poolTokensToSell);
 
         require(_poolTokensToSell <= balanceOf(msg.sender), "AugurCP: Trying to sell more LP tokens than owned");
         _burn(msg.sender, _poolTokensToSell);
 
         shareTransfer(address(this), msg.sender, _shortShare, _shortShare, _longShare);
-        cash.transfer(msg.sender, _cashShare);
 
-        emit RemoveLiquidity(msg.sender, _cashShare, _shortShare, _longShare);
+        emit RemoveLiquidity(msg.sender, _shortShare, _longShare);
     }
 
-    // Tells you how many shares you receive, how much cash you receive, and how many complete sets you burn for cash.
-    // Cash share does NOT include market fees from burning complete sets.
-    function rateRemoveLiquidity(uint256 _poolTokensToSell) public view returns (uint256 _shortShare, uint256 _longShare, uint256 _cashShare) {
+    // Tells you how many shares you receive from the pool.
+    function rateRemoveLiquidity(uint256 _poolTokensToSell) public view returns (uint256 _shortShare, uint256 _longShare) {
         uint256 _poolSupply = totalSupply;
         (uint256 _poolShort, uint256 _poolLong) = yesNoShareBalances(address(this));
-        uint256 _poolCash = cash.balanceOf(address(this));
 
         _shortShare = _poolShort.mul(_poolTokensToSell).div(_poolSupply);
         _longShare = _poolLong.mul(_poolTokensToSell).div(_poolSupply);
-        _cashShare = _poolCash.mul(_poolTokensToSell).div(_poolSupply);
     }
 
     function enterPosition(uint256 _cashCost, bool _buyLong, uint256 _minShares) public returns (uint256) {
-        uint256 _sharesToBuy = rateEnterPosition(_cashCost, _buyLong);
         uint256 _setsToBuy = _cashCost.div(numTicks);
+        uint256 _sharesToBuy = _setsToBuy.add(rateSwap(_setsToBuy, _buyLong));
 
         require(_sharesToBuy >= _minShares, "AugurCP: Too few shares would be received for given cash.");
 
         factory.transferCash(augurMarket, shareToken, fee, msg.sender, address(this), _cashCost);
+        shareToken.publicBuyCompleteSets(augurMarket, _setsToBuy);
 
         (uint256 _priorNo, uint _priorYes) = yesNoShareBalances(msg.sender);
         if (_buyLong) {
@@ -179,21 +174,26 @@ contract AMMExchange is IAMMExchange, ERC20 {
         return _sharesToBuy;
     }
 
-    // Tells you how many shares you get for given cash.
-    function rateEnterPosition(uint256 _cashToSpend, bool _buyLong) public view returns (uint256) {
-        uint256 _setsToBuy = _cashToSpend.div(numTicks);
-        (uint256 _reserveNo, uint256 _reserveYes) = yesNoShareBalances(address(this));
+    // Sell as many of the given shares as possible, swapping yes<->no as-needed.
+    function exitPosition(uint256 _shortShares, uint256 _longShares, uint256 _minCashPayout) public returns (uint256) {
+        (uint256 _poolShort, uint256 _poolLong) = yesNoShareBalances(address(this));
 
-        // user buys complete sets
-        _reserveNo = _reserveNo.subS(_setsToBuy, "AugurCP: The pool doesn't have enough Invalid and NO tokens to fulfill the request.");
-        _reserveYes = _reserveYes.subS(_setsToBuy, "AugurCP: The pool doesn't have enough YES tokens to fulfill the request.");
-
-        // user swaps away the side they don't want
-        if (_buyLong) {
-            return applyFee(_setsToBuy.add(calculateSwap(_reserveYes, _reserveNo, _setsToBuy)), fee);
-        } else {
-            return applyFee(_setsToBuy.add(calculateSwap(_reserveNo, _reserveYes, _setsToBuy)), fee);
+        uint256 _sets = _shortShares;  // if short and long to sell are identical, sets to sell is equal to either
+        if (_shortShares > _longShares) {
+            _sets = _longShares.add(applyFee(calculateReverseSwap(_poolShort, _poolLong, _shortShares.sub(_longShares)), fee));
+        } else if (_longShares > _shortShares) {
+            _sets = _shortShares.add(applyFee(calculateReverseSwap(_poolLong, _poolShort, _longShares.sub(_shortShares)), fee));
         }
+
+        factory.shareTransfer(augurMarket, shareToken, fee, msg.sender, address(this), _shortShares, _shortShares, _longShares);
+        (uint256 _creatorFee, uint256 _reportingFee) = shareToken.publicSellCompleteSets(augurMarket, _sets);
+        uint256 _cashPayout = _sets.mul(numTicks).sub(_creatorFee).sub(_reportingFee);
+        require(_cashPayout >= _minCashPayout, "AugurCP: Proceeds were less than the required payout");
+        cash.transfer(msg.sender, _cashPayout);
+
+        emit ExitPosition(msg.sender, _shortShares, _longShares, _cashPayout);
+
+        return _cashPayout;
     }
 
     // Exits as much of the position as possible.
@@ -202,57 +202,6 @@ contract AMMExchange is IAMMExchange, ERC20 {
         _userNo = SafeMathUint256.min(_userInvalid, _userNo);
 		return exitPosition(_userNo, _userYes, _minCashPayout);
 	}
-
-    // Sell as many of the given shares as possible, swapping yes<->no as-needed.
-    function exitPosition(uint256 _shortShares, uint256 _longShares, uint256 _minCashPayout) public returns (uint256) {
-        uint256 _cashPayout = rateExitPosition(_shortShares, _longShares);
-        require(_cashPayout >= _minCashPayout, "AugurCP: Proceeds were less than the required payout");
-
-        factory.shareTransfer(augurMarket, shareToken, fee, msg.sender, address(this), _shortShares, _shortShares, _longShares);
-
-        cash.transfer(msg.sender, _cashPayout);
-
-        emit ExitPosition(msg.sender, _shortShares, _longShares, _cashPayout);
-
-        return _cashPayout;
-    }
-
-    function rateExitAll() public view returns (uint256) {
-        (uint256 _userNo, uint256 _userYes) = yesNoShareBalances(msg.sender);
-        return rateExitPosition(_userNo, _userYes);
-    }
-
-    function rateExitPosition(uint256 _shortSharesToSell, uint256 _longSharesToSell) public view returns (uint256) {
-        (uint256 _poolShort, uint256 _poolLong) = yesNoShareBalances(address(this));
-        return calcExitPosition(_poolShort, _poolLong, _shortSharesToSell, _longSharesToSell);
-    }
-
-    function calcExitPosition(uint256 _poolShort, uint256 _poolLong, uint256 _shortSharesToSell, uint256 _longSharesToSell) internal view returns (uint256) {
-        // Figure out how many shares we're buying in our synthetic swap and use that to figure out the final balance of Yes/No (setsToSell)
-        uint256 _setsToSell = _shortSharesToSell; // if short and long to sell are identical, sets to sell is equal to either
-        if (_longSharesToSell > _shortSharesToSell) {
-            uint256 _delta = _longSharesToSell.sub(_shortSharesToSell);
-            uint256 _shortSharesToBuy = quadratic(
-                1,
-                -int256(_delta.add(_poolLong).add(_poolShort)),
-                int256(_delta.mul(_poolShort)),
-                _delta
-            );
-
-            _setsToSell = _shortSharesToSell.add(_shortSharesToBuy);
-        } else if (_shortSharesToSell > _longSharesToSell) {
-            uint256 _delta = _shortSharesToSell.sub(_longSharesToSell);
-            uint256 _longSharesToBuy = quadratic(
-                1,
-                -int256(_delta.add(_poolLong).add(_poolShort)),
-                int256(_delta.mul(_poolLong)),
-                _delta
-            );
-            _setsToSell = _longSharesToSell.add(_longSharesToBuy);
-        }
-
-        return applyFee(_setsToSell.mul(numTicks), fee);
-    }
 
     function swap(uint256 _inputShares, bool _inputLong, uint256 _minOutputShares) external returns (uint256) {
         uint256 _outputShares = rateSwap(_inputShares, _inputLong);
@@ -352,12 +301,26 @@ contract AMMExchange is IAMMExchange, ERC20 {
         }
     }
 
-
     // Calculates _deltaA, the number of shares gained from the swap.
+    // To swap long->short: calculateSwap(shortsInPool, longsInPool, longsToSell).
+    // To swap short->long: calculateSwap(longsInPool, shortsInPool, shortsToSell).
     // NOTE: Normally the fee is applied to the input shares. We don't do that here, the fee is later applied to the output shares.
     function calculateSwap(uint256 _reserveA, uint256 _reserveB, uint256 _deltaB) internal pure returns (uint256) {
         uint256 _k = _reserveA.mul(_reserveB);
         return _reserveA.sub(_k.div(_reserveB.add(_deltaB)));
+    }
+
+    // Calculates _deltaA, the number of complete sets you get from selling shares.
+    // That is equivalent to the number of shares you would swap for to get complete sets.
+    // To swap long->short: calculateReverseSwap(longsInPool, shortsInPool, longsToSell).
+    // To swap short->long: calculateReverseSwap(shortsInPool, longsInPool, shortsToSell).
+    function calculateReverseSwap(uint256 _reserveA, uint256 _reserveB, uint256 _deltaB) internal pure returns (uint256) {
+        return quadratic(
+            1,
+            -int256(_deltaB.add(_reserveA).add(_reserveB)),
+            int256(_deltaB.mul(_reserveB)),
+            _deltaB
+        );
     }
 
     function applyFee(uint256 _amount, uint256 _fee) internal pure returns (uint256) {

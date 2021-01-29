@@ -421,47 +421,6 @@ export const WethWrapperForAMMExchangeAbi = [
     "type": "function"
   },
   {
-    "constant": false,
-    "inputs": [
-      {
-        "internalType": "contract IMarket",
-        "name": "_market",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_fee",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_poolTokensToSell",
-        "type": "uint256"
-      }
-    ],
-    "name": "removeLiquidity",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "_shortShare",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_longShare",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_cashShare",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "constant": true,
     "inputs": [],
     "name": "shareToken",
