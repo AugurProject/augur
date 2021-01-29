@@ -939,6 +939,7 @@ type _Schema_
         fields: [
           { name: "description" },
           { name: "longDescription" },
+          { name: "categories" },
         ]
       }
     ]
