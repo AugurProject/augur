@@ -106,6 +106,7 @@ export function handleMarketCreated(event: MarketCreated): void {
         }
       }
       market.categories = resultingArray;
+      market.categoriesRaw = resultingArray.join(" ");
     }
 
     let scalarDenomination = extraInfoObject.get("_scalarDenomination");
