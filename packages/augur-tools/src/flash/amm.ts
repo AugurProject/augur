@@ -6,8 +6,8 @@ import { FlashArguments, FlashSession } from './flash';
 
 import { AMM, SignerOrProvider } from '@augurproject/sdk-lite';
 import { updateConfig } from '@augurproject/artifacts';
-import { SDKConfiguration } from '@augurproject/utils/build';
-import {ExchangeERC20, ExchangeETH} from '@augurproject/sdk-lite/build';
+import {ContractAddresses, SDKConfiguration} from '@augurproject/utils';
+import {ExchangeERC20, ExchangeETH} from '@augurproject/sdk-lite';
 import {deployWethAMMContract} from '../libs/blockchain';
 
 const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
@@ -15,7 +15,16 @@ const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
 export function addAMMScripts(flash: FlashSession) {
   flash.addScript({
     name: 'deploy-amm-factory',
-    async call(this: FlashSession) {
+    options: [
+      {
+        name: 'skipWrapper',
+        abbr: 'S',
+        description: 'Do NOT deploy the eth wrapper.',
+        flag: true
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const deployWrapper = !Boolean(args.skipWrapper);
       if (this.noProvider()) return;
 
       console.log('Deploying: ', sanitizeConfig(this.config).deploy);
@@ -32,9 +41,18 @@ export function addAMMScripts(flash: FlashSession) {
       );
 
       const factory = await contractDeployer.uploadAMMContracts();
+      const addresses: Partial<ContractAddresses> = {
+        AMMFactory: factory
+      }
+
+      if (deployWrapper) {
+        const wrapper = await deployWethAMMContract(this.provider, this.accounts[0], compilerOutput, this.config);
+        console.log(`Deployed Weth AMM to: ${wrapper}`);
+        addresses.WethWrapperForAMMExchange = wrapper;
+      }
 
       await updateConfig(this.network, {
-        addresses: { AMMFactory: factory }
+        addresses
       });
     }
   });
