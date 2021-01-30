@@ -380,6 +380,7 @@ const shapeEnterTransactions = (
 ): AmmTransaction[] => {
   return transactions.map((e) => {
     const properties = formatTransaction(e, cash);
+    const cashValueUsd = new BN(properties.value).times(cash?.usdPrice).toFixed(2);
     const subheader = `Swap ${cash.name} for ${
       e.noShares !== '0' ? 'No Shares' : 'Yes Shares'
     }`;
@@ -389,6 +390,7 @@ const shapeEnterTransactions = (
       sender: e.sender?.id,
       subheader,
       ...properties,
+      value: cashValueUsd
     };
   });
 };
@@ -402,12 +404,14 @@ const shapeExitTransactions = (
     const subheader = `Swap ${
       e.noShares !== '0' ? 'No Shares' : 'Yes Shares'
     } for ${cash.name}`;
+    const cashValueUsd = new BN(properties.value).abs().times(cash?.usdPrice).toFixed(2);
     return {
       ...e,
       tx_type: TransactionTypes.EXIT,
       sender: e.sender?.id,
       subheader,
       ...properties,
+      value: cashValueUsd,
     };
   });
 };
@@ -416,6 +420,7 @@ const shapeAddLiquidityTransactions = (
   transactions: GraphAddLiquidity[],
   cash: Cash
 ): AmmTransaction[] => {
+  console.log('cash.usdPrice', cash.usdPrice)
   return transactions.map((e) => {
     const properties = formatTransaction(e, cash);
     const subheader = `Add ${cash.name} Liquidity`;
@@ -441,6 +446,7 @@ const shapeAddLiquidityTransactions = (
       ...properties,
       price: null,
       cashValueUsd,
+      value: cashValueUsd,
       lpTokens,
     };
   });
@@ -486,7 +492,7 @@ const formatTransaction = (
   const time = timeSinceTimestamp(Number(tx.timestamp));
   const currency = cash.name;
   const shares = tx.noShares !== '0' ? tx.noShares : tx.yesShares;
-  const shareAmount = formatShares(
+  const shareAmount = String(formatShares(
     convertOnChainSharesToDisplayShareAmount(
       new BN(shares),
       new BN(cash.decimals)
@@ -495,11 +501,11 @@ const formatTransaction = (
       decimals: 4,
       decimalsRounded: 4,
     }
-  ).formatted;
-  const tAmount = formatShares(tokenAmount, {
+  ).formattedValue);
+  const tAmount = String(formatShares(tokenAmount, {
     decimals: 4,
     decimalsRounded: 4,
-  }).formatted;
+  }).formattedValue);
   return { shareAmount, currency, time, date, tokenAmount: tAmount, value };
 };
 
