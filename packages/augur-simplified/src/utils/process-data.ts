@@ -169,7 +169,6 @@ export const processGraphMarkets = (graphData: GraphData): ProcessedData => {
     }
   });
 
-  //console.log(cashes, markets, ammExchanges)
   return { cashes, markets, ammExchanges };
 };
 
@@ -420,7 +419,6 @@ const shapeAddLiquidityTransactions = (
   transactions: GraphAddLiquidity[],
   cash: Cash
 ): AmmTransaction[] => {
-  console.log('cash.usdPrice', cash.usdPrice)
   return transactions.map((e) => {
     const properties = formatTransaction(e, cash);
     const subheader = `Add ${cash.name} Liquidity`;
