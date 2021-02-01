@@ -2,10 +2,11 @@ import React, { useRef } from 'react';
 import { XIcon } from './icons';
 import Styles from './inputs.styles.less';
 
+const ENTER_CHAR_CODE = 13;
 export const SearchInput = ({ value, onChange, clearValue }) => {
   const input = useRef();
   const keypressHandler = e => {
-    if (e.code === "Enter") {
+    if (e.charCode === ENTER_CHAR_CODE) {
       console.log('hi')
       input.current && input.current.blur();
     }
