@@ -23,6 +23,7 @@ export const SettingsButton = () => {
     settings: { slippage, showInvalidMarkets },
     actions: { updateSettings },
   } = useAppStatusStore();
+  
   const [open, setOpened] = useState(false);
   const [customVal, setCustomVal] = useState('');
   const settingsRef = useRef(null);
@@ -67,6 +68,12 @@ export const SettingsButton = () => {
       window.removeEventListener('click', handleWindowOnClick);
     };
   });
+
+  useEffect(() => {
+    if (customVal === '' && !["0.5", "1", "2"].includes(slippage)) {
+      setCustomVal(slippage);
+    }
+  }, [slippage, customVal])
 
   return (
     <div className={Styles.SettingsMenuWrapper}>
