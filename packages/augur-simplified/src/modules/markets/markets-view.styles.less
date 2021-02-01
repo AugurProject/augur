@@ -35,7 +35,7 @@
 
   > section {
     display: grid;
-    grid-gap: @size-16;
+    grid-gap: @size-24;
     grid-template-columns: repeat(3, 1fr);
     flex: 1;
     margin-bottom: @size-40;
@@ -210,6 +210,7 @@
 
     > section {
       grid-template-columns: 1fr 1fr;
+      grid-gap: @size-16;
     }
 
     > div:nth-of-type(2) {
@@ -277,6 +278,12 @@
   .MarketsView {
     > section {
       grid-template-columns: 1fr;
+    }
+  }
+
+  .MarketCard {
+    > div > a {
+      height: unset;
     }
   }
 }
