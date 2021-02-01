@@ -7,7 +7,6 @@ export const SearchInput = ({ value, onChange, clearValue }) => {
   const input = useRef();
   const keypressHandler = e => {
     if (e.charCode === ENTER_CHAR_CODE) {
-      console.log('hi')
       input.current && input.current.blur();
     }
   };
