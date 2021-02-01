@@ -147,19 +147,18 @@ export class AMM {
     return this.intermediary(paraShareToken).rateRemoveLiquidity(market, paraShareToken, fee, lpTokens);
   }
 
-  async doSwap(market: string, paraShareToken: string, fee: BigNumber, inputShares: BigNumber, buyLong: Boolean, minShares: BigNumber): Promise<TransactionResponse> {
-    return this.intermediary(paraShareToken).swap(market, paraShareToken, fee, inputShares, buyLong, minShares);
+  async doSwap(market: string, paraShareToken: string, fee: BigNumber, inputShares: BigNumber, outputLong: Boolean, minShares: BigNumber): Promise<TransactionResponse> {
+    return this.intermediary(paraShareToken).swap(market, paraShareToken, fee, inputShares, outputLong, minShares);
   }
 
   async getSwap(market: string, paraShareToken: string, fee: BigNumber, inputShares: BigNumber, buyLong: Boolean, includeFee: Boolean): Promise<BigNumber> {
-    const inputLong = !buyLong;
-
     const exchange = await this.intermediary(paraShareToken).calculateExchangeAddress(market, paraShareToken, fee);
     const { yes: poolYes, no: poolNo } = await this.intermediary(paraShareToken).shareBalances(market, paraShareToken, fee, exchange);
 
-    const outputShares = inputLong
-      ? AMM.calculateSwap(poolNo, poolYes, inputShares)
-      : AMM.calculateSwap(poolYes, poolNo, inputShares)
+    const outputShares = buyLong
+      ? AMM.calculateSwap(poolYes, poolNo, inputShares)
+      : AMM.calculateSwap(poolNo, poolYes, inputShares)
+
     return includeFee
       ? AMM.applyFee(outputShares, fee)
       : outputShares;

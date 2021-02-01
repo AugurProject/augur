@@ -263,6 +263,32 @@ def test_amm_yes_position(contractsFixture, market, shareToken, cash, factory, a
 
     assert cash.balanceOf(account0) == payoutAll
 
+def test_amm_yes_position_oversized(contractsFixture, market, cash, factory, amm, account0):
+    if not contractsFixture.paraAugur:
+        return skip("Test is only for para augur")
+
+    numticks = market.getNumTicks()
+    sets = 100 * ATTO
+    liquidityCost = sets * numticks
+
+    cash.faucet(liquidityCost)
+    cash.approve(factory.address, 10 ** 48)
+
+    amm.addInitialLiquidity(liquidityCost, RATIO_50_50, True, account0)
+
+    # Enter position, skewing the ratio
+    yesPositionSets = 10 * ATTO
+    yesPositionCost = yesPositionSets * numticks
+    cash.faucet(yesPositionCost)
+    sharesReceivedFirst = amm.enterPosition(yesPositionCost, True, 0)
+
+    # Enter position again, with so many shares that swap direction must be correct
+    yesPositionSets = 10000000 * ATTO
+    yesPositionCost = yesPositionSets * numticks
+    cash.faucet(yesPositionCost)
+    sharesReceivedSecond = amm.enterPosition(yesPositionCost, True, 0)
+
+
 def test_amm_no_position(contractsFixture, market, shareToken, cash, factory, amm, account0):
     if not contractsFixture.paraAugur:
         return skip("Test is only for para augur")
@@ -300,13 +326,13 @@ def test_amm_swap(contractsFixture, market, shareToken, cash, factory, amm, acco
     cash.faucet(cost)
     yesShares = amm.enterPosition(cost, True, 0)
 
-    noSharesReceived = amm.rateSwap(1 * ATTO, True) # trade away 1 Yes share
+    noSharesReceived = amm.rateSwap(1 * ATTO, False) # trade away 1 Yes share
 
     # Entered Yes position earlier, which spent Cash for Yes shares, raising their value and therefore lowering the value of No shares.
     # Then sold 1e18 Yes shares for No shares, which are worth less than Yes shares.
     assert noSharesReceived == 1183695652173913044
 
-    amm.swap(1 * ATTO, True, noSharesReceived)
+    amm.swap(1 * ATTO, False, noSharesReceived)
 
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == noSharesReceived
     assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == noSharesReceived
@@ -562,7 +588,7 @@ def test_amm_villainous_fee_extraction(contractsFixture, market, cash, shareToke
     totalLPSupply = amm.totalSupply()
     shareToken.setApprovalForAll(factory.address, True, sender=attacker)
 
-    [shortFromLP, longFromLP] = amm.yesNoShareBalances(attacker)
+    [_, shortFromLP, longFromLP] = amm.shareBalances(attacker)
     [shortShare, longShare] = amm.removeLiquidity(lpTokens, sender=attacker)
 
     setsToKeep = min(shortFromLP + shortShare, longFromLP + longShare)
@@ -600,7 +626,7 @@ def test_amm_add_liquidity_ratio(contractsFixture, market, cash, factory, amm, a
         return skip("Test is only for para augur")
 
     def calc_ratio():
-        [short, long] = amm.yesNoShareBalances(amm.address)
+        [_, short, long] = amm.shareBalances(amm.address)
         return short / long
 
     numticks = market.getNumTicks()

@@ -45,5 +45,4 @@ contract IAMMExchange is IERC20 {
     function rateSwap(uint256 _inputShares, bool _inputLong) public view returns (uint256);
 
     function shareBalances(address _owner) public view returns (uint256 _invalid, uint256 _no, uint256 _yes);
-    function yesNoShareBalances(address _owner) public view returns (uint256 _no, uint256 _yes);
 }
