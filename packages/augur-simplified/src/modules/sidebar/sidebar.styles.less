@@ -3,7 +3,7 @@
 
 div.Sidebar {
   @media @breakpoint-mobile-tablet {
-    position: fixed;
+    position: absolute;
     background: var(--light-background-color);
     z-index: @above-all-content-top-layer;
     top: 0;
@@ -29,6 +29,7 @@ div.Sidebar {
   align-items: center;
   grid-column: 1;
   grid-row: 1;
+  position: fixed;
 
   > span:first-of-type {
     .text-20-bold;
