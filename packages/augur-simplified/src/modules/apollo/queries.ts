@@ -52,18 +52,6 @@ export const GET_MARKETS = blockNumber => {
     extraInfoRaw
     shareTokens {
       id
-      tradingProceedsClaimed {
-        id
-        shareToken
-        sender {
-          id
-        }
-        outcome
-        numShares
-        numPayoutTokens
-        fees
-        timestamp
-      }
     }
     owner {
       id
