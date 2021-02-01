@@ -456,7 +456,8 @@ export const claimWinnings = (account: string, marketIds: string[], cash: Cash):
     console.error('augurClient is null');
     return null;
   }
-  return augurClient.amm.claimMarketsProceeds(marketIds, [cash?.shareToken], account, ethers.utils.formatBytes32String('11'));
+  const shareTokens = marketIds.map(m => cash?.shareToken);
+  return augurClient.amm.claimMarketsProceeds(marketIds, shareTokens, account, ethers.utils.formatBytes32String('11'));
 }
 
 export const claimMarketWinnings = (account: string, library: Web3Provider, marketId: string, cash: Cash): Promise<TransactionResponse | null> => {
