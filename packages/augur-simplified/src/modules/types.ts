@@ -1079,6 +1079,7 @@ export interface ProcessedData {
   ammExchanges: {
     [id: string]: AmmExchange;
   };
+  errors
 }
 
 export interface GraphData {

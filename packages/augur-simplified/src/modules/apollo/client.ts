@@ -62,7 +62,13 @@ export async function getMarketsData(paraConfig, updateHeartbeat) {
       console.error(JSON.stringify(response.errors, null, 1));
     }
 
-    updateHeartbeat({ ...response.data, cashes: responseUsd }, newBlock);
+    updateHeartbeat({
+        ...response.data,
+        cashes: responseUsd
+      },
+      newBlock,
+      response?.errors
+    );
   }
 }
 
