@@ -17,7 +17,6 @@ export function updateAMM(id: string):AMMExchange {
 
   let cash = ERC20.bind(Address.fromString(amm.cash));
   let decimals = BigInt.fromI32(10 ).pow(cash.decimals() as u8).toBigDecimal();
-  amm.liquidityCash = cash.balanceOf(Address.fromString(id)).toBigDecimal().div(decimals);
   amm.liquidityInvalid = shareTokenInstance.balanceOfMarketOutcome(
     Address.fromString(amm.market), BigInt.fromI32(0), Address.fromString(id)).times(market.numTicks).toBigDecimal().div(decimals);
   amm.liquidityNo = shareTokenInstance.balanceOfMarketOutcome(
