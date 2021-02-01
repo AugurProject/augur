@@ -705,9 +705,7 @@ const TradingForm = ({
           ammCash={ammCash}
           rate={
             !isNaN(Number(breakdown?.ratePerCash))
-              ? `1 ${amm?.cash?.name} (${
-                  getCashFormat(ammCash?.name).symbol
-                }) = ${formatSimpleShares(breakdown?.ratePerCash).full}`
+              ? `1 ${amm?.cash?.name} = ${formatSimpleShares(breakdown?.ratePerCash, { denomination: v => `${v} Shares` }).full}`
               : null
           }
           isBuy={orderType === BUY}
