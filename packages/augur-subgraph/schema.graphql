@@ -335,7 +335,7 @@ type VolumeChangeMarketEvent implements MarketEvent @entity {
 type TradingProceedsClaimed @entity {
   id: ID!
 
-  shareToken: ShareToken!
+  shareToken: ParaShareToken!
 
   universe: Universe!
 
@@ -371,8 +371,6 @@ type ShareToken @entity {
 
   "Market that this share is being traded on."
   market: Market!
-
-  tradingProceedsClaimed: [TradingProceedsClaimed]! @derivedFrom(field: "shareToken")
 }
 
 type ParaShareToken @entity {
@@ -380,6 +378,8 @@ type ParaShareToken @entity {
 
   "The collateral used for purchasing shares"
   cash: Cash!
+
+  tradingProceedsClaimed: [TradingProceedsClaimed]! @derivedFrom(field: "shareToken")
 }
 
 interface TokenEvent {
