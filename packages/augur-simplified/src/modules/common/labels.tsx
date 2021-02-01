@@ -331,6 +331,7 @@ export const ErrorBlock = ({ text }) => {
 export const NetworkMismatchBanner = () => {
   const {
     paraConfig: { networkId },
+    processed: { errors },
     loginAccount,
   } = useAppStatusStore();
   const location = useLocation();
@@ -340,6 +341,7 @@ export const NetworkMismatchBanner = () => {
     () => !!chainId && String(networkId) !== String(chainId),
     [chainId, networkId]
   );
+  const isGraphError = !!errors;
   return (
     <>
       {isNetworkMismatch && (
@@ -349,6 +351,15 @@ export const NetworkMismatchBanner = () => {
           })}
         >
           You're connected to an unsupported network
+        </article>
+      )}
+      {isGraphError && (
+        <article
+        className={classNames(Styles.NetworkMismatch, {
+          [Styles.Market]: path === MARKET,
+        })}
+        >
+          Unable to retrieve market data
         </article>
       )}
     </>

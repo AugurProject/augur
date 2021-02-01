@@ -48,17 +48,19 @@ const AppBody = () => {
   useEffect(() => {
     let isMounted = true;
     // get data immediately, then setup interval
-    getMarketsData(paraConfig, (graphData, block) => {
+    getMarketsData(paraConfig, (graphData, block, errors) => {
       isMounted &&
-        updateGraphHeartbeat(processGraphMarkets(graphData), graphData, block);
+        updateGraphHeartbeat(processGraphMarkets(graphData), graphData, block,
+        errors);
     });
     const intervalId = setInterval(() => {
-      getMarketsData(paraConfig, (graphData, block) => {
+      getMarketsData(paraConfig, (graphData, block, errors) => {
         isMounted &&
           updateGraphHeartbeat(
             processGraphMarkets(graphData),
             graphData,
-            block
+            block,
+            errors
           );
       });
     }, 15000);

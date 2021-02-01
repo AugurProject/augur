@@ -12,7 +12,7 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   setIsMobile: isMobile => {},
   setSidebar: sidebarType => {},
   setShowTradingForm: showTradingForm => {},
-  updateGraphHeartbeat: (processed, graphData, blocknumber) => {},
+  updateGraphHeartbeat: (processed, graphData, blocknumber, errors) => {},
   updateLoginAccount: updateLoginAccount => {},
   updateMarketsViewSettings: settings => {},
   updateUserBalances: balances => {},
@@ -42,7 +42,8 @@ export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
   processed: {
     markets: {},
     cashes: {},
-    ammExchanges: {}
+    ammExchanges: {},
+    errors: null,
   },
   userInfo: {
     activity: [],
