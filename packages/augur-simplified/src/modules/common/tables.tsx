@@ -44,7 +44,7 @@ import {
 } from '../../utils/contract-calls';
 import { createBigNumber } from '../../utils/create-big-number';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
-import { WarningBanner } from './labels';
+import { MovementLabel, WarningBanner } from './labels';
 
 interface PositionsTableProps {
   market: MarketInfo;
@@ -120,7 +120,12 @@ const PositionRow = ({ position }: { position: PositionBalance }) => {
       <li>{formatSimplePrice(position.avgPrice).formattedValue}</li>
       <li>{formatDai(position.initCostUsd).full}</li>
       <li>{formatDai(position.usdValue).full}</li>
-      <li>{formatDai(position.totalChangeUsd).full}</li>
+      <li>
+        <MovementLabel
+          value={formatDai(position.totalChangeUsd)}
+          numberValue={parseFloat(position.totalChangeUsd)}
+        />
+      </li>
     </ul>
   );
 };
@@ -325,7 +330,16 @@ const LiquidityRow = ({
       <li>{formatDai(liquidity.balance).formatted}</li>
       <li>{formatDai(liquidity.initCostUsd).full}</li>
       <li>{currValue ? formatDai(currValue).full : '-'}</li>
-      <li>{currValue ? formatDai(earnedFees).full : '-'}</li>
+      <li>
+        {earnedFees ? (
+          <MovementLabel
+            value={formatDai(earnedFees)}
+            numberValue={earnedFees.toNumber()}
+          />
+        ) : (
+          '-'
+        )}
+      </li>
     </ul>
   );
 };
