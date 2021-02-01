@@ -93,7 +93,6 @@ interface GraphAmmExchange {
     };
   };
   liquidity: string;
-  liquidityCash: string;
   liquidityInvalid: string;
   liquidityNo: string;
   liquidityYes: string;
@@ -320,7 +319,6 @@ const shapeAmmExchange = (
     liquidityInvalid: amm.liquidityInvalid,
     liquidityNo: amm.liquidityNo,
     liquidityYes: amm.liquidityYes,
-    liquidityCash: amm.liquidityCash,
     liquidityUSD,
     cash,
     priceNo: priceNoFixed,

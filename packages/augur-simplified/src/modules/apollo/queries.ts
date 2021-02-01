@@ -81,7 +81,6 @@ export const GET_MARKETS = blockNumber => {
       percentageYes
       percentageNo
       liquidity
-      liquidityCash
       liquidityYes
       liquidityNo
       liquidityInvalid
@@ -179,7 +178,6 @@ export const GET_MARKETS = blockNumber => {
       percentageYes
       percentageNo
       liquidity
-      liquidityCash
       liquidityYes
       liquidityNo
       liquidityInvalid
