@@ -224,6 +224,11 @@ export const WethWrapperForAMMExchangeAbi = [
         "type": "address[]"
       },
       {
+        "internalType": "contract IParaShareToken[]",
+        "name": "_shareTokens",
+        "type": "address[]"
+      },
+      {
         "internalType": "address payable",
         "name": "_shareHolder",
         "type": "address"

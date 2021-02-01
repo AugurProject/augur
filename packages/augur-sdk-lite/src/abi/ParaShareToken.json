@@ -464,44 +464,13 @@
     "name": "cash",
     "outputs": [
       {
-        "internalType": "contract ICash",
+        "internalType": "contract IERC20",
         "name": "",
         "type": "address"
       }
     ],
     "payable": false,
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "internalType": "contract IMarket[]",
-        "name": "_markets",
-        "type": "address[]"
-      },
-      {
-        "internalType": "address",
-        "name": "_shareHolder",
-        "type": "address"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "_fingerprint",
-        "type": "bytes32"
-      }
-    ],
-    "name": "claimMarketsProceeds",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
