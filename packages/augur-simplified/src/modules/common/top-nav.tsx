@@ -143,7 +143,7 @@ export const SettingsButton = () => {
                         if (
                           customVal === '' ||
                           isNaN(Number(customVal)) ||
-                          Number(customVal) > 100 ||
+                          Number(customVal) > 1000 ||
                           Number(customVal) <= 0
                         ) {
                           setCustomVal(slippage);
@@ -153,7 +153,7 @@ export const SettingsButton = () => {
                       }
                     }}
                     placeholder="custom"
-                    max="100"
+                    max="1000"
                     min="0.1"
                   />
                   <span>%</span>
