@@ -146,7 +146,7 @@ export const SettingsButton = () => {
                       }
                     }}
                     placeholder="custom"
-                    max="100"
+                    max="1000"
                     min="0.1"
                   />
                   <span>%</span>
