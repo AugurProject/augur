@@ -51,7 +51,7 @@ import { useAppStatusStore, AppStatusStore } from '../stores/app-status';
 import { BigNumber as BN } from 'bignumber.js';
 import { createBigNumber } from '../../utils/create-big-number';
 import { BackIcon } from '../common/icons';
-import { checkAllowance, isERC1155ContractApproved } from '../hooks/use-approval-callback';
+import { checkAllowance } from '../hooks/use-approval-callback';
 
 const TRADING_FEE_OPTIONS = [
   {
@@ -156,9 +156,7 @@ const ModalAddLiquidity = ({
   const [tradingFeeSelection, setTradingFeeSelection] = useState<number>(
     TRADING_FEE_OPTIONS[2].id
   );
-
-  const [canAddLiquidity, setCanAddLiquidity] = useState(false);
-  const [canRemoveLiquidity, setCanRemoveLiquidity] = useState(false);
+const [canAddLiquidity, setCanAddLiquidity] = useState(false);
 
   const cash = useMemo(() => {
     return cashes && chosenCash
@@ -168,10 +166,9 @@ const ModalAddLiquidity = ({
 
   const isETH = cash?.name === ETH;
   const { addresses } = paraConfig;
-  const { AMMFactory, WethWrapperForAMMExchange } = addresses;
-  const shareToken = cash?.shareToken;
+  const { AMMFactory } = addresses;
   const isApproved = modalType === REMOVE
-    ? canRemoveLiquidity
+    ? true
     : canAddLiquidity;
 
   useEffect(() => {
@@ -192,26 +189,6 @@ const ModalAddLiquidity = ({
       }
     }
   }, [isLogged, canAddLiquidity, setCanAddLiquidity, updateTransaction, transactions]);
-
-  useEffect(() => {
-    const checkCanEthRemove = async() => {
-      const approvalCheck = await isERC1155ContractApproved(shareToken, WethWrapperForAMMExchange, loginAccount, transactions, updateTransaction);
-      if (approvalCheck === APPROVED) {
-        setCanRemoveLiquidity(true);
-      } else {
-        setCanRemoveLiquidity(false);
-      }
-    }
-
-    if (isLogged && !canRemoveLiquidity) {
-      if (isETH) {
-        checkCanEthRemove();
-      } else {
-        setCanRemoveLiquidity(true);
-      }
-    }
-  }, [isLogged, canRemoveLiquidity, setCanRemoveLiquidity, updateTransaction, transactions]);
-
 
   const userTokenBalance = cash?.name ? balances[cash?.name]?.balance : '0';
   const shareBalance =
