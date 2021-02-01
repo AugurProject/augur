@@ -24,6 +24,14 @@
   }
 }
 
+.TwoToneContent { 
+  background: linear-gradient(to right, var(--light-background-color), var(--light-background-color) 50%, var(--simple-light-bg) 51%, var(--simple-light-bg));
+
+  @media @breakpoint-mobile-tablet {
+    background: unset;
+  }
+}
+
 
 body {
   display: flex;

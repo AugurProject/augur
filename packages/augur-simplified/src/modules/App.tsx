@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { ApolloProvider } from 'react-apollo';
 import { client, getMarketsData } from './apollo/client';
+import { useLocation } from 'react-router';
 import { HashRouter } from 'react-router-dom';
 import Styles from './App.styles.less';
 import Routes from './routes/routes';
@@ -15,6 +16,8 @@ import { ConnectAccountProvider } from './ConnectAccount/connect-account-provide
 import classNames from 'classnames';
 import { TransactionDetails } from './types';
 import ModalView from './modal/modal-view';
+import parsePath from './routes/helpers/parse-path';
+import { MARKETS } from './constants';
 
 function checkIsMobile(setIsMobile) {
   const isMobile =
@@ -44,6 +47,8 @@ const AppBody = () => {
     },
   } = useAppStatusStore();
   const modalShowing = Object.keys(modal).length !== 0;
+  const location = useLocation();
+  const path = parsePath(location.pathname)[0];
 
   useEffect(() => {
     let isMounted = true;
@@ -143,6 +148,7 @@ const AppBody = () => {
       id="mainContent"
       className={classNames(Styles.App, {
         [Styles.SidebarOut]: sidebarOut,
+        [Styles.TwoToneContent]: path !== MARKETS
       })}
     >
       {modalShowing && <ModalView />}
