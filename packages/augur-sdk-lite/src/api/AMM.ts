@@ -77,6 +77,10 @@ export class AMM {
     return this.doCreateExchangeWithLiquidity(market, paraShareToken, fee, cash, longPercent, shortPercent, recipient);
   }
 
+  async claimMarketsProceeds(_markets:string[], _shareTokens:string[], _shareHolder: string, _fingerprint: string) {
+    return this.ethIntermediary.claimMarketsProceeds(_markets, _shareTokens, _shareHolder, _fingerprint);
+  }
+
   async getAddLiquidity(
     totalSupply: BigNumber,
     noBalance: BigNumber,
