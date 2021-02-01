@@ -3,7 +3,7 @@
 
 .TopNav {
   align-items: center;
-  background: var(--light-background-color);
+  background: transparent;
   border-bottom: @size-1 solid var(--simple-border);
   display: flex;
   flex-flow: row nowrap;
@@ -17,6 +17,7 @@
 
   > section {
     align-items: center;
+    background: var(--light-background-color);
     box-sizing: border-box;
     display: inline-grid;
     grid-template-columns: auto auto;
@@ -96,6 +97,7 @@
 
 @media @breakpoint-mobile-tablet {
   .TopNav {
+    background: var(--light-background-color);
     display: grid;
     grid-template-columns: auto 1fr;
 
