@@ -172,6 +172,8 @@ type Market @entity {
 
   "List of AMM Exchanges for this Market"
   amms: [AMMExchange!]! @derivedFrom(field: "market")
+
+  tradingProceedsClaimed: [TradingProceedsClaimed!]! @derivedFrom(field: "market")
 }
 
 interface MarketEvent {
