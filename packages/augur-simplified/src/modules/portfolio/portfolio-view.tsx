@@ -33,10 +33,9 @@ const calculateTotalWinnings = (claimbleMarketsPerCash) => {
 
 const handleClaimAll = (loginAccount, cash, marketIds, addTransaction, updateTransaction) => {
   const from = loginAccount?.account;
-  const library = loginAccount?.library;
   const chainId = loginAccount?.chainId;
   if (from) {
-    claimWinnings(from, library, marketIds, cash).then((response) => {
+    claimWinnings(from, marketIds, cash).then((response) => {
       // handle transaction response here
       if (response) {
         const { hash } = response;

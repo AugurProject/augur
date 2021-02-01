@@ -449,11 +449,15 @@ export async function doTrade(
   return null;
 }
 
-export const claimWinnings = (account: string, library: Web3Provider, marketIds: string[], cash: Cash): Promise<TransactionResponse | null> => {
+export const claimWinnings = (account: string, marketIds: string[], cash: Cash): Promise<TransactionResponse | null> => {
   if (!cash?.shareToken) return null;
-  const contract = getContract(cash.shareToken, ParaShareToken.ABI, library, account);
-  return contract
-    .claimMarketsProceeds(marketIds, account, ethers.utils.formatBytes32String('11'));
+  const augurClient = augurSdkLite.get();
+  if (!augurClient || !augurClient.amm) {
+    console.error('augurClient is null');
+    return null;
+  }
+  const shareTokens = marketIds.map(m => cash?.shareToken);
+  return augurClient.amm.claimMarketsProceeds(marketIds, shareTokens, account, ethers.utils.formatBytes32String('11'));
 }
 
 export const claimMarketWinnings = (account: string, library: Web3Provider, marketId: string, cash: Cash): Promise<TransactionResponse | null> => {
