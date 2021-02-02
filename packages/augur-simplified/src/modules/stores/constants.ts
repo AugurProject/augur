@@ -12,7 +12,7 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   setIsMobile: isMobile => {},
   setSidebar: sidebarType => {},
   setShowTradingForm: showTradingForm => {},
-  updateGraphHeartbeat: (processed, graphData, blocknumber, errors) => {},
+  updateGraphHeartbeat: (processed, blocknumber, errors) => {},
   updateLoginAccount: updateLoginAccount => {},
   updateMarketsViewSettings: settings => {},
   updateUserBalances: balances => {},
@@ -68,11 +68,6 @@ export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
       claimableWinnings: {}
     },
   },
-  graphData: {
-    markets: {},
-    past: {},
-    paraShareTokens: {},
-  },
   settings: {
     slippage: SETTINGS_SLIPPAGE,
     showInvalidMarkets: false,
@@ -88,7 +83,6 @@ export const APP_STATE_KEYS = {
   LIQUIDITY: 'liquidity',
   TRANSACTIONS: 'transactions',
   USER_INFO: 'userInfo',
-  GRAPH_DATA: 'graphData',
   PROCESSED: 'processed',
   MARKETS_VIEW_SETTINGS: 'marketsViewSettings',
   PARA_CONFIG: 'paraConfig',
@@ -103,7 +97,6 @@ export const APP_STATE_KEYS = {
 export const APP_STATUS_ACTIONS = {
   SET_IS_MOBILE: 'SET_IS_MOBILE',
   SET_SIDEBAR: 'SET_SIDEBAR',
-  UPDATE_GRAPH_DATA: 'UPDATE_GRAPH_DATA',
   SET_SHOW_TRADING_FORM: 'SET_SHOW_TRADING_FORM',
   UPDATE_PROCESSED: 'UPDATE_PROCESSED',
   SET_LOGIN_ACCOUNT: 'SET_LOGIN_ACCOUNT',

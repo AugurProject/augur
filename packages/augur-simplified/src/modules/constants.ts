@@ -41,6 +41,11 @@ export const GWEI_CONVERSION = 1000000000;
 export const TEN = createBigNumber(10, 10);
 export const ZERO = createBigNumber(0);
 export const ONE = createBigNumber(1);
+export const HUNDRED = createBigNumber(100);
+export const THOUSAND = createBigNumber(1000);
+export const MILLION = THOUSAND.times(THOUSAND);
+export const BILLION = MILLION.times(THOUSAND);
+export const TRILLION = BILLION.times(THOUSAND);
 export const SEC_IN_YEAR = createBigNumber(86400).times(createBigNumber(365));
 
 // # Asset Types

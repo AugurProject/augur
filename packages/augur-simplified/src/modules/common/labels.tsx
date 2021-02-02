@@ -3,7 +3,6 @@ import Styles from './labels.styles.less';
 import { useLocation } from 'react-router';
 import classNames from 'classnames';
 import { formatDai } from '../../utils/format-number';
-import { createBigNumber } from '../../utils/create-big-number';
 import { CATEGORIES_ICON_MAP } from './category-icons-map';
 import { useAppStatusStore } from '../stores/app-status';
 import parsePath from '../routes/helpers/parse-path';
@@ -187,11 +186,9 @@ export const ReportingStateLabel = ({ reportingState, big = false }) => {
   return <>{content}</>;
 };
 
-const ONE_HUNDRED_K = '100000.00';
-
 const handleValue = (value) =>
   formatDai(value, {
-    bigUnitPostfix: createBigNumber(value).gte(ONE_HUNDRED_K),
+    bigUnitPostfix: true,
   }).full;
 
 interface AppViewStatsProps {
@@ -355,9 +352,9 @@ export const NetworkMismatchBanner = () => {
       )}
       {isGraphError && (
         <article
-        className={classNames(Styles.NetworkMismatch, {
-          [Styles.Market]: path === MARKET,
-        })}
+          className={classNames(Styles.NetworkMismatch, {
+            [Styles.Market]: path === MARKET,
+          })}
         >
           Unable to retrieve market data
         </article>
@@ -422,10 +419,7 @@ export interface MovementLabelProps {
   numberValue: number;
 }
 
-export const MovementLabel = ({
-  value,
-  numberValue,
-}: MovementLabelProps) => {
+export const MovementLabel = ({ value, numberValue }: MovementLabelProps) => {
   const getTextColorStyles: Function = (val: number): string =>
     classNames({
       [Styles.MovementLabel_Text_positive]: val > 0,
@@ -436,14 +430,10 @@ export const MovementLabel = ({
   const handlePlusMinus: Function = (label: string): string => {
     if (numberValue > 0) {
       return '+'.concat(label);
-    } 
+    }
     return label;
   };
   const formattedString = handlePlusMinus(value.full);
 
-  return (
-    <div className={`${textColorStyle}`}>
-      {formattedString}
-    </div>
-  );
+  return <div className={`${textColorStyle}`}>{formattedString}</div>;
 };

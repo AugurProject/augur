@@ -54,19 +54,15 @@ const AppBody = () => {
     let isMounted = true;
     // get data immediately, then setup interval
     getMarketsData(paraConfig, (graphData, block, errors) => {
-      isMounted &&
-        updateGraphHeartbeat(processGraphMarkets(graphData), graphData, block,
-        errors);
+      isMounted && !!errors
+        ? updateGraphHeartbeat(processed, blocknumber, errors)
+        : updateGraphHeartbeat(processGraphMarkets(graphData), block, errors);
     });
     const intervalId = setInterval(() => {
       getMarketsData(paraConfig, (graphData, block, errors) => {
-        isMounted &&
-          updateGraphHeartbeat(
-            processGraphMarkets(graphData),
-            graphData,
-            block,
-            errors
-          );
+        isMounted && !!errors
+        ? updateGraphHeartbeat(processed, blocknumber, errors)
+        : updateGraphHeartbeat(processGraphMarkets(graphData), block, errors);
       });
     }, 15000);
     return () => {
@@ -125,7 +121,7 @@ const AppBody = () => {
 
     return () => {
       isMounted = false;
-    }
+    };
     // eslint-disable-next-line
   }, [loginAccount?.account, loginAccount?.library, processed, paraConfig]);
 
@@ -148,7 +144,7 @@ const AppBody = () => {
       id="mainContent"
       className={classNames(Styles.App, {
         [Styles.SidebarOut]: sidebarOut,
-        [Styles.TwoToneContent]: path !== MARKETS
+        [Styles.TwoToneContent]: path !== MARKETS,
       })}
     >
       {modalShowing && <ModalView />}
