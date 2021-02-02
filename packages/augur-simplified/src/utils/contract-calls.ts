@@ -799,7 +799,7 @@ const getPositionUsdValues = (trades: UserTrades, rawBalance: string, balance: s
     }
     totalChangeUsd = trimDecimalValue(usdChangedValue);
     visible = true;
-    positionFromLiquidity = result.positionFromLiquidity;
+    positionFromLiquidity = !result.positionFromRemoveLiquidity && result.positionFromLiquidity;
     positionFromRemoveLiquidity = result.positionFromRemoveLiquidity;
   }
 
@@ -872,13 +872,13 @@ const getInitPositionValues = (trades: UserTrades, amm: AmmExchange, isYesOutcom
   // get shares from LP activity
   const sharesLiquidity = accumLpSharesPrice(amm.transactions, isYesOutcome, account);
   const positionFromLiquidity = sharesLiquidity.shares.gt(new BN(0));
-  const positionFromRemoveLiquidity = sharesLiquidity.shares.eq(new BN(0));
   const allInputShareAmounts = sharesLiquidity.shares.plus(sharesEntered.shares);
   const allInputCashAmounts = sharesLiquidity.cashAmount.plus(sharesEntered.cashAmount);
   const netShareAmounts = allInputShareAmounts.minus(sharesExited.shares);
   const netCashAmounts = allInputCashAmounts.minus(sharesExited.cashAmount);
   const cost = convertOnChainSharesToDisplayShareAmount(netCashAmounts, amm.cash.decimals).times(new BN(cashPrice));
   const avgPrice = netShareAmounts.gt(0) ? netCashAmounts.div(netShareAmounts) : new BN(0);
+  const positionFromRemoveLiquidity = hasPositionFromRemoveLiquidity(amm.transactions, account);
   return { avgPrice: String(avgPrice), initCostUsd: String(cost), positionFromLiquidity, positionFromRemoveLiquidity }
 }
 
@@ -896,19 +896,23 @@ const accumLpSharesPrice = (transactions: AmmTransaction[], isYesOutcome: boolea
   const result = transactions.filter(t => isSameAddress(t.sender, account) && (t.tx_type === TransactionTypes.ADD_LIQUIDITY || t.tx_type === TransactionTypes.REMOVE_LIQUIDITY)).reduce((p, t) => {
     const yesShares = new BN(t.yesShares);
     const noShares = new BN(t.noShares);
-    const shareCost = new BN(t.cash).minus(t.cashValue);
     if (isYesOutcome) {
       const netYesShares = noShares.minus(yesShares)
       if (netYesShares.lte(new BN(0))) return p;
-      return { shares: p.shares.plus(netYesShares), cashAmount: p.cashAmount.plus(shareCost) }
+      return { shares: p.shares.plus(netYesShares), cashAmount: p.cashAmount.plus(new BN(t.cashValue)) }
     }
     const netNoShares = yesShares.minus(noShares)
     if (netNoShares.lte(new BN(0))) return p;
-    return { shares: p.shares.plus(netNoShares), cashAmount: p.cashAmount.plus(shareCost) }
+    return { shares: p.shares.plus(netNoShares), cashAmount: p.cashAmount.plus(new BN(t.cashValue)) }
   },
     { shares: new BN(0), cashAmount: new BN(0) });
 
   return { shares: result.shares, cashAmount: result.cashAmount };
+}
+
+const hasPositionFromRemoveLiquidity = (transactions: AmmTransaction[], account): boolean => {
+  const tx = transactions.filter(t => isSameAddress(t.sender, account) && (t.tx_type === TransactionTypes.REMOVE_LIQUIDITY));
+  return Boolean(tx.length);
 }
 
 const getEthBalance = async (provider: Web3Provider, cashes: Cashes, account: string): Promise<CurrencyBalance> => {
