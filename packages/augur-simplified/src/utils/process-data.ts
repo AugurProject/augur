@@ -483,7 +483,19 @@ const shapeRemoveLiquidityTransactions = (
         new BN(cash.decimals)
       )
     );
+    const shares = new BN(e.noShares).plus(new BN(e.yesShares));
+    const shareAmount = String(formatShares(
+      convertOnChainSharesToDisplayShareAmount(
+        new BN(shares),
+        new BN(cash.decimals)
+      ),
+      {
+        decimals: 4,
+        decimalsRounded: 4,
+      }
+    ).formattedValue);
 
+    const tokenAmount =  `-`; // TODO; graph data needs to to provide lp token amount burnt
     return {
       ...e,
       tx_type: TransactionTypes.REMOVE_LIQUIDITY,
@@ -493,6 +505,8 @@ const shapeRemoveLiquidityTransactions = (
       price: null,
       cashValue,
       value: cashValue,
+      tokenAmount,
+      shareAmount
     };
   });
 };
