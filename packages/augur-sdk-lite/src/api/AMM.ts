@@ -151,11 +151,11 @@ export class AMM {
     return this.intermediary(paraShareToken).swap(market, paraShareToken, fee, inputShares, outputLong, minShares);
   }
 
-  async getSwap(market: string, paraShareToken: string, fee: BigNumber, inputShares: BigNumber, buyLong: Boolean, includeFee: Boolean): Promise<BigNumber> {
+  async getSwap(market: string, paraShareToken: string, fee: BigNumber, inputShares: BigNumber, outputLong: Boolean, includeFee: Boolean): Promise<BigNumber> {
     const exchange = await this.intermediary(paraShareToken).calculateExchangeAddress(market, paraShareToken, fee);
     const { yes: poolYes, no: poolNo } = await this.intermediary(paraShareToken).shareBalances(market, paraShareToken, fee, exchange);
 
-    const outputShares = buyLong
+    const outputShares = outputLong
       ? AMM.calculateSwap(poolYes, poolNo, inputShares)
       : AMM.calculateSwap(poolNo, poolYes, inputShares)
 
