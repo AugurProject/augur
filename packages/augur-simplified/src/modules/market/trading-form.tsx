@@ -482,12 +482,9 @@ const TradingForm = ({
   useEffect(() => {
     if (initialSelectedOutcome.id !== selectedOutcomeId) {
       setSelectedOutcome(initialSelectedOutcome);
+      setAmount('');
     }
   }, [initialSelectedOutcome]);
-
-  useEffect(() => {
-    setAmount('')
-  }, [selectedOutcome]);
 
   useEffect(() => {
     const checkCanEnterPosition = async () => {
@@ -716,7 +713,10 @@ const TradingForm = ({
         <OutcomesGrid
           outcomes={outcomes}
           selectedOutcome={selectedOutcome}
-          setSelectedOutcome={setSelectedOutcome}
+          setSelectedOutcome={(outcome) => {
+            setSelectedOutcome(outcome);
+            setAmount('');
+          }}
           marketType={marketType}
           orderType={orderType}
           ammCash={ammCash}
