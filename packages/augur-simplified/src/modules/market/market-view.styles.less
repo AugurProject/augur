@@ -18,7 +18,12 @@
         margin: 0;
         padding: 0;
       }
+
+      > div[class*="Outcomes"] {
+        display: none;
+      }
     }
+
     &:last-of-type:not(:first-of-type) {
       display: flex;
       flex-direction: column;
@@ -27,10 +32,6 @@
         margin-bottom: @size-32;
       }
     }
-  }
-
-  @media @breakpoint-mobile-tablet {
-    grid-template-columns: 1fr;
   }
 }
 
@@ -168,10 +169,39 @@
 }
 
 .MobileLiquidSection {
+  display: none;
   margin-top: @size-40;
 
   > button {
     width: 100%;
+  }
+}
+
+@media @breakpoint-mobile-tiny {
+  .MarketView {
+    grid-template-columns: 1fr;
+
+    > section {
+      &:first-of-type > div[class*="Outcomes"] {
+        display: grid;
+      }
+
+      &:last-of-type:not(:first-of-type) {
+        display: none;
+
+        > button {
+          display: none;
+        }
+
+        &.ShowTradingForm {
+          display: flex;
+        }
+      }
+    }
+  }
+
+  .MobileLiquidSection {
+    display: block;
   }
 }
 

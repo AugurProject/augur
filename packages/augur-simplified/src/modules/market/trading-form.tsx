@@ -534,10 +534,17 @@ const TradingForm = ({
       : '';
 
   useEffect(() => {
-    if (!isMobile) {
-      setShowTradingForm(false);
+    function handleShowTradingForm() {
+      if (window.innerWidth >= 1200) {
+        setShowTradingForm(false);
+      }
     }
-  }, [isMobile]);
+    window.addEventListener('resize', handleShowTradingForm);
+    setShowTradingForm(false);
+    return () => {
+      window.removeEventListener('resize', handleShowTradingForm);
+    };
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -683,9 +690,7 @@ const TradingForm = ({
           <span>fee</span>
           <span>{formatPercent(amm?.feeInPercent).full}</span>
         </div>
-        {isMobile && (
-          <div onClick={() => setShowTradingForm(false)}>{CloseIcon}</div>
-        )}
+        <div onClick={() => setShowTradingForm(false)}>{CloseIcon}</div>
       </div>
       <div>
         <OutcomesGrid
