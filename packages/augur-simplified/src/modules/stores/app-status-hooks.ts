@@ -272,8 +272,13 @@ export function AppStatusReducer(state, action) {
       break;
     }
     case UPDATE_SEEN_POSITION_WARNING: {
-      updatedState[SEEN_POSITION_WARNINGS][action.id] =
-        action.seenPositionWarning;
+      if (updatedState[SEEN_POSITION_WARNINGS][action.id]) {
+        updatedState[SEEN_POSITION_WARNINGS][action.id][action.warningType] = action.seenPositionWarning;
+      } else {
+        updatedState[SEEN_POSITION_WARNINGS][action.id] = {
+          [action.warningType]: action.seenPositionWarning
+        }
+      }
       break;
     }
     case ADD_SEEN_POSITION_WARNINGS: {
@@ -333,11 +338,12 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
         dispatch({ type: FINALIZE_TRANSACTION, hash }),
       setModal: (modal) => dispatch({ type: SET_MODAL, modal }),
       closeModal: () => dispatch({ type: CLOSE_MODAL }),
-      updateSeenPositionWarning: (id, seenPositionWarning) =>
+      updateSeenPositionWarning: (id, seenPositionWarning, warningType) =>
         dispatch({
           type: UPDATE_SEEN_POSITION_WARNING,
           id,
           seenPositionWarning,
+          warningType
         }),
       addSeenPositionWarnings: (seenPositionWarnings) =>
         dispatch({ type: ADD_SEEN_POSITION_WARNINGS, seenPositionWarnings }),

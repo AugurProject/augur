@@ -1053,6 +1053,7 @@ export interface PositionBalance extends SimpleBalance {
   quantity: string;
   visible: boolean;
   positionFromLiquidity: boolean;
+  positionFromRemoveLiquidity: boolean;
 }
 
 export interface AmmMarketShares {
@@ -1114,6 +1115,12 @@ export interface Settings {
   slippage: string;
   showInvalidMarkets: boolean;
 }
+
+export interface SeenPositionWarnings {
+  add: boolean;
+  remove: boolean;
+}
+
 export interface AppStatusState {
   processed: ProcessedData;
   loginAccount: LoginAccount;
@@ -1137,7 +1144,7 @@ export interface AppStatusState {
   modal: Modal;
   settings: Settings;
   seenPositionWarnings: {
-    [id: string]: boolean
+    [id: string]: SeenPositionWarnings;
   }
 }
 
