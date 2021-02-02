@@ -93,6 +93,16 @@ const updateLocalStorage = (userAccount, updatedState) => {
         transactions: updatedState[TRANSACTIONS],
       })
     );
+  } else if (!!userAccount) {
+    window.localStorage.setItem(
+      userAccount,
+      JSON.stringify({
+        account: userAccount,
+        seenPositionWarnings: updatedState[SEEN_POSITION_WARNINGS],
+        settings: updatedState[SETTINGS],
+        transactions: updatedState[TRANSACTIONS],
+      })
+    );
   }
 };
 
