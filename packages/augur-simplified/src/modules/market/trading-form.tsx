@@ -638,7 +638,7 @@ const TradingForm = ({
     const worstCaseOutput = String(new BN(minOutput).times(percentageOff));
     const direction = isBuy ? TradingDirection.ENTRY : TradingDirection.EXIT;
     const outputYesShares = selectedOutcomeId === YES_OUTCOME_ID;
-    const userBalances = marketShares?.outcomeShares || [];
+    const userBalances = marketShares?.outcomeSharesRaw || [];
     setShowTradingForm(false);
     doTrade(
       direction,
