@@ -23,7 +23,7 @@ export const SettingsButton = () => {
     settings: { slippage, showInvalidMarkets },
     actions: { updateSettings },
   } = useAppStatusStore();
-  
+
   const [open, setOpened] = useState(false);
   const [customVal, setCustomVal] = useState('');
   const settingsRef = useRef(null);
@@ -70,10 +70,10 @@ export const SettingsButton = () => {
   });
 
   useEffect(() => {
-    if (customVal === '' && !["0.5", "1", "2"].includes(slippage)) {
+    if (customVal === '' && !['0.5', '1', '2'].includes(slippage)) {
       setCustomVal(slippage);
     }
-  }, [slippage, customVal])
+  }, [slippage, customVal]);
 
   return (
     <div className={Styles.SettingsMenuWrapper}>
@@ -193,26 +193,13 @@ export const TopNav = () => {
     isLogged,
     isMobile,
     actions: {
-      addSeenPositionWarnings,
       setSidebar,
       updateLoginAccount,
       logout,
-      addTransaction,
       updateTransaction,
-      updateSettings,
     },
   } = useAppStatusStore();
   const [lastUser, setLastUser] = useLocalStorage('lastUser', null);
-
-  const getSavedUserInfo = () => {
-    return (
-      JSON.parse(window.localStorage.getItem(loginAccount?.account)) || null
-    );
-  };
-
-  const setSavedUserInfo = (state) => {
-    window.localStorage.setItem(loginAccount?.account, JSON.stringify(state));
-  };
 
   useEffect(() => {
     if (blocknumber && transactions) {
@@ -239,11 +226,6 @@ export const TopNav = () => {
   useEffect(() => {
     if (loginAccount?.library?.provider?.isMetaMask && loginAccount?.account) {
       setLastUser(loginAccount.account);
-      const firstLogin =
-        window.localStorage.getItem(loginAccount.account) === null;
-      if (firstLogin) {
-        setSavedUserInfo({ account: loginAccount.account });
-      }
     } else if (!loginAccount?.active) {
       setLastUser(null);
     }
@@ -253,29 +235,9 @@ export const TopNav = () => {
 
   const handleAccountUpdate = (activeWeb3) => {
     if (activeWeb3) {
-      const savedTransactions = getSavedUserInfo()?.transactions;
-      if (
-        transactions &&
-        transactions.length === 0 &&
-        savedTransactions &&
-        savedTransactions.length > 0
-      ) {
-        savedTransactions.forEach((tx) => addTransaction(tx));
-      }
-
-      const userSettings = getSavedUserInfo()?.settings;
-      if (userSettings) {
-        updateSettings(userSettings);
-      }
-
-      const seenPositionWarnings = getSavedUserInfo()?.seenPositionWarnings;
-      if (seenPositionWarnings) {
-        addSeenPositionWarnings(seenPositionWarnings);
-      }
-
       if (String(networkId) !== String(activeWeb3.chainId)) {
         updateLoginAccount({ chainId: activeWeb3.chainId });
-      } else if (loginAccount && loginAccount.account) {
+      } else if (loginAccount?.account) {
         if (loginAccount.account !== activeWeb3.account) {
           // Cleanup old user state
           logout();
