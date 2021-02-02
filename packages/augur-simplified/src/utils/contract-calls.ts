@@ -551,7 +551,7 @@ export const getUserBalances = async (
 
   const contractMarketShareBalanceCall: ContractCallContext[] = marketIds.reduce(
     (p, marketId) => {
-      const shareTokenOutcomeShareBalances = shareTokens.reduce(
+      const shareTokenOutcomeShareBalances = [shareTokens[1]].reduce(
         (k, shareToken) => {
           // TODO: might need to change when scalars come in
           const outcomeShareBalances = [0, 1, 2].map((outcome) => ({
@@ -560,7 +560,7 @@ export const getUserBalances = async (
             abi: ParaShareToken.ABI,
             calls: [
               {
-                reference: `${marketId}-${outcome}`,
+                reference: `${shareToken}-${marketId}-${outcome}`,
                 methodName: MARKET_SHARE_BALANCE,
                 methodParameters: [marketId, outcome, account],
               },
