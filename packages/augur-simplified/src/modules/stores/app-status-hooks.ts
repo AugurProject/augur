@@ -31,7 +31,7 @@ const {
   LOGOUT,
   UPDATE_GRAPH_HEARTBEAT,
   UPDATE_SEEN_POSITION_WARNING,
-  ADD_SEEN_POSITION_WARNINGS
+  ADD_SEEN_POSITION_WARNINGS,
 } = APP_STATUS_ACTIONS;
 
 const {
@@ -47,7 +47,7 @@ const {
   MODAL,
   IS_LOGGED,
   SHOW_TRADING_FORM,
-  SEEN_POSITION_WARNINGS
+  SEEN_POSITION_WARNINGS,
 } = APP_STATE_KEYS;
 
 const isAsync = (obj) => {
@@ -86,8 +86,8 @@ const updateLocalStorage = (userAccount, updatedState) => {
   if (userData) {
     window.localStorage.setItem(
       userAccount,
-      JSON.stringify({ 
-        ...userData, 
+      JSON.stringify({
+        ...userData,
         seenPositionWarnings: updatedState[SEEN_POSITION_WARNINGS],
         settings: updatedState[SETTINGS],
         transactions: updatedState[TRANSACTIONS],
@@ -95,6 +95,9 @@ const updateLocalStorage = (userAccount, updatedState) => {
     );
   }
 };
+
+const getSavedUserInfo = (account) =>
+  JSON.parse(window.localStorage.getItem(account)) || null;
 
 export const getRelatedMarkets = (
   market: MarketInfo,
@@ -152,12 +155,24 @@ export function AppStatusReducer(state, action) {
       updatedState[IS_LOGGED] = false;
       updatedState[TRANSACTIONS] = [];
       updatedState[LOGIN_ACCOUNT] = null;
-      updatedState[USER_INFO] = DEFAULT_APP_STATUS_STATE.userInfo
+      updatedState[USER_INFO] = DEFAULT_APP_STATUS_STATE.userInfo;
       break;
     }
     case SET_LOGIN_ACCOUNT: {
-      updatedState[LOGIN_ACCOUNT] = action.account;
-      updatedState[IS_LOGGED] = !!action.account?.account;
+      const address = action?.account?.account;
+      updatedState[LOGIN_ACCOUNT] = action?.account;
+      updatedState[IS_LOGGED] = !!address;
+      const savedInfo = getSavedUserInfo(address);
+      if (savedInfo) {
+        updatedState[SETTINGS] = {
+          ...state.settings,
+          ...savedInfo.settings,
+        };
+        updatedState[SEEN_POSITION_WARNINGS] =
+          savedInfo?.seenPositionWarnings || state[SEEN_POSITION_WARNINGS];
+        const accTransactions = savedInfo.transactions.map((t) => ({ ...t, timestamp: now }));
+        updatedState[TRANSACTIONS] = accTransactions;
+      }
 
       if (updatedState.processed?.ammExchanges) {
         const activity = shapeUserActvity(
@@ -217,7 +232,9 @@ export function AppStatusReducer(state, action) {
       break;
     }
     case UPDATE_TRANSACTION: {
-      const transactionIndex = updatedState[TRANSACTIONS].findIndex(transaction => transaction.hash === action.hash);
+      const transactionIndex = updatedState[TRANSACTIONS].findIndex(
+        (transaction) => transaction.hash === action.hash
+      );
       if (transactionIndex >= 0) {
         updatedState[TRANSACTIONS][transactionIndex] = {
           ...updatedState[TRANSACTIONS][transactionIndex],
@@ -235,7 +252,6 @@ export function AppStatusReducer(state, action) {
       break;
     }
     case REMOVE_TRANSACTION: {
-
       if (action.hash) {
         updatedState[TRANSACTIONS] = updatedState[TRANSACTIONS].filter(
           (tx) => tx.hash !== action.hash
@@ -252,13 +268,12 @@ export function AppStatusReducer(state, action) {
       break;
     }
     case UPDATE_SEEN_POSITION_WARNING: {
-      updatedState[SEEN_POSITION_WARNINGS][action.id] = action.seenPositionWarning;
-      
+      updatedState[SEEN_POSITION_WARNINGS][action.id] =
+        action.seenPositionWarning;
       break;
     }
     case ADD_SEEN_POSITION_WARNINGS: {
       updatedState[SEEN_POSITION_WARNINGS] = action.seenPositionWarnings;
-      
       break;
     }
     default:
@@ -303,13 +318,25 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
         dispatch({ type: ADD_TRANSACTION, transaction }),
       removeTransaction: (hash: string) =>
         dispatch({ type: REMOVE_TRANSACTION, hash }),
-      updateGraphHeartbeat: (processed, blocknumber, errors) => dispatch({ type: UPDATE_GRAPH_HEARTBEAT, processed, blocknumber, errors }), 
+      updateGraphHeartbeat: (processed, blocknumber, errors) =>
+        dispatch({
+          type: UPDATE_GRAPH_HEARTBEAT,
+          processed,
+          blocknumber,
+          errors,
+        }),
       finalizeTransaction: (hash) =>
         dispatch({ type: FINALIZE_TRANSACTION, hash }),
       setModal: (modal) => dispatch({ type: SET_MODAL, modal }),
       closeModal: () => dispatch({ type: CLOSE_MODAL }),
-      updateSeenPositionWarning: (id, seenPositionWarning) => dispatch({type: UPDATE_SEEN_POSITION_WARNING, id, seenPositionWarning}),
-      addSeenPositionWarnings: (seenPositionWarnings) => dispatch({type: ADD_SEEN_POSITION_WARNINGS, seenPositionWarnings}),
+      updateSeenPositionWarning: (id, seenPositionWarning) =>
+        dispatch({
+          type: UPDATE_SEEN_POSITION_WARNING,
+          id,
+          seenPositionWarning,
+        }),
+      addSeenPositionWarnings: (seenPositionWarnings) =>
+        dispatch({ type: ADD_SEEN_POSITION_WARNINGS, seenPositionWarnings }),
       logout: () => dispatch({ type: LOGOUT }),
     },
   };
