@@ -14,8 +14,21 @@
 pragma solidity 0.5.15;
 
 import "ROOT/balancer/BNum.sol";
-import "ROOT/libraries/token/IERC20.sol";
 
+interface IERC20Balancer {
+    event Approval(address indexed src, address indexed dst, uint amt);
+    event Transfer(address indexed src, address indexed dst, uint amt);
+
+    function totalSupply() external view returns (uint);
+    function balanceOf(address whom) external view returns (uint);
+    function allowance(address src, address dst) external view returns (uint);
+
+    function approve(address dst, uint amt) external returns (bool);
+    function transfer(address dst, uint amt) external returns (bool);
+    function transferFrom(
+        address src, address dst, uint amt
+    ) external returns (bool);
+}
 
 contract BTokenBase is BNum {
 
@@ -55,7 +68,7 @@ contract BTokenBase is BNum {
     }
 }
 
-contract BToken is BTokenBase, IERC20 {
+contract BToken is BTokenBase, IERC20Balancer {
 
     string  private _name     = "Balancer Pool Token";
     string  private _symbol   = "BPT";

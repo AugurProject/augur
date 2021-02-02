@@ -22290,6 +22290,11 @@
 					"internalType": "address",
 					"name": "_proxyToClone",
 					"type": "address"
+				},
+				{
+					"internalType": "contract BPool",
+					"name": "_bPool",
+					"type": "address"
 				}
 			],
 			"payable": false,

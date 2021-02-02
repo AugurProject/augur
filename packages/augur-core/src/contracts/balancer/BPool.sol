@@ -337,7 +337,7 @@ contract BPool is BBronze, BToken, BMath {
         _lock_
     {
         require(_records[token].bound, "ERR_NOT_BOUND");
-        _records[token].balance = IERC20(token).balanceOf(address(this));
+        _records[token].balance = IERC20Balancer(token).balanceOf(address(this));
     }
 
     function getSpotPrice(address tokenIn, address tokenOut)
@@ -701,14 +701,14 @@ contract BPool is BBronze, BToken, BMath {
     function _pullUnderlying(address erc20, address from, uint amount)
         internal
     {
-        bool xfer = IERC20(erc20).transferFrom(from, address(this), amount);
+        bool xfer = IERC20Balancer(erc20).transferFrom(from, address(this), amount);
         require(xfer, "ERR_ERC20_FALSE");
     }
 
     function _pushUnderlying(address erc20, address to, uint amount)
         internal
     {
-        bool xfer = IERC20(erc20).transfer(to, amount);
+        bool xfer = IERC20Balancer(erc20).transfer(to, amount);
         require(xfer, "ERR_ERC20_FALSE");
     }
 
