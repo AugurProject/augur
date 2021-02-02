@@ -924,6 +924,8 @@ type AddLiquidity @entity {
   noShareCashValue: BigDecimal!
 
   yesShareCashValue: BigDecimal!
+
+  netShares: BigInt!
 }
 
 type RemoveLiquidity @entity {
