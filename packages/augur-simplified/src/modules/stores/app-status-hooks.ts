@@ -163,6 +163,19 @@ export function AppStatusReducer(state, action) {
       updatedState[LOGIN_ACCOUNT] = action?.account;
       updatedState[IS_LOGGED] = !!address;
       const savedInfo = getSavedUserInfo(address);
+
+      if (updatedState.processed?.ammExchanges) {
+        const activity = shapeUserActvity(
+          address,
+          updatedState.processed?.markets,
+          updatedState.processed?.ammExchanges
+        );
+        updatedState[USER_INFO] = {
+          ...updatedState[USER_INFO],
+          activity,
+        };
+      }
+
       if (savedInfo) {
         updatedState[SETTINGS] = {
           ...state.settings,
@@ -172,18 +185,9 @@ export function AppStatusReducer(state, action) {
           savedInfo?.seenPositionWarnings || state[SEEN_POSITION_WARNINGS];
         const accTransactions = savedInfo.transactions.map((t) => ({ ...t, timestamp: now }));
         updatedState[TRANSACTIONS] = accTransactions;
-      }
-
-      if (updatedState.processed?.ammExchanges) {
-        const activity = shapeUserActvity(
-          action.account?.account,
-          updatedState.processed?.markets,
-          updatedState.processed?.ammExchanges
-        );
-        updatedState[USER_INFO] = {
-          ...updatedState[USER_INFO],
-          activity,
-        };
+      } else if (!!address) {
+        // no saved info for this account, must be first login...
+        window.localStorage.setItem(address, JSON.stringify({ account: address }));
       }
       break;
     }
@@ -280,7 +284,7 @@ export function AppStatusReducer(state, action) {
       console.log(`Error: ${action.type} not caught by App Status reducer`);
   }
   windowRef.appStatus = updatedState;
-  const userAccount = state[LOGIN_ACCOUNT]?.account;
+  const userAccount = updatedState[LOGIN_ACCOUNT]?.account;
   if (userAccount) {
     updateLocalStorage(userAccount, updatedState);
   }

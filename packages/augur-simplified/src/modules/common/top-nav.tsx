@@ -201,9 +201,6 @@ export const TopNav = () => {
   } = useAppStatusStore();
   const [lastUser, setLastUser] = useLocalStorage('lastUser', null);
 
-  const setSavedUserInfo = (state) =>
-    window.localStorage.setItem(loginAccount?.account, JSON.stringify(state));
-
   useEffect(() => {
     if (blocknumber && transactions) {
       transactions
@@ -229,11 +226,6 @@ export const TopNav = () => {
   useEffect(() => {
     if (loginAccount?.library?.provider?.isMetaMask && loginAccount?.account) {
       setLastUser(loginAccount.account);
-      const firstLogin =
-        window.localStorage.getItem(loginAccount.account) === null;
-      if (firstLogin) {
-        setSavedUserInfo({ account: loginAccount.account });
-      }
     } else if (!loginAccount?.active) {
       setLastUser(null);
     }
