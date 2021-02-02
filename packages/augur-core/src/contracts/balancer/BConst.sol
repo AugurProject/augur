@@ -11,9 +11,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-pragma solidity 0.5.12;
+pragma solidity 0.5.15;
 
-import "./BColor.sol";
+import "ROOT/balancer/BColor.sol";
 
 contract BConst is BBronze {
     uint public constant BONE              = 10**18;

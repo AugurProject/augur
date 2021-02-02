@@ -405,6 +405,7 @@ class ContractsFixture:
             if 'external' in directory: continue
             if '0x' in directory: continue # uploaded separately
             if 'uniswap' in directory: continue # uploaded separately
+            if 'balancer' in directory: continue # uploaded separately
             if 'gsn/v2' in directory: continue # uploaded separately
             if 'gov' in directory: continue # uploaded separately
             if 'trading/erc20proxy' in directory: continue # uploaded separately
@@ -450,8 +451,9 @@ class ContractsFixture:
         self.upload("../src/contracts/trading/erc20proxy1155/ERC20Proxy1155Nexus.sol", constructorArgs=[masterProxy.address, shareToken.address])
 
     def uploadAMMContracts(self):
+        b_pool = self.upload("../src/contracts/balancer/BFactory.sol")
         masterProxy = self.upload('../src/contracts/para/AMMExchange.sol')
-        self.upload('../src/contracts/para/AMMFactory.sol', constructorArgs=[masterProxy.address])
+        self.upload('../src/contracts/para/AMMFactory.sol', constructorArgs=[masterProxy.address, b_pool.address])
 
     def uploadWethWrappedAmm(self, factory, shareToken):
         return self.upload("../src/contracts/para/WethWrapperForAMMExchange.sol", constructorArgs=[factory.address, shareToken.address])
@@ -499,6 +501,10 @@ class ContractsFixture:
         self.generateAndStoreSignature("../src/contracts/uniswap/UniswapV2Pair.sol")
         wethAddress = self.contracts["WETH9"].address
         self.upload("../src/contracts/uniswap/UniswapV2Router02.sol", constructorArgs=[factory.address, wethAddress])
+
+    def uploadBalancerContracts(self):
+        self.upload("../src/contracts/balancer/BFactory.sol")
+        self.generateAndStoreSignature("../src/contracts/balancer/BFactory.sol")
 
     def initializeAllContracts(self):
         coreContractsToInitialize = ['Time','ShareToken','WarpSync','RepOracle','AuditFunds']
@@ -847,6 +853,7 @@ def augurInitializedSnapshot(fixture, baseSnapshot):
     fixture.uploadParaAugur()
     fixture.uploadSideChainAugur()
     fixture.uploadERC20Proxy1155()
+    fixture.uploadBalancerContracts()
     fixture.uploadAMMContracts()
     if not fixture.paraAugur:
         fixture.doAugurTradingApprovals()

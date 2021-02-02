@@ -7,15 +7,18 @@ import 'ROOT/para/ParaShareToken.sol';
 import 'ROOT/para/interfaces/IAMMFactory.sol';
 import 'ROOT/para/interfaces/IAMMExchange.sol';
 import 'ROOT/para/interfaces/IParaShareToken.sol';
+import 'ROOT/balancer/BPool.sol';
 
 contract AMMFactory is IAMMFactory, CloneFactory2 {
     using SafeMathUint256 for uint256;
 
     IAMMExchange internal proxyToClone;
+    BPool internal bPool;
 
     event AMMCreated(IAMMExchange amm, IMarket market, ParaShareToken shareToken, uint256 fee);
 
-    constructor(address _proxyToClone) public {
+    constructor(address _proxyToClone, BPool _bPool) public {
+        bPool = _bPool;
         proxyToClone = IAMMExchange(_proxyToClone);
     }
 

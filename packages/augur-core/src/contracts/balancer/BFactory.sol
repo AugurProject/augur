@@ -11,11 +11,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-pragma solidity 0.5.12;
+pragma solidity 0.5.15;
 
 // Builds new BPools, logging their addresses and providing `isBPool(address) -> (bool)`
 
-import "./BPool.sol";
+import "ROOT/balancer/BPool.sol";
 
 contract BFactory is BBronze {
     event LOG_NEW_POOL(
@@ -69,7 +69,7 @@ contract BFactory is BBronze {
     }
 
     function collect(BPool pool)
-        external 
+        external
     {
         require(msg.sender == _blabs, "ERR_NOT_BLABS");
         uint collected = IERC20(pool).balanceOf(address(this));

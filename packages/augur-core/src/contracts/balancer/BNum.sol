@@ -11,14 +11,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-pragma solidity 0.5.12;
+pragma solidity 0.5.15;
 
-import "./BConst.sol";
+import "ROOT/balancer/BConst.sol";
 
 contract BNum is BConst {
 
     function btoi(uint a)
-        internal pure 
+        internal pure
         returns (uint)
     {
         return a / BONE;
@@ -112,7 +112,7 @@ contract BNum is BConst {
         require(base >= MIN_BPOW_BASE, "ERR_BPOW_BASE_TOO_LOW");
         require(base <= MAX_BPOW_BASE, "ERR_BPOW_BASE_TOO_HIGH");
 
-        uint whole  = bfloor(exp);   
+        uint whole  = bfloor(exp);
         uint remain = bsub(exp, whole);
 
         uint wholePow = bpowi(base, btoi(whole));
@@ -137,7 +137,7 @@ contract BNum is BConst {
         bool negative = false;
 
 
-        // term(k) = numer / denom 
+        // term(k) = numer / denom
         //         = (product(a - i - 1, i=1-->k) * x^k) / (k!)
         // each iteration, multiply previous term by (a-(k-1)) * x / k
         // continue until term is less than precision
