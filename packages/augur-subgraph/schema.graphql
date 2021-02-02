@@ -41,6 +41,8 @@ type User @entity {
 
   "Positions exited by this user has executed with any AMMExchange"
   exits: [ExitPosition!]! @derivedFrom(field: "sender")
+
+  tradingProceedsClaimed: [TradingProceedsClaimed!]! @derivedFrom(field: "sender")
 }
 
 type Universe @entity {
