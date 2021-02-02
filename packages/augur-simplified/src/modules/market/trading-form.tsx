@@ -486,6 +486,10 @@ const TradingForm = ({
   }, [initialSelectedOutcome]);
 
   useEffect(() => {
+    setAmount('')
+  }, [selectedOutcome]);
+
+  useEffect(() => {
     const checkCanEnterPosition = async () => {
       const approvalCheck = await checkAllowance(
         ammCash?.address,
