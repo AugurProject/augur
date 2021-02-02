@@ -551,7 +551,7 @@ export const getUserBalances = async (
 
   const contractMarketShareBalanceCall: ContractCallContext[] = marketIds.reduce(
     (p, marketId) => {
-      const shareTokenOutcomeShareBalances = [shareTokens[1]].reduce(
+      const shareTokenOutcomeShareBalances = shareTokens.reduce(
         (k, shareToken) => {
           // TODO: might need to change when scalars come in
           const outcomeShareBalances = [0, 1, 2].map((outcome) => ({
