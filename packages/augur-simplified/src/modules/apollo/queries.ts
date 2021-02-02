@@ -71,6 +71,16 @@ export const GET_MARKETS = blockNumber => {
     endTimestamp
     status
     categories
+    tradingProceedsClaimed {
+      id
+			shareToken {
+        id
+      }
+      outcome
+      numPayoutTokens
+      fees
+      timestamp
+    }
     amms {
       id
       shareToken {

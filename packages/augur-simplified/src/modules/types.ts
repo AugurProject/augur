@@ -186,6 +186,15 @@ export interface AmmExchange {
 export interface Cashes {
   [address: string]: Cash;
 }
+
+export interface ClaimedProceeds {
+  id: string;
+  shareToken: string;
+  outcome: number;
+  winnings: string;
+  fees: string;
+  timestamp: number;
+}
 export interface MarketInfo {
   marketId: string;
   description: string;
@@ -198,6 +207,7 @@ export interface MarketInfo {
   outcomes: MarketOutcome[];
   amm: AmmExchange | null;
   reportingState: string;
+  claimedProceeds: ClaimedProceeds[]
 }
 
 export interface MarketOutcome {
