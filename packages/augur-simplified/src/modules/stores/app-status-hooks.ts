@@ -185,7 +185,7 @@ export function AppStatusReducer(state, action) {
           savedInfo?.seenPositionWarnings || state[SEEN_POSITION_WARNINGS];
         const accTransactions = savedInfo.transactions.map((t) => ({ ...t, timestamp: now }));
         updatedState[TRANSACTIONS] = accTransactions;
-      } else if (!!address) {
+      } else if (!!address && action?.account?.library?.provider?.isMetamask) {
         // no saved info for this account, must be first login...
         window.localStorage.setItem(address, JSON.stringify({ account: address }));
       }
