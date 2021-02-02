@@ -20,7 +20,7 @@ import { updateTxStatus } from '../modal/modal-add-liquidity';
 
 export const SettingsButton = () => {
   const {
-    settings: { slippage, showInvalidMarkets },
+    settings: { slippage, showInvalidMarkets, showLiquidMarkets },
     actions: { updateSettings },
   } = useAppStatusStore();
 
@@ -173,6 +173,17 @@ export const SettingsButton = () => {
               toggle={showInvalidMarkets}
               setToggle={() =>
                 updateSettings({ showInvalidMarkets: !showInvalidMarkets })
+              }
+            />
+          </li>
+          <li>
+            <label>
+              Show liquid markets only
+            </label>
+            <ToggleSwitch
+              toggle={showLiquidMarkets}
+              setToggle={() =>
+                updateSettings({ showLiquidMarkets: !showLiquidMarkets })
               }
             />
           </li>

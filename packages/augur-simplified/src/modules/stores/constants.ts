@@ -71,6 +71,7 @@ export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
   settings: {
     slippage: SETTINGS_SLIPPAGE,
     showInvalidMarkets: false,
+    showLiquidMarkets: false,
   },
   seenPositionWarnings: {}
 };
