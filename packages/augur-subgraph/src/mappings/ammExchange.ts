@@ -60,7 +60,10 @@ export function handleAddLiquidity(event: AddLiquidityEvent): void {
   let priceOfYesShares = noShares.div(totalShares);
 
   let priceOfGainedShares: BigDecimal;
-  if(yesShares.gt(noShares)) {
+  // LP mints sets to add to pool, which are equal shares.
+  // The no and yes share values are how many are added to the pool.
+  // So the smaller side is the side where the user gains shares.
+  if(yesShares.lt(noShares)) {
     priceOfGainedShares = priceOfYesShares;
   } else {
     priceOfGainedShares = priceOfNoShares;
