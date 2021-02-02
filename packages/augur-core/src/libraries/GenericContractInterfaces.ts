@@ -151,7 +151,7 @@ export const eventDescriptions: { [signatureHash: string]: EventDescription } = 
 	'0x46bba48d6dbbf776b68a85bd1717fe039734230c00b94a581cfb5de1bf57e003': {"name":"EnterPosition","signature":"EnterPosition(address,uint256,uint256,bool,uint256)","signatureHash":"0x46bba48d6dbbf776b68a85bd1717fe039734230c00b94a581cfb5de1bf57e003","parameters":[{"indexed":false,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"cash","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"outputShares","type":"uint256"},{"indexed":false,"internalType":"bool","name":"buyLong","type":"bool"},{"indexed":false,"internalType":"uint256","name":"priorShares","type":"uint256"}]},
 	'0xc8e60626e3688330bf9707179915c42362e48ae21b6303ebe7ff85dd0a2c92e3': {"name":"ExitPosition","signature":"ExitPosition(address,uint256,uint256,uint256)","signatureHash":"0xc8e60626e3688330bf9707179915c42362e48ae21b6303ebe7ff85dd0a2c92e3","parameters":[{"indexed":false,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"shortShares","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"longShares","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"cashPayout","type":"uint256"}]},
 	'0x0fbf06c058b90cb038a618f8c2acbf6145f8b3570fd1fa56abb8f0f3f05b36e8': {"name":"RemoveLiquidity","signature":"RemoveLiquidity(address,uint256,uint256)","signatureHash":"0x0fbf06c058b90cb038a618f8c2acbf6145f8b3570fd1fa56abb8f0f3f05b36e8","parameters":[{"indexed":false,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"shortShares","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"longShares","type":"uint256"}]},
-	'0xb6c699f6b5288bc206eaee35c3e0fe3ffa35ef715f8ebbaa9d0157df3f57c31a': {"name":"SwapPosition","signature":"SwapPosition(address,uint256,uint256,bool)","signatureHash":"0xb6c699f6b5288bc206eaee35c3e0fe3ffa35ef715f8ebbaa9d0157df3f57c31a","parameters":[{"indexed":false,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"inputShares","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"outputShares","type":"uint256"},{"indexed":false,"internalType":"bool","name":"inputLong","type":"bool"}]},
+	'0xb6c699f6b5288bc206eaee35c3e0fe3ffa35ef715f8ebbaa9d0157df3f57c31a': {"name":"SwapPosition","signature":"SwapPosition(address,uint256,uint256,bool)","signatureHash":"0xb6c699f6b5288bc206eaee35c3e0fe3ffa35ef715f8ebbaa9d0157df3f57c31a","parameters":[{"indexed":false,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"inputShares","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"outputShares","type":"uint256"},{"indexed":false,"internalType":"bool","name":"outputLong","type":"bool"}]},
 	'0x94e3a39e6f82d8b385b8be50484f591a3be1b8cb8324c3e3f40abbebc5b2b8be': {"name":"AMMCreated","signature":"AMMCreated(address,address,address,uint256)","signatureHash":"0x94e3a39e6f82d8b385b8be50484f591a3be1b8cb8324c3e3f40abbebc5b2b8be","parameters":[{"indexed":false,"internalType":"contract IAMMExchange","name":"amm","type":"address"},{"indexed":false,"internalType":"contract IMarket","name":"market","type":"address"},{"indexed":false,"internalType":"contract ParaShareToken","name":"shareToken","type":"address"},{"indexed":false,"internalType":"uint256","name":"fee","type":"uint256"}]},
 	'0xcf387c24607bb8f2113f15487a6be6a6ea89f7359d98d64f32407a168fa24576': {"name":"CompleteSetsPurchased","signature":"CompleteSetsPurchased(address,address,address,uint256,uint256,address)","signatureHash":"0xcf387c24607bb8f2113f15487a6be6a6ea89f7359d98d64f32407a168fa24576","parameters":[{"indexed":true,"internalType":"address","name":"universe","type":"address"},{"indexed":true,"internalType":"address","name":"market","type":"address"},{"indexed":true,"internalType":"address","name":"account","type":"address"},{"indexed":false,"internalType":"uint256","name":"numCompleteSets","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"},{"indexed":false,"internalType":"address","name":"para","type":"address"}]},
 	'0xd57f8e2a65dd0df631b96ef9fb08bf2229810ea2e516fbe9ae2b8c47e443cab0': {"name":"CompleteSetsSold","signature":"CompleteSetsSold(address,address,address,uint256,uint256,uint256,address)","signatureHash":"0xd57f8e2a65dd0df631b96ef9fb08bf2229810ea2e516fbe9ae2b8c47e443cab0","parameters":[{"indexed":true,"internalType":"address","name":"universe","type":"address"},{"indexed":true,"internalType":"address","name":"market","type":"address"},{"indexed":true,"internalType":"address","name":"account","type":"address"},{"indexed":false,"internalType":"uint256","name":"numCompleteSets","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"fees","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"},{"indexed":false,"internalType":"address","name":"para","type":"address"}]},
@@ -8184,10 +8184,10 @@ export class AMMExchange<TBigNumber> extends Contract<TBigNumber> {
 		return <{_shortShare: TBigNumber, _longShare: TBigNumber}>result
 	}
 
-	public rateSwap_ = async (inputShares: TBigNumber, inputLong: boolean, options?: { sender?: string }): Promise<TBigNumber> => {
+	public rateSwap_ = async (inputShares: TBigNumber, outputLong: boolean, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"_inputShares","type":"uint256"},{"internalType":"bool","name":"_inputLong","type":"bool"}],"name":"rateSwap","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [inputShares, inputLong], options.sender)
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"_inputShares","type":"uint256"},{"internalType":"bool","name":"_outputLong","type":"bool"}],"name":"rateSwap","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [inputShares, outputLong], options.sender)
 		return <TBigNumber>result[0]
 	}
 
@@ -8224,22 +8224,22 @@ export class AMMExchange<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
-	public swap = async (inputShares: TBigNumber, inputLong: boolean, minOutputShares: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+	public swap = async (inputShares: TBigNumber, outputLong: boolean, minOutputShares: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_inputShares","type":"uint256"},{"internalType":"bool","name":"_inputLong","type":"bool"},{"internalType":"uint256","name":"_minOutputShares","type":"uint256"}],"name":"swap","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [inputShares, inputLong, minOutputShares], 'swap', options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_inputShares","type":"uint256"},{"internalType":"bool","name":"_outputLong","type":"bool"},{"internalType":"uint256","name":"_minOutputShares","type":"uint256"}],"name":"swap","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [inputShares, outputLong, minOutputShares], 'swap', options.sender)
 	}
 
-	public swap_estimateGas = async (inputShares: TBigNumber, inputLong: boolean, minOutputShares: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+	public swap_estimateGas = async (inputShares: TBigNumber, outputLong: boolean, minOutputShares: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_inputShares","type":"uint256"},{"internalType":"bool","name":"_inputLong","type":"bool"},{"internalType":"uint256","name":"_minOutputShares","type":"uint256"}],"name":"swap","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [inputShares, inputLong, minOutputShares], 'swap', options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_inputShares","type":"uint256"},{"internalType":"bool","name":"_outputLong","type":"bool"},{"internalType":"uint256","name":"_minOutputShares","type":"uint256"}],"name":"swap","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [inputShares, outputLong, minOutputShares], 'swap', options.sender)
 	}
 
-	public swap_ = async (inputShares: TBigNumber, inputLong: boolean, minOutputShares: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+	public swap_ = async (inputShares: TBigNumber, outputLong: boolean, minOutputShares: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_inputShares","type":"uint256"},{"internalType":"bool","name":"_inputLong","type":"bool"},{"internalType":"uint256","name":"_minOutputShares","type":"uint256"}],"name":"swap","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		const result = await this.localCall(abi, [inputShares, inputLong, minOutputShares], options.sender)
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_inputShares","type":"uint256"},{"internalType":"bool","name":"_outputLong","type":"bool"},{"internalType":"uint256","name":"_minOutputShares","type":"uint256"}],"name":"swap","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [inputShares, outputLong, minOutputShares], options.sender)
 		return <TBigNumber>result[0]
 	}
 
@@ -8286,13 +8286,6 @@ export class AMMExchange<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_sender","type":"address"},{"internalType":"address","name":"_recipient","type":"address"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		const result = await this.localCall(abi, [sender, recipient, amount], options.sender)
 		return <boolean>result[0]
-	}
-
-	public yesNoShareBalances_ = async (owner: string, options?: { sender?: string }): Promise<{_no: TBigNumber, _yes: TBigNumber}> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"_owner","type":"address"}],"name":"yesNoShareBalances","outputs":[{"internalType":"uint256","name":"_no","type":"uint256"},{"internalType":"uint256","name":"_yes","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [owner], options.sender)
-		return <{_no: TBigNumber, _yes: TBigNumber}>result
 	}
 }
 

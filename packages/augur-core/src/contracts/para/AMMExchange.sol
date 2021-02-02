@@ -28,7 +28,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
 
     event EnterPosition(address sender, uint256 cash, uint256 outputShares, bool buyLong, uint256 priorShares);
     event ExitPosition(address sender, uint256 shortShares, uint256 longShares, uint256 cashPayout);
-    event SwapPosition(address sender, uint256 inputShares, uint256 outputShares, bool inputLong);
+    event SwapPosition(address sender, uint256 inputShares, uint256 outputShares, bool outputLong);
     event AddLiquidity(address sender, uint256 cash, uint256 shortShares, uint256 longShares, uint256 lpTokens);
     event RemoveLiquidity(address sender, uint256 shortShares, uint256 longShares);
 
@@ -54,7 +54,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
 
     // Adds shares to the liquidity pool by minting complete sets.
     function addLiquidity(uint256 _cash, address _recipient) public returns (uint256) {
-        (uint256 _poolShort, uint256 _poolLong) = yesNoShareBalances(address(this));
+        (uint256 _poolShort, uint256 _poolLong) = shortLongShareBalances(address(this));
         require(_poolShort != 0, "To add initial liquidity please use addInitialLiquidity");
         uint256 _ratioFactor = 0;
         bool _keepLong = true;
@@ -70,7 +70,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
     }
 
     function addInitialLiquidity(uint256 _cash, uint256 _ratioFactor, bool _keepLong, address _recipient) external returns (uint256) {
-        (uint256 _poolShort, uint256 _poolLong) = yesNoShareBalances(address(this));
+        (uint256 _poolShort, uint256 _poolLong) = shortLongShareBalances(address(this));
         require(_poolShort == 0, "Cannot add a specified ratio liquidity after initial liquidity has been provided");
         return addLiquidityInternal(msg.sender, _cash, _ratioFactor, _keepLong, _recipient);
     }
@@ -114,7 +114,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
 
     // returns how many LP tokens you get for providing the given number of sets
     function rateAddLiquidity(uint256 _longs, uint256 _shorts) public view returns (uint256) {
-        (uint256 _noBalance, uint256 _yesBalance) = yesNoShareBalances(address(this));
+        (uint256 _noBalance, uint256 _yesBalance) = shortLongShareBalances(address(this));
 
         uint256 _prior = 0;
         if (_noBalance + _yesBalance != 0) {
@@ -147,7 +147,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
     // Tells you how many shares you receive from the pool.
     function rateRemoveLiquidity(uint256 _poolTokensToSell) public view returns (uint256 _shortShare, uint256 _longShare) {
         uint256 _poolSupply = totalSupply;
-        (uint256 _poolShort, uint256 _poolLong) = yesNoShareBalances(address(this));
+        (uint256 _poolShort, uint256 _poolLong) = shortLongShareBalances(address(this));
 
         _shortShare = _poolShort.mul(_poolTokensToSell).div(_poolSupply);
         _longShare = _poolLong.mul(_poolTokensToSell).div(_poolSupply);
@@ -162,21 +162,21 @@ contract AMMExchange is IAMMExchange, ERC20 {
         factory.transferCash(augurMarket, shareToken, fee, msg.sender, address(this), _cashCost);
         shareToken.publicBuyCompleteSets(augurMarket, _setsToBuy);
 
-        (uint256 _priorNo, uint _priorYes) = yesNoShareBalances(msg.sender);
+        (uint256 _priorShort, uint _priorLong) = shortLongShareBalances(msg.sender);
         if (_buyLong) {
             shareTransfer(address(this), msg.sender, 0, 0, _sharesToBuy);
-            emit EnterPosition(msg.sender, _cashCost, _sharesToBuy, _buyLong, _priorYes);
+            emit EnterPosition(msg.sender, _cashCost, _sharesToBuy, _buyLong, _priorLong);
         } else {
             shareTransfer(address(this), msg.sender, _sharesToBuy, _sharesToBuy, 0);
-            emit EnterPosition(msg.sender, _cashCost, _sharesToBuy, _buyLong, _priorNo);
+            emit EnterPosition(msg.sender, _cashCost, _sharesToBuy, _buyLong, _priorShort);
         }
 
         return _sharesToBuy;
     }
 
-    // Sell as many of the given shares as possible, swapping yes<->no as-needed.
+    // Sell as many of the given shares as possible, swapping long<->short as needed.
     function exitPosition(uint256 _shortShares, uint256 _longShares, uint256 _minCashPayout) public returns (uint256) {
-        (uint256 _poolShort, uint256 _poolLong) = yesNoShareBalances(address(this));
+        (uint256 _poolShort, uint256 _poolLong) = shortLongShareBalances(address(this));
 
         uint256 _sets = _shortShares;  // if short and long to sell are identical, sets to sell is equal to either
         if (_shortShares > _longShares) {
@@ -199,39 +199,40 @@ contract AMMExchange is IAMMExchange, ERC20 {
     // Exits as much of the position as possible.
 	function exitAll(uint256 _minCashPayout) external returns (uint256) {
 		(uint256 _userInvalid, uint256 _userNo, uint256 _userYes) = shareBalances(msg.sender);
-        _userNo = SafeMathUint256.min(_userInvalid, _userNo);
+        _userNo = SafeMathUint256.min(_userInvalid, _userNo); // determine short position
 		return exitPosition(_userNo, _userYes, _minCashPayout);
 	}
 
-    function swap(uint256 _inputShares, bool _inputLong, uint256 _minOutputShares) external returns (uint256) {
-        uint256 _outputShares = rateSwap(_inputShares, _inputLong);
+    function swap(uint256 _inputShares, bool _outputLong, uint256 _minOutputShares) external returns (uint256) {
+        uint256 _outputShares = rateSwap(_inputShares, _outputLong);
 
         require(_outputShares >= _minOutputShares, "AugurCP: Swap would yield too few output shares.");
 
-        if (_inputLong) {
-            shareTransfer(address(this), msg.sender, _outputShares, _outputShares, 0); // gain No and Invalid
-            factory.shareTransfer(augurMarket, shareToken, fee, msg.sender, address(this), uint256(0), uint256(0), _inputShares); // lose Yes
-        } else {
+        if (_outputLong) {
             shareToken.unsafeTransferFrom(address(this), msg.sender, YES, _outputShares); // gain Yes
             factory.shareTransfer(augurMarket, shareToken, fee, msg.sender, address(this), _inputShares, _inputShares, uint256(0)); // lose No and Invalid
+        } else {
+            shareTransfer(address(this), msg.sender, _outputShares, _outputShares, 0); // gain No and Invalid
+            factory.shareTransfer(augurMarket, shareToken, fee, msg.sender, address(this), uint256(0), uint256(0), _inputShares); // lose Yes
         }
 
-        emit SwapPosition(msg.sender, _inputShares, _outputShares, _inputLong);
+        emit SwapPosition(msg.sender, _inputShares, _outputShares, _outputLong);
 
         return _outputShares;
     }
 
     // How many of the other shares you would get for your shares.
-    function rateSwap(uint256 _inputShares, bool _inputLong) public view returns (uint256) {
-        (uint256 _reserveNo, uint256 _reserveYes) = yesNoShareBalances(address(this));
+    function rateSwap(uint256 _inputShares, bool _outputLong) public view returns (uint256) {
+        (uint256 _reserveShort, uint256 _reserveLong) = shortLongShareBalances(address(this));
 
-        if (_inputLong) {
-            return applyFee(calculateSwap(_reserveNo, _reserveYes, _inputShares), fee);
+        if (_outputLong) {
+            return applyFee(calculateSwap(_reserveLong, _reserveShort, _inputShares), fee);
         } else {
-            return applyFee(calculateSwap(_reserveYes, _reserveNo, _inputShares), fee);
+            return applyFee(calculateSwap(_reserveShort, _reserveLong, _inputShares), fee);
         }
     }
 
+    // Public because it's an extremely convenient method for other contracts or middleware.
     function shareBalances(address _owner) public view returns (uint256 _invalid, uint256 _no, uint256 _yes) {
         uint256[] memory _tokenIds = new uint256[](3);
         _tokenIds[0] = INVALID;
@@ -248,7 +249,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
         return (_invalid, _no, _yes);
     }
 
-    function yesNoShareBalances(address _owner) public view returns (uint256 _no, uint256 _yes) {
+    function shortLongShareBalances(address _owner) internal view returns (uint256 _no, uint256 _yes) {
         uint256[] memory _tokenIds = new uint256[](2);
         _tokenIds[0] = NO;
         _tokenIds[1] = YES;
@@ -261,7 +262,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
         return (_no, _yes);
     }
 
-    function shareTransfer(address _from, address _to, uint256 _invalidAmount, uint256 _noAmount, uint256 _yesAmount) private {
+    function shareTransfer(address _from, address _to, uint256 _invalidAmount, uint256 _noAmount, uint256 _yesAmount) internal {
         uint256 _size = (_invalidAmount != 0 ? 1 : 0) + (_noAmount != 0 ? 1 : 0) + (_yesAmount != 0 ? 1 : 0);
         uint256[] memory _tokenIds = new uint256[](_size);
         uint256[] memory _amounts = new uint256[](_size);

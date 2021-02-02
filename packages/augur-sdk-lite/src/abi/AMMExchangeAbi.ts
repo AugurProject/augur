@@ -178,7 +178,7 @@ export const AMMExchangeAbi = [
       {
         "indexed": false,
         "internalType": "bool",
-        "name": "inputLong",
+        "name": "outputLong",
         "type": "bool"
       }
     ],
@@ -749,7 +749,7 @@ export const AMMExchangeAbi = [
       },
       {
         "internalType": "bool",
-        "name": "_inputLong",
+        "name": "_outputLong",
         "type": "bool"
       }
     ],
@@ -847,7 +847,7 @@ export const AMMExchangeAbi = [
       },
       {
         "internalType": "bool",
-        "name": "_inputLong",
+        "name": "_outputLong",
         "type": "bool"
       },
       {
@@ -938,32 +938,6 @@ export const AMMExchangeAbi = [
     ],
     "payable": false,
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_owner",
-        "type": "address"
-      }
-    ],
-    "name": "yesNoShareBalances",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "_no",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_yes",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
     "type": "function"
   }
 ]

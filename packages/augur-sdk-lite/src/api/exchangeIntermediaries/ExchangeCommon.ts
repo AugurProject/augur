@@ -58,11 +58,10 @@ export abstract class ExchangeCommon {
     return amm.removeLiquidity(lpTokens.toFixed());
   }
 
-  async swap(market: string, paraShareToken: string, fee: BigNumber, inputShares: BigNumber, buyLong: Boolean, minShares: BigNumber): Promise<TransactionResponse> {
+  async swap(market: string, paraShareToken: string, fee: BigNumber, inputShares: BigNumber, outputLong: Boolean, minShares: BigNumber): Promise<TransactionResponse> {
     const exchangeAddress = await this.calculateExchangeAddress(market, paraShareToken, fee);
     const amm = this.exchangeContract(exchangeAddress);
-    const inputLong = !buyLong;
-    return amm.swap(inputShares.toFixed(), inputLong, minShares.toFixed());
+    return amm.swap(inputShares.toFixed(), outputLong, minShares.toFixed());
   }
 
   async calculateExchangeAddress(market: string, paraShareToken: string, fee: BigNumber): Promise<string> {
