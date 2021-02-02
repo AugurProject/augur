@@ -445,11 +445,11 @@ const TradingForm = ({
   amm,
 }: TradingFormProps) => {
   const {
-    isMobile,
     isLogged,
     loginAccount,
     transactions,
     paraConfig,
+    showTradingForm,
     actions: { addTransaction, updateTransaction, setShowTradingForm },
     settings: { slippage },
     userInfo: { balances },
@@ -472,6 +472,12 @@ const TradingForm = ({
   const isApprovedTrade = isBuy
     ? canEnterPosition
     : canExitPosition;
+
+  useEffect(() => {
+    if (initialSelectedOutcome.id !== selectedOutcomeId) {
+      setSelectedOutcome(initialSelectedOutcome);
+    }
+  }, [initialSelectedOutcome]);
 
   useEffect(() => {
     const checkCanEnterPosition = async() => {
@@ -535,8 +541,9 @@ const TradingForm = ({
 
   useEffect(() => {
     function handleShowTradingForm() {
-      if (window.innerWidth >= 1200) {
+      if (window.innerWidth >= 1200 && showTradingForm) {
         setShowTradingForm(false);
+        setAmount('');
       }
     }
     window.addEventListener('resize', handleShowTradingForm);
@@ -690,7 +697,10 @@ const TradingForm = ({
           <span>fee</span>
           <span>{formatPercent(amm?.feeInPercent).full}</span>
         </div>
-        <div onClick={() => setShowTradingForm(false)}>{CloseIcon}</div>
+        <div onClick={() => {
+          setShowTradingForm(false);
+          setAmount('');
+        }}>{CloseIcon}</div>
       </div>
       <div>
         <OutcomesGrid
