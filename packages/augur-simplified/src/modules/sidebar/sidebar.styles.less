@@ -66,8 +66,8 @@ div.Sidebar {
   grid-column: 1;
   grid-row: 2;
   overflow: auto;
-  max-height: calc(100vh - 144px);
-  height: calc(100vh - 144px);
+  max-height: calc(100vh - @size-144);
+  height: calc(100vh - @size-144);
 
   > div:not(:last-of-type) {
     margin-bottom: @size-24;
@@ -111,7 +111,7 @@ div.Sidebar {
 
 .MobileBrowser {
   > div[class*="Body"] {
-    max-height: calc(100vh - 220px);
-    height: calc(100vh - 220px);
+    max-height: calc(100vh - @size-220);
+    height: calc(100vh - @size-220);
   }
 }
