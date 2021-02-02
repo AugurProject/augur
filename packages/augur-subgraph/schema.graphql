@@ -953,6 +953,8 @@ type RemoveLiquidity @entity {
   noShareCashValue: BigDecimal!
 
   yesShareCashValue: BigDecimal!
+
+  lpTokensBurnt: BigInt!
 }
 
 type _Schema_

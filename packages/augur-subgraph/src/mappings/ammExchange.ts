@@ -88,6 +88,7 @@ export function handleRemoveLiquidity(event: RemoveLiquidityEvent): void {
   removeLiquidity.timestamp = event.block.timestamp;
   removeLiquidity.ammExchange = event.address.toHexString();
   removeLiquidity.noShares = event.params.shortShares;
+  removeLiquidity.lpTokensBurnt = event.params.lpTokensBurnt;
   removeLiquidity.yesShares = event.params.longShares;
   removeLiquidity.sender = event.params.sender.toHexString();
 
