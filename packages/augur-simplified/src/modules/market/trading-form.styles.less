@@ -7,7 +7,6 @@
   display: flex;
   height: fit-content;
   background: var(--simple-light-bg);
-  display: flex;
   flex-direction: column;
 
   > div:first-of-type {
@@ -58,6 +57,10 @@
           color: var(--simple-primary-text);
           margin-top: @size-4;
         }
+      }
+
+      &:last-of-type {
+        display: none;
       }
     }
   }
@@ -281,7 +284,7 @@
   &.nonSelectable {
     height: @size-80;
     min-height: @size-80;
-    
+
     &.Yes {
       border-right-color: var(--simple-border);
     }
@@ -550,7 +553,7 @@
   }
 }
 
-@media @breakpoint-mobile-tablet {
+@media @breakpoint-mobile-tiny {
   .TradingForm {
     filter: unset;
     border-radius: unset;
@@ -571,6 +574,8 @@
       > div:last-of-type {
         .SimpleBorder;
 
+        cursor: pointer;
+        display: flex;
         margin-left: @size-24;
         padding: @size-12 @size-16;
       }
@@ -579,5 +584,11 @@
     > div:nth-of-type(2) {
       padding: 0 @size-16 @size-24;
     }
+  }
+}
+
+@media @breakpoint-tiny {
+  .TradingForm {
+    top: 0;
   }
 }

@@ -17,7 +17,12 @@ import {
   formatSimpleShares,
   getCashFormat,
 } from '../../utils/format-number';
-import { ApprovalButton, TinyButton, BuySellButton, APPROVED } from '../common/buttons';
+import {
+  ApprovalButton,
+  TinyButton,
+  BuySellButton,
+  APPROVED,
+} from '../common/buttons';
 import {
   ApprovalAction,
   SHARES,
@@ -44,7 +49,10 @@ import {
 import { BigNumber as BN } from 'bignumber.js';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
 import { CloseIcon, UsdIcon, EthIcon, LinkIcon } from '../common/icons';
-import { checkAllowance, isERC1155ContractApproved } from '../hooks/use-approval-callback';
+import {
+  checkAllowance,
+  isERC1155ContractApproved,
+} from '../hooks/use-approval-callback';
 
 export const DefaultMarketOutcomes = [
   {
@@ -445,11 +453,11 @@ const TradingForm = ({
   amm,
 }: TradingFormProps) => {
   const {
-    isMobile,
     isLogged,
     loginAccount,
     transactions,
     paraConfig,
+    showTradingForm,
     actions: { addTransaction, updateTransaction, setShowTradingForm },
     settings: { slippage },
     userInfo: { balances },
@@ -469,54 +477,57 @@ const TradingForm = ({
   const { shareToken } = ammCash;
   const [canEnterPosition, setCanEnterPosition] = useState(false);
   const [canExitPosition, setCanExitPosition] = useState(false);
-  const isApprovedTrade = isBuy
-    ? canEnterPosition
-    : canExitPosition;
+  const isApprovedTrade = isBuy ? canEnterPosition : canExitPosition;
 
   useEffect(() => {
-    const checkCanEnterPosition = async() => {
-      const approvalCheck = await checkAllowance(ammCash?.address, AMMFactory, loginAccount, transactions, updateTransaction);
-      if (approvalCheck === APPROVED) {
-        setCanEnterPosition(true);
-      } else {
-        setCanEnterPosition(false);
-      }
+    if (initialSelectedOutcome.id !== selectedOutcomeId) {
+      setSelectedOutcome(initialSelectedOutcome);
     }
+  }, [initialSelectedOutcome]);
+
+  useEffect(() => {
+    const checkCanEnterPosition = async () => {
+      const approvalCheck = await checkAllowance(
+        ammCash?.address,
+        AMMFactory,
+        loginAccount,
+        transactions,
+        updateTransaction
+      );
+      setCanEnterPosition(approvalCheck === APPROVED);
+    };
     if (isLogged && !canEnterPosition) {
-      if (isETH) {
-        setCanEnterPosition(true);
-      } else {
-        checkCanEnterPosition();
-      }
+      isETH ? setCanEnterPosition(true) : checkCanEnterPosition();
     }
-  }, [isLogged, canEnterPosition, setCanEnterPosition, updateTransaction, transactions]);
+  }, [
+    isLogged,
+    canEnterPosition,
+    setCanEnterPosition,
+    updateTransaction,
+    transactions,
+  ]);
 
   useEffect(() => {
-    const checkCanEthExit = async() => {
-      const approvalCheck = await isERC1155ContractApproved(shareToken, WethWrapperForAMMExchange, loginAccount, transactions, updateTransaction);
-      if (approvalCheck === APPROVED) {
-        setCanExitPosition(true);
-      } else {
-        setCanExitPosition(false);
-      }
-    }
-    const checkCanCashExit = async() => {
-      const approvalCheck = await isERC1155ContractApproved(shareToken, AMMFactory, loginAccount, transactions, updateTransaction);
-      if (approvalCheck === APPROVED) {
-        setCanExitPosition(true);
-      } else {
-        setCanExitPosition(false);
-      }
-    }
-
+    const checkCanExit = async () => {
+      const approvalCheck = await isERC1155ContractApproved(
+        shareToken,
+        isETH ? WethWrapperForAMMExchange : AMMFactory,
+        loginAccount,
+        transactions,
+        updateTransaction
+      );
+      setCanExitPosition(approvalCheck === APPROVED);
+    };
     if (isLogged && !canExitPosition) {
-      if (isETH) {
-        checkCanEthExit();
-      } else {
-        checkCanCashExit();
-      }
+      checkCanExit();
     }
-  }, [isLogged, canExitPosition, setCanExitPosition, updateTransaction, transactions]);
+  }, [
+    isLogged,
+    canExitPosition,
+    setCanExitPosition,
+    updateTransaction,
+    transactions,
+  ]);
 
   const approvalAction = !isApprovedTrade
     ? isBuy
@@ -534,10 +545,18 @@ const TradingForm = ({
       : '';
 
   useEffect(() => {
-    if (!isMobile) {
-      setShowTradingForm(false);
+    function handleShowTradingForm() {
+      if (window.innerWidth >= 1200 && showTradingForm) {
+        setShowTradingForm(false);
+        setAmount('');
+      }
     }
-  }, [isMobile]);
+    window.addEventListener('resize', handleShowTradingForm);
+    setShowTradingForm(false);
+    return () => {
+      window.removeEventListener('resize', handleShowTradingForm);
+    };
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -551,13 +570,13 @@ const TradingForm = ({
       const breakdown = isBuy
         ? await estimateEnterTrade(amm, amount, outputYesShares)
         : await estimateExitTrade(amm, amount, outputYesShares, userBalances);
-      if (isMounted) setBreakdown(breakdown);
+      isMounted && setBreakdown(breakdown);
     };
 
     if (amount && Number(amount) > 0) {
       getEstimate();
     } else if (breakdown !== null) {
-      setBreakdown(null);
+      isMounted && setBreakdown(null);
     }
 
     return () => {
@@ -614,16 +633,13 @@ const TradingForm = ({
   ]);
 
   const makeTrade = () => {
-    setShowTradingForm(false);
     const minOutput = breakdown?.outputValue;
     const percentageOff = new BN(1).minus(new BN(slippage).div(100));
     const worstCaseOutput = String(new BN(minOutput).times(percentageOff));
     const direction = isBuy ? TradingDirection.ENTRY : TradingDirection.EXIT;
     const outputYesShares = selectedOutcomeId === YES_OUTCOME_ID;
-    let userBalances = [];
-    if (marketShares) {
-      userBalances = marketShares.outcomeShares;
-    }
+    const userBalances = marketShares?.outcomeShares || [];
+    setShowTradingForm(false);
     doTrade(
       direction,
       amm,
@@ -683,9 +699,14 @@ const TradingForm = ({
           <span>fee</span>
           <span>{formatPercent(amm?.feeInPercent).full}</span>
         </div>
-        {isMobile && (
-          <div onClick={() => setShowTradingForm(false)}>{CloseIcon}</div>
-        )}
+        <div
+          onClick={() => {
+            setShowTradingForm(false);
+            setAmount('');
+          }}
+        >
+          {CloseIcon}
+        </div>
       </div>
       <div>
         <OutcomesGrid
@@ -705,7 +726,11 @@ const TradingForm = ({
           ammCash={ammCash}
           rate={
             !isNaN(Number(breakdown?.ratePerCash))
-              ? `1 ${amm?.cash?.name} = ${formatSimpleShares(breakdown?.ratePerCash, { denomination: v => `${v} Shares` }).full}`
+              ? `1 ${amm?.cash?.name} = ${
+                  formatSimpleShares(breakdown?.ratePerCash, {
+                    denomination: (v) => `${v} Shares`,
+                  }).full
+                }`
               : null
           }
           isBuy={orderType === BUY}

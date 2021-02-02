@@ -118,34 +118,30 @@ const MarketView = ({ defaultMarket = null }) => {
             <span>{endTimeDate}</span>
           </li>
         </ul>
-        {isMobile && (
-          <OutcomesGrid
-            outcomes={amm?.ammOutcomes}
-            selectedOutcome={amm?.ammOutcomes[2]}
-            showAllHighlighted
-            setSelectedOutcome={(outcome) => {
-              setSelectedOutcome(outcome);
-              setShowTradingForm(true);
-            }}
-            marketType={YES_NO}
-            orderType={BUY}
-            ammCash={amm?.cash}
-            showAsButtons
-          />
-        )}
+        <OutcomesGrid
+          outcomes={amm?.ammOutcomes}
+          selectedOutcome={amm?.ammOutcomes[2]}
+          showAllHighlighted
+          setSelectedOutcome={(outcome) => {
+            setSelectedOutcome(outcome);
+            setShowTradingForm(true);
+          }}
+          marketType={YES_NO}
+          orderType={BUY}
+          ammCash={amm?.cash}
+          showAsButtons
+        />
         <SimpleChartSection {...{ market, cash: amm?.cash }} />
         <PositionsLiquidityViewSwitcher ammExchange={amm} />
-        {isMobile && (
-          <article className={Styles.MobileLiquidSection}>
-            <AddLiquidity market={market} />
-            {currentAMMs.length === 1 && (
-              <AddCurrencyLiquidity
-                market={market}
-                currency={currentAMMs[0] === USDC ? ETH : USDC}
-              />
-            )}
-          </article>
-        )}
+        <article className={Styles.MobileLiquidSection}>
+          <AddLiquidity market={market} />
+          {currentAMMs.length === 1 && (
+            <AddCurrencyLiquidity
+              market={market}
+              currency={currentAMMs[0] === USDC ? ETH : USDC}
+            />
+          )}
+        </article>
         <div
           className={classNames(Styles.Details, {
             [Styles.isClosed]: !showMoreDetails,
@@ -170,18 +166,18 @@ const MarketView = ({ defaultMarket = null }) => {
           <TransactionsTable transactions={amm?.transactions} />
         </div>
       </section>
-      {(!isMobile || showTradingForm) && (
-        <section>
-          <TradingForm initialSelectedOutcome={selectedOutcome} amm={amm} />
-          {!isMobile && <AddLiquidity market={market} />}
-          {!isMobile && currentAMMs.length === 1 && (
-            <AddCurrencyLiquidity
-              market={market}
-              currency={currentAMMs[0] === USDC ? ETH : USDC}
-            />
-          )}
-        </section>
-      )}
+      <section className={classNames({
+        [Styles.ShowTradingForm]: showTradingForm,
+      })}>
+        <TradingForm initialSelectedOutcome={selectedOutcome} amm={amm} />
+        <AddLiquidity market={market} />
+        {currentAMMs.length === 1 && (
+          <AddCurrencyLiquidity
+            market={market}
+            currency={currentAMMs[0] === USDC ? ETH : USDC}
+          />
+        )}
+      </section>
     </div>
   );
 };

@@ -3,6 +3,7 @@
 .SearchInput {
   .SimpleBorder;
 
+  border-radius: @size-16;
   background: var(--simple-light-bg);
   color: var(--simple-primary-text);
   display: flex;
@@ -28,9 +29,11 @@
   }
 
   > input {
+    .text-16-bold;
+
     background: var(--simple-light-bg);
     color: var(--simple-primary-text);
-    border-radius: @size-8;
+    border-radius: @size-16;
     border: 0;
 
     &:focus,
