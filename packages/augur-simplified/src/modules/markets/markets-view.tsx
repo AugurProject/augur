@@ -170,7 +170,7 @@ const applyFiltersAndSort = (
   passedInMarkets,
   setFilteredMarkets,
   paraConfig,
-  { filter, categories, sortBy, currency, reportingState }
+  { filter, categories, sortBy, currency, reportingState, showLiquidMarkets }
 ) => {
   searchMarkets(paraConfig, filter, (searchedMarkets) => {
     let updatedFilteredMarkets = passedInMarkets;
@@ -183,6 +183,14 @@ const applyFiltersAndSort = (
 
     updatedFilteredMarkets = updatedFilteredMarkets.filter(
       (market: MarketInfo) => {
+        if (
+          showLiquidMarkets &&
+          (!market.amm ||
+            isNaN(market?.amm?.liquidityUSD) ||
+            !market?.amm?.liquidityUSD)
+        ) {
+          return false;
+        }
         if (
           categories !== ALL_MARKETS &&
           categories !== OTHER &&
@@ -225,11 +233,20 @@ const applyFiltersAndSort = (
     );
     updatedFilteredMarkets = updatedFilteredMarkets.sort((marketA, marketB) => {
       if (sortBy === TOTAL_VOLUME) {
-        return (marketB?.amm?.volumeTotalUSD || 0) > (marketA?.amm?.volumeTotalUSD || 0) ? 1 : -1;
+        return (marketB?.amm?.volumeTotalUSD || 0) >
+          (marketA?.amm?.volumeTotalUSD || 0)
+          ? 1
+          : -1;
       } else if (sortBy === TWENTY_FOUR_HOUR_VOLUME) {
-        return (marketB?.amm?.volume24hrTotalUSD || 0) > (marketA?.amm?.volume24hrTotalUSD || 0) ? 1 : -1;
+        return (marketB?.amm?.volume24hrTotalUSD || 0) >
+          (marketA?.amm?.volume24hrTotalUSD || 0)
+          ? 1
+          : -1;
       } else if (sortBy === LIQUIDITY) {
-        return (marketB?.amm?.liquidityUSD || 0) > (marketA?.amm?.liquidityUSD || 0) ? 1 : -1;
+        return (marketB?.amm?.liquidityUSD || 0) >
+          (marketA?.amm?.liquidityUSD || 0)
+          ? 1
+          : -1;
       } else if (sortBy === ENDING_SOON) {
         return marketA?.endTimestamp < marketB?.endTimestamp ? 1 : -1;
       }
@@ -252,6 +269,7 @@ const MarketsView = () => {
     paraConfig,
     actions: { setSidebar, updateMarketsViewSettings },
     processed: { markets },
+    settings: { showLiquidMarkets },
   } = useAppStatusStore();
   const { sortBy, categories, reportingState, currency } = marketsViewSettings;
   const [page, setPage] = useState(1);
@@ -278,9 +296,10 @@ const MarketsView = () => {
         sortBy,
         currency,
         reportingState,
+        showLiquidMarkets,
       }
     );
-  }, [sortBy, filter, categories, reportingState, currency]);
+  }, [sortBy, filter, categories, reportingState, currency, showLiquidMarkets]);
 
   useEffect(() => {
     if (Object.values(markets).length > 0) setLoading(false);
@@ -294,6 +313,7 @@ const MarketsView = () => {
         sortBy,
         currency,
         reportingState,
+        showLiquidMarkets,
       }
     );
   }, [markets]);
