@@ -14,8 +14,8 @@ import { useLocalStorage } from '../stores/local-storage';
 import ConnectAccount from '../ConnectAccount/index';
 import { SecondaryButton, TinyButton } from './buttons';
 import { Toasts } from '../toasts/toasts';
-import {ToggleSwitch} from 'modules/common/toggle-switch';
-import {generateTooltip} from 'modules/common/labels';
+import { ToggleSwitch } from 'modules/common/toggle-switch';
+import { generateTooltip } from 'modules/common/labels';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
 
 export const SettingsButton = () => {
@@ -23,6 +23,7 @@ export const SettingsButton = () => {
     settings: { slippage, showInvalidMarkets },
     actions: { updateSettings },
   } = useAppStatusStore();
+  
   const [open, setOpened] = useState(false);
   const [customVal, setCustomVal] = useState('');
   const settingsRef = useRef(null);
@@ -68,6 +69,12 @@ export const SettingsButton = () => {
     };
   });
 
+  useEffect(() => {
+    if (customVal === '' && !["0.5", "1", "2"].includes(slippage)) {
+      setCustomVal(slippage);
+    }
+  }, [slippage, customVal])
+
   return (
     <div className={Styles.SettingsMenuWrapper}>
       <SecondaryButton action={() => setOpened(!open)} icon={GearIcon} />
@@ -79,13 +86,19 @@ export const SettingsButton = () => {
           <li>
             <label>
               Slippage Tolerance
-              {generateTooltip('The maximum percentage the price can change and still have your transaction succeed.', 'slippageToleranceInfo')}
+              {generateTooltip(
+                'The maximum percentage the price can change and still have your transaction succeed.',
+                'slippageToleranceInfo'
+              )}
             </label>
             <ul>
               <li>
                 <TinyButton
                   text="0.5%"
-                  action={() => updateSettings({ slippage: '0.5' })}
+                  action={() => {
+                    updateSettings({ slippage: '0.5' });
+                    setCustomVal('');
+                  }}
                   selected={isSelectedArray[0]}
                   className={ButtonStyles.TinyTransparentButton}
                 />
@@ -93,7 +106,10 @@ export const SettingsButton = () => {
               <li>
                 <TinyButton
                   text="1%"
-                  action={() => updateSettings({ slippage: '1' })}
+                  action={() => {
+                    updateSettings({ slippage: '1' });
+                    setCustomVal('');
+                  }}
                   selected={isSelectedArray[1]}
                   className={ButtonStyles.TinyTransparentButton}
                 />
@@ -101,7 +117,10 @@ export const SettingsButton = () => {
               <li>
                 <TinyButton
                   text="2%"
-                  action={() => updateSettings({ slippage: '2' })}
+                  action={() => {
+                    updateSettings({ slippage: '2' });
+                    setCustomVal('');
+                  }}
                   selected={isSelectedArray[2]}
                   className={ButtonStyles.TinyTransparentButton}
                 />
@@ -133,8 +152,8 @@ export const SettingsButton = () => {
                         }
                       }
                     }}
-                    placeholder={slippage}
-                    max="100"
+                    placeholder="custom"
+                    max="1000"
                     min="0.1"
                   />
                   <span>%</span>
@@ -145,11 +164,16 @@ export const SettingsButton = () => {
           <li>
             <label>
               Show Invalid Markets
-              {generateTooltip('Filters out markets which are likely to resolve to "Invalid" based upon the current trading price of the "Invalid" outcome.', 'showInvalidMarketsInfo')}
+              {generateTooltip(
+                'Filters out markets which are likely to resolve to "Invalid" based upon the current trading price of the "Invalid" outcome.',
+                'showInvalidMarketsInfo'
+              )}
             </label>
             <ToggleSwitch
               toggle={showInvalidMarkets}
-              setToggle={() => updateSettings({showInvalidMarkets: !showInvalidMarkets})}
+              setToggle={() =>
+                updateSettings({ showInvalidMarkets: !showInvalidMarkets })
+              }
             />
           </li>
         </ul>
@@ -168,48 +192,57 @@ export const TopNav = () => {
     transactions,
     isLogged,
     isMobile,
-    actions: { addSeenPositionWarnings, setSidebar, updateLoginAccount, logout, addTransaction, updateTransaction, updateSettings },
+    actions: {
+      addSeenPositionWarnings,
+      setSidebar,
+      updateLoginAccount,
+      logout,
+      addTransaction,
+      updateTransaction,
+      updateSettings,
+    },
   } = useAppStatusStore();
   const [lastUser, setLastUser] = useLocalStorage('lastUser', null);
 
   const getSavedUserInfo = () => {
-    return JSON.parse(window.localStorage.getItem(loginAccount?.account)) || null;
-  }
+    return (
+      JSON.parse(window.localStorage.getItem(loginAccount?.account)) || null
+    );
+  };
 
   const setSavedUserInfo = (state) => {
     window.localStorage.setItem(loginAccount?.account, JSON.stringify(state));
-  }
+  };
 
   useEffect(() => {
     if (blocknumber && transactions) {
       transactions
-        .filter(tx => tx?.status === TX_STATUS.PENDING)
-        .forEach(tx => {
-          const isTransactionMined = async(transactionHash, provider) => {
-            const txReceipt = await provider.getTransactionReceipt(transactionHash);
+        .filter((tx) => tx?.status === TX_STATUS.PENDING)
+        .forEach((tx) => {
+          const isTransactionMined = async (transactionHash, provider) => {
+            const txReceipt = await provider.getTransactionReceipt(
+              transactionHash
+            );
             if (txReceipt && txReceipt.blockNumber) {
-                return txReceipt;
+              return txReceipt;
             }
-          }
-          isTransactionMined(tx.hash, loginAccount.library)
-            .then(response => {
-              if (response?.confirmations > 0) {
-                updateTxStatus(response, updateTransaction)
-              }
-            });
+          };
+          isTransactionMined(tx.hash, loginAccount.library).then((response) => {
+            if (response?.confirmations > 0) {
+              updateTxStatus(response, updateTransaction);
+            }
+          });
         });
     }
   }, [transactions, blocknumber]);
 
   useEffect(() => {
-    if (
-      loginAccount?.library?.provider?.isMetaMask &&
-      loginAccount?.account
-    ) {
+    if (loginAccount?.library?.provider?.isMetaMask && loginAccount?.account) {
       setLastUser(loginAccount.account);
-      const firstLogin = window.localStorage.getItem(loginAccount.account) === null;
+      const firstLogin =
+        window.localStorage.getItem(loginAccount.account) === null;
       if (firstLogin) {
-        setSavedUserInfo({ account: loginAccount.account })
+        setSavedUserInfo({ account: loginAccount.account });
       }
     } else if (!loginAccount?.active) {
       setLastUser(null);
@@ -265,7 +298,9 @@ export const TopNav = () => {
         {!isMobile && (
           <ol>
             <li className={classNames({ [Styles.Active]: path === MARKETS })}>
-              <Link placeholder="Markets" to={makePath(MARKETS)}>Markets</Link>
+              <Link placeholder="Markets" to={makePath(MARKETS)}>
+                Markets
+              </Link>
             </li>
             <li className={classNames({ [Styles.Active]: path === PORTFOLIO })}>
               <Link
@@ -274,7 +309,9 @@ export const TopNav = () => {
                 }}
                 disabled={!isLogged}
                 to={makePath(PORTFOLIO)}
-                placeholder={isLogged ? 'Portfolio' : 'Please Login to view Portfolio'}
+                placeholder={
+                  isLogged ? 'Portfolio' : 'Please Login to view Portfolio'
+                }
               >
                 Portfolio
               </Link>

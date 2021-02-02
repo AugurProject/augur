@@ -24,7 +24,6 @@ export function handleAMMCreated(event: AMMCreated): void {
   amm.fee = fee;
   amm.feePercent = fee.divDecimal(BigInt.fromI32(100).toBigDecimal());
   amm.liquidity = ZERO;
-  amm.liquidityCash = ZERO;
   amm.liquidityInvalid = ZERO;
   amm.liquidityNo = ZERO;
   amm.liquidityYes = ZERO;

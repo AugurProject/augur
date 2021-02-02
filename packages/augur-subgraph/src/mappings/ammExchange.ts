@@ -155,7 +155,7 @@ export function handleExitPosition(event: ExitPositionEvent): void {
   exitPosition.noShares = event.params.shortShares;
   exitPosition.yesShares = event.params.longShares;
   exitPosition.sender = event.params.sender.toHexString();
-  exitPosition.price = event.params.cashPayout.toBigDecimal().div(event.params.longShares.plus(event.params.shortShares).toBigDecimal().times(numTicks))
+  exitPosition.price = event.params.cashPayout.toBigDecimal().div(event.params.longShares.plus(event.params.shortShares).toBigDecimal().times(numTicks));
   exitPosition.save();
 
   updateVolumeValues(
@@ -177,17 +177,17 @@ export function handleSwapPosition(event: SwapPositionEvent): void {
   swapPosition.ammExchange = event.address.toHexString();
   swapPosition.sender = event.params.sender.toHexString();
 
-  if (event.params.inputLong) {
-    updateVolumeValues(
-      event.address,
-      event.params.outputShares,
-      event.params.inputShares.times(BigInt.fromI32(-1))
-    );
-  } else {
+  if (event.params.outputLong) {
     updateVolumeValues(
       event.address,
       event.params.inputShares.times(BigInt.fromI32(-1)),
       event.params.outputShares
+    );
+  } else {
+    updateVolumeValues(
+      event.address,
+      event.params.outputShares,
+      event.params.inputShares.times(BigInt.fromI32(-1))
     );
   }
 

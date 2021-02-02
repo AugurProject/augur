@@ -158,7 +158,6 @@ export interface AmmExchange {
   liquidityNo: string;
   liquidityYes: string;
   liquidityInvalid: string;
-  liquidityCash: string;
   priceYes: string;
   priceNo: string;
   percentageYes: string;
@@ -1079,6 +1078,7 @@ export interface ProcessedData {
   ammExchanges: {
     [id: string]: AmmExchange;
   };
+  errors
 }
 
 export interface GraphData {

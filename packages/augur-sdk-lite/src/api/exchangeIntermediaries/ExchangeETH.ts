@@ -46,4 +46,7 @@ export class ExchangeETH extends ExchangeCommon implements ExchangeContractInter
     return this.wrapper.exitPosition(market, fee.toFixed(), shortShares.toFixed(), longShares.toFixed(), minCash.toFixed());
   }
 
+  async claimMarketsProceeds(_markets:string[], _shareTokens:string[], _shareHolder: string, _fingerprint: string) {
+    return this.wrapper.claimMarketsProceeds(_markets, _shareTokens, _shareHolder, _fingerprint);
+  }
 }

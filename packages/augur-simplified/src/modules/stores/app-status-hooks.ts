@@ -193,11 +193,12 @@ export function AppStatusReducer(state, action) {
       break;
     }
     case UPDATE_GRAPH_HEARTBEAT: {
-      const { markets, cashes, ammExchanges } = action[PROCESSED];
+      const { markets, cashes, ammExchanges, errors } = action[PROCESSED];
       updatedState[PROCESSED] = {
         markets,
         cashes,
         ammExchanges,
+        errors: errors ? errors : null,
       };
       if (updatedState?.loginAccount?.account) {
         const activity = shapeUserActvity(
@@ -337,7 +338,7 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
         dispatch({ type: ADD_TRANSACTION, transaction }),
       removeTransaction: (hash: string) =>
         dispatch({ type: REMOVE_TRANSACTION, hash }),
-      updateGraphHeartbeat: (processed, graphData, blocknumber) => dispatch({ type: UPDATE_GRAPH_HEARTBEAT, processed, graphData, blocknumber }), 
+      updateGraphHeartbeat: (processed, graphData, blocknumber, errors) => dispatch({ type: UPDATE_GRAPH_HEARTBEAT, processed, graphData, blocknumber, errors }), 
       finalizeTransaction: (hash) =>
         dispatch({ type: FINALIZE_TRANSACTION, hash }),
       setModal: (modal) => dispatch({ type: SET_MODAL, modal }),

@@ -27,7 +27,7 @@ import {
   MARKET,
   ADD,
 } from '../constants';
-import { MarketInfo } from '../types';
+import { FormattedNumber, MarketInfo } from '../types';
 
 interface ValueLabelProps {
   large?: boolean;
@@ -331,6 +331,7 @@ export const ErrorBlock = ({ text }) => {
 export const NetworkMismatchBanner = () => {
   const {
     paraConfig: { networkId },
+    processed: { errors },
     loginAccount,
   } = useAppStatusStore();
   const location = useLocation();
@@ -340,6 +341,7 @@ export const NetworkMismatchBanner = () => {
     () => !!chainId && String(networkId) !== String(chainId),
     [chainId, networkId]
   );
+  const isGraphError = !!errors;
   return (
     <>
       {isNetworkMismatch && (
@@ -349,6 +351,15 @@ export const NetworkMismatchBanner = () => {
           })}
         >
           You're connected to an unsupported network
+        </article>
+      )}
+      {isGraphError && (
+        <article
+        className={classNames(Styles.NetworkMismatch, {
+          [Styles.Market]: path === MARKET,
+        })}
+        >
+          Unable to retrieve market data
         </article>
       )}
     </>
@@ -403,5 +414,36 @@ export const WarningBanner = ({
       </div>
       <div onClick={() => onClose()}>{XIcon}</div>
     </section>
+  );
+};
+
+export interface MovementLabelProps {
+  value: FormattedNumber;
+  numberValue: number;
+}
+
+export const MovementLabel = ({
+  value,
+  numberValue,
+}: MovementLabelProps) => {
+  const getTextColorStyles: Function = (val: number): string =>
+    classNames({
+      [Styles.MovementLabel_Text_positive]: val > 0,
+      [Styles.MovementLabel_Text_negative]: val < 0,
+    });
+  const textColorStyle = getTextColorStyles(numberValue);
+
+  const handlePlusMinus: Function = (label: string): string => {
+    if (numberValue > 0) {
+      return '+'.concat(label);
+    } 
+    return label;
+  };
+  const formattedString = handlePlusMinus(value.full);
+
+  return (
+    <div className={`${textColorStyle}`}>
+      {formattedString}
+    </div>
   );
 };
