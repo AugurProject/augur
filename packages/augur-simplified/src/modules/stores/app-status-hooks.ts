@@ -37,7 +37,6 @@ const {
 const {
   IS_MOBILE,
   SIDEBAR_TYPE,
-  GRAPH_DATA,
   PROCESSED,
   LOGIN_ACCOUNT,
   MARKETS_VIEW_SETTINGS,
@@ -82,35 +81,20 @@ const middleware = (dispatch, action) => {
   }
 };
 
-const updateUserStorageDataTx = (userAccount, updatedState) => {
+const updateLocalStorage = (userAccount, updatedState) => {
   const userData = JSON.parse(window.localStorage.getItem(userAccount)) || null;
   if (userData) {
     window.localStorage.setItem(
       userAccount,
-      JSON.stringify({ ...userData, transactions: updatedState[TRANSACTIONS]})
+      JSON.stringify({ 
+        ...userData, 
+        seenPositionWarnings: updatedState[SEEN_POSITION_WARNINGS],
+        settings: updatedState[SETTINGS],
+        transactions: updatedState[TRANSACTIONS],
+      })
     );
   }
-}
-
-const updateUserStorageDataSettings = (userAccount, updatedState) => {
-  const userData = JSON.parse(window.localStorage.getItem(userAccount)) || null;
-  if (userData) {
-    window.localStorage.setItem(
-      userAccount,
-      JSON.stringify({ ...userData, settings: updatedState[SETTINGS]})
-    );
-  }
-}
-
-const updateUserStorageDataSeenPositionWarnings = (userAccount, updatedState) => {
-  const userData = JSON.parse(window.localStorage.getItem(userAccount)) || null;
-  if (userData) {
-    window.localStorage.setItem(
-      userAccount,
-      JSON.stringify({ ...userData, seenPositionWarnings: updatedState[SEEN_POSITION_WARNINGS]})
-    );
-  }
-}
+};
 
 export const getRelatedMarkets = (
   market: MarketInfo,
@@ -193,12 +177,12 @@ export function AppStatusReducer(state, action) {
       break;
     }
     case UPDATE_GRAPH_HEARTBEAT: {
-      const { markets, cashes, ammExchanges, errors } = action[PROCESSED];
+      const { markets, cashes, ammExchanges } = action[PROCESSED];
       updatedState[PROCESSED] = {
         markets,
         cashes,
         ammExchanges,
-        errors: errors ? errors : null,
+        errors: action?.errors || null,
       };
       if (updatedState?.loginAccount?.account) {
         const activity = shapeUserActvity(
@@ -211,11 +195,6 @@ export function AppStatusReducer(state, action) {
           activity,
         };
       }
-      updatedState[GRAPH_DATA] = {
-        markets: arrayToKeyedObject(action[GRAPH_DATA].markets),
-        past: arrayToKeyedObject(action[GRAPH_DATA].past),
-        paraShareTokens: arrayToKeyedObject(action[GRAPH_DATA].paraShareTokens),
-      };
       updatedState[BLOCKNUMBER] = action.blocknumber;
       break;
     }
@@ -227,15 +206,10 @@ export function AppStatusReducer(state, action) {
       break;
     }
     case UPDATE_SETTINGS: {
-      const userAccount = state[LOGIN_ACCOUNT]?.account;
       updatedState[SETTINGS] = {
         ...state[SETTINGS],
         ...action[SETTINGS],
       };
-
-      if (userAccount) {
-        updateUserStorageDataSettings(userAccount, updatedState);
-      }
       break;
     }
     case UPDATE_USER_BALANCES: {
@@ -243,7 +217,6 @@ export function AppStatusReducer(state, action) {
       break;
     }
     case UPDATE_TRANSACTION: {
-      const userAccount = action.updates.from;
       const transactionIndex = updatedState[TRANSACTIONS].findIndex(transaction => transaction.hash === action.hash);
       if (transactionIndex >= 0) {
         updatedState[TRANSACTIONS][transactionIndex] = {
@@ -251,28 +224,22 @@ export function AppStatusReducer(state, action) {
           ...action.updates,
           timestamp: now,
         };
-        updateUserStorageDataTx(userAccount, updatedState);
       }
       break;
     }
     case ADD_TRANSACTION: {
-      const userAccount = action.transaction.from;
-
       updatedState[TRANSACTIONS] = [
         ...updatedState[TRANSACTIONS],
         { ...action.transaction, timestamp: now },
       ];
-      updateUserStorageDataTx(userAccount, updatedState);
       break;
     }
     case REMOVE_TRANSACTION: {
-      const userAccount = state?.loginAccount?.account;
 
       if (action.hash) {
         updatedState[TRANSACTIONS] = updatedState[TRANSACTIONS].filter(
           (tx) => tx.hash !== action.hash
         );
-        updateUserStorageDataTx(userAccount, updatedState);
       }
       break;
     }
@@ -286,24 +253,22 @@ export function AppStatusReducer(state, action) {
     }
     case UPDATE_SEEN_POSITION_WARNING: {
       updatedState[SEEN_POSITION_WARNINGS][action.id] = action.seenPositionWarning;
-      const userAccount = state[LOGIN_ACCOUNT]?.account;
-      if (userAccount) {
-        updateUserStorageDataSeenPositionWarnings(userAccount, updatedState);
-      }
+      
       break;
     }
     case ADD_SEEN_POSITION_WARNINGS: {
       updatedState[SEEN_POSITION_WARNINGS] = action.seenPositionWarnings;
-      const userAccount = state[LOGIN_ACCOUNT]?.account;
-      if (userAccount) {
-        updateUserStorageDataSeenPositionWarnings(userAccount, updatedState);
-      }
+      
       break;
     }
     default:
       console.log(`Error: ${action.type} not caught by App Status reducer`);
   }
   windowRef.appStatus = updatedState;
+  const userAccount = state[LOGIN_ACCOUNT]?.account;
+  if (userAccount) {
+    updateLocalStorage(userAccount, updatedState);
+  }
   return updatedState;
 }
 
@@ -338,7 +303,7 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
         dispatch({ type: ADD_TRANSACTION, transaction }),
       removeTransaction: (hash: string) =>
         dispatch({ type: REMOVE_TRANSACTION, hash }),
-      updateGraphHeartbeat: (processed, graphData, blocknumber, errors) => dispatch({ type: UPDATE_GRAPH_HEARTBEAT, processed, graphData, blocknumber, errors }), 
+      updateGraphHeartbeat: (processed, blocknumber, errors) => dispatch({ type: UPDATE_GRAPH_HEARTBEAT, processed, blocknumber, errors }), 
       finalizeTransaction: (hash) =>
         dispatch({ type: FINALIZE_TRANSACTION, hash }),
       setModal: (modal) => dispatch({ type: SET_MODAL, modal }),

@@ -1088,7 +1088,7 @@ export interface ProcessedData {
   ammExchanges: {
     [id: string]: AmmExchange;
   };
-  errors
+  errors?: any;
 }
 
 export interface GraphData {
@@ -1116,7 +1116,6 @@ export interface Settings {
 }
 export interface AppStatusState {
   processed: ProcessedData;
-  graphData: GraphData;
   loginAccount: LoginAccount;
   marketsViewSettings: {
     categories: string;

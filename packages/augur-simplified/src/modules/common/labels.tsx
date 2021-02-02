@@ -3,7 +3,6 @@ import Styles from './labels.styles.less';
 import { useLocation } from 'react-router';
 import classNames from 'classnames';
 import { formatDai } from '../../utils/format-number';
-import { createBigNumber } from '../../utils/create-big-number';
 import { CATEGORIES_ICON_MAP } from './category-icons-map';
 import { useAppStatusStore } from '../stores/app-status';
 import parsePath from '../routes/helpers/parse-path';

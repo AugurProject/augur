@@ -55,6 +55,7 @@ export async function getMarketsData(paraConfig, updateHeartbeat) {
     responseUsd = await getCashTokenData(cashes);
   } catch (e) {
     console.error(e);
+    updateHeartbeat(null, null, e);
   }
 
   if (response) {
