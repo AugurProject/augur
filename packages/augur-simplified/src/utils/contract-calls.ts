@@ -874,7 +874,7 @@ const getInitPositionValues = (trades: UserTrades, amm: AmmExchange, isYesOutcom
   const netShareAmounts = allInputShareAmounts.minus(sharesExited.shares);
   const netCashAmounts = allInputCashAmounts.minus(sharesExited.cashAmount);
   const cost = convertOnChainSharesToDisplayShareAmount(netCashAmounts, amm.cash.decimals).times(new BN(cashPrice));
-  const avgPrice = netShareAmounts.gt(0) ? netCashAmounts.div(netShareAmounts) : new BN(0);
+  const avgPrice = netShareAmounts.gt(0) ? new BN(1).minus(netCashAmounts.div(netShareAmounts)) : new BN(0);
   return { avgPrice: String(avgPrice), initCostUsd: String(cost), positionFromLiquidity }
 }
 
