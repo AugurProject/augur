@@ -50,6 +50,9 @@ interface GraphClaims {
   id: string;
   shareToken: {
     id: string;
+  };
+  sender: {
+    id: string;
   }
   outcome: number;
   numPayoutTokens: string;
@@ -147,7 +150,7 @@ export const processGraphMarkets = (graphData: GraphData): ProcessedData => {
 
     // keying markets by marketId or marketId-ammExchange.id.
     if (amms.length === 0) {
-      markets[marketId] = shapeMarketInfo(market, null);
+      markets[marketId] = shapeMarketInfo(market, null, cashes);
     } else if (amms.length === 1) {
       const ammExchange = shapeAmmExchange(
         market.amms[0],
@@ -155,7 +158,7 @@ export const processGraphMarkets = (graphData: GraphData): ProcessedData => {
         cashes,
         market
       );
-      const ammMarket = shapeMarketInfo(market, ammExchange);
+      const ammMarket = shapeMarketInfo(market, ammExchange, cashes);
       markets[`${marketId}-${ammExchange.id}`] = ammMarket;
       ammExchange.market = ammMarket;
       ammExchanges[ammExchange.id] = ammExchange;
@@ -171,7 +174,7 @@ export const processGraphMarkets = (graphData: GraphData): ProcessedData => {
         const amm = marketAmms[ammId];
         const pastAmm = pastMarketAmms[ammId];
         const newAmmExchange = shapeAmmExchange(amm, pastAmm, cashes, market);
-        const ammMarket = shapeMarketInfo(market, newAmmExchange);
+        const ammMarket = shapeMarketInfo(market, newAmmExchange, cashes);
         markets[`${marketId}-${ammId}`] = ammMarket;
         ammExchanges[newAmmExchange.id] = newAmmExchange;
         newAmmExchange.market = ammMarket;
@@ -184,21 +187,28 @@ export const processGraphMarkets = (graphData: GraphData): ProcessedData => {
 
 const shapeMarketInfo = (
   market: GraphMarket,
-  ammExchange: AmmExchange
+  ammExchange: AmmExchange,
+  cashes: Cashes,
 ): MarketInfo => {
   const extraInfo = JSON.parse(market?.extraInfoRaw);
   const feeAsPercent = convertAttoValueToDisplayValue(new BN(market.fee)).times(
     100
   );
-  const cashDecimals = ammExchange?.cash?.decimals
-  const claimedProceeds = market.tradingProceedsClaimed.filter(t => t.numPayoutTokens !== "0").map(t => ({
-    id: t.id,
-    shareToken: t.shareToken.id,
-    outcome: t.outcome,
-    fees: String(convertOnChainCashAmountToDisplayCashAmount(t.fees, cashDecimals)),
-    winnings: String(convertOnChainCashAmountToDisplayCashAmount(t.numPayoutTokens, cashDecimals)),
-    timestamp: Number(t.timestamp),
-  }));
+
+  const shareTokenCashes = Object.values(cashes).reduce((p, c) => ({ ...p, [c.shareToken.toLowerCase()]: c }), {})
+  const claimedProceeds = market.tradingProceedsClaimed.filter(t => t.numPayoutTokens !== "0").map(t => {
+    const cash = shareTokenCashes[t.shareToken.id.toLowerCase()];
+    return {
+      id: t.id,
+      shareToken: t.shareToken.id,
+      user: t.sender.id,
+      outcome: t.outcome,
+      fees: String(convertOnChainCashAmountToDisplayCashAmount(t.fees, cash.decimals)),
+      winnings: String(convertOnChainCashAmountToDisplayCashAmount(t.numPayoutTokens, cash.decimals)),
+      timestamp: Number(t.timestamp),
+      cash
+    }
+  });
 
   return {
     marketId: market.id,
@@ -400,9 +410,8 @@ const shapeEnterTransactions = (
   return transactions.map((e) => {
     const properties = formatTransaction(e, cash);
     const cashValueUsd = new BN(properties.value).times(cash?.usdPrice).toFixed(2);
-    const subheader = `Swap ${cash.name} for ${
-      e.noShares !== '0' ? 'No Shares' : 'Yes Shares'
-    }`;
+    const subheader = `Swap ${cash.name} for ${e.noShares !== '0' ? 'No Shares' : 'Yes Shares'
+      }`;
     return {
       ...e,
       tx_type: TransactionTypes.ENTER,
@@ -420,9 +429,8 @@ const shapeExitTransactions = (
 ): AmmTransaction[] => {
   return transactions.map((e) => {
     const properties = formatTransaction(e, cash);
-    const subheader = `Swap ${
-      e.noShares !== '0' ? 'No Shares' : 'Yes Shares'
-    } for ${cash.name}`;
+    const subheader = `Swap ${e.noShares !== '0' ? 'No Shares' : 'Yes Shares'
+      } for ${cash.name}`;
     const cashValueUsd = new BN(properties.value).abs().times(cash?.usdPrice).toFixed(2);
     return {
       ...e,
@@ -495,7 +503,7 @@ const shapeRemoveLiquidityTransactions = (
       }
     ).formattedValue);
 
-    const tokenAmount =  `-`; // TODO; graph data needs to to provide lp token amount burnt
+    const tokenAmount = `-`; // TODO; graph data needs to to provide lp token amount burnt
     return {
       ...e,
       tx_type: TransactionTypes.REMOVE_LIQUIDITY,
@@ -635,8 +643,8 @@ const getActivityType = (
   let type = null;
   let subheader = null;
   let value = null;
-  switch(tx.tx_type) {
-    case(TransactionTypes.ADD_LIQUIDITY): {
+  switch (tx.tx_type) {
+    case (TransactionTypes.ADD_LIQUIDITY): {
       type = 'Add Liquidity';
       // when design wants to add usd value for this or remove use below:
       //const usdValue = `${String(new BN(tx.value).times(new BN(cash.usdPrice)))}`;
@@ -650,19 +658,17 @@ const getActivityType = (
     }
     default: {
       const shares =
-      tx.yesShares !== '0'
-        ? convertOnChainSharesToDisplayShareAmount(tx.yesShares, cash.decimals)
-        : convertOnChainSharesToDisplayShareAmount(tx.noShares, cash.decimals);
+        tx.yesShares !== '0'
+          ? convertOnChainSharesToDisplayShareAmount(tx.yesShares, cash.decimals)
+          : convertOnChainSharesToDisplayShareAmount(tx.noShares, cash.decimals);
       const shareType = tx.yesShares !== '0' ? 'Yes' : 'No';
       const formattedPrice = formatCashPrice(tx.price, cash.name);
-      subheader = `${
-        formatSimpleShares(String(shares)).full
-      } Shares of ${shareType} @ ${formattedPrice.full}`;
+      subheader = `${formatSimpleShares(String(shares)).full
+        } Shares of ${shareType} @ ${formattedPrice.full}`;
       // when design wants to add usd value
       const cashValue = convertOnChainCashAmountToDisplayCashAmount(tx.cash, cash.decimals);
-      value = `${
-        formatCash(String(cashValue.abs()), cash.name).full
-      }`;
+      value = `${formatCash(String(cashValue.abs()), cash.name).full
+        }`;
       type = tx.tx_type === TransactionTypes.ENTER ? BUY : SELL;
       break;
     }
@@ -679,6 +685,16 @@ export const shapeUserActvity = (
   markets: { [id: string]: MarketInfo },
   ammExchanges: { [id: string]: AmmExchange }
 ): ActivityData[] => {
+  const userTransactions = formatUserTransactionActvity(account, markets, ammExchanges);
+
+  return userTransactions;
+};
+
+export const formatUserTransactionActvity = (
+  account: string,
+  markets: { [id: string]: MarketInfo },
+  ammExchanges: { [id: string]: AmmExchange }
+): ActivityData[] => {
   if (!ammExchanges || !account) return [];
   const exchanges = Object.values(ammExchanges);
   if (!exchanges || exchanges.length === 0) return [];
@@ -690,7 +706,24 @@ export const shapeUserActvity = (
         isSameAddress(t.sender, account)
       );
 
-      if (userTx.length === 0) return p;
+      const claims = markets[`${exchange.marketId}-${exchange.id}`].claimedProceeds.filter(c => isSameAddress(c.user, account));
+      if (userTx.length === 0 && claims.length === 0) return p;
+
+      const userClaims = claims.map(c => {
+        return {
+          id: c.id,
+          currency: cashName,
+          description:
+            markets[`${exchange.marketId}-${exchange.id}`]?.description,
+          type: `Claim Proceeds`,
+          date: getDayFormat(c.timestamp),
+          sortableMonthDay: getDayTimestamp(String(c.timestamp)),
+          time: getTimeFormat(c.timestamp),
+          txHash: null,
+          timestamp: Number(c.timestamp),
+          value: `${formatCash(c.winnings, c.cash.name).full}`,
+        };
+      })
 
       const datedUserTx = userTx.map((t) => {
         const typeDetails = getActivityType(t, exchange.cash);
@@ -707,12 +740,12 @@ export const shapeUserActvity = (
           timestamp: Number(t.timestamp),
         };
       });
-      return [...p, ...datedUserTx];
+      return [...p, ...datedUserTx, ...userClaims];
     }, [])
     .sort((a, b) => (a.timestamp < b.timestamp ? 1 : -1));
 
   // form array of grouped by date activities
-  return transactions
+  return [...transactions]
     .reduce((p, t) => {
       const item = p.find((x) => x.date === t.date);
       if (item) {

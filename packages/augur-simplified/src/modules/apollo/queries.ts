@@ -76,6 +76,9 @@ export const GET_MARKETS = blockNumber => {
 			shareToken {
         id
       }
+      sender {
+        id
+      }
       outcome
       numPayoutTokens
       fees

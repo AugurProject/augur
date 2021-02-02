@@ -869,7 +869,7 @@ const getInitPositionValues = (trades: UserTrades, amm: AmmExchange, isYesOutcom
   // sum up enters shares
   const sharesEntered = accumSharesPrice(trades.enters, isYesOutcome, account);
   const sharesExited = accumSharesPrice(trades.exits, isYesOutcome, account);
-  // get shares from LP activity
+  // get shares from LP transactions
   const sharesLiquidity = accumLpSharesPrice(amm.transactions, isYesOutcome, account);
   const positionFromLiquidity = sharesLiquidity.shares.gt(new BN(0));
   const allInputShareAmounts = sharesLiquidity.shares.plus(sharesEntered.shares);
