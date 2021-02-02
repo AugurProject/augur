@@ -560,7 +560,7 @@ export const getUserBalances = async (
             abi: ParaShareToken.ABI,
             calls: [
               {
-                reference: `${marketId}-${outcome}`,
+                reference: `${shareToken}-${marketId}-${outcome}`,
                 methodName: MARKET_SHARE_BALANCE,
                 methodParameters: [marketId, outcome, account],
               },
