@@ -45,7 +45,6 @@ import {
 import { createBigNumber } from '../../utils/create-big-number';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
 import { MovementLabel, WarningBanner } from './labels';
-import { concatSeries } from 'async';
 
 interface PositionsTableProps {
   market: MarketInfo;
