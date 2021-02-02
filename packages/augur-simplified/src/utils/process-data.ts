@@ -43,8 +43,19 @@ interface GraphMarket {
   categories: string[];
   outcomes: GraphMarketOutcome[];
   amms: GraphAmmExchange[];
+  tradingProceedsClaimed: GraphClaims[]
 }
 
+interface GraphClaims {
+  id: string;
+  shareToken: {
+    id: string;
+  }
+  outcome: number;
+  numPayoutTokens: string;
+  fees: string;
+  timestamp: string;
+}
 interface GraphMarketOutcome {
   id: string;
   isFinalNumerator: boolean;
@@ -168,7 +179,7 @@ export const processGraphMarkets = (graphData: GraphData): ProcessedData => {
     }
   });
 
-  return { cashes, markets, ammExchanges };
+  return { cashes, markets, ammExchanges, errors: null };
 };
 
 const shapeMarketInfo = (
@@ -179,6 +190,16 @@ const shapeMarketInfo = (
   const feeAsPercent = convertAttoValueToDisplayValue(new BN(market.fee)).times(
     100
   );
+  const cashDecimals = ammExchange?.cash?.decimals
+  const claimedProceeds = market.tradingProceedsClaimed.filter(t => t.numPayoutTokens !== "0").map(t => ({
+    id: t.id,
+    shareToken: t.shareToken.id,
+    outcome: t.outcome,
+    fees: String(convertOnChainCashAmountToDisplayCashAmount(t.fees, cashDecimals)),
+    winnings: String(convertOnChainCashAmountToDisplayCashAmount(t.numPayoutTokens, cashDecimals)),
+    timestamp: Number(t.timestamp),
+  }));
+
   return {
     marketId: market.id,
     description: market.description,
@@ -191,6 +212,7 @@ const shapeMarketInfo = (
     outcomes: shapeOutcomes(market.outcomes),
     amm: ammExchange,
     reportingState: market.status,
+    claimedProceeds,
   };
 };
 

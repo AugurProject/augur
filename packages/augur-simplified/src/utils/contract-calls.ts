@@ -344,6 +344,8 @@ export const estimateEnterPosition = async (
   const includeFee = true;
   let breakdown = null;
   const { cash, marketId, feeRaw } = amm;
+
+  console.log(ethers.utils.formatBytes32String('11'));
   if (tradeDirection === TradingDirection.ENTRY) {
     const inputOnChainCashAmount = convertDisplayCashAmountToOnChainCashAmount(new BN(inputDisplayAmount || "0"), new BN(cash?.decimals))
     console.log(
@@ -402,7 +404,8 @@ export async function doTrade(
     );
 
     const inputOnChainCashAmount = convertDisplayCashAmountToOnChainCashAmount(new BN(inputDisplayAmount || "0"), new BN(amm.cash.decimals))
-    const onChainMinShares = convertDisplayShareAmountToOnChainShareAmount(minAmount, amm.cash.decimals).decimalPlaces(0);
+    const bareMinAmount = new BN(minAmount).lt(0) ? 0 : minAmount
+    const onChainMinShares = convertDisplayShareAmountToOnChainShareAmount(bareMinAmount, amm.cash.decimals).decimalPlaces(0);
     return augurClient.amm.doEnterPosition(
       amm.marketId,
       amm.cash.shareToken,
