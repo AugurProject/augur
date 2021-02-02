@@ -12,9 +12,11 @@ div.Sidebar {
     right: 0;
     margin: 0;
     display: grid;
-    grid-template-rows: auto 1fr auto;
     grid-template-columns: 1fr;
+    min-height: unset;
+    grid-template-rows: @size-72 auto @size-72;
   }
+
 }
 
 .Header {
@@ -30,6 +32,11 @@ div.Sidebar {
   grid-column: 1;
   grid-row: 1;
   position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
 
   > span:first-of-type {
     .text-20-bold;
@@ -59,6 +66,8 @@ div.Sidebar {
   grid-column: 1;
   grid-row: 2;
   overflow: auto;
+  max-height: calc(100vh - 144px);
+  height: calc(100vh - 144px);
 
   > div:not(:last-of-type) {
     margin-bottom: @size-24;
@@ -98,4 +107,11 @@ div.Sidebar {
   .Footer;
 
   justify-content: flex-end;
+}
+
+.MobileBrowser {
+  > div[class*="Body"] {
+    max-height: calc(100vh - 220px);
+    height: calc(100vh - 220px);
+  }
 }

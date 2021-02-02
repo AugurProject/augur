@@ -22,6 +22,17 @@ import {
   sortByItems,
 } from '../constants';
 
+export default function isMobileBrowser(): boolean {
+  console.log(navigator.platform);
+  return (
+    navigator.platform.indexOf('Android') > -1 ||
+    navigator.platform.indexOf('iPhone') > -1 ||
+    navigator.platform.indexOf('iPad') > -1 ||
+    navigator.platform.indexOf('webOS') > -1 ||
+    navigator.platform.indexOf('Windows Phone') > -1
+  );
+}
+
 interface SideBarHeaderProps {
   header?: string;
   showLogo?: boolean;
@@ -147,7 +158,7 @@ const NavigationSideBar = () => {
 export const Sidebar = () => {
   const { sidebarType } = useAppStatusStore();
   return (
-    <div className={Styles.Sidebar}>
+    <div className={classNames(Styles.Sidebar, {[Styles.MobileBrowser]: isMobileBrowser()})}>
       {sidebarType === SIDEBAR_TYPES.FILTERS && <FilterSideBar />}
       {sidebarType === SIDEBAR_TYPES.NAVIGATION && <NavigationSideBar />}
     </div>
