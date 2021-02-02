@@ -661,7 +661,7 @@ const getActivityType = (
       // when design wants to add usd value
       const cashValue = convertOnChainCashAmountToDisplayCashAmount(tx.cash, cash.decimals);
       value = `${
-        formatCash(String(cashValue), cash.name).full
+        formatCash(String(cashValue.abs()), cash.name).full
       }`;
       type = tx.tx_type === TransactionTypes.ENTER ? BUY : SELL;
       break;
