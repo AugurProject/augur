@@ -30,7 +30,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
     event ExitPosition(address sender, uint256 shortShares, uint256 longShares, uint256 cashPayout);
     event SwapPosition(address sender, uint256 inputShares, uint256 outputShares, bool outputLong);
     event AddLiquidity(address sender, uint256 cash, uint256 shortShares, uint256 longShares, uint256 lpTokens);
-    event RemoveLiquidity(address sender, uint256 shortShares, uint256 longShares);
+    event RemoveLiquidity(address sender, uint256 shortShares, uint256 longShares, uint256 lpTokensBurnt);
 
     function initialize(IMarket _market, ParaShareToken _shareToken, uint256 _fee) public {
         require(cash == ICash(0)); // can only initialize once
@@ -141,7 +141,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
 
         shareTransfer(address(this), msg.sender, _shortShare, _shortShare, _longShare);
 
-        emit RemoveLiquidity(msg.sender, _shortShare, _longShare);
+        emit RemoveLiquidity(msg.sender, _shortShare, _longShare, _poolTokensToSell);
     }
 
     // Tells you how many shares you receive from the pool.

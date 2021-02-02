@@ -52,7 +52,7 @@ export function handleAddLiquidity(event: AddLiquidityEvent): void {
   addLiquidity.sender = event.params.sender.toHexString();
 
   // Will be zero if ratio is 50-50.
-  let netShares = addLiquidity.noShares.minus(addLiquidity.yesShares).abs();
+  addLiquidity.netShares = addLiquidity.noShares.minus(addLiquidity.yesShares).abs();
   let noShares = addLiquidity.noShares.toBigDecimal();
   let yesShares = addLiquidity.yesShares.toBigDecimal();
   let totalShares = noShares.plus(yesShares);
@@ -60,14 +60,17 @@ export function handleAddLiquidity(event: AddLiquidityEvent): void {
   let priceOfYesShares = noShares.div(totalShares);
 
   let priceOfGainedShares: BigDecimal;
-  if(yesShares.gt(noShares)) {
+  // LP mints sets to add to pool, which are equal shares.
+  // The no and yes share values are how many are added to the pool.
+  // So the smaller side is the side where the user gains shares.
+  if(yesShares.lt(noShares)) {
     priceOfGainedShares = priceOfYesShares;
   } else {
     priceOfGainedShares = priceOfNoShares;
   }
 
   // Cash value is the cost of the lp tokens received accounting for shares returned to user.
-  addLiquidity.cashValue = addLiquidity.cash.toBigDecimal().minus(priceOfGainedShares.times(netShares.toBigDecimal())).truncate(0);
+  addLiquidity.cashValue = addLiquidity.cash.toBigDecimal().minus(priceOfGainedShares.times(addLiquidity.netShares.toBigDecimal())).truncate(0);
 
   addLiquidity.noShareCashValue = priceOfNoShares.times(noShares);
   addLiquidity.yesShareCashValue = priceOfYesShares.times(yesShares);
@@ -85,6 +88,7 @@ export function handleRemoveLiquidity(event: RemoveLiquidityEvent): void {
   removeLiquidity.timestamp = event.block.timestamp;
   removeLiquidity.ammExchange = event.address.toHexString();
   removeLiquidity.noShares = event.params.shortShares;
+  removeLiquidity.lpTokensBurnt = event.params.lpTokensBurnt;
   removeLiquidity.yesShares = event.params.longShares;
   removeLiquidity.sender = event.params.sender.toHexString();
 
