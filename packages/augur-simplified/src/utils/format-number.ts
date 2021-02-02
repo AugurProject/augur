@@ -13,6 +13,10 @@ import {
   TEN,
   ZERO,
   CASH_LABEL_FORMATS,
+  THOUSAND,
+  MILLION,
+  BILLION,
+  TRILLION,
 } from '../modules/constants';
 import addCommas from './add-commas-to-number';
 import getPrecision from './get-number-precision';
@@ -609,16 +613,16 @@ export function formatNumber(
 
 function addBigUnitPostfix(value, formattedValue, removeComma = false) {
   let postfixed;
-  if (value.gt(createBigNumber('1000000000000', 10))) {
+  if (value.gt(TRILLION)) {
     postfixed = '> 1T';
-  } else if (value.gt(createBigNumber('10000000000', 10))) {
+  } else if (value.gt(BILLION)) {
     postfixed =
-      value.dividedBy(createBigNumber('1000000000', 10)).toFixed(2) + 'B';
-  } else if (value.gt(createBigNumber('10000000', 10))) {
+      addCommas(`${value.dividedBy(BILLION).toFixed(2)}B`, removeComma);
+  } else if (value.gt(MILLION)) {
     postfixed =
-      value.dividedBy(createBigNumber('1000000', 10)).toFixed(2) + 'M';
-  } else if (value.gt(createBigNumber('10000', 10))) {
-    postfixed = value.dividedBy(createBigNumber('1000', 10)).toFixed(2) + 'K';
+      addCommas(`${value.dividedBy(MILLION).toFixed(2)}M`, removeComma);
+  } else if (value.gt(THOUSAND.times(TEN))) {
+    postfixed = addCommas(`${value.dividedBy(THOUSAND).toFixed(2)}K`, removeComma);
   } else {
     postfixed = addCommas(formattedValue, removeComma);
   }
