@@ -162,6 +162,7 @@ export function AppStatusReducer(state, action) {
       break;
     }
     case LOGOUT: {
+      window.localStorage.setItem('lastUser', null);
       updatedState[IS_LOGGED] = false;
       updatedState[TRANSACTIONS] = [];
       updatedState[LOGIN_ACCOUNT] = null;

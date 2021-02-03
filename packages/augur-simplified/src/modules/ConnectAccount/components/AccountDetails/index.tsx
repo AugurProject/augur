@@ -19,6 +19,7 @@ interface AccountCardProps {
   connectorName: string;
   chainId: string;
   switchWalletAction: Function;
+  logout: Function;
 }
 
 const AccountCard = ({
@@ -26,7 +27,8 @@ const AccountCard = ({
   connector,
   connectorName,
   chainId,
-  switchWalletAction
+  switchWalletAction,
+  logout,
 }: AccountCardProps) => {
   return (
     <div className={Styles.AccountCard}>
@@ -35,6 +37,12 @@ const AccountCard = ({
         {connector !== injected && connector !== walletlink && (
           <TinyButton
             action={() => (connector as any).close()}
+            text='Disconnect'
+          />
+        )}
+        {connector === injected && connector !== walletlink && (
+          <TinyButton
+            action={() => logout()}
             text='Disconnect'
           />
         )}
@@ -163,6 +171,7 @@ interface AccountDetailsProps {
   darkMode: boolean;
   transactions: object[];
   removeTransaction: Function;
+  logout: Function;
 }
 
 const AccountDetails = ({
@@ -171,9 +180,11 @@ const AccountDetails = ({
   darkMode,
   transactions,
   removeTransaction,
+  logout,
 }: AccountDetailsProps) => {
   const { chainId, account, connector } = useActiveWeb3React();
   const [connectorName, setConnectorName] = useState(formatConnectorName(connector));
+  const { deactivate } = useActiveWeb3React();
 
   useEffect(() => {
     setConnectorName(formatConnectorName(connector));
@@ -190,6 +201,14 @@ const AccountDetails = ({
           connectorName={connectorName}
           chainId={chainId}
           switchWalletAction={openOptions}
+          logout={() => {
+            logout();
+            // setTimeout allows lastUser localStorage to be cleared before calling deactivate,
+            // otherwise the autologin seems to overide our deactivate call.
+            setTimeout(() => {
+              deactivate();
+            });
+          }}
         />
       </section>
       <footer>
