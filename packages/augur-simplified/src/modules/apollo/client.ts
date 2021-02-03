@@ -85,7 +85,7 @@ export async function getMarketsData(paraConfig, updateHeartbeat) {
 export async function searchMarkets(paraConfig, searchString, cb) {
   const clientConfig = getClientConfig(paraConfig);
   let response = null;
-  if (searchString === '') return cb([]);
+  if (searchString === '') return cb(null, []);
   const searchQuery = searchString.trim().split(' ').join(' & ');
   try {
     const query = SEARCH_MARKETS(`${searchQuery}:*`);
