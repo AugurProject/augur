@@ -308,6 +308,22 @@
       }
     }
   }
+
+  > li:last-of-type {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+
+    > svg {
+      margin-left: @size-8;
+    }
+  }
+}
+
+.SortUp {
+  > svg {
+    transform: rotate(-180deg);
+  }
 }
 
 .TransactionsTable {
@@ -326,7 +342,6 @@
   .TransactionsSharedRowHeader;
 
   > li {
-
     > a {
       text-decoration: none;
       color: var(--simple-primary-text);
