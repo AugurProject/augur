@@ -132,6 +132,7 @@ export interface AmmTransaction {
   yesShareCashValue?: string;
   noShareCashValue?: string;
   cashValue?: string; // for add/remove liquidity
+  netShares?: string; // only for add liquidity
 }
 
 export interface Trade {
