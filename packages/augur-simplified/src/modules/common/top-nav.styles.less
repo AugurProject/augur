@@ -78,7 +78,6 @@
     }
 
     &:last-of-type {
-      
       max-width: @size-528;
       padding-right: @size-88;
       grid-gap: @size-8;
@@ -93,6 +92,14 @@
 
   &.TwoTone > section:last-of-type {
     background: var(--simple-light-bg);
+  }
+}
+
+@media @breakpoint-tiny {
+  .TopNav {
+    &.TwoTone > section:last-of-type {
+      background: var(--light-background-color);
+    }
   }
 }
 
@@ -125,7 +132,6 @@
     }
   }
 }
-
 
 .SettingsButton {
   .RoundedButton;
@@ -252,7 +258,7 @@
           margin-left: @size-4;
         }
 
-        &[class*="Selected"] {
+        &[class*='Selected'] {
           background-color: var(--simple-alternate-background);
           border: @size-1 solid var(--simple-secondary-text);
 
