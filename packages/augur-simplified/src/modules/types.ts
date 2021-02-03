@@ -219,7 +219,7 @@ export interface MarketOutcome {
   payoutNumerator?: string;
   name: string;
   isInvalid: boolean;
-  isWinning: boolean;
+  isWinner: boolean;
 }
 
 export interface AmmOutcome {
