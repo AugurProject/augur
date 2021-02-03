@@ -152,6 +152,7 @@ export const GET_MARKETS = blockNumber => {
         lpTokens
         noShareCashValue
         yesShareCashValue
+        netShares
       }
       removeLiquidity {
         id
