@@ -174,7 +174,7 @@ const applyFiltersAndSort = (
   updateGraphHeartbeat
 ) => {
   searchMarkets(paraConfig, filter, (err, searchedMarkets) => {
-    if (err && searchedMarkets === null) updateGraphHeartbeat(null, null, err);
+    if (err) updateGraphHeartbeat(null, null, err);
     let updatedFilteredMarkets = passedInMarkets;
 
     if (filter !== '') {

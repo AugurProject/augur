@@ -91,7 +91,7 @@ export async function searchMarkets(paraConfig, searchString, cb) {
     const query = SEARCH_MARKETS(`${searchQuery}:*`);
     response = await augurV2Client(clientConfig.augurClient).query({ query });
   } catch (e) {
-    cb(e, null);
+    cb(e, []);
     console.error(e);
   }
 
