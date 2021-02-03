@@ -64,6 +64,50 @@
   }
 }
 
+.WinningOutcomeLabel {
+  .SimpleBorder;
+
+  border: @size-1 solid var(--color-brand);
+  display: flex;
+  flex-flow: column nowrap;
+  width: 100%;
+  min-width: 100%;
+  min-height: @size-86;
+  height: @size-86;
+  max-height: @size-86;
+  justify-content: center;
+  padding: @size-16;
+
+
+  @media @breakpoint-mobile-tablet {
+    margin-bottom: @size-24;
+  }
+
+  > span {
+    align-items: center;
+    display: flex;
+    flex-flow: row nowrap;
+    white-space: nowrap;
+
+    &:first-of-type {
+      .text-16;
+  
+      color: var(--simple-secondary-text);
+      margin-bottom: @size-8;
+    }
+
+    &:last-of-type {
+      .text-20-semi-bold;
+
+      color: var(--simple-primary-text);
+
+      > svg {
+        margin-left: @size-8;
+      }
+    }
+  }
+}
+
 .CategoryIcon,
 .CategoryLabel {
   .RoundedLabel;

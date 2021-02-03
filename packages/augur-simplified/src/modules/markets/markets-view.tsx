@@ -76,15 +76,27 @@ const LoadingMarketCard = () => {
   );
 };
 
-export const outcomesToDisplay = (
+export const combineOutcomeData = (
   ammOutcomes: AmmOutcome[],
   marketOutcomes: MarketOutcome[]
 ) => {
   if (!ammOutcomes || ammOutcomes.length === 0) return [];
-  const combinedData = marketOutcomes.map((mOutcome, index) => ({
+  return marketOutcomes.map((mOutcome, index) => ({
     ...mOutcome,
     ...ammOutcomes[index],
   }));
+};
+
+export const getWinningOutcome = (
+  ammOutcomes: AmmOutcome[],
+  marketOutcomes: MarketOutcome[]
+) => combineOutcomeData(ammOutcomes, marketOutcomes).filter(({ payoutNumerator }) => payoutNumerator !== null && payoutNumerator !== '0');
+
+export const outcomesToDisplay = (
+  ammOutcomes: AmmOutcome[],
+  marketOutcomes: MarketOutcome[]
+) => {
+  const combinedData = combineOutcomeData(ammOutcomes, marketOutcomes);
   const invalid = combinedData.slice(0, 1);
   const yes = combinedData.slice(2, 3);
   const no = combinedData.slice(1, 2);
@@ -109,9 +121,11 @@ const OutcomesTable = ({
   amm: AmmExchange;
   marketOutcomes: MarketOutcome[];
 }) => (
-  <div className={classNames(Styles.OutcomesTable, {
-    [Styles.hasWinner]: marketOutcomes[0].isFinalNumerator,
-  })}>
+  <div
+    className={classNames(Styles.OutcomesTable, {
+      [Styles.hasWinner]: marketOutcomes[0].isFinalNumerator,
+    })}
+  >
     {outcomesToDisplay(amm.ammOutcomes, marketOutcomes).map((outcome) => {
       const isWinner =
         outcome.isFinalNumerator && outcome.payoutNumerator !== '0';
