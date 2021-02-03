@@ -234,6 +234,7 @@ const shapeOutcomes = (graphOutcomes: GraphMarketOutcome[]): MarketOutcome[] =>
     payoutNumerator: g.payoutNumerator,
     name: g.value,
     isInvalid: g.id.indexOf('-0') > -1,
+    isWinner: Boolean(Number(g.payoutNumerator)),
   }));
 
 const shapeAmmExchange = (
