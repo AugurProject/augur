@@ -896,14 +896,16 @@ const accumLpSharesPrice = (transactions: AmmTransaction[], isYesOutcome: boolea
   const result = transactions.filter(t => isSameAddress(t.sender, account) && (t.tx_type === TransactionTypes.ADD_LIQUIDITY || t.tx_type === TransactionTypes.REMOVE_LIQUIDITY)).reduce((p, t) => {
     const yesShares = new BN(t.yesShares);
     const noShares = new BN(t.noShares);
+    // TODO, convert cash to share cash, needed to combine with user's positions
+    const cashValue = new BN(t.cashValue).div(10000);
     if (isYesOutcome) {
       const netYesShares = noShares.minus(yesShares)
       if (netYesShares.lte(new BN(0))) return p;
-      return { shares: p.shares.plus(netYesShares), cashAmount: p.cashAmount.plus(new BN(t.cashValue)) }
+      return { shares: p.shares.plus(netYesShares), cashAmount: p.cashAmount.plus(new BN(cashValue)) }
     }
     const netNoShares = yesShares.minus(noShares)
     if (netNoShares.lte(new BN(0))) return p;
-    return { shares: p.shares.plus(netNoShares), cashAmount: p.cashAmount.plus(new BN(t.cashValue)) }
+    return { shares: p.shares.plus(netNoShares), cashAmount: p.cashAmount.plus(new BN(cashValue)) }
   },
     { shares: new BN(0), cashAmount: new BN(0) });
 

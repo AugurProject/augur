@@ -190,10 +190,12 @@ export interface Cashes {
 export interface ClaimedProceeds {
   id: string;
   shareToken: string;
+  user: string;
   outcome: number;
   winnings: string;
   fees: string;
   timestamp: number;
+  cash: Cash;
 }
 export interface MarketInfo {
   marketId: string;
