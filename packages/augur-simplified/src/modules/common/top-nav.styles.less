@@ -97,8 +97,14 @@
 
 @media @breakpoint-tiny {
   .TopNav {
+    &.OnMarketsView {
+      &.TwoTone > section:last-of-type {
+        background: var(--light-background-color);
+      }
+    }
     &.TwoTone > section:last-of-type {
-      background: var(--light-background-color);
+      max-width: 371px;
+      width: 371px;
     }
   }
 }
