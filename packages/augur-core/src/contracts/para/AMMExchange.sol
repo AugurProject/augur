@@ -9,7 +9,7 @@ import 'ROOT/para/ParaShareToken.sol';
 import "ROOT/para/interfaces/IAMMFactory.sol";
 import "ROOT/para/interfaces/IAMMExchange.sol";
 import 'ROOT/libraries/token/SafeERC20.sol';
-
+import 'ROOT/balancer/BPool.sol';
 
 contract AMMExchange is IAMMExchange, ERC20 {
     using SafeERC20 for IERC20;
@@ -25,6 +25,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
     uint256 public NO;
     uint256 public YES;
     uint256 public fee; // [0-1000] how many thousandths of swaps should be kept as fees
+    BPool public bPool;
 
     event EnterPosition(address sender, uint256 cash, uint256 outputShares, bool buyLong, uint256 priorShares);
     event ExitPosition(address sender, uint256 shortShares, uint256 longShares, uint256 cashPayout);
@@ -32,10 +33,11 @@ contract AMMExchange is IAMMExchange, ERC20 {
     event AddLiquidity(address sender, uint256 cash, uint256 shortShares, uint256 longShares, uint256 lpTokens);
     event RemoveLiquidity(address sender, uint256 shortShares, uint256 longShares);
 
-    function initialize(IMarket _market, ParaShareToken _shareToken, uint256 _fee) public {
+    function initialize(IMarket _market, ParaShareToken _shareToken, uint256 _fee, BPool _bPool) public {
         require(cash == ICash(0)); // can only initialize once
         require(_fee <= 30); // fee must be [0,30] aka 0-3%
 
+        bPool = _bPool;
         factory = IAMMFactory(msg.sender);
         cash = _shareToken.cash();
         shareToken = _shareToken;

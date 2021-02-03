@@ -5,6 +5,7 @@ import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/libraries/token/IERC20.sol';
 import 'ROOT/para/ParaShareToken.sol';
 import 'ROOT/para/interfaces/IAMMFactory.sol';
+import 'ROOT/balancer/BPool.sol';
 
 
 contract IAMMExchange is IERC20 {
@@ -17,8 +18,9 @@ contract IAMMExchange is IERC20 {
     uint256 public NO;
     uint256 public YES;
     uint256 public fee; // [0-1000] how many thousandths of swaps should be kept as fees
+    // BPool public _bPool;
 
-    function initialize(IMarket _market, ParaShareToken _shareToken, uint256 _fee) public;
+    function initialize(IMarket _market, ParaShareToken _shareToken, uint256 _fee, BPool _bPool) public;
 
     // Adds shares to the liquidity pool by minting complete sets.
     function addLiquidity(uint256 _cash, address _recipient) public returns (uint256);

@@ -7,27 +7,31 @@ import 'ROOT/para/ParaShareToken.sol';
 import 'ROOT/para/interfaces/IAMMFactory.sol';
 import 'ROOT/para/interfaces/IAMMExchange.sol';
 import 'ROOT/para/interfaces/IParaShareToken.sol';
+import 'ROOT/balancer/BFactory.sol';
 import 'ROOT/balancer/BPool.sol';
 
 contract AMMFactory is IAMMFactory, CloneFactory2 {
     using SafeMathUint256 for uint256;
 
     IAMMExchange internal proxyToClone;
-    BPool internal bPool;
+    BFactory internal bFactory;
 
-    event AMMCreated(IAMMExchange amm, IMarket market, ParaShareToken shareToken, uint256 fee);
+    event AMMCreated(IAMMExchange amm, IMarket market, ParaShareToken shareToken, uint256 fee, BPool bPool);
 
-    constructor(address _proxyToClone, BPool _bPool) public {
-        bPool = _bPool;
+    constructor(address _proxyToClone, BFactory _bFactory) public {
+        bFactory = _bFactory;
         proxyToClone = IAMMExchange(_proxyToClone);
     }
 
     function addAMM(IMarket _market, ParaShareToken _para, uint256 _fee) external returns (address) {
         IAMMExchange _amm = IAMMExchange(createClone2(address(proxyToClone), salt(_market, _para, _fee)));
-        _amm.initialize(_market, _para, _fee);
+
+        BPool _bPool = bFactory.newBPool();
+        _amm.initialize(_market, _para, _fee, _bPool);
+
         exchanges[address(_market)][address(_para)][_fee] = address(_amm);
 
-        emit AMMCreated(_amm, _market, _para, _fee);
+        emit AMMCreated(_amm, _market, _para, _fee, _bPool);
 
         return address(_amm);
     }
@@ -43,10 +47,11 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
     ) external returns (address _ammAddress, uint256 _lpTokens) {
         _ammAddress = createClone2(address(proxyToClone), salt(_market, _para, _fee));
         IAMMExchange _amm = IAMMExchange(_ammAddress);
-        _amm.initialize(_market, _para, _fee);
+        BPool _bPool = bFactory.newBPool();
+        _amm.initialize(_market, _para, _fee, _bPool);
         exchanges[address(_market)][address(_para)][_fee] = _ammAddress;
 
-        emit AMMCreated(_amm, _market, _para, _fee);
+        emit AMMCreated(_amm, _market, _para, _fee, _bPool);
 
         // User sends cash to factory, which turns cash into LP tokens and shares which it gives to the user.
         _para.cash().transferFrom(msg.sender, address(this), _cash);
