@@ -621,10 +621,10 @@ const TransactionsHeader = ({
           <SmallDropdown
             onChange={(value) => setSelectedType(value)}
             options={[
-              { label: ALL, value: 0 },
-              { label: SWAP, value: 1 },
-              { label: ADD, value: 2 },
-              { label: REMOVE, value: 3 },
+              { label: ALL, value: ALL },
+              { label: SWAP, value: SWAP },
+              { label: ADD, value: ADD },
+              { label: REMOVE, value: REMOVE },
             ]}
             defaultValue={ALL}
           />
