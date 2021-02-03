@@ -15,7 +15,7 @@ import {
   formatDai,
   formatPercent,
 } from '../../utils/format-number';
-import { FilterIcon } from '../common/icons';
+import { FilterIcon, ConfirmedCheck } from '../common/icons';
 import classNames from 'classnames';
 import {
   PrimaryButton,
@@ -24,7 +24,7 @@ import {
 } from '../common/buttons';
 import { SquareDropdown } from '../common/selection';
 import { useAppStatusStore } from '../stores/app-status';
-import { AmmExchange, AmmOutcome, MarketInfo } from '../types';
+import { AmmExchange, AmmOutcome, MarketInfo, MarketOutcome } from '../types';
 import {
   SIDEBAR_TYPES,
   ALL_CURRENCIES,
@@ -48,7 +48,7 @@ import {
   CREATE,
 } from '../constants';
 import { sliceByPage, Pagination } from '../common/pagination';
-import { TopBanner } from 'modules/common/top-banner';
+import { TopBanner } from '../common/top-banner';
 import { searchMarkets } from '../apollo/client';
 import { SearchInput } from '../common/inputs';
 
@@ -76,33 +76,75 @@ const LoadingMarketCard = () => {
   );
 };
 
-export const outcomesToDisplay = (ammOutcomes: AmmOutcome[]) => {
+export const outcomesToDisplay = (
+  ammOutcomes: AmmOutcome[],
+  marketOutcomes: MarketOutcome[]
+) => {
   if (!ammOutcomes || ammOutcomes.length === 0) return [];
-  const invalid = ammOutcomes.slice(0, 1);
-  const yes = ammOutcomes.slice(2, 3);
-  const no = ammOutcomes.slice(1, 2);
-  return invalid.concat(yes).concat(no).concat(ammOutcomes.slice(3));
+  const combinedData = marketOutcomes.map((mOutcome, index) => ({
+    ...mOutcome,
+    ...ammOutcomes[index],
+  }));
+  const invalid = combinedData.slice(0, 1);
+  const yes = combinedData.slice(2, 3);
+  const no = combinedData.slice(1, 2);
+  let newOrder = invalid.concat(yes).concat(no).concat(combinedData.slice(3));
+  if (
+    newOrder[0].isFinalNumerator &&
+    newOrder[0].payoutNumerator !== '0' &&
+    newOrder[0].payoutNumerator !== null
+  ) {
+    // invalid is winner -- only pass invalid
+    newOrder = invalid;
+  } else {
+    newOrder = newOrder.filter((outcome) => !outcome.isInvalid);
+  }
+  return newOrder;
 };
 
-const OutcomesTable = ({ amm }: { amm: AmmExchange }) => (
-  <div className={Styles.OutcomesTable}>
-    {outcomesToDisplay(amm.ammOutcomes)
-      .filter((outcome) => !outcome.isInvalid)
-      .map((outcome) => (
-        <div key={`${outcome.name}-${amm?.marketId}-${outcome.id}`}>
+const OutcomesTable = ({
+  amm,
+  marketOutcomes,
+}: {
+  amm: AmmExchange;
+  marketOutcomes: MarketOutcome[];
+}) => (
+  <div className={classNames(Styles.OutcomesTable, {
+    [Styles.hasWinner]: marketOutcomes[0].isFinalNumerator,
+  })}>
+    {outcomesToDisplay(amm.ammOutcomes, marketOutcomes).map((outcome) => {
+      const isWinner =
+        outcome.isFinalNumerator && outcome.payoutNumerator !== '0';
+      return (
+        <div
+          key={`${outcome.name}-${amm?.marketId}-${outcome.id}`}
+          className={classNames({ [Styles.WinningOutcome]: isWinner })}
+        >
           <span>{outcome.name.toLowerCase()}</span>
           <span>
-            {amm?.liquidity !== '0'
+            {isWinner
+              ? ConfirmedCheck
+              : outcome.isFinalNumerator
+              ? ''
+              : amm?.liquidity !== '0'
               ? formatCashPrice(outcome.price, amm?.cash?.name).full
               : '-'}
           </span>
         </div>
-      ))}
+      );
+    })}
   </div>
 );
 
 const MarketCard = ({ market }: { market: MarketInfo }) => {
-  const { categories, description, marketId, amm, reportingState } = market;
+  const {
+    categories,
+    description,
+    marketId,
+    amm,
+    reportingState,
+    outcomes,
+  } = market;
   const formattedApy = amm?.apy && formatPercent(amm.apy).full;
   const {
     isLogged,
@@ -158,7 +200,7 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
               value={formatDai(market.amm?.volumeTotalUSD).full}
             />
             <ValueLabel label="APY" value={formattedApy} />
-            <OutcomesTable amm={amm} />
+            <OutcomesTable amm={amm} marketOutcomes={outcomes} />
           </>
         )}
       </div>
