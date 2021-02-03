@@ -3,6 +3,7 @@ import {
   TradingProceedsClaimed as TradingProceedsClaimedEvent,
   ParaAugur
 } from '../../generated/templates/ParaAugur/ParaAugur';
+import { getOrCreateUser } from '../utils/helpers';
 
 export function handleTradingProceedsClaimed(
   event: TradingProceedsClaimedEvent
@@ -11,6 +12,8 @@ export function handleTradingProceedsClaimed(
 
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let tradingProceedsClaimed = new TradingProceedsClaimed(id);
+
+  getOrCreateUser(event.params.sender.toHexString());
 
   tradingProceedsClaimed.fees = event.params.fees;
   tradingProceedsClaimed.market = event.params.market.toHexString();

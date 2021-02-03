@@ -14,7 +14,7 @@ const ActivityCard = ({ activity }: { activity: ActivityItem }) => (
     <span className={Styles.description}>{activity.description}</span>
     {activity.subheader && <div className={Styles.subheader}>{activity.subheader}</div>}
     <div className={Styles.time}>{activity.time}</div>
-    <ReceiptLink hash={activity.txHash} />
+    {activity.txHash && <ReceiptLink hash={activity.txHash} />}
   </div>
 );
 

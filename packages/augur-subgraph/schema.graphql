@@ -41,6 +41,8 @@ type User @entity {
 
   "Positions exited by this user has executed with any AMMExchange"
   exits: [ExitPosition!]! @derivedFrom(field: "sender")
+
+  tradingProceedsClaimed: [TradingProceedsClaimed!]! @derivedFrom(field: "sender")
 }
 
 type Universe @entity {
@@ -922,6 +924,8 @@ type AddLiquidity @entity {
   noShareCashValue: BigDecimal!
 
   yesShareCashValue: BigDecimal!
+
+  netShares: BigInt!
 }
 
 type RemoveLiquidity @entity {
@@ -949,6 +953,8 @@ type RemoveLiquidity @entity {
   noShareCashValue: BigDecimal!
 
   yesShareCashValue: BigDecimal!
+
+  lpTokensBurnt: BigInt!
 }
 
 type _Schema_

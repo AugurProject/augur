@@ -24,7 +24,7 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   finalizeTransaction: hash => {},
   setModal: modal => {},
   closeModal: () => {},
-  updateSeenPositionWarning: (id, seenPositionWarning) => {},
+  updateSeenPositionWarning: (id, seenPositionWarning, warningType) => {},
   addSeenPositionWarnings: (seenPositionWarnings) => {}
 };
 
@@ -71,6 +71,7 @@ export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
   settings: {
     slippage: SETTINGS_SLIPPAGE,
     showInvalidMarkets: false,
+    showLiquidMarkets: false,
   },
   seenPositionWarnings: {}
 };

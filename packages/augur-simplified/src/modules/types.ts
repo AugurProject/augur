@@ -190,10 +190,12 @@ export interface Cashes {
 export interface ClaimedProceeds {
   id: string;
   shareToken: string;
+  user: string;
   outcome: number;
   winnings: string;
   fees: string;
   timestamp: number;
+  cash: Cash;
 }
 export interface MarketInfo {
   marketId: string;
@@ -1053,6 +1055,7 @@ export interface PositionBalance extends SimpleBalance {
   quantity: string;
   visible: boolean;
   positionFromLiquidity: boolean;
+  positionFromRemoveLiquidity: boolean;
 }
 
 export interface AmmMarketShares {
@@ -1113,7 +1116,14 @@ interface Modal {
 export interface Settings {
   slippage: string;
   showInvalidMarkets: boolean;
+  showLiquidMarkets: boolean;
 }
+
+export interface SeenPositionWarnings {
+  add: boolean;
+  remove: boolean;
+}
+
 export interface AppStatusState {
   processed: ProcessedData;
   loginAccount: LoginAccount;
@@ -1137,7 +1147,7 @@ export interface AppStatusState {
   modal: Modal;
   settings: Settings;
   seenPositionWarnings: {
-    [id: string]: boolean
+    [id: string]: SeenPositionWarnings;
   }
 }
 

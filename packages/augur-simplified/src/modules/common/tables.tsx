@@ -243,8 +243,10 @@ export const PositionTable = ({
     actions: { updateSeenPositionWarning },
   } = useAppStatusStore();
   const marketAmmId = createMarketAmmId(market.marketId, market?.amm?.id);
-  const seenMarketPositionWarning =
-    seenPositionWarnings && seenPositionWarnings[marketAmmId];
+  const seenMarketPositionWarningAdd =
+    seenPositionWarnings && seenPositionWarnings[marketAmmId]?.add;
+  const seenMarketPositionWarningRemove =
+    seenPositionWarnings && seenPositionWarnings[marketAmmId]?.remove;
   return (
     <>
       <div className={Styles.PositionTable}>
@@ -265,7 +267,7 @@ export const PositionTable = ({
           claimableWinnings={claimableWinnings}
         />
       </div>
-      {!seenMarketPositionWarning &&
+      {!seenMarketPositionWarningAdd &&
         singleMarket &&
         positions.filter((position) => position.positionFromLiquidity).length >
           0 && (
@@ -275,7 +277,18 @@ export const PositionTable = ({
             subtitle={
               'To maintain the Yes to No percentage ratio, a number of shares are returned to the liquidity provider.'
             }
-            onClose={() => updateSeenPositionWarning(marketAmmId, true)}
+            onClose={() => updateSeenPositionWarning(marketAmmId, true, ADD)}
+          />
+        )}
+      {!seenMarketPositionWarningRemove &&
+        singleMarket &&
+        positions.filter((position) => position.positionFromRemoveLiquidity)
+          .length > 0 && (
+          <WarningBanner
+            className={Styles.MarginTop}
+            title={'Why do I have a position after removing liquidity?'}
+            subtitle={`To give liquidity providers the most options available to manage their positions. Shares can be sold for ${market?.amm?.cash?.name}.`}
+            onClose={() => updateSeenPositionWarning(marketAmmId, true, REMOVE)}
           />
         )}
     </>

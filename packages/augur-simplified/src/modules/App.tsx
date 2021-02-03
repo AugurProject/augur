@@ -83,17 +83,18 @@ const AppBody = () => {
     };
     // eslint-disable-next-line
   }, []);
-
+  
+  const sidebarOut = sidebarType && isMobile;
   useEffect(() => {
     if (showTradingForm) {
       window.scrollTo(0, 0);
     }
-    if (showTradingForm || modalShowing) {
+    if (showTradingForm || modalShowing || sidebarOut) {
       document.body.classList.add('App--noScroll');
     } else {
       document.body.classList.remove('App--noScroll');
     }
-  }, [showTradingForm, modalShowing]);
+  }, [showTradingForm, modalShowing, sidebarOut]);
 
   useEffect(() => {
     let isMounted = true;
@@ -138,7 +139,6 @@ const AppBody = () => {
     // eslint-disable-next-line
   }, [loginAccount, blocknumber, transactions]);
 
-  const sidebarOut = sidebarType && isMobile;
   return (
     <div
       id="mainContent"
