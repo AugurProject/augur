@@ -170,9 +170,11 @@ const applyFiltersAndSort = (
   passedInMarkets,
   setFilteredMarkets,
   paraConfig,
-  { filter, categories, sortBy, currency, reportingState, showLiquidMarkets }
+  { filter, categories, sortBy, currency, reportingState, showLiquidMarkets },
+  handleGraphError
 ) => {
-  searchMarkets(paraConfig, filter, (searchedMarkets) => {
+  searchMarkets(paraConfig, filter, (err, searchedMarkets) => {
+    if (err) handleGraphError(err);
     let updatedFilteredMarkets = passedInMarkets;
 
     if (filter !== '') {
@@ -266,12 +268,14 @@ const MarketsView = () => {
     isMobile,
     isLogged,
     marketsViewSettings,
+    blocknumber,
     paraConfig,
-    actions: { setSidebar, updateMarketsViewSettings },
-    processed: { markets },
+    actions: { setSidebar, updateMarketsViewSettings, updateGraphHeartbeat },
+    processed,
     settings: { showLiquidMarkets },
   } = useAppStatusStore();
   const { sortBy, categories, reportingState, currency } = marketsViewSettings;
+  const { markets } = processed;
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [filteredMarkets, setFilteredMarkets] = useState([]);
@@ -297,7 +301,8 @@ const MarketsView = () => {
         currency,
         reportingState,
         showLiquidMarkets,
-      }
+      },
+      (err) => updateGraphHeartbeat(processed, blocknumber, err)
     );
   }, [sortBy, filter, categories, reportingState, currency, showLiquidMarkets]);
 
@@ -314,7 +319,8 @@ const MarketsView = () => {
         currency,
         reportingState,
         showLiquidMarkets,
-      }
+      },
+      (err) => updateGraphHeartbeat(processed, blocknumber, err)
     );
   }, [markets]);
 
