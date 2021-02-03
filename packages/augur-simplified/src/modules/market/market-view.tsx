@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 import Styles from './market-view.styles.less';
 import classNames from 'classnames';
 import SimpleChartSection from '../common/charts';

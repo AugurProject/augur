@@ -569,3 +569,12 @@ export const UpArrow = (
     />
   </svg>
 );
+
+export const InvalidFlagIcon = (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <circle cx="12" cy="12" r="11.5" stroke="#DBE1E7"/>
+    <path d="M7.6875 6.9375H17.8125L16.125 10.3125L17.8125 13.6875H7.6875" fill="#FF3E13"/>
+    <path d="M7.6875 6.9375H17.8125L16.125 10.3125L17.8125 13.6875H7.6875" stroke="#FF3E13" strokeMiterlimit="10" strokeLinecap="square"/>
+    <path d="M7.6875 5.8125V18.1875" stroke="#FF3E13" strokeMiterlimit="10" strokeLinecap="square"/>
+  </svg>
+);
