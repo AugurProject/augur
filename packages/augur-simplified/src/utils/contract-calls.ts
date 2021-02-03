@@ -11,7 +11,7 @@ import {
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers'
 import { convertDisplayCashAmountToOnChainCashAmount, convertDisplayShareAmountToOnChainShareAmount, convertOnChainCashAmountToDisplayCashAmount, convertOnChainSharesToDisplayShareAmount, isSameAddress } from './format-number';
 import { augurSdkLite } from './augurlitesdk';
-import { ETH, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_NO_OUTCOMES_NAMES, YES_OUTCOME_ID, INVALID_OUTCOME_ID, MARKET_STATUS } from '../modules/constants';
+import { ETH, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_NO_OUTCOMES_NAMES, YES_OUTCOME_ID, INVALID_OUTCOME_ID, MARKET_STATUS, NUM_TICKS_Y_N } from '../modules/constants';
 import { getProviderOrSigner } from '../modules/ConnectAccount/utils';
 import { createBigNumber } from './create-big-number';
 
@@ -878,7 +878,7 @@ const getInitPositionValues = (trades: UserTrades, amm: AmmExchange, isYesOutcom
   const netShareAmounts = allInputShareAmounts.minus(sharesExited.shares);
   const netCashAmounts = allInputCashAmounts.minus(sharesExited.cashAmount);
   const cost = convertOnChainSharesToDisplayShareAmount(netCashAmounts, amm.cash.decimals).times(new BN(cashPrice));
-  const avgPrice = netShareAmounts.gt(0) ? new BN(1).minus(netCashAmounts.div(netShareAmounts)) : new BN(0);
+  const avgPrice = netShareAmounts.gt(0) ? netCashAmounts.div(netShareAmounts) : new BN(0);
   const positionFromRemoveLiquidity = hasPositionFromRemoveLiquidity(amm.transactions, account);
   return { avgPrice: String(avgPrice), initCostUsd: String(cost), positionFromLiquidity, positionFromRemoveLiquidity }
 }
@@ -897,16 +897,16 @@ const accumLpSharesPrice = (transactions: AmmTransaction[], isYesOutcome: boolea
   const result = transactions.filter(t => isSameAddress(t.sender, account) && (t.tx_type === TransactionTypes.ADD_LIQUIDITY || t.tx_type === TransactionTypes.REMOVE_LIQUIDITY)).reduce((p, t) => {
     const yesShares = new BN(t.yesShares);
     const noShares = new BN(t.noShares);
-    // TODO, convert cash to share cash, needed to combine with user's positions
-    const cashValue = new BN(t.cashValue).div(10000);
+    const cashValue = new BN(t.cash).minus(new BN(t.cashValue)).div(NUM_TICKS_Y_N);
+    console.log(t.cash, t.cashValue);
     if (isYesOutcome) {
       const netYesShares = noShares.minus(yesShares)
       if (netYesShares.lte(new BN(0))) return p;
-      return { shares: p.shares.plus(netYesShares), cashAmount: p.cashAmount.plus(new BN(cashValue)) }
+      return { shares: p.shares.plus(t.netShares), cashAmount: p.cashAmount.plus(new BN(cashValue)) }
     }
     const netNoShares = yesShares.minus(noShares)
     if (netNoShares.lte(new BN(0))) return p;
-    return { shares: p.shares.plus(netNoShares), cashAmount: p.cashAmount.plus(new BN(cashValue)) }
+    return { shares: p.shares.plus(t.netShares), cashAmount: p.cashAmount.plus(new BN(cashValue)) }
   },
     { shares: new BN(0), cashAmount: new BN(0) });
 
