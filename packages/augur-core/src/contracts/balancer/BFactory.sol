@@ -72,7 +72,7 @@ contract BFactory is BBronze {
         external
     {
         require(msg.sender == _blabs, "ERR_NOT_BLABS");
-        uint collected = IERC20(pool).balanceOf(address(this));
+        uint collected = IERC20Balancer(pool).balanceOf(address(this));
         bool xfer = pool.transfer(_blabs, collected);
         require(xfer, "ERR_ERC20_FAILED");
     }
