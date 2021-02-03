@@ -166,14 +166,39 @@
 }
 
 .OutcomesTable {
-  .SimpleBorder;
-
+  border-radius: @size-8;
   display: flex;
   flex-direction: column;
 
   > div {
     padding: @size-10 @size-16;
     display: flex;
+
+    &:first-of-type {
+      .SimpleBorder;
+
+      &:not(:last-of-type) {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+
+      &.WinningOutcome {
+        border: @size-1 solid var(--color-brand);
+      }
+    }
+
+    &:last-of-type {
+      .SimpleBorder;
+      
+      &:not(:first-of-type) {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+      }
+
+      &.WinningOutcome {
+        border: @size-1 solid var(--color-brand);
+      }
+    }
 
     > span {
       display: flex;
@@ -193,10 +218,24 @@
         color: var(--simple-primary-text);
       }
     }
-    &:not(:first-of-type) {
-      border-top: @size-1 solid var(--simple-border);
+    &:not(:first-of-type):not(:last-of-type) {
+      border-top: 0;
+    }
+
+    &:last-of-type:not(:first-of-type):not(.WinningOutcome) {
+      border-top: 0;
     }
   }
+
+  &.hasWinner {
+    > div:nth-last-child(2):not(.WinningOutcome) {
+      border-bottom: 0;
+    }
+  }
+}
+
+&.WinningOutcome {
+  background: var(--color-brand-20);
 }
 
 @media @breakpoint-mobile-tablet {

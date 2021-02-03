@@ -30,6 +30,15 @@ import {
   getMarketEndtimeDate,
 } from '../../utils/date-utils';
 import { getCurrentAmms } from '../stores/app-status-hooks';
+import { getWinningOutcome } from '../markets/markets-view';
+import { ConfirmedCheck } from '../common/icons';
+
+const WinningOutcomeLabel = ({ winningOutcome }) => (
+  <span className={Styles.WinningOutcomeLabel}>
+    <span>Winning Outcome</span>
+    <span>{winningOutcome.name}{ConfirmedCheck}</span>
+  </span>
+);
 
 const getDetails = (market) => {
   const rawInfo = market?.extraInfoRaw || '{}';
@@ -87,7 +96,8 @@ const MarketView = ({ defaultMarket = null }) => {
   if (!market) return <div className={Styles.MarketView} />;
   const details = getDetails(market);
   const currentAMMs = getCurrentAmms(market, markets);
-  const { reportingState } = market;
+  const { reportingState, outcomes } = market;
+  const winningOutcomes = getWinningOutcome(amm?.ammOutcomes, outcomes);
   return (
     <div className={Styles.MarketView}>
       <section>
@@ -100,6 +110,7 @@ const MarketView = ({ defaultMarket = null }) => {
           <CurrencyLabel name={amm?.cash?.name} />
         </div>
         <h1>{market.description}</h1>
+        {winningOutcomes.length > 0 && <WinningOutcomeLabel winningOutcome={winningOutcomes[0]} />}
         <ul className={Styles.StatsRow}>
           <li>
             <span>24hr Volume</span>
