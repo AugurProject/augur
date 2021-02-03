@@ -139,7 +139,7 @@ const getCashTokenData = async (
       });
       let tokenData = { usdPrice: usdPrice?.data?.tokenDayDatas[0], ...cash };
       if (!tokenData.usdPrice) {
-        // TOOD remove this, used only form kovan testing
+        // TODO: remove this, used only form kovan testing
         tokenData = {
           ...cash,
           usdPrice: cash?.name === ETH ? '1300' : '1',
