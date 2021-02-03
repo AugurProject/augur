@@ -3,7 +3,7 @@ import { useLocation } from 'react-router';
 import Styles from './top-nav.styles.less';
 import ButtonStyles from './buttons.styles.less';
 import { Link } from 'react-router-dom';
-import { MARKETS, PORTFOLIO, SIDEBAR_TYPES, TX_STATUS } from '../constants';
+import { MARKET, MARKETS, PORTFOLIO, SIDEBAR_TYPES, TX_STATUS } from '../constants';
 import makePath from '../routes/helpers/make-path';
 import Logo from './logo';
 import parsePath from '../routes/helpers/parse-path';
@@ -270,6 +270,7 @@ export const TopNav = () => {
     <nav
       className={classNames(Styles.TopNav, {
         [Styles.TwoTone]: path !== MARKETS,
+        [Styles.OnMarketsView]: path === MARKET
       })}
     >
       <section>
