@@ -9,6 +9,7 @@ import {
   CurrencyTipIcon,
   NetworkMismatchBanner,
   ReportingStateLabel,
+  InvalidFlagTipIcon,
 } from '../common/labels';
 import {
   formatCashPrice,
@@ -90,7 +91,10 @@ export const combineOutcomeData = (
 export const getWinningOutcome = (
   ammOutcomes: AmmOutcome[],
   marketOutcomes: MarketOutcome[]
-) => combineOutcomeData(ammOutcomes, marketOutcomes).filter(({ payoutNumerator }) => payoutNumerator !== null && payoutNumerator !== '0');
+) =>
+  combineOutcomeData(ammOutcomes, marketOutcomes).filter(
+    ({ payoutNumerator }) => payoutNumerator !== null && payoutNumerator !== '0'
+  );
 
 export const outcomesToDisplay = (
   ammOutcomes: AmmOutcome[],
@@ -181,12 +185,20 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
       }}
     >
       <div>
-        <CategoryIcon categories={categories} />
-        <CategoryLabel categories={categories} />
-        <div>
+        <article
+          className={classNames({
+            [Styles.Trading]: reportingState === MARKET_STATUS.TRADING,
+          })}
+        >
           <ReportingStateLabel {...{ reportingState }} />
-          <CurrencyTipIcon name={amm?.cash?.name} marketId={marketId} />
-        </div>
+          <CategoryIcon categories={categories} />
+          <CategoryLabel categories={categories} />
+          <div>
+            <ReportingStateLabel {...{ reportingState }} />
+            {/* <InvalidFlagTipIcon market={market} /> */}
+            <CurrencyTipIcon name={amm?.cash?.name} marketId={marketId} />
+          </div>
+        </article>
         {!amm ? (
           <span>{description}</span>
         ) : (
