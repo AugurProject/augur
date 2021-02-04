@@ -904,7 +904,7 @@ const accumLpSharesAddPrice = (transactions: AmmTransaction[], isYesOutcome: boo
     const noShares = new BN(t.noShares);
     const cashValue = new BN(t.cash).minus(new BN(t.cashValue));
     const cashShareAmount = new BN(t.cash).minus(new BN(t.cashValue)).div(NUM_TICKS_Y_N);
-    console.log(t)
+
     if (isYesOutcome) {
       const netYesShares = noShares.minus(yesShares)
       if (netYesShares.lte(new BN(0))) return p;
