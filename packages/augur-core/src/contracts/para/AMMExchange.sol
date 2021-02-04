@@ -27,6 +27,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
     uint256 public YES;
     uint256 public fee; // [0-1000] how many thousandths of swaps should be kept as fees
     BPool public bPool;
+    IERC20Proxy1155 public invalidERC20Proxy1155;
 
     event EnterPosition(address sender, uint256 cash, uint256 outputShares, bool buyLong, uint256 priorShares);
     event ExitPosition(address sender, uint256 shortShares, uint256 longShares, uint256 cashPayout);
@@ -48,6 +49,8 @@ contract AMMExchange is IAMMExchange, ERC20 {
         NO = _shareToken.getTokenId(_market, 1);
         YES = _shareToken.getTokenId(_market, 2);
         fee = _fee;
+
+        invalidERC20Proxy1155 = _erc20Proxy1155Nexus.newERC20(INVALID);
 
         // approve cash so sets can be bought
         cash.safeApprove(address(_shareToken.augur()), 2**256-1);
