@@ -238,7 +238,15 @@ const applyFiltersAndSort = (
   passedInMarkets,
   setFilteredMarkets,
   paraConfig,
-  { filter, categories, sortBy, currency, reportingState, showLiquidMarkets },
+  {
+    filter,
+    categories,
+    sortBy,
+    currency,
+    reportingState,
+    showLiquidMarkets,
+    showInvalidMarkets,
+  },
   handleGraphError
 ) => {
   searchMarkets(paraConfig, filter, (err, searchedMarkets) => {
@@ -259,6 +267,9 @@ const applyFiltersAndSort = (
             isNaN(market?.amm?.liquidityUSD) ||
             !market?.amm?.liquidityUSD)
         ) {
+          return false;
+        }
+        if (!showInvalidMarkets && market.isInvalid) {
           return false;
         }
         if (
@@ -340,7 +351,7 @@ const MarketsView = () => {
     paraConfig,
     actions: { setSidebar, updateMarketsViewSettings, updateGraphHeartbeat },
     processed,
-    settings: { showLiquidMarkets },
+    settings: { showLiquidMarkets, showInvalidMarkets },
   } = useAppStatusStore();
   const { sortBy, categories, reportingState, currency } = marketsViewSettings;
   const { markets } = processed;
@@ -369,10 +380,11 @@ const MarketsView = () => {
         currency,
         reportingState,
         showLiquidMarkets,
+        showInvalidMarkets,
       },
       (err) => updateGraphHeartbeat(processed, blocknumber, err)
     );
-  }, [sortBy, filter, categories, reportingState, currency, showLiquidMarkets]);
+  }, [sortBy, filter, categories, reportingState, currency, showLiquidMarkets.valueOf, showInvalidMarkets]);
 
   useEffect(() => {
     if (Object.values(markets).length > 0) setLoading(false);
@@ -387,6 +399,7 @@ const MarketsView = () => {
         currency,
         reportingState,
         showLiquidMarkets,
+        showInvalidMarkets,
       },
       (err) => updateGraphHeartbeat(processed, blocknumber, err)
     );
