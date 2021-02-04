@@ -76,27 +76,51 @@
     height: 100%;
     grid-template-columns: @size-46 @size-60 1fr;
     padding: @size-24;
-    grid-template-rows: @size-30 auto auto auto;
+    grid-template-rows: auto auto auto auto;
 
-    > div:first-of-type {
-      display: flex;
-      margin-right: @size-6;
-      grid-column: 1;
+    > article {
+      display: grid;
+      grid-template-columns: @size-46 @size-60 1fr;
+      grid-template-rows: @size-32;
+      grid-column: span 3;
       grid-row: 1;
-    }
+      grid-gap: @size-16 0;
 
-    > div:nth-of-type(2) {
-      grid-column: 2 / span 2;
-      grid-row: 1;
-      width: fit-content;
-    }
+      &.Trading {
+        grid-gap: 0;
+      }
 
-    > div:nth-of-type(3) {
-      align-items: center;
-      justify-content: flex-end;
-      display: flex;
-      grid-row: 1;
-      grid-column: 3;
+      > div[class*="InSettlement"],
+      > div[class*="Resolved"] {
+        display: none;
+        grid-row: 1;
+        grid-column: 1 / span 3;
+      }
+
+      > div[class*="CategoryIcon"] {
+        display: flex;
+        margin-right: @size-8;
+        grid-column: 1;
+        grid-row: 1;
+      }
+  
+      > div[class*="CategoryLabel"] {
+        grid-column: 2 / span 2;
+        grid-row: 1;
+        width: fit-content;
+      }
+  
+      > div:last-of-type {
+        align-items: center;
+        justify-content: flex-end;
+        display: flex;
+        grid-row: 1;
+        grid-column: 3;
+  
+        > span:not(:last-of-type) {
+          margin-right: @size-8;
+        }
+      }
     }
 
     > a,
@@ -111,14 +135,14 @@
       height: @size-80;
     }
 
-    > div:nth-of-type(4) {
+    > div:first-of-type {
       grid-column: 1 / span 2;
       grid-row: 3;
       margin-right: @size-32;
       margin-top: auto;
     }
 
-    > div:nth-of-type(5) {
+    > div:nth-of-type(2) {
       grid-column: 1 / span 2;
       grid-row: 4;
       display: flex;
@@ -139,7 +163,7 @@
       }
     }
 
-    > div:nth-of-type(6) {
+    > div:nth-of-type(3) {
       grid-column: 3;
       grid-row: 3 / span 2;
     }
@@ -148,7 +172,7 @@
   &.NoLiquidity {
     > div,
     > section > div {
-      > div:nth-of-type(4) {
+      > div:first-of-type {
         grid-column: 1 / span 3;
         margin-right: 0;
         display: flex;
@@ -275,11 +299,41 @@
     > div {
       max-width: 100%;
 
+      > article {
+
+        &.Trading {
+          grid-template-rows: auto;
+        }
+
+        &:not(.Trading) {
+          > div[class*="InSettlement"],
+          > div[class*="Resolved"] {
+            display: flex;
+            grid-row: 1;
+            grid-column: 1 / span 3;
+            max-width: fit-content;
+            margin-bottom: @size-16;
+          }
+
+          > div[class*="CategoryIcon"],
+          > div[class*="CategoryLabel"],
+          > div:last-of-type {
+            grid-row: 2;
+
+            > div[class*="InSettlement"],
+            > div[class*="Resolved"] {
+              display: none;
+            }
+          }
+        } 
+      }
+
       > span {
         margin-bottom: @size-16;
         height: unset;
       }
-      > div:nth-of-type(4) {
+
+      > div:first-of-type {
         grid-column: 1 / span 2;
         grid-row: 4;
         display: flex;
@@ -294,13 +348,13 @@
         }
       }
 
-      > div:nth-of-type(5) {
+      > div:nth-of-type(2) {
         grid-column: 3;
         grid-row: 4;
         justify-content: flex-end;
       }
 
-      > div:nth-of-type(6) {
+      > div:nth-of-type(3) {
         grid-row: 3;
         grid-column: 1 / span 3;
       }

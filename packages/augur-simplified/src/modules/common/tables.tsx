@@ -44,7 +44,7 @@ import {
 } from '../../utils/contract-calls';
 import { createBigNumber } from '../../utils/create-big-number';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
-import { MovementLabel, WarningBanner } from './labels';
+import { InvalidFlagTipIcon, MovementLabel, WarningBanner } from './labels';
 
 interface PositionsTableProps {
   market: MarketInfo;
@@ -72,6 +72,7 @@ const MarketTableHeader = ({
     <div className={Styles.MarketTableHeader}>
       <MarketLink id={market.marketId} ammId={market.amm?.id}>
         <span>{market.description}</span>
+        <InvalidFlagTipIcon {...{ market }} />
         {ammExchange.cash.name === USDC ? UsdIcon : EthIcon}
       </MarketLink>
     </div>

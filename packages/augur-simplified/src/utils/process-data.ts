@@ -224,6 +224,7 @@ const shapeMarketInfo = (
     amm: ammExchange,
     reportingState: market.status,
     claimedProceeds,
+    isInvalid: false,
   };
 };
 
