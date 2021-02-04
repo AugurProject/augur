@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import Styles from './labels.styles.less';
 import { useLocation } from 'react-router';
 import classNames from 'classnames';
@@ -368,6 +368,15 @@ export const NetworkMismatchBanner = () => {
     [chainId, networkId]
   );
   const isGraphError = !!errors;
+
+  useEffect(() => {
+    // in the event of an error, scroll to top to force banner to be seen.
+    if (isNetworkMismatch || isGraphError) {
+      document.getElementById('mainContent')?.scrollTo(0, 0);
+      window.scrollTo(0, 1);
+    }
+  }, [isNetworkMismatch, isGraphError]);
+
   return (
     <>
       {isNetworkMismatch && (
