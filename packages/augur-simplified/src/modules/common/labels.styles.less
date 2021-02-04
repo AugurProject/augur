@@ -525,6 +525,13 @@
     }
   }
 
+  &[data-big="true"] > label > svg {
+    height: @size-32;
+    width: @size-32;
+    max-height: @size-32;
+    max-width: @size-32;
+  }
+
   @media @breakpoint-min-tiny {
     &[data-big="true"] {
       height: @size-44;

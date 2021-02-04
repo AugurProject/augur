@@ -14,13 +14,28 @@
     text-decoration: none;
   }
 
-  > a > span {
+  > a > span:first-of-type {
     .text-16-semi-bold;
 
     color: var(--simple-primary-text);
     flex: 1;
     margin-right: @size-12;
     text-decoration: none;
+  }
+
+  > a > span[class*="InvalidFlagTipIcon"] {
+    margin-right: @size-8;
+    min-height: @size-20;
+    min-width: @size-20;
+    max-height: @size-20;
+    max-width: @size-20;
+
+    > label > svg {
+      min-height: @size-20;
+      min-width: @size-20;
+      max-height: @size-20;
+      max-width: @size-20;
+    }
   }
 
   > a > svg {
