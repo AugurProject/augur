@@ -540,6 +540,7 @@ Deploying to: ${env}
     // fee is thousandths of a percent; valid values are [0,1000]
     async uploadAMMContracts(fee = 3): Promise<string> {
         console.log('Uploading AMM contracts');
+        this.configuration
         const factory = this.contracts.get('AMMFactory');
         const masterProxy = this.contracts.get('AMMExchange');
         masterProxy.address = await this.construct(masterProxy, []);

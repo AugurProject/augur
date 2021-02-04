@@ -10,16 +10,21 @@ import 'ROOT/para/interfaces/IParaShareToken.sol';
 import 'ROOT/balancer/BFactory.sol';
 import 'ROOT/balancer/BPool.sol';
 
+import 'ROOT/trading/erc20proxy1155/IERC20Proxy1155Nexus.sol';
+import 'ROOT/trading/erc20proxy1155/IERC20Proxy1155.sol';
+
 contract AMMFactory is IAMMFactory, CloneFactory2 {
     using SafeMathUint256 for uint256;
 
     IAMMExchange internal proxyToClone;
     BFactory internal bFactory;
+    IERC20Proxy1155Nexus internal eRC20Proxy1155Nexus;
 
     event AMMCreated(IAMMExchange amm, IMarket market, ParaShareToken shareToken, uint256 fee, BPool bPool);
 
-    constructor(address _proxyToClone, BFactory _bFactory) public {
+    constructor(address _proxyToClone, BFactory _bFactory, IERC20Proxy1155Nexus _erc20Proxy1155Nexus) public {
         bFactory = _bFactory;
+        eRC20Proxy1155Nexus = _erc20Proxy1155Nexus;
         proxyToClone = IAMMExchange(_proxyToClone);
     }
 
@@ -27,7 +32,8 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         IAMMExchange _amm = IAMMExchange(createClone2(address(proxyToClone), salt(_market, _para, _fee)));
 
         BPool _bPool = bFactory.newBPool();
-        _amm.initialize(_market, _para, _fee, _bPool);
+        _bPool.setController(address(_amm));
+        _amm.initialize(_market, _para, _fee, _bPool, eRC20Proxy1155Nexus);
 
         exchanges[address(_market)][address(_para)][_fee] = address(_amm);
 
@@ -48,7 +54,7 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         _ammAddress = createClone2(address(proxyToClone), salt(_market, _para, _fee));
         IAMMExchange _amm = IAMMExchange(_ammAddress);
         BPool _bPool = bFactory.newBPool();
-        _amm.initialize(_market, _para, _fee, _bPool);
+        _amm.initialize(_market, _para, _fee, _bPool, eRC20Proxy1155Nexus);
         exchanges[address(_market)][address(_para)][_fee] = _ammAddress;
 
         emit AMMCreated(_amm, _market, _para, _fee, _bPool);

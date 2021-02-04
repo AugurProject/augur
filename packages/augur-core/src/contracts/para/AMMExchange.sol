@@ -10,6 +10,7 @@ import "ROOT/para/interfaces/IAMMFactory.sol";
 import "ROOT/para/interfaces/IAMMExchange.sol";
 import 'ROOT/libraries/token/SafeERC20.sol';
 import 'ROOT/balancer/BPool.sol';
+import 'ROOT/trading/erc20proxy1155/IERC20Proxy1155Nexus.sol';
 
 contract AMMExchange is IAMMExchange, ERC20 {
     using SafeERC20 for IERC20;
@@ -33,7 +34,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
     event AddLiquidity(address sender, uint256 cash, uint256 shortShares, uint256 longShares, uint256 lpTokens);
     event RemoveLiquidity(address sender, uint256 shortShares, uint256 longShares);
 
-    function initialize(IMarket _market, ParaShareToken _shareToken, uint256 _fee, BPool _bPool) public {
+    function initialize(IMarket _market, ParaShareToken _shareToken, uint256 _fee, BPool _bPool, IERC20Proxy1155Nexus _erc20Proxy1155Nexus) public {
         require(cash == ICash(0)); // can only initialize once
         require(_fee <= 30); // fee must be [0,30] aka 0-3%
 
@@ -52,6 +53,9 @@ contract AMMExchange is IAMMExchange, ERC20 {
         cash.safeApprove(address(_shareToken.augur()), 2**256-1);
         // approve factory so users can just approve the factory, not each exchange
         shareToken.setApprovalForAll(msg.sender, true);
+
+        // Approve balancer pool as it will need to pull tokens when binding tokens.
+        shareToken.setApprovalForAll(address(bPool), true);
     }
 
     // Adds shares to the liquidity pool by minting complete sets.
