@@ -299,10 +299,9 @@ const LiquidityHeader = () => {
   const { isMobile } = useAppStatusStore();
   return (
     <ul className={Styles.LiquidityHeader}>
-      <li>LP tokens{isMobile ? <br /> : ' '}owned</li>
-      <li>init.{isMobile ? <br /> : ' '}value</li>
-      <li>cur.{isMobile ? <br /> : ' '}value</li>
-      <li>fees{isMobile ? <br /> : ' '}earned</li>
+      <li>LP tokens owned</li>
+      <li>init. value</li>
+      <li>cur. value</li>
     </ul>
   );
 };
@@ -315,24 +314,12 @@ const LiquidityRow = ({
   amm: AmmExchange;
 }) => {
   const [currValue, setInitValue] = useState(null);
-  const [earnedFees, setEarnedFees] = useState(null);
   useEffect(() => {
     let isMounted = true;
     const getCurrentValue = async (balance: string, amm: AmmExchange) => {
       const value = await getLPCurrentValue(balance, amm);
       if (isMounted) {
         setInitValue(value);
-        let earned = createBigNumber(value).minus(
-          createBigNumber(liquidity.initCostUsd)
-        );
-        if (
-          value &&
-          earned.lt(createBigNumber('0')) &&
-          earned.gt(createBigNumber('-0.001'))
-        ) {
-          earned = earned.abs();
-        }
-        setEarnedFees(earned);
       }
     };
     getCurrentValue(liquidity.balance, amm);
@@ -343,16 +330,6 @@ const LiquidityRow = ({
       <li>{formatDai(liquidity.balance).formatted}</li>
       <li>{formatDai(liquidity.initCostUsd).full}</li>
       <li>{currValue ? formatDai(currValue).full : '-'}</li>
-      <li>
-        {earnedFees ? (
-          <MovementLabel
-            value={formatDai(earnedFees)}
-            numberValue={earnedFees.toNumber()}
-          />
-        ) : (
-          '-'
-        )}
-      </li>
     </ul>
   );
 };
