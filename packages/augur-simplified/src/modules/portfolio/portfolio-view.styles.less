@@ -2,21 +2,35 @@
 
 .PortfolioView {
   .TwoTonePage;
+  .TwoTonePageGrid;
 
   > section:first-of-type {
     flex-flow: column nowrap;
 
-    > div[class*="AppStats"] > div {
-      grid-gap: 0;
+    > div[class*="AppStats"] {
+      padding: 0 @size-10;
 
-      > span {
-        text-align: center;
-        justify-content: center;
-        align-items: center;
-        grid-column: span 2;
+      > div {
+        grid-gap: 0;
+        padding: @size-36 @size-10;
+
+        &:first-of-type {
+          padding: @size-36 @size-10 @size-36 0;
+        }
 
         &:last-of-type {
-          .text-24-bold;
+          padding: 0 0 0 @size-10;
+        }
+
+        > span {
+          text-align: center;
+          justify-content: center;
+          align-items: center;
+          grid-column: span 2;
+
+          &:last-of-type {
+            .text-24-bold;
+          }
         }
       }
     }
@@ -31,9 +45,9 @@
   }
 }
 
-
 @media @breakpoint-mobile-tablet {
   .PortfolioView {
+    grid-template-columns: 1fr;
     padding: @size-16 @size-16 @size-40;
     flex-flow: column nowrap;
 
@@ -46,17 +60,18 @@
       max-width: 100%;
 
       > div[class*="AppStats"] > div {
+        padding: 0;
         grid-gap: 0;
         display: flex;
         flex-flow: column nowrap;
         justify-content: center;
-  
+
         > span {
           text-align: center;
           justify-content: center;
           align-items: center;
           grid-column: span 2;
-  
+
           &:last-of-type {
             .text-14-bold;
           }

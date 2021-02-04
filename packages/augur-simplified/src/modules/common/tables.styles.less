@@ -7,6 +7,7 @@
   border-bottom: @size-1 solid var(--simple-border);
   justify-content: center;
   align-items: center;
+  min-width: @size-400;
 
   > a {
     display: flex;
@@ -56,11 +57,18 @@
   display: flex;
   background: var(--simple-light-bg);
   flex-direction: column;
+  width: 100%;
+  overflow: auto;
+
+  > ul {
+    grid-column-gap: @size-8;
+  }
 
   > span {
     .EmptyMessage;
 
     border-top: @size-1 solid var(--simple-border);
+    min-width: @size-400;
   }
 }
 
@@ -111,6 +119,7 @@
 
 .PositionRowHeader {
   grid-template-columns: repeat(6, 1fr);
+  min-width: @size-400;
 
   @media @breakpoint-mobile-tablet {
     grid-template-columns: repeat(5, 1fr);
@@ -140,7 +149,8 @@
 // liquidity table
 
 .LiquidityRowHeader {
-  grid-template-columns: minmax(@size-96, 1fr) repeat(3, 1fr);
+  grid-template-columns: minmax(@size-104, 1fr) repeat(2, 1fr);
+  min-width: @size-320;
 }
 
 .LiquidityRow {
@@ -158,9 +168,14 @@
 .LiquidityTable {
   .SharedTable;
 
+  > div:first-of-type {
+    min-width: @size-320;
+  }
+
   > span {
     justify-content: space-between;
     padding: @size-20 @size-32;
+    min-width: @size-320;
   }
 }
 
@@ -169,6 +184,7 @@
   justify-content: flex-end;
   padding: @size-20;
   border-top: @size-1 solid var(--simple-border);
+  min-width: @size-320;
 
   > button:nth-of-type(2) {
     margin-left: @size-11;
@@ -294,6 +310,8 @@
 
   @media @breakpoint-mobile-tablet {
     grid-template-columns: @size-150 repeat(2, 1fr);
+    min-width: @size-320;
+
     > li {
       &:nth-of-type(3),
       &:nth-of-type(4),
@@ -346,6 +364,8 @@
 
   > span {
     .EmptyMessage;
+
+    min-width: @size-320;
   }
 }
 
