@@ -7,6 +7,7 @@
   border-bottom: @size-1 solid var(--simple-border);
   justify-content: center;
   align-items: center;
+  min-width: @size-400;
 
   > a {
     display: flex;
@@ -41,6 +42,8 @@
   display: flex;
   background: var(--simple-light-bg);
   flex-direction: column;
+  width: 100%;
+  overflow: auto;
 
   > span {
     .EmptyMessage;
@@ -96,6 +99,8 @@
 
 .PositionRowHeader {
   grid-template-columns: repeat(6, 1fr);
+  grid-column-gap: @size-8;
+  min-width: @size-400;
 
   @media @breakpoint-mobile-tablet {
     grid-template-columns: repeat(5, 1fr);
