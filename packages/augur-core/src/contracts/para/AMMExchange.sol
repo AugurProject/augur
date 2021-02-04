@@ -38,6 +38,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
     function initialize(IMarket _market, ParaShareToken _shareToken, uint256 _fee, BPool _bPool, IERC20Proxy1155Nexus _erc20Proxy1155Nexus) public {
         require(cash == ICash(0)); // can only initialize once
         require(_fee <= 30); // fee must be [0,30] aka 0-3%
+        require(_bPool.getController() == address(this), "This AMM must be balancer pool controller.");
 
         bPool = _bPool;
         factory = IAMMFactory(msg.sender);
@@ -58,7 +59,9 @@ contract AMMExchange is IAMMExchange, ERC20 {
         shareToken.setApprovalForAll(msg.sender, true);
 
         // Approve balancer pool as it will need to pull tokens when binding tokens.
-        shareToken.setApprovalForAll(address(bPool), true);
+        shareToken.setApprovalForAll(address(_erc20Proxy1155Nexus), true);
+        invalidERC20Proxy1155.approve(address(bPool), 2**256-1);
+        cash.approve(address(bPool), 2**256-1);
     }
 
     // Adds shares to the liquidity pool by minting complete sets.
@@ -81,7 +84,36 @@ contract AMMExchange is IAMMExchange, ERC20 {
     function addInitialLiquidity(uint256 _cash, uint256 _ratioFactor, bool _keepLong, address _recipient) external returns (uint256) {
         (uint256 _poolShort, uint256 _poolLong) = shortLongShareBalances(address(this));
         require(_poolShort == 0, "Cannot add a specified ratio liquidity after initial liquidity has been provided");
-        return addLiquidityInternal(msg.sender, _cash, _ratioFactor, _keepLong, _recipient);
+
+        // MIN_BALANCE needed to setup pool is 10**18 / 10**12.
+        uint256 MIN_BALANCE = 10**6 * numTicks;
+
+        // Setup bPool....
+        factory.transferCash(augurMarket, shareToken, fee, msg.sender, address(this), 2 * MIN_BALANCE);
+        shareToken.publicBuyCompleteSets(augurMarket, MIN_BALANCE.div(numTicks));
+
+
+        // Send cash to balancer bPool
+        // Pool weight == 90%
+        bPool.bind(address(cash), MIN_BALANCE, 45 * 10**18);
+
+
+        // Move just minted invalid shares to the balancer pool.
+        // Pool weight == 10%
+        bPool.bind(address(invalidERC20Proxy1155),  MIN_BALANCE.div(numTicks), 5 * 10**18);
+
+        bPool.finalize();
+
+
+        return addLiquidityInternal(msg.sender, _cash - (2 * MIN_BALANCE), _ratioFactor, _keepLong, _recipient);
+    }
+
+    function getController() public returns (address) {
+        return bPool.getController();
+    }
+
+    function checkMath(uint256 _cash) public returns (uint256) {
+        return  (_cash * 5 * 10**16) / 10**18;
     }
 
     function addLiquidityInternal(address _user, uint256 _cash, uint256 _ratioFactor, bool _keepLong, address _recipient) internal returns (uint256) {
@@ -101,7 +133,6 @@ contract AMMExchange is IAMMExchange, ERC20 {
         }
         uint256 _lpTokens = rateAddLiquidity(_longShares, _shortShares);
 
-        factory.transferCash(augurMarket, shareToken, fee, _user, address(this), _cash);
         shareToken.publicBuyCompleteSets(augurMarket, _setsToBuy);
 
         if (_ratioFactor != 10**18) {

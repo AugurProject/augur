@@ -11,7 +11,6 @@ import 'ROOT/balancer/BFactory.sol';
 import 'ROOT/balancer/BPool.sol';
 
 import 'ROOT/trading/erc20proxy1155/IERC20Proxy1155Nexus.sol';
-import 'ROOT/trading/erc20proxy1155/IERC20Proxy1155.sol';
 
 contract AMMFactory is IAMMFactory, CloneFactory2 {
     using SafeMathUint256 for uint256;
@@ -54,6 +53,7 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         _ammAddress = createClone2(address(proxyToClone), salt(_market, _para, _fee));
         IAMMExchange _amm = IAMMExchange(_ammAddress);
         BPool _bPool = bFactory.newBPool();
+        _bPool.setController(address(_amm));
         _amm.initialize(_market, _para, _fee, _bPool, eRC20Proxy1155Nexus);
         exchanges[address(_market)][address(_para)][_fee] = _ammAddress;
 
