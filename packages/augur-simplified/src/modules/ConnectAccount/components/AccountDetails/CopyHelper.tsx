@@ -1,7 +1,8 @@
 import React from 'react'
-import { CheckCircle, Copy } from 'react-feather'
+import { CheckCircle } from 'react-feather'
 import { useCopyClipboard } from '../../hooks'
 import {TinyButton} from '../../../common/buttons';
+import { CopyIcon } from '../../../common/icons';
 
 interface CopyHelperProps {
   darkMode: boolean;
@@ -19,7 +20,7 @@ const CopyHelper = ({
   return (
     <TinyButton
       action={() => setCopied(toCopy)}
-      icon={isCopied ? <CheckCircle size={'16'} /> : <Copy size={'16'} />}
+      icon={isCopied ? <CheckCircle size={'16'} /> : CopyIcon}
       text={isCopied ? 'Copied' : copyText}
     />
   );
