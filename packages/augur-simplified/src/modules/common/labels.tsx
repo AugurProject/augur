@@ -184,9 +184,10 @@ export const ReportingStateLabel = ({ reportingState, big = false }) => {
   return <>{content}</>;
 };
 
-export const InvalidFlagTipIcon = ({ market }) => {
+export const InvalidFlagTipIcon = ({ market, big = false }) => {
   return (
     <span
+      data-big={big}
       className={classNames(Styles.InvalidFlagTipIcon, TooltipStyles.Container)}
     >
       <label
