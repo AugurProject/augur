@@ -87,7 +87,7 @@ const AppBody = () => {
   const sidebarOut = sidebarType && isMobile;
   useEffect(() => {
     if (showTradingForm) {
-      window.scrollTo(0, 0);
+      window.scrollTo(0, 1);
     }
     if (showTradingForm || modalShowing || sidebarOut) {
       document.body.classList.add('App--noScroll');
