@@ -152,8 +152,10 @@
       width: 100%;
     }
 
-    &:first-of-type {
-      overflow: hidden;
+    @media @breakpoint-mobile-tablet {
+      &:first-of-type {
+        overflow: hidden;
+      }
     }
   }
 }
