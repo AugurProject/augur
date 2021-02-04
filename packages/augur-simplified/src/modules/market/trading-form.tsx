@@ -53,6 +53,7 @@ import {
   checkAllowance,
   isERC1155ContractApproved,
 } from '../hooks/use-approval-callback';
+import { createBigNumber } from '../../utils/create-big-number';
 
 export const DefaultMarketOutcomes = [
   {
@@ -615,7 +616,7 @@ const TradingForm = ({
         new BN(breakdown?.slippagePercent)
       )
     ) {
-      subText = '(Adjust slippage Tolerance in Settings)';
+      subText = `(Adjust slippage tolerance in settings to ${Math.ceil(Number(breakdown.slippagePercent))}%)`;
       disabled = true;
     }
 
