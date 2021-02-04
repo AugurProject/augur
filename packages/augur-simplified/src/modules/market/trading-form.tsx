@@ -53,7 +53,6 @@ import {
   checkAllowance,
   isERC1155ContractApproved,
 } from '../hooks/use-approval-callback';
-import { createBigNumber } from '../../utils/create-big-number';
 
 export const DefaultMarketOutcomes = [
   {
@@ -584,8 +583,8 @@ const TradingForm = ({
     return () => {
       isMounted = false;
     };
-  }, [orderType, selectedOutcomeId, amount, outcomeSharesRaw, amm?.liquidity]);
-
+  }, [orderType, selectedOutcomeId, amount, outcomeSharesRaw, amm?.volumeTotal]);
+  
   const userBalance = String(
     useMemo(() => {
       return isBuy
