@@ -195,7 +195,7 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
           <CategoryLabel categories={categories} />
           <div>
             <ReportingStateLabel {...{ reportingState }} />
-            {/* <InvalidFlagTipIcon market={market} /> */}
+            <InvalidFlagTipIcon market={market} />
             <CurrencyTipIcon name={amm?.cash?.name} marketId={marketId} />
           </div>
         </article>

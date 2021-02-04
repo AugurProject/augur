@@ -108,7 +108,7 @@ const MarketView = ({ defaultMarket = null }) => {
           <CategoryIcon big categories={market.categories} />
           <CategoryLabel big categories={market.categories} />
           {!isMobile && <ReportingStateLabel {...{ reportingState, big: true }} />}
-          {/* <InvalidFlagTipIcon {...{ market, big: true }} /> */}
+          <InvalidFlagTipIcon {...{ market, big: true }} />
           <CurrencyLabel name={amm?.cash?.name} />
         </div>
         <h1>{market.description}</h1>

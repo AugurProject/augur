@@ -185,7 +185,8 @@ export const ReportingStateLabel = ({ reportingState, big = false }) => {
 };
 
 export const InvalidFlagTipIcon = ({ market, big = false }) => {
-  return (
+  let content;
+  if (market.isInvalid) content = (
     <span
       data-big={big}
       className={classNames(Styles.InvalidFlagTipIcon, TooltipStyles.Container)}
@@ -211,6 +212,7 @@ export const InvalidFlagTipIcon = ({ market, big = false }) => {
       </ReactTooltip>
     </span>
   );
+  return (<>{content}</>);
 };
 
 const handleValue = (value) =>

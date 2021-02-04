@@ -211,6 +211,7 @@ export interface MarketInfo {
   amm: AmmExchange | null;
   reportingState: string;
   claimedProceeds: ClaimedProceeds[]
+  isInvalid: boolean;
 }
 
 export interface MarketOutcome {
