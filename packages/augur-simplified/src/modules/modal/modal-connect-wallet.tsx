@@ -132,7 +132,7 @@ const ModalConnectWallet = ({
   const {
     isLogged,
     isMobile,
-    actions: { removeTransaction, closeModal, setModal },
+    actions: { logout, removeTransaction, closeModal, setModal },
     modal: { type },
   } = useAppStatusStore();
   // important that these are destructed from the account-specific web3-react context
@@ -395,6 +395,10 @@ const ModalConnectWallet = ({
               darkMode={darkMode}
               transactions={transactions}
               removeTransaction={removeTransaction}
+              logout={() => {
+                closeModal();
+                logout();
+              }}
             />
           ) : walletView === WALLET_VIEWS.PENDING ? (
             <PendingWalletView

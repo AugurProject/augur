@@ -130,6 +130,15 @@
       padding-right: @size-88;
     }
   }
+
+  @media @breakpoint-mobile-tiny {
+    > section {
+      &:last-of-type {
+        max-width: @size-340;
+        width: @size-340;
+      }
+    }
+  }
 }
 
 .TwoTonePageGrid {

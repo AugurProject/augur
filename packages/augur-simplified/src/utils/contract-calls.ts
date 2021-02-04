@@ -11,7 +11,7 @@ import {
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers'
 import { convertDisplayCashAmountToOnChainCashAmount, convertDisplayShareAmountToOnChainShareAmount, convertOnChainCashAmountToDisplayCashAmount, convertOnChainSharesToDisplayShareAmount, isSameAddress } from './format-number';
 import { augurSdkLite } from './augurlitesdk';
-import { ETH, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_NO_OUTCOMES_NAMES, YES_OUTCOME_ID, INVALID_OUTCOME_ID, MARKET_STATUS } from '../modules/constants';
+import { ETH, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_NO_OUTCOMES_NAMES, YES_OUTCOME_ID, INVALID_OUTCOME_ID, MARKET_STATUS, NUM_TICKS_Y_N } from '../modules/constants';
 import { getProviderOrSigner } from '../modules/ConnectAccount/utils';
 import { createBigNumber } from './create-big-number';
 
@@ -712,7 +712,8 @@ const populateClaimableWinnings = (finalizedMarkets: MarketInfos = {}, finalized
       if (userShares && new BN(userShares?.rawBalance).gt(0)) {
         // for yesNo and categoricals user would get 1 cash for each share
         // TODO: figure out scalars when the time comes
-        const claimableBalance = String(new BN(userShares.maxUsdValue).minus(new BN(userShares.initCostUsd)).toFixed(4));
+        const maxValue = Math.ceil(Number(userShares.balance));
+        const claimableBalance = (new BN(maxValue).minus(new BN(userShares.balance))).toFixed(4);
         marketShares[amm.id].claimableWinnings = {
           claimableBalance,
           sharetoken: amm.cash.shareToken,
@@ -896,16 +897,15 @@ const accumLpSharesPrice = (transactions: AmmTransaction[], isYesOutcome: boolea
   const result = transactions.filter(t => isSameAddress(t.sender, account) && (t.tx_type === TransactionTypes.ADD_LIQUIDITY || t.tx_type === TransactionTypes.REMOVE_LIQUIDITY)).reduce((p, t) => {
     const yesShares = new BN(t.yesShares);
     const noShares = new BN(t.noShares);
-    // TODO, convert cash to share cash, needed to combine with user's positions
-    const cashValue = new BN(t.cashValue).div(10000);
+    const cashValue = new BN(t.cash).minus(new BN(t.cashValue)).div(NUM_TICKS_Y_N);
     if (isYesOutcome) {
       const netYesShares = noShares.minus(yesShares)
       if (netYesShares.lte(new BN(0))) return p;
-      return { shares: p.shares.plus(netYesShares), cashAmount: p.cashAmount.plus(new BN(cashValue)) }
+      return { shares: p.shares.plus(t.netShares), cashAmount: p.cashAmount.plus(new BN(cashValue)) }
     }
     const netNoShares = yesShares.minus(noShares)
     if (netNoShares.lte(new BN(0))) return p;
-    return { shares: p.shares.plus(netNoShares), cashAmount: p.cashAmount.plus(new BN(cashValue)) }
+    return { shares: p.shares.plus(t.netShares), cashAmount: p.cashAmount.plus(new BN(cashValue)) }
   },
     { shares: new BN(0), cashAmount: new BN(0) });
 

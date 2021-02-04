@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 import Styles from './market-view.styles.less';
 import classNames from 'classnames';
 import SimpleChartSection from '../common/charts';
@@ -10,7 +10,8 @@ import {
   NetworkMismatchBanner,
   CurrencyLabel,
   AddCurrencyLiquidity,
-  ReportingStateLabel
+  ReportingStateLabel,
+  InvalidFlagTipIcon
 } from '../common/labels';
 import {
   PositionsLiquidityViewSwitcher,
@@ -30,6 +31,15 @@ import {
   getMarketEndtimeDate,
 } from '../../utils/date-utils';
 import { getCurrentAmms } from '../stores/app-status-hooks';
+import { getWinningOutcome } from '../markets/markets-view';
+import { ConfirmedCheck } from '../common/icons';
+
+const WinningOutcomeLabel = ({ winningOutcome }) => (
+  <span className={Styles.WinningOutcomeLabel}>
+    <span>Winning Outcome</span>
+    <span>{winningOutcome.name}{ConfirmedCheck}</span>
+  </span>
+);
 
 const getDetails = (market) => {
   const rawInfo = market?.extraInfoRaw || '{}';
@@ -87,7 +97,8 @@ const MarketView = ({ defaultMarket = null }) => {
   if (!market) return <div className={Styles.MarketView} />;
   const details = getDetails(market);
   const currentAMMs = getCurrentAmms(market, markets);
-  const { reportingState } = market;
+  const { reportingState, outcomes } = market;
+  const winningOutcomes = getWinningOutcome(amm?.ammOutcomes, outcomes);
   return (
     <div className={Styles.MarketView}>
       <section>
@@ -97,9 +108,11 @@ const MarketView = ({ defaultMarket = null }) => {
           <CategoryIcon big categories={market.categories} />
           <CategoryLabel big categories={market.categories} />
           {!isMobile && <ReportingStateLabel {...{ reportingState, big: true }} />}
+          <InvalidFlagTipIcon {...{ market, big: true }} />
           <CurrencyLabel name={amm?.cash?.name} />
         </div>
         <h1>{market.description}</h1>
+        {winningOutcomes.length > 0 && <WinningOutcomeLabel winningOutcome={winningOutcomes[0]} />}
         <ul className={Styles.StatsRow}>
           <li>
             <span>24hr Volume</span>

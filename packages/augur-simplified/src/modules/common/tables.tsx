@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import Styles from './tables.styles.less';
-import { EthIcon, UsdIcon } from './icons';
+import { EthIcon, UpArrow, UsdIcon } from './icons';
 import { PrimaryButton, SecondaryButton, TinyButton } from './buttons';
 import classNames from 'classnames';
 import {
@@ -44,7 +44,7 @@ import {
 } from '../../utils/contract-calls';
 import { createBigNumber } from '../../utils/create-big-number';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
-import { MovementLabel, WarningBanner } from './labels';
+import { InvalidFlagTipIcon, MovementLabel, WarningBanner } from './labels';
 
 interface PositionsTableProps {
   market: MarketInfo;
@@ -72,6 +72,7 @@ const MarketTableHeader = ({
     <div className={Styles.MarketTableHeader}>
       <MarketLink id={market.marketId} ammId={market.amm?.id}>
         <span>{market.description}</span>
+        <InvalidFlagTipIcon {...{ market }} />
         {ammExchange.cash.name === USDC ? UsdIcon : EthIcon}
       </MarketLink>
     </div>
@@ -584,7 +585,12 @@ export const PositionsLiquidityViewSwitcher = ({
   );
 };
 
-const TransactionsHeader = ({ selectedType, setSelectedType }) => {
+const TransactionsHeader = ({
+  selectedType,
+  setSelectedType,
+  sortUp,
+  setSortUp,
+}) => {
   const { isMobile } = useAppStatusStore();
   return (
     <ul className={Styles.TransactionsHeader}>
@@ -593,10 +599,10 @@ const TransactionsHeader = ({ selectedType, setSelectedType }) => {
           <SmallDropdown
             onChange={(value) => setSelectedType(value)}
             options={[
-              { label: ALL, value: 0 },
-              { label: SWAP, value: 1 },
-              { label: ADD, value: 2 },
-              { label: REMOVE, value: 3 },
+              { label: ALL, value: ALL },
+              { label: SWAP, value: SWAP },
+              { label: ADD, value: ADD },
+              { label: REMOVE, value: REMOVE },
             ]}
             defaultValue={ALL}
           />
@@ -641,7 +647,12 @@ const TransactionsHeader = ({ selectedType, setSelectedType }) => {
       <li>token amount</li>
       <li>share amount</li>
       <li>account</li>
-      <li>time</li>
+      <li
+        className={classNames({ [Styles.SortUp]: sortUp })}
+        onClick={() => setSortUp()}
+      >
+        time {UpArrow}
+      </li>
     </ul>
   );
 };
@@ -676,6 +687,7 @@ interface TransactionsProps {
 export const TransactionsTable = ({ transactions }: TransactionsProps) => {
   const [selectedType, setSelectedType] = useState(ALL);
   const [page, setPage] = useState(1);
+  const [sortUp, setSortUp] = useState(false);
   const filteredTransactions = useMemo(
     () =>
       []
@@ -699,8 +711,10 @@ export const TransactionsTable = ({ transactions }: TransactionsProps) => {
               return true;
           }
         })
-        .sort((a, b) => b.timestamp - a.timestamp),
-    [selectedType, transactions]
+        .sort((a, b) =>
+          !sortUp ? b.timestamp - a.timestamp : a.timestamp - b.timestamp
+        ),
+    [selectedType, transactions, sortUp]
   );
 
   return (
@@ -711,6 +725,8 @@ export const TransactionsTable = ({ transactions }: TransactionsProps) => {
           setPage(1);
           setSelectedType(type);
         }}
+        sortUp={sortUp}
+        setSortUp={() => setSortUp(!sortUp)}
       />
       {sliceByPage(filteredTransactions, page, TX_PAGE_LIMIT).map(
         (transaction) => (

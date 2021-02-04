@@ -132,6 +132,7 @@ export interface AmmTransaction {
   yesShareCashValue?: string;
   noShareCashValue?: string;
   cashValue?: string; // for add/remove liquidity
+  netShares?: string; // only for add liquidity
 }
 
 export interface Trade {
@@ -210,6 +211,7 @@ export interface MarketInfo {
   amm: AmmExchange | null;
   reportingState: string;
   claimedProceeds: ClaimedProceeds[]
+  isInvalid: boolean;
 }
 
 export interface MarketOutcome {
@@ -217,6 +219,8 @@ export interface MarketOutcome {
   isFinalNumerator?: boolean;
   payoutNumerator?: string;
   name: string;
+  isInvalid: boolean;
+  isWinner: boolean;
 }
 
 export interface AmmOutcome {

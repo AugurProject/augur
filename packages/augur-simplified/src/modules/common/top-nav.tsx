@@ -3,7 +3,7 @@ import { useLocation } from 'react-router';
 import Styles from './top-nav.styles.less';
 import ButtonStyles from './buttons.styles.less';
 import { Link } from 'react-router-dom';
-import { MARKETS, PORTFOLIO, SIDEBAR_TYPES, TX_STATUS } from '../constants';
+import { MARKET, MARKETS, PORTFOLIO, SIDEBAR_TYPES, TX_STATUS } from '../constants';
 import makePath from '../routes/helpers/make-path';
 import Logo from './logo';
 import parsePath from '../routes/helpers/parse-path';
@@ -211,7 +211,6 @@ export const TopNav = () => {
     },
   } = useAppStatusStore();
   const [lastUser, setLastUser] = useLocalStorage('lastUser', null);
-
   useEffect(() => {
     if (blocknumber && transactions) {
       transactions
@@ -235,7 +234,8 @@ export const TopNav = () => {
   }, [transactions, blocknumber]);
 
   useEffect(() => {
-    if (loginAccount?.library?.provider?.isMetaMask && loginAccount?.account) {
+    const isMetaMask = loginAccount?.library?.provider?.isMetaMask;
+    if (isMetaMask && loginAccount?.account) {
       setLastUser(loginAccount.account);
     } else if (!loginAccount?.active) {
       setLastUser(null);
@@ -244,15 +244,21 @@ export const TopNav = () => {
 
   const autoLogin = lastUser || null;
 
-  const handleAccountUpdate = (activeWeb3) => {
+  const handleAccountUpdate = async (activeWeb3) => {
     if (activeWeb3) {
       if (String(networkId) !== String(activeWeb3.chainId)) {
         updateLoginAccount({ chainId: activeWeb3.chainId });
-      } else if (loginAccount?.account) {
-        if (loginAccount.account !== activeWeb3.account) {
-          // Cleanup old user state
-          logout();
-          updateLoginAccount(activeWeb3);
+      }
+      else if (loginAccount?.account && loginAccount.account !== activeWeb3.account) {
+        logout();
+        updateLoginAccount(activeWeb3);
+
+        // TEMPORARY WORKAROUND - MM provider broken on account change
+        const isMetaMask = activeWeb3?.library?.provider?.isMetaMask;
+        if (isMetaMask) {
+          // When we detect a MM account chanage we call updateLoginAccount in order to update the lastUser localStorage
+          // key with the users new selected account and refresh the page to reload the provider using autologin
+          window.location.reload();
         }
       } else {
         updateLoginAccount(activeWeb3);
@@ -264,6 +270,7 @@ export const TopNav = () => {
     <nav
       className={classNames(Styles.TopNav, {
         [Styles.TwoTone]: path !== MARKETS,
+        [Styles.OnMarketsView]: path === MARKET
       })}
     >
       <section>

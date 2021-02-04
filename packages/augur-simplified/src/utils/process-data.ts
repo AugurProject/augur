@@ -88,6 +88,7 @@ interface GraphAddLiquidity extends GraphTransaction {
   lpTokens: string;
   yesShareCashValue: string;
   noShareCashValue: string;
+  netShares: string;
 }
 
 interface GraphRemoveLiquidity extends GraphTransaction {
@@ -223,6 +224,7 @@ const shapeMarketInfo = (
     amm: ammExchange,
     reportingState: market.status,
     claimedProceeds,
+    isInvalid: false,
   };
 };
 
@@ -233,6 +235,7 @@ const shapeOutcomes = (graphOutcomes: GraphMarketOutcome[]): MarketOutcome[] =>
     payoutNumerator: g.payoutNumerator,
     name: g.value,
     isInvalid: g.id.indexOf('-0') > -1,
+    isWinner: Boolean(Number(g.payoutNumerator)),
   }));
 
 const shapeAmmExchange = (
@@ -452,6 +455,12 @@ const shapeAddLiquidityTransactions = (
     const subheader = `Add ${cash.name} Liquidity`;
     // TODO: cashValue seems to be off on graph data, work around is to add up yes/no share cashValues
     const totalCashValue = new BN(e.noShareCashValue).plus(e.yesShareCashValue);
+    const cashValue = String(
+      convertOnChainCashAmountToDisplayCashAmount(
+        e.cashValue,
+        new BN(cash.decimals)
+      )
+    );
     const cashValueUsd = String(
       convertOnChainSharesToDisplayShareAmount(
         totalCashValue,
@@ -464,6 +473,12 @@ const shapeAddLiquidityTransactions = (
         new BN(cash.decimals)
       )
     );
+    const netShares = String(
+      convertOnChainSharesToDisplayShareAmount(
+        new BN(e.netShares),
+        new BN(cash.decimals)
+      )
+    );
     return {
       ...e,
       tx_type: TransactionTypes.ADD_LIQUIDITY,
@@ -472,8 +487,9 @@ const shapeAddLiquidityTransactions = (
       ...properties,
       price: null,
       cashValueUsd,
-      value: cashValueUsd,
+      value: cashValue,
       lpTokens,
+      netShares
     };
   });
 };

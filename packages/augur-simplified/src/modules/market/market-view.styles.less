@@ -9,7 +9,6 @@
       display: flex;
       flex-flow: column nowrap;
       grid-gap: @size-40;
-      margin-bottom: @size-32;
 
       > h1 {
         .text-30-bold;
@@ -47,19 +46,60 @@
     height: @size-32;
   }
 
-  > div:nth-of-type(2) {
+  > div[class*="CategoryLabel"] {
+    margin-left: @size-8;
+    margin-right: auto;
+  }
+
+  > span[class*="CurrencyLabel"] {
     margin-left: @size-8;
   }
 
-  > div:nth-of-type(3) {
-    margin-left: auto;
+  > span[class*="InvalidFlagTipIcon"] {
+    margin-left: @size-8;
+  }
+}
+
+.WinningOutcomeLabel {
+  .SimpleBorder;
+
+  border: @size-1 solid var(--color-brand);
+  display: flex;
+  flex-flow: column nowrap;
+  width: 100%;
+  min-width: 100%;
+  min-height: @size-86;
+  height: @size-86;
+  max-height: @size-86;
+  justify-content: center;
+  padding: @size-16;
+
+
+  @media @breakpoint-mobile-tablet {
+    margin-bottom: @size-24;
   }
 
-  > :nth-child(4) {
-    margin-left: 0;
+  > span {
+    align-items: center;
+    display: flex;
+    flex-flow: row nowrap;
+    white-space: nowrap;
 
-    @media @breakpoint-mobile-tablet {
-      margin-left: auto;
+    &:first-of-type {
+      .text-16;
+  
+      color: var(--simple-secondary-text);
+      margin-bottom: @size-8;
+    }
+
+    &:last-of-type {
+      .text-20-semi-bold;
+
+      color: var(--simple-primary-text);
+
+      > svg {
+        margin-left: @size-8;
+      }
     }
   }
 }

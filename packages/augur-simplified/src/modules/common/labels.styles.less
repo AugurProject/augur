@@ -86,13 +86,16 @@
   .SimpleBorder;
 
   color: var(--simple-primary-text);
-  white-space: nowrap;
-  justify-content: center;
-  display: flex;
+  max-width: @size-136;
+  overflow: hidden;
+  padding: @size-7 @size-8;
+  text-overflow: ellipsis;
   text-transform: capitalize;
-  justify-content: center;
-  padding: @size-5 @size-8;
-  align-items: center;
+  white-space: nowrap;
+
+  @media @breakpoint-mobile-tablet {
+    max-width: @size-180;
+  }
 
   &[data-big="true"] {
     .text-16;
@@ -507,7 +510,8 @@
   color: var(--simple-warning);
 }
 
-.CurrencyTipIcon {
+.CurrencyTipIcon,
+.InvalidFlagTipIcon {
   height: @size-32;
   min-height: @size-32;
   max-height: @size-32;
@@ -518,6 +522,30 @@
       width: @size-24;
       max-height: @size-24;
       max-width: @size-24;
+    }
+  }
+
+  &[data-big="true"] > label > svg {
+    height: @size-32;
+    width: @size-32;
+    max-height: @size-32;
+    max-width: @size-32;
+  }
+
+  @media @breakpoint-min-tiny {
+    &[data-big="true"] {
+      height: @size-44;
+      min-height: @size-44;
+      max-height: @size-44;
+  
+      > label {
+        > svg {
+          height: @size-44;
+          width: @size-44;
+          max-height: @size-44;
+          max-width: @size-44;
+        }
+      }
     }
   }
 }

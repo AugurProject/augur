@@ -583,8 +583,8 @@ const TradingForm = ({
     return () => {
       isMounted = false;
     };
-  }, [orderType, selectedOutcomeId, amount, outcomeSharesRaw, amm?.liquidity]);
-
+  }, [orderType, selectedOutcomeId, amount, outcomeSharesRaw, amm?.volumeTotal, amm?.liquidity]);
+  
   const userBalance = String(
     useMemo(() => {
       return isBuy
@@ -615,7 +615,7 @@ const TradingForm = ({
         new BN(breakdown?.slippagePercent)
       )
     ) {
-      subText = '(Adjust slippage Tolerance in Settings)';
+      subText = `(Adjust slippage tolerance in settings to ${Math.ceil(Number(breakdown.slippagePercent))}%)`;
       disabled = true;
     }
 

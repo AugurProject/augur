@@ -1,5 +1,9 @@
 import ApolloClient from 'apollo-boost';
-import { GET_MARKETS, GET_BLOCK, CASH_TOKEN_DATA } from 'modules/apollo/queries';
+import {
+  GET_MARKETS,
+  GET_BLOCK,
+  CASH_TOKEN_DATA,
+} from 'modules/apollo/queries';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { Cash } from '../types';
@@ -21,9 +25,13 @@ const defaultOptions = {
   },
 };
 
-export const client = augurV2Client('https://api.thegraph.com/subgraphs/name/ianlapham/uniswapv2');
+export const client = augurV2Client(
+  'https://api.thegraph.com/subgraphs/name/ianlapham/uniswapv2'
+);
 
-export const healthClient = augurV2Client('https://api.thegraph.com/index-node/graphql');
+export const healthClient = augurV2Client(
+  'https://api.thegraph.com/index-node/graphql'
+);
 
 export function blockClient(uri: string) {
   return new ApolloClient({
@@ -35,15 +43,15 @@ export function augurV2Client(uri: string) {
   const client = new ApolloClient({
     uri,
     cache: new InMemoryCache({
-      addTypename: false
-    })
+      addTypename: false,
+    }),
   });
   client.defaultOptions = defaultOptions;
   return client;
 }
 
 export async function getMarketsData(paraConfig, updateHeartbeat) {
-  const cashes = getCashesInfo(paraConfig)
+  const cashes = getCashesInfo(paraConfig);
   const clientConfig = getClientConfig(paraConfig);
   let response = null;
   let responseUsd = null;
@@ -63,9 +71,10 @@ export async function getMarketsData(paraConfig, updateHeartbeat) {
       console.error(JSON.stringify(response.errors, null, 1));
     }
 
-    updateHeartbeat({
+    updateHeartbeat(
+      {
         ...response.data,
-        cashes: responseUsd
+        cashes: responseUsd,
       },
       newBlock,
       response?.errors
@@ -76,12 +85,13 @@ export async function getMarketsData(paraConfig, updateHeartbeat) {
 export async function searchMarkets(paraConfig, searchString, cb) {
   const clientConfig = getClientConfig(paraConfig);
   let response = null;
-  if (searchString === '') return cb([]);
+  if (searchString === '') return cb(null, []);
   const searchQuery = searchString.trim().split(' ').join(' & ');
   try {
     const query = SEARCH_MARKETS(`${searchQuery}:*`);
     response = await augurV2Client(clientConfig.augurClient).query({ query });
   } catch (e) {
+    cb(e, []);
     console.error(e);
   }
 
@@ -89,21 +99,17 @@ export async function searchMarkets(paraConfig, searchString, cb) {
     if (response.errors) {
       console.error(JSON.stringify(response.errors, null, 1));
     }
-    if (response?.data?.marketSearch) cb([ ...response.data.marketSearch?.map(market => market.id) ]);
-    else cb([]);
+    if (response?.data?.marketSearch)
+      cb(null, [...response.data.marketSearch?.map((market) => market.id)]);
+    else cb(null, []);
   }
 }
 
 async function getPastDayBlockNumber(blockClient) {
   // @ts-ignore
   const utcCurrentTime = dayjs.utc();
-  let block = null;
-  try {
-    const utcOneDayBack = utcCurrentTime.subtract(1, 'day').unix();
-    block = await getBlockFromTimestamp(utcOneDayBack, blockClient);
-  } catch (e) {
-    console.error('get past day block number', e);
-  }
+  const utcOneDayBack = utcCurrentTime.subtract(1, 'day').unix();
+  const block = await getBlockFromTimestamp(utcOneDayBack, blockClient);
   return block;
 }
 
@@ -113,50 +119,41 @@ async function getPastDayBlockNumber(blockClient) {
  * @param {Int} timestamp in seconds
  */
 export async function getBlockFromTimestamp(timestamp, url) {
-  let result = null;
-  try {
-    result = await blockClient(url).query({
-      query: GET_BLOCK(timestamp),
-    });
-  } catch (e) {
-    console.error('getBlockFromTimestamp', e);
-  }
+  const result = await blockClient(url).query({
+    query: GET_BLOCK(timestamp),
+  });
   return result ? result?.data?.blocks?.[0]?.number : 0;
 }
 
-const getCashTokenData = async (cashes: Cash[]): Promise<{ [address: string]: Cash }> => {
-  let bulkResults = []
-  try {
-    bulkResults = await Promise.all(
-      cashes.map(async cash => {
-        let usdPrice = await client.query({
-          query: CASH_TOKEN_DATA,
-          variables: {
-            tokenAddr: cash?.address
-          },
-          fetchPolicy: 'cache-first'
-        })
-        let tokenData = { usdPrice: usdPrice?.data?.tokenDayDatas[0], ...cash }
-        if (!tokenData.usdPrice) {
+const getCashTokenData = async (
+  cashes: Cash[]
+): Promise<{ [address: string]: Cash }> => {
+  const bulkResults = await Promise.all(
+    cashes.map(async (cash) => {
+      let usdPrice = await client.query({
+        query: CASH_TOKEN_DATA,
+        variables: {
+          tokenAddr: cash?.address,
+        },
+        fetchPolicy: 'cache-first',
+      });
+      let tokenData = { usdPrice: usdPrice?.data?.tokenDayDatas[0], ...cash };
+      if (!tokenData.usdPrice) {
+        // TODO: remove this, used only form kovan testing
+        tokenData = {
+          ...cash,
+          usdPrice: cash?.name === ETH ? '1300' : '1',
+        };
+      }
+      return tokenData;
+    })
+  );
+  return (bulkResults || []).reduce((p, a) => ({ ...p, [a.address]: a }), {});
+};
 
-          // TOOD remove this, used only form kovan testing
-          tokenData = {
-            ...cash,
-            usdPrice: cash?.name === ETH ? '1300' : '1'
-          }
-        }
-        return tokenData
-      })
-    )
-  } catch (e) {
-    console.error(e)
-  }
-
-  return (bulkResults || []).reduce((p, a) => ({ ...p, [a.address]: a }), {})
-}
-
-
-const getClientConfig = (paraDeploys): { augurClient: string, blockClient: string } => {
+const getClientConfig = (
+  paraDeploys
+): { augurClient: string; blockClient: string } => {
   const { networkId } = paraDeploys;
   const clientConfig = {
     '1': {
@@ -173,11 +170,9 @@ const getClientConfig = (paraDeploys): { augurClient: string, blockClient: strin
         'https://api.thegraph.com/subgraphs/name/blocklytics/kovan-blocks',
       network: 'kovan',
     },
-  }
+  };
   return clientConfig[Number(networkId)];
-
-}
-
+};
 
 const paraCashes = {
   '1': {
@@ -210,23 +205,34 @@ const paraCashes = {
   },
 };
 
-const getCashesInfo = (paraConfig: { networkId: string, paraDeploys: { [address: string]: { name: string, decimals: number, addresses: { Cash: string, ShareToken: string } } } }): Cash[] => {
+const getCashesInfo = (paraConfig: {
+  networkId: string;
+  paraDeploys: {
+    [address: string]: {
+      name: string;
+      decimals: number;
+      addresses: { Cash: string; ShareToken: string };
+    };
+  };
+}): Cash[] => {
   const { networkId, paraDeploys } = paraConfig;
   const paraValues = Object.values(paraDeploys);
-  const keysValues = paraValues.reduce((p, v) => ({...p, [v.name]: v}), {});
+  const keysValues = paraValues.reduce((p, v) => ({ ...p, [v.name]: v }), {});
   const cashes = paraCashes[String(networkId)].Cashes;
   // fill in address and shareToken
-  cashes.forEach(c => {
+  cashes.forEach((c) => {
     if (c.name === ETH) {
-      const ethPara = keysValues["WETH"];
-      if (!ethPara) throw new Error('WETH not found in para deploy configuration');
+      const ethPara = keysValues['WETH'];
+      if (!ethPara)
+        throw new Error('WETH not found in para deploy configuration');
       c.address = ethPara.addresses.Cash.toLowerCase();
       c.shareToken = ethPara.addresses.ShareToken.toLowerCase();
       c.decimals = ethPara.decimals;
     } else {
       // TODO: will need to be changed, in mainnet deploy this will prob be 'USDC'
-      const stablecoinPara = keysValues["USDT"];
-      if (!stablecoinPara) throw new Error('USDT/USDC not found in para deploy configuration');
+      const stablecoinPara = keysValues['USDT'];
+      if (!stablecoinPara)
+        throw new Error('USDT/USDC not found in para deploy configuration');
       c.address = stablecoinPara.addresses.Cash.toLowerCase();
       c.shareToken = stablecoinPara.addresses.ShareToken.toLowerCase();
       c.decimals = stablecoinPara.decimals;
@@ -234,5 +240,4 @@ const getCashesInfo = (paraConfig: { networkId: string, paraDeploys: { [address:
   });
 
   return cashes;
-}
-
+};

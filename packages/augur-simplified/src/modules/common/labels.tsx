@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import Styles from './labels.styles.less';
 import { useLocation } from 'react-router';
 import classNames from 'classnames';
@@ -17,6 +17,7 @@ import {
   UsdIcon,
   WarningIcon,
   XIcon,
+  InvalidFlagIcon,
 } from './icons';
 import {
   CREATE,
@@ -77,13 +78,11 @@ interface CategoriesProps {
   big?: boolean;
 }
 
-export const CategoryLabel = ({ categories, big = false }: CategoriesProps) => {
-  return (
-    <div data-big={big} className={classNames(Styles.CategoryLabel)}>
-      {!!categories[1] ? categories[1] : categories[0]}
-    </div>
-  );
-};
+export const CategoryLabel = ({ categories, big = false }: CategoriesProps) => (
+  <div data-big={big} className={Styles.CategoryLabel}>
+    {!!categories[1] ? categories[1] : categories[0]}
+  </div>
+);
 
 export const CategoryIcon = ({ categories, big = false }: CategoriesProps) => {
   const prime = CATEGORIES_ICON_MAP[categories[0].toLowerCase()];
@@ -143,7 +142,6 @@ export const CurrencyTipIcon = ({ name, marketId }) => {
       </ReactTooltip>
     </span>
   );
-  // return icon ? icon : null;
 };
 
 export const CurrencyLabel = ({ name }) => {
@@ -184,6 +182,37 @@ export const ReportingStateLabel = ({ reportingState, big = false }) => {
       break;
   }
   return <>{content}</>;
+};
+
+export const InvalidFlagTipIcon = ({ market, big = false }) => {
+  let content;
+  if (market.isInvalid) content = (
+    <span
+      data-big={big}
+      className={classNames(Styles.InvalidFlagTipIcon, TooltipStyles.Container)}
+    >
+      <label
+        className={classNames(TooltipStyles.TooltipHint)}
+        data-tip
+        data-for={`invalidFlag-${market.marketId}`}
+        data-iscapture={true}
+      >
+        {InvalidFlagIcon}
+      </label>
+      <ReactTooltip
+        id={`invalidFlag-${market.marketId}`}
+        className={TooltipStyles.Tooltip}
+        effect="solid"
+        place="top"
+        type="light"
+        event="mouseover mouseenter"
+        eventOff="mouseleave mouseout scroll mousewheel blur"
+      >
+        <p>High probabilty of resolving Invalid</p>
+      </ReactTooltip>
+    </span>
+  );
+  return (<>{content}</>);
 };
 
 const handleValue = (value) =>
@@ -339,6 +368,15 @@ export const NetworkMismatchBanner = () => {
     [chainId, networkId]
   );
   const isGraphError = !!errors;
+
+  useEffect(() => {
+    // in the event of an error, scroll to top to force banner to be seen.
+    if (isNetworkMismatch || isGraphError) {
+      document.getElementById('mainContent')?.scrollTo(0, 0);
+      window.scrollTo(0, 1);
+    }
+  }, [isNetworkMismatch, isGraphError]);
+
   return (
     <>
       {isNetworkMismatch && (

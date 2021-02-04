@@ -15,13 +15,28 @@
     text-decoration: none;
   }
 
-  > a > span {
+  > a > span:first-of-type {
     .text-16-semi-bold;
 
     color: var(--simple-primary-text);
     flex: 1;
     margin-right: @size-12;
     text-decoration: none;
+  }
+
+  > a > span[class*="InvalidFlagTipIcon"] {
+    margin-right: @size-8;
+    min-height: @size-20;
+    min-width: @size-20;
+    max-height: @size-20;
+    max-width: @size-20;
+
+    > label > svg {
+      min-height: @size-20;
+      min-width: @size-20;
+      max-height: @size-20;
+      max-width: @size-20;
+    }
   }
 
   > a > svg {
@@ -326,6 +341,22 @@
       }
     }
   }
+
+  > li:last-of-type {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+
+    > svg {
+      margin-left: @size-8;
+    }
+  }
+}
+
+.SortUp {
+  > svg {
+    transform: rotate(-180deg);
+  }
 }
 
 .TransactionsTable {
@@ -334,7 +365,6 @@
   > span {
     .EmptyMessage;
 
-    border-radius: 0;
     min-width: @size-320;
   }
 }
@@ -345,7 +375,6 @@
   .TransactionsSharedRowHeader;
 
   > li {
-
     > a {
       text-decoration: none;
       color: var(--simple-primary-text);
