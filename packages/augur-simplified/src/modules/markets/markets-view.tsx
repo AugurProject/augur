@@ -200,13 +200,8 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
           </div>
         </article>
         {!amm ? (
+          <>
           <span>{description}</span>
-        ) : (
-          <MarketLink id={marketId} dontGoToMarket={!amm} ammId={amm?.id}>
-            {description}
-          </MarketLink>
-        )}
-        {!amm ? (
           <div>
             <span>Market requires Initial liquidity</span>
             <PrimaryButton
@@ -219,15 +214,17 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
               text="Earn fees as a liquidity provider"
             />
           </div>
+          </>
         ) : (
-          <>
+          <MarketLink id={marketId} dontGoToMarket={!amm} ammId={amm?.id}>
+            <span>{description}</span>
             <ValueLabel
               label="total volume"
               value={formatDai(market.amm?.volumeTotalUSD).full}
             />
             <ValueLabel label="APY" value={formattedApy} />
             <OutcomesTable amm={amm} marketOutcomes={outcomes} />
-          </>
+          </MarketLink>
         )}
       </div>
     </article>

@@ -76,7 +76,7 @@
     height: 100%;
     grid-template-columns: @size-46 @size-60 1fr;
     padding: @size-24;
-    grid-template-rows: auto auto auto auto;
+    grid-template-rows: auto;
 
     > article {
       display: grid;
@@ -123,7 +123,6 @@
       }
     }
 
-    > a,
     > span {
       .text-16-semi-bold;
       .limit-lines(4);
@@ -135,37 +134,59 @@
       height: @size-80;
     }
 
-    > div:first-of-type {
-      grid-column: 1 / span 2;
-      grid-row: 3;
-      margin-right: @size-32;
-      margin-top: auto;
-    }
-
-    > div:nth-of-type(2) {
-      grid-column: 1 / span 2;
-      grid-row: 4;
-      display: flex;
-      align-items: flex-end;
-      height: 100%;
+    > a {
+      grid-column: 1 / span 3;
+      width: 100%;
+      min-height: @size-180;
+      display: grid;
+      grid-template-columns: @size-46 @size-60 1fr;
+      grid-template-rows: auto;
+      margin-bottom: 0;
+      grid-gap: @size-8;
 
       > span {
-        &:first-of-type {
-          .text-12;
+        .text-16-semi-bold;
+        .text-16-semi-bold;
+        .limit-lines(4);
 
-          color: var(--color-secondary-text);
-          margin-right: @size-4;
-        }
+        color: var(--simple-primary-text);
+        grid-column: 1 / span 3;
+        grid-row: 1;
+        margin: @size-16 0;
+        text-align: left;
+        height: @size-80;
+      }
 
-        &:last-of-type {
-          .text-12-semi-bold;
+      > div:first-of-type {
+        grid-column: 1 / span 2;
+        grid-row: 2;
+      }
+
+      > div:nth-of-type(2) {
+        grid-column: 1 / span 2;
+        grid-row: 3;
+        display: flex;
+        align-items: flex-end;
+        height: 100%;
+
+        > span {
+          &:first-of-type {
+            .text-12;
+
+            color: var(--color-secondary-text);
+            margin-right: @size-4;
+          }
+
+          &:last-of-type {
+            .text-12-semi-bold;
+          }
         }
       }
-    }
 
-    > div:nth-of-type(3) {
-      grid-column: 3;
-      grid-row: 3 / span 2;
+      > div.OutcomesTable {
+        grid-column: 3;
+        grid-row: 2 / span 2;
+      }
     }
   }
 
@@ -333,30 +354,45 @@
         height: unset;
       }
 
-      > div:first-of-type {
-        grid-column: 1 / span 2;
-        grid-row: 4;
+      > a {
         display: flex;
-        flex: 1;
-        margin: @size-16 0 0;
+        flex-flow: row wrap;
+        justify-content: space-between;
+        grid-gap: 0;
 
-        > span:first-of-type {
-          margin-right: @size-8;
+        > span {
+          flex: 1 100%;
+          order: 0;
         }
-        > span:last-of-type {
-          .text-16-semi-bold;
+
+        > div:first-of-type {
+          align-items: center;
+          justify-content: center;
+          flex: 0;
+          order: 2;
+          display: flex;
+          flex-flow: row nowrap;
+          grid-gap: 0;
+
+          > span:last-of-type {
+            .text-14-semi-bold;
+
+            margin-left: @size-4;
+          }
         }
-      }
-
-      > div:nth-of-type(2) {
-        grid-column: 3;
-        grid-row: 4;
-        justify-content: flex-end;
-      }
-
-      > div:nth-of-type(3) {
-        grid-row: 3;
-        grid-column: 1 / span 3;
+  
+        > div:nth-of-type(2) {
+          align-items: center;
+          justify-content: center;
+          flex: 0;
+          order: 3;
+        }
+  
+        > div.OutcomesTable {
+          flex: 1 100%;
+          order: 1;
+          margin-bottom: @size-16;
+        } 
       }
     }
   }

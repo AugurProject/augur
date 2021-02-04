@@ -24,6 +24,7 @@ interface ButtonProps {
   target?: string;
   rel?: string;
   error?: string;
+  title?: string;
 }
 
 const Button = ({
@@ -36,11 +37,13 @@ const Button = ({
   selected,
   href,
   error,
+  title,
   target = '_blank',
   rel = 'noopener noreferrer',
 }: ButtonProps) => {
   return href ? (
     <a
+      title={title}
       href={href}
       className={classNames(
         Styles.Button,
@@ -62,6 +65,7 @@ const Button = ({
     </a>
   ) : (
     <button
+      title={title}
       className={classNames(
         Styles.Button,
         {
