@@ -45,6 +45,10 @@
   width: 100%;
   overflow: auto;
 
+  > ul {
+    grid-column-gap: @size-8;
+  }
+
   > span {
     .EmptyMessage;
 
@@ -99,7 +103,6 @@
 
 .PositionRowHeader {
   grid-template-columns: repeat(6, 1fr);
-  grid-column-gap: @size-8;
   min-width: @size-400;
 
   @media @breakpoint-mobile-tablet {
@@ -131,6 +134,7 @@
 
 .LiquidityRowHeader {
   grid-template-columns: minmax(@size-96, 1fr) repeat(3, 1fr);
+  min-width: @size-400;
 }
 
 .LiquidityRow {
@@ -284,6 +288,8 @@
 
   @media @breakpoint-mobile-tablet {
     grid-template-columns: @size-150 repeat(2, 1fr);
+    min-width: @size-320;
+
     > li {
       &:nth-of-type(3),
       &:nth-of-type(4),
