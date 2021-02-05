@@ -11,6 +11,7 @@ import 'ROOT/balancer/BFactory.sol';
 import 'ROOT/balancer/BPool.sol';
 
 import 'ROOT/trading/erc20proxy1155/IERC20Proxy1155Nexus.sol';
+import 'ROOT/trading/erc20proxy1155/IERC20Proxy1155Nexus.sol';
 
 contract AMMFactory is IAMMFactory, CloneFactory2 {
     using SafeMathUint256 for uint256;
@@ -26,6 +27,29 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         eRC20Proxy1155Nexus = _erc20Proxy1155Nexus;
         proxyToClone = IAMMExchange(_proxyToClone);
     }
+
+
+    function addLiquidity(uint256 _cash, address _recipient) public returns (uint256) {
+        factory.transferCash(augurMarket, shareToken, fee, _user, address(this), _cash);
+
+        // Move 5% of cash to the balancer pool.
+        uint256 _cashToSendToPool = (_cash * 5 * 10**16) / 10**18;
+        uint _poolCashBalance = bPool.getBalance(address(cash));
+        uint _poolLPTokenTotalSupply = bPool.totalSupply();
+
+        uint256 _lpTokenOut = _cashToSendToPool.div(_poolCashBalance).mul(_poolLPTokenTotalSupply);
+
+        shareToken.publicBuyCompleteSets(augurMarket, _cashToSendToPool.div(numTicks));
+
+        uint256[] memory _maxAmountsIn = new uint256[](2);
+        _maxAmountsIn[0] = 2**128-1;
+        _maxAmountsIn[1] = 2**128-1;
+
+        bPool.joinPool(_lpTokenOut, _maxAmountsIn);
+
+        _cash = cash.balanceOf(address(this));
+    }
+
 
     function addAMMWithLiquidity(
         IMarket _market,
@@ -47,6 +71,32 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
 
         // User sends cash to factory, which turns cash into LP tokens and shares which it gives to the user.
         _para.cash().transferFrom(msg.sender, address(this), _cash);
+
+        IERC20Proxy1155Nexus invalidERC20Proxy1155 = _erc20Proxy1155Nexus.newERC20(_para.getTokenId(_market, 0));
+
+        // Approve balancer pool as it will need to pull tokens when binding tokens.
+        _para.setApprovalForAll(address(_erc20Proxy1155Nexus), true);
+        invalidERC20Proxy1155.approve(address(bPool), 2**256-1);
+        cash.approve(address(bPool), 2**256-1);
+
+        // Create pool.
+        // MIN_BALANCE needed to setup pool is 10**18 / 10**12.
+        // Will send MIN_BALANCE * numTicks cash because we need MIN_BALANCE complete sets.
+        uint256 MIN_BALANCE = 10**6 * numTicks;
+
+        // Setup bPool....
+        _para.publicBuyCompleteSets(augurMarket, MIN_BALANCE.div(numTicks));
+
+        // Send cash to balancer bPool
+        // Pool weight == 90%
+        _bPool.bind(address(cash), MIN_BALANCE, 45 * 10**18);
+
+        // Move just minted invalid shares to the balancer pool.
+        // Pool weight == 10%
+        _bPool.bind(address(invalidERC20Proxy1155),  MIN_BALANCE.div(numTicks), 5 * 10**18);
+
+        _bPool.finalize();
+
         _lpTokens = _amm.addInitialLiquidity(_cash, _ratioFactor, _keepLong, _recipient);
     }
 

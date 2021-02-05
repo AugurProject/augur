@@ -9,8 +9,7 @@ import 'ROOT/para/ParaShareToken.sol';
 import "ROOT/para/interfaces/IAMMFactory.sol";
 import "ROOT/para/interfaces/IAMMExchange.sol";
 import 'ROOT/libraries/token/SafeERC20.sol';
-import 'ROOT/balancer/BPool.sol';
-import 'ROOT/trading/erc20proxy1155/IERC20Proxy1155Nexus.sol';
+
 
 contract AMMExchange is IAMMExchange, ERC20 {
     using SafeERC20 for IERC20;
@@ -26,8 +25,6 @@ contract AMMExchange is IAMMExchange, ERC20 {
     uint256 public NO;
     uint256 public YES;
     uint256 public fee; // [0-1000] how many thousandths of swaps should be kept as fees
-    BPool public bPool;
-    IERC20Proxy1155 public invalidERC20Proxy1155;
 
     event EnterPosition(address sender, uint256 cash, uint256 outputShares, bool buyLong, uint256 priorShares);
     event ExitPosition(address sender, uint256 shortShares, uint256 longShares, uint256 cashPayout);
@@ -35,12 +32,10 @@ contract AMMExchange is IAMMExchange, ERC20 {
     event AddLiquidity(address sender, uint256 cash, uint256 shortShares, uint256 longShares, uint256 lpTokens);
     event RemoveLiquidity(address sender, uint256 shortShares, uint256 longShares);
 
-    function initialize(IMarket _market, ParaShareToken _shareToken, uint256 _fee, BPool _bPool, IERC20Proxy1155Nexus _erc20Proxy1155Nexus) public {
+    function initialize(IMarket _market, ParaShareToken _shareToken, uint256 _fee) public {
         require(cash == ICash(0)); // can only initialize once
         require(_fee <= 30); // fee must be [0,30] aka 0-3%
-        require(_bPool.getController() == address(this), "This AMM must be balancer pool controller.");
 
-        bPool = _bPool;
         factory = IAMMFactory(msg.sender);
         cash = _shareToken.cash();
         shareToken = _shareToken;
@@ -51,17 +46,10 @@ contract AMMExchange is IAMMExchange, ERC20 {
         YES = _shareToken.getTokenId(_market, 2);
         fee = _fee;
 
-        invalidERC20Proxy1155 = _erc20Proxy1155Nexus.newERC20(INVALID);
-
         // approve cash so sets can be bought
         cash.safeApprove(address(_shareToken.augur()), 2**256-1);
         // approve factory so users can just approve the factory, not each exchange
         shareToken.setApprovalForAll(msg.sender, true);
-
-        // Approve balancer pool as it will need to pull tokens when binding tokens.
-        shareToken.setApprovalForAll(address(_erc20Proxy1155Nexus), true);
-        invalidERC20Proxy1155.approve(address(bPool), 2**256-1);
-        cash.approve(address(bPool), 2**256-1);
     }
 
     // Adds shares to the liquidity pool by minting complete sets.
@@ -84,36 +72,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
     function addInitialLiquidity(uint256 _cash, uint256 _ratioFactor, bool _keepLong, address _recipient) external returns (uint256) {
         (uint256 _poolShort, uint256 _poolLong) = shortLongShareBalances(address(this));
         require(_poolShort == 0, "Cannot add a specified ratio liquidity after initial liquidity has been provided");
-
-        // MIN_BALANCE needed to setup pool is 10**18 / 10**12.
-        uint256 MIN_BALANCE = 10**6 * numTicks;
-
-        // Setup bPool....
-        factory.transferCash(augurMarket, shareToken, fee, msg.sender, address(this), 2 * MIN_BALANCE);
-        shareToken.publicBuyCompleteSets(augurMarket, MIN_BALANCE.div(numTicks));
-
-
-        // Send cash to balancer bPool
-        // Pool weight == 90%
-        bPool.bind(address(cash), MIN_BALANCE, 45 * 10**18);
-
-
-        // Move just minted invalid shares to the balancer pool.
-        // Pool weight == 10%
-        bPool.bind(address(invalidERC20Proxy1155),  MIN_BALANCE.div(numTicks), 5 * 10**18);
-
-        bPool.finalize();
-
-
-        return addLiquidityInternal(msg.sender, _cash - (2 * MIN_BALANCE), _ratioFactor, _keepLong, _recipient);
-    }
-
-    function getController() public returns (address) {
-        return bPool.getController();
-    }
-
-    function checkMath(uint256 _cash) public returns (uint256) {
-        return  (_cash * 5 * 10**16) / 10**18;
+        return addLiquidityInternal(msg.sender, _cash, _ratioFactor, _keepLong, _recipient);
     }
 
     function addLiquidityInternal(address _user, uint256 _cash, uint256 _ratioFactor, bool _keepLong, address _recipient) internal returns (uint256) {
@@ -133,6 +92,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
         }
         uint256 _lpTokens = rateAddLiquidity(_longShares, _shortShares);
 
+        factory.transferCash(augurMarket, shareToken, fee, _user, address(this), _cash);
         shareToken.publicBuyCompleteSets(augurMarket, _setsToBuy);
 
         if (_ratioFactor != 10**18) {
