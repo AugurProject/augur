@@ -24,7 +24,6 @@ import {
 } from '../constants';
 import {
   OutcomesGrid,
-  AmountInput,
   InfoNumbers,
   isInvalidNumber,
 } from '../market/trading-form';
@@ -52,6 +51,7 @@ import { BigNumber as BN } from 'bignumber.js';
 import { createBigNumber } from '../../utils/create-big-number';
 import { BackIcon } from '../common/icons';
 import { checkAllowance } from '../hooks/use-approval-callback';
+import { AmountInput, TextInput } from '../common/inputs';
 
 const TRADING_FEE_OPTIONS = [
   {
@@ -156,7 +156,7 @@ const ModalAddLiquidity = ({
   const [tradingFeeSelection, setTradingFeeSelection] = useState<number>(
     TRADING_FEE_OPTIONS[2].id
   );
-const [canAddLiquidity, setCanAddLiquidity] = useState(false);
+  const [canAddLiquidity, setCanAddLiquidity] = useState(false);
 
   const cash = useMemo(() => {
     return cashes && chosenCash
@@ -167,19 +167,23 @@ const [canAddLiquidity, setCanAddLiquidity] = useState(false);
   const isETH = cash?.name === ETH;
   const { addresses } = paraConfig;
   const { AMMFactory } = addresses;
-  const isApproved = modalType === REMOVE
-    ? true
-    : canAddLiquidity;
+  const isApproved = modalType === REMOVE ? true : canAddLiquidity;
 
   useEffect(() => {
-    const checkCanCashAdd = async() => {
-      const approvalCheck = await checkAllowance(cash?.address, AMMFactory, loginAccount, transactions, updateTransaction)
+    const checkCanCashAdd = async () => {
+      const approvalCheck = await checkAllowance(
+        cash?.address,
+        AMMFactory,
+        loginAccount,
+        transactions,
+        updateTransaction
+      );
       if (approvalCheck === APPROVED) {
         setCanAddLiquidity(true);
       } else {
         setCanAddLiquidity(false);
       }
-    }
+    };
 
     if (isLogged && !canAddLiquidity) {
       if (isETH) {
@@ -188,7 +192,13 @@ const [canAddLiquidity, setCanAddLiquidity] = useState(false);
         checkCanCashAdd();
       }
     }
-  }, [isLogged, canAddLiquidity, setCanAddLiquidity, updateTransaction, transactions]);
+  }, [
+    isLogged,
+    canAddLiquidity,
+    setCanAddLiquidity,
+    updateTransaction,
+    transactions,
+  ]);
 
   const userTokenBalance = cash?.name ? balances[cash?.name]?.balance : '0';
   const shareBalance =
@@ -201,6 +211,8 @@ const [canAddLiquidity, setCanAddLiquidity] = useState(false);
   const [amount, updateAmount] = useState(
     modalType === REMOVE ? userMaxAmount : ''
   );
+
+  const [customName, setCustomName] = useState('');
 
   const feePercentFormatted = useMemo(() => {
     const feeOption = TRADING_FEE_OPTIONS.find(
@@ -467,8 +479,7 @@ const [canAddLiquidity, setCanAddLiquidity] = useState(false);
       actionButtonText: 'Remove all liquidity',
       confirmButtonText: 'confirm remove',
       currencyName: SHARES,
-      footerText:
-        `Removing liquidity returns shares; these shares may be sold for ${chosenCash}.`,
+      footerText: `Removing liquidity returns shares; these shares may be sold for ${chosenCash}.`,
       breakdown: [
         {
           label: 'yes shares',
@@ -569,13 +580,30 @@ const [canAddLiquidity, setCanAddLiquidity] = useState(false);
       actionButtonText: 'Add',
       confirmButtonText: 'confirm market liquidity',
       currencyName: `${chosenCash}`,
+      customToken: {
+        title: 'Give your outcome tokens a custom name',
+        confirmationTitle: 'Token names',
+        breakdown: [
+          {
+            label: 'Yes',
+            value: `y${customName}`,
+          },
+          {
+            label: 'No',
+            value: `n${customName}`,
+          },
+          {
+            label: 'Invalid',
+            value: `i${customName}`,
+          },
+        ],
+      },
       footerText:
         "By adding initial liquidity you'll earn your set trading fee percentage of all trades on this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.",
       breakdown: addCreateBreakdown,
       approvalButtonText: `approve ${chosenCash}`,
       confirmOverview: {
         title: 'What you are depositing',
-
         breakdown: [
           {
             label: 'amount',
@@ -690,6 +718,23 @@ const [canAddLiquidity, setCanAddLiquidity] = useState(false);
                 />
               </>
             )}
+            {LIQUIDITY_STRINGS[modalType].customToken && (
+              <>
+                <span className={Styles.SmallLabel}>
+                  {LIQUIDITY_STRINGS[modalType].customToken.title}
+                  {generateTooltip(
+                    'Custom token title.',
+                    'customTokenTitle'
+                  )}
+                </span>
+                <TextInput placeholder='Enter a custom name' value={customName} onChange={(value) => setCustomName(value.charAt(0).toUpperCase() + value.slice(1))}/>
+                <InfoNumbers
+                  infoNumbers={
+                    LIQUIDITY_STRINGS[modalType].customToken.breakdown
+                  }
+                />
+              </>
+            )}
             {LIQUIDITY_STRINGS[modalType].liquidityDetails && (
               <div className={Styles.LineBreak}>
                 <span className={Styles.SmallLabel}>
@@ -706,15 +751,17 @@ const [canAddLiquidity, setCanAddLiquidity] = useState(false);
               {LIQUIDITY_STRINGS[modalType].receiveTitle}
             </span>
             <InfoNumbers infoNumbers={LIQUIDITY_STRINGS[modalType].breakdown} />
-            {!isApproved && <ApprovalButton
-              amm={amm}
-              cash={cash}
-              actionType={
-                modalType !== REMOVE
-                  ? ApprovalAction.ADD_LIQUIDITY
-                  : ApprovalAction.REMOVE_LIQUIDITY
-              }
-            />}
+            {!isApproved && (
+              <ApprovalButton
+                amm={amm}
+                cash={cash}
+                actionType={
+                  modalType !== REMOVE
+                    ? ApprovalAction.ADD_LIQUIDITY
+                    : ApprovalAction.REMOVE_LIQUIDITY
+                }
+              />
+            )}
 
             <BuySellButton
               action={() => setShowBackView(true)}
@@ -774,6 +821,18 @@ const [canAddLiquidity, setCanAddLiquidity] = useState(false);
                   infoNumbers={
                     LIQUIDITY_STRINGS[modalType].marketLiquidityDetails
                       .breakdown
+                  }
+                />
+              </section>
+            )}
+            {LIQUIDITY_STRINGS[modalType].customToken && (
+              <section>
+                <span className={Styles.SmallLabel}>
+                  {LIQUIDITY_STRINGS[modalType].customToken.confirmationTitle}
+                </span>
+                <InfoNumbers
+                  infoNumbers={
+                    LIQUIDITY_STRINGS[modalType].customToken.breakdown
                   }
                 />
               </section>
