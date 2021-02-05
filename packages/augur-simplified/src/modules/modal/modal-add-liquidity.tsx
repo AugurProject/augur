@@ -719,7 +719,7 @@ const ModalAddLiquidity = ({
               </>
             )}
             {LIQUIDITY_STRINGS[modalType].customToken && (
-              <>
+              <div className={Styles.LineBreak}>
                 <span className={Styles.SmallLabel}>
                   {LIQUIDITY_STRINGS[modalType].customToken.title}
                   {generateTooltip(
@@ -733,7 +733,7 @@ const ModalAddLiquidity = ({
                     LIQUIDITY_STRINGS[modalType].customToken.breakdown
                   }
                 />
-              </>
+              </div>
             )}
             {LIQUIDITY_STRINGS[modalType].liquidityDetails && (
               <div className={Styles.LineBreak}>
