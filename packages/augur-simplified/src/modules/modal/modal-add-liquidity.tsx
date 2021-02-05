@@ -276,9 +276,12 @@ const ModalAddLiquidity = ({
   ]);
 
   let buttonError = '';
-  const priceErrors = outcomes.filter(
-    (outcome) => !outcome.isInvalid && isInvalidNumber(outcome.price)
-  );
+  const priceErrors = outcomes.filter((outcome) => {
+    return (
+      parseFloat(outcome.price) >= 1 ||
+      (!outcome.isInvalid && isInvalidNumber(outcome.price))
+    );
+  });
   if (isInvalidNumber(amount)) {
     buttonError = ERROR_AMOUNT;
   } else if (priceErrors.length > 0) {
@@ -636,7 +639,12 @@ const ModalAddLiquidity = ({
   const setPrices = (price, index) => {
     const newOutcomes = outcomes;
     newOutcomes[index].price = price;
-    if (price !== '' && !isNaN(price) && price !== '0') {
+    if (
+      price !== '' &&
+      !isNaN(price) &&
+      price !== '0' &&
+      parseFloat(price) < 1
+    ) {
       let newValue = ONE.minus(createBigNumber(price)).toString();
       if (newOutcomes[index].id === YES_OUTCOME_ID) {
         newOutcomes[NO_OUTCOME_ID].price = newValue;
@@ -722,12 +730,17 @@ const ModalAddLiquidity = ({
               <div className={Styles.LineBreak}>
                 <span className={Styles.SmallLabel}>
                   {LIQUIDITY_STRINGS[modalType].customToken.title}
-                  {generateTooltip(
-                    'Custom token title.',
-                    'customTokenTitle'
-                  )}
+                  {generateTooltip('Custom token title.', 'customTokenTitle')}
                 </span>
-                <TextInput placeholder='Enter a custom name' value={customName} onChange={(value) => setCustomName(value.charAt(0).toUpperCase() + value.slice(1))}/>
+                <TextInput
+                  placeholder="Enter a custom name"
+                  value={customName}
+                  onChange={(value) =>
+                    setCustomName(
+                      value.charAt(0).toUpperCase() + value.slice(1)
+                    )
+                  }
+                />
                 <InfoNumbers
                   infoNumbers={
                     LIQUIDITY_STRINGS[modalType].customToken.breakdown
