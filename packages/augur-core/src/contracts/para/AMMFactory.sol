@@ -27,20 +27,6 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         proxyToClone = IAMMExchange(_proxyToClone);
     }
 
-    function addAMM(IMarket _market, ParaShareToken _para, uint256 _fee) external returns (address) {
-        IAMMExchange _amm = IAMMExchange(createClone2(address(proxyToClone), salt(_market, _para, _fee)));
-
-        BPool _bPool = bFactory.newBPool();
-        _bPool.setController(address(_amm));
-        _amm.initialize(_market, _para, _fee, _bPool, eRC20Proxy1155Nexus);
-
-        exchanges[address(_market)][address(_para)][_fee] = address(_amm);
-
-        emit AMMCreated(_amm, _market, _para, _fee, _bPool);
-
-        return address(_amm);
-    }
-
     function addAMMWithLiquidity(
         IMarket _market,
         ParaShareToken _para,
