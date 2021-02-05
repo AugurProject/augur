@@ -71,10 +71,6 @@ const ConnectAccountButton = ({
     (tx) => tx.status === TX_STATUS.PENDING
   );
   const hasPendingTransaction = pendingTransaction.length > 0 || false;
-  // const now = new Date().getTime();
-  // const rencentConfirmed = transactions.filter(tx => tx.status === TX_STATUS.CONFIRMED && now - tx.timestamp < 3000);
-  // const recentFailed = transactions.filter(tx => tx.status === TX_STATUS.FAILURE && now - tx.timestamp < 3000);
-  // console.log(rencentConfirmed, recentFailed, transactions, now);
 
   useEffect(() => {
     if (autoLogin && !account) tryAutoLogin(activate);

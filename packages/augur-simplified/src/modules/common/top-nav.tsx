@@ -3,7 +3,13 @@ import { useLocation } from 'react-router';
 import Styles from './top-nav.styles.less';
 import ButtonStyles from './buttons.styles.less';
 import { Link } from 'react-router-dom';
-import { MARKET, MARKETS, PORTFOLIO, SIDEBAR_TYPES, TX_STATUS } from '../constants';
+import {
+  MARKET,
+  MARKETS,
+  PORTFOLIO,
+  SIDEBAR_TYPES,
+  TX_STATUS,
+} from '../constants';
 import makePath from '../routes/helpers/make-path';
 import Logo from './logo';
 import parsePath from '../routes/helpers/parse-path';
@@ -177,9 +183,7 @@ export const SettingsButton = () => {
             />
           </li>
           <li>
-            <label>
-              Show liquid markets only
-            </label>
+            <label>Show liquid markets only</label>
             <ToggleSwitch
               toggle={showLiquidMarkets}
               setToggle={() =>
@@ -203,12 +207,7 @@ export const TopNav = () => {
     transactions,
     isLogged,
     isMobile,
-    actions: {
-      setSidebar,
-      updateLoginAccount,
-      logout,
-      updateTransaction,
-    },
+    actions: { setSidebar, updateLoginAccount, logout, updateTransaction },
   } = useAppStatusStore();
   const [lastUser, setLastUser] = useLocalStorage('lastUser', null);
   useEffect(() => {
@@ -248,8 +247,10 @@ export const TopNav = () => {
     if (activeWeb3) {
       if (String(networkId) !== String(activeWeb3.chainId)) {
         updateLoginAccount({ chainId: activeWeb3.chainId });
-      }
-      else if (loginAccount?.account && loginAccount.account !== activeWeb3.account) {
+      } else if (
+        loginAccount?.account &&
+        loginAccount.account !== activeWeb3.account
+      ) {
         logout();
         updateLoginAccount(activeWeb3);
 
@@ -270,7 +271,7 @@ export const TopNav = () => {
     <nav
       className={classNames(Styles.TopNav, {
         [Styles.TwoTone]: path !== MARKETS,
-        [Styles.OnMarketsView]: path === MARKET
+        [Styles.OnMarketsView]: path === MARKET,
       })}
     >
       <section>
@@ -301,19 +302,11 @@ export const TopNav = () => {
       </section>
       <section>
         <ConnectAccount
-          updateLoginAccount={handleAccountUpdate}
-          autoLogin={autoLogin}
-          transactions={transactions.concat([{
-            addedTime: 1612537911777,
-            chainId: 42,
-            from: "0x206d79c337EDC1C0703e47E91CCf2938d0b51C50",
-            hash: "0xdeadbeef",
-            marketDescription: "This is fake",
-            message: "Buy Shares",
-            seen: false,
-            status: TX_STATUS.CONFIRMED,
-            timestamp: new Date().getTime(),
-          }])}
+          {...{
+            updateLoginAccount: handleAccountUpdate,
+            autoLogin,
+            transactions,
+          }}
         />
         {isMobile ? (
           <button
