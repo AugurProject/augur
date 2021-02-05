@@ -5,13 +5,11 @@ import {TinyButton} from '../../../common/buttons';
 import { CopyIcon } from '../../../common/icons';
 
 interface CopyHelperProps {
-  darkMode: boolean;
   toCopy: string;
   copyText: string;
 };
 
 const CopyHelper = ({
-  darkMode,
   toCopy,
   copyText = 'Copy',
 }: CopyHelperProps) => {

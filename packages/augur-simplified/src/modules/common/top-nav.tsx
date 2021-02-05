@@ -303,8 +303,17 @@ export const TopNav = () => {
         <ConnectAccount
           updateLoginAccount={handleAccountUpdate}
           autoLogin={autoLogin}
-          transactions={transactions}
-          darkMode={false}
+          transactions={transactions.concat([{
+            addedTime: 1612537911777,
+            chainId: 42,
+            from: "0x206d79c337EDC1C0703e47E91CCf2938d0b51C50",
+            hash: "0xdeadbeef",
+            marketDescription: "This is fake",
+            message: "Buy Shares",
+            seen: false,
+            status: TX_STATUS.CONFIRMED,
+            timestamp: new Date().getTime(),
+          }])}
         />
         {isMobile ? (
           <button

@@ -13,10 +13,10 @@ import {useAppStatusStore} from 'modules/stores/app-status';
 interface GetWalletIconProps {
   account: string;
   connector: AbstractConnector;
-  showPortisButton: boolean;
+  showPortisButton?: boolean;
 };
 
-export const GetWalletIcon = ({connector, account, showPortisButton}: GetWalletIconProps) => {
+export const GetWalletIcon = ({connector, account, showPortisButton = false }: GetWalletIconProps) => {
   const { isMobile } = useAppStatusStore();
   let icon;
   let iconAlt;

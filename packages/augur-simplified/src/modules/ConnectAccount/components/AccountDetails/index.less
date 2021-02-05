@@ -175,7 +175,7 @@
       }
 
       > .TransactionList {
-        max-height: 280px;
+        max-height: @size-280;
         overflow-y: auto;
         overflow-x: hidden;
         flex-direction: column;
@@ -196,12 +196,12 @@
           > a, div {
             display: flex;
             cursor: pointer;
-            margin-right: 0.25rem;
+            margin-right: @size-4;
 
             > svg {
               width: @size-16;
               height: @size-16;
-              stroke-width: 0px;
+              stroke-width: 0;
 
               > path,
               > polyline,
