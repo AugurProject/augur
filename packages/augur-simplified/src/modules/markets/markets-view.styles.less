@@ -422,7 +422,7 @@
 
   background-color: var(--simple-light-bg);
   padding: @size-24;
-  max-height: 279px;
+  max-height: @size-280;
 
   > div {
     display: grid;
@@ -461,7 +461,7 @@
     }
 
     &:nth-of-type(3) {
-      grid-template-columns: 1fr 250px;
+      grid-template-columns: 1fr @size-250;
       grid-template-rows: @size-46 repeat(2, @size-16);
       display: grid;
       grid-column-gap: @size-32;

@@ -36,7 +36,7 @@ const AccountCard = ({
         <GetWalletIcon
           connector={connector}
           account={account}
-          showPortisButton={true}
+          showPortisButton
         />
         <h3>{account && shortenAddress(account)}</h3>
       </div>
@@ -157,7 +157,6 @@ interface AccountDetailsProps {
 }
 
 const AccountDetails = ({
-  toggleWalletModal,
   openOptions,
   darkMode,
   transactions,

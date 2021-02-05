@@ -1,15 +1,15 @@
-import React, {ReactElement, useEffect} from 'react';
-import {UnsupportedChainIdError, useWeb3React} from '@web3-react/core';
-import {Activity as NetworkIcon} from 'react-feather';
-import {ethers} from 'ethers';
-import {SecondaryButton} from '../common/buttons';
+import React, { ReactElement, useEffect } from 'react';
+import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
+import { Activity as NetworkIcon } from 'react-feather';
+import { ethers } from 'ethers';
+import { SecondaryButton } from '../common/buttons';
 import classNames from 'classnames';
 import ButtonStyles from '../common/buttons.styles.less';
-import {GetWalletIcon} from '../common/get-wallet-icon';
-import {useActiveWeb3React} from './hooks';
-import {MODAL_CONNECT_WALLET, TX_STATUS} from '../constants';
-import {useAppStatusStore} from '../stores/app-status';
-import {tryAutoLogin} from './utils';
+import { GetWalletIcon } from '../common/get-wallet-icon';
+import { useActiveWeb3React } from './hooks';
+import { MODAL_CONNECT_WALLET, TX_STATUS } from '../constants';
+import { useAppStatusStore } from '../stores/app-status';
+import { tryAutoLogin } from './utils';
 import { Spinner } from '../common/spinner';
 
 interface LoginButtonProps {
@@ -20,41 +20,57 @@ interface LoginButtonProps {
   className: string;
 }
 
-const LoginButton = ({ action, text, icon, darkMode, className }: LoginButtonProps) => (
+const LoginButton = ({
+  action,
+  text,
+  icon,
+  darkMode,
+  className,
+}: LoginButtonProps) => (
   <SecondaryButton
     action={action}
     text={text}
     icon={icon}
-    className={classNames({
-      'dark-mode': darkMode,
-    }, className)}
+    className={classNames(
+      {
+        'dark-mode': darkMode,
+      },
+      className
+    )}
   />
 );
 
 const shortenAddress = (address: string, chars = 4): string => {
-  const isAddress = value => {
+  const isAddress = (value) => {
     try {
-      return ethers.utils.getAddress(value.toLowerCase())
+      return ethers.utils.getAddress(value.toLowerCase());
     } catch {
-      return false
+      return false;
     }
-  }
-  const parsed = isAddress(address)
+  };
+  const parsed = isAddress(address);
   if (!parsed) {
-    throw Error(`Invalid 'address' parameter '${address}'.`)
+    throw Error(`Invalid 'address' parameter '${address}'.`);
   }
-  return `${parsed.substring(0, chars + 2)}...${parsed.substring(42 - chars)}`
-}
+  return `${parsed.substring(0, chars + 2)}...${parsed.substring(42 - chars)}`;
+};
 
-const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode, transactions }) => {
+const ConnectAccountButton = ({
+  autoLogin,
+  updateLoginAccount,
+  darkMode = false,
+  transactions,
+}) => {
   const {
     isMobile,
     actions: { setModal },
   } = useAppStatusStore();
   const { account, activate, connector, error } = useWeb3React();
   const activeWeb3 = useActiveWeb3React();
-  const pendingTransaction = transactions.filter(tx => tx.status === TX_STATUS.PENDING);
-  const hasPpendingTransaction = pendingTransaction.length > 0 || false;
+  const pendingTransaction = transactions.filter(
+    (tx) => tx.status === TX_STATUS.PENDING
+  );
+  const hasPendingTransaction = pendingTransaction.length > 0 || false;
 
   useEffect(() => {
     if (autoLogin && !account) tryAutoLogin(activate);
@@ -67,12 +83,13 @@ const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode, transac
   }, [account, activeWeb3]);
 
   let buttonProps = {
-    action: () => setModal({
-      type: MODAL_CONNECT_WALLET,
-      darkMode,
-      autoLogin,
-      transactions,
-    }),
+    action: () =>
+      setModal({
+        type: MODAL_CONNECT_WALLET,
+        darkMode,
+        autoLogin,
+        transactions,
+      }),
     className: null,
     darkMode,
     icon: null,
@@ -82,34 +99,48 @@ const ConnectAccountButton = ({ autoLogin, updateLoginAccount, darkMode, transac
   if (account) {
     buttonProps = {
       ...buttonProps,
-      className: hasPpendingTransaction ? ButtonStyles.Pending : null,
-      text: hasPpendingTransaction ? `${pendingTransaction.length || 0} Pending`: isMobile ? shortenAddress(account, 3) : shortenAddress(account),
-      icon: hasPpendingTransaction
-        ? <Spinner />
-        : connector && (
-        <GetWalletIcon
-          connector={connector}
-          account={account}
-          showPortisButton={false}
-        />
+      className: hasPendingTransaction ? ButtonStyles.Pending : null,
+      text: hasPendingTransaction
+        ? `${pendingTransaction.length || 0} Pending`
+        : isMobile
+        ? shortenAddress(account, 3)
+        : shortenAddress(account),
+      icon: hasPendingTransaction ? (
+        <Spinner />
+      ) : (
+        connector && (
+          <GetWalletIcon
+            connector={connector}
+            account={account}
+          />
+        )
       ),
-    }
+    };
   } else if (error) {
     buttonProps = {
       ...buttonProps,
       className: ButtonStyles.Error,
-      text: error instanceof UnsupportedChainIdError ? 'Wrong Network' : 'Error',
+      text:
+        error instanceof UnsupportedChainIdError ? 'Wrong Network' : 'Error',
       icon: <NetworkIcon />,
-    }
+    };
   }
 
-  return (
-    <LoginButton {...buttonProps} />
-  )
-}
+  return <LoginButton {...buttonProps} />;
+};
 
-export default function ConnectAccount({ autoLogin, updateLoginAccount, darkMode, transactions }) {
+export default function ConnectAccount({
+  autoLogin,
+  updateLoginAccount,
+  darkMode = false,
+  transactions,
+}) {
   return (
-    <ConnectAccountButton autoLogin={autoLogin} updateLoginAccount={updateLoginAccount} darkMode={darkMode} transactions={transactions} />
+    <ConnectAccountButton
+      autoLogin={autoLogin}
+      updateLoginAccount={updateLoginAccount}
+      darkMode={darkMode}
+      transactions={transactions}
+    />
   );
 }
