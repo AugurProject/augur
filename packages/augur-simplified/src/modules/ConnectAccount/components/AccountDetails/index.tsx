@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {CheckCircle, ExternalLink as LinkIcon, XCircle} from 'react-feather';
+import {CheckCircle, XCircle} from 'react-feather';
 import CopyHelper from './CopyHelper';
 import {getEtherscanLink, shortenAddress} from '../../utils';
 import {injected, walletlink} from '../../connectors';
@@ -12,14 +12,13 @@ import {Spinner} from '../../../common/spinner';
 import {GetWalletIcon} from '../../../common/get-wallet-icon';
 import {AbstractConnector} from '@web3-react/abstract-connector';
 import { TX_STATUS } from '../../../constants';
+import { LinkIcon } from '../../../common/icons';
 
 interface AccountCardProps {
   account: string;
   connector: AbstractConnector;
   connectorName: string;
   chainId: string;
-  switchWalletAction: Function;
-  logout: Function;
 }
 
 const AccountCard = ({
@@ -27,29 +26,11 @@ const AccountCard = ({
   connector,
   connectorName,
   chainId,
-  switchWalletAction,
-  logout,
 }: AccountCardProps) => {
   return (
     <div className={Styles.AccountCard}>
       <div>
         <span>{connectorName}</span>
-        {connector !== injected && connector !== walletlink && (
-          <TinyButton
-            action={() => (connector as any).close()}
-            text='Disconnect'
-          />
-        )}
-        {connector === injected && connector !== walletlink && (
-          <TinyButton
-            action={() => logout()}
-            text='Disconnect'
-          />
-        )}
-        <TinyButton
-          action={() => switchWalletAction()}
-          text='Switch Wallet'
-        />
       </div>
       <div>
         <GetWalletIcon
@@ -66,7 +47,7 @@ const AccountCard = ({
         {chainId && account && (
           <TinyButton
             href={getEtherscanLink(chainId, account, 'address')}
-            icon={<LinkIcon size={16} />}
+            icon={LinkIcon}
             text='View on Etherscan'
           />
         )}
@@ -90,14 +71,15 @@ const GetStatusIcon = (transactionStatus: string) => {
 const Transaction = ({label, link, status, chainId}) => (
   <div>
     <span>{label}</span>
-    <a
+    {link && <a
       href={getEtherscanLink(chainId, link, 'transaction')}
       target='_blank'
       rel='noopener noreferrer'
     >
-      <LinkIcon />
-    </a>
-    {GetStatusIcon(status,)}
+      {LinkIcon}
+    </a>}
+    {!link && <div/>}
+    {GetStatusIcon(status)}
   </div>
 );
 
@@ -201,15 +183,32 @@ const AccountDetails = ({
           connectorName={connectorName}
           chainId={chainId}
           switchWalletAction={openOptions}
-          logout={() => {
-            logout();
-            // setTimeout allows lastUser localStorage to be cleared before calling deactivate,
-            // otherwise the autologin seems to overide our deactivate call.
-            setTimeout(() => {
-              deactivate();
-            });
-          }}
         />
+      </section>
+      <section>
+        <TinyButton
+          action={() => openOptions()}
+          text='Switch Wallet'
+        />
+        {connector !== injected && connector !== walletlink && (
+          <TinyButton
+            action={() => (connector as any).close()}
+            text='Sign Out'
+          />
+        )}
+        {connector === injected && connector !== walletlink && (
+          <TinyButton
+            action={() => {
+              logout();
+              // setTimeout allows lastUser localStorage to be cleared before calling deactivate,
+              // otherwise the autologin seems to overide our deactivate call.
+              setTimeout(() => {
+                deactivate();
+              });
+            }}
+            text='Sign Out'
+          />
+        )}
       </section>
       <footer>
         <Transactions chainId={chainId} removeTransaction={removeTransaction} transactions={transactions} />

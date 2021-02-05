@@ -73,12 +73,15 @@
   }
 
   > .Content {
-    padding: @size-24;
+    padding: @size-24 @size-24 @size-20 @size-24;
 
     > .AccountCard {
       display: flex;
       flex-direction: column;
       width: 100%;
+      border: @size-1 solid var(--simple-border);
+      border-radius: @size-8;
+      padding: @size-16;
 
       > div {
         display: flex;
@@ -123,6 +126,16 @@
           margin-right: @size-8;
         }
       }
+    }
+  }
+
+  > section:last-of-type {
+    display: flex;
+    justify-content: flex-end;
+    margin: 0 @size-24 @size-20 0;
+
+    > button:first-of-type {
+      margin: 0 @size-8 0;
     }
   }
 
@@ -179,15 +192,16 @@
             margin-right: @size-4;
           }
 
-          > a {
+
+          > a, div {
             display: flex;
             cursor: pointer;
-            margin-left: auto;
             margin-right: 0.25rem;
 
             > svg {
               width: @size-16;
               height: @size-16;
+              stroke-width: 0px;
 
               > path,
               > polyline,
@@ -200,6 +214,7 @@
           > span:nth-of-type(2) {
             display: flex;
             align-items: center;
+            margin-left: auto;
 
             &.Success > svg {
               > path,
