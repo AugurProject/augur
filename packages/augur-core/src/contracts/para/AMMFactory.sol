@@ -19,6 +19,7 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
     IAMMExchange internal proxyToClone;
     BFactory internal bFactory;
     IERC20Proxy1155Nexus internal eRC20Proxy1155Nexus;
+    mapping (address => address) public balancePools;
 
     event AMMCreated(IAMMExchange amm, IMarket market, ParaShareToken shareToken, uint256 fee, BPool bPool);
 
@@ -28,16 +29,26 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         proxyToClone = IAMMExchange(_proxyToClone);
     }
 
+    function addLiquidity(
+        IMarket _market,
+        ParaShareToken _para,
+        uint256 _fee,
+        uint256 _cash,
+        address _recipient,
+        uint256 _cashToInvalidPool
+    ) public returns (uint256) {
+        transferCash(_market, _para, fee, _user, address(this), _cash);
 
-    function addLiquidity(uint256 _cash, address _recipient) public returns (uint256) {
-        factory.transferCash(augurMarket, shareToken, fee, _user, address(this), _cash);
+        address _ammAddress = exchanges[address(_market)][address(_para)][_fee];
+        IAMMExchange _amm = IAMMExchange(_ammAddress);
+
+        BPool _bPool = balancePools[_ammAddress];
 
         // Move 5% of cash to the balancer pool.
-        uint256 _cashToSendToPool = (_cash * 5 * 10**16) / 10**18;
-        uint _poolCashBalance = bPool.getBalance(address(cash));
-        uint _poolLPTokenTotalSupply = bPool.totalSupply();
+        uint _poolCashBalance = _bPool.getBalance(address(cash));
+        uint _poolLPTokenTotalSupply = _bPool.totalSupply();
 
-        uint256 _lpTokenOut = _cashToSendToPool.div(_poolCashBalance).mul(_poolLPTokenTotalSupply);
+        uint256 _lpTokenOut = _cashToInvalidPool.div(_poolCashBalance).mul(_poolLPTokenTotalSupply);
 
         shareToken.publicBuyCompleteSets(augurMarket, _cashToSendToPool.div(numTicks));
 
@@ -47,9 +58,9 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
 
         bPool.joinPool(_lpTokenOut, _maxAmountsIn);
 
-        _cash = cash.balanceOf(address(this));
-    }
 
+        _amm.addLiquidity(_cash, _recipient);
+    }
 
     function addAMMWithLiquidity(
         IMarket _market,
@@ -62,10 +73,11 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
     ) external returns (address _ammAddress, uint256 _lpTokens) {
         _ammAddress = createClone2(address(proxyToClone), salt(_market, _para, _fee));
         IAMMExchange _amm = IAMMExchange(_ammAddress);
-        BPool _bPool = bFactory.newBPool();
-        _bPool.setController(address(_amm));
         _amm.initialize(_market, _para, _fee, _bPool, eRC20Proxy1155Nexus);
         exchanges[address(_market)][address(_para)][_fee] = _ammAddress;
+
+        BPool _bPool = bFactory.newBPool();
+        balancePools[_ammAddress] = address(_bPool);
 
         emit AMMCreated(_amm, _market, _para, _fee, _bPool);
 
