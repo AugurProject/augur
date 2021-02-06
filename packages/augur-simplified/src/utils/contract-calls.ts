@@ -188,7 +188,7 @@ export async function getRemoveLiquidity(
     return null;
   }
   const balance = convertDisplayShareAmountToOnChainShareAmount(lpTokenBalance, cash?.decimals);
-  //console.log('estimate remove liquidity', 'marketId', marketId, 'paraSharetoken', cash?.shareToken, 'fee', fee, 'lp tokens', lpTokenBalance, 'raw balance', String(balance));
+
   const results = await augurClient.amm.getRemoveLiquidity(
     marketId,
     cash.shareToken,
@@ -198,7 +198,6 @@ export async function getRemoveLiquidity(
 
   if (!results) return null
 
-  //console.log('results.cash', String(results.cash), cash?.decimals, 'lpTokenBalance', lpTokenBalance, 'balance', String(balance));
   const shortShares = String(convertOnChainSharesToDisplayShareAmount(results.short, cash?.decimals));
   const longShares = String(convertOnChainSharesToDisplayShareAmount(results.long, cash?.decimals));
 
@@ -233,22 +232,19 @@ export const estimateEnterTrade = async (
   inputDisplayAmount: string,
   outputYesShares: boolean = true,
 ): Promise<EstimateTradeResult | null> => {
-  //const startTime = new Date().getTime();
   const breakdownWithFeeRaw = await estimateEnterPosition(TradingDirection.ENTRY, amm, inputDisplayAmount, outputYesShares).catch(e => console.log(e));
 
   if (!breakdownWithFeeRaw) return null;
 
   const estimatedShares = convertOnChainSharesToDisplayShareAmount(breakdownWithFeeRaw, amm.cash.decimals);
   const tradeFees = String(estimatedShares.times(new BN(amm.feeDecimal)));
-  //console.log('enter, breakdown estimateShares', String(estimatedShares))
+
   const averagePrice = new BN(inputDisplayAmount).div(new BN(estimatedShares)).toFixed(2);
   const maxProfit = String(new BN(estimatedShares).minus(new BN(inputDisplayAmount)));
   const price = outputYesShares ? amm.priceYes : amm.priceNo;
   const slippagePercent = (new BN(averagePrice).minus(price)).div(price).times(100).toFixed(2);
   const ratePerCash = new BN(estimatedShares).div(new BN(inputDisplayAmount)).toFixed(6);
 
-  //const endTime = new Date().getTime();
-  //console.log('seconds to estimate', (endTime - startTime) / 1000)
 
   return {
     outputValue: String(estimatedShares),
@@ -306,7 +302,7 @@ export const estimateExitTrade = async (
 
   const estimateCash = convertOnChainCashAmountToDisplayCashAmount(breakdownWithFeeRaw, amm.cash.decimals);
   const tradeFees = String(estimateCash.times(new BN(amm.feeDecimal)));
-  //console.log('exit, breakdown estimateCash', String(estimateCash))
+
   const averagePrice = new BN(estimateCash).div(new BN(inputDisplayAmount)).toFixed(2);
   const price = outputYesShares ? amm.priceYes : amm.priceNo;
   const shares = outputYesShares ? new BN(userBalances[YES_OUTCOME_ID] || "0") : BigNumber.min(new BN(userBalances[0]), new BN(userBalances[NO_OUTCOME_ID]));
@@ -314,9 +310,6 @@ export const estimateExitTrade = async (
   const ratePerCash = new BN(estimateCash).div(new BN(inputDisplayAmount)).toFixed(6);
   const displayShares = convertOnChainSharesToDisplayShareAmount(shares, amm.cash.decimals);
   const remainingShares = String(new BN(displayShares || "0").minus(new BN(inputDisplayAmount)).toFixed(6));
-
-  //const endTime = new Date().getTime();
-  //console.log('seconds to estimate', (endTime - startTime) / 1000)
 
   return {
     outputValue: String(estimateCash),
@@ -738,7 +731,7 @@ const normalizeNoInvalidPositionsBalances = (ammMarketShares: AmmMarketShares, a
         position.balance = minNoInvalidBalance;
         position.rawBalance = minNoInvalidRawBalance;
         position.quantity = trimDecimalValue(position.balance);
-        position.usdValue = String(new BN(minNoInvalidBalance).times(new BN(priceNo)));
+        position.usdValue = String(new BN(minNoInvalidBalance).times(new BN(priceNo)).times(amm.cash.usdPrice));
         position.past24hrUsdValue = past24hrPriceNo ? String(new BN(minNoInvalidBalance).times(new BN(past24hrPriceNo))) : null;
       }
     })
@@ -1016,7 +1009,6 @@ export const getERC20Allowance = async (tokenAddress: string, provider: Web3Prov
     contractAllowanceCall
   );
 
-  // console.log('allowance', String(allowance))
   let allowanceAmount = "0";
   Object.keys(allowance.results).forEach((key) => {
     const value = allowance.results[key].callsReturnContext[0].returnValues as ethers.utils.Result;

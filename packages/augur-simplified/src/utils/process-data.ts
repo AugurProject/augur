@@ -662,8 +662,6 @@ const getActivityType = (
   switch (tx.tx_type) {
     case (TransactionTypes.ADD_LIQUIDITY): {
       type = 'Add Liquidity';
-      // when design wants to add usd value for this or remove use below:
-      //const usdValue = `${String(new BN(tx.value).times(new BN(cash.usdPrice)))}`;
       value = `${formatCash(tx.value, cash.name).full}`;
       break;
     }
