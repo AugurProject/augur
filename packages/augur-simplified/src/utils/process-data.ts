@@ -473,12 +473,7 @@ const shapeAddLiquidityTransactions = (
         new BN(cash.decimals)
       )
     );
-    const netShares = String(
-      convertOnChainSharesToDisplayShareAmount(
-        new BN(e.netShares),
-        new BN(cash.decimals)
-      )
-    );
+
     return {
       ...e,
       tx_type: TransactionTypes.ADD_LIQUIDITY,
@@ -489,7 +484,7 @@ const shapeAddLiquidityTransactions = (
       cashValueUsd,
       value: cashValue,
       lpTokens,
-      netShares
+      netShares: e.netShares
     };
   });
 };

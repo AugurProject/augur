@@ -864,7 +864,9 @@ const getInitPositionValues = (trades: UserTrades, amm: AmmExchange, isYesOutcom
   const sharesEntered = accumSharesPrice(trades.enters, isYesOutcome, account);
   const sharesExited = accumSharesPrice(trades.exits, isYesOutcome, account);
   // get shares from LP activity
-  const sharesAddLiquidity = accumLpSharesAddPrice(amm.transactions, isYesOutcome, account);
+  const cashName = amm?.cash?.name;
+  const sharesAddLiquidity = accumLpSharesAddPrice(amm.transactions, isYesOutcome, account, cashName);
+  //console.log('sharesAddLiquidity', String(sharesAddLiquidity.cashAmount), String(sharesAddLiquidity.cashShareAmount), String(sharesAddLiquidity.shares))
   const sharesRemoveLiquidity = accumLpSharesRemovesPrice(amm.transactions, isYesOutcome, account);
   const positionFromLiquidity = sharesAddLiquidity.shares.gt(new BN(0));
   const positionFromRemoveLiquidity = sharesRemoveLiquidity.shares.gt(new BN(0));
@@ -891,12 +893,12 @@ const accumSharesPrice = (trades: AmmTransaction[], isYesOutcome: boolean, accou
   return { shares: result.shares, cashAmount: result.cashAmount };
 }
 
-const accumLpSharesAddPrice = (transactions: AmmTransaction[], isYesOutcome: boolean, account: string): { shares: BigNumber, cashAmount: BigNumber, cashShareAmount: BigNumber } => {
+const accumLpSharesAddPrice = (transactions: AmmTransaction[], isYesOutcome: boolean, account: string, cashName: string): { shares: BigNumber, cashAmount: BigNumber, cashShareAmount: BigNumber } => {
   const result = transactions.filter(t => isSameAddress(t.sender, account) && (t.tx_type === TransactionTypes.ADD_LIQUIDITY)).reduce((p, t) => {
     const yesShares = new BN(t.yesShares);
     const noShares = new BN(t.noShares);
     const cashValue = new BN(t.cash).minus(new BN(t.cashValue));
-    const cashShareAmount = new BN(t.cash).minus(new BN(t.cashValue)).div(NUM_TICKS_Y_N);
+    const cashShareAmount = cashName === USDC ? cashValue.div(NUM_TICKS_Y_N) : cashValue;
 
     if (isYesOutcome) {
       const netYesShares = noShares.minus(yesShares)
