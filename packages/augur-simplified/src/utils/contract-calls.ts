@@ -780,7 +780,6 @@ const getPositionUsdValues = (trades: UserTrades, rawBalance: string, balance: s
       result = getInitPositionValues(trades, amm, false, account);
     } else if (outcome === String(YES_OUTCOME_ID)) {
       currUsdValue = String(new BN(balance).times(new BN(priceYes)).times(new BN(amm.cash.usdPrice)));
-      console.log('priceYes', priceYes, balance, amm.cash.usdPrice)
       past24hrUsdValue = past24hrPriceYes ? String(new BN(balance).times(new BN(past24hrPriceYes))) : null;
       change24hrPositionUsd = past24hrPriceYes ? String(new BN(currUsdValue).times(new BN(past24hrUsdValue))) : null;
       result = getInitPositionValues(trades, amm, true, account);
