@@ -318,8 +318,8 @@ const shapeAmmExchange = (
     addLiquidity
   );
 
-  const priceNoFixed = priceNo.toFixed(2);
-  const priceYesFixed = priceYes.toFixed(2);
+  const priceNoFixed = priceNo.toFixed(4);
+  const priceYesFixed = priceYes.toFixed(4);
 
   // recreate outcomes specific for amm
   const ammOutcomes = [
@@ -482,7 +482,7 @@ const shapeAddLiquidityTransactions = (
       ...properties,
       price: null,
       cashValueUsd,
-      value: cashValue,
+      value: cashValueUsd,
       lpTokens,
       netShares: e.netShares
     };
