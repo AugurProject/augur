@@ -482,7 +482,7 @@ const shapeAddLiquidityTransactions = (
       ...properties,
       price: null,
       cashValueUsd,
-      value: cashValue,
+      value: cashValueUsd,
       lpTokens,
       netShares: e.netShares
     };
