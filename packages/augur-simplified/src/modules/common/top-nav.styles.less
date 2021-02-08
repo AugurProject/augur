@@ -42,7 +42,6 @@
         list-style: none;
         display: flex;
         flex-flow: row nowrap;
-        grid-gap: @size-40;
         margin: 0;
         padding: 0;
         min-height: @size-32;
@@ -50,6 +49,11 @@
 
         > li {
           flex: 0 auto;
+          margin-right: @size-40;
+
+          &:last-of-type {
+            margin-right: 0;
+          }
 
           > a {
             .text-20-bold;

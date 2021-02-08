@@ -15,14 +15,20 @@
   padding: @size-40 @size-88;
 
   > ul {
-    margin: 0;
     padding: 0;
     list-style: none;
     display: flex;
     flex-flow: row nowrap;
     width: 100%;
-    grid-gap: @size-20;
     margin: @size-40 0;
+
+    > div {
+      margin-right: @size-20;
+
+      &:last-of-type {
+        margin-right: 0;
+      }
+    }
 
     > button {
       margin-left: auto;
@@ -103,20 +109,20 @@
         grid-column: 1;
         grid-row: 1;
       }
-  
+
       > div[class*="CategoryLabel"] {
         grid-column: 2 / span 2;
         grid-row: 1;
         width: fit-content;
       }
-  
+
       > div:last-of-type {
         align-items: center;
         justify-content: flex-end;
         display: flex;
         grid-row: 1;
         grid-column: 3;
-  
+
         > span:not(:last-of-type) {
           margin-right: @size-8;
         }
@@ -234,7 +240,7 @@
 
     &:last-of-type {
       .SimpleBorder;
-      
+
       &:not(:first-of-type) {
         border-top-left-radius: 0;
         border-top-right-radius: 0;
@@ -346,7 +352,7 @@
               display: none;
             }
           }
-        } 
+        }
       }
 
       > span {
@@ -380,19 +386,19 @@
             margin-left: @size-4;
           }
         }
-  
+
         > div:nth-of-type(2) {
           align-items: center;
           justify-content: center;
           flex: 0;
           order: 3;
         }
-  
+
         > div.OutcomesTable {
           flex: 1 100%;
           order: 1;
           margin-bottom: @size-16;
-        } 
+        }
       }
     }
   }

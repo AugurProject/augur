@@ -8,7 +8,6 @@
     &:first-of-type {
       display: flex;
       flex-flow: column nowrap;
-      grid-gap: @size-40;
 
       > h1 {
         .text-30-bold;
@@ -20,6 +19,14 @@
 
       > div[class*="Outcomes"] {
         display: none;
+      }
+
+      > div,
+      > h1,
+      > ul,
+      > article,
+      > section {
+        margin-bottom: @size-40;
       }
     }
 
@@ -87,7 +94,7 @@
 
     &:first-of-type {
       .text-16;
-  
+
       color: var(--simple-secondary-text);
       margin-bottom: @size-8;
     }
@@ -210,7 +217,6 @@
 
 .MobileLiquidSection {
   display: none;
-  margin-top: @size-40;
 
   > button {
     width: 100%;
@@ -256,17 +262,16 @@
       max-width: unset;
       grid-gap: unset;
 
-      > h1 {
+      > div,
+      > h1,
+      > ul,
+      > article,
+      > section {
         margin-bottom: @size-24;
       }
 
-      > section {
-        margin-top: @size-40;
-        margin-bottom: @size-48;
-      }
-
-      > div:nth-of-type(4) {
-        margin: @size-40 0;
+      > section[class*="SimpleChartSection"] {
+        margin-bottom: @size-16;
       }
     }
 
