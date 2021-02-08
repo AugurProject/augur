@@ -69,16 +69,14 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         bool _keepLong,
         address _recipient
     ) external returns (address _ammAddress, uint256 _lpTokens) {
+        // User sends cash to factory, which turns cash into LP tokens and shares which it gives to the user.
+        _para.cash().transferFrom(msg.sender, address(this), _cash);
+        _para.setApprovalForAll(address(erc20Proxy1155Nexus), true);
+
         IAMMExchange _amm = createAMM(_market, _para, _fee);
         BPool _bPool = createBPool(_ammAddress, _para, _market);
 
         emit AMMCreated(_amm, _market, _para, _fee, _bPool);
-
-        // User sends cash to factory, which turns cash into LP tokens and shares which it gives to the user.
-        _para.cash().transferFrom(msg.sender, address(this), _cash);
-
-        // Approve balancer pool as it will need to pull tokens when binding tokens.
-        _para.setApprovalForAll(address(erc20Proxy1155Nexus), true);
 
         _ammAddress = address(_amm);
         _lpTokens = _amm.addInitialLiquidity(_cash, _ratioFactor, _keepLong, _recipient);
