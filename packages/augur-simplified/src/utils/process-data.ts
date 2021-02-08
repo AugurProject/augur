@@ -318,8 +318,8 @@ const shapeAmmExchange = (
     addLiquidity
   );
 
-  const priceNoFixed = priceNo.toFixed(2);
-  const priceYesFixed = priceYes.toFixed(2);
+  const priceNoFixed = priceNo.toFixed(4);
+  const priceYesFixed = priceYes.toFixed(4);
 
   // recreate outcomes specific for amm
   const ammOutcomes = [
@@ -473,12 +473,7 @@ const shapeAddLiquidityTransactions = (
         new BN(cash.decimals)
       )
     );
-    const netShares = String(
-      convertOnChainSharesToDisplayShareAmount(
-        new BN(e.netShares),
-        new BN(cash.decimals)
-      )
-    );
+
     return {
       ...e,
       tx_type: TransactionTypes.ADD_LIQUIDITY,
@@ -487,9 +482,9 @@ const shapeAddLiquidityTransactions = (
       ...properties,
       price: null,
       cashValueUsd,
-      value: cashValue,
+      value: cashValueUsd,
       lpTokens,
-      netShares
+      netShares: e.netShares
     };
   });
 };
@@ -662,8 +657,6 @@ const getActivityType = (
   switch (tx.tx_type) {
     case (TransactionTypes.ADD_LIQUIDITY): {
       type = 'Add Liquidity';
-      // when design wants to add usd value for this or remove use below:
-      //const usdValue = `${String(new BN(tx.value).times(new BN(cash.usdPrice)))}`;
       value = `${formatCash(tx.value, cash.name).full}`;
       break;
     }

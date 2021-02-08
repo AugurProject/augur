@@ -42,7 +42,6 @@ import {
   claimMarketWinnings,
   getLPCurrentValue,
 } from '../../utils/contract-calls';
-import { createBigNumber } from '../../utils/create-big-number';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
 import { InvalidFlagTipIcon, MovementLabel, WarningBanner } from './labels';
 
@@ -113,23 +112,21 @@ const PositionHeader = () => {
   );
 };
 
-const PositionRow = ({ position }: { position: PositionBalance }) => {
-  return (
-    <ul className={Styles.PositionRow}>
-      <li>{position.outcomeName}</li>
-      <li>{formatSimpleShares(position.quantity).formattedValue}</li>
-      <li>{formatSimplePrice(position.avgPrice).formattedValue}</li>
-      <li>{formatDai(position.initCostUsd).full}</li>
-      <li>{formatDai(position.usdValue).full}</li>
-      <li>
-        <MovementLabel
-          value={formatDai(position.totalChangeUsd)}
-          numberValue={parseFloat(position.totalChangeUsd)}
-        />
-      </li>
-    </ul>
-  );
-};
+const PositionRow = ({ position }: { position: PositionBalance }) => (
+  <ul className={Styles.PositionRow}>
+    <li>{position.outcomeName}</li>
+    <li>{formatSimpleShares(position.quantity).formattedValue}</li>
+    <li>{formatSimplePrice(position.avgPrice).formattedValue}</li>
+    <li>{formatDai(position.initCostUsd).full}</li>
+    <li>{formatDai(position.usdValue).full}</li>
+    <li>
+      <MovementLabel
+        value={formatDai(position.totalChangeUsd)}
+        numberValue={parseFloat(position.totalChangeUsd)}
+      />
+    </li>
+  </ul>
+);
 
 interface PositionFooterProps {
   claimableWinnings?: Winnings;
@@ -296,16 +293,13 @@ export const PositionTable = ({
   );
 };
 
-const LiquidityHeader = () => {
-  const { isMobile } = useAppStatusStore();
-  return (
-    <ul className={Styles.LiquidityHeader}>
-      <li>LP tokens owned</li>
-      <li>init. value</li>
-      <li>cur. value</li>
-    </ul>
-  );
-};
+const LiquidityHeader = () => (
+  <ul className={Styles.LiquidityHeader}>
+    <li>LP tokens owned</li>
+    <li>init. value</li>
+    <li>cur. value</li>
+  </ul>
+);
 
 const LiquidityRow = ({
   liquidity,

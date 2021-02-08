@@ -43,3 +43,174 @@
     }
   }
 }
+
+.faded {
+  opacity: 0.5;
+}
+
+.AmountInput {
+  .SimpleBorder;
+
+  display: flex;
+  padding: @size-24 @size-24 @size-40;
+  background: var(--light-background-color);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  > span:first-of-type {
+    .text-16-bold;
+
+    text-transform: capitalize;
+    color: var(--simple-secondary-text);
+  }
+
+  > span:nth-of-type(2) {
+    .text-14;
+
+    display: flex;
+    justify-content: flex-end;
+    text-transform: capitalize;
+    color: var(--simple-secondary-text);
+    cursor: pointer;
+    text-align: right;
+  }
+
+  > span.RateLabel {
+    display: none;
+  }
+
+  &.Rate {
+    padding-bottom: @size-12;
+
+    > span.RateLabel {
+      display: block;
+    }
+  }
+}
+
+.AmountInputDropdown {
+  .text-20-bold;
+
+  grid-column: 1 / span 2;
+  margin-top: @size-14;
+  background-color: var(--simple-light-bg);
+  border-radius: @size-8;
+  display: flex;
+  height: @size-50;
+  min-height: @size-50;
+  border: @size-1 solid transparent;
+  outline: 0;
+  color: var(--simple-secondary-text);
+
+  &:focus-within {
+    border: @size-1 solid var(--simple-border);
+    outline: 0;
+  }
+
+  > input {
+    .text-20-bold;
+
+    width: 100%;
+    color: var(--simple-primary-text);
+    background-color: var(--simple-light-bg);
+    border-radius: @size-8;
+    border: 0;
+    outline: 0;
+    flex: 1;
+    padding: @size-16 @size-12;
+    margin-right: @size-8;
+    padding-right: 0;
+    padding-left: 0;
+
+    &:focus {
+      border: 0;
+      outline: 0;
+    }
+
+    &:disabled {
+      text-align: center;
+      background-color: var(--simple-light-bg);
+    }
+  }
+
+  > div {
+    margin-left: -@size-80;
+  }
+
+  > span:first-of-type {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    margin-right: @size-2;
+    margin-left: @size-16;
+  }
+
+  &.Edited {
+    color: var(--simple-primary-text);
+  }
+
+  &.showCurrencyDropdown {
+    > input {
+      margin-right: @size-80;
+    }
+  }
+}
+
+.CurrencyLabel,
+.SharesLabel {
+  .text-16-semi-bold;
+
+  align-items: center;
+  color: var(--simple-primary-text);
+  flex: 0 0 auto;
+  display: flex;
+  flex-flow: row nowrap;
+  white-space: nowrap;
+  justify-content: center;
+  margin-right: @size-16;
+
+  > svg {
+    height: @size-24;
+    width: @size-24;
+    margin-right: @size-4;
+  }
+}
+
+.RateLabel {
+  .text-14;
+
+  color: var(--simple-secondary-text);
+  margin-top: @size-12;
+  margin-left: auto;
+  grid-column: 1 / span 2;
+  height: @size-16;
+
+  > span {
+    .text-14-semi-bold;
+
+    margin-right: @size-4;
+  }
+}
+
+.SharesLabel {
+  > button {
+    margin-left: @size-12;
+  }
+}
+
+.TextInput {
+  .SimpleBorder;
+  .text-16-bold;
+
+  display: flex;
+  padding: @size-12 @size-16;
+  background: transparent;
+  width: unset;
+  color: var(--simple-primary-text);
+
+  &:focus {
+    .SimpleBorder;
+    outline: 0;
+  }
+}

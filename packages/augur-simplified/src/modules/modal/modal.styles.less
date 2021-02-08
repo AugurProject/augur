@@ -32,7 +32,7 @@
 
     > div {
       max-width: 100%;
-      max-height: calc(100% - 48px);
+      max-height: calc(100% - @size-48);
       margin: 0 @size-16;
     }
   }
@@ -44,8 +44,8 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  width: 395px;
-  max-height: calc(100vh - 100px);
+  width: @size-395;
+  max-height: calc(100vh - @size-100);
   overflow-y: auto;
 
   > main {
@@ -59,12 +59,18 @@
     }
 
     > button:last-of-type {
-      margin-bottom: @size-24;
+      // margin-bottom: @size-24;
+      margin-bottom: 0;
     }
 
     > span {
       margin-bottom: @size-12;
       margin-top: @size-24;
+    }
+
+    > div > input {
+      margin-bottom: @size-16;
+      width: 100%
     }
 
     > div[class*='ErrorBlock'] {
@@ -169,6 +175,7 @@
 
     > div[class*='FooterText'] {
       margin: 0;
+      margin-top: @size-24;
     }
 
     > * {
@@ -259,6 +266,7 @@
   border-radius: @size-16;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+  margin-top: @size-24;
 
   > span:first-of-type {
     margin-bottom: @size-12;

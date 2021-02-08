@@ -38,7 +38,7 @@ export const Activity = () => {
                   <div>
                     {activityGroup.activity.map((activityItem) => (
                       <ActivityCard
-                        key={activityItem.id}
+                        key={`${activityItem.id}-${activityItem.currency}-${activityItem.type}-${activityItem.date}-${activityItem.time}`}
                         activity={activityItem}
                       />
                     ))}
