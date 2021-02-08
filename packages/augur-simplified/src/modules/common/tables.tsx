@@ -136,7 +136,7 @@ interface PositionFooterProps {
 }
 export const PositionFooter = ({
   claimableWinnings,
-  market: { settlementFee, reportingFee, marketId, amm },
+  market: { settlementFee, marketId, amm },
   showTradeButton,
 }: PositionFooterProps) => {
   const {
@@ -272,7 +272,7 @@ export const PositionTable = ({
           0 && (
           <WarningBanner
             className={Styles.MarginTop}
-            title={'Why do I have a position after adding liquidity?'}
+            title='Why do I have a position after adding liquidity?'
             subtitle={
               'To maintain the Yes to No percentage ratio, a number of shares are returned to the liquidity provider.'
             }
@@ -285,7 +285,7 @@ export const PositionTable = ({
           .length > 0 && (
           <WarningBanner
             className={Styles.MarginTop}
-            title={'Why do I have a position after removing liquidity?'}
+            title='Why do I have a position after removing liquidity?'
             subtitle={`To give liquidity providers the most options available to manage their positions. Shares can be sold for ${market?.amm?.cash?.name}.`}
             onClose={() => updateSeenPositionWarning(marketAmmId, true, REMOVE)}
           />
