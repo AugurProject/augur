@@ -250,16 +250,29 @@
 .SimpleChartSection {
   display: flex;
   flex-flow: column nowrap;
-  grid-gap: @size-16;
+
+  > * {
+    margin-bottom: @size-16;
+  }
 
   > div {
     display: flex;
     flex-flow: row wrap;
-    grid-gap: @size-8;
+    margin-bottom: 0;
+
+    > button {
+      margin: 0 @size-8 0 0;
+    }
   }
 
   > ul {
     align-self: flex-end;
+  }
+
+  @media @breakpoint-mobile-tablet {
+    > div > button {
+      margin: 0 0 @size-8 0;
+    }
   }
 }
 
@@ -274,6 +287,7 @@
   flex: 0 auto;
   white-space: nowrap;
   text-transform: capitalize;
+  grid-gap: 0;
 
   > span {
     border: @size-2 solid var(--simple-border-dk);
@@ -286,6 +300,7 @@
     max-height: @size-20;
     max-width: @size-20;
     box-sizing: border-box;
+    margin-right: @size-8;
 
     > svg {
       height: @size-16;
@@ -298,6 +313,7 @@
     .text-16-semi-bold;
 
     color: var(--simple-primary-text);
+    margin-left: @size-8;
   }
 
   &:hover:not([class*="isSelected_"]) {
