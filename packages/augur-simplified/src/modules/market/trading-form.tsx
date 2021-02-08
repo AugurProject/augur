@@ -228,13 +228,14 @@ interface InfoNumber {
 
 interface InfoNumbersProps {
   infoNumbers: InfoNumber[];
+  unedited?: boolean;
 }
 
-export const InfoNumbers = ({ infoNumbers }: InfoNumbersProps) => {
+export const InfoNumbers = ({ infoNumbers, unedited }: InfoNumbersProps) => {
   return (
     <div
       className={classNames(Styles.OrderInfo, {
-        [Styles.Populated]: infoNumbers[0]?.value !== '-',
+        [Styles.Populated]: !unedited,
       })}
     >
       {infoNumbers.map((infoNumber) => (
