@@ -9,7 +9,6 @@ import {
   MarketInfo,
   ActivityData,
   ProcessedData,
-  Universe,
 } from '../modules/types';
 import { BigNumber as BN } from 'bignumber.js';
 import { getDayFormat, getDayTimestamp, getTimeFormat } from './date-utils';
