@@ -19,7 +19,6 @@ import {
 } from '../../utils/format-number';
 import {
   ApprovalButton,
-  TinyButton,
   BuySellButton,
   APPROVED,
 } from '../common/buttons';
@@ -36,10 +35,8 @@ import {
   BUY,
   SELL,
   YES_NO,
-  USDC,
   ETH,
 } from '../constants';
-import { CurrencyDropdown } from '../common/selection';
 import { generateTooltip } from '../common/labels';
 import {
   doTrade,
@@ -48,7 +45,7 @@ import {
 } from '../../utils/contract-calls';
 import { BigNumber as BN } from 'bignumber.js';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
-import { CloseIcon, UsdIcon, EthIcon, LinkIcon } from '../common/icons';
+import { CloseIcon, LinkIcon } from '../common/icons';
 import {
   checkAllowance,
   isERC1155ContractApproved,
