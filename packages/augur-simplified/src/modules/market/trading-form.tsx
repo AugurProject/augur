@@ -104,7 +104,7 @@ const Outcome = ({
   const { prepend, symbol } = getCashFormat(ammCash?.name);
   useEffect(() => {
     if (outcome.price !== '0' && outcome.price && outcome.price !== '') {
-      setCustomVal(outcome.price.split('.')[1]);
+      setCustomVal(outcome.price);
     }
   }, [outcome.price]);
   const formattedPrice = formatDai(outcome.price);
@@ -128,19 +128,15 @@ const Outcome = ({
       <span>{outcome.name}</span>
       {editable ? (
         <div onClick={() => input.current && input.current.focus()}>
-          <span>{`${prepend && symbol}0.`}</span>
+          <span>{`${prepend && symbol}`}</span>
           <input
             value={customVal}
             onChange={(v) => {
               setCustomVal(`${v.target.value}`);
-              setEditableValue(
-                v.target.value && v.target.value !== '0'
-                  ? `.${v.target.value}`
-                  : `${v.target.value}`
-              );
+              setEditableValue(v.target.value);
             }}
             type="number"
-            placeholder={PLACEHOLDER}
+            placeholder={editable ? '0.0' : PLACEHOLDER}
             ref={input}
             // @ts-ignore
             onWheel={(e) => e?.target?.blur()}
