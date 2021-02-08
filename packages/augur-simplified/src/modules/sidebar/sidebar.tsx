@@ -22,14 +22,18 @@ import {
   sortByItems,
 } from '../constants';
 
-export default function isMobileBrowser(): boolean {
-  console.log(navigator.platform);
+export function isMobileBrowser(): boolean {
   return (
-    navigator.platform.indexOf('Android') > -1 ||
-    navigator.platform.indexOf('iPhone') > -1 ||
-    navigator.platform.indexOf('iPad') > -1 ||
-    navigator.platform.indexOf('webOS') > -1 ||
-    navigator.platform.indexOf('Windows Phone') > -1
+    navigator.userAgent.indexOf('Android') > -1 ||
+    navigator.userAgent.indexOf('webOS') > -1 ||
+    navigator.userAgent.indexOf('Windows Phone') > -1
+  );
+}
+
+export function isMobileBrowserTall(): boolean {
+  return (
+    navigator.userAgent.indexOf('iPhone') > -1 ||
+    navigator.userAgent.indexOf('iPad') > -1
   );
 }
 
@@ -158,7 +162,12 @@ const NavigationSideBar = () => {
 export const Sidebar = () => {
   const { sidebarType } = useAppStatusStore();
   return (
-    <div className={classNames(Styles.Sidebar, {[Styles.MobileBrowser]: isMobileBrowser()})}>
+    <div
+      className={classNames(Styles.Sidebar, {
+        [Styles.MobileBrowser]: isMobileBrowser(),
+        [Styles.MobileBrowserTall]: isMobileBrowserTall(),
+      })}
+    >
       {sidebarType === SIDEBAR_TYPES.FILTERS && <FilterSideBar />}
       {sidebarType === SIDEBAR_TYPES.NAVIGATION && <NavigationSideBar />}
     </div>
