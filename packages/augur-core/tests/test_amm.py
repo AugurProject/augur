@@ -81,7 +81,7 @@ def test_amm_add_with_liquidity2(contractsFixture, market, cash, shareToken, fac
     ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, cost, RATIO_50_50, keepYes, account0)
     assert ammAddress != nullAddress
 
-def test_amm_initial_liquidity(contractsFixture, market, cash, shareToken, factory, amm, account0):
+def test_amm_initial_liquidity(contractsFixture, sessionFixture, market, cash, shareToken, factory, account0):
     if not contractsFixture.paraAugur:
         return skip("Test is only for para augur")
 
@@ -91,7 +91,11 @@ def test_amm_initial_liquidity(contractsFixture, market, cash, shareToken, facto
     cash.faucet(cost)
     cash.approve(factory.address, 10 ** 48)
 
-    lpTokens = amm.addInitialLiquidity(cost, 10**18, True, account0)
+    ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, cost, 10**18, True, account0)
+    assert ammAddress != nullAddress
+
+    amm = sessionFixture.applySignature("AMMExchange", ammAddress[0])
+    lpTokens = ammAddress[1]
 
     addLiquidityEvent = amm.getLogs('AddLiquidity')
     assert addLiquidityEvent[0].args.sender == account0

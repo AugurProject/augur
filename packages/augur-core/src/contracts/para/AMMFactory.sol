@@ -72,6 +72,7 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         // User sends cash to factory, which turns cash into LP tokens and shares which it gives to the user.
         _para.cash().transferFrom(msg.sender, address(this), _cash);
         _para.setApprovalForAll(address(erc20Proxy1155Nexus), true);
+        _para.cash().approve(address(_para.augur()), 2**256-1);
 
         IAMMExchange _amm = createAMM(_market, _para, _fee);
         BPool _bPool = createBPool(_ammAddress, _para, _market);
@@ -79,6 +80,9 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         emit AMMCreated(_amm, _market, _para, _fee, _bPool);
 
         _ammAddress = address(_amm);
+
+        _cash = _para.cash().balanceOf(address(this));
+
         _lpTokens = _amm.addInitialLiquidity(_cash, _ratioFactor, _keepLong, _recipient);
     }
 
