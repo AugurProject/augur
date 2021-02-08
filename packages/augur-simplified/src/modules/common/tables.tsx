@@ -43,7 +43,7 @@ import {
   getLPCurrentValue,
 } from '../../utils/contract-calls';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
-import { InvalidFlagTipIcon, MovementLabel, WarningBanner } from './labels';
+import { InvalidFlagTipIcon, MovementLabel, WarningBanner, generateTooltip } from './labels';
 
 interface PositionsTableProps {
   market: MarketInfo;
@@ -107,7 +107,7 @@ const PositionHeader = () => {
       </li>
       <li>init. value</li>
       <li>cur.{isMobile ? <br /> : ' '}value</li>
-      <li>p/l</li>
+      <li>p/l {generateTooltip('Display values might be rounded, consider this in calculations', 'pnltip-positionheader')}</li>
     </ul>
   );
 };
