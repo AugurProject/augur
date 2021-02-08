@@ -28,6 +28,7 @@ import {
   formatCash,
   formatSimplePrice,
   formatSimpleShares,
+  formatPercent,
 } from '../../utils/format-number';
 import { MODAL_ADD_LIQUIDITY, USDC } from '../constants';
 import { useAppStatusStore } from '../stores/app-status';
@@ -107,7 +108,7 @@ const PositionHeader = () => {
       </li>
       <li>init. value</li>
       <li>cur.{isMobile ? <br /> : ' '}value</li>
-      <li>p/l {generateTooltip('Display values might be rounded, consider this in calculations', 'pnltip-positionheader')}</li>
+      <li>p/l {generateTooltip('Display values might be rounded, consider this in calculations.', 'pnltip-positionheader')}</li>
     </ul>
   );
 };
@@ -135,7 +136,7 @@ interface PositionFooterProps {
 }
 export const PositionFooter = ({
   claimableWinnings,
-  market: { fee, marketId, amm },
+  market: { settlementFee, reportingFee, marketId, amm },
   showTradeButton,
 }: PositionFooterProps) => {
   const {
@@ -177,7 +178,7 @@ export const PositionFooter = ({
     <div className={Styles.PositionFooter}>
       {claimableWinnings && (
         <>
-          <span>{`${fee}% fee charged on settlement`}</span>
+          <span>{`${formatPercent(settlementFee).full} fee charged on settlement`}</span>
           <PrimaryButton
             text={`Claim Winnings (${
               formatCash(claimableWinnings?.claimableBalance, amm?.cash?.name)

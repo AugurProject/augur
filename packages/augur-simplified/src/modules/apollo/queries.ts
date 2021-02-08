@@ -67,6 +67,7 @@ export const GET_MARKETS = blockNumber => {
     noShowBond
     universe {
       id
+      reportingFee
     }
     endTimestamp
     status
