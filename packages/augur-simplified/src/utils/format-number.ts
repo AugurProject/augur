@@ -208,12 +208,13 @@ export function formatBestPrice(
     decimalsRounded: decimals,
     denomination: v => {
       const isNegative = Number(v) < 0;
+      const formattedNegative = createBigNumber(createBigNumber(v).toFixed(2)).lt(0);
       const val = isNegative
         ? createBigNumber(v)
           .abs()
           .toFixed(2)
         : v;
-      return `${isNegative ? '-' : ''}${val}`;
+      return `${formattedNegative ? '-' : ''}${val}`;
     },
     positiveSign: false,
     zeroStyled: false,

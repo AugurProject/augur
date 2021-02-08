@@ -466,7 +466,7 @@ export const MovementLabel = ({ value, numberValue }: MovementLabelProps) => {
   const textColorStyle = getTextColorStyles(numberValue);
 
   const handlePlusMinus: Function = (label: string): string => {
-    if (numberValue > 0) {
+    if (numberValue >= 0.01) {
       return '+'.concat(label);
     }
     return label;
