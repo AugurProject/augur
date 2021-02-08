@@ -206,6 +206,8 @@ export interface MarketInfo {
   extraInfoRaw: string;
   longDescription: string;
   fee: string;
+  reportingFee: string;
+  settlementFee: string;
   categories: string[];
   outcomes: MarketOutcome[];
   amm: AmmExchange | null;

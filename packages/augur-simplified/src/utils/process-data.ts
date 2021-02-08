@@ -44,6 +44,10 @@ interface GraphMarket {
   outcomes: GraphMarketOutcome[];
   amms: GraphAmmExchange[];
   tradingProceedsClaimed: GraphClaims[]
+  universe?: {
+    id: string;
+    reportingFee: string;
+  };
 }
 
 interface GraphClaims {
@@ -195,6 +199,9 @@ const shapeMarketInfo = (
   const feeAsPercent = convertAttoValueToDisplayValue(new BN(market.fee)).times(
     100
   );
+  const reportingFeeAsPercent = new BN(1).dividedBy(new BN(market.universe.reportingFee)).times(
+    100
+  );
 
   const shareTokenCashes = Object.values(cashes).reduce((p, c) => ({ ...p, [c.shareToken.toLowerCase()]: c }), {})
   const claimedProceeds = market.tradingProceedsClaimed.filter(t => t.numPayoutTokens !== "0").map(t => {
@@ -220,6 +227,8 @@ const shapeMarketInfo = (
     creationTimestamp: market.timestamp,
     extraInfoRaw: market.extraInfoRaw,
     fee: String(feeAsPercent),
+    reportingFee: String(reportingFeeAsPercent),
+    settlementFee: String(feeAsPercent.plus(reportingFeeAsPercent)),
     outcomes: shapeOutcomes(market.outcomes),
     amm: ammExchange,
     reportingState: market.status,
