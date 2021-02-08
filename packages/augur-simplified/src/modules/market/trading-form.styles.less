@@ -358,6 +358,26 @@
   &.disabled {
     pointer-events: none;
   }
+
+  &.Error {
+    border: @size-1 solid var(--simple-failed);
+
+    &.Yes {
+      border-right-color: var(--simple-failed);
+    }
+    &:hover,
+    &:not(.Selected):hover {
+      border: @size-1 solid var(--simple-failed);
+
+      &.Yes {
+        border: @size-1 solid var(--simple-failed);
+      }
+
+      &:not(.Yes) {
+        border-left-color: transparent;
+      }
+    }
+  }
 }
 
 .OrderInfo {

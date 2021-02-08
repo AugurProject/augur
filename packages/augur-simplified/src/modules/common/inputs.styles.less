@@ -88,7 +88,7 @@
   }
 }
 
-.AmountInputDropdown {
+.AmountInputField {
   .text-20-bold;
 
   grid-column: 1 / span 2;
@@ -132,10 +132,6 @@
     }
   }
 
-  > div {
-    margin-left: -@size-80;
-  }
-
   > span:first-of-type {
     display: flex;
     justify-content: center;
@@ -153,6 +149,10 @@
     > input {
       margin-right: @size-80;
     }
+  }
+
+  &.Error {
+    border: @size-1 solid var(--simple-failed);
   }
 }
 
