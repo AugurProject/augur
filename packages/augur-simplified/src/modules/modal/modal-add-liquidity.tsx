@@ -128,7 +128,7 @@ const ModalAddLiquidity = ({
   const modalType = liquidityModalType;
 
   const [outcomes, setOutcomes] = useState<AmmOutcome[]>(
-    amm && modalType !== CREATE
+    !mustSetPrices && modalType !== CREATE
       ? amm.ammOutcomes
       : [
           {
@@ -539,7 +539,7 @@ const ModalAddLiquidity = ({
       header: 'add liquidity',
       showTradingFee: true,
       setOdds: true,
-      setOddsTitle: 'Current Prices',
+      setOddsTitle: mustSetPrices ? 'Set the price (between 0.0 to 1.0)' : 'Current Prices',
       receiveTitle: "You'll receive",
       actionButtonText: 'Add',
       confirmButtonText: 'confirm add',
