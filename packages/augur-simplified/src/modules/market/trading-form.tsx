@@ -17,11 +17,7 @@ import {
   formatSimpleShares,
   getCashFormat,
 } from '../../utils/format-number';
-import {
-  ApprovalButton,
-  BuySellButton,
-  APPROVED,
-} from '../common/buttons';
+import { ApprovalButton, BuySellButton, APPROVED } from '../common/buttons';
 import {
   ApprovalAction,
   SHARES,
@@ -94,6 +90,7 @@ const Outcome = ({
   ammCash,
   showAsButton,
   invalidSelected,
+  error,
 }) => {
   const [customVal, setCustomVal] = useState('');
   const input = useRef(null);
@@ -120,6 +117,7 @@ const Outcome = ({
         [Styles.InvalidSelected]: invalidSelected,
         [Styles.loggedOut]: !isLogged,
         [Styles.disabled]: !isLogged && outcome.isInvalid,
+        [Styles.Error]: error,
       })}
     >
       <span>{outcome.name}</span>
@@ -169,6 +167,7 @@ interface OutcomesGridProps {
   ammCash: Cash;
   showAsButtons?: boolean;
   dontFilterInvalid?: boolean;
+  error?: boolean;
 }
 export const OutcomesGrid = ({
   outcomes,
@@ -182,6 +181,7 @@ export const OutcomesGrid = ({
   ammCash,
   showAsButtons,
   dontFilterInvalid,
+  error,
 }: OutcomesGridProps) => {
   return (
     <div
@@ -212,6 +212,7 @@ export const OutcomesGrid = ({
             ammCash={ammCash}
             showAsButton={showAsButtons}
             invalidSelected={selectedOutcome?.isInvalid}
+            error={error}
           />
         ))}
     </div>
@@ -425,11 +426,10 @@ const TradingForm = ({
   const marketShares =
     balances?.marketShares && balances?.marketShares[amm?.id];
   const outcomeSharesRaw = JSON.stringify(marketShares?.outcomeSharesRaw);
-  const buttonError =
+  const amountError =
     amount !== '' &&
-    (isNaN(Number(amount)) || Number(amount) === 0 || Number(amount) < 0)
-      ? ERROR_AMOUNT
-      : '';
+    (isNaN(Number(amount)) || Number(amount) === 0 || Number(amount) < 0);
+  const buttonError = amountError ? ERROR_AMOUNT : '';
 
   useEffect(() => {
     function handleShowTradingForm() {
@@ -469,8 +469,15 @@ const TradingForm = ({
     return () => {
       isMounted = false;
     };
-  }, [orderType, selectedOutcomeId, amount, outcomeSharesRaw, amm?.volumeTotal, amm?.liquidity]);
-  
+  }, [
+    orderType,
+    selectedOutcomeId,
+    amount,
+    outcomeSharesRaw,
+    amm?.volumeTotal,
+    amm?.liquidity,
+  ]);
+
   const userBalance = String(
     useMemo(() => {
       return isBuy
@@ -501,7 +508,9 @@ const TradingForm = ({
         new BN(breakdown?.slippagePercent)
       )
     ) {
-      subText = `(Adjust slippage tolerance in settings to ${Math.ceil(Number(breakdown.slippagePercent))}%)`;
+      subText = `(Adjust slippage tolerance in settings to ${Math.ceil(
+        Number(breakdown.slippagePercent)
+      )}%)`;
       disabled = true;
     }
 
@@ -612,6 +621,7 @@ const TradingForm = ({
           chosenCash={isBuy ? ammCash?.name : SHARES}
           updateInitialAmount={setAmount}
           initialAmount={amount}
+          error={amountError}
           maxValue={userBalance}
           ammCash={ammCash}
           rate={

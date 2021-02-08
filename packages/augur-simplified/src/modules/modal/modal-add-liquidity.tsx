@@ -282,9 +282,11 @@ const ModalAddLiquidity = ({
       (!outcome.isInvalid && isInvalidNumber(outcome.price))
     );
   });
-  if (isInvalidNumber(amount)) {
+  const hasPriceErrors = priceErrors.length > 0;
+  const hasAmountErrors = isInvalidNumber(amount);
+  if (hasAmountErrors) {
     buttonError = ERROR_AMOUNT;
-  } else if (priceErrors.length > 0) {
+  } else if (hasPriceErrors) {
     buttonError = 'Price is not valid';
   }
 
@@ -292,9 +294,9 @@ const ModalAddLiquidity = ({
     const priceErrorsWithEmptyString = outcomes.filter(
       (outcome) =>
         !outcome.isInvalid &&
-        (isInvalidNumber(outcome.price) || outcome.price === '')
+        (parseFloat(outcome.price) >= 1 || isInvalidNumber(outcome.price) || outcome.price === '')
     );
-    if (priceErrorsWithEmptyString.length > 0 || isInvalidNumber(amount)) {
+    if (priceErrorsWithEmptyString.length > 0 || hasAmountErrors) {
       return setBreakdown(defaultAddLiquidityBreakdown);
     }
 
@@ -537,7 +539,7 @@ const ModalAddLiquidity = ({
       header: 'add liquidity',
       showTradingFee: true,
       setOdds: true,
-      setOddsTitle: 'Current Odds',
+      setOddsTitle: 'Current Prices',
       receiveTitle: "You'll receive",
       actionButtonText: 'Add',
       confirmButtonText: 'confirm add',
@@ -689,6 +691,7 @@ const ModalAddLiquidity = ({
                   chosenCash={modalType === REMOVE ? SHARES : chosenCash}
                   updateCash={updateCash}
                   updateAmountError={() => null}
+                  error={hasAmountErrors}
                 />
               </>
             )}
@@ -723,6 +726,7 @@ const ModalAddLiquidity = ({
                   editable={mustSetPrices}
                   setEditableValue={(price, index) => setPrices(price, index)}
                   ammCash={cash}
+                  error={hasPriceErrors}
                 />
               </>
             )}

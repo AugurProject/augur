@@ -8,7 +8,7 @@ import { getCashFormat, formatCash, formatSimpleShares } from '../../utils/forma
 import { USDC, ERROR_AMOUNT, SHARES } from '../constants';
 import { useAppStatusStore } from '../stores/app-status';
 import { TinyButton } from './buttons.styles.less';
-import { CurrencyDropdown } from './selection.styles.less';
+import { CurrencyDropdown } from './selection';
 
 const ENTER_CHAR_CODE = 13;
 export const SearchInput = ({ value, onChange, clearValue }) => {
@@ -59,7 +59,7 @@ interface AmountInputProps {
   updateCash?: (string) => void;
   chosenCash: string;
   rate?: string;
-  amountError?: string;
+  error?: boolean;
   updateAmountError?: Function;
   ammCash: Cash;
   isBuy?: boolean;
@@ -76,6 +76,7 @@ export const AmountInput = ({
   ammCash,
   updateAmountError = () => {},
   isBuy = true,
+  error
 }: AmountInputProps) => {
   const { isLogged } = useAppStatusStore();
   const currencyName = chosenCash;
@@ -115,9 +116,10 @@ export const AmountInput = ({
           }`}
       </span>
       <div
-        className={classNames(Styles.AmountInputDropdown, {
+        className={classNames(Styles.AmountInputField, {
           [Styles.Edited]: amount !== '',
           [Styles.showCurrencyDropdown]: showCurrencyDropdown,
+          [Styles.Error]: error
         })}
       >
         <span>{chosenCash !== SHARES && prepend && symbol}</span>
