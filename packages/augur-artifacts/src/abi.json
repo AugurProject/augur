@@ -22292,8 +22292,13 @@
 					"type": "address"
 				},
 				{
-					"internalType": "contract BPool",
-					"name": "_bPool",
+					"internalType": "contract BFactory",
+					"name": "_bFactory",
+					"type": "address"
+				},
+				{
+					"internalType": "contract IERC20Proxy1155Nexus",
+					"name": "_erc20Proxy1155Nexus",
 					"type": "address"
 				}
 			],
@@ -22327,41 +22332,16 @@
 					"internalType": "uint256",
 					"name": "fee",
 					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "contract BPool",
+					"name": "bPool",
+					"type": "address"
 				}
 			],
 			"name": "AMMCreated",
 			"type": "event"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "contract IMarket",
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"internalType": "contract ParaShareToken",
-					"name": "_para",
-					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_fee",
-					"type": "uint256"
-				}
-			],
-			"name": "addAMM",
-			"outputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
 		},
 		{
 			"constant": false,
@@ -22417,6 +22397,73 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "contract IMarket",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "contract ParaShareToken",
+					"name": "_para",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_fee",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_cash",
+					"type": "uint256"
+				},
+				{
+					"internalType": "address",
+					"name": "_recipient",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_cashToInvalidPool",
+					"type": "uint256"
+				}
+			],
+			"name": "addLiquidity",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "balancePools",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
