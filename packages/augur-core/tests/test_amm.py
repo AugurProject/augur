@@ -85,8 +85,8 @@ def test_amm_initial_liquidity(contractsFixture, sessionFixture, market, cash, s
     if not contractsFixture.paraAugur:
         return skip("Test is only for para augur")
 
-    sets = 100 * ATTO
-    cost = sets * 1000
+    cost = 100 * ATTO * 1000
+    sets = (100 * ATTO) - (2 * 10**6)
 
     cash.faucet(cost)
     cash.approve(factory.address, 10 ** 48)
@@ -121,11 +121,11 @@ def test_amm_initial_liquidity(contractsFixture, sessionFixture, market, cash, s
     assert cash.balanceOf(account0) == 0  # user did not receive cash, just shares
     assert cash.balanceOf(amm.address) == 0  # shares are just passed along to user; no cash suddenly appears
     assert amm.balanceOf(account0) == lpTokens - removedLPTokens
-    # user receives 10 of each share
-    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == sets * 0.1
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == sets * 0.1
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == sets * 0.1
-    # AMM still has 90 of each share
+    # user receives just shy of 10 of each share
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == sets // 10
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == sets // 10
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == sets // 10
+    # # AMM still has 90 of each share
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, amm.address) == sets * 0.9
     assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == sets * 0.9
     assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == sets * 0.9
