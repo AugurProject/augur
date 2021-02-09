@@ -294,7 +294,9 @@ const ModalAddLiquidity = ({
     const priceErrorsWithEmptyString = outcomes.filter(
       (outcome) =>
         !outcome.isInvalid &&
-        (parseFloat(outcome.price) >= 1 || isInvalidNumber(outcome.price) || outcome.price === '')
+        (parseFloat(outcome.price) >= 1 ||
+          isInvalidNumber(outcome.price) ||
+          outcome.price === '')
     );
     if (priceErrorsWithEmptyString.length > 0 || hasAmountErrors) {
       return setBreakdown(defaultAddLiquidityBreakdown);
@@ -539,7 +541,9 @@ const ModalAddLiquidity = ({
       header: 'add liquidity',
       showTradingFee: true,
       setOdds: true,
-      setOddsTitle: mustSetPrices ? 'Set the price (between 0.0 to 1.0)' : 'Current Prices',
+      setOddsTitle: mustSetPrices
+        ? 'Set the price (between 0.0 to 1.0)'
+        : 'Current Prices',
       receiveTitle: "You'll receive",
       actionButtonText: 'Add',
       confirmButtonText: 'confirm add',
@@ -767,7 +771,13 @@ const ModalAddLiquidity = ({
             <span className={Styles.SmallLabel}>
               {LIQUIDITY_STRINGS[modalType].receiveTitle}
             </span>
-            <InfoNumbers infoNumbers={LIQUIDITY_STRINGS[modalType].breakdown} />
+            <InfoNumbers
+              unedited={
+                JSON.stringify(breakdown) ===
+                JSON.stringify(defaultAddLiquidityBreakdown)
+              }
+              infoNumbers={LIQUIDITY_STRINGS[modalType].breakdown}
+            />
             {!isApproved && (
               <ApprovalButton
                 amm={amm}
