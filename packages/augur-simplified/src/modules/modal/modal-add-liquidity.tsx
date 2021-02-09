@@ -472,7 +472,7 @@ const ModalAddLiquidity = ({
         });
     }
     closeModal();
-    if (modalType === CREATE) {
+    if (modalType === CREATE && history.location.pathname !== `/${MARKETS}`) {
       history.push(`/${MARKETS}`);
     }
   };
