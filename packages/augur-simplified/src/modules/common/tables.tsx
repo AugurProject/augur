@@ -92,8 +92,8 @@ const PositionHeader = () => {
             owned
           </>
         ) : (
-          'quantity owned'
-        )}
+            'quantity owned'
+          )}
       </li>
       <li>
         {isMobile ? (
@@ -103,8 +103,8 @@ const PositionHeader = () => {
             price
           </>
         ) : (
-          'avg. price paid'
-        )}
+            'avg. price paid'
+          )}
       </li>
       <li>init. value</li>
       <li>cur.{isMobile ? <br /> : ' '}value</li>
@@ -113,18 +113,20 @@ const PositionHeader = () => {
   );
 };
 
-const PositionRow = ({ position }: { position: PositionBalance }) => (
+const PositionRow = ({ position, hasLiquidity = true }: { position: PositionBalance, hasLiquidity: boolean }) => (
   <ul className={Styles.PositionRow}>
     <li>{position.outcomeName}</li>
     <li>{formatSimpleShares(position.quantity).formattedValue}</li>
     <li>{formatSimplePrice(position.avgPrice).formattedValue}</li>
     <li>{formatDai(position.initCostUsd).full}</li>
-    <li>{formatDai(position.usdValue).full}</li>
+    <li>{hasLiquidity ? formatDai(position.usdValue).full : '-'}</li>
     <li>
-      <MovementLabel
-        value={formatDai(position.totalChangeUsd)}
-        numberValue={parseFloat(position.totalChangeUsd)}
-      />
+      {hasLiquidity ?
+        <MovementLabel
+          value={formatDai(position.totalChangeUsd)}
+          numberValue={parseFloat(position.totalChangeUsd)}
+        />
+        : '-'}
     </li>
   </ul>
 );
@@ -180,10 +182,9 @@ export const PositionFooter = ({
         <>
           <span>{`${formatPercent(settlementFee).full} fee charged on settlement`}</span>
           <PrimaryButton
-            text={`Claim Winnings (${
-              formatCash(claimableWinnings?.claimableBalance, amm?.cash?.name)
+            text={`Claim Winnings (${formatCash(claimableWinnings?.claimableBalance, amm?.cash?.name)
                 .full
-            })`}
+              })`}
             action={claim}
           />
         </>
@@ -205,10 +206,10 @@ export const AllPositionTable = ({ page }) => {
   } = useAppStatusStore();
   const positions = marketShares
     ? ((Object.values(marketShares) as unknown[]) as {
-        ammExchange: AmmExchange;
-        positions: PositionBalance[];
-        claimableWinnings: Winnings;
-      }[])
+      ammExchange: AmmExchange;
+      positions: PositionBalance[];
+      claimableWinnings: Winnings;
+    }[])
     : [];
 
   const positionVis = sliceByPage(
@@ -246,6 +247,7 @@ export const PositionTable = ({
     seenPositionWarnings && seenPositionWarnings[marketAmmId]?.add;
   const seenMarketPositionWarningRemove =
     seenPositionWarnings && seenPositionWarnings[marketAmmId]?.remove;
+  const hasLiquidity = ammExchange.liquidity !== "0";
   return (
     <>
       <div className={Styles.PositionTable}>
@@ -258,7 +260,7 @@ export const PositionTable = ({
           positions
             .filter((p) => p.visible)
             .map((position, id) => (
-              <PositionRow key={id} position={position} />
+              <PositionRow key={id} position={position} hasLiquidity={hasLiquidity} />
             ))}
         <PositionFooter
           showTradeButton={!singleMarket}
@@ -269,7 +271,7 @@ export const PositionTable = ({
       {!seenMarketPositionWarningAdd &&
         singleMarket &&
         positions.filter((position) => position.positionFromLiquidity).length >
-          0 && (
+        0 && (
           <WarningBanner
             className={Styles.MarginTop}
             title='Why do I have a position after adding liquidity?'
@@ -372,10 +374,10 @@ export const AllLiquidityTable = ({ page }) => {
   const { ammExchanges } = processed;
   const liquidities = lpTokens
     ? Object.keys(lpTokens).map((ammId) => ({
-        ammExchange: ammExchanges[ammId],
-        market: ammExchanges[ammId].market,
-        lpTokens: lpTokens[ammId],
-      }))
+      ammExchange: ammExchanges[ammId],
+      market: ammExchanges[ammId].market,
+      lpTokens: lpTokens[ammId],
+    }))
     : [];
   const liquiditiesViz = sliceByPage(
     liquidities,
@@ -476,17 +478,17 @@ export const PositionsLiquidityViewSwitcher = ({
 
   const positions = marketShares
     ? ((Object.values(marketShares) as unknown[]) as {
-        ammExchange: AmmExchange;
-        positions: PositionBalance[];
-        claimableWinnings: Winnings;
-      }[])
+      ammExchange: AmmExchange;
+      positions: PositionBalance[];
+      claimableWinnings: Winnings;
+    }[])
     : [];
   const liquidities = lpTokens
     ? Object.keys(lpTokens).map((ammId) => ({
-        ammExchange: ammExchanges[ammId],
-        market: ammExchanges[ammId].market,
-        lpTokens: lpTokens[ammId],
-      }))
+      ammExchange: ammExchanges[ammId],
+      market: ammExchanges[ammId].market,
+      lpTokens: lpTokens[ammId],
+    }))
     : [];
   return (
     <div className={Styles.PositionsLiquidityViewSwitcher}>
@@ -602,41 +604,41 @@ const TransactionsHeader = ({
             defaultValue={ALL}
           />
         ) : (
-          <>
-            <span
-              className={classNames({
-                [Styles.Selected]: selectedType === ALL,
-              })}
-              onClick={() => setSelectedType(ALL)}
-            >
-              all
+            <>
+              <span
+                className={classNames({
+                  [Styles.Selected]: selectedType === ALL,
+                })}
+                onClick={() => setSelectedType(ALL)}
+              >
+                all
             </span>
-            <span
-              className={classNames({
-                [Styles.Selected]: selectedType === SWAP,
-              })}
-              onClick={() => setSelectedType(SWAP)}
-            >
-              swaps
+              <span
+                className={classNames({
+                  [Styles.Selected]: selectedType === SWAP,
+                })}
+                onClick={() => setSelectedType(SWAP)}
+              >
+                swaps
             </span>
-            <span
-              className={classNames({
-                [Styles.Selected]: selectedType === ADD,
-              })}
-              onClick={() => setSelectedType(ADD)}
-            >
-              adds
+              <span
+                className={classNames({
+                  [Styles.Selected]: selectedType === ADD,
+                })}
+                onClick={() => setSelectedType(ADD)}
+              >
+                adds
             </span>
-            <span
-              className={classNames({
-                [Styles.Selected]: selectedType === REMOVE,
-              })}
-              onClick={() => setSelectedType(REMOVE)}
-            >
-              removes
+              <span
+                className={classNames({
+                  [Styles.Selected]: selectedType === REMOVE,
+                })}
+                onClick={() => setSelectedType(REMOVE)}
+              >
+                removes
             </span>
-          </>
-        )}
+            </>
+          )}
       </li>
       <li>total value</li>
       <li>token amount</li>
