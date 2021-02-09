@@ -104,7 +104,10 @@ export const outcomesToDisplay = (
   const invalid = combinedData.slice(0, 1);
   const yes = combinedData.slice(2, 3);
   const no = combinedData.slice(1, 2);
-  let newOrder = invalid.concat(yes).concat(no).concat(combinedData.slice(3));
+  let newOrder = invalid
+    .concat(yes)
+    .concat(no)
+    .concat(combinedData.slice(3));
   if (
     newOrder[0].isFinalNumerator &&
     newOrder[0].payoutNumerator !== '0' &&
@@ -113,7 +116,7 @@ export const outcomesToDisplay = (
     // invalid is winner -- only pass invalid
     newOrder = invalid;
   } else {
-    newOrder = newOrder.filter((outcome) => !outcome.isInvalid);
+    newOrder = newOrder.filter(outcome => !outcome.isInvalid);
   }
   return newOrder;
 };
@@ -130,7 +133,7 @@ const OutcomesTable = ({
       [Styles.hasWinner]: marketOutcomes[0].isFinalNumerator,
     })}
   >
-    {outcomesToDisplay(amm.ammOutcomes, marketOutcomes).map((outcome) => {
+    {outcomesToDisplay(amm.ammOutcomes, marketOutcomes).map(outcome => {
       const isWinner =
         outcome.isFinalNumerator && outcome.payoutNumerator !== '0';
       return (
@@ -201,19 +204,19 @@ const MarketCard = ({ market }: { market: MarketInfo }) => {
         </article>
         {!amm ? (
           <>
-          <span>{description}</span>
-          <div>
-            <span>Market requires Initial liquidity</span>
-            <PrimaryButton
-              title={
-                isLogged
-                  ? 'Earn fees as a liquidity provider'
-                  : `Connect an account to earn fees as a liquidity provider`
-              }
-              disabled={!isLogged}
-              text="Earn fees as a liquidity provider"
-            />
-          </div>
+            <span>{description}</span>
+            <div>
+              <span>Market requires Initial liquidity</span>
+              <PrimaryButton
+                title={
+                  isLogged
+                    ? 'Earn fees as a liquidity provider'
+                    : `Connect an account to earn fees as a liquidity provider`
+                }
+                disabled={!isLogged}
+                text="Earn fees as a liquidity provider"
+              />
+            </div>
           </>
         ) : (
           <MarketLink id={marketId} dontGoToMarket={!amm} ammId={amm?.id}>
@@ -252,7 +255,7 @@ const applyFiltersAndSort = (
 
     if (filter !== '') {
       updatedFilteredMarkets = updatedFilteredMarkets.filter(
-        (market) => searchedMarkets.indexOf(market.marketId) !== -1
+        market => searchedMarkets.indexOf(market.marketId) !== -1
       );
     }
 
@@ -332,8 +335,8 @@ const applyFiltersAndSort = (
     });
     if (sortBy !== ENDING_SOON) {
       updatedFilteredMarkets = updatedFilteredMarkets
-        .filter((m) => m.amm !== null)
-        .concat(updatedFilteredMarkets.filter((m) => m.amm === null));
+        .filter(m => m.amm !== null)
+        .concat(updatedFilteredMarkets.filter(m => m.amm === null));
     }
     setFilteredMarkets(updatedFilteredMarkets);
   });
@@ -364,7 +367,9 @@ const MarketsView = () => {
   }, [page]);
 
   useEffect(() => {
-    if (Object.values(markets).length > 0) setLoading(false);
+    if (Object.values(markets).length > 0) {
+      setLoading(false);
+    }
     setPage(1);
     applyFiltersAndSort(
       Object.values(markets),
@@ -379,12 +384,22 @@ const MarketsView = () => {
         showLiquidMarkets,
         showInvalidMarkets,
       },
-      (err) => updateGraphHeartbeat(processed, blocknumber, err)
+      err => updateGraphHeartbeat(processed, blocknumber, err)
     );
-  }, [sortBy, filter, categories, reportingState, currency, showLiquidMarkets.valueOf, showInvalidMarkets]);
+  }, [
+    sortBy,
+    filter,
+    categories,
+    reportingState,
+    currency,
+    showLiquidMarkets.valueOf(),
+    showInvalidMarkets,
+  ]);
 
   useEffect(() => {
-    if (Object.values(markets).length > 0) setLoading(false);
+    if (Object.values(markets).length > 0) {
+      setLoading(false);
+    }
     applyFiltersAndSort(
       Object.values(markets),
       setFilteredMarkets,
@@ -398,7 +413,7 @@ const MarketsView = () => {
         showLiquidMarkets,
         showInvalidMarkets,
       },
-      (err) => updateGraphHeartbeat(processed, blocknumber, err)
+      err => updateGraphHeartbeat(processed, blocknumber, err)
     );
   }, [markets]);
 
@@ -410,7 +425,7 @@ const MarketsView = () => {
 
   let changedFilters = 0;
 
-  Object.keys(DEFAULT_MARKET_VIEW_SETTINGS).forEach((setting) => {
+  Object.keys(DEFAULT_MARKET_VIEW_SETTINGS).forEach(setting => {
     if (marketsViewSettings[setting] !== DEFAULT_MARKET_VIEW_SETTINGS[setting])
       changedFilters++;
   });
@@ -441,28 +456,28 @@ const MarketsView = () => {
       )}
       <ul>
         <SquareDropdown
-          onChange={(value) => {
+          onChange={value => {
             updateMarketsViewSettings({ categories: value });
           }}
           options={categoryItems}
           defaultValue={categories}
         />
         <SquareDropdown
-          onChange={(value) => {
+          onChange={value => {
             updateMarketsViewSettings({ sortBy: value });
           }}
           options={sortByItems}
           defaultValue={sortBy}
         />
         <SquareDropdown
-          onChange={(value) => {
+          onChange={value => {
             updateMarketsViewSettings({ reportingState: value });
           }}
           options={marketStatusItems}
           defaultValue={reportingState}
         />
         <SquareDropdown
-          onChange={(value) => {
+          onChange={value => {
             updateMarketsViewSettings({ currency: value });
           }}
           options={currencyItems}
@@ -479,7 +494,7 @@ const MarketsView = () => {
       {showFilter && (
         <SearchInput
           value={filter}
-          onChange={(e) => setFilter(e.target.value)}
+          onChange={e => setFilter(e.target.value)}
           clearValue={() => setFilter('')}
         />
       )}
@@ -509,7 +524,7 @@ const MarketsView = () => {
           page={page}
           itemCount={filteredMarkets.length}
           itemsPerPage={PAGE_LIMIT}
-          action={(page) => {
+          action={page => {
             setPage(page);
           }}
           updateLimit={null}
