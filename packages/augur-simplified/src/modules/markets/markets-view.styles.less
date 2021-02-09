@@ -96,21 +96,21 @@
         grid-gap: 0;
       }
 
-      > div[class*="InSettlement"],
-      > div[class*="Resolved"] {
+      > div[class*='InSettlement'],
+      > div[class*='Resolved'] {
         display: none;
         grid-row: 1;
         grid-column: 1 / span 3;
       }
 
-      > div[class*="CategoryIcon"] {
+      > div[class*='CategoryIcon'] {
         display: flex;
         margin-right: @size-8;
         grid-column: 1;
         grid-row: 1;
       }
 
-      > div[class*="CategoryLabel"] {
+      > div[class*='CategoryLabel'] {
         grid-column: 2 / span 2;
         grid-row: 1;
         width: fit-content;
@@ -327,14 +327,13 @@
       max-width: 100%;
 
       > article {
-
         &.Trading {
           grid-template-rows: auto;
         }
 
         &:not(.Trading) {
-          > div[class*="InSettlement"],
-          > div[class*="Resolved"] {
+          > div[class*='InSettlement'],
+          > div[class*='Resolved'] {
             display: flex;
             grid-row: 1;
             grid-column: 1 / span 3;
@@ -342,13 +341,13 @@
             margin-bottom: @size-16;
           }
 
-          > div[class*="CategoryIcon"],
-          > div[class*="CategoryLabel"],
+          > div[class*='CategoryIcon'],
+          > div[class*='CategoryLabel'],
           > div:last-of-type {
             grid-row: 2;
 
-            > div[class*="InSettlement"],
-            > div[class*="Resolved"] {
+            > div[class*='InSettlement'],
+            > div[class*='Resolved'] {
               display: none;
             }
           }
@@ -436,6 +435,31 @@
     > div {
       background-color: var(--simple-alternate-background);
       border-radius: @size-8;
+      position: relative;
+
+      &::after {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        transform: translateX(-100%);
+        background-image: linear-gradient(
+          90deg,
+          transparent 0,
+          var(--simple-light-bg-20) 20%,
+          var(--simple-light-bg-50) 60%,
+          transparent
+        );
+        animation: shimmer 2s infinite;
+        content: '';
+      }
+
+      @keyframes shimmer {
+        100% {
+          transform: translateX(100%);
+        }
+      }
     }
 
     &:nth-of-type(1) {
