@@ -17,7 +17,8 @@ NO = 1
 YES = 2
 RATIO_50_50 = calc_ratio(0.5)
 RATIO_60_40 = calc_ratio(0.4)
-BALANCER_POOL_MIN = 2 * 10 ** 6
+BALANCER_POOL_MIN = 10 ** 6
+TOTAL_BALANCER_POOL_MIN = 2 * BALANCER_POOL_MIN
 
 @fixture
 def factory(sessionFixture):
@@ -37,6 +38,30 @@ def test_amm_calc_addr(contractsFixture, factory, shareToken, market):
 
     address = factory.calculateAMMAddress(market.address, shareToken.address, FEE)
     assert address != nullAddress
+
+def test_amm_add_with_minimal_liquidity(contractsFixture, market, cash, shareToken, factory, account0):
+    if not contractsFixture.paraAugur:
+        return skip("Test is only for para augur")
+
+    numticks = market.getNumTicks()
+    cost = TOTAL_BALANCER_POOL_MIN * numticks
+    # BALANCER_POOL_MIN accounts for cash and sets. Must divide in half.
+    sets = cost // (numticks * 2)
+    keepYes = True
+
+    cash.faucet(cost)
+    cash.approve(factory.address, cost)
+
+    ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, cost, RATIO_50_50, keepYes, account0)
+    amm = contractsFixture.applySignature("AMMExchange", ammAddress[0])
+
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, factory.address) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, factory.address) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, factory.address) == 0
+
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == sets
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == sets
 
 def test_amm_add_with_liquidity(contractsFixture, market, cash, shareToken, factory, account0):
     if not contractsFixture.paraAugur:
@@ -75,7 +100,7 @@ def test_amm_initial_liquidity(contractsFixture, sessionFixture, market, cash, s
         return skip("Test is only for para augur")
 
     sets = 100 * ATTO
-    cost = (sets * 1000) + (BALANCER_POOL_MIN * 1000)
+    cost = (sets * 1000) + (TOTAL_BALANCER_POOL_MIN * 1000)
 
     cash.faucet(cost)
     cash.approve(factory.address, 10 ** 48)
@@ -94,8 +119,8 @@ def test_amm_initial_liquidity(contractsFixture, sessionFixture, market, cash, s
     assert cash.balanceOf(amm.address) == 0
     # user did not get any shares themselves: they go to the AMM
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == 0
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == 0
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == BALANCER_POOL_MIN
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == BALANCER_POOL_MIN
     # AMM has 100 of each share
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, amm.address) == sets
     assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == sets
@@ -111,9 +136,9 @@ def test_amm_initial_liquidity(contractsFixture, sessionFixture, market, cash, s
     assert cash.balanceOf(amm.address) == 0  # shares are just passed along to user; no cash suddenly appears
     assert amm.balanceOf(account0) == lpTokens - removedLPTokens
     # user receives just shy of 10 of each share
-    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == sets * 0.1
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == sets * 0.1
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == sets * 0.1
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == sets // 10
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == (sets // 10) + BALANCER_POOL_MIN
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == (sets // 10) + BALANCER_POOL_MIN
     # # AMM still has 90 of each share
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, amm.address) == sets * 0.9
     assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == sets * 0.9
@@ -126,7 +151,7 @@ def test_amm_subsequent_liquidity(contractsFixture, market, cash, shareToken, fa
     cash.approve(factory.address, 10 ** 48)
 
     initialSets = 100 * ATTO
-    initialCost = (initialSets * 1000) + (BALANCER_POOL_MIN * 1000)
+    initialCost = (initialSets * 1000) + (TOTAL_BALANCER_POOL_MIN * 1000)
     cash.faucet(initialCost)
     ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, initialCost, 10**18, True, account0)
     amm = contractsFixture.applySignature("AMMExchange", ammAddress[0])
@@ -144,8 +169,8 @@ def test_amm_subsequent_liquidity(contractsFixture, market, cash, shareToken, fa
 
     # user receives no shares
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == 0
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == 0
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == BALANCER_POOL_MIN
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == BALANCER_POOL_MIN
     # AMM has initial and subsequent liquidity shares
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, amm.address) == totalSets
     assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == totalSets
@@ -170,7 +195,7 @@ def test_amm_60_40_liquidity(contractsFixture, market, cash, shareToken, factory
         return skip("Test is only for para augur")
 
     sets = 100 * ATTO
-    cost = (sets * 1000) + (BALANCER_POOL_MIN * 1000)
+    cost = (sets * 1000) + (TOTAL_BALANCER_POOL_MIN * 1000)
 
     cash.faucet(cost)
     cash.approve(factory.address, 10 ** 48)
@@ -190,8 +215,8 @@ def test_amm_60_40_liquidity(contractsFixture, market, cash, shareToken, factory
     assert cash.balanceOf(amm.address) == 0
     # user did not get any shares themselves: they go to the AMM
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == 0
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == keptYesShares
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == keptYesShares + BALANCER_POOL_MIN
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == BALANCER_POOL_MIN
     # AMM has 60 Yes shares and 40 No shares
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, amm.address) == sets
     assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == yesShares
@@ -212,8 +237,8 @@ def test_amm_60_40_liquidity(contractsFixture, market, cash, shareToken, factory
 
     # user receives 10 of each share
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == recoveredInvalidShares
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == recoveredNoShares
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == recoveredYesShares + keptYesShares
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == recoveredNoShares + BALANCER_POOL_MIN
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == recoveredYesShares + keptYesShares + BALANCER_POOL_MIN
     # AMM still has 90 of each share
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, amm.address) == remainingInvalidShares
     assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == remainingNoShares
@@ -231,7 +256,7 @@ def test_amm_yes_position(contractsFixture, market, shareToken, cash, factory, a
 
     numticks = market.getNumTicks()
     sets = 100 * ATTO
-    liquidityCost = (sets * numticks) + (BALANCER_POOL_MIN * numticks)
+    liquidityCost = (sets * numticks) + (TOTAL_BALANCER_POOL_MIN * numticks)
 
     cash.faucet(liquidityCost)
     cash.approve(factory.address, 10 ** 48)
@@ -251,8 +276,8 @@ def test_amm_yes_position(contractsFixture, market, shareToken, cash, factory, a
 
     assert cash.balanceOf(account0) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == 0
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == 0
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == sharesReceived
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == BALANCER_POOL_MIN
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == sharesReceived + BALANCER_POOL_MIN
 
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, amm.address) == sets + yesPositionSets
     assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == sets + yesPositionSets
@@ -263,7 +288,7 @@ def test_amm_yes_position(contractsFixture, market, shareToken, cash, factory, a
     shareToken.setApprovalForAll(factory.address, True)
 
     payoutAll = amm.exitAll(0)
-    assert payoutAll == 9751022193891319200732
+    assert payoutAll == 9751022193891809201232
 
     assert cash.balanceOf(account0) == payoutAll
 
@@ -273,7 +298,7 @@ def test_amm_yes_position_oversized(contractsFixture, shareToken, market, cash, 
 
     numticks = market.getNumTicks()
     sets = 100 * ATTO
-    liquidityCost = (sets * numticks) + (BALANCER_POOL_MIN * numticks)
+    liquidityCost = (sets * numticks) + (TOTAL_BALANCER_POOL_MIN * numticks)
 
     cash.faucet(liquidityCost)
     cash.approve(factory.address, 10 ** 48)
@@ -315,14 +340,14 @@ def test_amm_no_position(contractsFixture, market, shareToken, cash, factory, ac
 
     assert cash.balanceOf(account0) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == sharesReceived
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == sharesReceived
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == sharesReceived + BALANCER_POOL_MIN
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == BALANCER_POOL_MIN
 
 def test_amm_swap(contractsFixture, market, shareToken, cash, factory, account0):
     if not contractsFixture.paraAugur:
         return skip("Test is only for para augur")
 
-    liquidityCost = (100000 * ATTO) + (BALANCER_POOL_MIN * 1000)
+    liquidityCost = (100000 * ATTO) + (TOTAL_BALANCER_POOL_MIN * 1000)
 
     cash.faucet(liquidityCost)
     cash.approve(factory.address, 10 ** 48)
@@ -344,8 +369,8 @@ def test_amm_swap(contractsFixture, market, shareToken, cash, factory, account0)
     amm.swap(1 * ATTO, False, noSharesReceived)
 
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == noSharesReceived
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == noSharesReceived
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == yesShares - ATTO # spent one Yes share to buy some No shares
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == noSharesReceived + BALANCER_POOL_MIN
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == yesShares + BALANCER_POOL_MIN - ATTO # spent one Yes share to buy some No shares
 
 def test_amm_fees_work(sessionFixture, market, shareToken, cash, factory, account0):
     if not sessionFixture.paraAugur:
@@ -354,7 +379,7 @@ def test_amm_fees_work(sessionFixture, market, shareToken, cash, factory, accoun
     fee = 3 # 3/1000 aka 0.3%
 
     liquiditySets = 100 * ATTO
-    liquidityCash = (liquiditySets * market.getNumTicks()) + (BALANCER_POOL_MIN * market.getNumTicks())
+    liquidityCash = (liquiditySets * market.getNumTicks()) + (TOTAL_BALANCER_POOL_MIN * market.getNumTicks())
     cash.faucet(liquidityCash)
     cash.approve(factory.address, 10 ** 48)
     shareToken.setApprovalForAll(factory.address, True)
@@ -370,8 +395,8 @@ def test_amm_fees_work(sessionFixture, market, shareToken, cash, factory, accoun
     assert yesShares == 19063636363636363637
 
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == 0
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == 0
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == yesShares
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == BALANCER_POOL_MIN
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == yesShares + BALANCER_POOL_MIN
     assert cash.balanceOf(account0) == 0
     assert amm.balanceOf(account0) == amm.totalSupply()
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, amm.address) == liquiditySets + tradeSets
@@ -390,8 +415,8 @@ def test_amm_fees_work(sessionFixture, market, shareToken, cash, factory, accoun
     assert cash.balanceOf(amm.address) == 0
 
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == liquiditySets + tradeSets
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == liquiditySets + tradeSets
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == liquiditySets + tradeSets
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == liquiditySets + tradeSets + BALANCER_POOL_MIN
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == liquiditySets + tradeSets + BALANCER_POOL_MIN
     assert cash.balanceOf(account0) == 0
 
 def test_amm_fee_calc_0(sessionFixture, market, shareToken, cash, factory, account0):
@@ -572,7 +597,7 @@ def test_amm_villainous_fee_extraction(contractsFixture, market, cash, shareToke
 
     numticks = market.getNumTicks()
     sets = 100 * ATTO
-    initialLiquidityCost = (sets * numticks) + (BALANCER_POOL_MIN * 1000)
+    initialLiquidityCost = (sets * numticks) + (TOTAL_BALANCER_POOL_MIN * 1000)
 
     cash.approve(factory.address, 10 ** 48, sender=account0)
     cash.approve(factory.address, 10 ** 48, sender=account1)
@@ -642,7 +667,7 @@ def test_amm_add_liquidity_ratio(contractsFixture, market, cash, shareToken, fac
 
     cash.approve(factory.address, 10 ** 48)
 
-    initialLiquidityCost = (sets * numticks) + (BALANCER_POOL_MIN * 1000)
+    initialLiquidityCost = (sets * numticks) + (TOTAL_BALANCER_POOL_MIN * 1000)
     cash.faucet(initialLiquidityCost)
     ammInfo = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, initialLiquidityCost, RATIO_60_40, True, account0)
     amm = contractsFixture.applySignature("AMMExchange", ammInfo[0])
@@ -706,7 +731,7 @@ def test_amm_claim_from_multiple_markets(sessionFixture, universe, factory, shar
 
 def make_amm(sessionFixture, factory, market, shareToken, cash, account, fee=FEE, liquiditySets=0, liquidityRatio=RATIO_50_50):
     liquiditySets *= ATTO
-    liquidityCash = (liquiditySets * market.getNumTicks()) + (BALANCER_POOL_MIN * 1000)
+    liquidityCash = (liquiditySets * market.getNumTicks()) + (TOTAL_BALANCER_POOL_MIN * 1000)
     cash.faucet(liquidityCash)
     cash.approve(factory.address, 10 ** 48)
     shareToken.setApprovalForAll(factory.address, True)

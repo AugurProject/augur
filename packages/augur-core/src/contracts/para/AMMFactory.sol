@@ -75,7 +75,7 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         _para.cash().approve(address(_para.augur()), 2**256-1);
 
         IAMMExchange _amm = createAMM(_market, _para, _fee);
-        BPool _bPool = createBPool(_ammAddress, _para, _market);
+        BPool _bPool = createBPool(_ammAddress, _para, _market, _fee, _recipient);
 
         emit AMMCreated(_amm, _market, _para, _fee, _bPool);
 
@@ -83,7 +83,11 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
 
         _cash = _para.cash().balanceOf(address(this));
 
-        _lpTokens = _amm.addInitialLiquidity(_cash, _ratioFactor, _keepLong, _recipient);
+        if(_cash > 0) {
+            _lpTokens = _amm.addInitialLiquidity(_cash, _ratioFactor, _keepLong, _recipient);
+        } else {
+            _lpTokens = 0;
+        }
     }
 
     function createAMM(IMarket _market, ParaShareToken _para, uint256 _fee) private returns (IAMMExchange _amm) {
@@ -95,11 +99,11 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         exchanges[address(_market)][address(_para)][_fee] = _ammAddress;
     }
 
-    function createBPool(address _ammAddress, ParaShareToken _para, IMarket _market) private returns (BPool _bPool){
+    function createBPool(address _ammAddress, ParaShareToken _para, IMarket _market, uint256 _fee, address _recipient) private returns (BPool _bPool){
         _bPool = bFactory.newBPool();
         balancePools[_ammAddress] = address(_bPool);
 
-        IERC20Proxy1155 _invalidERC20Proxy1155 = erc20Proxy1155Nexus.newERC20(_para.getTokenId(_market, 1));
+        IERC20Proxy1155 _invalidERC20Proxy1155 = erc20Proxy1155Nexus.newERC20(_para.getTokenId(_market, 0));
 
         _invalidERC20Proxy1155.approve(address(_bPool), 2**256-1);
         _para.cash().approve(address(_bPool), 2**256-1);
@@ -124,6 +128,16 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         _bPool.bind(address(_invalidERC20Proxy1155),  _setsToBuy, 5 * 10**18);
 
         _bPool.finalize();
+
+        uint256[] memory _tokenIds = new uint256[](2);
+        _tokenIds[0] = _para.getTokenId(_market, 1);
+        _tokenIds[1] = _para.getTokenId(_market, 2);
+
+        uint256[] memory _amounts = new uint256[](2);
+        _amounts[0] = _setsToBuy;
+        _amounts[1] = _setsToBuy;
+
+        _para.unsafeBatchTransferFrom(address(this), _recipient, _tokenIds, _amounts);
     }
 
     function transferCash(
