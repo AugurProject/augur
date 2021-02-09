@@ -8,7 +8,6 @@ import { FortmaticConnector } from './Fortmatic'
 import { NetworkConnector } from './NetworkConnector'
 import { ChainId } from '@uniswap/sdk'
 
-const NETWORK_URL = process.env.REACT_APP_NETWORK_URL || 'https://eth-mainnet.alchemyapi.io/v2/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM'
 const PORTIS_ID = 'ede221f9-710f-44c9-a429-ed28bbb54376'
 const FORTMATIC_API_KEY = 'pk_live_8001A50CCA35D8CB'
 const FORTMATIC_API_TEST_KEY = 'pk_test_5185BE42CA372148'
@@ -19,6 +18,10 @@ export const NETWORK_CHAIN_ID: number = process.env.CHAIN_ID ? parseInt(process.
 if (NETWORK_CHAIN_ID === ChainId.MAINNET) {
   FORMATIC_KEY = FORTMATIC_API_KEY
 }
+
+const NETWORK_URL = process.env.REACT_APP_NETWORK_URL || NETWORK_CHAIN_ID === ChainId.MAINNET
+  ? 'https://eth-mainnet.alchemyapi.io/v2/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM'
+  : 'https://eth-kovan.alchemyapi.io/v2/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM'
 
 if (typeof NETWORK_URL === 'undefined') {
   throw new Error(`REACT_APP_NETWORK_URL must be a defined environment variable`)
@@ -39,7 +42,8 @@ export const injected = new InjectedConnector({
 
 // mainnet only
 export const walletconnect = new WalletConnectConnector({
-  rpc: { 1: NETWORK_URL },
+  rpc: { [NETWORK_CHAIN_ID]: NETWORK_URL },
+
   bridge: 'https://bridge.walletconnect.org',
   qrcode: true,
   pollingInterval: 15000
