@@ -433,31 +433,25 @@
     display: grid;
 
     > div {
-      background-color: var(--simple-alternate-background);
       border-radius: @size-8;
-      position: relative;
-
-      &::after {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        transform: translateX(-100%);
-        background-image: linear-gradient(
-          90deg,
-          transparent 0,
-          var(--simple-light-bg-20) 20%,
-          var(--simple-light-bg-50) 60%,
-          transparent
-        );
-        animation: shimmer 2s infinite;
-        content: '';
-      }
-
+      background: var(--light-background-color);
+      background-image: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);     
+      background-repeat: no-repeat;
+      background-size: 800px 104px; 
+      display: inline-block;
+      position: relative; 
+      
+      animation-fill-mode: forwards; 
+      animation-timing-function: linear;
+      animation: shimmer 2s infinite;
+      
       @keyframes shimmer {
+        0% {
+          background-position: -468px 0;
+        }
+        
         100% {
-          transform: translateX(100%);
+          background-position: 468px 0; 
         }
       }
     }
