@@ -456,13 +456,6 @@ export const claimWinnings = (account: string, marketIds: string[], cash: Cash):
   return augurClient.amm.claimMarketsProceeds(marketIds, shareTokens, account, ethers.utils.formatBytes32String('11'));
 }
 
-export const claimMarketWinnings = (account: string, library: Web3Provider, marketId: string, cash: Cash): Promise<TransactionResponse | null> => {
-  if (!cash?.shareToken) return null;
-  const contract = getContract(cash.shareToken, ParaShareToken.ABI, library, account);
-  return contract
-    .claimTradingProceeds(marketId, account, ethers.utils.formatBytes32String('11'));
-}
-
 interface UserTrades {
   enters: AmmTransaction[],
   exits: AmmTransaction[]
