@@ -2,11 +2,13 @@ import React, { useEffect, useMemo, useState } from 'react';
 
 import Styles from './modal.styles.less';
 import { Header } from './common';
+import { useHistory } from 'react-router';
 import {
   YES_NO,
   BUY,
   USDC,
   SHARES,
+  MARKETS,
   ApprovalAction,
   ENTER_AMOUNT,
   YES_OUTCOME_ID,
@@ -117,6 +119,7 @@ const ModalAddLiquidity = ({
     loginAccount,
     actions: { closeModal, addTransaction, updateTransaction },
   } = useAppStatusStore();
+  const history = useHistory();
   const account = loginAccount?.account;
 
   let amm = market?.amm;
@@ -348,10 +351,6 @@ const ModalAddLiquidity = ({
 
   useEffect(() => {
     getBreakdown();
-  }, []);
-
-  useEffect(() => {
-    getBreakdown();
   }, [
     account,
     amount,
@@ -473,6 +472,9 @@ const ModalAddLiquidity = ({
         });
     }
     closeModal();
+    if (modalType === CREATE) {
+      history.push(`/${MARKETS}`);
+    }
   };
 
   const LIQUIDITY_STRINGS = {
