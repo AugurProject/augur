@@ -40,7 +40,7 @@ import {
 } from '../routes/helpers/links';
 import { sliceByPage, Pagination } from './pagination';
 import {
-  claimMarketWinnings,
+  claimWinnings,
   getLPCurrentValue,
 } from '../../utils/contract-calls';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
@@ -150,7 +150,7 @@ export const PositionFooter = ({
   const account = loginAccount?.account;
   const claim = () => {
     if (amm && account) {
-      claimMarketWinnings(account, loginAccount?.library, marketId, amm?.cash)
+      claimWinnings(account, [marketId], amm?.cash)
         .then((response) => {
           // handle transaction response here
           if (response) {
