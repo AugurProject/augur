@@ -430,6 +430,7 @@ const shapeEnterTransactions = (
       sender: e.sender?.id,
       subheader,
       ...properties,
+      cashValueUsd: String(cashValueUsd),
       value: cashValueUsd
     };
   });
@@ -451,6 +452,7 @@ const shapeExitTransactions = (
       subheader,
       ...properties,
       value: cashValueUsd,
+      cashValueUsd: String(cashValueUsd)
     };
   });
 };
@@ -501,11 +503,12 @@ const shapeRemoveLiquidityTransactions = (
   return transactions.map((e) => {
     const properties = formatTransaction(e, cash);
     const subheader = `Remove ${cash.name} Liquidity`;
-    const cashValue = String(
-      convertOnChainSharesToDisplayShareAmount(
-        new BN(e.cashValue),
-        new BN(cash.decimals)
-      )
+    const cashValue = convertOnChainSharesToDisplayShareAmount(
+      new BN(e.cashValue),
+      new BN(cash.decimals)
+    )
+    const cashValueUsd = String(
+      cashValue.times(cash.usdPrice)
     );
     const shares = new BN(e.noShares).plus(new BN(e.yesShares));
     const shareAmount = String(formatShares(
@@ -527,8 +530,9 @@ const shapeRemoveLiquidityTransactions = (
       subheader,
       ...properties,
       price: null,
-      cashValue,
-      value: cashValue,
+      cashValue: String(cashValue),
+      cashValueUsd,
+      value: String(cashValue),
       tokenAmount,
       shareAmount
     };
