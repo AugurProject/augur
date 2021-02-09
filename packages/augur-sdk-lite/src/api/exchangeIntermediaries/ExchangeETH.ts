@@ -31,7 +31,7 @@ export class ExchangeETH extends ExchangeCommon implements ExchangeContractInter
   }
 
   async addInitialLiquidity(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, ratio: BigNumber, keepLong: Boolean, recipient: string): Promise<TransactionResponse> {
-    return this.wrapper.addInitialLiquidity(market, fee.toFixed(), keepLong, recipient, { value: cash.toFixed() });
+    return this.wrapper.addInitialLiquidity(market, fee.toFixed(), ratio.toFixed(), keepLong, recipient, { value: cash.toFixed() });
   }
 
   async addLiquidity(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, recipient: string): Promise<TransactionResponse> {
