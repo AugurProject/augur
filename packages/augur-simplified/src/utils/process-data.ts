@@ -309,6 +309,7 @@ const shapeAmmExchange = (
     priceYes,
     cash.usdPrice
   );
+
   const liquidityUSD = calculateLiquidityInUsd(amm.liquidity, cash.usdPrice);
 
   const volume24hrNoUSD = calculatePastVolumeInUsd(
@@ -606,20 +607,23 @@ const calculateTotalShareVolumeInUsd = (
   priceYes: number,
   priceUsd: string
 ): number => {
-  if (!priceNo || !priceYes) return 0;
-  const normalizedYes = new BN(volumeNo || 0).times(new BN(priceNo));
-  const normalizedNo = new BN(volumeYes || 0).times(new BN(priceYes));
+  const usePriceYes = priceYes ? priceYes : 0.5;
+  const usePriceNo = priceNo ? priceNo : 0.5;
+  const normalizedYes = new BN(volumeNo || 0).times(new BN(usePriceNo));
+  const normalizedNo = new BN(volumeYes || 0).times(new BN(usePriceYes));
   return normalizedYes.plus(normalizedNo).times(new BN(priceUsd)).toNumber();
 };
 
+const hasZeroValue = (value) => value === '0' || !value;
 const calculateVolumeInUsd = (
   volumeShare: string,
   priceShare: number,
   priceUsd: string
 ): string => {
-  if (!volumeShare || !priceUsd || !priceShare) return '0';
+  if (!volumeShare || !priceUsd) return '0';
+  const usePrice = hasZeroValue(priceShare) ? 0.5 : priceShare;
   return String(
-    new BN(volumeShare).times(new BN(priceShare)).times(new BN(priceUsd))
+    new BN(volumeShare).times(new BN(usePrice)).times(new BN(priceUsd))
   );
 };
 
@@ -631,18 +635,19 @@ const calculateLiquidityInUsd = (
   return Number(new BN(volumeOrLiquidity).times(new BN(priceUsd)).toFixed(2));
 };
 
-const hasZeroValue = (value) => value === '0' || !value;
 const calculatePastVolumeInUsd = (
   volume: string = '0',
   pastVolume: string = '0',
   priceShare: number = 0,
   priceUsd: string = '0'
 ): string => {
-  if (hasZeroValue(priceShare) || hasZeroValue(priceUsd)) return '0';
+  if (hasZeroValue(priceUsd)) return '0';
+  // use half way market for price if amm doesn't have price cuz no liquidity
+  const usePrice = hasZeroValue(priceShare) ? 0.5 : priceShare;
   return String(
     new BN(volume)
       .minus(new BN(pastVolume))
-      .times(new BN(priceShare))
+      .times(new BN(usePrice))
       .times(new BN(priceUsd))
   );
 };
