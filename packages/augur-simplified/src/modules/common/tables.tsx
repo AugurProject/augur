@@ -108,7 +108,7 @@ const PositionHeader = () => {
       </li>
       <li>init. value</li>
       <li>cur.{isMobile ? <br /> : ' '}value</li>
-      <li>p/l {generateTooltip('Display values might be rounded, consider this in calculations.', 'pnltip-positionheader')}</li>
+      <li>p/l {generateTooltip('Display values might be rounded, dashes are displayed when liquidity is depleted.', 'pnltip-positionheader')}</li>
     </ul>
   );
 };
