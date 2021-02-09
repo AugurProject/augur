@@ -666,7 +666,7 @@ const TransactionRow = ({ transaction }: TransactionProps) => {
       <li>
         <ReceiptLink hash={transaction.tx_hash} label={transaction.subheader} />
       </li>
-      <li>{formatDai(transaction.value).full}</li>
+      <li>{formatDai(transaction.cashValueUsd).full}</li>
       <li>{transaction.tokenAmount}</li>
       <li>{transaction.shareAmount}</li>
       <li>
