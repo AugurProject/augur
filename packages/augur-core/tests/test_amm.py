@@ -52,6 +52,29 @@ def test_amm_add_with_minimal_liquidity(contractsFixture, market, cash, shareTok
     cash.faucet(cost)
     cash.approve(factory.address, cost)
 
+    factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, cost, RATIO_50_50, keepYes, account0)
+
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, factory.address) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, factory.address) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, factory.address) == 0
+
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == sets
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == sets
+
+def test_amm_add_additional_liquidity(contractsFixture, market, cash, shareToken, factory, account0):
+    if not contractsFixture.paraAugur:
+        return skip("Test is only for para augur")
+
+    numticks = market.getNumTicks()
+    cost = TOTAL_BALANCER_POOL_MIN * numticks
+    # BALANCER_POOL_MIN accounts for cash and sets. Must divide in half.
+    sets = cost // (numticks * 2)
+    keepYes = True
+
+    cash.faucet(cost)
+    cash.approve(factory.address, cost)
+
     ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, cost, RATIO_50_50, keepYes, account0)
     amm = contractsFixture.applySignature("AMMExchange", ammAddress[0])
 
