@@ -338,7 +338,6 @@ export const estimateEnterPosition = async (
   let breakdown = null;
   const { cash, marketId, feeRaw } = amm;
 
-  console.log(ethers.utils.formatBytes32String('11'));
   if (tradeDirection === TradingDirection.ENTRY) {
     const inputOnChainCashAmount = convertDisplayCashAmountToOnChainCashAmount(new BN(inputDisplayAmount || "0"), new BN(cash?.decimals))
     console.log(
@@ -1028,7 +1027,6 @@ export const getERC1155ApprovedForAll = async (tokenAddress: string, provider: W
       },
     ],
   }];
-
   const isApprovedResult: ContractCallResults = await multicall.call(
     contractAllowanceCall
   );

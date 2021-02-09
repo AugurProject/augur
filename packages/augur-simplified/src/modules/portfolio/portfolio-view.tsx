@@ -4,7 +4,7 @@ import { AppViewStats } from '../common/labels';
 import Activity from './activity';
 import { PositionsLiquidityViewSwitcher } from '../common/tables';
 import { useAppStatusStore } from '../stores/app-status';
-import { APPROVED, PrimaryButton } from '../common/buttons';
+import { PrimaryButton } from '../common/buttons';
 import { NetworkMismatchBanner } from '../common/labels';
 import { EthIcon, UsdIcon } from '../common/icons';
 import { keyedObjToArray } from '../stores/app-status-hooks';
@@ -90,16 +90,11 @@ export const ClaimWinningsSection = () => {
   const { addresses } = paraConfig;
   const { WethWrapperForAMMExchange } = addresses;
   const [canClaimETH, setCanClaimETH] = useState(false);
-  const shareToken = Object.keys(paraConfig.paraDeploys).find(hash => paraConfig.paraDeploys[hash].name === 'WETH')
 
   useEffect(() => {
     const checkCanEthExit = async() => {
-      const approvalCheck = await isERC1155ContractApproved(shareToken, WethWrapperForAMMExchange, loginAccount, transactions, updateTransaction);
-      if (approvalCheck === APPROVED) {
-        setCanClaimETH(true);
-      } else {
-        setCanClaimETH(false);
-      }
+      const approvalCheck = await isERC1155ContractApproved(ethCash.shareToken, WethWrapperForAMMExchange, loginAccount, transactions, updateTransaction);
+      setCanClaimETH(Boolean(approvalCheck));
     }
     if (isLogged && !canClaimETH && ETHTotals.hasWinnings) {
         checkCanEthExit();

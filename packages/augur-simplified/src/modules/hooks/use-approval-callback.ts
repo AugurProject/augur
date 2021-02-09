@@ -1,97 +1,121 @@
-import { ApprovalState, ETH, TX_STATUS } from "../constants"
+import { ApprovalState, ETH, TX_STATUS } from '../constants';
 import { useActiveWeb3React } from '../ConnectAccount/hooks';
-import { useCallback, useMemo } from "react";
-import { getERC1155ApprovedForAll, getErc1155Contract, getERC20Allowance, getErc20Contract } from "../../utils/contract-calls";
-import { BigNumber as BN } from 'bignumber.js'
-import { useAppStatusStore } from "../stores/app-status";
-import { TransactionResponse } from '@ethersproject/providers'
-import { AmmExchange, LoginAccount, TransactionDetails } from "../types";
+import { useCallback, useMemo } from 'react';
+import {
+  getERC1155ApprovedForAll,
+  getErc1155Contract,
+  getERC20Allowance,
+  getErc20Contract,
+} from '../../utils/contract-calls';
+import { BigNumber as BN } from 'bignumber.js';
+import { useAppStatusStore } from '../stores/app-status';
+import { TransactionResponse } from '@ethersproject/providers';
+import { AmmExchange, LoginAccount, TransactionDetails } from '../types';
 
 const APPROVAL_AMOUNT = String(new BN(2 ** 255).minus(1));
 
 export const useIsTokenApproved = (tokenAddress: string): Promise<boolean> => {
-  const { loginAccount }  = useAppStatusStore()
+  const { loginAccount } = useAppStatusStore();
 
   return useMemo(async () => {
     if (loginAccount) {
-      const allowance = await getERC20Allowance(tokenAddress, loginAccount.library, loginAccount.account, loginAccount.account);
-      return allowance && new BN(allowance).gt(0) ? true : false
+      const allowance = await getERC20Allowance(
+        tokenAddress,
+        loginAccount.library,
+        loginAccount.account,
+        loginAccount.account
+      );
+      return allowance && new BN(allowance).gt(0) ? true : false;
     }
-    return false
-  }, [
-    loginAccount, tokenAddress
-  ])
-}
+    return false;
+  }, [loginAccount, tokenAddress]);
+};
 
-
-export const useIsTokenApprovedSpender = (tokenAddress: string, spender: string): Promise<boolean> => {
+export const useIsTokenApprovedSpender = (
+  tokenAddress: string,
+  spender: string
+): Promise<boolean> => {
   const { account, library } = useActiveWeb3React();
 
   return useMemo(async () => {
-    const allowance = await getERC20Allowance(tokenAddress, library, account, spender);
-    return allowance && new BN(allowance).gt(0) ? true : false
-  }, [
-    account,
-    library,
-    tokenAddress,
-    spender,
-  ])
-}
+    const allowance = await getERC20Allowance(
+      tokenAddress,
+      library,
+      account,
+      spender
+    );
+    return allowance && new BN(allowance).gt(0) ? true : false;
+  }, [account, library, tokenAddress, spender]);
+};
 
-const useHasPendingTransaction = (account: string, tokenAddress: string, spender: string): boolean => {
-  const { transactions } = useAppStatusStore()
+const useHasPendingTransaction = (
+  account: string,
+  tokenAddress: string,
+  spender: string
+): boolean => {
+  const { transactions } = useAppStatusStore();
 
   return useMemo(() => {
     if (!account || !tokenAddress || !spender) return false;
-    const tx = Object.values(transactions).find(tx => tx.approval
-      && !tx.receipt
-      && tx?.approval?.spender === spender
-      && tx?.approval?.tokenAddress === tokenAddress)
+    const tx = Object.values(transactions).find(
+      (tx) =>
+        tx.approval &&
+        !tx.receipt &&
+        tx?.approval?.spender === spender &&
+        tx?.approval?.tokenAddress === tokenAddress
+    );
     return Boolean(tx);
-  }, [account, tokenAddress, spender, transactions])
-
-}
+  }, [account, tokenAddress, spender, transactions]);
+};
 
 export function useApproveCallback(
   tokenAddress: string,
   approvingName: string,
-  spender: string,
+  spender: string
 ): [ApprovalState, () => Promise<void>] {
-  const isApproved = useIsTokenApprovedSpender(tokenAddress, spender)
-  const { chainId, account, library } = useActiveWeb3React()
-  const pendingApproval = useHasPendingTransaction(account, tokenAddress, spender);
-  const { actions: { addTransaction } } = useAppStatusStore()
+  const isApproved = useIsTokenApprovedSpender(tokenAddress, spender);
+  const { chainId, account, library } = useActiveWeb3React();
+  const pendingApproval = useHasPendingTransaction(
+    account,
+    tokenAddress,
+    spender
+  );
+  const {
+    actions: { addTransaction },
+  } = useAppStatusStore();
   // check the current approval status
   const approvalState: ApprovalState = useMemo(() => {
-    if (!tokenAddress || !spender) return ApprovalState.UNKNOWN
+    if (!tokenAddress || !spender) return ApprovalState.UNKNOWN;
 
     return isApproved
       ? pendingApproval
         ? ApprovalState.PENDING
         : ApprovalState.NOT_APPROVED
-      : ApprovalState.APPROVED
-  }, [isApproved, pendingApproval, spender, tokenAddress])
+      : ApprovalState.APPROVED;
+  }, [isApproved, pendingApproval, spender, tokenAddress]);
 
   const approve = useCallback(async (): Promise<void> => {
     if (approvalState !== ApprovalState.NOT_APPROVED) {
-      console.error('approve was called unnecessarily')
-      return
+      console.error('approve was called unnecessarily');
+      return;
     }
 
     if (!spender) {
-      console.error('no spender')
-      return
+      console.error('no spender');
+      return;
     }
 
     const tokenContract = getErc20Contract(tokenAddress, library, account);
-    const estimatedGas = await tokenContract.estimateGas.approve(spender, APPROVAL_AMOUNT).catch(() => {
-      // general fallback for tokens who restrict approval amounts
-      return tokenContract.estimateGas.approve(spender, APPROVAL_AMOUNT)
-    })
+    const estimatedGas = await tokenContract.estimateGas
+      .approve(spender, APPROVAL_AMOUNT)
+      .catch(() => {
+        // general fallback for tokens who restrict approval amounts
+        return tokenContract.estimateGas.approve(spender, APPROVAL_AMOUNT);
+      });
 
     return tokenContract
       .approve(spender, APPROVAL_AMOUNT, {
-        gasLimit: estimatedGas
+        gasLimit: estimatedGas,
       })
       .then((response: TransactionResponse) => {
         const { hash } = response;
@@ -101,73 +125,89 @@ export function useApproveCallback(
           addedTime: new Date().getTime(),
           from: account,
           summary: `Approve ${approvingName || 'for use'}`,
-          approval: { tokenAddress: tokenAddress, spender: spender }
-        })
+          approval: { tokenAddress: tokenAddress, spender: spender },
+        });
       })
       .catch((error: Error) => {
-        console.debug('Failed to approve token', error)
-        throw error
-      })
-  }, [approvalState, tokenAddress, spender, approvingName, account, library, addTransaction, chainId])
+        console.debug('Failed to approve token', error);
+        throw error;
+      });
+  }, [
+    approvalState,
+    tokenAddress,
+    spender,
+    approvingName,
+    account,
+    library,
+    addTransaction,
+    chainId,
+  ]);
 
-  return [approvalState, approve]
+  return [approvalState, approve];
 }
 
-export const useIsTokenApprovedForAll = async (erc1155Address?: string, spender?: string): Promise<boolean | undefined> => {
+export const useIsTokenApprovedForAll = async (
+  erc1155Address?: string,
+  spender?: string
+): Promise<boolean | undefined> => {
   const { account, library } = useActiveWeb3React();
 
   return useMemo(async () => {
-    const isApproved = await getERC1155ApprovedForAll(erc1155Address, library, account, spender);
+    const isApproved = await getERC1155ApprovedForAll(
+      erc1155Address,
+      library,
+      account,
+      spender
+    );
     return isApproved;
-  }, [
-    erc1155Address,
-    spender,
-    account,
-    library
-  ])
-}
+  }, [erc1155Address, spender, account, library]);
+};
 
 export function useApproveERC1155Callback(
   erc1155Address?: string,
   approvingName?: string,
-  spender?: string,
+  spender?: string
 ): [ApprovalState, () => Promise<void>] {
   const { chainId, account, library } = useActiveWeb3React();
-  const { actions: { addTransaction } } = useAppStatusStore()
-  const pendingApproval = useIsTokenApprovedSpender(erc1155Address, spender)
-  const isApproved = useIsTokenApprovedForAll(erc1155Address, spender)
+  const {
+    actions: { addTransaction },
+  } = useAppStatusStore();
+  const pendingApproval = useIsTokenApprovedSpender(erc1155Address, spender);
+  const isApproved = useIsTokenApprovedForAll(erc1155Address, spender);
   // check the current approval status
   const approvalState: ApprovalState = useMemo(() => {
     return isApproved
       ? ApprovalState.APPROVED
       : pendingApproval
-        ? ApprovalState.PENDING
-        : ApprovalState.NOT_APPROVED
-  }, [pendingApproval, isApproved])
+      ? ApprovalState.PENDING
+      : ApprovalState.NOT_APPROVED;
+  }, [pendingApproval, isApproved]);
 
   const approve = useCallback(async (): Promise<void> => {
     if (approvalState !== ApprovalState.NOT_APPROVED) {
-      console.error('approve was called unnecessarily')
-      return
+      console.error('approve was called unnecessarily');
+      return;
     }
     if (!erc1155Address) {
-      console.error('no token')
-      return
+      console.error('no token');
+      return;
     }
 
     if (!spender) {
-      console.error('no spender')
-      return
+      console.error('no spender');
+      return;
     }
 
     const tokenContract = getErc1155Contract(erc1155Address, library, account);
-    const estimatedGas = await tokenContract.estimateGas.setApprovalForAll(spender, true).catch(() => {
-      return tokenContract.estimateGas.setApprovalForAll(spender, true)
-    })
+    const estimatedGas = await tokenContract.estimateGas
+      .setApprovalForAll(spender, true)
+      .catch(() => {
+        return tokenContract.estimateGas.setApprovalForAll(spender, true);
+      });
 
     return tokenContract
       .setApprovalForAll(spender, true, {
-        gasLimit: estimatedGas
+        gasLimit: estimatedGas,
       })
       .then((response: TransactionResponse) => {
         const { hash } = response;
@@ -177,16 +217,25 @@ export function useApproveERC1155Callback(
           from: account,
           addedTime: new Date().getTime(),
           summary: `Approve ${approvingName || 'for use'}`,
-          approval: { tokenAddress: erc1155Address, spender }
-        })
+          approval: { tokenAddress: erc1155Address, spender },
+        });
       })
       .catch((error: Error) => {
-        console.debug('Failed to approve token', error)
-        throw error
-      })
-  }, [approvalState, erc1155Address, account, spender, addTransaction, approvingName, library, chainId])
+        console.debug('Failed to approve token', error);
+        throw error;
+      });
+  }, [
+    approvalState,
+    erc1155Address,
+    account,
+    spender,
+    addTransaction,
+    approvingName,
+    library,
+    chainId,
+  ]);
 
-  return [approvalState, approve]
+  return [approvalState, approve];
 }
 
 /*
@@ -202,81 +251,133 @@ claim winnings          | none                  | share: wrapper
 */
 
 // wraps useApproveCallback in the context of a swap
-export const useApproveCallbackForTrade = (ammExchange: AmmExchange, isEnter: boolean): [ApprovalState, () => Promise<void>] => {
-  const { paraConfig: { addresses } } = useAppStatusStore()
+export const useApproveCallbackForTrade = (
+  ammExchange: AmmExchange,
+  isEnter: boolean
+): [ApprovalState, () => Promise<void>] => {
+  const {
+    paraConfig: { addresses },
+  } = useAppStatusStore();
   const { AMMFactory, WethWrapperForAMMExchange } = addresses;
   const { cash } = ammExchange;
   const { shareToken } = cash;
   const approvingName = cash.name;
   const isETH = cash.name === ETH;
 
-  const [approveShareWrapperStatus, approveShareWrapper] = useApproveERC1155Callback(shareToken, approvingName, WethWrapperForAMMExchange);
-  const [approveShareFactoryStatus, approveShareFactory] = useApproveERC1155Callback(shareToken, approvingName, AMMFactory);
-  const [approveFactoryStatus, approveFactory] = useApproveCallback(cash?.address, approvingName, AMMFactory);
+  const [
+    approveShareWrapperStatus,
+    approveShareWrapper,
+  ] = useApproveERC1155Callback(
+    shareToken,
+    approvingName,
+    WethWrapperForAMMExchange
+  );
+  const [
+    approveShareFactoryStatus,
+    approveShareFactory,
+  ] = useApproveERC1155Callback(shareToken, approvingName, AMMFactory);
+  const [approveFactoryStatus, approveFactory] = useApproveCallback(
+    cash?.address,
+    approvingName,
+    AMMFactory
+  );
 
   if (isEnter) {
-    if (isETH) return [ApprovalState.APPROVED, () => null]
-    return [approveShareFactoryStatus, approveShareFactory]
+    if (isETH) return [ApprovalState.APPROVED, () => null];
+    return [approveShareFactoryStatus, approveShareFactory];
   }
   if (isETH) {
-    return [approveShareWrapperStatus, approveShareWrapper]
+    return [approveShareWrapperStatus, approveShareWrapper];
   }
-  return [approveFactoryStatus, approveFactory]
-}
+  return [approveFactoryStatus, approveFactory];
+};
 
 // wraps useApproveCallback in the context of a swap
-export const useApproveCallbackForLiquidity = (ammExchange: AmmExchange, isAdd: boolean): [ApprovalState, () => Promise<void>] => {
-  const { paraConfig: { addresses } } = useAppStatusStore()
+export const useApproveCallbackForLiquidity = (
+  ammExchange: AmmExchange,
+  isAdd: boolean
+): [ApprovalState, () => Promise<void>] => {
+  const {
+    paraConfig: { addresses },
+  } = useAppStatusStore();
   const { AMMFactory, WethWrapperForAMMExchange } = addresses;
   const { cash } = ammExchange;
   const approvingName = cash.name;
   const isETH = cash.name === ETH;
 
-  const [approveCashFactoryStatus, approveCashFactory] = useApproveCallback(cash?.address, approvingName, AMMFactory);
-  const [approveAmmWrapperStatus, approveAmmWrapper] = useApproveCallback(ammExchange.id, approvingName, WethWrapperForAMMExchange);
+  const [approveCashFactoryStatus, approveCashFactory] = useApproveCallback(
+    cash?.address,
+    approvingName,
+    AMMFactory
+  );
+  const [approveAmmWrapperStatus, approveAmmWrapper] = useApproveCallback(
+    ammExchange.id,
+    approvingName,
+    WethWrapperForAMMExchange
+  );
 
   if (isAdd) {
-    if (isETH) return [ApprovalState.APPROVED, () => null]
-    return [approveCashFactoryStatus, approveCashFactory]
+    if (isETH) return [ApprovalState.APPROVED, () => null];
+    return [approveCashFactoryStatus, approveCashFactory];
   }
   if (isETH) {
-    return [approveAmmWrapperStatus, approveAmmWrapper]
+    return [approveAmmWrapperStatus, approveAmmWrapper];
   }
-  return [ApprovalState.APPROVED, () => null]
-}
+  return [ApprovalState.APPROVED, () => null];
+};
 
-export const hasPendingTransaction = async (transactions: TransactionDetails[], account: string, tokenAddress: string, spender: string): Promise<boolean> => {
+export const hasPendingTransaction = async (
+  transactions: TransactionDetails[],
+  account: string,
+  tokenAddress: string,
+  spender: string
+): Promise<boolean> => {
   if (!account || !tokenAddress || !spender) return false;
-  const tx = Object.values(transactions).find(tx => tx.approval
-    && !tx.receipt
-    && tx?.approval?.spender === spender
-    && tx?.approval?.tokenAddress === tokenAddress)
+  const tx = Object.values(transactions).find(
+    (tx) =>
+      tx.approval &&
+      !tx.receipt &&
+      tx?.approval?.spender === spender &&
+      tx?.approval?.tokenAddress === tokenAddress
+  );
   return Boolean(tx);
-}
+};
 
 export async function checkAllowance(
   tokenAddress: string,
   spender: string,
   loginAccount: LoginAccount,
   transactions: TransactionDetails[],
-  updateTransactions: Function,
+  updateTransactions: Function
 ): Promise<ApprovalState> {
   const { account, library } = loginAccount;
-  const allowance = await getERC20Allowance(tokenAddress, library, account, spender);
+  const allowance = await getERC20Allowance(
+    tokenAddress,
+    library,
+    account,
+    spender
+  );
   if (allowance && new BN(allowance).gt(0)) {
-      const updateTxState = transactions.find(tx =>
-        tx.approval
-        && !tx.receipt
-        && tx?.approval?.spender === spender
-        && tx?.approval?.tokenAddress === tokenAddress);
+    const updateTxState = transactions.find(
+      (tx) =>
+        tx.approval &&
+        !tx.receipt &&
+        tx?.approval?.spender === spender &&
+        tx?.approval?.tokenAddress === tokenAddress
+    );
 
-      if (updateTxState) {
-        updateTxState.status = TX_STATUS.CONFIRMED;
-        updateTransactions(updateTxState.hash, updateTxState);
-      }
-      return ApprovalState.APPROVED;
+    if (updateTxState) {
+      updateTxState.status = TX_STATUS.CONFIRMED;
+      updateTransactions(updateTxState.hash, updateTxState);
+    }
+    return ApprovalState.APPROVED;
   }
-  const isPending = await hasPendingTransaction(transactions, loginAccount.account, tokenAddress, spender);
+  const isPending = await hasPendingTransaction(
+    transactions,
+    loginAccount.account,
+    tokenAddress,
+    spender
+  );
   return isPending ? ApprovalState.PENDING : ApprovalState.NOT_APPROVED;
 }
 
@@ -285,92 +386,113 @@ export const isERC1155ContractApproved = async (
   spender: string,
   loginAccount: LoginAccount,
   transactions: TransactionDetails[],
-  updateTransactions: Function,
+  updateTransactions: Function
 ) => {
-    const { account, library } = loginAccount;
-    const isPending = await hasPendingTransaction(transactions, loginAccount.account, erc1155Address, spender);
-    const isApproved = await getERC1155ApprovedForAll(erc1155Address, library, account, spender);
+  const { account, library } = loginAccount;
+  const isPending = await hasPendingTransaction(
+    transactions,
+    loginAccount.account,
+    erc1155Address,
+    spender
+  );
+  const isApproved = await getERC1155ApprovedForAll(
+    erc1155Address,
+    library,
+    account,
+    spender
+  );
 
+  if (isApproved) {
+    const updateTxState = transactions.find(
+      (tx) =>
+        tx.approval &&
+        !tx.receipt &&
+        tx?.approval?.spender === spender &&
+        tx?.approval?.tokenAddress === erc1155Address
+    );
 
-    if (isApproved) {
-      const updateTxState = transactions.find(tx =>
-        tx.approval
-        && !tx.receipt
-        && tx?.approval?.spender === spender
-        && tx?.approval?.tokenAddress === erc1155Address);
-
-      if (updateTxState) {
-        updateTxState.status = TX_STATUS.CONFIRMED;
-        updateTransactions(updateTxState.hash, updateTxState);
-      }
+    if (updateTxState) {
+      updateTxState.status = TX_STATUS.CONFIRMED;
+      updateTransactions(updateTxState.hash, updateTxState);
     }
+  }
 
-
-    return isApproved
-      ? ApprovalState.APPROVED
-      : isPending
-        ? ApprovalState.PENDING
-        : ApprovalState.NOT_APPROVED
-}
+  return isApproved
+    ? ApprovalState.APPROVED
+    : isPending
+    ? ApprovalState.PENDING
+    : ApprovalState.NOT_APPROVED;
+};
 
 export const approveERC20Contract = async (
   tokenAddress: string,
   approvingName: string,
   spender: string,
-  loginAccount: LoginAccount,
+  loginAccount: LoginAccount
 ) => {
   const { chainId, account, library } = loginAccount;
-    if (!spender) {
-      console.error('no spender')
-      return
-    }
+  if (!spender) {
+    console.error('no spender');
+    return;
+  }
 
-    const tokenContract = getErc20Contract(tokenAddress, library, account);
-    const estimatedGas = await tokenContract.estimateGas.approve(spender, APPROVAL_AMOUNT).catch(() => {
+  const tokenContract = getErc20Contract(tokenAddress, library, account);
+  const estimatedGas = await tokenContract.estimateGas
+    .approve(spender, APPROVAL_AMOUNT)
+    .catch(() => {
       // general fallback for tokens who restrict approval amounts
-      return tokenContract.estimateGas.approve(spender, APPROVAL_AMOUNT)
-    })
+      return tokenContract.estimateGas.approve(spender, APPROVAL_AMOUNT);
+    });
 
-    try {
-      const response: TransactionResponse = await tokenContract.approve(spender, APPROVAL_AMOUNT, {
-        gasLimit: estimatedGas
-      });
-      const { hash } = response;
-      return {
-        hash,
-        chainId,
-        addedTime: new Date().getTime(),
-        seen: false,
-        status: TX_STATUS.PENDING,
-        marketDescription: null,
-        from: account,
-        message: `Approve ${approvingName || 'for use'}`,
-        approval: { tokenAddress: tokenAddress, spender: spender }
+  try {
+    const response: TransactionResponse = await tokenContract.approve(
+      spender,
+      APPROVAL_AMOUNT,
+      {
+        gasLimit: estimatedGas,
       }
-    }
-    catch (error) {
-      console.debug('Failed to approve token', error)
-      throw error
-    }
-}
+    );
+    const { hash } = response;
+    return {
+      hash,
+      chainId,
+      addedTime: new Date().getTime(),
+      seen: false,
+      status: TX_STATUS.PENDING,
+      marketDescription: null,
+      from: account,
+      message: `Approve ${approvingName || 'for use'}`,
+      approval: { tokenAddress: tokenAddress, spender: spender },
+    };
+  } catch (error) {
+    console.debug('Failed to approve token', error);
+    throw error;
+  }
+};
 
 export const approveERC1155Contract = async (
   erc1155Address: string,
   approvingName: string,
   spender: string,
-  loginAccount: LoginAccount,
+  loginAccount: LoginAccount
 ) => {
   const { chainId, account, library } = loginAccount;
 
   const tokenContract = getErc1155Contract(erc1155Address, library, account);
-  const estimatedGas = await tokenContract.estimateGas.setApprovalForAll(spender, true).catch(() => {
-    return tokenContract.estimateGas.setApprovalForAll(spender, true)
-  });
+  const estimatedGas = await tokenContract.estimateGas
+    .setApprovalForAll(spender, true)
+    .catch(() => {
+      return tokenContract.estimateGas.setApprovalForAll(spender, true);
+    });
 
   try {
-    const response: TransactionResponse = await tokenContract.setApprovalForAll(spender, true, {
-      gasLimit: estimatedGas
-    })
+    const response: TransactionResponse = await tokenContract.setApprovalForAll(
+      spender,
+      true,
+      {
+        gasLimit: estimatedGas,
+      }
+    );
 
     const { hash } = response;
     return {
@@ -382,11 +504,10 @@ export const approveERC1155Contract = async (
       marketDescription: null,
       from: account,
       message: `Approve ${approvingName || 'for use'}`,
-      approval: { tokenAddress: erc1155Address, spender }
-    }
+      approval: { tokenAddress: erc1155Address, spender },
+    };
+  } catch (error) {
+    console.debug('Failed to approve token', error);
+    throw error;
   }
-  catch (error) {
-    console.debug('Failed to approve token', error)
-    throw error
-  }
-}
+};
