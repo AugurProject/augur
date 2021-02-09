@@ -43,7 +43,7 @@ interface GraphMarket {
   categories: string[];
   outcomes: GraphMarketOutcome[];
   amms: GraphAmmExchange[];
-  tradingProceedsClaimed: GraphClaims[]
+  tradingProceedsClaimed: GraphClaims[];
   universe?: {
     id: string;
     reportingFee: string;
@@ -57,7 +57,7 @@ interface GraphClaims {
   };
   sender: {
     id: string;
-  }
+  };
   outcome: number;
   numPayoutTokens: string;
   fees: string;
@@ -193,30 +193,42 @@ export const processGraphMarkets = (graphData: GraphData): ProcessedData => {
 const shapeMarketInfo = (
   market: GraphMarket,
   ammExchange: AmmExchange,
-  cashes: Cashes,
+  cashes: Cashes
 ): MarketInfo => {
   const extraInfo = JSON.parse(market?.extraInfoRaw);
   const feeAsPercent = convertAttoValueToDisplayValue(new BN(market.fee)).times(
     100
   );
-  const reportingFeeAsPercent = new BN(1).dividedBy(new BN(market.universe.reportingFee)).times(
-    100
-  );
+  const reportingFeeAsPercent = new BN(1)
+    .dividedBy(new BN(market.universe.reportingFee))
+    .times(100);
 
-  const shareTokenCashes = Object.values(cashes).reduce((p, c) => ({ ...p, [c.shareToken.toLowerCase()]: c }), {})
-  const claimedProceeds = market.tradingProceedsClaimed.filter(t => t.numPayoutTokens !== "0").map(t => {
-    const cash = shareTokenCashes[t.shareToken.id.toLowerCase()];
-    return {
-      id: t.id,
-      shareToken: t.shareToken.id,
-      user: t.sender.id,
-      outcome: t.outcome,
-      fees: String(convertOnChainCashAmountToDisplayCashAmount(t.fees, cash.decimals)),
-      winnings: String(convertOnChainCashAmountToDisplayCashAmount(t.numPayoutTokens, cash.decimals)),
-      timestamp: Number(t.timestamp),
-      cash
-    }
-  });
+  const shareTokenCashes = Object.values(cashes).reduce(
+    (p, c) => ({ ...p, [c.shareToken.toLowerCase()]: c }),
+    {}
+  );
+  const claimedProceeds = market.tradingProceedsClaimed
+    .filter((t) => t.numPayoutTokens !== '0')
+    .map((t) => {
+      const cash = shareTokenCashes[t.shareToken.id.toLowerCase()];
+      return {
+        id: t.id,
+        shareToken: t.shareToken.id,
+        user: t.sender.id,
+        outcome: t.outcome,
+        fees: String(
+          convertOnChainCashAmountToDisplayCashAmount(t.fees, cash.decimals)
+        ),
+        winnings: String(
+          convertOnChainCashAmountToDisplayCashAmount(
+            t.numPayoutTokens,
+            cash.decimals
+          )
+        ),
+        timestamp: Number(t.timestamp),
+        cash,
+      };
+    });
 
   return {
     marketId: market.id,
@@ -320,12 +332,7 @@ const shapeAmmExchange = (
     pastLiquidity,
     cash.usdPrice
   );
-  const apy = calculateAmmApy(
-    volumeTotalUSD,
-    amm,
-    liquidityUSD,
-    addLiquidity
-  );
+  const apy = calculateAmmApy(volumeTotalUSD, amm, liquidityUSD, addLiquidity);
 
   const priceNoFixed = priceNo.toFixed(4);
   const priceYesFixed = priceYes.toFixed(4);
@@ -394,7 +401,7 @@ const calculateAmmApy = (
   volumeTotalUSD: number,
   amm: GraphAmmExchange,
   liquidityUSD: number,
-  addLiquidity: GraphAddLiquidity[] = [],
+  addLiquidity: GraphAddLiquidity[] = []
 ): string => {
   const initValue =
     addLiquidity.length > 0 ? Number(addLiquidity[0].timestamp) : 0;
@@ -403,14 +410,25 @@ const calculateAmmApy = (
     initValue
   );
 
-  if (liquidityUSD === 0 || volumeTotalUSD === 0 || startTimestamp === 0 || amm.fee === '0') return '0';
+  if (
+    liquidityUSD === 0 ||
+    volumeTotalUSD === 0 ||
+    startTimestamp === 0 ||
+    amm.fee === '0'
+  )
+    return '0';
 
   const fee = new BN(amm.fee).div(new BN(1000));
   const totalFeesInUsd = new BN(volumeTotalUSD).times(new BN(fee));
   const currTimestamp = Math.floor(new Date().getTime() / 1000); // current time in unix timestamp
   const secondsPast = currTimestamp - startTimestamp;
-  const percentFeeLiquidity = (totalFeesInUsd.div(new BN(liquidityUSD))).div(secondsPast);
-  const percentPerSecondForYear = percentFeeLiquidity.times(SEC_IN_YEAR).abs().toFixed(4);
+  const percentFeeLiquidity = totalFeesInUsd
+    .div(new BN(liquidityUSD))
+    .div(secondsPast);
+  const percentPerSecondForYear = percentFeeLiquidity
+    .times(SEC_IN_YEAR)
+    .abs()
+    .toFixed(4);
 
   return String(percentPerSecondForYear);
 };
@@ -421,9 +439,12 @@ const shapeEnterTransactions = (
 ): AmmTransaction[] => {
   return transactions.map((e) => {
     const properties = formatTransaction(e, cash);
-    const cashValueUsd = new BN(properties.value).times(cash?.usdPrice).toFixed(2);
-    const subheader = `Swap ${cash.name} for ${e.noShares !== '0' ? 'No Shares' : 'Yes Shares'
-      }`;
+    const cashValueUsd = new BN(properties.value)
+      .times(cash?.usdPrice)
+      .toFixed(2);
+    const subheader = `Swap ${cash.name} for ${
+      e.noShares !== '0' ? 'No Shares' : 'Yes Shares'
+    }`;
     return {
       ...e,
       tx_type: TransactionTypes.ENTER,
@@ -442,9 +463,13 @@ const shapeExitTransactions = (
 ): AmmTransaction[] => {
   return transactions.map((e) => {
     const properties = formatTransaction(e, cash);
-    const subheader = `Swap ${e.noShares !== '0' ? 'No Shares' : 'Yes Shares'
-      } for ${cash.name}`;
-    const cashValueUsd = new BN(properties.value).abs().times(cash?.usdPrice).toFixed(2);
+    const subheader = `Swap ${
+      e.noShares !== '0' ? 'No Shares' : 'Yes Shares'
+    } for ${cash.name}`;
+    const cashValueUsd = new BN(properties.value)
+      .abs()
+      .times(cash?.usdPrice)
+      .toFixed(2);
     return {
       ...e,
       tx_type: TransactionTypes.EXIT,
@@ -491,7 +516,7 @@ const shapeAddLiquidityTransactions = (
       cashValueUsd,
       value: String(cashValue),
       lpTokens,
-      netShares: e.netShares
+      netShares: e.netShares,
     };
   });
 };
@@ -511,16 +536,18 @@ const shapeRemoveLiquidityTransactions = (
       cashValue.times(cash.usdPrice)
     );
     const shares = new BN(e.noShares).plus(new BN(e.yesShares));
-    const shareAmount = String(formatShares(
-      convertOnChainSharesToDisplayShareAmount(
-        new BN(shares),
-        new BN(cash.decimals)
-      ),
-      {
-        decimals: 4,
-        decimalsRounded: 4,
-      }
-    ).formattedValue);
+    const shareAmount = String(
+      formatShares(
+        convertOnChainSharesToDisplayShareAmount(
+          new BN(shares),
+          new BN(cash.decimals)
+        ),
+        {
+          decimals: 4,
+          decimalsRounded: 4,
+        }
+      ).formattedValue
+    );
 
     const tokenAmount = `-`; // TODO; graph data needs to to provide lp token amount burnt
     return {
@@ -534,7 +561,7 @@ const shapeRemoveLiquidityTransactions = (
       cashValueUsd,
       value: String(cashValue),
       tokenAmount,
-      shareAmount
+      shareAmount,
     };
   });
 };
@@ -552,20 +579,24 @@ const formatTransaction = (
   const time = timeSinceTimestamp(Number(tx.timestamp));
   const currency = cash.name;
   const shares = tx.noShares !== '0' ? tx.noShares : tx.yesShares;
-  const shareAmount = String(formatShares(
-    convertOnChainSharesToDisplayShareAmount(
-      new BN(shares),
-      new BN(cash.decimals)
-    ),
-    {
+  const shareAmount = String(
+    formatShares(
+      convertOnChainSharesToDisplayShareAmount(
+        new BN(shares),
+        new BN(cash.decimals)
+      ),
+      {
+        decimals: 4,
+        decimalsRounded: 4,
+      }
+    ).formattedValue
+  );
+  const tAmount = String(
+    formatShares(tokenAmount, {
       decimals: 4,
       decimalsRounded: 4,
-    }
-  ).formattedValue);
-  const tAmount = String(formatShares(tokenAmount, {
-    decimals: 4,
-    decimalsRounded: 4,
-  }).formattedValue);
+    }).formattedValue
+  );
   return { shareAmount, currency, time, date, tokenAmount: tAmount, value };
 };
 
@@ -580,33 +611,53 @@ const calculateTotalShareVolumeInUsd = (
   const normalizedYes = new BN(volumeNo || 0).times(new BN(priceNo));
   const normalizedNo = new BN(volumeYes || 0).times(new BN(priceYes));
   return normalizedYes.plus(normalizedNo).times(new BN(priceUsd)).toNumber();
-}
+};
 
-const calculateVolumeInUsd = (volumeShare: string, priceShare: number, priceUsd: string): string => {
-  if (!volumeShare || !priceUsd || !priceShare) return "0"
-  return String(new BN(volumeShare).times(new BN(priceShare)).times(new BN(priceUsd)))
-}
+const calculateVolumeInUsd = (
+  volumeShare: string,
+  priceShare: number,
+  priceUsd: string
+): string => {
+  if (!volumeShare || !priceUsd || !priceShare) return '0';
+  return String(
+    new BN(volumeShare).times(new BN(priceShare)).times(new BN(priceUsd))
+  );
+};
 
-const calculateLiquidityInUsd = (volumeOrLiquidity: string, priceUsd: string): number => {
+const calculateLiquidityInUsd = (
+  volumeOrLiquidity: string,
+  priceUsd: string
+): number => {
   if (!volumeOrLiquidity || !priceUsd) return 0;
-  return Number(new BN(volumeOrLiquidity).times(new BN(priceUsd)).toFixed(2))
-}
+  return Number(new BN(volumeOrLiquidity).times(new BN(priceUsd)).toFixed(2));
+};
 
-const hasZeroValue = (value) => value === "0" || !value;
-const calculatePastVolumeInUsd = (volume: string = "0", pastVolume: string = "0", priceShare: number = 0, priceUsd: string = "0"): string => {
-  if (hasZeroValue(priceShare) || hasZeroValue(priceUsd)) return "0"
-  return String(new BN(volume)
-    .minus(new BN(pastVolume))
-    .times(new BN(priceShare))
-    .times(new BN(priceUsd)))
-}
+const hasZeroValue = (value) => value === '0' || !value;
+const calculatePastVolumeInUsd = (
+  volume: string = '0',
+  pastVolume: string = '0',
+  priceShare: number = 0,
+  priceUsd: string = '0'
+): string => {
+  if (hasZeroValue(priceShare) || hasZeroValue(priceUsd)) return '0';
+  return String(
+    new BN(volume)
+      .minus(new BN(pastVolume))
+      .times(new BN(priceShare))
+      .times(new BN(priceUsd))
+  );
+};
 
-const calculatePastLiquidityInUsd = (volume: string, pastVolume: string, priceUsd: string): string => {
-  if (!volume || !pastVolume || !priceUsd) return "0"
-  return String(new BN(volume)
-    .minus(new BN(pastVolume))
-    .times(new BN(priceUsd)))
-}
+const calculatePastLiquidityInUsd = (
+  volume: string,
+  pastVolume: string,
+  priceUsd: string
+): string => {
+  if (!volume || !pastVolume || !priceUsd) return '0';
+  return String(
+    new BN(volume).minus(new BN(pastVolume)).times(new BN(priceUsd))
+  );
+};
 
 // TODO: this needs to chagne when categoricals come along. We'll need to change up graph data processing
 const calculateTradePrice = (
@@ -664,12 +715,12 @@ const getActivityType = (
   let subheader = null;
   let value = null;
   switch (tx.tx_type) {
-    case (TransactionTypes.ADD_LIQUIDITY): {
+    case TransactionTypes.ADD_LIQUIDITY: {
       type = 'Add Liquidity';
       value = `${formatCash(tx.value, cash.name).full}`;
       break;
     }
-    case (TransactionTypes.REMOVE_LIQUIDITY): {
+    case TransactionTypes.REMOVE_LIQUIDITY: {
       type = 'Remove Liquidity';
       value = `${formatCash(tx.value, cash.name).full}`;
       break;
@@ -677,16 +728,25 @@ const getActivityType = (
     default: {
       const shares =
         tx.yesShares !== '0'
-          ? convertOnChainSharesToDisplayShareAmount(tx.yesShares, cash.decimals)
-          : convertOnChainSharesToDisplayShareAmount(tx.noShares, cash.decimals);
+          ? convertOnChainSharesToDisplayShareAmount(
+              tx.yesShares,
+              cash.decimals
+            )
+          : convertOnChainSharesToDisplayShareAmount(
+              tx.noShares,
+              cash.decimals
+            );
       const shareType = tx.yesShares !== '0' ? 'Yes' : 'No';
       const formattedPrice = formatCashPrice(tx.price, cash.name);
-      subheader = `${formatSimpleShares(String(shares)).full
-        } Shares of ${shareType} @ ${formattedPrice.full}`;
+      subheader = `${
+        formatSimpleShares(String(shares)).full
+      } Shares of ${shareType} @ ${formattedPrice.full}`;
       // when design wants to add usd value
-      const cashValue = convertOnChainCashAmountToDisplayCashAmount(tx.cash, cash.decimals);
-      value = `${formatCash(String(cashValue.abs()), cash.name).full
-        }`;
+      const cashValue = convertOnChainCashAmountToDisplayCashAmount(
+        tx.cash,
+        cash.decimals
+      );
+      value = `${formatCash(String(cashValue.abs()), cash.name).full}`;
       type = tx.tx_type === TransactionTypes.ENTER ? BUY : SELL;
       break;
     }
@@ -702,11 +762,8 @@ export const shapeUserActvity = (
   account: string,
   markets: { [id: string]: MarketInfo },
   ammExchanges: { [id: string]: AmmExchange }
-): ActivityData[] => {
-  const userTransactions = formatUserTransactionActvity(account, markets, ammExchanges);
-
-  return userTransactions;
-};
+): ActivityData[] =>
+  formatUserTransactionActvity(account, markets, ammExchanges);
 
 export const formatUserTransactionActvity = (
   account: string,
@@ -724,10 +781,12 @@ export const formatUserTransactionActvity = (
         isSameAddress(t.sender, account)
       );
 
-      const claims = markets[`${exchange.marketId}-${exchange.id}`].claimedProceeds.filter(c => isSameAddress(c.user, account));
+      const claims = markets[
+        `${exchange.marketId}-${exchange.id}`
+      ].claimedProceeds.filter((c) => isSameAddress(c.user, account) && c.cash.name === cashName);
       if (userTx.length === 0 && claims.length === 0) return p;
 
-      const userClaims = claims.map(c => {
+      const userClaims = claims.map((c) => {
         return {
           id: c.id,
           currency: cashName,
@@ -741,7 +800,7 @@ export const formatUserTransactionActvity = (
           timestamp: Number(c.timestamp),
           value: `${formatCash(c.winnings, c.cash.name).full}`,
         };
-      })
+      });
 
       const datedUserTx = userTx.map((t) => {
         const typeDetails = getActivityType(t, exchange.cash);
@@ -762,7 +821,7 @@ export const formatUserTransactionActvity = (
     }, [])
     .sort((a, b) => (a.timestamp < b.timestamp ? 1 : -1));
 
-  // form array of grouped by date activities
+    // form array of grouped by date activities
   return [...transactions]
     .reduce((p, t) => {
       const item = p.find((x) => x.date === t.date);
