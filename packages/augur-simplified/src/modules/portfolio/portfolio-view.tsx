@@ -121,7 +121,7 @@ export const ClaimWinningsSection = () => {
           })`}
           icon={EthIcon}
           action={() => {
-            handleClaimAll(loginAccount, ethCash, USDCTotals.marketIds, addTransaction, updateTransaction)
+            handleClaimAll(loginAccount, ethCash, ETHTotals.marketIds, addTransaction, updateTransaction)
           }}
         />
       )}
