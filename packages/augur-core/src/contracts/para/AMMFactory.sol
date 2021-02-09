@@ -121,7 +121,7 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
 
         // Move just minted invalid shares to the balancer pool.
         // Pool weight == 10%
-        _bPool.bind(address(_invalidERC20Proxy1155),  MIN_BALANCE.div(_numTicks), 5 * 10**18);
+        _bPool.bind(address(_invalidERC20Proxy1155),  _setsToBuy, 5 * 10**18);
 
         _bPool.finalize();
     }
