@@ -24,17 +24,6 @@ def factory(sessionFixture):
     return sessionFixture.contracts['AMMFactory']
 
 @fixture
-def amm(sessionFixture, factory, market, shareToken, cash):
-    sets = 100 * ATTO
-    cost = sets * 1000
-
-    cash.faucet(cost)
-    cash.approve(factory.address, 10 ** 48)
-
-    ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, cost, 10**18, True, account0)
-    return sessionFixture.applySignature("AMMExchange", ammAddress)
-
-@fixture
 def account0(sessionFixture):
     return sessionFixture.accounts[0]
 
