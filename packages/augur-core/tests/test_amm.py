@@ -17,7 +17,7 @@ NO = 1
 YES = 2
 RATIO_50_50 = calc_ratio(0.5)
 RATIO_60_40 = calc_ratio(0.4)
-
+BALANCER_POOL_MIN = 2 * 10 ** 6
 
 @fixture
 def factory(sessionFixture):
@@ -86,7 +86,7 @@ def test_amm_initial_liquidity(contractsFixture, sessionFixture, market, cash, s
         return skip("Test is only for para augur")
 
     sets = 100 * ATTO
-    cost = (sets * 1000) + (2 * 10**6 * 1000)
+    cost = (sets * 1000) + (BALANCER_POOL_MIN * 1000)
 
     cash.faucet(cost)
     cash.approve(factory.address, 10 ** 48)
@@ -130,16 +130,17 @@ def test_amm_initial_liquidity(contractsFixture, sessionFixture, market, cash, s
     assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == sets * 0.9
     assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == sets * 0.9
 
-def test_amm_subsequent_liquidity(contractsFixture, market, cash, shareToken, factory, amm, account0):
+def test_amm_subsequent_liquidity(contractsFixture, market, cash, shareToken, factory, account0):
     if not contractsFixture.paraAugur:
         return skip("Test is only for para augur")
 
     cash.approve(factory.address, 10 ** 48)
 
     initialSets = 100 * ATTO
-    initialCost = initialSets * 1000
+    initialCost = (initialSets * 1000) + (2 * 10**6 * 1000)
     cash.faucet(initialCost)
-    amm.addInitialLiquidity(initialCost, 10**18, True, account0)
+    ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, initialCost, 10**18, True, account0)
+    amm = contractsFixture.applySignature("AMMExchange", ammAddress[0])
 
     subsequentSets = 100 * ATTO
     subsequentCost = subsequentSets * 1000
@@ -175,12 +176,12 @@ def test_amm_subsequent_liquidity(contractsFixture, market, cash, shareToken, fa
     lpTokens = amm.addLiquidity(finalCost, account0)
     assert lpTokens == 95238095238095238064 # less than finalSets due to captured fees raising the value of an LP token
 
-def test_amm_60_40_liquidity(contractsFixture, market, cash, shareToken, factory, amm, account0, kitchenSinkSnapshot):
+def test_amm_60_40_liquidity(contractsFixture, market, cash, shareToken, factory, account0, kitchenSinkSnapshot):
     if not contractsFixture.paraAugur:
         return skip("Test is only for para augur")
 
     sets = 100 * ATTO
-    cost = sets * 1000
+    cost = (sets * 1000) + (2 * 10**6 * 1000)
 
     cash.faucet(cost)
     cash.approve(factory.address, 10 ** 48)
@@ -188,7 +189,9 @@ def test_amm_60_40_liquidity(contractsFixture, market, cash, shareToken, factory
     yesShares = 66666666666666675200 # approximately 2/3 aka 60%
     keptYesShares = sets - yesShares
 
-    lpTokens = amm.addInitialLiquidity(cost, RATIO_60_40, True, account0)
+    ammInfo = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, cost, RATIO_60_40, True, account0)
+    amm = contractsFixture.applySignature("AMMExchange", ammInfo[0])
+    lpTokens = ammInfo[1]
 
     assert lpTokens == 80000000000000006143 # skewed ratio means fewer shares which means fewer LP tokens
     assert amm.balanceOf(account0) == lpTokens
@@ -233,18 +236,20 @@ def test_amm_60_40_liquidity(contractsFixture, market, cash, shareToken, factory
     lpTokens = amm.addLiquidity(finalCost, account0)
     assert lpTokens == 80000000000000006141 # 2 atto off from initial, probably due to rounding
 
-def test_amm_yes_position(contractsFixture, market, shareToken, cash, factory, amm, account0):
+def test_amm_yes_position(contractsFixture, market, shareToken, cash, factory, account0):
     if not contractsFixture.paraAugur:
         return skip("Test is only for para augur")
 
     numticks = market.getNumTicks()
     sets = 100 * ATTO
-    liquidityCost = sets * numticks
+    liquidityCost = (sets * numticks) + (BALANCER_POOL_MIN * numticks)
 
     cash.faucet(liquidityCost)
     cash.approve(factory.address, 10 ** 48)
 
-    amm.addInitialLiquidity(liquidityCost, RATIO_50_50, True, account0)
+    ammInfo = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, liquidityCost, 10**18, True, account0)
+    amm = contractsFixture.applySignature("AMMExchange", ammInfo[0])
+    lpTokens = ammInfo[1]
 
     yesPositionSets = 10 * ATTO
     yesPositionCost = yesPositionSets * numticks
@@ -273,18 +278,19 @@ def test_amm_yes_position(contractsFixture, market, shareToken, cash, factory, a
 
     assert cash.balanceOf(account0) == payoutAll
 
-def test_amm_yes_position_oversized(contractsFixture, market, cash, factory, amm, account0):
+def test_amm_yes_position_oversized(contractsFixture, shareToken, market, cash, factory, account0):
     if not contractsFixture.paraAugur:
         return skip("Test is only for para augur")
 
     numticks = market.getNumTicks()
     sets = 100 * ATTO
-    liquidityCost = sets * numticks
+    liquidityCost = (sets * numticks) + (BALANCER_POOL_MIN * numticks)
 
     cash.faucet(liquidityCost)
     cash.approve(factory.address, 10 ** 48)
 
-    amm.addInitialLiquidity(liquidityCost, RATIO_50_50, True, account0)
+    ammInfo = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, liquidityCost, RATIO_50_50, True, account0)
+    amm = contractsFixture.applySignature("AMMExchange", ammInfo[0])
 
     # Enter position, skewing the ratio
     yesPositionSets = 10 * ATTO
@@ -299,17 +305,19 @@ def test_amm_yes_position_oversized(contractsFixture, market, cash, factory, amm
     sharesReceivedSecond = amm.enterPosition(yesPositionCost, True, 0)
 
 
-def test_amm_no_position(contractsFixture, market, shareToken, cash, factory, amm, account0):
+def test_amm_no_position(contractsFixture, market, shareToken, cash, factory, account0):
     if not contractsFixture.paraAugur:
         return skip("Test is only for para augur")
 
     cash.faucet(100000 * ATTO)
     cash.approve(factory.address, 10 ** 48)
+
+    ammInfo = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, 100000 * ATTO, RATIO_50_50, True, account0)
+    amm = contractsFixture.applySignature("AMMExchange", ammInfo[0])
+
     shareToken.setApprovalForAll(amm.address, True)
-    amm.addInitialLiquidity(100000 * ATTO, 10**18, True, account0)
 
     cost = 10000 * ATTO
-    sets = cost // market.getNumTicks()
 
     # Enter NO position
     cash.faucet(cost)
@@ -321,17 +329,19 @@ def test_amm_no_position(contractsFixture, market, shareToken, cash, factory, am
     assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == sharesReceived
     assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == 0
 
-def test_amm_swap(contractsFixture, market, shareToken, cash, factory, amm, account0):
+def test_amm_swap(contractsFixture, market, shareToken, cash, factory, account0):
     if not contractsFixture.paraAugur:
         return skip("Test is only for para augur")
 
-    cash.faucet(100000 * ATTO)
+    liquidityCost = (100000 * ATTO) + (2 * 10**6 * 1000)
+
+    cash.faucet(liquidityCost)
     cash.approve(factory.address, 10 ** 48)
     shareToken.setApprovalForAll(factory.address, True)
-    amm.addInitialLiquidity(100000 * ATTO, 10**18, True, account0)
+    ammInfo = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, liquidityCost, RATIO_50_50, True, account0)
+    amm = contractsFixture.applySignature("AMMExchange", ammInfo[0])
 
     cost = 10000 * ATTO
-    sets = cost // market.getNumTicks()
 
     cash.faucet(cost)
     yesShares = amm.enterPosition(cost, True, 0)
@@ -353,18 +363,16 @@ def test_amm_fees_work(sessionFixture, market, shareToken, cash, factory, accoun
         return skip("Test is only for para augur")
 
     fee = 3 # 3/1000 aka 0.3%
-    ammAddress = factory.addAMM(market.address, shareToken.address, fee)
-    amm = sessionFixture.applySignature("AMMExchange", ammAddress)
 
     liquiditySets = 100 * ATTO
-    liquidityCash = liquiditySets * market.getNumTicks()
+    liquidityCash = (liquiditySets * market.getNumTicks()) + (2 * 10**6 * market.getNumTicks())
     cash.faucet(liquidityCash)
     cash.approve(factory.address, 10 ** 48)
     shareToken.setApprovalForAll(factory.address, True)
 
-    lpTokens = amm.rateAddLiquidity(liquiditySets, liquiditySets)
-    assert lpTokens == liquiditySets
-    assert lpTokens == amm.addInitialLiquidity(liquidityCash, RATIO_50_50, True, account0)
+    ammInfo = factory.addAMMWithLiquidity(market.address, shareToken.address, fee, liquidityCash, RATIO_50_50, True, account0)
+    amm = sessionFixture.applySignature("AMMExchange", ammInfo[0])
+    lpTokens = ammInfo[1]
 
     tradeCash = 10000 * ATTO
     tradeSets = tradeCash // market.getNumTicks()
@@ -541,7 +549,7 @@ def test_amm_fee_calc_10(sessionFixture, market, shareToken, cash, factory, acco
     assert trade(  5000000, YES ) == ( ' 5097058823529411764705', '0.4902941176' )
     assert trade( 10000000, YES ) == ( '10098019801980198019801', '0.4950990099' )
 
-def test_amm_multiuser_liquidity(contractsFixture, market, cash, factory, amm, account0, account1):
+def test_amm_multiuser_liquidity(contractsFixture, market, cash, factory, shareToken, account0, account1):
     if not contractsFixture.paraAugur:
         return skip("Test is only for para augur")
 
@@ -551,9 +559,9 @@ def test_amm_multiuser_liquidity(contractsFixture, market, cash, factory, amm, a
     cash.approve(factory.address, 10 ** 48, sender=account1)
 
     cost0 = 10 * ATTO
-    sets0 = cost0 // numticks
     cash.faucet(cost0)
-    amm.addInitialLiquidity(cost0, RATIO_50_50, True, account0)
+    ammInfo = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, cost0, RATIO_50_50, True, account0)
+    amm = contractsFixture.applySignature("AMMExchange", ammInfo[0])
 
     cost1 = 5 * ATTO
     sets1 = cost1 // numticks
@@ -569,19 +577,20 @@ def test_amm_multiuser_liquidity(contractsFixture, market, cash, factory, amm, a
 
     amm.removeLiquidity(lpTokens1, sender=account1, getReturnData=False)
 
-def test_amm_villainous_fee_extraction(contractsFixture, market, cash, shareToken, factory, amm, account0, account1):
+def test_amm_villainous_fee_extraction(contractsFixture, market, cash, shareToken, factory, account0, account1):
     if not contractsFixture.paraAugur:
         return skip("Test is only for para augur")
 
     numticks = market.getNumTicks()
     sets = 100 * ATTO
-    initialLiquidityCost = sets * numticks
+    initialLiquidityCost = (sets * numticks) + (2 * 10**6 * 1000)
 
     cash.approve(factory.address, 10 ** 48, sender=account0)
     cash.approve(factory.address, 10 ** 48, sender=account1)
 
     cash.faucet(initialLiquidityCost)
-    amm.addInitialLiquidity(initialLiquidityCost, RATIO_50_50, True, account0)
+    ammInfo = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, initialLiquidityCost, RATIO_50_50, True, account0)
+    amm = contractsFixture.applySignature("AMMExchange", ammInfo[0])
 
     # Enter long position
     longPositionSets = 10 * ATTO
@@ -631,7 +640,7 @@ def test_amm_villainous_fee_extraction(contractsFixture, market, cash, shareToke
     assert cashFromPosition == 21778 # very very little difference in long and short so little to swap away
     assert attackLiquidityCost * 0.99 < totalValue <= attackLiquidityCost # no profit but little loss
 
-def test_amm_add_liquidity_ratio(contractsFixture, market, cash, factory, amm, account0, account1):
+def test_amm_add_liquidity_ratio(contractsFixture, market, cash, shareToken, factory, account0, account1):
     if not contractsFixture.paraAugur:
         return skip("Test is only for para augur")
 
@@ -644,9 +653,11 @@ def test_amm_add_liquidity_ratio(contractsFixture, market, cash, factory, amm, a
 
     cash.approve(factory.address, 10 ** 48)
 
-    initialLiquidityCost = sets * numticks
+    initialLiquidityCost = (sets * numticks) + (2 * 10**6 * 1000)
     cash.faucet(initialLiquidityCost)
-    amm.addInitialLiquidity(initialLiquidityCost, RATIO_60_40, True, account0)
+    ammInfo = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, initialLiquidityCost, RATIO_60_40, True, account0)
+    amm = contractsFixture.applySignature("AMMExchange", ammInfo[0])
+
     priorRatio = calc_ratio()
 
     subsequentLiquidityCost = sets * numticks
@@ -705,17 +716,13 @@ def test_amm_claim_from_multiple_markets(sessionFixture, universe, factory, shar
 
 
 def make_amm(sessionFixture, factory, market, shareToken, cash, account, fee=FEE, liquiditySets=0, liquidityRatio=RATIO_50_50):
-    ammAddress = factory.addAMM(market.address, shareToken.address, fee)
-    amm = sessionFixture.applySignature("AMMExchange", ammAddress)
+    liquiditySets *= ATTO
+    liquidityCash = (liquiditySets * market.getNumTicks()) + (2 * 10**6 * 1000)
+    cash.faucet(liquidityCash)
+    cash.approve(factory.address, 10 ** 48)
+    shareToken.setApprovalForAll(factory.address, True)
 
-    if liquiditySets:
-        liquiditySets *= ATTO
-        liquidityCash = liquiditySets * market.getNumTicks()
-        cash.faucet(liquidityCash)
-        cash.approve(factory.address, 10 ** 48)
-        shareToken.setApprovalForAll(factory.address, True)
-
-        amm.rateAddLiquidity(liquiditySets, liquiditySets)
-        amm.addInitialLiquidity(liquidityCash, liquidityRatio, True, account)
+    ammInfo = factory.addAMMWithLiquidity(market.address, shareToken.address, fee, liquidityCash, liquidityRatio, True, account)
+    amm = sessionFixture.applySignature("AMMExchange", ammInfo[0])
 
     return amm
