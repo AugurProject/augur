@@ -137,7 +137,6 @@ interface GraphData {
 
 export const processGraphMarkets = (graphData: GraphData): ProcessedData => {
   const { markets: rawMarkets, past: rawPastMarkets, cashes } = graphData;
-
   const keyedMarkets: { [marketId: string]: GraphMarket } = rawMarkets.reduce(
     (group, a) => ({ ...group, [a.id]: a }),
     {}
@@ -150,7 +149,7 @@ export const processGraphMarkets = (graphData: GraphData): ProcessedData => {
   let ammExchanges = {};
   Object.keys(keyedMarkets).forEach((marketId) => {
     const market = keyedMarkets[marketId];
-    const past = keyedPastMarkets[marketId];
+    const pastMarket = keyedPastMarkets[marketId];
     const amms = market.amms;
 
     // keying markets by marketId or marketId-ammExchange.id.
@@ -158,8 +157,8 @@ export const processGraphMarkets = (graphData: GraphData): ProcessedData => {
       markets[marketId] = shapeMarketInfo(market, null, cashes);
     } else if (amms.length === 1) {
       const ammExchange = shapeAmmExchange(
-        market.amms[0],
-        past?.amms[0],
+        amms[0],
+        pastMarket?.amms[0],
         cashes,
         market
       );
@@ -173,7 +172,7 @@ export const processGraphMarkets = (graphData: GraphData): ProcessedData => {
       } = market.amms.reduce((group, a) => ({ ...group, [a.id]: a }), {});
       const pastMarketAmms: {
         [marketId: string]: GraphAmmExchange;
-      } = market.amms.reduce((group, a) => ({ ...group, [a.id]: a }), {});
+      } = pastMarket.amms.reduce((group, a) => ({ ...group, [a.id]: a }), {});
 
       Object.keys(marketAmms).forEach((ammId) => {
         const amm = marketAmms[ammId];
@@ -261,7 +260,7 @@ const shapeOutcomes = (graphOutcomes: GraphMarketOutcome[]): MarketOutcome[] =>
 
 const shapeAmmExchange = (
   amm: GraphAmmExchange,
-  past: GraphAmmExchange,
+  pastAmm: GraphAmmExchange,
   cashes: Cashes,
   market: GraphMarket
 ): AmmExchange => {
@@ -296,7 +295,7 @@ const shapeAmmExchange = (
     liquidity: pastLiquidity,
     percentageNo: pastPctNo,
     percentageYes: pastPctYes,
-  } = past || {};
+  } = pastAmm || {};
   const past24hrPriceYes = pastPctNo ? Number(pastPctNo) / 100 : null;
   const past24hrPriceNo = pastPctYes ? Number(pastPctYes) / 100 : null;
 
