@@ -34,7 +34,7 @@ lru-dict==1.1.6           # via py-evm, web3
 multiaddr==0.0.8          # via ipfshttpclient
 mypy-extensions==0.4.1    # via py-ecc, py-evm
 netaddr==0.7.19           # via multiaddr
-numpy==1.18.3             # via -r requirements.in
+numpy==1.20.0             # via -r requirements.in
 packaging==19.2           # via pytest
 parsimonious==0.8.1       # via eth-abi
 pip-tools==5.4.0          # via -r requirements.in
@@ -61,7 +61,7 @@ toolz==0.10.0             # via cytoolz
 trie==1.4.0               # via py-evm
 urllib3==1.25.5           # via requests
 varint==1.0.2             # via multiaddr
-virtualenv==15.2.0        # via -r requirements.in
+virtualenv==20.4.2        # via -r requirements.in
 web3==5.6.0               # via -r requirements.in
 websockets==8.1           # via web3
 
