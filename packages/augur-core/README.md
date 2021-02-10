@@ -33,33 +33,28 @@ python3 -m pip install pytest
 
 ## Deployment
 
-Solidity contract deployment is handled by `ContractDeployer.ts` and the wrapper programs located in `source/deployment`.
+Solidity contract deployment is handled by `ContractDeployer.ts` and the wrapper programs located in `src/deployment`.
 
 - Main Code
-  - source/libraries/ContractCompiler.ts - All logic for compiling contracts, generating ABI
-  - source/libraries/ContractDeployer.ts - All logic for uploading, initializing, and whitelisting contracts, generating addresses and block number outputs.
+  - src/libraries/ContractCompiler.ts - All logic for compiling contracts, generating ABI
+  - src/libraries/ContractDeployer.ts - All logic for uploading, initializing, and whitelisting contracts, generating addresses and block number outputs.
 
 - Configuration
-  - source/libraries/CompilerConfiguration.ts
-  - source/libraries/DeployerConfiguration.ts
-  - source/libraries/NetworkConfiguration.ts -
+  - src/libraries/CompilerConfiguration.ts
 
 - Wrapper programs
-  - source/deployment/compileAndDeploy.ts - Compiles and Uploads contracts in one step. Useful for integration testing.
-  - source/deployment/compiledContracts.ts - Compile contract source (from source/contracts) and output contracts.json and abi.json. Outputs to output/contracts or CONTRACTS_OUTPUT_ROOT if defined.
-  - source/deployment/deployNetworks.ts - Application that can upload / upgrade all contracts, reads contracts from CONTRACTS_OUTPUT_ROOT, and uses a named network configuration to connect to an ethereum node. The resulting contract addresses are stored in output/contracts or ARTIFACT_OUTPUT_ROOT if defined.
+  - src/deployment/compileContracts.ts - Compile contract source (from source/contracts) and output contracts.json and abi.json. Outputs to output/contracts or CONTRACTS_OUTPUT_ROOT if defined.
+  - src/deployment/deployNetworks.ts - Application that can upload / upgrade all contracts, reads contracts from CONTRACTS_OUTPUT_ROOT, and uses a named network configuration to connect to an ethereum node. The resulting contract addresses are stored in output/contracts or ARTIFACT_OUTPUT_ROOT if defined.
 
 ## Tests
 
 The tests directory (augur-core/tests) contain tests and test fixtures to test the various functionalities present in Augur, including trading, reporting, and wcl tests.
 - conftest.py -- contains the class ContractFixture, which deals with caching compiled contracts, signatures, etc. as well as resetting the blockchain before each test.
-- delegation_sandbox.py -- tests the delegator contract.
 - sandbox.py -- used for testing miscellaneous Solidity behaviors
 - reporting -- contains tests for reporting purposes.
 - trading -- contains tests for trading purposes.
 - libraries -- tests for the libraries we use. Include Token tests, math, and various utility contracts
 - solidity_test_helpers -- small contracts to help run tests.
-- test_legacyRep.py -- tests for legacyRepToken's functionalities.
 - utils.py -- contains useful functions for testing, such as conversion between different data types.
 - wcl-in-python.py -- contains functions for making and taking various types of bids.
 - wcl.txt -- explains tests for the various situations when filling a bid and filling an ask.
@@ -123,10 +118,10 @@ https://github.com/AugurProject/augur-core/blob/7272124d985a4c38a2b4f6f599cc1601
 ## Source code organization
 
 Augur's smart contracts are organized into four folders:
-- `source/contracts/factories`: Constructors for universes, markets, dispute windows, etc.
-- `source/contracts/libraries`: Data structures used elsewhere in the source code.
-- `source/contracts/reporting`: Creation and manipulation of universes, markets, dispute windows, and reporting-related tokens.
-- `source/contracts/trading`: Functions to create, view, and fill orders, to issue and close out complete sets of shares, and for traders to claim proceeds after markets are closed.
+- `src/contracts/factories`: Constructors for universes, markets, dispute windows, etc.
+- `src/contracts/libraries`: Data structures used elsewhere in the source code.
+- `src/contracts/reporting`: Creation and manipulation of universes, markets, dispute windows, and reporting-related tokens.
+- `src/contracts/trading`: Functions to create, view, and fill orders, to issue and close out complete sets of shares, and for traders to claim proceeds after markets are closed.
 
 ## Additional notes
 
