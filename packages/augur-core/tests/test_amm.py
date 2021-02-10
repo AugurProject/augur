@@ -21,6 +21,12 @@ BALANCER_POOL_MIN = 10 ** 6
 TOTAL_BALANCER_POOL_MIN = 2 * BALANCER_POOL_MIN
 
 @fixture
+def nexus(sessionFixture, shareToken):
+    nexus = sessionFixture.contracts['ERC20Proxy1155Nexus']
+    shareToken.setApprovalForAll(nexus.address, True)
+    return nexus
+
+@fixture
 def factory(sessionFixture):
     return sessionFixture.contracts['AMMFactory']
 
@@ -62,7 +68,7 @@ def test_amm_add_with_minimal_liquidity(contractsFixture, market, cash, shareTok
     assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == sets
     assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == sets
 
-def test_amm_add_additional_liquidity(contractsFixture, market, cash, shareToken, factory, account0, account1):
+def test_amm_add_additional_liquidity(contractsFixture, market, cash, shareToken, factory, nexus, account0, account1):
     if not contractsFixture.paraAugur:
         return skip("Test is only for para augur")
 
@@ -86,21 +92,23 @@ def test_amm_add_additional_liquidity(contractsFixture, market, cash, shareToken
     assert shareToken.balanceOfMarketOutcome(market.address, NO, factory.address) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, factory.address) == 0
 
-    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, ammAddress) == sets
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, ammAddress) == sets
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, ammAddress) == sets
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, ammAddress) == sets * 0.9
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, ammAddress) == sets * 0.9
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, ammAddress) == sets * 0.9
 
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == 0
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == sets // 2
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == sets // 2
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == (sets // 2) * 1.1
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == (sets // 2) * 1.1
 
-    assert amm.balanceOf(account0) == sets
+    assert amm.balanceOf(account0) == sets * 0.9
+
+    # TODO: Figure out the precise value here.
+    # If the account received *some* bTokens that is sufficient here.
+    assert bPool.balanceOf(account0) > 0
 
     setsToBuy = 10 * ATTO
     cashToSend = setsToBuy * numticks
     cashToBPool = cashToSend // 10
-
-
 
     cash.faucet(cashToSend, sender=account1)
     cash.approve(factory.address, 2 ** 256 - 1, sender=account1)
@@ -114,16 +122,17 @@ def test_amm_add_additional_liquidity(contractsFixture, market, cash, shareToken
     assert shareToken.balanceOfMarketOutcome(market.address, NO, factory.address) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, factory.address) == 0
 
-    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, ammAddress) == sets + lpTokens
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, ammAddress) == sets + lpTokens
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, ammAddress) == sets + lpTokens
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, ammAddress) == (sets * 90 // 100) + lpTokens
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, ammAddress) == (sets * 90 // 100) + lpTokens
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, ammAddress) == (sets * 90 // 100) + lpTokens
 
-    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == 0
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == sets // 2
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == sets // 2
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account1) == 0
 
+    # This should represent 10% of the cash.
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account1) == setsToBuy // 20
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account1) == setsToBuy // 20
 
-
+    assert bPool.balanceOf(account1) > 0
 
 def test_amm_add_with_liquidity(contractsFixture, market, cash, shareToken, factory, account0):
     if not contractsFixture.paraAugur:
