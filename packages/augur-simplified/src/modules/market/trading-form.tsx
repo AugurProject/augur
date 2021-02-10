@@ -366,6 +366,7 @@ const TradingForm = ({
   const [canEnterPosition, setCanEnterPosition] = useState(false);
   const [canExitPosition, setCanExitPosition] = useState(false);
   const isApprovedTrade = isBuy ? canEnterPosition : canExitPosition;
+  const hasLiquidity = amm.liquidity !== "0";
 
   useEffect(() => {
     if (initialSelectedOutcome.id !== selectedOutcomeId) {
@@ -495,7 +496,10 @@ const TradingForm = ({
     let actionText = buttonError || orderType;
     let subText = null;
     let disabled = false;
-    if (Number(amount) === 0 || isNaN(Number(amount)) || amount === '') {
+    if (!hasLiquidity) {
+      actionText = 'Liquidity Depleted';
+      disabled = true;
+    } else if (Number(amount) === 0 || isNaN(Number(amount)) || amount === '') {
       actionText = ENTER_AMOUNT;
       disabled = true;
     } else if (new BN(amount).gt(new BN(userBalance))) {
@@ -527,6 +531,7 @@ const TradingForm = ({
     userBalance,
     breakdown?.slippagePercent,
     slippage,
+    hasLiquidity
   ]);
 
   const makeTrade = () => {
@@ -625,6 +630,7 @@ const TradingForm = ({
           error={amountError}
           maxValue={userBalance}
           ammCash={ammCash}
+          disabled={!hasLiquidity}
           rate={
             !isNaN(Number(breakdown?.ratePerCash))
               ? `1 ${amm?.cash?.name} = ${
