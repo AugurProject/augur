@@ -68,7 +68,7 @@ contract ERC1155 is
     {
         // sanity checks
         require(
-            to != address(0x0),
+            to != qq,
             "CANNOT_TRANSFER_TO_ADDRESS_ZERO"
         );
         require(

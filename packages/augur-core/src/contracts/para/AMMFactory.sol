@@ -19,7 +19,7 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
     IAMMExchange internal proxyToClone;
     BFactory internal bFactory;
     IERC20Proxy1155Nexus internal erc20Proxy1155Nexus;
-    mapping (address => address) public balancePools;
+    mapping (address => address) public balancerPools;
 
     event AMMCreated(IAMMExchange amm, IMarket market, ParaShareToken shareToken, uint256 fee, BPool bPool);
 
@@ -42,20 +42,11 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         IAMMExchange _amm = IAMMExchange(_ammAddress);
 
         if(_cashToInvalidPool > 0) {
-            BPool _bPool = BPool(balancePools[_ammAddress]);
+            BPool _bPool = BPool(balancerPools[_ammAddress]);
 
-            // Move _cashToInvalidPool to the balancer pool.
-            uint256 _lpTokenOut = _cashToInvalidPool
-                .div(_bPool.getBalance(address(_amm.cash())))
-                .mul(_bPool.totalSupply());
+            addLiquidityToBPool(_market, _para, _bPool, _cashToInvalidPool, _recipient);
 
-            _para.publicBuyCompleteSets(_market, _cashToInvalidPool.div(_market.getNumTicks()));
-
-            uint256[] memory _maxAmountsIn = new uint256[](2);
-            _maxAmountsIn[0] = 2**128-1;
-            _maxAmountsIn[1] = 2**128-1;
-
-            _bPool.joinPool(_lpTokenOut, _maxAmountsIn);
+            _cash = _para.cash().balanceOf(address(this));
         }
 
         return _amm.addLiquidity(_cash, _recipient);
@@ -77,6 +68,7 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
 
         IAMMExchange _amm = createAMM(_market, _para, _fee);
         BPool _bPool = createBPool(_ammAddress, _para, _market, _fee, _recipient);
+        balancerPools[address(_amm)] = address(_bPool);
 
         emit AMMCreated(_amm, _market, _para, _fee, _bPool);
 
@@ -98,6 +90,8 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         // uint256 _cashToSendToPool = (_cash * 5 * 10**16) / 10**18;
         uint _poolCashBalance = _bPool.getBalance(address(_para.cash()));
         uint _poolLPTokenTotalSupply = _bPool.totalSupply();
+
+        _cashToInvalidPool = _cashToInvalidPool.div(2);
 
         uint256 _lpTokenOut = _cashToInvalidPool.div(_poolCashBalance).mul(_poolLPTokenTotalSupply);
         uint256 _setsToBuy = _cashToInvalidPool.div(_market.getNumTicks());
@@ -137,7 +131,6 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
 
     function createBPool(address _ammAddress, ParaShareToken _para, IMarket _market, uint256 _fee, address _recipient) private returns (BPool _bPool){
         _bPool = bFactory.newBPool();
-        balancePools[_ammAddress] = address(_bPool);
 
         IERC20Proxy1155 _invalidERC20Proxy1155 = erc20Proxy1155Nexus.newERC20(_para.getTokenId(_market, 0));
 

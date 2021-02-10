@@ -75,23 +75,54 @@ def test_amm_add_additional_liquidity(contractsFixture, market, cash, shareToken
     cash.faucet(cost)
     cash.approve(factory.address, 2**256-1)
 
-    factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, cost, RATIO_50_50, keepYes, account0, account1)
+    ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, cost, RATIO_50_50, keepYes, account0)[0]
+    amm = contractsFixture.applySignature("AMMExchange", ammAddress)
 
+    ammCreatedEvent = factory.getLogs('AMMCreated')
+    bPool = contractsFixture.applySignature("BPool", ammCreatedEvent[0].args.bPool)
+
+    # The factory should not have any shares.
     assert shareToken.balanceOfMarketOutcome(market.address, YES, factory.address) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, NO, factory.address) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, factory.address) == 0
 
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, ammAddress) == sets
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, ammAddress) == sets
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, ammAddress) == sets
+
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == 0
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == sets
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == sets
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == sets // 2
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == sets // 2
+
+    assert amm.balanceOf(account0) == sets
 
     setsToBuy = 10 * ATTO
     cashToSend = setsToBuy * numticks
+    cashToBPool = cashToSend // 10
+
+
 
     cash.faucet(cashToSend, sender=account1)
     cash.approve(factory.address, 2 ** 256 - 1, sender=account1)
 
-    lpTokens = factory.addLiquidity(market.address, shareToken.address, FEE, cashToSend, account1, 0, sender=account1)
+    # Contribute 10% to the BPool.
+    lpTokens = factory.addLiquidity(market.address, shareToken.address, FEE, cashToSend, account1, cashToBPool, sender=account1)
+    assert lpTokens == (setsToBuy - (cashToBPool // numticks))
+
+    # confirm share balances
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, factory.address) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, factory.address) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, factory.address) == 0
+
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, ammAddress) == sets + lpTokens
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, ammAddress) == sets + lpTokens
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, ammAddress) == sets + lpTokens
+
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == sets // 2
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == sets // 2
+
+
 
 
 def test_amm_add_with_liquidity(contractsFixture, market, cash, shareToken, factory, account0):

@@ -506,6 +506,7 @@ class ContractsFixture:
     def uploadBalancerContracts(self):
         self.upload("../src/contracts/balancer/BFactory.sol")
         self.generateAndStoreSignature("../src/contracts/balancer/BFactory.sol")
+        self.generateAndStoreSignature("../src/contracts/balancer/BPool.sol")
 
     def initializeAllContracts(self):
         coreContractsToInitialize = ['Time','ShareToken','WarpSync','RepOracle','AuditFunds']
