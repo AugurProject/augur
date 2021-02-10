@@ -75,8 +75,7 @@ def test_amm_add_additional_liquidity(contractsFixture, market, cash, shareToken
     cash.faucet(cost)
     cash.approve(factory.address, cost)
 
-    ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, cost, RATIO_50_50, keepYes, account0)
-    amm = contractsFixture.applySignature("AMMExchange", ammAddress[0])
+    factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, cost, RATIO_50_50, keepYes, account0)
 
     assert shareToken.balanceOfMarketOutcome(market.address, YES, factory.address) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, NO, factory.address) == 0
