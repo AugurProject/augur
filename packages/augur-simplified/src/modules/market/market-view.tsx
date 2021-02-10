@@ -31,7 +31,7 @@ import {
   getMarketEndtimeDate,
 } from '../../utils/date-utils';
 import { getCurrentAmms } from '../stores/app-status-hooks';
-import { getWinningOutcome } from '../markets/markets-view';
+import { getWinningOutcome } from '../markets/market-card';
 import { ConfirmedCheck } from '../common/icons';
 
 const WinningOutcomeLabel = ({ winningOutcome }) => (
