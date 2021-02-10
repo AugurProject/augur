@@ -71,7 +71,7 @@ const PLACEHOLDER = '0';
 const AVG_PRICE_TIP =
   'The difference between the market price and estimated price due to trade size.';
 
-export const isInvalidNumber = (number) => {
+export const isInvalidNumber = number => {
   return (
     number !== '' &&
     (isNaN(number) || Number(number) < 0 || Number(number) === 0)
@@ -98,7 +98,9 @@ const Outcome = ({
   const { prepend, symbol } = getCashFormat(ammCash?.name);
   useEffect(() => {
     if (outcome.price !== '0' && outcome.price && outcome.price !== '') {
-      setCustomVal(outcome.price);
+      let numInput = outcome.price.split('.');
+      numInput.shift();
+      setCustomVal(numInput.join('.'));
     }
   }, [outcome.price]);
   const formattedPrice = formatDai(outcome.price);
@@ -123,18 +125,22 @@ const Outcome = ({
       <span>{outcome.name}</span>
       {editable ? (
         <div onClick={() => input.current && input.current.focus()}>
-          <span>{`${prepend && symbol}`}</span>
+          <span>{`${prepend && symbol}0.`}</span>
           <input
             value={customVal}
-            onChange={(v) => {
+            onChange={v => {
               setCustomVal(`${v.target.value}`);
-              setEditableValue(v.target.value);
+              setEditableValue(
+                v.target.value && v.target.value !== '0'
+                  ? `.${v.target.value}`
+                  : `${v.target.value}`
+              );
             }}
-            type="number"
-            placeholder={editable ? '0.0' : PLACEHOLDER}
+            type="text"
+            placeholder={PLACEHOLDER}
             ref={input}
             // @ts-ignore
-            onWheel={(e) => e?.target?.blur()}
+            onWheel={e => e?.target?.blur()}
           />
         </div>
       ) : (
@@ -192,7 +198,7 @@ export const OutcomesGrid = ({
       })}
     >
       {outcomes
-        .filter((outcome) => (dontFilterInvalid ? true : !outcome.isInvalid))
+        .filter(outcome => (dontFilterInvalid ? true : !outcome.isInvalid))
         .reverse()
         .map((outcome, index) => (
           <Outcome
@@ -208,7 +214,7 @@ export const OutcomesGrid = ({
             onClick={() => setSelectedOutcome(outcome)}
             marketType={marketType}
             editable={editable}
-            setEditableValue={(price) => setEditableValue(price, outcome.id)}
+            setEditableValue={price => setEditableValue(price, outcome.id)}
             ammCash={ammCash}
             showAsButton={showAsButtons}
             invalidSelected={selectedOutcome?.isInvalid}
@@ -238,7 +244,7 @@ export const InfoNumbers = ({ infoNumbers, unedited }: InfoNumbersProps) => {
         [Styles.Populated]: !unedited,
       })}
     >
-      {infoNumbers.map((infoNumber) => (
+      {infoNumbers.map(infoNumber => (
         <div key={infoNumber.label}>
           <span>
             {infoNumber.label}
@@ -550,7 +556,7 @@ const TradingForm = ({
       outputYesShares,
       userBalances
     )
-      .then((response) => {
+      .then(response => {
         if (response) {
           const { hash } = response;
           setAmount('');
@@ -568,10 +574,10 @@ const TradingForm = ({
           });
           response
             .wait()
-            .then((response) => updateTxStatus(response, updateTransaction));
+            .then(response => updateTxStatus(response, updateTransaction));
         }
       })
-      .catch((e) => {
+      .catch(e => {
         //TODO: handle errors here
       });
   };
@@ -614,7 +620,7 @@ const TradingForm = ({
         <OutcomesGrid
           outcomes={outcomes}
           selectedOutcome={selectedOutcome}
-          setSelectedOutcome={(outcome) => {
+          setSelectedOutcome={outcome => {
             setSelectedOutcome(outcome);
             setAmount('');
           }}
@@ -635,7 +641,7 @@ const TradingForm = ({
             !isNaN(Number(breakdown?.ratePerCash))
               ? `1 ${amm?.cash?.name} = ${
                   formatSimpleShares(breakdown?.ratePerCash, {
-                    denomination: (v) => `${v} Shares`,
+                    denomination: v => `${v} Shares`,
                   }).full
                 }`
               : null
