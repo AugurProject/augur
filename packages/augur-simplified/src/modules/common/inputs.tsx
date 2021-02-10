@@ -63,6 +63,7 @@ interface AmountInputProps {
   updateAmountError?: Function;
   ammCash: Cash;
   isBuy?: boolean;
+  disabled?: boolean;
 }
 
 export const AmountInput = ({
@@ -76,7 +77,8 @@ export const AmountInput = ({
   ammCash,
   updateAmountError = () => {},
   isBuy = true,
-  error
+  error,
+  disabled = false,
 }: AmountInputProps) => {
   const { isLogged } = useAppStatusStore();
   const currencyName = chosenCash;
@@ -132,6 +134,7 @@ export const AmountInput = ({
           }}
           value={amount}
           placeholder="0"
+          disabled={disabled}
           // @ts-ignore
           onWheel={(e) => e?.target?.blur()}
         />
