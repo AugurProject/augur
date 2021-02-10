@@ -9271,13 +9271,13 @@ bcrypt-pbkdf@^1.0.0:
   dependencies:
     tweetnacl "^0.14.3"
 
-bcrypto@5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/bcrypto/-/bcrypto-5.1.0.tgz#1ca3d0b1bd1ffe6bb18cfcf2a7d7fc19423b68e6"
-  integrity sha512-WEs5g7WHdEdLLcsvhE7Z1AXv0G+hb+bJhSUYM7samFNrH051XhcFVWxAbAZDmIU1HWjpjhmQ+HqBar7UC/qrzQ==
+bcrypto@5.1.0, bcrypto@5.4.0:
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/bcrypto/-/bcrypto-5.4.0.tgz#4046f0c44a4b301eff84de593b4f86fce8d91db2"
+  integrity sha512-KDX2CR29o6ZoqpQndcCxFZAtYA1jDMnXU3jmCfzP44g++Cu7AHHtZN/JbrN/MXAg9SLvtQ8XISG+eVD9zH1+Jg==
   dependencies:
-    bufio "~1.0.6"
-    loady "~0.0.1"
+    bufio "~1.0.7"
+    loady "~0.0.5"
 
 bech32@1.1.4, bech32@^1.1.2:
   version "1.1.4"
@@ -10021,7 +10021,7 @@ bufferutil@^4.0.1:
   dependencies:
     node-gyp-build "~3.7.0"
 
-bufio@~1.0.6:
+bufio@~1.0.7:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/bufio/-/bufio-1.0.7.tgz#b7f63a1369a0829ed64cc14edf0573b3e382a33e"
   integrity sha512-bd1dDQhiC+bEbEfg56IdBv7faWa6OipMs/AFFFvtFnB3wAYjlwQpQRZ0pm6ZkgtfL0pILRXhKxOiQj6UzoMR7A==
@@ -23775,7 +23775,7 @@ loader-utils@^1.0.0, loader-utils@^1.0.2, loader-utils@^1.1.0, loader-utils@^1.2
     emojis-list "^3.0.0"
     json5 "^1.0.1"
 
-loady@~0.0.1:
+loady@~0.0.5:
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/loady/-/loady-0.0.5.tgz#b17adb52d2fb7e743f107b0928ba0b591da5d881"
   integrity sha512-uxKD2HIj042/HBx77NBcmEPsD+hxCgAtjEWlYNScuUjIsh/62Uyu39GOR68TBR68v+jqDL9zfftCWoUo4y03sQ==

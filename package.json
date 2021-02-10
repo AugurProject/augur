@@ -93,6 +93,7 @@
     "**/bignumber.js": "9.0.0",
     "**/puppeteer": "https://github.com/AugurProject/blackhole.git",
     "**/scrypt": "https://github.com/AugurProject/blackhole.git",
+    "**/bcrypto": "5.4.0",
     "lodash": "4.17.15",
     "ethers": "5.0.15",
     "@ethersproject/hash": "5.0.9",
