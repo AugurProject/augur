@@ -67,13 +67,13 @@ def test_amm_add_additional_liquidity(contractsFixture, market, cash, shareToken
         return skip("Test is only for para augur")
 
     numticks = market.getNumTicks()
-    cost = TOTAL_BALANCER_POOL_MIN * numticks
+    cost = 2 * TOTAL_BALANCER_POOL_MIN * numticks
     # BALANCER_POOL_MIN accounts for cash and sets. Must divide in half.
     sets = cost // (numticks * 2);
     keepYes = True
 
     cash.faucet(cost)
-    cash.approve(factory.address, cost)
+    cash.approve(factory.address, 2**256-1)
 
     factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, cost, RATIO_50_50, keepYes, account0, account1)
 
@@ -89,7 +89,7 @@ def test_amm_add_additional_liquidity(contractsFixture, market, cash, shareToken
     cashToSend = setsToBuy * numticks
 
     cash.faucet(cashToSend, sender=account1)
-    cash.approve(factory.address, cost, sender=account1)
+    cash.approve(factory.address, 2 ** 256 - 1, sender=account1)
 
     lpTokens = factory.addLiquidity(market.address, shareToken.address, FEE, cashToSend, account1, 0, sender=account1)
 

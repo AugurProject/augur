@@ -38,12 +38,10 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         uint256 _cashToInvalidPool
     ) public returns (uint256) {
         _para.cash().transferFrom(msg.sender, address(this), _cash);
-
         address _ammAddress = exchanges[address(_market)][address(_para)][_fee];
         IAMMExchange _amm = IAMMExchange(_ammAddress);
 
         if(_cashToInvalidPool > 0) {
-            require(false, "this failed");
             BPool _bPool = BPool(balancePools[_ammAddress]);
 
             // Move _cashToInvalidPool to the balancer pool.
@@ -86,11 +84,46 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
 
         _cash = _para.cash().balanceOf(address(this));
 
-        if(_cash > 0) {
-            _lpTokens = _amm.addInitialLiquidity(_cash, _ratioFactor, _keepLong, _recipient);
-        } else {
-            _lpTokens = 0;
-        }
+        _lpTokens = _amm.addInitialLiquidity(_cash, _ratioFactor, _keepLong, _recipient);
+    }
+
+    function addLiquidityToBPool(
+        IMarket _market,
+        ParaShareToken _para,
+        BPool _bPool,
+        uint256 _cashToInvalidPool,
+        address _recipient
+    ) internal {
+        // Move 5% of cash to the balancer pool.
+        // uint256 _cashToSendToPool = (_cash * 5 * 10**16) / 10**18;
+        uint _poolCashBalance = _bPool.getBalance(address(_para.cash()));
+        uint _poolLPTokenTotalSupply = _bPool.totalSupply();
+
+        uint256 _lpTokenOut = _cashToInvalidPool.div(_poolCashBalance).mul(_poolLPTokenTotalSupply);
+        uint256 _setsToBuy = _cashToInvalidPool.div(_market.getNumTicks());
+
+        _para.publicBuyCompleteSets(_market, _setsToBuy);
+
+        uint256[] memory _maxAmountsIn = new uint256[](2);
+        // The max amount is constrained by the _lpTokenOut.
+        _maxAmountsIn[0] = 2**128-1;
+        _maxAmountsIn[1] = 2**128-1;
+
+        _bPool.joinPool(_lpTokenOut, _maxAmountsIn);
+
+        // Send back unused shares.
+        uint256[] memory _tokenIds = new uint256[](2);
+        _tokenIds[0] = _para.getTokenId(_market, 1);
+        _tokenIds[1] = _para.getTokenId(_market, 2);
+
+        uint256[] memory _amounts = new uint256[](2);
+        _amounts[0] = _setsToBuy;
+        _amounts[1] = _setsToBuy;
+
+        _para.unsafeBatchTransferFrom(address(this), _recipient, _tokenIds, _amounts);
+
+        // transfer balancer lp tokens back to liquidity provider.
+        _bPool.transfer(_recipient, _lpTokenOut);
     }
 
     function createAMM(IMarket _market, ParaShareToken _para, uint256 _fee) private returns (IAMMExchange _amm) {

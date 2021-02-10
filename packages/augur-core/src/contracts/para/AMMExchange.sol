@@ -55,7 +55,6 @@ contract AMMExchange is IAMMExchange, ERC20 {
     // Adds shares to the liquidity pool by minting complete sets.
     function addLiquidity(uint256 _cash, address _recipient) public returns (uint256) {
         (uint256 _poolShort, uint256 _poolLong) = shortLongShareBalances(address(this));
-        require(false, "got this far");
         require(_poolShort != 0, "To add initial liquidity please use addInitialLiquidity");
         uint256 _ratioFactor = 0;
         bool _keepLong = true;
