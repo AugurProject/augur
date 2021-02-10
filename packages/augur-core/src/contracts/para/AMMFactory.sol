@@ -37,25 +37,28 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         address _recipient,
         uint256 _cashToInvalidPool
     ) public returns (uint256) {
-        transferCash(_market, _para, _fee, _recipient, address(this), _cash);
+        _para.cash().transferFrom(msg.sender, address(this), _cash);
 
         address _ammAddress = exchanges[address(_market)][address(_para)][_fee];
         IAMMExchange _amm = IAMMExchange(_ammAddress);
 
-        BPool _bPool = BPool(balancePools[_ammAddress]);
+        if(_cashToInvalidPool > 0) {
+            require(false, "this failed");
+            BPool _bPool = BPool(balancePools[_ammAddress]);
 
-        // Move 5% of cash to the balancer pool.
-        uint256 _lpTokenOut = _cashToInvalidPool
-            .div(_bPool.getBalance(address(_amm.cash())))
-            .mul(_bPool.totalSupply());
+            // Move _cashToInvalidPool to the balancer pool.
+            uint256 _lpTokenOut = _cashToInvalidPool
+                .div(_bPool.getBalance(address(_amm.cash())))
+                .mul(_bPool.totalSupply());
 
-        _para.publicBuyCompleteSets(_market, _cashToInvalidPool.div(_market.getNumTicks()));
+            _para.publicBuyCompleteSets(_market, _cashToInvalidPool.div(_market.getNumTicks()));
 
-        uint256[] memory _maxAmountsIn = new uint256[](2);
-        _maxAmountsIn[0] = 2**128-1;
-        _maxAmountsIn[1] = 2**128-1;
+            uint256[] memory _maxAmountsIn = new uint256[](2);
+            _maxAmountsIn[0] = 2**128-1;
+            _maxAmountsIn[1] = 2**128-1;
 
-        _bPool.joinPool(_lpTokenOut, _maxAmountsIn);
+            _bPool.joinPool(_lpTokenOut, _maxAmountsIn);
+        }
 
         return _amm.addLiquidity(_cash, _recipient);
     }
