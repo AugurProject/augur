@@ -136,7 +136,7 @@ const MarketView = ({ defaultMarket = null }) => {
   );
   const amm: AmmExchange = market?.amm;
 
-  if (!makrket) return <EmptyMarketView />;
+  if (!market) return <EmptyMarketView />;
   const details = getDetails(market);
   const currentAMMs = getCurrentAmms(market, markets);
   const { reportingState, outcomes } = market;
