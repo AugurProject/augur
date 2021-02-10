@@ -1,4 +1,4 @@
-/* NOTE -- There is import order dependence, so please don￾t reorder before checking inheritence */
+// NOTE -- There is import order dependence, so please don't reorder before checking inheritence
 // This is so that there is not circular dependencies amoung these stylesheets
 @import '_colors';
 @import '_typography';
@@ -76,13 +76,13 @@ textarea {
   }
 }
 
-input[type='number']::-webkit-inner-spin-button,
-input[type='number']::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
 }
 /* Firefox */
-input[type='number'] {
+input[type=number] {
   -moz-appearance: textfield;
 }
 
@@ -101,9 +101,10 @@ input[type='number'] {
   overflow: hidden;
 }
 
+
 .RoundedButton {
-  @simpleborder .SimpleBorder;
-  @text-12-semi-bold .text-12-semi-bold;
+  .SimpleBorder;
+  .text-12-semi-bold;
 
   background: transparent;
   box-sizing: border-box;
@@ -121,8 +122,8 @@ input[type='number'] {
 }
 
 .RoundedLabel {
-  @roundedbutton .RoundedButton;
-  @text-16 .text-16;
+  .RoundedButton;
+  .text-16;
 
   color: var(--simple-primary-text);
   line-height: 140%;
@@ -134,7 +135,7 @@ input[type='number'] {
 }
 
 .EmptyMessage {
-  @text-12 .text-12;
+  .text-12;
 
   color: var(--simple-primary-text);
   padding: @size-20 0;
