@@ -54,6 +54,7 @@ import { createBigNumber } from '../../utils/create-big-number';
 import { BackIcon } from '../common/icons';
 import { checkAllowance } from '../hooks/use-approval-callback';
 import { AmountInput, TextInput } from '../common/inputs';
+import { useGraphDataStore } from '../stores/graph-data';
 
 const TRADING_FEE_OPTIONS = [
   {
@@ -115,10 +116,10 @@ const ModalAddLiquidity = ({
     transactions,
     isLogged,
     paraConfig,
-    processed: { cashes },
     loginAccount,
     actions: { closeModal, addTransaction, updateTransaction },
   } = useAppStatusStore();
+  const { cashes } = useGraphDataStore();
   const history = useHistory();
   const account = loginAccount?.account;
 

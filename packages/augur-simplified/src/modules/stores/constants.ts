@@ -6,7 +6,31 @@ import {
   DEFAULT_MARKET_VIEW_SETTINGS,
   SETTINGS_SLIPPAGE,
 } from '../constants';
-import { AppStatusState } from '../types';
+import { AppStatusState, GraphDataState } from '../types';
+
+export const STUBBED_GRAPH_DATA_ACTIONS = {
+  updateGraphHeartbeat: (processed, blocknumber, errors) => {},
+};
+
+export const DEFAULT_GRAPH_DATA_STATE: GraphDataState = {
+  ammExchanges: {},
+  blocknumber: null,
+  cashes: {},
+  errors: null,
+  markets: {},
+};
+
+export const GRAPH_DATA_KEYS = {
+  AMM_EXCHANGES: 'ammExchanges',
+  BLOCKNUMBER: 'blocknumber',
+  CASHES: 'cashes',
+  ERRORS: 'errors',
+  MARKETS: 'markets',
+};
+
+export const GRAPH_DATA_ACTIONS = {
+  UPDATE_GRAPH_HEARTBEAT: 'UPDATE_GRAPH_HEARTBEAT',
+};
 
 export const STUBBED_APP_STATUS_ACTIONS = {
   setIsMobile: isMobile => {},
@@ -27,6 +51,7 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   updateSeenPositionWarning: (id, seenPositionWarning, warningType) => {},
   addSeenPositionWarnings: (seenPositionWarnings) => {}
 };
+
 
 export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
   isMobile: false,
