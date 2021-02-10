@@ -1,6 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
-.MarketView {
+.MarketView,
+.EmptyMarketView {
   .TwoTonePage;
   .TwoTonePageGrid;
 
@@ -38,6 +39,118 @@
       > div:first-of-type {
         margin-bottom: @size-32;
       }
+    }
+  }
+}
+
+.EmptyMarketView {
+  > section {
+    display: grid;
+    > section > div, 
+    > div {
+      .ShimmerEmptyBlock;
+
+      border-radius: @size-16;
+      background: var(--simple-alternate-background);
+      background-size: 800px 100%;
+      background-image: linear-gradient(
+        to right,
+        #EDEFF1 0%,
+        #f6f7f8 20%,
+        #EDEFF1 40%,
+        #EDEFF1 100%
+      );
+    }
+  }
+
+  > section:first-of-type {
+    grid-template-columns: repeat(3, auto);
+
+    > section:first-of-type {
+      display: grid;
+      grid-template-columns: @size-55 @size-100 1fr;
+      grid-gap: @size-12;
+      margin-bottom: @size-48;
+
+      > div {
+        height: @size-44;
+
+        &:last-of-type {
+          min-width: 169px;
+          margin-left: auto;
+        }
+      }
+    }
+
+    > section:nth-of-type(2) {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: repeat(3, @size-32);
+      grid-gap: @size-8;
+
+      > div:last-of-type {
+        max-width: 352px;
+      }
+    }
+
+    > section:nth-of-type(3) {
+      display: grid;
+      grid-template-columns: repeat(4, 195px);
+      grid-template-rows: @size-85;
+      grid-gap: @size-2;
+
+      > div:nth-of-type(1) {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+
+      > div:nth-of-type(2),
+      > div:nth-of-type(3) {
+        border-radius: 0;
+      }
+
+      > div:nth-of-type(4) {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+    }
+
+    > section:nth-of-type(4) {
+      display: grid;
+      grid-template-columns: 39px @size-30 @size-40 59px;
+      grid-template-rows: @size-24;
+      grid-gap: @size-4;
+      margin-bottom: 0;
+      margin-left: auto;
+    }
+
+
+    > section:last-of-type {
+      > div {
+        width: 781px;
+        height: 450px;
+        margin-top: @size-16;
+      }
+    }
+  }
+
+  > section:nth-of-type(2) {
+    grid-template-columns: 1fr;
+
+    > div:first-of-type {
+      width: 395px;
+      height: 676px;
+    }
+
+    > div:nth-of-type(2) {
+      width: 395px;
+      height: 101px;
+    }
+
+    > div:nth-of-type(3) {
+      width: 395px;
+      height: @size-48;
+      margin-top: @size-16;
     }
   }
 }
