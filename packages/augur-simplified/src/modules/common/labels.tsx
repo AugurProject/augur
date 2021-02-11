@@ -29,6 +29,7 @@ import {
 } from '../constants';
 import { FormattedNumber, MarketInfo } from '../types';
 import { useGraphDataStore } from '../stores/graph-data';
+import { PARA_CONFIG } from '../stores/constants';
 import { useUserStore } from '../stores/user';
 
 interface ValueLabelProps {
@@ -360,14 +361,12 @@ export const ErrorBlock = ({ text }) => {
 
 export const NetworkMismatchBanner = () => {
   const {
-    paraConfig: { networkId },
-  } = useAppStatusStore();
-  const {
     errors
   } = useGraphDataStore();
   const {
     loginAccount
   } = useUserStore();
+  const { networkId } = PARA_CONFIG;
   const location = useLocation();
   const path = parsePath(location.pathname)[0];
   const { chainId } = loginAccount || {};

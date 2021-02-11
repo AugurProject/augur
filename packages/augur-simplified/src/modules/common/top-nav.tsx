@@ -10,6 +10,7 @@ import {
   SIDEBAR_TYPES,
   TX_STATUS,
 } from '../constants';
+import { PARA_CONFIG } from '../stores/constants';
 import makePath from '../routes/helpers/make-path';
 import Logo from './logo';
 import parsePath from '../routes/helpers/parse-path';
@@ -204,8 +205,8 @@ export const SettingsButton = () => {
 export const TopNav = () => {
   const location = useLocation();
   const path = parsePath(location.pathname)[0];
+  const { networkId } = PARA_CONFIG;
   const {
-    paraConfig: { networkId },
     isLogged,
     isMobile,
     actions: { setSidebar },

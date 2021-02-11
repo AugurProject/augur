@@ -56,6 +56,7 @@ import { checkAllowance } from '../hooks/use-approval-callback';
 import { AmountInput, TextInput } from '../common/inputs';
 import { useGraphDataStore } from '../stores/graph-data';
 import { useUserStore, UserStore } from '../stores/user';
+import { PARA_CONFIG } from '../stores/constants';
 
 const TRADING_FEE_OPTIONS = [
   {
@@ -113,7 +114,6 @@ const ModalAddLiquidity = ({
 }: ModalAddLiquidityProps) => {
   const {
     isLogged,
-    paraConfig,
     actions: { closeModal },
   } = useAppStatusStore();
   const {
@@ -172,8 +172,7 @@ const ModalAddLiquidity = ({
   }, [chosenCash]);
 
   const isETH = cash?.name === ETH;
-  const { addresses } = paraConfig;
-  const { AMMFactory } = addresses;
+  const { addresses: { AMMFactory } } = PARA_CONFIG;
   const isApproved = modalType === REMOVE ? true : canAddLiquidity;
 
   useEffect(() => {

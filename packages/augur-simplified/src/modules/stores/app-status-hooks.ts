@@ -5,9 +5,6 @@ import {
   APP_STATE_KEYS,
 } from './constants';
 import { windowRef } from '../../utils/window-ref';
-import {
-  ParaDeploys,
-} from '../types';
 import { dispatchMiddleware, getSavedUserInfo } from './utils';
 const {
   SET_SHOW_TRADING_FORM,
@@ -111,14 +108,8 @@ export function AppStatusReducer(state, action) {
   return updatedState;
 }
 
-// @ts-ignore
-const paraConfig: ParaDeploys = process.env.CONFIGURATION || {};
-
 export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
-  const [state, pureDispatch] = useReducer(AppStatusReducer, {
-    ...defaultState,
-    paraConfig,
-  });
+  const [state, pureDispatch] = useReducer(AppStatusReducer, defaultState);
   const dispatch = dispatchMiddleware(pureDispatch);
   windowRef.appStatus = state;
   return {

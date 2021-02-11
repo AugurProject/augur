@@ -16,6 +16,7 @@ import { updateTxStatus } from '../modal/modal-add-liquidity';
 import { isERC1155ContractApproved } from '../hooks/use-approval-callback';
 import { useGraphDataStore } from '../stores/graph-data';
 import { useUserStore } from '../stores/user';
+import { PARA_CONFIG } from '../stores/constants';
 const TABLES = 'TABLES';
 const ACTIVITY = 'ACTIVITY';
 
@@ -66,7 +67,6 @@ const handleClaimAll = (loginAccount, cash, marketIds, addTransaction, updateTra
 export const ClaimWinningsSection = () => {
   const {
     isLogged,
-    paraConfig,
   } = useAppStatusStore();
   const {
     balances: { marketShares },
@@ -89,8 +89,7 @@ export const ClaimWinningsSection = () => {
   );
   const ETHTotals = calculateTotalWinnings(claimableEthMarkets);
   const USDCTotals = calculateTotalWinnings(claimableUSDCMarkets);
-  const { addresses } = paraConfig;
-  const { WethWrapperForAMMExchange } = addresses;
+  const { addresses: { WethWrapperForAMMExchange } } = PARA_CONFIG;
   const [canClaimETH, setCanClaimETH] = useState(false);
 
   useEffect(() => {

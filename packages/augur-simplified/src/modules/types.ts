@@ -98,6 +98,7 @@ export interface CoreStats {
 }
 
 export interface ParaDeploys {
+  networkId: string;
   addresses: {
     [contract: string]: string;
   };
@@ -1140,7 +1141,6 @@ export interface AppStatusState {
     sortBy: string;
     currency: string;
   };
-  paraConfig: ParaDeploys;
   isMobile: boolean;
   isLogged: boolean;
   showTradingForm: boolean;

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import makePath from './make-path';
 import makeQuery from './make-query';
 import { MARKET, MARKETS, MARKET_ID_PARAM_NAME } from '../../constants';
-import { useAppStatusStore } from '../../stores/app-status';
+import { PARA_CONFIG } from '../../stores/constants';
 
 interface MarketLinkProps {
   id: string;
@@ -91,10 +91,7 @@ interface ReceiptLinkProps {
 }
 
 export const ReceiptLink = ({ hash, label = 'View Txn' }: ReceiptLinkProps) => {
-  const {
-    paraConfig: { networkId },
-  } = useAppStatusStore();
-  const URL = `${RECEIPT_LINKS[networkId] || RECEIPT_LINKS[1]}${hash}`;
+  const URL = `${RECEIPT_LINKS[PARA_CONFIG.networkId] || RECEIPT_LINKS[1]}${hash}`;
   return <ExternalLink {...{ URL, label }} />;
 };
 
@@ -104,12 +101,9 @@ interface AccountLinkProps {
 }
 
 export const AddressLink = ({ account, short = false }: AccountLinkProps) => {
-  const {
-    paraConfig: { networkId },
-  } = useAppStatusStore();
   const label = short
     ? `${account.slice(0, 6)}...${account.slice(38, 42)}`
     : account;
-  const URL = `${ADDRESS_LINKS[networkId] || ADDRESS_LINKS[1]}${account}`;
+  const URL = `${ADDRESS_LINKS[PARA_CONFIG.networkId] || ADDRESS_LINKS[1]}${account}`;
   return <ExternalLink {...{ URL, label }} />;
 };
