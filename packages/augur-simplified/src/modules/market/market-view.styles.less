@@ -184,16 +184,17 @@
 .WinningOutcomeLabel {
   .SimpleBorder;
 
-  border: @size-1 solid var(--color-brand);
+  border: @size-1 solid var(--simple-alternate-background);
+  background: var(--simple-alternate-background);
   display: flex;
   flex-flow: column nowrap;
   width: 100%;
   min-width: 100%;
-  min-height: @size-86;
-  height: @size-86;
-  max-height: @size-86;
+  min-height: @size-124;
+  height: @size-124;
+  max-height: @size-124;
   justify-content: center;
-  padding: @size-16;
+  padding: @size-24;
 
   > span {
     align-items: center;
@@ -202,18 +203,20 @@
     white-space: nowrap;
 
     &:first-of-type {
-      .text-16;
+      .text-20-semi-bold;
 
       color: var(--simple-secondary-text);
       margin-bottom: @size-8;
     }
 
     &:last-of-type {
-      .text-20-semi-bold;
+      .text-36-bold;
 
       color: var(--simple-primary-text);
 
       > svg {
+        height: @size-32;
+        width: @size-32;
         margin-left: @size-8;
       }
     }
