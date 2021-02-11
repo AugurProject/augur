@@ -11,6 +11,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ErrorPolicy, FetchPolicy } from 'apollo-client';
 import { ETH } from '../constants';
 import { SEARCH_MARKETS } from './queries';
+import { PARA_CONFIG } from '../stores/constants';
 
 dayjs.extend(utc);
 
@@ -50,9 +51,9 @@ export function augurV2Client(uri: string) {
   return client;
 }
 
-export async function getMarketsData(paraConfig, updateHeartbeat) {
-  const cashes = getCashesInfo(paraConfig);
-  const clientConfig = getClientConfig(paraConfig);
+export async function getMarketsData(updateHeartbeat) {
+  const cashes = getCashesInfo();
+  const clientConfig = getClientConfig();
   let response = null;
   let responseUsd = null;
   let newBlock = null;
@@ -82,8 +83,8 @@ export async function getMarketsData(paraConfig, updateHeartbeat) {
   }
 }
 
-export async function searchMarkets(paraConfig, searchString, cb) {
-  const clientConfig = getClientConfig(paraConfig);
+export async function searchMarkets(searchString, cb) {
+  const clientConfig = getClientConfig();
   let response = null;
   if (searchString === '') return cb(null, []);
   const searchQuery = searchString.trim().split(' ').join(' & ');
@@ -151,10 +152,8 @@ const getCashTokenData = async (
   return (bulkResults || []).reduce((p, a) => ({ ...p, [a.address]: a }), {});
 };
 
-const getClientConfig = (
-  paraDeploys
-): { augurClient: string; blockClient: string } => {
-  const { networkId } = paraDeploys;
+const getClientConfig = (): { augurClient: string; blockClient: string } => {
+  const { networkId } = PARA_CONFIG;
   const clientConfig = {
     '1': {
       augurClient:
@@ -205,17 +204,8 @@ const paraCashes = {
   },
 };
 
-const getCashesInfo = (paraConfig: {
-  networkId: string;
-  paraDeploys: {
-    [address: string]: {
-      name: string;
-      decimals: number;
-      addresses: { Cash: string; ShareToken: string };
-    };
-  };
-}): Cash[] => {
-  const { networkId, paraDeploys } = paraConfig;
+const getCashesInfo = (): Cash[] => {
+  const { networkId, paraDeploys } = PARA_CONFIG;
   const paraValues = Object.values(paraDeploys);
   const keysValues = paraValues.reduce((p, v) => ({ ...p, [v.name]: v }), {});
   const cashes = paraCashes[String(networkId)].Cashes;

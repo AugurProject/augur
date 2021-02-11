@@ -39,7 +39,6 @@ import { searchMarkets } from '../apollo/client';
 import { SearchInput } from '../common/inputs';
 import { LoadingMarketCard, MarketCard } from './market-card';
 import { useGraphDataStore } from '../stores/graph-data';
-import { PARA_CONFIG } from '../stores/constants';
 
 const PAGE_LIMIT = 21;
 
@@ -57,7 +56,7 @@ const applyFiltersAndSort = (
   },
   handleGraphError
 ) => {
-  searchMarkets(PARA_CONFIG, filter, (err, searchedMarkets) => {
+  searchMarkets(filter, (err, searchedMarkets) => {
     if (err) handleGraphError(err);
     let updatedFilteredMarkets = passedInMarkets;
 
