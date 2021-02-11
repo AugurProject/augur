@@ -11,7 +11,7 @@ import {
   CurrencyLabel,
   AddCurrencyLiquidity,
   ReportingStateLabel,
-  InvalidFlagTipIcon
+  InvalidFlagTipIcon,
 } from '../common/labels';
 import {
   PositionsLiquidityViewSwitcher,
@@ -38,11 +38,14 @@ import { useGraphDataStore } from '../stores/graph-data';
 const WinningOutcomeLabel = ({ winningOutcome }) => (
   <span className={Styles.WinningOutcomeLabel}>
     <span>Winning Outcome</span>
-    <span>{winningOutcome.name}{ConfirmedCheck}</span>
+    <span>
+      {winningOutcome.name}
+      {ConfirmedCheck}
+    </span>
   </span>
 );
 
-const getDetails = (market) => {
+const getDetails = market => {
   const rawInfo = market?.extraInfoRaw || '{}';
   const { longDescription } = JSON.parse(rawInfo, (key, value) => {
     if (key === 'longDescription') {
@@ -60,6 +63,45 @@ const useMarketQueryId = () => {
   const location = useLocation();
   const { [MARKET_ID_PARAM_NAME]: marketId } = parseQuery(location.search);
   return marketId;
+};
+
+const EmptyMarketView = () => {
+  return (
+    <div className={classNames(Styles.MarketView, Styles.EmptyMarketView)}>
+      <section>
+        <section>
+          <div/>
+          <div/>
+          <div/>
+        </section>
+        <section>
+          <div/>
+          <div/>
+          <div/>
+        </section>
+        <section>
+          <div/>
+          <div/>
+          <div/>
+          <div/>
+        </section>
+        <section>
+          <div/>
+          <div/>
+          <div/>
+          <div/>
+        </section>
+        <section>
+          <div/>
+        </section>
+      </section>
+      <section>
+        <div/>
+        <div/>
+        <div/>
+      </section>
+    </div>
+  );
 };
 
 const MarketView = ({ defaultMarket = null }) => {
@@ -94,7 +136,7 @@ const MarketView = ({ defaultMarket = null }) => {
   );
   const amm: AmmExchange = market?.amm;
 
-  if (!market) return <div className={Styles.MarketView} />;
+  if (!market) return <EmptyMarketView />;
   const details = getDetails(market);
   const currentAMMs = getCurrentAmms(market, markets);
   const { reportingState, outcomes } = market;
@@ -107,12 +149,16 @@ const MarketView = ({ defaultMarket = null }) => {
         <div className={Styles.topRow}>
           <CategoryIcon big categories={market.categories} />
           <CategoryLabel big categories={market.categories} />
-          {!isMobile && <ReportingStateLabel {...{ reportingState, big: true }} />}
+          {!isMobile && (
+            <ReportingStateLabel {...{ reportingState, big: true }} />
+          )}
           <InvalidFlagTipIcon {...{ market, big: true }} />
           <CurrencyLabel name={amm?.cash?.name} />
         </div>
         <h1>{market.description}</h1>
-        {winningOutcomes.length > 0 && <WinningOutcomeLabel winningOutcome={winningOutcomes[0]} />}
+        {winningOutcomes.length > 0 && (
+          <WinningOutcomeLabel winningOutcome={winningOutcomes[0]} />
+        )}
         <ul className={Styles.StatsRow}>
           <li>
             <span>24hr Volume</span>
@@ -135,7 +181,7 @@ const MarketView = ({ defaultMarket = null }) => {
           outcomes={amm?.ammOutcomes}
           selectedOutcome={amm?.ammOutcomes[2]}
           showAllHighlighted
-          setSelectedOutcome={(outcome) => {
+          setSelectedOutcome={outcome => {
             setSelectedOutcome(outcome);
             setShowTradingForm(true);
           }}
@@ -179,9 +225,11 @@ const MarketView = ({ defaultMarket = null }) => {
           <TransactionsTable transactions={amm?.transactions} />
         </div>
       </section>
-      <section className={classNames({
-        [Styles.ShowTradingForm]: showTradingForm,
-      })}>
+      <section
+        className={classNames({
+          [Styles.ShowTradingForm]: showTradingForm,
+        })}
+      >
         <TradingForm initialSelectedOutcome={selectedOutcome} amm={amm} />
         <AddLiquidity market={market} />
         {currentAMMs.length === 1 && (

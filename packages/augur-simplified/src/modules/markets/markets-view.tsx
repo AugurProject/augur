@@ -328,7 +328,7 @@ const MarketsView = () => {
           )}
         </section>
       )}
-      {filteredMarkets.length === 0 && (
+      {!loading && filteredMarkets.length === 0 && (
         <span className={Styles.EmptyMarketsMessage}>
           No markets to show. Try changing the filter options.
         </span>
