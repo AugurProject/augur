@@ -55,6 +55,7 @@ import { BackIcon } from '../common/icons';
 import { checkAllowance } from '../hooks/use-approval-callback';
 import { AmountInput, TextInput } from '../common/inputs';
 import { useGraphDataStore } from '../stores/graph-data';
+import { useUserStore } from '../stores/user';
 
 const TRADING_FEE_OPTIONS = [
   {
@@ -112,16 +113,19 @@ const ModalAddLiquidity = ({
   currency,
 }: ModalAddLiquidityProps) => {
   const {
-    userInfo: { balances },
-    transactions,
     isLogged,
     paraConfig,
-    loginAccount,
-    actions: { closeModal, addTransaction, updateTransaction },
+    actions: { closeModal },
   } = useAppStatusStore();
+  const {
+    account,
+    balances,
+    transactions,
+    loginAccount,
+    actions: { addTransaction, updateTransaction }
+  } = useUserStore();
   const { cashes } = useGraphDataStore();
   const history = useHistory();
-  const account = loginAccount?.account;
 
   let amm = market?.amm;
   const mustSetPrices =

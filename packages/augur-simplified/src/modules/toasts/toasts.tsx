@@ -4,14 +4,14 @@ import classNames from 'classnames';
 import Styles from './toasts.styles.less';
 import { CloseIcon, FailedX, ConfirmedCheck } from '../common/icons';
 import { ReceiptLink } from '../routes/helpers/links';
-import { useAppStatusStore } from '../stores/app-status';
 import { TX_STATUS } from '../constants';
+import { useUserStore } from '../stores/user';
 
 export const Toasts = () => {
   const {
     transactions,
     actions: { updateTransaction },
-  } = useAppStatusStore();
+  } = useUserStore();
   const toasts = transactions.sort((a,b) => a.timestamp - b.timestamp)
     .filter(t => !t.seen)
     .filter(t => t.status !== TX_STATUS.PENDING);

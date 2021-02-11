@@ -841,6 +841,7 @@ export interface WindowApp extends Window {
   markets?: any;
   betslip?: any;
   trading?: any;
+  user?: any;
   pendingOrders?: any;
   showIndexedDbSize?: Function;
 }
@@ -1140,7 +1141,6 @@ export interface AppStatusState {
     currency: string;
   };
   userInfo: {
-    activity: ActivityData[];
     balances: UserBalances;
   };
   transactions: TransactionDetails[];
@@ -1168,6 +1168,16 @@ export interface GraphDataState {
   markets: {
     [marketIdKey: string]: MarketInfo;
   };
+}
+
+export interface UserState {
+  account: string;
+  balances: UserBalances;
+  loginAccount: LoginAccount;
+  seenPositionWarnings: {
+    [id: string]: SeenPositionWarnings;
+  }
+  transactions: TransactionDetails[];
 }
 
 export interface TransactionDetails {

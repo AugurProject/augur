@@ -15,6 +15,7 @@ import { claimWinnings } from '../../utils/contract-calls';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
 import { isERC1155ContractApproved } from '../hooks/use-approval-callback';
 import { useGraphDataStore } from '../stores/graph-data';
+import { useUserStore } from '../stores/user';
 const TABLES = 'TABLES';
 const ACTIVITY = 'ACTIVITY';
 
@@ -65,14 +66,14 @@ const handleClaimAll = (loginAccount, cash, marketIds, addTransaction, updateTra
 export const ClaimWinningsSection = () => {
   const {
     isLogged,
+    paraConfig,
+  } = useAppStatusStore();
+  const {
+    balances: { marketShares },
     loginAccount,
     transactions,
-    paraConfig,
-    userInfo: {
-      balances: { marketShares },
-    },
     actions: { addTransaction, updateTransaction },
-  } = useAppStatusStore();
+  } = useUserStore();
   const { cashes } = useGraphDataStore();
   const claimableMarkets = marketShares
     ? keyedObjToArray(marketShares).filter((m) => !!m?.claimableWinnings)

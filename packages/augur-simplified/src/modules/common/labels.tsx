@@ -29,6 +29,7 @@ import {
 } from '../constants';
 import { FormattedNumber, MarketInfo } from '../types';
 import { useGraphDataStore } from '../stores/graph-data';
+import { useUserStore } from '../stores/user';
 
 interface ValueLabelProps {
   large?: boolean;
@@ -229,8 +230,10 @@ export const AppViewStats = ({ showCashAmounts }: AppViewStatsProps) => {
   const {
     isMobile,
     isLogged,
-    userInfo: { balances },
   } = useAppStatusStore();
+  const {
+    balances
+  } = useUserStore();
   const totalAccountValue = useMemo(
     () => handleValue(isLogged ? balances?.totalAccountValue : 0),
     [isLogged, balances.totalAccountValue]
@@ -358,11 +361,13 @@ export const ErrorBlock = ({ text }) => {
 export const NetworkMismatchBanner = () => {
   const {
     paraConfig: { networkId },
-    loginAccount,
   } = useAppStatusStore();
   const {
     errors
   } = useGraphDataStore();
+  const {
+    loginAccount
+  } = useUserStore();
   const location = useLocation();
   const path = parsePath(location.pathname)[0];
   const { chainId } = loginAccount || {};

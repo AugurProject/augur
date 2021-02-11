@@ -1,51 +1,27 @@
-import { useReducer } from 'react';
-import {
-  APP_STATUS_ACTIONS,
-  MOCK_APP_STATUS_STATE,
-  APP_STATE_KEYS,
-  DEFAULT_APP_STATUS_STATE,
-} from './constants';
-import { windowRef } from '../../utils/window-ref';
-import { shapeUserActvity } from '../../utils/process-data';
-import {
-  ParaDeploys,
-  TransactionDetails,
-  UserBalances,
-} from '../types';
 import { dispatchMiddleware } from './utils';
+import { useReducer } from 'react';
+import { windowRef } from '../../utils/window-ref';
+import { USER_ACTIONS, USER_KEYS, DEFAULT_USER_STATE } from './constants';
+import { UserBalances, TransactionDetails } from '../types';
+
 const {
-  SET_SHOW_TRADING_FORM,
-  SET_IS_MOBILE,
-  SET_SIDEBAR,
-  SET_LOGIN_ACCOUNT,
-  UPDATE_MARKETS_VIEW_SETTINGS,
-  UPDATE_USER_BALANCES,
-  UPDATE_SETTINGS,
-  UPDATE_TRANSACTION,
   ADD_TRANSACTION,
   REMOVE_TRANSACTION,
   FINALIZE_TRANSACTION,
-  SET_MODAL,
-  CLOSE_MODAL,
-  LOGOUT,
   UPDATE_SEEN_POSITION_WARNING,
   ADD_SEEN_POSITION_WARNINGS,
-  SET_IS_LOGGED,
-} = APP_STATUS_ACTIONS;
-
+  SET_LOGIN_ACCOUNT,
+  UPDATE_USER_BALANCES,
+  UPDATE_TRANSACTION,
+  LOGOUT,
+} = USER_ACTIONS;
 const {
-  IS_MOBILE,
-  SIDEBAR_TYPE,
+  ACCOUNT,
+  BALANCES,
   LOGIN_ACCOUNT,
-  MARKETS_VIEW_SETTINGS,
-  USER_INFO,
-  SETTINGS,
-  TRANSACTIONS,
-  MODAL,
-  IS_LOGGED,
-  SHOW_TRADING_FORM,
   SEEN_POSITION_WARNINGS,
-} = APP_STATE_KEYS;
+  TRANSACTIONS,
+} = USER_KEYS;
 
 const updateLocalStorage = (userAccount, updatedState) => {
   const userData = JSON.parse(window.localStorage.getItem(userAccount)) || null;
@@ -55,7 +31,6 @@ const updateLocalStorage = (userAccount, updatedState) => {
       JSON.stringify({
         ...userData,
         seenPositionWarnings: updatedState[SEEN_POSITION_WARNINGS],
-        settings: updatedState[SETTINGS],
         transactions: updatedState[TRANSACTIONS],
       })
     );
@@ -65,7 +40,6 @@ const updateLocalStorage = (userAccount, updatedState) => {
       JSON.stringify({
         account: userAccount,
         seenPositionWarnings: updatedState[SEEN_POSITION_WARNINGS],
-        settings: updatedState[SETTINGS],
         transactions: updatedState[TRANSACTIONS],
       })
     );
@@ -75,92 +49,40 @@ const updateLocalStorage = (userAccount, updatedState) => {
 const getSavedUserInfo = (account) =>
   JSON.parse(window.localStorage.getItem(account)) || null;
 
-export function AppStatusReducer(state, action) {
-  const updatedState = { ...state };
+export function UserReducer(state, action) {
+  let updatedState = { ...state };
   const now = new Date().getTime();
 
   switch (action.type) {
-    case SET_IS_MOBILE: {
-      updatedState[IS_MOBILE] = action[IS_MOBILE];
-      break;
-    }
-    case SET_SIDEBAR: {
-      updatedState[SIDEBAR_TYPE] = action.sidebarType;
-      break;
-    }
-    case SET_MODAL: {
-      updatedState[MODAL] = action.modal;
-      break;
-    }
-    case CLOSE_MODAL: {
-      updatedState[MODAL] = {};
-      break;
-    }
-    case SET_IS_LOGGED: {
-      updatedState[IS_LOGGED] = action.isLogged;
-      break;
-    }
     case LOGOUT: {
       window.localStorage.setItem('lastUser', null);
-      updatedState[IS_LOGGED] = false;
-      updatedState[TRANSACTIONS] = [];
-      updatedState[LOGIN_ACCOUNT] = null;
-      updatedState[USER_INFO] = DEFAULT_APP_STATUS_STATE.userInfo;
+      updatedState = { ...DEFAULT_USER_STATE };
       break;
     }
     case SET_LOGIN_ACCOUNT: {
-      const address = action?.account?.account;
+      const account = action?.account?.account;
       updatedState[LOGIN_ACCOUNT] = action?.account;
-      updatedState[IS_LOGGED] = !!address;
-      const savedInfo = getSavedUserInfo(address);
-
-      if (updatedState.processed?.ammExchanges) {
-        const activity = shapeUserActvity(
-          address,
-          updatedState.processed?.markets,
-          updatedState.processed?.ammExchanges
-        );
-        updatedState[USER_INFO] = {
-          ...updatedState[USER_INFO],
-          activity,
-        };
-      }
-
+      const savedInfo = getSavedUserInfo(account);
+      updatedState[ACCOUNT] = account || null;
       if (savedInfo) {
-        updatedState[SETTINGS] = {
-          ...state.settings,
-          ...savedInfo.settings,
-        };
         updatedState[SEEN_POSITION_WARNINGS] =
           savedInfo?.seenPositionWarnings || state[SEEN_POSITION_WARNINGS];
-        const accTransactions = savedInfo.transactions.map((t) => ({ ...t, timestamp: now }));
+        const accTransactions = savedInfo.transactions.map((t) => ({
+          ...t,
+          timestamp: now,
+        }));
         updatedState[TRANSACTIONS] = accTransactions;
-      } else if (!!address && action?.account?.library?.provider?.isMetamask) {
+      } else if (!!account && action?.account?.library?.provider?.isMetamask) {
         // no saved info for this account, must be first login...
-        window.localStorage.setItem(address, JSON.stringify({ account: address }));
+        window.localStorage.setItem(
+          account,
+          JSON.stringify({ account })
+        );
       }
-      break;
-    }
-    case SET_SHOW_TRADING_FORM: {
-      updatedState[SHOW_TRADING_FORM] = action.showTradingForm;
-      break;
-    }
-    case UPDATE_MARKETS_VIEW_SETTINGS: {
-      updatedState[MARKETS_VIEW_SETTINGS] = {
-        ...updatedState[MARKETS_VIEW_SETTINGS],
-        ...action[MARKETS_VIEW_SETTINGS],
-      };
-      break;
-    }
-    case UPDATE_SETTINGS: {
-      updatedState[SETTINGS] = {
-        ...state[SETTINGS],
-        ...action[SETTINGS],
-      };
       break;
     }
     case UPDATE_USER_BALANCES: {
-      updatedState[USER_INFO].balances = action.userBalances;
+      updatedState[BALANCES] = action.userBalances;
       break;
     }
     case UPDATE_TRANSACTION: {
@@ -214,9 +136,9 @@ export function AppStatusReducer(state, action) {
       break;
     }
     default:
-      console.log(`Error: ${action.type} not caught by App Status reducer`);
+      console.log(`Error: ${action.type} not caught by Graph Data reducer`);
   }
-  windowRef.appStatus = updatedState;
+  windowRef.user = updatedState;
   const userAccount = updatedState[LOGIN_ACCOUNT]?.account;
   if (userAccount) {
     updateLocalStorage(userAccount, updatedState);
@@ -224,31 +146,18 @@ export function AppStatusReducer(state, action) {
   return updatedState;
 }
 
-// @ts-ignore
-const paraConfig: ParaDeploys = process.env.CONFIGURATION || {};
-
-export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
-  const [state, pureDispatch] = useReducer(AppStatusReducer, {
-    ...defaultState,
-    paraConfig,
-  });
+export const useUser = (defaultState = DEFAULT_USER_STATE) => {
+  const [state, pureDispatch] = useReducer(UserReducer, defaultState);
   const dispatch = dispatchMiddleware(pureDispatch);
-  windowRef.appStatus = state;
+  windowRef.user = state;
+
   return {
     ...state,
     actions: {
-      updateMarketsViewSettings: (marketsViewSettings) =>
-        dispatch({ type: UPDATE_MARKETS_VIEW_SETTINGS, marketsViewSettings }),
-      setShowTradingForm: (showTradingForm) =>
-        dispatch({ type: SET_SHOW_TRADING_FORM, showTradingForm }),
-      setSidebar: (sidebarType) => dispatch({ type: SET_SIDEBAR, sidebarType }),
-      setIsMobile: (isMobile) => dispatch({ type: SET_IS_MOBILE, isMobile }),
       updateLoginAccount: (account) =>
         dispatch({ type: SET_LOGIN_ACCOUNT, account }),
       updateUserBalances: (userBalances: UserBalances) =>
         dispatch({ type: UPDATE_USER_BALANCES, userBalances }),
-      updateSettings: (settings) =>
-        dispatch({ type: UPDATE_SETTINGS, settings }),
       updateTransaction: (hash, updates) =>
         dispatch({ type: UPDATE_TRANSACTION, hash, updates }),
       addTransaction: (transaction: TransactionDetails) =>
@@ -257,8 +166,6 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
         dispatch({ type: REMOVE_TRANSACTION, hash }),
       finalizeTransaction: (hash) =>
         dispatch({ type: FINALIZE_TRANSACTION, hash }),
-      setModal: (modal) => dispatch({ type: SET_MODAL, modal }),
-      closeModal: () => dispatch({ type: CLOSE_MODAL }),
       updateSeenPositionWarning: (id, seenPositionWarning, warningType) =>
         dispatch({
           type: UPDATE_SEEN_POSITION_WARNING,
@@ -269,7 +176,6 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
       addSeenPositionWarnings: (seenPositionWarnings) =>
         dispatch({ type: ADD_SEEN_POSITION_WARNINGS, seenPositionWarnings }),
       logout: () => dispatch({ type: LOGOUT }),
-      setIsLogged: (isLogged) => dispatch({ type: SET_IS_LOGGED, isLogged }),
     },
   };
 };
