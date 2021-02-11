@@ -4,8 +4,9 @@
   .EmptyMessage;
 
   background: var(--simple-light-bg);
-  padding: @size-20 0;
+  padding: @size-20 @size-16;
   display: flex;
+  text-align: center;
   border-radius: @size-8;
 }
 
@@ -48,6 +49,10 @@
     margin-top: @size-24;
   }
 
+  > span {
+    margin-top: @size-24;
+  }
+
   > div:last-of-type:not(:first-of-type) {
     justify-content: center;
   }
@@ -69,6 +74,10 @@
     > section {
       grid-template-columns: 1fr 1fr;
       grid-gap: @size-16;
+      margin-top: @size-16;
+    }
+
+    > span {
       margin-top: @size-16;
     }
 
