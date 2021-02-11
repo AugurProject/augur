@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Styles from 'modules/market/trading-form.styles.less';
 import classNames from 'classnames';
 import { useAppStatusStore } from '../stores/app-status';
@@ -12,16 +12,13 @@ import {
 import {
   formatCash,
   formatCashPrice,
-  formatDai,
   formatPercent,
   formatSimpleShares,
-  getCashFormat,
 } from '../../utils/format-number';
 import { ApprovalButton, BuySellButton, APPROVED } from '../common/buttons';
 import {
   ApprovalAction,
   SHARES,
-  OUTCOME_YES_NAME,
   YES_OUTCOME_ID,
   INSUFFICIENT_LIQUIDITY,
   ENTER_AMOUNT,
@@ -41,14 +38,17 @@ import {
 } from '../../utils/contract-calls';
 import { BigNumber as BN } from 'bignumber.js';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
-import { CloseIcon, LinkIcon } from '../common/icons';
+import { CloseIcon } from '../common/icons';
 import {
   checkAllowance,
   isERC1155ContractApproved,
 } from '../hooks/use-approval-callback';
-import { AmountInput } from '../common/inputs';
+import { AmountInput, OutcomesGrid } from '../common/inputs';
 import { useUserStore } from '../stores/user';
 import { PARA_CONFIG } from '../stores/constants';
+
+const AVG_PRICE_TIP =
+  'The difference between the market price and estimated price due to trade size.';
 
 export const DefaultMarketOutcomes = [
   {
@@ -68,164 +68,6 @@ export const DefaultMarketOutcomes = [
     price: '$0.75',
   },
 ];
-
-const PLACEHOLDER = '0';
-const AVG_PRICE_TIP =
-  'The difference between the market price and estimated price due to trade size.';
-
-export const isInvalidNumber = (number) => {
-  return (
-    number !== '' &&
-    (isNaN(number) || Number(number) < 0 || Number(number) === 0)
-  );
-};
-
-const Outcome = ({
-  outcome,
-  marketType,
-  selected,
-  onClick,
-  showAllHighlighted,
-  nonSelectable,
-  editable,
-  setEditableValue,
-  ammCash,
-  showAsButton,
-  invalidSelected,
-  error,
-}) => {
-  const [customVal, setCustomVal] = useState('');
-  const input = useRef(null);
-  const { isLogged } = useAppStatusStore();
-  const { prepend, symbol } = getCashFormat(ammCash?.name);
-  useEffect(() => {
-    if (outcome.price !== '0' && outcome.price && outcome.price !== '') {
-      let numInput = outcome.price.split('.');
-      numInput.shift();
-      setCustomVal(numInput.join('.'));
-    }
-  }, [outcome.price]);
-  const formattedPrice = formatDai(outcome.price);
-  return (
-    <div
-      onClick={() => (outcome.isInvalid ? null : onClick())}
-      className={classNames(Styles.Outcome, {
-        [Styles.YesNo]: !outcome.isInvalid && marketType === YES_NO,
-        [Styles.Selected]: selected,
-        [Styles.Yes]: outcome.name === OUTCOME_YES_NAME,
-        [Styles.ShowAllHighlighted]: showAllHighlighted,
-        [Styles.nonSelectable]: nonSelectable,
-        [Styles.Edited]: customVal !== '',
-        [Styles.showAsButton]: showAsButton,
-        [Styles.Invalid]: outcome.isInvalid,
-        [Styles.InvalidSelected]: invalidSelected,
-        [Styles.loggedOut]: !isLogged,
-        [Styles.disabled]: !isLogged && outcome.isInvalid,
-        [Styles.Error]: error,
-      })}
-    >
-      <span>{outcome.name}</span>
-      {editable ? (
-        <div onClick={() => input.current && input.current.focus()}>
-          <span>{`${prepend && symbol}0.`}</span>
-          <input
-            value={customVal}
-            onChange={(v) => {
-              setCustomVal(`${v.target.value}`);
-              setEditableValue(
-                v.target.value && v.target.value !== '0'
-                  ? `.${v.target.value}`
-                  : `${v.target.value}`
-              );
-            }}
-            type="text"
-            placeholder={PLACEHOLDER}
-            ref={input}
-            // @ts-ignore
-            onWheel={(e) => e?.target?.blur()}
-          />
-        </div>
-      ) : (
-        <>
-          {!outcome.isInvalid && (
-            <span>
-              {
-                formatCashPrice(formattedPrice.fullPrecision, ammCash?.name)
-                  .full
-              }
-            </span>
-          )}
-          {outcome.isInvalid && LinkIcon}
-        </>
-      )}
-    </div>
-  );
-};
-
-interface OutcomesGridProps {
-  outcomes: AmmOutcome[];
-  selectedOutcome?: AmmOutcome;
-  setSelectedOutcome: Function;
-  marketType: string;
-  orderType?: string;
-  showAllHighlighted?: boolean;
-  nonSelectable?: boolean;
-  editable?: boolean;
-  setEditableValue?: Function;
-  ammCash: Cash;
-  showAsButtons?: boolean;
-  dontFilterInvalid?: boolean;
-  error?: boolean;
-}
-export const OutcomesGrid = ({
-  outcomes,
-  selectedOutcome,
-  setSelectedOutcome,
-  marketType,
-  showAllHighlighted,
-  nonSelectable,
-  editable,
-  setEditableValue,
-  ammCash,
-  showAsButtons,
-  dontFilterInvalid,
-  error,
-}: OutcomesGridProps) => {
-  return (
-    <div
-      className={classNames(Styles.Outcomes, {
-        [Styles.YesNo]: marketType === YES_NO,
-        [Styles.nonSelectable]: nonSelectable,
-        [Styles.showAsButtons]: showAsButtons,
-      })}
-    >
-      {outcomes
-        .filter((outcome) => (dontFilterInvalid ? true : !outcome.isInvalid))
-        .reverse()
-        .map((outcome, index) => (
-          <Outcome
-            key={outcome.id}
-            selected={
-              selectedOutcome &&
-              (outcome.id === selectedOutcome.id ||
-                (showAllHighlighted && !outcome.isInvalid))
-            }
-            nonSelectable={nonSelectable}
-            showAllHighlighted={showAllHighlighted}
-            outcome={outcome}
-            onClick={() => setSelectedOutcome(outcome)}
-            marketType={marketType}
-            editable={editable}
-            setEditableValue={(price) => setEditableValue(price, outcome.id)}
-            ammCash={ammCash}
-            showAsButton={showAsButtons}
-            invalidSelected={selectedOutcome?.isInvalid}
-            error={error}
-          />
-        ))}
-    </div>
-  );
-};
 
 interface InfoNumber {
   label: string;

@@ -19,7 +19,6 @@ import {
 } from '../common/tables';
 import TradingForm, {
   DefaultMarketOutcomes,
-  OutcomesGrid,
 } from './trading-form';
 import { useAppStatusStore } from '../stores/app-status';
 import { USDC, YES_NO, BUY, MARKET_ID_PARAM_NAME, ETH } from '../constants';
@@ -34,6 +33,7 @@ import { getCurrentAmms } from '../stores/utils';
 import { getWinningOutcome } from '../markets/market-card';
 import { ConfirmedCheck } from '../common/icons';
 import { useGraphDataStore } from '../stores/graph-data';
+import { OutcomesGrid } from '../common/inputs';
 
 const WinningOutcomeLabel = ({ winningOutcome }) => (
   <span className={Styles.WinningOutcomeLabel}>

@@ -25,9 +25,7 @@ import {
   ETH,
 } from '../constants';
 import {
-  OutcomesGrid,
   InfoNumbers,
-  isInvalidNumber,
 } from '../market/trading-form';
 import { ApprovalButton, APPROVED, BuySellButton } from '../common/buttons';
 import { generateTooltip } from '../common/labels';
@@ -53,7 +51,7 @@ import { BigNumber as BN } from 'bignumber.js';
 import { createBigNumber } from '../../utils/create-big-number';
 import { BackIcon } from '../common/icons';
 import { checkAllowance } from '../hooks/use-approval-callback';
-import { AmountInput, TextInput } from '../common/inputs';
+import { AmountInput, isInvalidNumber, OutcomesGrid, TextInput } from '../common/inputs';
 import { useGraphDataStore } from '../stores/graph-data';
 import { useUserStore, UserStore } from '../stores/user';
 import { PARA_CONFIG } from '../stores/constants';
