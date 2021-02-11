@@ -42,10 +42,7 @@ const AppBody = () => {
   const {
     loginAccount,
     transactions,
-    actions: { 
-      updateUserBalances,
-      finalizeTransaction
-    }
+    actions: { updateUserBalances, finalizeTransaction },
   } = useUserStore();
   const {
     blocknumber,
@@ -184,9 +181,9 @@ function App() {
         <ApolloProvider client={client}>
           <GraphDataProvider>
             <UserProvider>
-            <AppStatusProvider>
-              <AppBody />
-            </AppStatusProvider>
+              <AppStatusProvider>
+                <AppBody />
+              </AppStatusProvider>
             </UserProvider>
           </GraphDataProvider>
         </ApolloProvider>
