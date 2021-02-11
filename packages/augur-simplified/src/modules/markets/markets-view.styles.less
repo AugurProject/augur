@@ -20,7 +20,7 @@
     display: flex;
     flex-flow: row nowrap;
     width: 100%;
-    margin: @size-40 0;
+    margin: @size-40 0 @size-16;
 
     > div {
       margin-right: @size-20;
@@ -45,20 +45,15 @@
     grid-template-columns: repeat(3, 1fr);
     flex: 1;
     margin-bottom: @size-40;
+    margin-top: @size-24;
   }
 
   > div:last-of-type:not(:first-of-type) {
     justify-content: center;
   }
 
-  &.SearchOpen {
-    > ul {
-      margin-bottom: @size-16;
-    }
-
-    > div[class*='SearchInput'] {
-      margin-bottom: @size-24;
-    }
+  > div[class*='SearchInput'] {
+    overflow: hidden;
   }
 }
 
@@ -74,6 +69,7 @@
     > section {
       grid-template-columns: 1fr 1fr;
       grid-gap: @size-16;
+      margin-top: @size-16;
     }
 
     > div:nth-of-type(2) {
@@ -95,7 +91,9 @@
 }
 
 @media @breakpoint-mobile {
-  .MarketsView > section {
-    grid-template-columns: 1fr;
+  .MarketsView {
+    > section {
+      grid-template-columns: 1fr;
+    }
   }
 }
