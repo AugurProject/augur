@@ -48,14 +48,14 @@ import {
   estimateAddLiquidity,
   getRemoveLiquidity,
 } from '../../utils/contract-calls';
-import { useAppStatusStore, AppStatusStore } from '../stores/app-status';
+import { useAppStatusStore } from '../stores/app-status';
 import { BigNumber as BN } from 'bignumber.js';
 import { createBigNumber } from '../../utils/create-big-number';
 import { BackIcon } from '../common/icons';
 import { checkAllowance } from '../hooks/use-approval-callback';
 import { AmountInput, TextInput } from '../common/inputs';
 import { useGraphDataStore } from '../stores/graph-data';
-import { useUserStore } from '../stores/user';
+import { useUserStore, UserStore } from '../stores/user';
 
 const TRADING_FEE_OPTIONS = [
   {
@@ -95,8 +95,7 @@ interface ModalAddLiquidityProps {
 
 export const updateTxStatus = (txResponse, updateTransaction) => {
   if (txResponse.confirmations > 0) {
-    // TODO temp workaround
-    const tx = AppStatusStore.get().transactions;
+    const tx = UserStore.get().transactions;
     const updateTxState = tx.find(
       (tx) => tx.hash === txResponse.transactionHash
     );
