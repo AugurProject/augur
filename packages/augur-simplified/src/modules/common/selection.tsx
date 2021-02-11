@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { Component, useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 import Styles from './selection.styles.less';
 import {
@@ -49,7 +49,7 @@ interface DropdownState {
 }
 
 function findSelected(options, defaultVal) {
-  const foundOption = options.find((o) => o.value === defaultVal);
+  const foundOption = options.find(o => o.value === defaultVal);
   const defaultValue = defaultVal
     ? {
         label: defaultVal.toString(),
@@ -60,202 +60,133 @@ function findSelected(options, defaultVal) {
   return foundOption ? foundOption : defaultValue;
 }
 
-class Dropdown extends Component<DropdownProps, DropdownState> {
-  state: DropdownState = {
-    selected:
-      this.props.defaultValue !== null
-        ? findSelected(this.props.options, this.props.defaultValue)
-        : null,
-    showList: false,
-    scrollWidth: null,
-    clientWidth: null,
-    isDisabled: true,
-    sortedList:
-      this.props.sort && this.props.options
-        ? this.props.options.sort((a, b) => (a.label > b.label ? 1 : -1))
-        : this.props.options,
-  };
-  labelRef: any;
+export const Dropdown = ({
+  options,
+  defaultValue,
+  sortByStyles,
+  large,
+  openTop,
+  className,
+  activeClassName,
+  staticLabel,
+  id,
+  showColor,
+  disabled,
+  preLabel,
+  preLabelClean,
+  onChange,
+}: DropdownProps) => {
+  const labelRef = useRef();
+  const refDropdown = useRef();
+  const [selected, setSelected] = useState(
+    defaultValue !== null ? findSelected(options, defaultValue) : null
+  );
 
-  componentDidMount() {
-    this.measure();
-    window.addEventListener('click', this.handleWindowOnClick);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('click', this.handleWindowOnClick);
-  }
-
-  componentDidUpdate(prevProps: DropdownProps, prevState: DropdownState) {
-    this.measure();
-    if (prevProps.defaultValue !== this.props.defaultValue) {
-      this.setState({
-        selected: findSelected(this.props.options, this.props.defaultValue),
-      });
-    }
-    if (
-      JSON.stringify(this.props.options) !==
-        JSON.stringify(prevProps.options) ||
-      this.props.sort !== prevProps.sort
-    ) {
-      const sortedList =
-        this.props.sort && this.props.options
-          ? this.props.options.sort((a, b) => (a.label > b.label ? 1 : -1))
-          : this.props.options;
-      this.setState({
-        sortedList,
-      });
-    }
-  }
-
-  shouldComponentUpdate(nextProps: DropdownProps, nextState: DropdownState) {
-    if (
-      nextState.selected !== this.state.selected ||
-      nextState.showList !== this.state.showList ||
-      this.props.disabled !== nextProps.disabled ||
-      this.props.staticLabel !== nextProps.staticLabel ||
-      this.props.defaultValue !== nextProps.defaultValue ||
-      JSON.stringify(this.props.options) !==
-        JSON.stringify(nextProps.options) ||
-      this.props.className !== nextProps.className
-    ) {
-      return true;
-    }
-
-    return (
-      this.state.scrollWidth !== nextState.scrollWidth ||
-      this.state.clientWidth !== nextState.clientWidth
+  useEffect(() => {
+    setSelected(
+      defaultValue !== null ? findSelected(options, defaultValue) : null
     );
-  }
+  }, [defaultValue]);
 
-  measure = () => {
-    if (!this.labelRef) return;
-    const { clientWidth, scrollWidth } = this.labelRef;
-
-    this.setState({
-      scrollWidth,
-      clientWidth,
-      isDisabled: !(scrollWidth > clientWidth),
-    });
+  const handleWindowOnClick = (event: React.MouseEvent<HTMLElement>) => {
+    if (refDropdown?.current && !refDropdown.current.contains(event.target)) {
+      setShowList(false);
+    }
   };
 
-  refDropdown: any = null;
+  useEffect(() => {
+    window.addEventListener('click', handleWindowOnClick);
+    return () => {
+      window.removeEventListener('click', handleWindowOnClick);
+    };
+  }, []);
 
-  dropdownSelect = (selected: NameValuePair) => {
-    const { onChange } = this.props;
-    if (selected !== this.state.selected) {
-      this.setState({
-        selected,
-      });
+  const [showList, setShowList] = useState(false);
+  const dropdownSelect = (selectedVal: NameValuePair) => {
+    if (selectedVal !== selected) {
+      setSelected(selectedVal);
 
       if (onChange) {
-        onChange(selected.value);
+        onChange(selectedVal.value);
       }
 
-      this.toggleList();
+      toggleList();
     }
   };
 
-  toggleList = () => {
-    this.setState({ showList: !this.state.showList });
+  const toggleList = () => {
+    setShowList(!showList);
   };
 
-  handleWindowOnClick = (event: React.MouseEvent<HTMLElement>) => {
-    if (this.refDropdown && !this.refDropdown.contains(event.target)) {
-      this.setState({ showList: false });
-    }
-  };
-
-  render() {
-    const {
-      sortByStyles,
-      large,
-      openTop,
-      className,
-      activeClassName,
-      staticLabel,
-      id,
-      showColor,
-      disabled,
-      preLabel,
-      preLabelClean,
-    } = this.props;
-    const { selected, showList, sortedList } = this.state;
-    return (
-      <div
-        style={sortByStyles}
-        className={classNames(className, {
-          [Styles.Large]: large,
-          [Styles.Normal]: !large,
-          [Styles.isOpen]: showList,
-          [Styles.openTop]: openTop,
-          [`${activeClassName}`]: showList,
-          [Styles.showColor]: showColor,
-          [Styles.Disabled]: disabled,
+  return (
+    <div
+      style={sortByStyles}
+      className={classNames(className, {
+        [Styles.Large]: large,
+        [Styles.Normal]: !large,
+        [Styles.isOpen]: showList,
+        [Styles.openTop]: openTop,
+        [`${activeClassName}`]: showList,
+        [Styles.showColor]: showColor,
+        [Styles.Disabled]: disabled,
+      })}
+      ref={refDropdown}
+      role="button"
+      tabIndex={0}
+      onClick={toggleList}
+      data-tip
+      data-for={'dropdown-' + id + staticLabel}
+      data-iscapture={true}
+    >
+      {preLabel && <span>{`${preLabel}${preLabelClean ? '' : ':'}`}</span>}
+      <button
+        className={classNames(Styles.label, {
+          [Styles.SelectedLabel]: selected,
         })}
-        ref={(dropdown) => {
-          this.refDropdown = dropdown;
-        }}
-        role="button"
-        tabIndex={0}
-        onClick={this.toggleList}
-        data-tip
-        data-for={'dropdown-' + id + staticLabel}
-        data-iscapture={true}
       >
-        {preLabel && <span>{`${preLabel}${preLabelClean ? '' : ':'}`}</span>}
-        <button
-          className={classNames(Styles.label, {
-            [Styles.SelectedLabel]: selected,
+        <span ref={labelRef}>
+          {selected?.icon ? selected.icon : null}
+          {selected ? selected.label : staticLabel}
+        </span>
+        {SimpleChevron}
+      </button>
+      <div>
+        <div
+          className={classNames(Styles.list, {
+            [`${Styles.active}`]: showList,
           })}
         >
-          <span ref={(ref) => (this.labelRef = ref)}>
-            {selected?.icon ? selected.icon : null}
-            {selected ? selected.label : staticLabel}
-          </span>
-          {SimpleChevron}
-        </button>
-        <div>
-          <div
-            className={classNames(Styles.list, {
-              [`${Styles.active}`]: showList,
-            })}
-          >
-            {sortedList.map((option) => (
-              <button
-                key={`${option.value}${option.label}`}
-                value={option.value}
-                onClick={() => this.dropdownSelect(option)}
-                className={classNames({
-                  [Styles.Selected]: option?.value === selected?.value,
-                })}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
+          {options.map(option => (
+            <button
+              key={`${option.value}${option.label}`}
+              value={option.value}
+              onClick={() => dropdownSelect(option)}
+              className={classNames({
+                [Styles.Selected]: option?.value === selected?.value,
+              })}
+            >
+              {option.label}
+            </button>
+          ))}
         </div>
-        {selected && (
-          <select
-            onChange={(e) => {
-              this.dropdownSelect(e.target.options[e.target.selectedIndex]);
-            }}
-            value={selected.value}
-          >
-            {sortedList.map((option) => (
-              <option
-                key={`${option.value}${option.label}`}
-                value={option.value}
-              >
-                {option.label}
-              </option>
-            ))}
-          </select>
-        )}
       </div>
-    );
-  }
-}
+      {selected && (
+        <select
+          onChange={e => {
+            dropdownSelect(e.target.options[e.target.selectedIndex]);
+          }}
+          value={selected.value}
+        >
+          {options.map(option => (
+            <option key={`${option.value}${option.label}`} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      )}
+    </div>
+  );
+};
 
 export const SquareDropdown = (props: DropdownProps) => <Dropdown {...props} />;
 
@@ -280,7 +211,7 @@ const Checkbox = ({ item, initialSelected, updateSelected }) => {
   const [selected, setSelected] = useState(initialSelected);
   return (
     <div
-      onClick={(e) => {
+      onClick={e => {
         e.preventDefault();
         setSelected(!selected);
         updateSelected(!selected);
@@ -311,7 +242,7 @@ export const CheckboxGroup = ({ title, items }) => {
             item={item}
             key={item.value}
             initialSelected={selectedItems[index].selected}
-            updateSelected={(selected) => updateSelected(selected, index)}
+            updateSelected={selected => updateSelected(selected, index)}
           />
         ))}
       </div>
@@ -322,7 +253,7 @@ export const CheckboxGroup = ({ title, items }) => {
 const RadioBar = ({ item, selected, onClick }) => {
   return (
     <div
-      onClick={(e) => {
+      onClick={e => {
         e.preventDefault();
         onClick(e);
       }}
@@ -343,7 +274,7 @@ export const RadioBarGroup = ({ title, items, selected, update }) => {
     <div className={Styles.SelectionGroup}>
       <span>{title}</span>
       <div>
-        {items.map((item) => (
+        {items.map(item => (
           <RadioBar
             item={item}
             key={item.value}
