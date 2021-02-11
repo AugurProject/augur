@@ -48,6 +48,7 @@ import {
 } from '../hooks/use-approval-callback';
 import { AmountInput } from '../common/inputs';
 import { useUserStore } from '../stores/user';
+import { PARA_CONFIG } from '../stores/constants';
 
 export const DefaultMarketOutcomes = [
   {
@@ -349,7 +350,6 @@ const TradingForm = ({
 }: TradingFormProps) => {
   const {
     isLogged,
-    paraConfig,
     showTradingForm,
     actions: { setShowTradingForm },
     settings: { slippage },
@@ -370,8 +370,7 @@ const TradingForm = ({
   const outcomes = amm?.ammOutcomes || [];
   const isBuy = orderType === BUY;
   const isETH = ammCash?.name === ETH;
-  const { addresses } = paraConfig;
-  const { AMMFactory, WethWrapperForAMMExchange } = addresses;
+  const { addresses: { AMMFactory, WethWrapperForAMMExchange }} = PARA_CONFIG;
   const { shareToken } = ammCash;
   const [canEnterPosition, setCanEnterPosition] = useState(false);
   const [canExitPosition, setCanExitPosition] = useState(false);

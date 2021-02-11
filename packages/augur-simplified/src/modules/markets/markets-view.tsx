@@ -39,13 +39,13 @@ import { searchMarkets } from '../apollo/client';
 import { SearchInput } from '../common/inputs';
 import { LoadingMarketCard, MarketCard } from './market-card';
 import { useGraphDataStore } from '../stores/graph-data';
+import { PARA_CONFIG } from '../stores/constants';
 
 const PAGE_LIMIT = 21;
 
 const applyFiltersAndSort = (
   passedInMarkets,
   setFilteredMarkets,
-  paraConfig,
   {
     filter,
     categories,
@@ -57,7 +57,7 @@ const applyFiltersAndSort = (
   },
   handleGraphError
 ) => {
-  searchMarkets(paraConfig, filter, (err, searchedMarkets) => {
+  searchMarkets(PARA_CONFIG, filter, (err, searchedMarkets) => {
     if (err) handleGraphError(err);
     let updatedFilteredMarkets = passedInMarkets;
 
@@ -155,7 +155,6 @@ const MarketsView = () => {
     isMobile,
     isLogged,
     marketsViewSettings,
-    paraConfig,
     actions: { setSidebar, updateMarketsViewSettings },
     settings: { showLiquidMarkets, showInvalidMarkets },
   } = useAppStatusStore();
@@ -188,7 +187,6 @@ const MarketsView = () => {
     applyFiltersAndSort(
       Object.values(markets),
       setFilteredMarkets,
-      paraConfig,
       {
         filter,
         categories,
@@ -217,7 +215,6 @@ const MarketsView = () => {
     applyFiltersAndSort(
       Object.values(markets),
       setFilteredMarkets,
-      paraConfig,
       {
         filter,
         categories,

@@ -8,10 +8,10 @@ import {
   getErc20Contract,
 } from '../../utils/contract-calls';
 import { BigNumber as BN } from 'bignumber.js';
-import { useAppStatusStore } from '../stores/app-status';
 import { TransactionResponse } from '@ethersproject/providers';
 import { AmmExchange, LoginAccount, TransactionDetails } from '../types';
 import { useUserStore } from '../stores/user';
+import { PARA_CONFIG } from '../stores/constants';
 
 const APPROVAL_AMOUNT = String(new BN(2 ** 255).minus(1));
 
@@ -257,9 +257,8 @@ export const useApproveCallbackForTrade = (
   isEnter: boolean
 ): [ApprovalState, () => Promise<void>] => {
   const {
-    paraConfig: { addresses },
-  } = useAppStatusStore();
-  const { AMMFactory, WethWrapperForAMMExchange } = addresses;
+    addresses: { AMMFactory, WethWrapperForAMMExchange },
+  } = PARA_CONFIG;
   const { cash } = ammExchange;
   const { shareToken } = cash;
   const approvingName = cash.name;
@@ -299,9 +298,8 @@ export const useApproveCallbackForLiquidity = (
   isAdd: boolean
 ): [ApprovalState, () => Promise<void>] => {
   const {
-    paraConfig: { addresses },
-  } = useAppStatusStore();
-  const { AMMFactory, WethWrapperForAMMExchange } = addresses;
+    addresses: { AMMFactory, WethWrapperForAMMExchange },
+  } = PARA_CONFIG;
   const { cash } = ammExchange;
   const approvingName = cash.name;
   const isETH = cash.name === ETH;

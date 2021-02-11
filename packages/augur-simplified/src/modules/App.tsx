@@ -20,6 +20,7 @@ import { TransactionDetails } from './types';
 import ModalView from './modal/modal-view';
 import parsePath from './routes/helpers/parse-path';
 import { MARKETS } from './constants';
+import { PARA_CONFIG } from './stores/constants';
 
 function checkIsMobile(setIsMobile) {
   const isMobile =
@@ -34,7 +35,6 @@ const AppBody = () => {
   const {
     sidebarType,
     showTradingForm,
-    paraConfig,
     isMobile,
     modal,
     actions: { setIsMobile },
@@ -58,7 +58,7 @@ const AppBody = () => {
   useEffect(() => {
     let isMounted = true;
     // get data immediately, then setup interval
-    getMarketsData(paraConfig, (graphData, block, errors) => {
+    getMarketsData(PARA_CONFIG, (graphData, block, errors) => {
       isMounted && !!errors
         ? updateGraphHeartbeat(
             { ammExchanges, cashes, markets },
@@ -68,7 +68,7 @@ const AppBody = () => {
         : updateGraphHeartbeat(processGraphMarkets(graphData), block, errors);
     });
     const intervalId = setInterval(() => {
-      getMarketsData(paraConfig, (graphData, block, errors) => {
+      getMarketsData(PARA_CONFIG, (graphData, block, errors) => {
         isMounted && !!errors
           ? updateGraphHeartbeat(
               { ammExchanges, cashes, markets },
@@ -122,7 +122,7 @@ const AppBody = () => {
     ) => getUserBalances(library, account, ammExchanges, cashes, markets);
     if (loginAccount?.library && loginAccount?.account) {
       if (!augurSdkLite.ready())
-        createClient(loginAccount.library, paraConfig, loginAccount?.account);
+        createClient(loginAccount.library, PARA_CONFIG, loginAccount?.account);
       fetchUserBalances(
         loginAccount.library,
         loginAccount.account,
@@ -142,7 +142,7 @@ const AppBody = () => {
     ammExchanges,
     cashes,
     markets,
-    paraConfig,
+    PARA_CONFIG,
   ]);
 
   useEffect(() => {

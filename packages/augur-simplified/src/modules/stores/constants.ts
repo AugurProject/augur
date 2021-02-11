@@ -1,8 +1,9 @@
-import {
-  DEFAULT_MARKET_VIEW_SETTINGS,
-  SETTINGS_SLIPPAGE,
-} from '../constants';
-import { AppStatusState, GraphDataState, UserState } from '../types';
+import { DEFAULT_MARKET_VIEW_SETTINGS, SETTINGS_SLIPPAGE } from '../constants';
+import { AppStatusState, GraphDataState, UserState, ParaDeploys } from '../types';
+
+// @ts-ignore
+export const PARA_CONFIG: ParaDeploys =
+  ((process.env.CONFIGURATION as unknown) as ParaDeploys) || {};
 
 export const STUBBED_GRAPH_DATA_ACTIONS = {
   updateGraphHeartbeat: (processed, blocknumber, errors) => {},
@@ -30,13 +31,13 @@ export const GRAPH_DATA_ACTIONS = {
 
 export const STUBBED_USER_ACTIONS = {
   addSeenPositionWarnings: (seenPositionWarnings) => {},
-  addTransaction: transaction => {},
-  finalizeTransaction: hash => {},
-  removeTransaction: hash => {},
-  updateLoginAccount: updateLoginAccount => {},
+  addTransaction: (transaction) => {},
+  finalizeTransaction: (hash) => {},
+  removeTransaction: (hash) => {},
+  updateLoginAccount: (updateLoginAccount) => {},
   updateSeenPositionWarning: (id, seenPositionWarning, warningType) => {},
   updateTransaction: (hash, updates) => {},
-  updateUserBalances: balances => {},
+  updateUserBalances: (balances) => {},
   logout: () => {},
 };
 
@@ -44,23 +45,23 @@ export const DEFAULT_USER_STATE: UserState = {
   account: null,
   balances: {
     ETH: {
-      balance: "0",
-      rawBalance: "0",
-      usdValue: "0",
+      balance: '0',
+      rawBalance: '0',
+      usdValue: '0',
     },
     USDC: {
-      balance: "0",
-      rawBalance: "0",
-      usdValue: "0",
+      balance: '0',
+      rawBalance: '0',
+      usdValue: '0',
     },
-    totalAccountValue: "0",
-    totalPositionUsd: "0",
-    total24hrPositionUsd: "0",
-    change24hrPositionUsd: "0",
-    availableFundsUsd: "0",
+    totalAccountValue: '0',
+    totalPositionUsd: '0',
+    total24hrPositionUsd: '0',
+    change24hrPositionUsd: '0',
+    availableFundsUsd: '0',
     lpTokens: {},
     marketShares: {},
-    claimableWinnings: {}
+    claimableWinnings: {},
   },
   loginAccount: null,
   seenPositionWarnings: {},
@@ -88,16 +89,15 @@ export const USER_ACTIONS = {
 };
 
 export const STUBBED_APP_STATUS_ACTIONS = {
-  setIsMobile: isMobile => {},
-  setSidebar: sidebarType => {},
-  setShowTradingForm: showTradingForm => {},
-  updateMarketsViewSettings: settings => {},
+  setIsMobile: (isMobile) => {},
+  setSidebar: (sidebarType) => {},
+  setShowTradingForm: (showTradingForm) => {},
+  updateMarketsViewSettings: (settings) => {},
   updateSettings: (settings, account = null) => {},
-  setModal: modal => {},
+  setModal: (modal) => {},
   closeModal: () => {},
   setIsLogged: (account) => {},
 };
-
 
 export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
   isMobile: false,
@@ -106,7 +106,6 @@ export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
   modal: {},
   showTradingForm: false,
   marketsViewSettings: DEFAULT_MARKET_VIEW_SETTINGS,
-  paraConfig: { addresses: {}, paraDeploys: {}},
   settings: {
     slippage: SETTINGS_SLIPPAGE,
     showInvalidMarkets: false,
@@ -118,7 +117,6 @@ export const APP_STATE_KEYS = {
   IS_MOBILE: 'isMobile',
   SIDEBAR_TYPE: 'sidebarType',
   MARKETS_VIEW_SETTINGS: 'marketsViewSettings',
-  PARA_CONFIG: 'paraConfig',
   SETTINGS: 'settings',
   MODAL: 'modal',
   IS_LOGGED: 'isLogged',
@@ -137,5 +135,5 @@ export const APP_STATUS_ACTIONS = {
 };
 
 export const MOCK_APP_STATUS_STATE = {
-  ...DEFAULT_APP_STATUS_STATE
+  ...DEFAULT_APP_STATUS_STATE,
 };

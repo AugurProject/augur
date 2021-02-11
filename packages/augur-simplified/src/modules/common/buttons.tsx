@@ -8,10 +8,10 @@ import {
   checkAllowance,
   isERC1155ContractApproved,
 } from '../hooks/use-approval-callback';
-import { useAppStatusStore } from '../stores/app-status';
 import { ApprovalAction, ApprovalState, ETH } from '../constants';
 import { AmmExchange, Cash } from '../types';
 import { useUserStore } from '../stores/user';
+import { PARA_CONFIG } from '../stores/constants';
 
 interface ButtonProps {
   text?: string;
@@ -178,10 +178,6 @@ export const ApprovalButton = ({
 }) => {
   const [isPendingTx, setIsPendingTx] = useState(false);
   const [isApproved, setIsApproved] = useState(UNKNOWN);
-
-  const {
-    paraConfig,
-  } = useAppStatusStore();
   const {
     loginAccount,
     transactions,
@@ -193,7 +189,7 @@ export const ApprovalButton = ({
   const approvingName = cash?.name;
   const marketDescription = amm?.market?.description;
   const { shareToken } = cash;
-  const { addresses } = paraConfig;
+  const { addresses } = PARA_CONFIG;
   const { AMMFactory, WethWrapperForAMMExchange } = addresses;
   const isETH = cash?.name === ETH;
 
@@ -346,7 +342,7 @@ export const ApprovalButton = ({
     return () => {
       isMounted = false;
     }
-  }, [loginAccount, isApproved, actionType, amm, paraConfig, tokenAddress, transactions, AMMFactory, WethWrapperForAMMExchange, cash?.address, isETH, marketCashType, shareToken, updateTransaction]);
+  }, [loginAccount, isApproved, actionType, amm, PARA_CONFIG, tokenAddress, transactions, AMMFactory, WethWrapperForAMMExchange, cash?.address, isETH, marketCashType, shareToken, updateTransaction]);
 
 
   if (!loginAccount || isApproved === APPROVED) {
