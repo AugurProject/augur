@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 import Styles from './selection.styles.less';
 import {
@@ -37,15 +37,6 @@ export interface DropdownProps {
   preLabel?: string;
   preLabelClean?: boolean;
   dontCheckInvalid?: boolean;
-}
-
-interface DropdownState {
-  selected: NameValuePair;
-  showList: boolean;
-  sortedList: NameValuePair[];
-  scrollWidth?: number;
-  clientWidth?: number;
-  isDisabled?: boolean;
 }
 
 function findSelected(options, defaultVal) {

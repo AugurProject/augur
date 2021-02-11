@@ -28,6 +28,7 @@ import {
   ADD,
 } from '../constants';
 import { FormattedNumber, MarketInfo } from '../types';
+import { useGraphDataStore } from '../stores/graph-data';
 
 interface ValueLabelProps {
   large?: boolean;
@@ -357,9 +358,11 @@ export const ErrorBlock = ({ text }) => {
 export const NetworkMismatchBanner = () => {
   const {
     paraConfig: { networkId },
-    processed: { errors },
     loginAccount,
   } = useAppStatusStore();
+  const {
+    errors
+  } = useGraphDataStore();
   const location = useLocation();
   const path = parsePath(location.pathname)[0];
   const { chainId } = loginAccount || {};

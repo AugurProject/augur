@@ -837,6 +837,7 @@ export interface WindowApp extends Window {
     pendingOrders?: any;
   };
   appStatus?: any;
+  graphData?: any;
   markets?: any;
   betslip?: any;
   trading?: any;
@@ -1131,7 +1132,6 @@ export interface SeenPositionWarnings {
 }
 
 export interface AppStatusState {
-  processed: ProcessedData;
   loginAccount: LoginAccount;
   marketsViewSettings: {
     categories: string;
@@ -1145,7 +1145,6 @@ export interface AppStatusState {
   };
   transactions: TransactionDetails[];
   paraConfig: ParaDeploys;
-  blocknumber: number;
   isMobile: boolean;
   isLogged: boolean;
   showTradingForm: boolean;
@@ -1155,6 +1154,20 @@ export interface AppStatusState {
   seenPositionWarnings: {
     [id: string]: SeenPositionWarnings;
   }
+}
+
+export interface GraphDataState {
+  ammExchanges: {
+    [id: string]: AmmExchange;
+  };
+  blocknumber: number;
+  cashes: {
+    [address: string]: Cash;
+  };
+  errors?: any;
+  markets: {
+    [marketIdKey: string]: MarketInfo;
+  };
 }
 
 export interface TransactionDetails {

@@ -7,13 +7,14 @@ import { useAppStatusStore } from '../stores/app-status';
 import { PrimaryButton } from '../common/buttons';
 import { NetworkMismatchBanner } from '../common/labels';
 import { EthIcon, UsdIcon } from '../common/icons';
-import { keyedObjToArray } from '../stores/app-status-hooks';
+import { keyedObjToArray } from '../stores/utils';
 import { ETH, TX_STATUS, USDC } from '../constants';
 import { formatCashPrice } from '../../utils/format-number';
 import { createBigNumber } from '../../utils/create-big-number';
 import { claimWinnings } from '../../utils/contract-calls';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
 import { isERC1155ContractApproved } from '../hooks/use-approval-callback';
+import { useGraphDataStore } from '../stores/graph-data';
 const TABLES = 'TABLES';
 const ACTIVITY = 'ACTIVITY';
 
@@ -70,9 +71,9 @@ export const ClaimWinningsSection = () => {
     userInfo: {
       balances: { marketShares },
     },
-    processed: { cashes },
     actions: { addTransaction, updateTransaction },
   } = useAppStatusStore();
+  const { cashes } = useGraphDataStore();
   const claimableMarkets = marketShares
     ? keyedObjToArray(marketShares).filter((m) => !!m?.claimableWinnings)
     : [];

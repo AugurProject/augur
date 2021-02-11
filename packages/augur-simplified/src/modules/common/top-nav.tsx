@@ -23,6 +23,7 @@ import { Toasts } from '../toasts/toasts';
 import { ToggleSwitch } from 'modules/common/toggle-switch';
 import { generateTooltip } from 'modules/common/labels';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
+import { useGraphDataStore } from '../stores/graph-data';
 
 export const SettingsButton = () => {
   const {
@@ -201,7 +202,6 @@ export const TopNav = () => {
   const location = useLocation();
   const path = parsePath(location.pathname)[0];
   const {
-    blocknumber,
     paraConfig: { networkId },
     loginAccount,
     transactions,
@@ -209,6 +209,7 @@ export const TopNav = () => {
     isMobile,
     actions: { setSidebar, updateLoginAccount, logout, updateTransaction },
   } = useAppStatusStore();
+  const { blocknumber } = useGraphDataStore();
   const [lastUser, setLastUser] = useLocalStorage('lastUser', null);
   useEffect(() => {
     if (blocknumber && transactions) {

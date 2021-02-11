@@ -6,13 +6,36 @@ import {
   DEFAULT_MARKET_VIEW_SETTINGS,
   SETTINGS_SLIPPAGE,
 } from '../constants';
-import { AppStatusState } from '../types';
+import { AppStatusState, GraphDataState } from '../types';
+
+export const STUBBED_GRAPH_DATA_ACTIONS = {
+  updateGraphHeartbeat: (processed, blocknumber, errors) => {},
+};
+
+export const DEFAULT_GRAPH_DATA_STATE: GraphDataState = {
+  ammExchanges: {},
+  blocknumber: null,
+  cashes: {},
+  errors: null,
+  markets: {},
+};
+
+export const GRAPH_DATA_KEYS = {
+  AMM_EXCHANGES: 'ammExchanges',
+  BLOCKNUMBER: 'blocknumber',
+  CASHES: 'cashes',
+  ERRORS: 'errors',
+  MARKETS: 'markets',
+};
+
+export const GRAPH_DATA_ACTIONS = {
+  UPDATE_GRAPH_HEARTBEAT: 'UPDATE_GRAPH_HEARTBEAT',
+};
 
 export const STUBBED_APP_STATUS_ACTIONS = {
   setIsMobile: isMobile => {},
   setSidebar: sidebarType => {},
   setShowTradingForm: showTradingForm => {},
-  updateGraphHeartbeat: (processed, blocknumber, errors) => {},
   updateLoginAccount: updateLoginAccount => {},
   updateMarketsViewSettings: settings => {},
   updateUserBalances: balances => {},
@@ -28,9 +51,9 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   addSeenPositionWarnings: (seenPositionWarnings) => {}
 };
 
+
 export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
   isMobile: false,
-  blocknumber: null,
   sidebarType: null,
   loginAccount: null,
   isLogged: false,
@@ -39,12 +62,6 @@ export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
   transactions: [],
   marketsViewSettings: DEFAULT_MARKET_VIEW_SETTINGS,
   paraConfig: { addresses: {}, paraDeploys: {}},
-  processed: {
-    markets: {},
-    cashes: {},
-    ammExchanges: {},
-    errors: null,
-  },
   userInfo: {
     activity: [],
     balances: {
@@ -84,11 +101,9 @@ export const APP_STATE_KEYS = {
   LIQUIDITY: 'liquidity',
   TRANSACTIONS: 'transactions',
   USER_INFO: 'userInfo',
-  PROCESSED: 'processed',
   MARKETS_VIEW_SETTINGS: 'marketsViewSettings',
   PARA_CONFIG: 'paraConfig',
   SETTINGS: 'settings',
-  BLOCKNUMBER: 'blocknumber',
   MODAL: 'modal',
   IS_LOGGED: 'isLogged',
   SHOW_TRADING_FORM: 'showTradingForm',
@@ -112,7 +127,6 @@ export const APP_STATUS_ACTIONS = {
   SET_MODAL: 'SET_MODAL',
   CLOSE_MODAL: 'CLOSE_MODAL',
   LOGOUT: 'LOGOUT',
-  UPDATE_GRAPH_HEARTBEAT: 'UPDATE_GRAPH_HEARTBEAT',
   UPDATE_SEEN_POSITION_WARNING: 'UPDATE_SEEN_POSITION_WARNING',
   ADD_SEEN_POSITION_WARNINGS: 'ADD_SEEN_POSITION_WARNINGS'
 };
@@ -195,7 +209,6 @@ export const MOCK_APP_STATUS_STATE = {
   ...DEFAULT_APP_STATUS_STATE,
   positions: fakePositionsData,
   liquidity: fakeLiquidityData,
-  blocknumber: 0,
   transactions: [],
   userInfo: {
     balances: {},

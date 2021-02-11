@@ -38,6 +38,7 @@ import { TopBanner } from '../common/top-banner';
 import { searchMarkets } from '../apollo/client';
 import { SearchInput } from '../common/inputs';
 import { LoadingMarketCard, MarketCard } from './market-card';
+import { useGraphDataStore } from '../stores/graph-data';
 
 const PAGE_LIMIT = 21;
 
@@ -154,14 +155,20 @@ const MarketsView = () => {
     isMobile,
     isLogged,
     marketsViewSettings,
-    blocknumber,
     paraConfig,
-    actions: { setSidebar, updateMarketsViewSettings, updateGraphHeartbeat },
-    processed,
+    actions: { setSidebar, updateMarketsViewSettings },
     settings: { showLiquidMarkets, showInvalidMarkets },
   } = useAppStatusStore();
+  const {
+    blocknumber,
+    ammExchanges,
+    cashes,
+    markets,
+    actions:{
+      updateGraphHeartbeat,
+    },
+  } = useGraphDataStore();
   const { sortBy, categories, reportingState, currency } = marketsViewSettings;
-  const { markets } = processed;
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [filteredMarkets, setFilteredMarkets] = useState([]);
@@ -191,7 +198,7 @@ const MarketsView = () => {
         showLiquidMarkets,
         showInvalidMarkets,
       },
-      err => updateGraphHeartbeat(processed, blocknumber, err)
+      err => updateGraphHeartbeat({ ammExchanges, cashes, markets }, blocknumber, err)
     );
   }, [
     sortBy,
@@ -220,7 +227,7 @@ const MarketsView = () => {
         showLiquidMarkets,
         showInvalidMarkets,
       },
-      err => updateGraphHeartbeat(processed, blocknumber, err)
+      err => updateGraphHeartbeat({ ammExchanges, cashes, markets }, blocknumber, err)
     );
   }, [markets]);
 

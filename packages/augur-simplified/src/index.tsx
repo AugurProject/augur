@@ -4,5 +4,6 @@ import App from './modules/App';
 import { windowRef } from './utils/window-ref';
 
 windowRef.appStatus = {};
+windowRef.graphData = {};
 
 render(<App />, document.getElementById('root'));

@@ -8,6 +8,7 @@ import Routes from './routes/routes';
 import TopNav from './common/top-nav';
 import '../assets/styles/shared.less';
 import { AppStatusProvider, useAppStatusStore } from './stores/app-status';
+import { GraphDataProvider, useGraphDataStore } from './stores/graph-data';
 import { Sidebar } from './sidebar/sidebar';
 import { processGraphMarkets } from '../utils/process-data';
 import { getUserBalances } from '../utils/contract-calls';
@@ -33,19 +34,19 @@ const AppBody = () => {
     loginAccount,
     sidebarType,
     showTradingForm,
-    processed,
     paraConfig,
     isMobile,
-    blocknumber,
     transactions,
     modal,
-    actions: {
-      setIsMobile,
-      updateGraphHeartbeat,
-      updateUserBalances,
-      finalizeTransaction,
-    },
+    actions: { setIsMobile, updateUserBalances, finalizeTransaction },
   } = useAppStatusStore();
+  const {
+    blocknumber,
+    ammExchanges,
+    cashes,
+    markets,
+    actions: { updateGraphHeartbeat },
+  } = useGraphDataStore();
   const modalShowing = Object.keys(modal).length !== 0;
   const location = useLocation();
   const path = parsePath(location.pathname)[0];
@@ -55,14 +56,22 @@ const AppBody = () => {
     // get data immediately, then setup interval
     getMarketsData(paraConfig, (graphData, block, errors) => {
       isMounted && !!errors
-        ? updateGraphHeartbeat(processed, blocknumber, errors)
+        ? updateGraphHeartbeat(
+            { ammExchanges, cashes, markets },
+            blocknumber,
+            errors
+          )
         : updateGraphHeartbeat(processGraphMarkets(graphData), block, errors);
     });
     const intervalId = setInterval(() => {
       getMarketsData(paraConfig, (graphData, block, errors) => {
         isMounted && !!errors
-        ? updateGraphHeartbeat(processed, blocknumber, errors)
-        : updateGraphHeartbeat(processGraphMarkets(graphData), block, errors);
+          ? updateGraphHeartbeat(
+              { ammExchanges, cashes, markets },
+              blocknumber,
+              errors
+            )
+          : updateGraphHeartbeat(processGraphMarkets(graphData), block, errors);
       });
     }, 15000);
     return () => {
@@ -83,7 +92,7 @@ const AppBody = () => {
     };
     // eslint-disable-next-line
   }, []);
-  
+
   const sidebarOut = sidebarType && isMobile;
   useEffect(() => {
     if (showTradingForm) {
@@ -110,7 +119,6 @@ const AppBody = () => {
     if (loginAccount?.library && loginAccount?.account) {
       if (!augurSdkLite.ready())
         createClient(loginAccount.library, paraConfig, loginAccount?.account);
-      const { ammExchanges, cashes, markets } = processed;
       fetchUserBalances(
         loginAccount.library,
         loginAccount.account,
@@ -124,7 +132,14 @@ const AppBody = () => {
       isMounted = false;
     };
     // eslint-disable-next-line
-  }, [loginAccount?.account, loginAccount?.library, processed, paraConfig]);
+  }, [
+    loginAccount?.account,
+    loginAccount?.library,
+    ammExchanges,
+    cashes,
+    markets,
+    paraConfig,
+  ]);
 
   useEffect(() => {
     if (loginAccount?.account && blocknumber && transactions?.length > 0) {
@@ -161,7 +176,9 @@ function App() {
       <AppStatusProvider>
         <ConnectAccountProvider>
           <ApolloProvider client={client}>
-            <AppBody />
+            <GraphDataProvider>
+              <AppBody />
+            </GraphDataProvider>
           </ApolloProvider>
         </ConnectAccountProvider>
       </AppStatusProvider>

@@ -45,6 +45,7 @@ import {
 } from '../../utils/contract-calls';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
 import { InvalidFlagTipIcon, MovementLabel, WarningBanner, generateTooltip } from './labels';
+import { useGraphDataStore } from '../stores/graph-data';
 
 interface PositionsTableProps {
   market: MarketInfo;
@@ -366,12 +367,11 @@ export const LiquidityFooter = ({ market }: { market: MarketInfo }) => {
 
 export const AllLiquidityTable = ({ page }) => {
   const {
-    processed,
     userInfo: {
       balances: { lpTokens },
     },
   } = useAppStatusStore();
-  const { ammExchanges } = processed;
+  const { ammExchanges } = useGraphDataStore();
   const liquidities = lpTokens
     ? Object.keys(lpTokens).map((ammId) => ({
       ammExchange: ammExchanges[ammId],
@@ -456,12 +456,11 @@ export const PositionsLiquidityViewSwitcher = ({
   const [tableView, setTableView] = useState(POSITIONS);
   const [page, setPage] = useState(1);
   const {
-    processed,
     userInfo: {
       balances: { lpTokens, marketShares },
     },
   } = useAppStatusStore();
-  const { ammExchanges } = processed;
+  const { ammExchanges } = useGraphDataStore();
 
   const ammId = ammExchange?.id;
   let userPositions = [];

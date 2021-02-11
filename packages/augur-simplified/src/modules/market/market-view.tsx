@@ -30,9 +30,10 @@ import {
   getMarketEndtimeFull,
   getMarketEndtimeDate,
 } from '../../utils/date-utils';
-import { getCurrentAmms } from '../stores/app-status-hooks';
+import { getCurrentAmms } from '../stores/utils';
 import { getWinningOutcome } from '../markets/market-card';
 import { ConfirmedCheck } from '../common/icons';
+import { useGraphDataStore } from '../stores/graph-data';
 
 const WinningOutcomeLabel = ({ winningOutcome }) => (
   <span className={Styles.WinningOutcomeLabel}>
@@ -110,9 +111,8 @@ const MarketView = ({ defaultMarket = null }) => {
     isMobile,
     showTradingForm,
     actions: { setShowTradingForm },
-    processed: { markets },
   } = useAppStatusStore();
-
+  const { markets } = useGraphDataStore();
   useEffect(() => {
     // initial render only.
     document.getElementById('mainContent')?.scrollTo(0, 0);

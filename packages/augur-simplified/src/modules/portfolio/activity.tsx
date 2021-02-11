@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import Styles from './activity.styles.less';
 import { useAppStatusStore } from '../stores/app-status';
+import { useGraphDataStore } from '../stores/graph-data';
 import { ActivityItem } from '../types';
 import { ReceiptLink } from '../routes/helpers/links';
 import { Pagination, sliceByPage } from '../common/pagination';
 import { getCashFormat } from '../../utils/format-number';
+import { shapeUserActvity } from '../../utils/process-data';
 
 const ActivityCard = ({ activity }: { activity: ActivityItem }) => (
   <div className={Styles.ActivityCard}>
@@ -12,7 +14,9 @@ const ActivityCard = ({ activity }: { activity: ActivityItem }) => (
     <div className={Styles.value}>{activity.value}</div>
     <div className={Styles.icon}>{getCashFormat(activity.currency).icon}</div>
     <span className={Styles.description}>{activity.description}</span>
-    {activity.subheader && <div className={Styles.subheader}>{activity.subheader}</div>}
+    {activity.subheader && (
+      <div className={Styles.subheader}>{activity.subheader}</div>
+    )}
     <div className={Styles.time}>{activity.time}</div>
     {activity.txHash && <ReceiptLink hash={activity.txHash} />}
   </div>
@@ -20,10 +24,12 @@ const ActivityCard = ({ activity }: { activity: ActivityItem }) => (
 
 const ACTIVITY_PAGE_LIMIT = 5;
 export const Activity = () => {
-  const {
-    isLogged,
-    userInfo: { activity },
-  } = useAppStatusStore();
+  const { isLogged, loginAccount } = useAppStatusStore();
+  const { ammExchanges, markets } = useGraphDataStore();
+  const activity = useMemo(
+    () => shapeUserActvity(loginAccount?.account, markets, ammExchanges),
+    [ammExchanges, loginAccount, markets]
+  );
   const [page, setPage] = useState(1);
   return (
     <div className={Styles.Activity}>
