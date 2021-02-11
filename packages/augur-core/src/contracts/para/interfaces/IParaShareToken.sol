@@ -2,6 +2,7 @@ pragma solidity 0.5.15;
 
 import 'ROOT/para/interfaces/IParaUniverse.sol';
 import 'ROOT/ICash.sol';
+import 'ROOT/reporting/IMarket.sol';
 
 interface IParaShareToken {
     function cash() external view returns (ICash);
@@ -17,4 +18,5 @@ interface IParaShareToken {
     function balanceOf(address owner, uint256 id) external view returns (uint256);
     function balanceOfBatch(address[] calldata owners, uint256[] calldata ids) external view returns (uint256[] memory balances_);
     function unsafeBatchTransferFrom(address _from, address _to, uint256[] calldata _ids, uint256[] calldata _values) external;
+    function getMarket(uint256 _tokenId) external pure returns(IMarket);
 }
