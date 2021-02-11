@@ -20,9 +20,9 @@ export const AppStatusProvider = ({ children }) => {
     account
   } = useUserStore();
   if (!!account && !state.isLogged) {
-    state.actions.setIsLogged(true);
+    state.actions.setIsLogged(account);
   } else if (!account && state.isLogged) {
-    state.actions.setIsLogged(false);
+    state.actions.setIsLogged(account);
   }
 
   if (!AppStatusStore.actionsSet) {

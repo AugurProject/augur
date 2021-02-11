@@ -3,48 +3,31 @@ import {
   APP_STATUS_ACTIONS,
   MOCK_APP_STATUS_STATE,
   APP_STATE_KEYS,
-  DEFAULT_APP_STATUS_STATE,
 } from './constants';
 import { windowRef } from '../../utils/window-ref';
-import { shapeUserActvity } from '../../utils/process-data';
 import {
   ParaDeploys,
-  TransactionDetails,
-  UserBalances,
 } from '../types';
-import { dispatchMiddleware } from './utils';
+import { dispatchMiddleware, getSavedUserInfo } from './utils';
 const {
   SET_SHOW_TRADING_FORM,
   SET_IS_MOBILE,
   SET_SIDEBAR,
-  SET_LOGIN_ACCOUNT,
   UPDATE_MARKETS_VIEW_SETTINGS,
-  UPDATE_USER_BALANCES,
   UPDATE_SETTINGS,
-  UPDATE_TRANSACTION,
-  ADD_TRANSACTION,
-  REMOVE_TRANSACTION,
-  FINALIZE_TRANSACTION,
   SET_MODAL,
   CLOSE_MODAL,
-  LOGOUT,
-  UPDATE_SEEN_POSITION_WARNING,
-  ADD_SEEN_POSITION_WARNINGS,
   SET_IS_LOGGED,
 } = APP_STATUS_ACTIONS;
 
 const {
   IS_MOBILE,
   SIDEBAR_TYPE,
-  LOGIN_ACCOUNT,
   MARKETS_VIEW_SETTINGS,
-  USER_INFO,
   SETTINGS,
-  TRANSACTIONS,
   MODAL,
   IS_LOGGED,
   SHOW_TRADING_FORM,
-  SEEN_POSITION_WARNINGS,
 } = APP_STATE_KEYS;
 
 const updateLocalStorage = (userAccount, updatedState) => {
@@ -54,9 +37,7 @@ const updateLocalStorage = (userAccount, updatedState) => {
       userAccount,
       JSON.stringify({
         ...userData,
-        seenPositionWarnings: updatedState[SEEN_POSITION_WARNINGS],
         settings: updatedState[SETTINGS],
-        transactions: updatedState[TRANSACTIONS],
       })
     );
   } else if (!!userAccount) {
@@ -64,21 +45,15 @@ const updateLocalStorage = (userAccount, updatedState) => {
       userAccount,
       JSON.stringify({
         account: userAccount,
-        seenPositionWarnings: updatedState[SEEN_POSITION_WARNINGS],
         settings: updatedState[SETTINGS],
-        transactions: updatedState[TRANSACTIONS],
       })
     );
   }
 };
 
-const getSavedUserInfo = (account) =>
-  JSON.parse(window.localStorage.getItem(account)) || null;
 
 export function AppStatusReducer(state, action) {
   const updatedState = { ...state };
-  const now = new Date().getTime();
-
   switch (action.type) {
     case SET_IS_MOBILE: {
       updatedState[IS_MOBILE] = action[IS_MOBILE];
@@ -97,47 +72,13 @@ export function AppStatusReducer(state, action) {
       break;
     }
     case SET_IS_LOGGED: {
-      updatedState[IS_LOGGED] = action.isLogged;
-      break;
-    }
-    case LOGOUT: {
-      window.localStorage.setItem('lastUser', null);
-      updatedState[IS_LOGGED] = false;
-      updatedState[TRANSACTIONS] = [];
-      updatedState[LOGIN_ACCOUNT] = null;
-      updatedState[USER_INFO] = DEFAULT_APP_STATUS_STATE.userInfo;
-      break;
-    }
-    case SET_LOGIN_ACCOUNT: {
-      const address = action?.account?.account;
-      updatedState[LOGIN_ACCOUNT] = action?.account;
-      updatedState[IS_LOGGED] = !!address;
-      const savedInfo = getSavedUserInfo(address);
-
-      if (updatedState.processed?.ammExchanges) {
-        const activity = shapeUserActvity(
-          address,
-          updatedState.processed?.markets,
-          updatedState.processed?.ammExchanges
-        );
-        updatedState[USER_INFO] = {
-          ...updatedState[USER_INFO],
-          activity,
-        };
-      }
-
-      if (savedInfo) {
+      const { account } = action;
+      updatedState[IS_LOGGED] = Boolean(account);
+      if (Boolean(account)) {
         updatedState[SETTINGS] = {
-          ...state.settings,
-          ...savedInfo.settings,
+          ...state[SETTINGS],
+          ...getSavedUserInfo(account)[SETTINGS],
         };
-        updatedState[SEEN_POSITION_WARNINGS] =
-          savedInfo?.seenPositionWarnings || state[SEEN_POSITION_WARNINGS];
-        const accTransactions = savedInfo.transactions.map((t) => ({ ...t, timestamp: now }));
-        updatedState[TRANSACTIONS] = accTransactions;
-      } else if (!!address && action?.account?.library?.provider?.isMetamask) {
-        // no saved info for this account, must be first login...
-        window.localStorage.setItem(address, JSON.stringify({ account: address }));
       }
       break;
     }
@@ -157,70 +98,16 @@ export function AppStatusReducer(state, action) {
         ...state[SETTINGS],
         ...action[SETTINGS],
       };
-      break;
-    }
-    case UPDATE_USER_BALANCES: {
-      updatedState[USER_INFO].balances = action.userBalances;
-      break;
-    }
-    case UPDATE_TRANSACTION: {
-      const transactionIndex = updatedState[TRANSACTIONS].findIndex(
-        (transaction) => transaction.hash === action.hash
-      );
-      if (transactionIndex >= 0) {
-        updatedState[TRANSACTIONS][transactionIndex] = {
-          ...updatedState[TRANSACTIONS][transactionIndex],
-          ...action.updates,
-          timestamp: now,
-        };
+      if (action.account) {
+        updateLocalStorage(action.account, updatedState);
       }
-      break;
-    }
-    case ADD_TRANSACTION: {
-      updatedState[TRANSACTIONS] = [
-        ...updatedState[TRANSACTIONS],
-        { ...action.transaction, timestamp: now },
-      ];
-      break;
-    }
-    case REMOVE_TRANSACTION: {
-      if (action.hash) {
-        updatedState[TRANSACTIONS] = updatedState[TRANSACTIONS].filter(
-          (tx) => tx.hash !== action.hash
-        );
-      }
-      break;
-    }
-    case FINALIZE_TRANSACTION: {
-      updatedState[TRANSACTIONS].forEach((tx) => {
-        if (tx.hash === action.hash) {
-          tx.confirmedTime = now;
-        }
-      });
-      break;
-    }
-    case UPDATE_SEEN_POSITION_WARNING: {
-      if (updatedState[SEEN_POSITION_WARNINGS][action.id]) {
-        updatedState[SEEN_POSITION_WARNINGS][action.id][action.warningType] = action.seenPositionWarning;
-      } else {
-        updatedState[SEEN_POSITION_WARNINGS][action.id] = {
-          [action.warningType]: action.seenPositionWarning
-        }
-      }
-      break;
-    }
-    case ADD_SEEN_POSITION_WARNINGS: {
-      updatedState[SEEN_POSITION_WARNINGS] = action.seenPositionWarnings;
       break;
     }
     default:
       console.log(`Error: ${action.type} not caught by App Status reducer`);
   }
   windowRef.appStatus = updatedState;
-  const userAccount = updatedState[LOGIN_ACCOUNT]?.account;
-  if (userAccount) {
-    updateLocalStorage(userAccount, updatedState);
-  }
+
   return updatedState;
 }
 
@@ -243,33 +130,11 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
         dispatch({ type: SET_SHOW_TRADING_FORM, showTradingForm }),
       setSidebar: (sidebarType) => dispatch({ type: SET_SIDEBAR, sidebarType }),
       setIsMobile: (isMobile) => dispatch({ type: SET_IS_MOBILE, isMobile }),
-      updateLoginAccount: (account) =>
-        dispatch({ type: SET_LOGIN_ACCOUNT, account }),
-      updateUserBalances: (userBalances: UserBalances) =>
-        dispatch({ type: UPDATE_USER_BALANCES, userBalances }),
-      updateSettings: (settings) =>
-        dispatch({ type: UPDATE_SETTINGS, settings }),
-      updateTransaction: (hash, updates) =>
-        dispatch({ type: UPDATE_TRANSACTION, hash, updates }),
-      addTransaction: (transaction: TransactionDetails) =>
-        dispatch({ type: ADD_TRANSACTION, transaction }),
-      removeTransaction: (hash: string) =>
-        dispatch({ type: REMOVE_TRANSACTION, hash }),
-      finalizeTransaction: (hash) =>
-        dispatch({ type: FINALIZE_TRANSACTION, hash }),
+      updateSettings: (settings, account = null) =>
+        dispatch({ type: UPDATE_SETTINGS, settings, account }),
       setModal: (modal) => dispatch({ type: SET_MODAL, modal }),
       closeModal: () => dispatch({ type: CLOSE_MODAL }),
-      updateSeenPositionWarning: (id, seenPositionWarning, warningType) =>
-        dispatch({
-          type: UPDATE_SEEN_POSITION_WARNING,
-          id,
-          seenPositionWarning,
-          warningType
-        }),
-      addSeenPositionWarnings: (seenPositionWarnings) =>
-        dispatch({ type: ADD_SEEN_POSITION_WARNINGS, seenPositionWarnings }),
-      logout: () => dispatch({ type: LOGOUT }),
-      setIsLogged: (isLogged) => dispatch({ type: SET_IS_LOGGED, isLogged }),
+      setIsLogged: (account) => dispatch({ type: SET_IS_LOGGED, account }),
     },
   };
 };

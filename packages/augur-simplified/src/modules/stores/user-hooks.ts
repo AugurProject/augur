@@ -1,4 +1,4 @@
-import { dispatchMiddleware } from './utils';
+import { dispatchMiddleware, getSavedUserInfo } from './utils';
 import { useReducer } from 'react';
 import { windowRef } from '../../utils/window-ref';
 import { USER_ACTIONS, USER_KEYS, DEFAULT_USER_STATE } from './constants';
@@ -45,9 +45,6 @@ const updateLocalStorage = (userAccount, updatedState) => {
     );
   }
 };
-
-const getSavedUserInfo = (account) =>
-  JSON.parse(window.localStorage.getItem(account)) || null;
 
 export function UserReducer(state, action) {
   let updatedState = { ...state };

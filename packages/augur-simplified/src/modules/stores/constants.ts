@@ -91,98 +91,49 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   setIsMobile: isMobile => {},
   setSidebar: sidebarType => {},
   setShowTradingForm: showTradingForm => {},
-  updateLoginAccount: updateLoginAccount => {},
   updateMarketsViewSettings: settings => {},
-  updateUserBalances: balances => {},
-  updateSettings: settings => {},
-  updateTransaction: (hash, updates) => {},
-  addTransaction: transaction => {},
-  removeTransaction: hash => {},
-  logout: () => {},
-  finalizeTransaction: hash => {},
+  updateSettings: (settings, account = null) => {},
   setModal: modal => {},
   closeModal: () => {},
-  updateSeenPositionWarning: (id, seenPositionWarning, warningType) => {},
-  addSeenPositionWarnings: (seenPositionWarnings) => {}
+  setIsLogged: (account) => {},
 };
 
 
 export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
   isMobile: false,
   sidebarType: null,
-  loginAccount: null,
   isLogged: false,
   modal: {},
   showTradingForm: false,
-  transactions: [],
   marketsViewSettings: DEFAULT_MARKET_VIEW_SETTINGS,
   paraConfig: { addresses: {}, paraDeploys: {}},
-  userInfo: {
-    balances: {
-      ETH: {
-        balance: "0",
-        rawBalance: "0",
-        usdValue: "0",
-      },
-      USDC: {
-        balance: "0",
-        rawBalance: "0",
-        usdValue: "0",
-      },
-      totalAccountValue: "0",
-      totalPositionUsd: "0",
-      total24hrPositionUsd: "0",
-      change24hrPositionUsd: "0",
-      availableFundsUsd: "0",
-      lpTokens: {},
-      marketShares: {},
-      claimableWinnings: {}
-    },
-  },
   settings: {
     slippage: SETTINGS_SLIPPAGE,
     showInvalidMarkets: false,
     showLiquidMarkets: false,
   },
-  seenPositionWarnings: {}
 };
 
 export const APP_STATE_KEYS = {
   IS_MOBILE: 'isMobile',
   SIDEBAR_TYPE: 'sidebarType',
-  LOGIN_ACCOUNT: 'loginAccount',
-  LIQUIDITY: 'liquidity',
-  TRANSACTIONS: 'transactions',
-  USER_INFO: 'userInfo',
   MARKETS_VIEW_SETTINGS: 'marketsViewSettings',
   PARA_CONFIG: 'paraConfig',
   SETTINGS: 'settings',
   MODAL: 'modal',
   IS_LOGGED: 'isLogged',
   SHOW_TRADING_FORM: 'showTradingForm',
-  SEEN_POSITION_WARNINGS: 'seenPositionWarnings'
 };
 
 export const APP_STATUS_ACTIONS = {
   SET_IS_MOBILE: 'SET_IS_MOBILE',
   SET_SIDEBAR: 'SET_SIDEBAR',
   SET_SHOW_TRADING_FORM: 'SET_SHOW_TRADING_FORM',
-  UPDATE_PROCESSED: 'UPDATE_PROCESSED',
-  SET_LOGIN_ACCOUNT: 'SET_LOGIN_ACCOUNT',
   UPDATE_MARKETS_VIEW_SETTINGS: 'UPDATE_MARKETS_VIEW_SETTINGS',
-  UPDATE_USER_BALANCES: 'UPDATE_USER_BALANCES',
   UPDATE_SETTINGS: 'UPDATE_SETTINGS',
-  UPDATE_TRANSACTION: 'UPDATE_TRANSACTION',
-  ADD_TRANSACTION: 'ADD_TRANSACTION',
-  REMOVE_TRANSACTION: 'REMOVE_TRANSACTION',
-  UPDATE_BLOCKNUMBER: 'UPDATE_BLOCKNUMBER',
-  FINALIZE_TRANSACTION: 'FINALIZE_TRANSACTION',
   SET_MODAL: 'SET_MODAL',
   CLOSE_MODAL: 'CLOSE_MODAL',
-  LOGOUT: 'LOGOUT',
   SET_IS_LOGGED: 'SET_IS_LOGGED',
-  UPDATE_SEEN_POSITION_WARNING: 'UPDATE_SEEN_POSITION_WARNING',
-  ADD_SEEN_POSITION_WARNINGS: 'ADD_SEEN_POSITION_WARNINGS'
 };
 
 export const MOCK_APP_STATUS_STATE = {

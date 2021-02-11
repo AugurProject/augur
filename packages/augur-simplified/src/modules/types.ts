@@ -1133,17 +1133,12 @@ export interface SeenPositionWarnings {
 }
 
 export interface AppStatusState {
-  loginAccount: LoginAccount;
   marketsViewSettings: {
     categories: string;
     reportingState: string;
     sortBy: string;
     currency: string;
   };
-  userInfo: {
-    balances: UserBalances;
-  };
-  transactions: TransactionDetails[];
   paraConfig: ParaDeploys;
   isMobile: boolean;
   isLogged: boolean;
@@ -1151,9 +1146,6 @@ export interface AppStatusState {
   sidebarType: string;
   modal: Modal;
   settings: Settings;
-  seenPositionWarnings: {
-    [id: string]: SeenPositionWarnings;
-  }
 }
 
 export interface GraphDataState {
