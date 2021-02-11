@@ -1132,7 +1132,6 @@ export interface SeenPositionWarnings {
 }
 
 export interface AppStatusState {
-  processed: ProcessedData;
   loginAccount: LoginAccount;
   marketsViewSettings: {
     categories: string;
@@ -1146,7 +1145,6 @@ export interface AppStatusState {
   };
   transactions: TransactionDetails[];
   paraConfig: ParaDeploys;
-  blocknumber: number;
   isMobile: boolean;
   isLogged: boolean;
   showTradingForm: boolean;

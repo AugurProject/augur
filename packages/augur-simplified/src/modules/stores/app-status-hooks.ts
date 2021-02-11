@@ -28,7 +28,6 @@ const {
   SET_MODAL,
   CLOSE_MODAL,
   LOGOUT,
-  UPDATE_GRAPH_HEARTBEAT,
   UPDATE_SEEN_POSITION_WARNING,
   ADD_SEEN_POSITION_WARNINGS,
 } = APP_STATUS_ACTIONS;
@@ -36,13 +35,11 @@ const {
 const {
   IS_MOBILE,
   SIDEBAR_TYPE,
-  PROCESSED,
   LOGIN_ACCOUNT,
   MARKETS_VIEW_SETTINGS,
   USER_INFO,
   SETTINGS,
   TRANSACTIONS,
-  BLOCKNUMBER,
   MODAL,
   IS_LOGGED,
   SHOW_TRADING_FORM,
@@ -141,28 +138,6 @@ export function AppStatusReducer(state, action) {
     }
     case SET_SHOW_TRADING_FORM: {
       updatedState[SHOW_TRADING_FORM] = action.showTradingForm;
-      break;
-    }
-    case UPDATE_GRAPH_HEARTBEAT: {
-      const { markets, cashes, ammExchanges } = action[PROCESSED];
-      updatedState[PROCESSED] = {
-        markets,
-        cashes,
-        ammExchanges,
-        errors: action?.errors || null,
-      };
-      if (updatedState?.loginAccount?.account) {
-        const activity = shapeUserActvity(
-          updatedState?.loginAccount?.account,
-          markets,
-          ammExchanges
-        );
-        updatedState[USER_INFO] = {
-          ...updatedState[USER_INFO],
-          activity,
-        };
-      }
-      updatedState[BLOCKNUMBER] = action.blocknumber;
       break;
     }
     case UPDATE_MARKETS_VIEW_SETTINGS: {
@@ -275,13 +250,6 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
         dispatch({ type: ADD_TRANSACTION, transaction }),
       removeTransaction: (hash: string) =>
         dispatch({ type: REMOVE_TRANSACTION, hash }),
-      updateGraphHeartbeat: (processed, blocknumber, errors) =>
-        dispatch({
-          type: UPDATE_GRAPH_HEARTBEAT,
-          processed,
-          blocknumber,
-          errors,
-        }),
       finalizeTransaction: (hash) =>
         dispatch({ type: FINALIZE_TRANSACTION, hash }),
       setModal: (modal) => dispatch({ type: SET_MODAL, modal }),
