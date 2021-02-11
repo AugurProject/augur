@@ -95,7 +95,6 @@ interface ModalAddLiquidityProps {
 
 export const updateTxStatus = (txResponse, updateTransaction) => {
   if (txResponse.confirmations > 0) {
-    // TODO temp workaround
     const tx = UserStore.get().transactions;
     const updateTxState = tx.find(
       (tx) => tx.hash === txResponse.transactionHash
