@@ -695,10 +695,7 @@ const populateClaimableWinnings = (finalizedMarkets: MarketInfos = {}, finalized
       const outcomeBalances = marketShares[amm.id];
       const userShares = outcomeBalances?.positions.find(p => p.outcomeId === winningOutcome.id);
       if (userShares && new BN(userShares?.rawBalance).gt(0)) {
-        // for yesNo and categoricals user would get 1 cash for each share
-        // TODO: figure out scalars when the time comes
-        const maxValue = Math.ceil(Number(userShares.balance));
-        const claimableBalance = (new BN(maxValue).minus(new BN(userShares.balance))).toFixed(4);
+        const claimableBalance = new BN(userShares.balance).toFixed(4);
         marketShares[amm.id].claimableWinnings = {
           claimableBalance,
           sharetoken: amm.cash.shareToken,
