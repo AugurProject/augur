@@ -132,6 +132,7 @@ export const AmountInput = ({
             updateInitialAmount(e.target.value);
             errorCheck(e.target.value);
           }}
+          title={disabled ? 'Liquidity Depleted' : 'enter amount'}
           value={amount}
           placeholder="0"
           disabled={disabled}
