@@ -7,6 +7,7 @@ import { ReceiptLink } from '../routes/helpers/links';
 import { Pagination, sliceByPage } from '../common/pagination';
 import { getCashFormat } from '../../utils/format-number';
 import { shapeUserActvity } from '../../utils/process-data';
+import { useUserStore } from '../stores/user';
 
 const ActivityCard = ({ activity }: { activity: ActivityItem }) => (
   <div className={Styles.ActivityCard}>
@@ -24,11 +25,12 @@ const ActivityCard = ({ activity }: { activity: ActivityItem }) => (
 
 const ACTIVITY_PAGE_LIMIT = 5;
 export const Activity = () => {
-  const { isLogged, loginAccount } = useAppStatusStore();
+  const { isLogged } = useAppStatusStore();
+  const { account } = useUserStore();
   const { ammExchanges, markets } = useGraphDataStore();
   const activity = useMemo(
-    () => shapeUserActvity(loginAccount?.account, markets, ammExchanges),
-    [ammExchanges, loginAccount, markets]
+    () => shapeUserActvity(account, markets, ammExchanges),
+    [ammExchanges, account, markets]
   );
   const [page, setPage] = useState(1);
   return (

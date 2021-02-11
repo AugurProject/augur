@@ -47,6 +47,7 @@ import {
   isERC1155ContractApproved,
 } from '../hooks/use-approval-callback';
 import { AmountInput } from '../common/inputs';
+import { useUserStore } from '../stores/user';
 
 export const DefaultMarketOutcomes = [
   {
@@ -71,7 +72,7 @@ const PLACEHOLDER = '0';
 const AVG_PRICE_TIP =
   'The difference between the market price and estimated price due to trade size.';
 
-export const isInvalidNumber = number => {
+export const isInvalidNumber = (number) => {
   return (
     number !== '' &&
     (isNaN(number) || Number(number) < 0 || Number(number) === 0)
@@ -128,7 +129,7 @@ const Outcome = ({
           <span>{`${prepend && symbol}0.`}</span>
           <input
             value={customVal}
-            onChange={v => {
+            onChange={(v) => {
               setCustomVal(`${v.target.value}`);
               setEditableValue(
                 v.target.value && v.target.value !== '0'
@@ -140,7 +141,7 @@ const Outcome = ({
             placeholder={PLACEHOLDER}
             ref={input}
             // @ts-ignore
-            onWheel={e => e?.target?.blur()}
+            onWheel={(e) => e?.target?.blur()}
           />
         </div>
       ) : (
@@ -198,7 +199,7 @@ export const OutcomesGrid = ({
       })}
     >
       {outcomes
-        .filter(outcome => (dontFilterInvalid ? true : !outcome.isInvalid))
+        .filter((outcome) => (dontFilterInvalid ? true : !outcome.isInvalid))
         .reverse()
         .map((outcome, index) => (
           <Outcome
@@ -214,7 +215,7 @@ export const OutcomesGrid = ({
             onClick={() => setSelectedOutcome(outcome)}
             marketType={marketType}
             editable={editable}
-            setEditableValue={price => setEditableValue(price, outcome.id)}
+            setEditableValue={(price) => setEditableValue(price, outcome.id)}
             ammCash={ammCash}
             showAsButton={showAsButtons}
             invalidSelected={selectedOutcome?.isInvalid}
@@ -244,7 +245,7 @@ export const InfoNumbers = ({ infoNumbers, unedited }: InfoNumbersProps) => {
         [Styles.Populated]: !unedited,
       })}
     >
-      {infoNumbers.map(infoNumber => (
+      {infoNumbers.map((infoNumber) => (
         <div key={infoNumber.label}>
           <span>
             {infoNumber.label}
@@ -348,14 +349,17 @@ const TradingForm = ({
 }: TradingFormProps) => {
   const {
     isLogged,
-    loginAccount,
-    transactions,
     paraConfig,
     showTradingForm,
-    actions: { addTransaction, updateTransaction, setShowTradingForm },
+    actions: { setShowTradingForm },
     settings: { slippage },
-    userInfo: { balances },
   } = useAppStatusStore();
+  const {
+    loginAccount,
+    transactions,
+    balances,
+    actions: { addTransaction, updateTransaction },
+  } = useUserStore();
   const [orderType, setOrderType] = useState(BUY);
   const [selectedOutcome, setSelectedOutcome] = useState(
     initialSelectedOutcome
@@ -372,7 +376,7 @@ const TradingForm = ({
   const [canEnterPosition, setCanEnterPosition] = useState(false);
   const [canExitPosition, setCanExitPosition] = useState(false);
   const isApprovedTrade = isBuy ? canEnterPosition : canExitPosition;
-  const hasLiquidity = amm.liquidity !== "0";
+  const hasLiquidity = amm.liquidity !== '0';
 
   useEffect(() => {
     if (initialSelectedOutcome.id !== selectedOutcomeId) {
@@ -537,7 +541,7 @@ const TradingForm = ({
     userBalance,
     breakdown?.slippagePercent,
     slippage,
-    hasLiquidity
+    hasLiquidity,
   ]);
 
   const makeTrade = () => {
@@ -556,7 +560,7 @@ const TradingForm = ({
       outputYesShares,
       userBalances
     )
-      .then(response => {
+      .then((response) => {
         if (response) {
           const { hash } = response;
           setAmount('');
@@ -574,10 +578,10 @@ const TradingForm = ({
           });
           response
             .wait()
-            .then(response => updateTxStatus(response, updateTransaction));
+            .then((response) => updateTxStatus(response, updateTransaction));
         }
       })
-      .catch(e => {
+      .catch((e) => {
         //TODO: handle errors here
       });
   };
@@ -620,7 +624,7 @@ const TradingForm = ({
         <OutcomesGrid
           outcomes={outcomes}
           selectedOutcome={selectedOutcome}
-          setSelectedOutcome={outcome => {
+          setSelectedOutcome={(outcome) => {
             setSelectedOutcome(outcome);
             setAmount('');
           }}
@@ -641,7 +645,7 @@ const TradingForm = ({
             !isNaN(Number(breakdown?.ratePerCash))
               ? `1 ${amm?.cash?.name} = ${
                   formatSimpleShares(breakdown?.ratePerCash, {
-                    denomination: v => `${v} Shares`,
+                    denomination: (v) => `${v} Shares`,
                   }).full
                 }`
               : null

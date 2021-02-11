@@ -9,6 +9,7 @@ import TopNav from './common/top-nav';
 import '../assets/styles/shared.less';
 import { AppStatusProvider, useAppStatusStore } from './stores/app-status';
 import { GraphDataProvider, useGraphDataStore } from './stores/graph-data';
+import { UserProvider, useUserStore } from './stores/user';
 import { Sidebar } from './sidebar/sidebar';
 import { processGraphMarkets } from '../utils/process-data';
 import { getUserBalances } from '../utils/contract-calls';
@@ -31,15 +32,18 @@ function checkIsMobile(setIsMobile) {
 
 const AppBody = () => {
   const {
-    loginAccount,
     sidebarType,
     showTradingForm,
     paraConfig,
     isMobile,
-    transactions,
     modal,
-    actions: { setIsMobile, updateUserBalances, finalizeTransaction },
+    actions: { setIsMobile },
   } = useAppStatusStore();
+  const {
+    loginAccount,
+    transactions,
+    actions: { updateUserBalances, finalizeTransaction },
+  } = useUserStore();
   const {
     blocknumber,
     ammExchanges,
@@ -173,15 +177,17 @@ const AppBody = () => {
 function App() {
   return (
     <HashRouter hashType="hashbang">
-      <AppStatusProvider>
-        <ConnectAccountProvider>
-          <ApolloProvider client={client}>
-            <GraphDataProvider>
-              <AppBody />
-            </GraphDataProvider>
-          </ApolloProvider>
-        </ConnectAccountProvider>
-      </AppStatusProvider>
+      <ConnectAccountProvider>
+        <ApolloProvider client={client}>
+          <GraphDataProvider>
+            <UserProvider>
+              <AppStatusProvider>
+                <AppBody />
+              </AppStatusProvider>
+            </UserProvider>
+          </GraphDataProvider>
+        </ApolloProvider>
+      </ConnectAccountProvider>
     </HashRouter>
   );
 }

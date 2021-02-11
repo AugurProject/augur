@@ -25,6 +25,9 @@ export const middleware = (dispatch, action) => {
   }
 };
 
+export const getSavedUserInfo = (account) =>
+  JSON.parse(window.localStorage.getItem(account)) || null;
+
 export const getRelatedMarkets = (
   market: MarketInfo,
   markets: Array<MarketInfo>

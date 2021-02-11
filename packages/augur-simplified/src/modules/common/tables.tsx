@@ -46,6 +46,7 @@ import {
 import { updateTxStatus } from '../modal/modal-add-liquidity';
 import { InvalidFlagTipIcon, MovementLabel, WarningBanner, generateTooltip } from './labels';
 import { useGraphDataStore } from '../stores/graph-data';
+import { useUserStore } from '../stores/user';
 
 interface PositionsTableProps {
   market: MarketInfo;
@@ -144,11 +145,13 @@ export const PositionFooter = ({
 }: PositionFooterProps) => {
   const {
     isMobile,
+  } = useAppStatusStore();
+  const {
+    account,
     loginAccount,
     actions: { addTransaction, updateTransaction },
-  } = useAppStatusStore();
+  } = useUserStore();
   if (isMobile && !claimableWinnings) return null;
-  const account = loginAccount?.account;
   const claim = () => {
     if (amm && account) {
       claimWinnings(account, [marketId], amm?.cash)
@@ -201,10 +204,8 @@ export const PositionFooter = ({
 
 export const AllPositionTable = ({ page }) => {
   const {
-    userInfo: {
-      balances: { marketShares },
-    },
-  } = useAppStatusStore();
+    balances: { marketShares },
+  } = useUserStore();
   const positions = marketShares
     ? ((Object.values(marketShares) as unknown[]) as {
       ammExchange: AmmExchange;
@@ -242,7 +243,7 @@ export const PositionTable = ({
   const {
     seenPositionWarnings,
     actions: { updateSeenPositionWarning },
-  } = useAppStatusStore();
+  } = useUserStore();
   const marketAmmId = createMarketAmmId(market.marketId, market?.amm?.id);
   const seenMarketPositionWarningAdd =
     seenPositionWarnings && seenPositionWarnings[marketAmmId]?.add;
@@ -367,10 +368,8 @@ export const LiquidityFooter = ({ market }: { market: MarketInfo }) => {
 
 export const AllLiquidityTable = ({ page }) => {
   const {
-    userInfo: {
-      balances: { lpTokens },
-    },
-  } = useAppStatusStore();
+    balances: { lpTokens },
+  } = useUserStore();
   const { ammExchanges } = useGraphDataStore();
   const liquidities = lpTokens
     ? Object.keys(lpTokens).map((ammId) => ({
@@ -456,10 +455,8 @@ export const PositionsLiquidityViewSwitcher = ({
   const [tableView, setTableView] = useState(POSITIONS);
   const [page, setPage] = useState(1);
   const {
-    userInfo: {
-      balances: { lpTokens, marketShares },
-    },
-  } = useAppStatusStore();
+    balances: { lpTokens, marketShares },
+  } = useUserStore();
   const { ammExchanges } = useGraphDataStore();
 
   const ammId = ammExchange?.id;

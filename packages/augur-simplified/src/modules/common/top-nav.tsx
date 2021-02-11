@@ -24,13 +24,16 @@ import { ToggleSwitch } from 'modules/common/toggle-switch';
 import { generateTooltip } from 'modules/common/labels';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
 import { useGraphDataStore } from '../stores/graph-data';
+import { useUserStore } from '../stores/user';
 
 export const SettingsButton = () => {
   const {
     settings: { slippage, showInvalidMarkets, showLiquidMarkets },
     actions: { updateSettings },
   } = useAppStatusStore();
-
+  const {
+    account
+  } = useUserStore();
   const [open, setOpened] = useState(false);
   const [customVal, setCustomVal] = useState('');
   const settingsRef = useRef(null);
@@ -103,7 +106,7 @@ export const SettingsButton = () => {
                 <TinyButton
                   text="0.5%"
                   action={() => {
-                    updateSettings({ slippage: '0.5' });
+                    updateSettings({ slippage: '0.5' }, account);
                     setCustomVal('');
                   }}
                   selected={isSelectedArray[0]}
@@ -114,7 +117,7 @@ export const SettingsButton = () => {
                 <TinyButton
                   text="1%"
                   action={() => {
-                    updateSettings({ slippage: '1' });
+                    updateSettings({ slippage: '1' }, account);
                     setCustomVal('');
                   }}
                   selected={isSelectedArray[1]}
@@ -125,7 +128,7 @@ export const SettingsButton = () => {
                 <TinyButton
                   text="2%"
                   action={() => {
-                    updateSettings({ slippage: '2' });
+                    updateSettings({ slippage: '2' }, account);
                     setCustomVal('');
                   }}
                   selected={isSelectedArray[2]}
@@ -155,7 +158,7 @@ export const SettingsButton = () => {
                         ) {
                           setCustomVal(slippage);
                         } else {
-                          updateSettings({ slippage: customVal });
+                          updateSettings({ slippage: customVal }, account);
                         }
                       }
                     }}
@@ -179,7 +182,7 @@ export const SettingsButton = () => {
             <ToggleSwitch
               toggle={showInvalidMarkets}
               setToggle={() =>
-                updateSettings({ showInvalidMarkets: !showInvalidMarkets })
+                updateSettings({ showInvalidMarkets: !showInvalidMarkets }, account)
               }
             />
           </li>
@@ -188,7 +191,7 @@ export const SettingsButton = () => {
             <ToggleSwitch
               toggle={showLiquidMarkets}
               setToggle={() =>
-                updateSettings({ showLiquidMarkets: !showLiquidMarkets })
+                updateSettings({ showLiquidMarkets: !showLiquidMarkets }, account)
               }
             />
           </li>
@@ -203,12 +206,16 @@ export const TopNav = () => {
   const path = parsePath(location.pathname)[0];
   const {
     paraConfig: { networkId },
-    loginAccount,
-    transactions,
     isLogged,
     isMobile,
-    actions: { setSidebar, updateLoginAccount, logout, updateTransaction },
+    actions: { setSidebar },
   } = useAppStatusStore();
+  const {
+    account,
+    loginAccount,
+    transactions,
+    actions: { updateLoginAccount, logout, updateTransaction },
+  } = useUserStore();
   const { blocknumber } = useGraphDataStore();
   const [lastUser, setLastUser] = useLocalStorage('lastUser', null);
   useEffect(() => {
@@ -235,8 +242,8 @@ export const TopNav = () => {
 
   useEffect(() => {
     const isMetaMask = loginAccount?.library?.provider?.isMetaMask;
-    if (isMetaMask && loginAccount?.account) {
-      setLastUser(loginAccount.account);
+    if (isMetaMask && account) {
+      setLastUser(account);
     } else if (!loginAccount?.active) {
       setLastUser(null);
     }
@@ -249,8 +256,8 @@ export const TopNav = () => {
       if (String(networkId) !== String(activeWeb3.chainId)) {
         updateLoginAccount({ chainId: activeWeb3.chainId });
       } else if (
-        loginAccount?.account &&
-        loginAccount.account !== activeWeb3.account
+        account &&
+        account !== activeWeb3.account
       ) {
         logout();
         updateLoginAccount(activeWeb3);

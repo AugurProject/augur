@@ -11,6 +11,7 @@ import {
 import { useAppStatusStore } from '../stores/app-status';
 import { ApprovalAction, ApprovalState, ETH } from '../constants';
 import { AmmExchange, Cash } from '../types';
+import { useUserStore } from '../stores/user';
 
 interface ButtonProps {
   text?: string;
@@ -179,11 +180,13 @@ export const ApprovalButton = ({
   const [isApproved, setIsApproved] = useState(UNKNOWN);
 
   const {
-    loginAccount,
     paraConfig,
+  } = useAppStatusStore();
+  const {
+    loginAccount,
     transactions,
     actions: { addTransaction, updateTransaction }
-  } = useAppStatusStore();
+  } = useUserStore();
 
   const marketCashType = cash?.name;
   const tokenAddress = cash?.address;

@@ -1,6 +1,7 @@
 import React from 'react';
 import { DEFAULT_APP_STATUS_STATE, STUBBED_APP_STATUS_ACTIONS } from '../stores/constants';
 import { useAppStatus } from '../stores/app-status-hooks';
+import { useUserStore } from './user';
 
 export const AppStatusContext = React.createContext({
   ...DEFAULT_APP_STATUS_STATE,
@@ -15,6 +16,14 @@ export const AppStatusStore = {
 
 export const AppStatusProvider = ({ children }) => {
   const state = useAppStatus();
+  const {
+    account
+  } = useUserStore();
+  if (!!account && !state.isLogged) {
+    state.actions.setIsLogged(account);
+  } else if (!account && state.isLogged) {
+    state.actions.setIsLogged(account);
+  }
 
   if (!AppStatusStore.actionsSet) {
     AppStatusStore.actions = state.actions;

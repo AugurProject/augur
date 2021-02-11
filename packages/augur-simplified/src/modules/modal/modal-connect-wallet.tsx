@@ -14,6 +14,7 @@ import AccountDetails from '../ConnectAccount/components/AccountDetails';
 import { useAppStatusStore } from '../stores/app-status';
 import classNames from 'classnames';
 import { MODAL_CONNECT_WALLET } from '../constants';
+import { useUserStore } from '../stores/user';
 
 const WALLET_VIEWS = {
   OPTIONS: 'options',
@@ -132,9 +133,12 @@ const ModalConnectWallet = ({
   const {
     isLogged,
     isMobile,
-    actions: { logout, removeTransaction, closeModal, setModal },
+    actions: { closeModal, setModal },
     modal: { type },
   } = useAppStatusStore();
+  const {
+    actions: { removeTransaction, logout },
+  } = useUserStore();
   // important that these are destructed from the account-specific web3-react context
   const { active, account, connector, activate, error } = useWeb3React();
   const [walletView, setWalletView] = useState(WALLET_VIEWS.ACCOUNT);

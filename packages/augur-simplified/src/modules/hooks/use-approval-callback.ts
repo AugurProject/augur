@@ -11,11 +11,12 @@ import { BigNumber as BN } from 'bignumber.js';
 import { useAppStatusStore } from '../stores/app-status';
 import { TransactionResponse } from '@ethersproject/providers';
 import { AmmExchange, LoginAccount, TransactionDetails } from '../types';
+import { useUserStore } from '../stores/user';
 
 const APPROVAL_AMOUNT = String(new BN(2 ** 255).minus(1));
 
 export const useIsTokenApproved = (tokenAddress: string): Promise<boolean> => {
-  const { loginAccount } = useAppStatusStore();
+  const { loginAccount } = useUserStore();
 
   return useMemo(async () => {
     if (loginAccount) {
@@ -53,7 +54,7 @@ const useHasPendingTransaction = (
   tokenAddress: string,
   spender: string
 ): boolean => {
-  const { transactions } = useAppStatusStore();
+  const { transactions } = useUserStore();
 
   return useMemo(() => {
     if (!account || !tokenAddress || !spender) return false;
@@ -82,7 +83,7 @@ export function useApproveCallback(
   );
   const {
     actions: { addTransaction },
-  } = useAppStatusStore();
+  } = useUserStore();
   // check the current approval status
   const approvalState: ApprovalState = useMemo(() => {
     if (!tokenAddress || !spender) return ApprovalState.UNKNOWN;
@@ -171,7 +172,7 @@ export function useApproveERC1155Callback(
   const { chainId, account, library } = useActiveWeb3React();
   const {
     actions: { addTransaction },
-  } = useAppStatusStore();
+  } = useUserStore();
   const pendingApproval = useIsTokenApprovedSpender(erc1155Address, spender);
   const isApproved = useIsTokenApprovedForAll(erc1155Address, spender);
   // check the current approval status

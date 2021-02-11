@@ -841,6 +841,7 @@ export interface WindowApp extends Window {
   markets?: any;
   betslip?: any;
   trading?: any;
+  user?: any;
   pendingOrders?: any;
   showIndexedDbSize?: Function;
 }
@@ -1132,18 +1133,12 @@ export interface SeenPositionWarnings {
 }
 
 export interface AppStatusState {
-  loginAccount: LoginAccount;
   marketsViewSettings: {
     categories: string;
     reportingState: string;
     sortBy: string;
     currency: string;
   };
-  userInfo: {
-    activity: ActivityData[];
-    balances: UserBalances;
-  };
-  transactions: TransactionDetails[];
   paraConfig: ParaDeploys;
   isMobile: boolean;
   isLogged: boolean;
@@ -1151,9 +1146,6 @@ export interface AppStatusState {
   sidebarType: string;
   modal: Modal;
   settings: Settings;
-  seenPositionWarnings: {
-    [id: string]: SeenPositionWarnings;
-  }
 }
 
 export interface GraphDataState {
@@ -1168,6 +1160,16 @@ export interface GraphDataState {
   markets: {
     [marketIdKey: string]: MarketInfo;
   };
+}
+
+export interface UserState {
+  account: string;
+  balances: UserBalances;
+  loginAccount: LoginAccount;
+  seenPositionWarnings: {
+    [id: string]: SeenPositionWarnings;
+  }
+  transactions: TransactionDetails[];
 }
 
 export interface TransactionDetails {
