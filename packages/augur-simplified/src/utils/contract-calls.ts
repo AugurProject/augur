@@ -696,7 +696,7 @@ const populateClaimableWinnings = (finalizedMarkets: MarketInfos = {}, finalized
       const userShares = outcomeBalances?.positions.find(p => p.outcomeId === winningOutcome.id);
       if (userShares && new BN(userShares?.rawBalance).gt(0)) {
         const initValue = userShares.initCostCash; // get init CostCash
-        const claimableBalance = (new BN(userShares.balance).minus(new BN(initValue))).toFixed(4);
+        const claimableBalance = (new BN(userShares.balance).minus(new BN(initValue))).abs().toFixed(4);
         marketShares[amm.id].claimableWinnings = {
           claimableBalance,
           sharetoken: amm.cash.shareToken,

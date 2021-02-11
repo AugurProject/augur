@@ -9,7 +9,7 @@ import { NetworkMismatchBanner } from '../common/labels';
 import { EthIcon, UsdIcon } from '../common/icons';
 import { keyedObjToArray } from '../stores/utils';
 import { ETH, TX_STATUS, USDC } from '../constants';
-import { formatCashPrice } from '../../utils/format-number';
+import { formatCash, formatCashPrice } from '../../utils/format-number';
 import { createBigNumber } from '../../utils/create-big-number';
 import { claimWinnings } from '../../utils/contract-calls';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
@@ -107,7 +107,7 @@ export const ClaimWinningsSection = () => {
       {isLogged && USDCTotals.hasWinnings && (
         <PrimaryButton
           text={`Claim Winnings (${
-            formatCashPrice(USDCTotals.total, usdcCash?.name).full
+            formatCash(USDCTotals.total, usdcCash?.name).full
           })`}
           icon={UsdIcon}
           action={() => {
@@ -118,7 +118,7 @@ export const ClaimWinningsSection = () => {
       {isLogged && ETHTotals.hasWinnings && (
         <PrimaryButton
           text={`${canClaimETH ? '' : 'Approve to '}Claim Winnings (${
-            formatCashPrice(ETHTotals.total, ethCash?.name).full
+            formatCash(ETHTotals.total, ethCash?.name).full
           })`}
           icon={EthIcon}
           action={() => {

@@ -74,10 +74,10 @@ export function formatSimpleShares(num: NumStrBigNumber, opts: FormattedNumberOp
 }
 
 export function formatCashPrice(num: NumStrBigNumber, cashName: string, opts: FormattedNumberOptions = {}): FormattedNumber {
-  const { prepend, symbol } = getCashFormat(cashName);
+  const { prepend, symbol, displayDecimals } = getCashFormat(cashName);
   return formatNumber(num, {
-    decimals: 2,
-    decimalsRounded: 2,
+    decimals: displayDecimals,
+    decimalsRounded: displayDecimals,
     denomination: v => prepend ? `${symbol}${v}` : `${v} ${symbol}`,
     positiveSign: false,
     zeroStyled: false,
