@@ -239,10 +239,10 @@ export const estimateEnterTrade = async (
   const estimatedShares = convertOnChainSharesToDisplayShareAmount(breakdownWithFeeRaw, amm.cash.decimals);
   const tradeFees = String(estimatedShares.times(new BN(amm.feeDecimal)));
 
-  const averagePrice = new BN(inputDisplayAmount).div(new BN(estimatedShares)).toFixed(2);
+  const averagePrice = new BN(inputDisplayAmount).div(new BN(estimatedShares)).toFixed(4);
   const maxProfit = String(new BN(estimatedShares).minus(new BN(inputDisplayAmount)));
   const price = outputYesShares ? amm.priceYes : amm.priceNo;
-  const slippagePercent = (new BN(averagePrice).minus(price)).div(price).times(100).toFixed(2);
+  const slippagePercent = (new BN(averagePrice).minus(price)).div(price).times(100).toFixed(4);
   const ratePerCash = new BN(estimatedShares).div(new BN(inputDisplayAmount)).toFixed(6);
 
 
@@ -695,10 +695,7 @@ const populateClaimableWinnings = (finalizedMarkets: MarketInfos = {}, finalized
       const outcomeBalances = marketShares[amm.id];
       const userShares = outcomeBalances?.positions.find(p => p.outcomeId === winningOutcome.id);
       if (userShares && new BN(userShares?.rawBalance).gt(0)) {
-        // for yesNo and categoricals user would get 1 cash for each share
-        // TODO: figure out scalars when the time comes
         const initValue = userShares.initCostCash; // get init CostCash
-        console.log('init value', initValue, 'balance', userShares.balance);
         const claimableBalance = (new BN(userShares.balance).minus(new BN(initValue))).toFixed(4);
         marketShares[amm.id].claimableWinnings = {
           claimableBalance,
