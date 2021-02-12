@@ -50,7 +50,7 @@ import {
 } from './labels';
 import { useGraphDataStore } from '../stores/graph-data';
 import { useUserStore } from '../stores/user';
-import { useCanClaimETH } from '../stores/utils';
+import { useCanExitCashPosition } from '../stores/utils';
 
 interface PositionsTableProps {
   market: MarketInfo;
@@ -167,7 +167,7 @@ export const PositionFooter = ({
     loginAccount,
     actions: { addTransaction, updateTransaction },
   } = useUserStore();
-  const canClaimETH = useCanClaimETH();
+  const canClaimETH = useCanExitCashPosition(claimableWinnings?.sharetoken);
   const isETHClaim = amm?.cash?.name === ETH;
 
   const claim = () => {

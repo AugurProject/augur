@@ -1,9 +1,11 @@
-import { ETH } from '@augurproject/sdk-lite/build';
 import { useState, useEffect } from 'react';
-import { isERC1155ContractApproved } from '../hooks/use-approval-callback';
+import { APPROVED } from '../common/buttons';
+import {
+  checkAllowance,
+  isERC1155ContractApproved,
+} from '../hooks/use-approval-callback';
 import { MarketInfo } from '../types';
 import { PARA_CONFIG } from './constants';
-import { useGraphDataStore } from './graph-data';
 import { useUserStore } from './user';
 
 const isAsync = (obj) =>
@@ -65,21 +67,76 @@ export const arrayToKeyedObjectByProp = (ArrayOfObj: any[], prop: string) =>
     return acc;
   }, {});
 
-export function useCanClaimETH() {
-  const { cashes } = useGraphDataStore();
-  const { loginAccount, transactions, actions: { updateTransaction }} = useUserStore();
-  const [canClaimETH, setCanClaimETH] = useState(false);
-  const { addresses: { WethWrapperForAMMExchange } } = PARA_CONFIG;
-  const ethCash = keyedObjToArray(cashes).find((c) => c?.name === ETH);
-  useEffect(() => {
-    const checkCanEthExit = async() => {
-      const approvalCheck = await isERC1155ContractApproved(ethCash.shareToken, WethWrapperForAMMExchange, loginAccount, transactions, updateTransaction);
-      setCanClaimETH(Boolean(approvalCheck));
-    }
-    if (!!loginAccount?.account && !canClaimETH) {
-        checkCanEthExit();
-    }
-  }, [canClaimETH, setCanClaimETH, updateTransaction, transactions]);
+// CUSTOM HOOKS
 
-  return canClaimETH;
-};
+export function useCanExitCashPosition(shareToken) {
+  const {
+    account,
+    loginAccount,
+    transactions,
+    actions: { updateTransaction },
+  } = useUserStore();
+  const [canExitPosition, setCanExitPosition] = useState(false);
+  const {
+    addresses: { WethWrapperForAMMExchange },
+  } = PARA_CONFIG;
+  useEffect(() => {
+    const checkCanCashExit = async () => {
+      const approvalCheck = await isERC1155ContractApproved(
+        shareToken,
+        WethWrapperForAMMExchange,
+        loginAccount,
+        transactions,
+        updateTransaction
+      );
+      setCanExitPosition(Boolean(approvalCheck));
+    };
+    if (!!account && !canExitPosition) {
+      checkCanCashExit();
+    }
+  }, [
+    canExitPosition,
+    setCanExitPosition,
+    updateTransaction,
+    transactions,
+    account,
+  ]);
+
+  return canExitPosition;
+}
+
+export function useCanEnterCashPosition(cashAddress) {
+  const {
+    account,
+    loginAccount,
+    transactions,
+    actions: { updateTransaction },
+  } = useUserStore();
+  const [canEnterPosition, setCanEnterPosition] = useState(false);
+  const {
+    addresses: { AMMFactory },
+  } = PARA_CONFIG;
+  useEffect(() => {
+    const checkCanCashExit = async () => {
+      const approvalCheck = await checkAllowance(
+        cashAddress,
+        AMMFactory,
+        loginAccount,
+        transactions,
+        updateTransaction
+      );
+      setCanEnterPosition(approvalCheck === APPROVED);
+    };
+    if (!!account && !canEnterPosition) {
+      checkCanCashExit();
+    }
+  }, [
+    canEnterPosition,
+    setCanEnterPosition,
+    updateTransaction,
+    transactions,
+    account,
+  ]);
+
+  return canEnterPosition;
+}
