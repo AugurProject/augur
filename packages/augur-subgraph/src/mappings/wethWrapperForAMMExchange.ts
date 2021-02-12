@@ -63,7 +63,7 @@ export function wethWrapperHandleRemoveLiquidity(event: ExitPositionEvent): void
 }
 
 export function wethTradingProceedsClaimed(event: TradingProceedsClaimedEvent): void {
-  let id = event.transaction.hash.toHexString() + "-" + event.logIndex.minus(BigInt.fromI32(3)).toString();
+  let id = event.transaction.hash.toHexString() + "-" + event.logIndex.minus(BigInt.fromI32(4)).toString();
   let tradingProceedsClaimed = TradingProceedsClaimed.load(id);
   if(tradingProceedsClaimed == null) {
     return;
