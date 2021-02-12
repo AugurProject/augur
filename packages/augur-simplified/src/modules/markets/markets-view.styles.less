@@ -4,8 +4,9 @@
   .EmptyMessage;
 
   background: var(--simple-light-bg);
-  padding: @size-20 0;
+  padding: @size-20 @size-16;
   display: flex;
+  text-align: center;
   border-radius: @size-8;
 }
 
@@ -20,7 +21,7 @@
     display: flex;
     flex-flow: row nowrap;
     width: 100%;
-    margin: @size-40 0;
+    margin: @size-40 0 @size-16;
 
     > div {
       margin-right: @size-20;
@@ -45,19 +46,28 @@
     grid-template-columns: repeat(3, 1fr);
     flex: 1;
     margin-bottom: @size-40;
+    margin-top: @size-24;
+  }
+
+  > span {
+    margin-top: @size-24;
   }
 
   > div:last-of-type:not(:first-of-type) {
     justify-content: center;
   }
 
-  &.SearchOpen {
-    > ul {
-      margin-bottom: @size-16;
-    }
+  > div[class*='SearchInput'] {
+    overflow: hidden;
+    height: 0px;
+    transition: height 100ms ease-in-out, opacity 100ms ease-in-out;
+    opacity: 0;
+  }
 
+  &.SearchOpen {
     > div[class*='SearchInput'] {
-      margin-bottom: @size-24;
+      height: @size-56;
+      opacity: 1;
     }
   }
 }
@@ -74,6 +84,11 @@
     > section {
       grid-template-columns: 1fr 1fr;
       grid-gap: @size-16;
+      margin-top: @size-16;
+    }
+
+    > span {
+      margin-top: @size-16;
     }
 
     > div:nth-of-type(2) {
@@ -95,7 +110,9 @@
 }
 
 @media @breakpoint-mobile {
-  .MarketsView > section {
-    grid-template-columns: 1fr;
+  .MarketsView {
+    > section {
+      grid-template-columns: 1fr;
+    }
   }
 }

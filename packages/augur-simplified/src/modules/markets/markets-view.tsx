@@ -317,13 +317,11 @@ const MarketsView = () => {
           }}
         />
       </ul>
-      {showFilter && (
-        <SearchInput
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          clearValue={() => setFilter('')}
-        />
-      )}
+      <SearchInput
+        value={filter}
+        onChange={e => setFilter(e.target.value)}
+        clearValue={() => setFilter('')}
+      />
       {loading ? (
         <section>
           {new Array(PAGE_LIMIT).fill(null).map((m, index) => (
