@@ -856,6 +856,7 @@ const getInitPositionValues = (trades: UserTrades, amm: AmmExchange, isYesOutcom
   // sum up enters shares
   const sharesEntered = accumSharesPrice(trades.enters, isYesOutcome, account);
   const sharesExited = accumSharesPrice(trades.exits, isYesOutcome, account);
+  const sharesClaimed = accumClaimedShares(amm, isYesOutcome, account);
 
   // get shares from LP activity
   const sharesAddLiquidity = accumLpSharesAddPrice(amm.transactions, isYesOutcome, account);
@@ -866,16 +867,16 @@ const getInitPositionValues = (trades: UserTrades, amm: AmmExchange, isYesOutcom
 
   // liquidity has cash and cash for shares properties
   const allInputCashAmounts = sharesRemoveLiquidity.cashAmount.plus(sharesAddLiquidity.cashAmount).plus(sharesEntered.cashAmount);
-  const netCashAmounts = allInputCashAmounts.minus(sharesExited.cashAmount);
+  const netCashAmounts = allInputCashAmounts.minus(sharesExited.cashAmount).minus(sharesClaimed.cashAmount);
   const initCostCash = convertOnChainSharesToDisplayShareAmount(netCashAmounts, amm.cash.decimals);
   const cost = initCostCash.times(new BN(cashPrice));
 
   const allInputShareAmounts = sharesRemoveLiquidity.shares.plus(sharesAddLiquidity.shares).plus(sharesEntered.shares);
-  const netShareAmounts = allInputShareAmounts.minus(sharesExited.shares);
+  const netShareAmounts = allInputShareAmounts.minus(sharesExited.shares).minus(sharesClaimed.shares);
   const allCashShareAmounts = sharesRemoveLiquidity.cashAmount.plus(sharesAddLiquidity.cashAmount).plus(sharesEntered.cashAmount);
-  const avgPrice = netShareAmounts.gt(0) ? allCashShareAmounts.div(netShareAmounts) : new BN(0);
+  const avgPrice = (netShareAmounts.gt(0) ? allCashShareAmounts.div(netShareAmounts) : new BN(0)).toFixed(4);
 
-  return { avgPrice: String(avgPrice), initCostCash: String(initCostCash), initCostUsd: String(cost), positionFromLiquidity, positionFromRemoveLiquidity }
+  return { avgPrice: String(avgPrice), initCostCash: initCostCash.toFixed(4), initCostUsd: cost.toFixed(4), positionFromLiquidity, positionFromRemoveLiquidity }
 }
 
 const accumSharesPrice = (trades: AmmTransaction[], isYesOutcome: boolean, account: string): { shares: BigNumber, cashAmount: BigNumber } => {
@@ -919,6 +920,18 @@ const accumLpSharesRemovesPrice = (transactions: AmmTransaction[], isYesOutcome:
     }
     const cashValue = new BN(t.yesShareCashValue);
     return { shares: p.shares.plus(noShares), cashAmount: p.cashAmount.plus(new BN(cashValue)) }
+  },
+    { shares: new BN(0), cashAmount: new BN(0) });
+
+  return { shares: result.shares, cashAmount: result.cashAmount };
+}
+
+const accumClaimedShares = (amm: AmmExchange, isYesOutcome: boolean, account: string): { shares: BigNumber, cashAmount: BigNumber } => {
+  const shareToken = amm.cash.shareToken;
+  const claims = amm.market.claimedProceeds.filter(c => isSameAddress(c.shareToken, shareToken) && isSameAddress(c.user, account) && c.outcome === (isYesOutcome ? YES_OUTCOME_ID : NO_OUTCOME_ID) )
+  const result = claims.reduce((p, t) => {
+    const sharesClaimed = new BN(t.rawSharesClaimed);
+    return { shares: p.shares.plus(sharesClaimed), cashAmount: p.cashAmount.plus(new BN(sharesClaimed)) }
   },
     { shares: new BN(0), cashAmount: new BN(0) });
 
