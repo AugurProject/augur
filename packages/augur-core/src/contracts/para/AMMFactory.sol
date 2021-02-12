@@ -1,4 +1,5 @@
 pragma solidity 0.5.15;
+pragma experimental ABIEncoderV2;
 
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/libraries/CloneFactory2.sol';
@@ -9,9 +10,7 @@ import 'ROOT/para/interfaces/IAMMExchange.sol';
 import 'ROOT/para/interfaces/IParaShareToken.sol';
 import 'ROOT/balancer/BFactory.sol';
 import 'ROOT/balancer/BPool.sol';
-
-import 'ROOT/trading/erc20proxy1155/IERC20Proxy1155Nexus.sol';
-import 'ROOT/trading/erc20proxy1155/IERC20Proxy1155Nexus.sol';
+import 'ROOT/trading/wrappedShareToken/WrappedShareTokenFactoryFactory.sol';
 
 contract AMMFactory is IAMMFactory, CloneFactory2 {
     using SafeMathUint256 for uint256;
@@ -19,20 +18,22 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
     IAMMExchange internal proxyToClone;
     BFactory internal bFactory;
     IERC20Proxy1155Nexus internal erc20Proxy1155Nexus;
+    WrappedShareTokenFactoryFactory wrappedShareTokenFactoryFactory;
     mapping (address => address) public balancerPools;
 
-    event AMMCreated(IAMMExchange amm, IMarket market, ParaShareToken shareToken, uint256 fee, BPool bPool);
+    event AMMCreated(IAMMExchange amm, IMarket market, IParaShareToken shareToken, uint256 fee, BPool bPool);
     event BPoolCreated(IERC20Proxy1155 _invalidERC20Proxy1155);
 
-    constructor(address _proxyToClone, BFactory _bFactory, IERC20Proxy1155Nexus _erc20Proxy1155Nexus) public {
+    constructor(address _proxyToClone, BFactory _bFactory, IERC20Proxy1155Nexus _erc20Proxy1155Nexus, WrappedShareTokenFactoryFactory _wrappedShareTokenFactoryFactory) public {
         bFactory = _bFactory;
         erc20Proxy1155Nexus = _erc20Proxy1155Nexus;
         proxyToClone = IAMMExchange(_proxyToClone);
+        wrappedShareTokenFactoryFactory = _wrappedShareTokenFactoryFactory;
     }
 
     function addLiquidity(
         IMarket _market,
-        ParaShareToken _para,
+        IParaShareToken _para,
         uint256 _fee,
         uint256 _cash,
         address _recipient,
@@ -55,13 +56,14 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
 
     function addAMMWithLiquidity(
         IMarket _market,
-        ParaShareToken _para,
+        IParaShareToken _para,
         uint256 _fee,
         uint256 _cash,
         uint256 _ratioFactor,
         bool _keepLong,
-        address _recipient
-    ) external returns (address _ammAddress, uint256 _lpTokens) {
+        address _recipient,
+        string[] memory _symbols
+    ) public returns (address _ammAddress, uint256 _lpTokens) {
         // User sends cash to factory, which turns cash into LP tokens and shares which it gives to the user.
         _para.cash().transferFrom(msg.sender, address(this), _cash);
         _para.setApprovalForAll(address(erc20Proxy1155Nexus), true);
@@ -88,7 +90,7 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
     // This method assumes cash has already been transfer to the factory.
     function addLiquidityToBPool(
         IMarket _market,
-        ParaShareToken _para,
+        IParaShareToken _para,
         BPool _bPool,
         uint256 _cashToInvalidPool,
         address _recipient
@@ -125,7 +127,7 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         _bPool.transfer(_recipient, _lpTokenOut);
     }
 
-    function createAMM(IMarket _market, ParaShareToken _para, uint256 _fee) private returns (IAMMExchange _amm) {
+    function createAMM(IMarket _market, IParaShareToken _para, uint256 _fee) private returns (IAMMExchange _amm) {
         uint256 _numTicks = _market.getNumTicks();
         address _ammAddress = createClone2(address(proxyToClone), salt(_market, _para, _fee));
 
@@ -134,7 +136,7 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         exchanges[address(_market)][address(_para)][_fee] = _ammAddress;
     }
 
-    function createBPool(address _ammAddress, ParaShareToken _para, IMarket _market, uint256 _fee, address _recipient) private returns (BPool _bPool){
+    function createBPool(address _ammAddress, IParaShareToken _para, IMarket _market, uint256 _fee, address _recipient) private returns (BPool _bPool){
         _bPool = bFactory.newBPool();
 
         IERC20Proxy1155 _invalidERC20Proxy1155 = erc20Proxy1155Nexus.newERC20(_para.getTokenId(_market, 0));
@@ -176,7 +178,7 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
 
     function transferCash(
         IMarket _market,
-        ParaShareToken _para,
+        IParaShareToken _para,
         uint256 _fee,
         address _sender,
         address _recipient,
@@ -194,7 +196,7 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
 
     function shareTransfer(
         IMarket _market,
-        ParaShareToken _para,
+        IParaShareToken _para,
         uint256 _fee,
         address _from,
         address _to,
@@ -249,12 +251,12 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         return true;
     }
 
-    function calculateAMMAddress(IMarket _market, ParaShareToken _para, uint256 _fee) public view returns (address) {
+    function calculateAMMAddress(IMarket _market, IParaShareToken _para, uint256 _fee) public view returns (address) {
         return clone2Address(address(proxyToClone), salt(_market, _para, _fee), address(this));
     }
 
 
-    function salt(IMarket _market, ParaShareToken _para, uint256 _fee) public pure returns (uint256) {
+    function salt(IMarket _market, IParaShareToken _para, uint256 _fee) public pure returns (uint256) {
         return uint256(keccak256(abi.encodePacked(_market, _para, _fee)));
     }
 }

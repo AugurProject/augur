@@ -19,26 +19,29 @@ contract WrappedShareToken is ERC20, ERC1155Receiver {
     IERC20 public cash;
     address public owner;
 
+    string public symbol;
+
     /**
      * @dev sets values for
      * transaction without giving individual approvals
      * @param _shareToken address of shareToken for which this wrapper is for
      * @param _cash DAI
      * @param _tokenId id of market outcome this wrapper is for
-     * @param _name a descriptive name mentioning market and outcome
      * @param _symbol symbol
      */
     constructor(
         IParaShareToken _shareToken,
         IERC20 _cash,
         uint256 _tokenId,
-        string memory _name,
-        string memory _symbol
+        string memory _symbol,
+        uint8 _decimals
     ) public {
         owner = msg.sender;
         tokenId = _tokenId;
         shareToken = _shareToken;
         cash = _cash;
+        decimals = _decimals;
+        symbol = _symbol;
     }
 
     /**@dev A function that gets ERC1155s and mints ERC20s

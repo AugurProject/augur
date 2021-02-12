@@ -16,12 +16,12 @@ contract WrappedShareTokenFactory {
 
     mapping(uint256 => address) public wrappers;
 
-    event WrapperCreated(uint256 indexed tokenId, address tokenAddress);
+    event WrapperCreated(uint256 indexed tokenId, address tokenAddress, string symbol);
 
     /**@dev sets value for {shareToken} and {cash}
      * @param _shareToken address of shareToken associated with a augur universe
      */
-    constructor(IParaShareToken _shareToken, IERC20 _cash) public {
+    constructor(IParaShareToken _shareToken) public {
         shareToken = _shareToken;
         cash = _shareToken.cash();
     }
@@ -39,15 +39,16 @@ contract WrappedShareTokenFactory {
         uint8 _decimals
     ) public {
         require(wrappers[_tokenId] == address(0), "Wrapper already created");
+        // @todo: Use create2 here.
         WrappedShareToken WrappedShareToken = new WrappedShareToken(
             shareToken,
             cash,
             _tokenId,
-            _name,
-            _symbol
+            _symbol,
+            shareToken.cash().decimals()
         );
         wrappers[_tokenId] = address(WrappedShareToken);
-        emit WrapperCreated(_tokenId, address(WrappedShareToken));
+        emit WrapperCreated(_tokenId, address(WrappedShareToken), _symbol);
     }
 
     /**@dev creates new ERC20 wrappers for multiple tokenIds*/

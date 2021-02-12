@@ -1,4 +1,5 @@
 pragma solidity 0.5.15;
+pragma experimental ABIEncoderV2;
 
 import 'ROOT/reporting/IMarket.sol';
 import "ROOT/para/interfaces/IAMMExchange.sol";
@@ -9,7 +10,7 @@ import 'ROOT/para/interfaces/IParaShareToken.sol';
 
 contract WethWrapperForAMMExchange {
     IAMMFactory public factory;
-    ParaShareToken public shareToken; // WETH para share token
+    IParaShareToken public shareToken; // WETH para share token
     WETH9 public weth;
 
     uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
@@ -22,7 +23,7 @@ contract WethWrapperForAMMExchange {
     // For WETH integration, since weth.withdraw() causes ETH to be sent here.
     function() external payable {}
 
-    constructor(IAMMFactory _factory, ParaShareToken _shareToken) public {
+    constructor(IAMMFactory _factory, IParaShareToken _shareToken) public {
         factory = _factory;
         shareToken = _shareToken;
         weth = WETH9(address(uint160(address(_shareToken.cash()))));
@@ -36,8 +37,9 @@ contract WethWrapperForAMMExchange {
         uint256 _fee,
         uint256 _ratioFactor,
         bool _keepLong,
-        address _recipient
-    ) public payable returns (address _ammAddress, uint256 _lpTokens) {
+        address _recipient,
+        string[] calldata _symbols
+    ) external payable returns (address _ammAddress, uint256 _lpTokens) {
         weth.deposit.value(msg.value)();
         return factory.addAMMWithLiquidity(
             _market,
@@ -46,7 +48,8 @@ contract WethWrapperForAMMExchange {
             msg.value,
             _ratioFactor,
             _keepLong,
-            _recipient
+            _recipient,
+            _symbols
         );
     }
 

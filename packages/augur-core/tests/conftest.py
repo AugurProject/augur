@@ -422,7 +422,7 @@ class ContractsFixture:
                 if name == 'ReputationTokenFactory': continue # In testing and development we use the TestNetReputationTokenFactory which lets us faucet
                 if name == 'Cash': continue # We upload the Test Dai contracts manually after this process
 
-                if name in ['ParaDeployer', 'ParaAugur', 'FeePot', 'ParaUniverse', 'ParaAugurTrading','AMMExchange', 'AMMFactory', 'ParaShareToken', 'ParaZeroXTrade', 'OINexus', 'WrappedShareTokenFactory', 'WrappedShareToken']: continue # We upload ParaAugur explicitly and the others are generated via contract
+                if name in ['ParaDeployer', 'ParaAugur', 'FeePot', 'ParaUniverse', 'ParaAugurTrading','AMMExchange', 'AMMFactory', 'ParaShareToken', 'ParaZeroXTrade', 'OINexus', 'WrappedShareTokenFactoryFactory', 'WrappedShareTokenFactory', 'WrappedShareToken']: continue # We upload ParaAugur explicitly and the others are generated via contract
                 if name in ['IAugur', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IInitialReporter']: continue # Don't compile interfaces or libraries
                 # TODO these four are necessary for test_universe but break everything else
                 # if name == 'MarketFactory': continue # tests use mock
@@ -454,8 +454,8 @@ class ContractsFixture:
     def uploadAMMContracts(self):
         b_factory = self.upload("../src/contracts/balancer/BFactory.sol")
         masterProxy = self.upload('../src/contracts/para/AMMExchange.sol')
-        eRC20Proxy1155Nexus = self.upload('../src/contracts/trading/erc20proxy1155/ERC20Proxy1155Nexus.sol')
-        self.upload('../src/contracts/para/AMMFactory.sol', constructorArgs=[masterProxy.address, b_factory.address, eRC20Proxy1155Nexus.address])
+        wrappedShareTokenFactoryFactory = self.upload("../src/contracts/trading/wrappedShareToken/WrappedShareTokenFactoryFactory.sol")
+        self.upload('../src/contracts/para/AMMFactory.sol', constructorArgs=[masterProxy.address, b_factory.address, wrappedShareTokenFactoryFactory.address])
 
     def uploadWethWrappedAmm(self, factory, shareToken):
         return self.upload("../src/contracts/para/WethWrapperForAMMExchange.sol", constructorArgs=[factory.address, shareToken.address])
