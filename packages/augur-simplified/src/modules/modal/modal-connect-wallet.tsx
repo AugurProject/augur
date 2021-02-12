@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import { Header } from './common';
 import Styles from './modal.styles.less';
 import { SecondaryButton, TextButton, WalletButton } from '../common/buttons';
@@ -6,7 +6,7 @@ import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { SUPPORTED_WALLETS } from '../ConnectAccount/constants';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import { injected, portis } from '../ConnectAccount/connectors';
+import {injected, NETWORK_CHAIN_ID, portis} from '../ConnectAccount/connectors';
 import MetamaskIcon from '../ConnectAccount/assets/metamask.png';
 import { ErrorBlock } from '../common/labels';
 import Loader from '../ConnectAccount/components/Loader';
@@ -15,6 +15,7 @@ import { useAppStatusStore } from '../stores/app-status';
 import classNames from 'classnames';
 import { MODAL_CONNECT_WALLET } from '../constants';
 import { useUserStore } from '../stores/user';
+import {NETWORK_NAMES} from 'modules/stores/constants';
 
 const WALLET_VIEWS = {
   OPTIONS: 'options',
@@ -388,7 +389,7 @@ const ModalConnectWallet = ({
             <ErrorBlock
               text={
                 error instanceof UnsupportedChainIdError
-                  ? 'Please connect to the appropriate Ethereum network.'
+                  ? `Please connect your wallet to the ${NETWORK_NAMES[NETWORK_CHAIN_ID]} Ethereum network and refresh the page.`
                   : 'Error connecting. Try refreshing the page.'
               }
             />

@@ -121,7 +121,7 @@ const ConnectAccountButton = ({
       ...buttonProps,
       className: ButtonStyles.Error,
       text:
-        error instanceof UnsupportedChainIdError ? 'Wrong Network' : 'Error',
+        error instanceof UnsupportedChainIdError ? 'Unsupported Network' : 'Error',
       icon: <NetworkIcon />,
     };
   }

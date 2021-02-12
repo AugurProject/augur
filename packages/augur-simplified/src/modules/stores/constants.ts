@@ -137,3 +137,11 @@ export const APP_STATUS_ACTIONS = {
 export const MOCK_APP_STATUS_STATE = {
   ...DEFAULT_APP_STATUS_STATE,
 };
+
+export const NETWORK_NAMES = {
+  1: 'Mainnet',
+  3: 'Ropsten',
+  4: 'Rinkeby',
+  5: 'Goerli',
+  42: 'Kovan'
+};
