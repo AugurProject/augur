@@ -30338,6 +30338,19 @@
 			"type": "event"
 		},
 		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"internalType": "address",
+					"name": "sender",
+					"type": "address"
+				}
+			],
+			"name": "TradingProceedsClaimed",
+			"type": "event"
+		},
+		{
 			"payable": true,
 			"stateMutability": "payable",
 			"type": "fallback"

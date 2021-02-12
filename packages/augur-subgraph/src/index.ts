@@ -63,7 +63,8 @@ export {
   wethWrapperHandleAddLiquidity,
   wethWrapperHandleEnterPosition,
   wethWrapperHandleExitPosition,
-  wethWrapperHandleRemoveLiquidity
+  wethWrapperHandleRemoveLiquidity,
+  wethTradingProceedsClaimed
 } from './mappings/wethWrapperForAMMExchange';
 
 export {

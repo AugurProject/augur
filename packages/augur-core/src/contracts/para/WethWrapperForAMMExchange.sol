@@ -18,6 +18,7 @@ contract WethWrapperForAMMExchange {
     event EnterPosition(address amm, address sender);
     event ExitPosition(address amm, address sender);
     event RemoveLiquidity(address amm, address sender);
+    event TradingProceedsClaimed(address sender);
 
     // For WETH integration, since weth.withdraw() causes ETH to be sent here.
     function() external payable {}
@@ -171,6 +172,7 @@ contract WethWrapperForAMMExchange {
 
         // Turn em' in.
         shareToken.claimTradingProceeds(_market, address(this), _fingerprint);
+        emit TradingProceedsClaimed(msg.sender);
 
         // Unwrap weth
         uint _balance = weth.balanceOf(address(this));
@@ -212,6 +214,7 @@ contract WethWrapperForAMMExchange {
 
                 // Turn em' in.
                 shareToken.claimTradingProceeds(_markets[i], address(this), _fingerprint);
+                emit TradingProceedsClaimed(msg.sender);
             } else {
                 _shareTokens[i].claimTradingProceeds(_markets[i], _shareHolder, _fingerprint);
             }

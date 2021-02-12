@@ -31,6 +31,7 @@ import { FormattedNumber, MarketInfo } from '../types';
 import { useGraphDataStore } from '../stores/graph-data';
 import { PARA_CONFIG } from '../stores/constants';
 import { useUserStore } from '../stores/user';
+import {UnsupportedChainIdError, useWeb3React} from '@web3-react/core';
 
 interface ValueLabelProps {
   large?: boolean;
@@ -360,12 +361,9 @@ export const ErrorBlock = ({ text }) => {
 };
 
 export const NetworkMismatchBanner = () => {
-  const {
-    errors
-  } = useGraphDataStore();
-  const {
-    loginAccount
-  } = useUserStore();
+  const { errors } = useGraphDataStore();
+  const { loginAccount } = useUserStore();
+  const { error } = useWeb3React();
   const { networkId } = PARA_CONFIG;
   const location = useLocation();
   const path = parsePath(location.pathname)[0];
@@ -375,18 +373,19 @@ export const NetworkMismatchBanner = () => {
     [chainId, networkId]
   );
   const isGraphError = !!errors;
+  const unsupportedChainIdError = error && error instanceof UnsupportedChainIdError;
 
   useEffect(() => {
     // in the event of an error, scroll to top to force banner to be seen.
-    if (isNetworkMismatch || isGraphError) {
+    if (isNetworkMismatch || isGraphError || unsupportedChainIdError) {
       document.getElementById('mainContent')?.scrollTo(0, 0);
       window.scrollTo(0, 1);
     }
-  }, [isNetworkMismatch, isGraphError]);
+  }, [isNetworkMismatch, isGraphError, unsupportedChainIdError]);
 
   return (
     <>
-      {isNetworkMismatch && (
+      {(isNetworkMismatch || unsupportedChainIdError) && (
         <article
           className={classNames(Styles.NetworkMismatch, {
             [Styles.Market]: path === MARKET,

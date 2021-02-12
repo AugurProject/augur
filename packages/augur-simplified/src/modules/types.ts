@@ -195,6 +195,7 @@ export interface ClaimedProceeds {
   user: string;
   outcome: number;
   winnings: string;
+  rawSharesClaimed: string;
   fees: string;
   timestamp: number;
   cash: Cash;

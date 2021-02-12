@@ -9,7 +9,7 @@ import { NetworkMismatchBanner } from '../common/labels';
 import { EthIcon, UsdIcon } from '../common/icons';
 import { keyedObjToArray } from '../stores/utils';
 import { ETH, TX_STATUS, USDC } from '../constants';
-import { formatCash, formatCashPrice } from '../../utils/format-number';
+import { formatCash } from '../../utils/format-number';
 import { createBigNumber } from '../../utils/create-big-number';
 import { claimWinnings } from '../../utils/contract-calls';
 import { updateTxStatus } from '../modal/modal-add-liquidity';

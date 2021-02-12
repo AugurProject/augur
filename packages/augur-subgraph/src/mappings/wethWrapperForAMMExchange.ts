@@ -4,11 +4,13 @@ import {
   EnterPosition,
   ExitPosition,
   RemoveLiquidity,
+  TradingProceedsClaimed
 } from '../../generated/schema';
 import {
   AddLiquidity as AddLiquidityEvent,
   EnterPosition as EnterPositionEvent,
   ExitPosition as ExitPositionEvent,
+  TradingProceedsClaimed as TradingProceedsClaimedEvent,
 } from '../../generated/WethWrapperForAMMExchange/WethWrapperForAMMExchange';
 import { getOrCreateUser } from '../utils/helpers';
 
@@ -58,4 +60,16 @@ export function wethWrapperHandleRemoveLiquidity(event: ExitPositionEvent): void
   getOrCreateUser(event.params.sender.toHexString());
   removeLiquidity.sender = event.params.sender.toHexString();
   removeLiquidity.save();
+}
+
+export function wethTradingProceedsClaimed(event: TradingProceedsClaimedEvent): void {
+  let id = event.transaction.hash.toHexString() + "-" + event.logIndex.minus(BigInt.fromI32(3)).toString();
+  let tradingProceedsClaimed = TradingProceedsClaimed.load(id);
+  if(tradingProceedsClaimed == null) {
+    return;
+  }
+
+  getOrCreateUser(event.params.sender.toHexString());
+  tradingProceedsClaimed.sender = event.params.sender.toHexString();
+  tradingProceedsClaimed.save();
 }
