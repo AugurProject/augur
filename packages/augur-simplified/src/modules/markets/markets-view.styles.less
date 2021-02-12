@@ -59,6 +59,16 @@
 
   > div[class*='SearchInput'] {
     overflow: hidden;
+    height: 0px;
+    transition: height 100ms ease-in-out, opacity 100ms ease-in-out;
+    opacity: 0;
+  }
+
+  &.SearchOpen {
+    > div[class*='SearchInput'] {
+      height: @size-56;
+      opacity: 1;
+    }
   }
 }
 

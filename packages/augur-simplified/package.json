@@ -76,7 +76,6 @@
     "postcss-safe-parser": "5.0.2",
     "prompts": "2.4.0",
     "react": "^17.0.1",
-    "react-animate-height": "^2.0.23",
     "react-apollo": "^3.1.5",
     "react-app-polyfill": "^2.0.0",
     "react-dev-utils": "^11.0.1",
