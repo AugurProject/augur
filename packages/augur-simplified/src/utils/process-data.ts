@@ -214,7 +214,7 @@ const shapeMarketInfo = (
         id: t.id,
         shareToken: t.shareToken.id,
         user: t.sender.id,
-        outcome: t.outcome,
+        outcome: Number(t.outcome),
         rawSharesClaimed: t.numPayoutTokens,
         fees: String(
           convertOnChainCashAmountToDisplayCashAmount(t.fees, cash.decimals)
