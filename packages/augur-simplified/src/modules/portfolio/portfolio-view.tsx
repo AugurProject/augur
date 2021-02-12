@@ -7,16 +7,14 @@ import { useAppStatusStore } from '../stores/app-status';
 import { PrimaryButton } from '../common/buttons';
 import { NetworkMismatchBanner } from '../common/labels';
 import { EthIcon, UsdIcon } from '../common/icons';
-import { keyedObjToArray } from '../stores/utils';
+import { keyedObjToArray, useCanExitCashPosition } from '../stores/utils';
 import { ETH, TX_STATUS, USDC } from '../constants';
 import { formatCash } from '../../utils/format-number';
 import { createBigNumber } from '../../utils/create-big-number';
 import { claimWinnings } from '../../utils/contract-calls';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
-import { isERC1155ContractApproved } from '../hooks/use-approval-callback';
 import { useGraphDataStore } from '../stores/graph-data';
 import { useUserStore } from '../stores/user';
-import { PARA_CONFIG } from '../stores/constants';
 const TABLES = 'TABLES';
 const ACTIVITY = 'ACTIVITY';
 
@@ -64,6 +62,8 @@ const handleClaimAll = (loginAccount, cash, marketIds, addTransaction, updateTra
   }
 }
 
+
+
 export const ClaimWinningsSection = () => {
   const {
     isLogged,
@@ -71,7 +71,6 @@ export const ClaimWinningsSection = () => {
   const {
     balances: { marketShares },
     loginAccount,
-    transactions,
     actions: { addTransaction, updateTransaction },
   } = useUserStore();
   const { cashes } = useGraphDataStore();
@@ -89,18 +88,7 @@ export const ClaimWinningsSection = () => {
   );
   const ETHTotals = calculateTotalWinnings(claimableEthMarkets);
   const USDCTotals = calculateTotalWinnings(claimableUSDCMarkets);
-  const { addresses: { WethWrapperForAMMExchange } } = PARA_CONFIG;
-  const [canClaimETH, setCanClaimETH] = useState(false);
-
-  useEffect(() => {
-    const checkCanEthExit = async() => {
-      const approvalCheck = await isERC1155ContractApproved(ethCash.shareToken, WethWrapperForAMMExchange, loginAccount, transactions, updateTransaction);
-      setCanClaimETH(Boolean(approvalCheck));
-    }
-    if (isLogged && !canClaimETH && ETHTotals.hasWinnings) {
-        checkCanEthExit();
-    }
-  }, [isLogged, canClaimETH, setCanClaimETH, updateTransaction, transactions]);
+  const canClaimETH = useCanExitCashPosition(ethCash.shareToken);
 
   return (
     <div className={Styles.ClaimableWinningsSection}>
