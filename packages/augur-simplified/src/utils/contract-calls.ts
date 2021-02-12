@@ -848,8 +848,6 @@ const accumLpSharesAmounts = (transactions: AmmTransaction[], account: string): 
   return String(adds.minus(removed));
 }
 
-const showShares = (label, sharesObj) => console.log(label, String(sharesObj.shares), String(sharesObj.cashAmount))
-
 // TODO: isYesOutcome is for convenience, down the road, outcome index will be used.
 const getInitPositionValues = (trades: UserTrades, amm: AmmExchange, isYesOutcome: boolean, account: string): { avgPrice: string, initCostCash: string, initCostUsd: string, positionFromLiquidity: boolean, positionFromRemoveLiquidity: boolean } => {
   // if cash price not available show zero for costs
@@ -877,13 +875,6 @@ const getInitPositionValues = (trades: UserTrades, amm: AmmExchange, isYesOutcom
   const netShareAmounts = allInputShareAmounts.minus(sharesExited.shares).minus(sharesClaimed.shares);
   const allCashShareAmounts = sharesRemoveLiquidity.cashAmount.plus(sharesAddLiquidity.cashAmount).plus(sharesEntered.cashAmount);
   const avgPrice = (netShareAmounts.gt(0) ? allCashShareAmounts.div(netShareAmounts) : new BN(0)).toFixed(4);
-
-  console.log(amm?.cash?.name);
-  showShares('sharesEntered', sharesEntered);
-  showShares('sharesExited', sharesExited);
-  showShares('sharesClaimed', sharesClaimed);
-  console.log('avg', avgPrice, 'initCostCash', initCostCash.toFixed(4), 'cost', cost.toFixed(4))
-  console.log(amm.marketId)
 
   return { avgPrice: String(avgPrice), initCostCash: initCostCash.toFixed(4), initCostUsd: cost.toFixed(4), positionFromLiquidity, positionFromRemoveLiquidity }
 }
