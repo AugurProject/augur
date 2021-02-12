@@ -853,34 +853,34 @@ const getInitPositionValues = (trades: UserTrades, amm: AmmExchange, isYesOutcom
   // if cash price not available show zero for costs
   const cashPrice = amm.cash?.usdPrice ? amm.cash?.usdPrice : "0";
 
-  // sum up enters shares
-  const sharesEntered = accumSharesPrice(trades.enters, isYesOutcome, account);
-  const sharesExited = accumSharesPrice(trades.exits, isYesOutcome, account);
-  const sharesClaimed = accumClaimedShares(amm, isYesOutcome, account);
+  // sum up trades shares
+  const claimTimestamp = lastClaimTimestamp(amm, isYesOutcome, account);
+  const sharesEntered = accumSharesPrice(trades.enters, isYesOutcome, account, claimTimestamp);
+  const sharesExited = accumSharesPrice(trades.exits, isYesOutcome, account, claimTimestamp);
 
   // get shares from LP activity
-  const sharesAddLiquidity = accumLpSharesAddPrice(amm.transactions, isYesOutcome, account);
-  const sharesRemoveLiquidity = accumLpSharesRemovesPrice(amm.transactions, isYesOutcome, account);
+  const sharesAddLiquidity = accumLpSharesAddPrice(amm.transactions, isYesOutcome, account, claimTimestamp);
+  const sharesRemoveLiquidity = accumLpSharesRemovesPrice(amm.transactions, isYesOutcome, account, claimTimestamp);
 
   const positionFromLiquidity = sharesAddLiquidity.shares.gt(new BN(0));
   const positionFromRemoveLiquidity = sharesRemoveLiquidity.shares.gt(new BN(0));
 
   // liquidity has cash and cash for shares properties
   const allInputCashAmounts = sharesRemoveLiquidity.cashAmount.plus(sharesAddLiquidity.cashAmount).plus(sharesEntered.cashAmount);
-  const netCashAmounts = allInputCashAmounts.minus(sharesExited.cashAmount).minus(sharesClaimed.cashAmount);
+  const netCashAmounts = allInputCashAmounts.minus(sharesExited.cashAmount);
   const initCostCash = convertOnChainSharesToDisplayShareAmount(netCashAmounts, amm.cash.decimals);
   const cost = initCostCash.times(new BN(cashPrice));
 
   const allInputShareAmounts = sharesRemoveLiquidity.shares.plus(sharesAddLiquidity.shares).plus(sharesEntered.shares);
-  const netShareAmounts = allInputShareAmounts.minus(sharesExited.shares).minus(sharesClaimed.shares);
+  const netShareAmounts = allInputShareAmounts.minus(sharesExited.shares);
   const allCashShareAmounts = sharesRemoveLiquidity.cashAmount.plus(sharesAddLiquidity.cashAmount).plus(sharesEntered.cashAmount);
   const avgPrice = (netShareAmounts.gt(0) ? allCashShareAmounts.div(netShareAmounts) : new BN(0)).toFixed(4);
 
   return { avgPrice: String(avgPrice), initCostCash: initCostCash.toFixed(4), initCostUsd: cost.toFixed(4), positionFromLiquidity, positionFromRemoveLiquidity }
 }
 
-const accumSharesPrice = (trades: AmmTransaction[], isYesOutcome: boolean, account: string): { shares: BigNumber, cashAmount: BigNumber } => {
-  const result = trades.filter(t => isSameAddress(t.sender, account) && isYesOutcome ? t.yesShares !== "0" : t.noShares !== "0").reduce((p, t) =>
+const accumSharesPrice = (trades: AmmTransaction[], isYesOutcome: boolean, account: string, cutOffTimestamp: number): { shares: BigNumber, cashAmount: BigNumber } => {
+  const result = trades.filter(t => isSameAddress(t.sender, account) && (isYesOutcome ? t.yesShares !== "0" : t.noShares !== "0") && Number(t.timestamp) > cutOffTimestamp).reduce((p, t) =>
     isYesOutcome ?
       { shares: p.shares.plus(new BN(t.yesShares)), cashAmount: p.cashAmount.plus((new BN(t.yesShares).times(t.price))) } :
       { shares: p.shares.plus(new BN(t.noShares)), cashAmount: p.cashAmount.plus((new BN(t.noShares).times(t.price))) },
@@ -889,8 +889,8 @@ const accumSharesPrice = (trades: AmmTransaction[], isYesOutcome: boolean, accou
   return { shares: result.shares, cashAmount: result.cashAmount };
 }
 
-const accumLpSharesAddPrice = (transactions: AmmTransaction[], isYesOutcome: boolean, account: string): { shares: BigNumber, cashAmount: BigNumber } => {
-  const result = transactions.filter(t => isSameAddress(t.sender, account) && (t.tx_type === TransactionTypes.ADD_LIQUIDITY)).reduce((p, t) => {
+const accumLpSharesAddPrice = (transactions: AmmTransaction[], isYesOutcome: boolean, account: string, cutOffTimestamp: number): { shares: BigNumber, cashAmount: BigNumber } => {
+  const result = transactions.filter(t => isSameAddress(t.sender, account) && (t.tx_type === TransactionTypes.ADD_LIQUIDITY) && Number(t.timestamp) > cutOffTimestamp).reduce((p, t) => {
     const yesShares = new BN(t.yesShares);
     const noShares = new BN(t.noShares);
     const cashValue = new BN(t.cash).minus(new BN(t.cashValue));
@@ -909,8 +909,8 @@ const accumLpSharesAddPrice = (transactions: AmmTransaction[], isYesOutcome: boo
   return { shares: result.shares, cashAmount: result.cashAmount };
 }
 
-const accumLpSharesRemovesPrice = (transactions: AmmTransaction[], isYesOutcome: boolean, account: string): { shares: BigNumber, cashAmount: BigNumber } => {
-  const result = transactions.filter(t => isSameAddress(t.sender, account) && (t.tx_type === TransactionTypes.REMOVE_LIQUIDITY)).reduce((p, t) => {
+const accumLpSharesRemovesPrice = (transactions: AmmTransaction[], isYesOutcome: boolean, account: string, cutOffTimestamp: number): { shares: BigNumber, cashAmount: BigNumber } => {
+  const result = transactions.filter(t => isSameAddress(t.sender, account) && (t.tx_type === TransactionTypes.REMOVE_LIQUIDITY) && Number(t.timestamp) > cutOffTimestamp).reduce((p, t) => {
     const yesShares = new BN(t.yesShares);
     const noShares = new BN(t.noShares);
 
@@ -926,16 +926,10 @@ const accumLpSharesRemovesPrice = (transactions: AmmTransaction[], isYesOutcome:
   return { shares: result.shares, cashAmount: result.cashAmount };
 }
 
-const accumClaimedShares = (amm: AmmExchange, isYesOutcome: boolean, account: string): { shares: BigNumber, cashAmount: BigNumber } => {
+const lastClaimTimestamp = (amm: AmmExchange, isYesOutcome: boolean, account: string): number => {
   const shareToken = amm.cash.shareToken;
   const claims = amm.market.claimedProceeds.filter(c => isSameAddress(c.shareToken, shareToken) && isSameAddress(c.user, account) && c.outcome === (isYesOutcome ? YES_OUTCOME_ID : NO_OUTCOME_ID) )
-  const result = claims.reduce((p, t) => {
-    const sharesClaimed = new BN(t.rawSharesClaimed);
-    return { shares: p.shares.plus(sharesClaimed), cashAmount: p.cashAmount.plus(new BN(sharesClaimed)) }
-  },
-    { shares: new BN(0), cashAmount: new BN(0) });
-
-  return { shares: result.shares, cashAmount: result.cashAmount };
+  return claims.reduce((p, c) => Number(c.timestamp) > p ? Number(c.timestamp) : p, 0);
 }
 
 const getEthBalance = async (provider: Web3Provider, cashes: Cashes, account: string): Promise<CurrencyBalance> => {
