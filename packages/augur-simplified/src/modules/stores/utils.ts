@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { APPROVED } from '../common/buttons';
+import { ETH } from '../constants';
 import {
   checkAllowance,
   isERC1155ContractApproved,
@@ -105,7 +106,7 @@ export function useCanExitCashPosition(shareToken) {
   return canExitPosition;
 }
 
-export function useCanEnterCashPosition(cashAddress) {
+export function useCanEnterCashPosition(cashAddress, cashName) {
   const {
     account,
     loginAccount,
@@ -117,7 +118,7 @@ export function useCanEnterCashPosition(cashAddress) {
     addresses: { AMMFactory },
   } = PARA_CONFIG;
   useEffect(() => {
-    const checkCanCashExit = async () => {
+    const checkCanCashEnter = async () => {
       const approvalCheck = await checkAllowance(
         cashAddress,
         AMMFactory,
@@ -127,8 +128,10 @@ export function useCanEnterCashPosition(cashAddress) {
       );
       setCanEnterPosition(approvalCheck === APPROVED);
     };
+    // ETH amms don't need approaval to buy
+    if (cashName === ETH) return setCanEnterPosition(true)
     if (!!account && !canEnterPosition && !!cashAddress) {
-      checkCanCashExit();
+      checkCanCashEnter();
     }
   }, [
     canEnterPosition,
