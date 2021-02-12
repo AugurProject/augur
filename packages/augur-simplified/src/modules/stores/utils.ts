@@ -4,8 +4,9 @@ import {
   checkAllowance,
   isERC1155ContractApproved,
 } from '../hooks/use-approval-callback';
-import { MarketInfo } from '../types';
+import { Cash, MarketInfo } from '../types';
 import { PARA_CONFIG } from './constants';
+import { ETH } from '../constants';
 import { useUserStore } from './user';
 
 const isAsync = (obj) =>
@@ -105,21 +106,21 @@ export function useCanExitCashPosition(shareToken) {
   return canExitPosition;
 }
 
-export function useCanEnterCashPosition(cashAddress) {
+export function useCanEnterCashPosition({ name, address }: Cash) {
   const {
     account,
     loginAccount,
     transactions,
     actions: { updateTransaction },
   } = useUserStore();
-  const [canEnterPosition, setCanEnterPosition] = useState(false);
+  const [canEnterPosition, setCanEnterPosition] = useState(name === ETH);
   const {
     addresses: { AMMFactory },
   } = PARA_CONFIG;
   useEffect(() => {
-    const checkCanCashExit = async () => {
+    const checkCanCashEnter = async () => {
       const approvalCheck = await checkAllowance(
-        cashAddress,
+        address,
         AMMFactory,
         loginAccount,
         transactions,
@@ -127,8 +128,8 @@ export function useCanEnterCashPosition(cashAddress) {
       );
       setCanEnterPosition(approvalCheck === APPROVED);
     };
-    if (!!account && !canEnterPosition && !!cashAddress) {
-      checkCanCashExit();
+    if (!!account && !canEnterPosition && !!address) {
+      checkCanCashEnter();
     }
   }, [
     canEnterPosition,
