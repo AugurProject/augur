@@ -1,4 +1,13 @@
-import { MarketInfo } from '../types';
+import { useState, useEffect } from 'react';
+import { APPROVED } from '../common/buttons';
+import {
+  checkAllowance,
+  isERC1155ContractApproved,
+} from '../hooks/use-approval-callback';
+import { Cash, MarketInfo } from '../types';
+import { PARA_CONFIG } from './constants';
+import { ETH } from '../constants';
+import { useUserStore } from './user';
 
 const isAsync = (obj) =>
   !!obj &&
@@ -58,3 +67,77 @@ export const arrayToKeyedObjectByProp = (ArrayOfObj: any[], prop: string) =>
     acc[obj[prop]] = obj;
     return acc;
   }, {});
+
+// CUSTOM HOOKS
+
+export function useCanExitCashPosition(shareToken) {
+  const {
+    account,
+    loginAccount,
+    transactions,
+    actions: { updateTransaction },
+  } = useUserStore();
+  const [canExitPosition, setCanExitPosition] = useState(false);
+  const {
+    addresses: { WethWrapperForAMMExchange },
+  } = PARA_CONFIG;
+  useEffect(() => {
+    const checkCanCashExit = async () => {
+      const approvalCheck = await isERC1155ContractApproved(
+        shareToken,
+        WethWrapperForAMMExchange,
+        loginAccount,
+        transactions,
+        updateTransaction
+      );
+      setCanExitPosition(Boolean(approvalCheck));
+    };
+    if (!!account && !canExitPosition && !!shareToken) {
+      checkCanCashExit();
+    }
+  }, [
+    canExitPosition,
+    setCanExitPosition,
+    updateTransaction,
+    transactions,
+    account,
+  ]);
+
+  return canExitPosition;
+}
+
+export function useCanEnterCashPosition({ name, address }: Cash) {
+  const {
+    account,
+    loginAccount,
+    transactions,
+    actions: { updateTransaction },
+  } = useUserStore();
+  const [canEnterPosition, setCanEnterPosition] = useState(name === ETH);
+  const {
+    addresses: { AMMFactory },
+  } = PARA_CONFIG;
+  useEffect(() => {
+    const checkCanCashEnter = async () => {
+      const approvalCheck = await checkAllowance(
+        address,
+        AMMFactory,
+        loginAccount,
+        transactions,
+        updateTransaction
+      );
+      setCanEnterPosition(approvalCheck === APPROVED);
+    };
+    if (!!account && !canEnterPosition && !!address) {
+      checkCanCashEnter();
+    }
+  }, [
+    canEnterPosition,
+    setCanEnterPosition,
+    updateTransaction,
+    transactions,
+    account,
+  ]);
+
+  return canEnterPosition;
+}

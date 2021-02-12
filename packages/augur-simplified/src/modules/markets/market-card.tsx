@@ -16,16 +16,9 @@ import {
 } from '../../utils/format-number';
 import { ConfirmedCheck } from '../common/icons';
 import classNames from 'classnames';
-import {
-  PrimaryButton
-} from '../common/buttons';
-import { useAppStatusStore } from '../stores/app-status';
+import { PrimaryButton } from '../common/buttons';
 import { AmmExchange, AmmOutcome, MarketInfo, MarketOutcome } from '../types';
-import {
-  MARKET_STATUS,
-  MODAL_ADD_LIQUIDITY,
-  CREATE,
-} from '../constants';
+import { MARKET_STATUS } from '../constants';
 
 export const LoadingMarketCard = () => {
   return (
@@ -76,10 +69,7 @@ export const outcomesToDisplay = (
   const invalid = combinedData.slice(0, 1);
   const yes = combinedData.slice(2, 3);
   const no = combinedData.slice(1, 2);
-  let newOrder = invalid
-    .concat(yes)
-    .concat(no)
-    .concat(combinedData.slice(3));
+  let newOrder = invalid.concat(yes).concat(no).concat(combinedData.slice(3));
   if (
     newOrder[0].isFinalNumerator &&
     newOrder[0].payoutNumerator !== '0' &&
@@ -88,7 +78,7 @@ export const outcomesToDisplay = (
     // invalid is winner -- only pass invalid
     newOrder = invalid;
   } else {
-    newOrder = newOrder.filter(outcome => !outcome.isInvalid);
+    newOrder = newOrder.filter((outcome) => !outcome.isInvalid);
   }
   return newOrder;
 };
@@ -105,7 +95,7 @@ const OutcomesTable = ({
       [Styles.hasWinner]: marketOutcomes[0].isFinalNumerator,
     })}
   >
-    {outcomesToDisplay(amm.ammOutcomes, marketOutcomes).map(outcome => {
+    {outcomesToDisplay(amm.ammOutcomes, marketOutcomes).map((outcome) => {
       const isWinner =
         outcome.isFinalNumerator && outcome.payoutNumerator !== '0';
       return (
@@ -129,7 +119,15 @@ const OutcomesTable = ({
   </div>
 );
 
-export const MarketCard = ({ market }: { market: MarketInfo }) => {
+export const MarketCard = ({
+  market,
+  handleNoLiquidity = (market: MarketInfo) => {},
+  noLiquidityDisabled = false,
+}: {
+  market: MarketInfo;
+  handleNoLiquidity: Function;
+  noLiquidityDisabled: boolean;
+}) => {
   const {
     categories,
     description,
@@ -139,25 +137,12 @@ export const MarketCard = ({ market }: { market: MarketInfo }) => {
     outcomes,
   } = market;
   const formattedApy = amm?.apy && formatPercent(amm.apy).full;
-  const {
-    isLogged,
-    actions: { setModal },
-  } = useAppStatusStore();
   return (
     <article
       className={classNames(Styles.MarketCard, {
         [Styles.NoLiquidity]: !amm,
       })}
-      onClick={() => {
-        if (!amm && isLogged) {
-          setModal({
-            type: MODAL_ADD_LIQUIDITY,
-            market,
-            liquidityModalType: CREATE,
-            currency: amm?.cash?.name,
-          });
-        }
-      }}
+      onClick={() => handleNoLiquidity(market)}
     >
       <div>
         <article
@@ -165,12 +150,12 @@ export const MarketCard = ({ market }: { market: MarketInfo }) => {
             [Styles.Trading]: reportingState === MARKET_STATUS.TRADING,
           })}
         >
-          <ReportingStateLabel {...{ reportingState }} />
-          <CategoryIcon categories={categories} />
-          <CategoryLabel categories={categories} />
+          <ReportingStateLabel {...{reportingState}} />
+          <CategoryIcon {...{categories}} />
+          <CategoryLabel {...{categories}} />
           <div>
-            <ReportingStateLabel {...{ reportingState }} />
-            <InvalidFlagTipIcon market={market} />
+            <ReportingStateLabel {...{reportingState}} />
+            <InvalidFlagTipIcon {...{market}} />
             <CurrencyTipIcon name={amm?.cash?.name} marketId={marketId} />
           </div>
         </article>
@@ -181,11 +166,11 @@ export const MarketCard = ({ market }: { market: MarketInfo }) => {
               <span>Market requires Initial liquidity</span>
               <PrimaryButton
                 title={
-                  isLogged
-                    ? 'Earn fees as a liquidity provider'
-                    : `Connect an account to earn fees as a liquidity provider`
+                  noLiquidityDisabled
+                    ? "Connect an account to earn fees as a liquidity provider"
+                    : "Earn fees as a liquidity provider"
                 }
-                disabled={!isLogged}
+                disabled={noLiquidityDisabled}
                 text="Earn fees as a liquidity provider"
               />
             </div>

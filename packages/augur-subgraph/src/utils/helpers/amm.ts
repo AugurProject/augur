@@ -30,9 +30,6 @@ export function updateAMM(id: string):AMMExchange {
   if(totalShares.gt(ZERO)) {
     amm.percentageNo = amm.liquidityNo.times(BigDecimal.fromString('100')).div(totalShares);
     amm.percentageYes = amm.liquidityYes.times(BigDecimal.fromString('100')).div(totalShares);
-  } else {
-    amm.percentageNo = ZERO;
-    amm.percentageYes = ZERO;
   }
 
   amm.liquidity = amm.liquidityNo.times(amm.percentageYes.div(BigDecimal.fromString('100'))).plus(amm.liquidityYes.times(amm.percentageNo.div(BigDecimal.fromString('100'))));
