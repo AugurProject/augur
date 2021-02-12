@@ -1,15 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import Styles from './markets-view.styles.less';
-import {
-  AppViewStats,
-  NetworkMismatchBanner,
-} from '../common/labels';
+import { AppViewStats, NetworkMismatchBanner } from '../common/labels';
 import { FilterIcon } from '../common/icons';
 import classNames from 'classnames';
-import {
-  SearchButton,
-  SecondaryButton,
-} from '../common/buttons';
+import { SearchButton, SecondaryButton } from '../common/buttons';
 import { SquareDropdown } from '../common/selection';
 import { useAppStatusStore } from '../stores/app-status';
 import { MarketInfo } from '../types';
@@ -32,6 +26,8 @@ import {
   LIQUIDITY,
   MARKET_STATUS,
   TWENTY_FOUR_HOUR_VOLUME,
+  CREATE,
+  MODAL_ADD_LIQUIDITY,
 } from '../constants';
 import { sliceByPage, Pagination } from '../common/pagination';
 import { TopBanner } from '../common/top-banner';
@@ -62,7 +58,7 @@ const applyFiltersAndSort = (
 
     if (filter !== '') {
       updatedFilteredMarkets = updatedFilteredMarkets.filter(
-        market => searchedMarkets.indexOf(market.marketId) !== -1
+        (market) => searchedMarkets.indexOf(market.marketId) !== -1
       );
     }
 
@@ -142,8 +138,8 @@ const applyFiltersAndSort = (
     });
     if (sortBy !== ENDING_SOON) {
       updatedFilteredMarkets = updatedFilteredMarkets
-        .filter(m => m.amm !== null)
-        .concat(updatedFilteredMarkets.filter(m => m.amm === null));
+        .filter((m) => m.amm !== null)
+        .concat(updatedFilteredMarkets.filter((m) => m.amm === null));
     }
     setFilteredMarkets(updatedFilteredMarkets);
   });
@@ -154,7 +150,7 @@ const MarketsView = () => {
     isMobile,
     isLogged,
     marketsViewSettings,
-    actions: { setSidebar, updateMarketsViewSettings },
+    actions: { setSidebar, updateMarketsViewSettings, setModal },
     settings: { showLiquidMarkets, showInvalidMarkets },
   } = useAppStatusStore();
   const {
@@ -162,9 +158,7 @@ const MarketsView = () => {
     ammExchanges,
     cashes,
     markets,
-    actions:{
-      updateGraphHeartbeat,
-    },
+    actions: { updateGraphHeartbeat },
   } = useGraphDataStore();
   const { sortBy, categories, reportingState, currency } = marketsViewSettings;
   const [page, setPage] = useState(1);
@@ -195,7 +189,12 @@ const MarketsView = () => {
         showLiquidMarkets,
         showInvalidMarkets,
       },
-      err => updateGraphHeartbeat({ ammExchanges, cashes, markets }, blocknumber, err)
+      (err) =>
+        updateGraphHeartbeat(
+          { ammExchanges, cashes, markets },
+          blocknumber,
+          err
+        )
     );
   }, [
     sortBy,
@@ -223,7 +222,12 @@ const MarketsView = () => {
         showLiquidMarkets,
         showInvalidMarkets,
       },
-      err => updateGraphHeartbeat({ ammExchanges, cashes, markets }, blocknumber, err)
+      (err) =>
+        updateGraphHeartbeat(
+          { ammExchanges, cashes, markets },
+          blocknumber,
+          err
+        )
     );
   }, [markets]);
 
@@ -235,10 +239,22 @@ const MarketsView = () => {
 
   let changedFilters = 0;
 
-  Object.keys(DEFAULT_MARKET_VIEW_SETTINGS).forEach(setting => {
+  Object.keys(DEFAULT_MARKET_VIEW_SETTINGS).forEach((setting) => {
     if (marketsViewSettings[setting] !== DEFAULT_MARKET_VIEW_SETTINGS[setting])
       changedFilters++;
   });
+
+  const handleNoLiquidity = (market: MarketInfo) => {
+    const { amm } = market;
+    if (!amm && isLogged) {
+      setModal({
+        type: MODAL_ADD_LIQUIDITY,
+        market,
+        liquidityModalType: CREATE,
+        currency: amm?.cash?.name,
+      });
+    }
+  };
 
   return (
     <div
@@ -266,28 +282,28 @@ const MarketsView = () => {
       )}
       <ul>
         <SquareDropdown
-          onChange={value => {
+          onChange={(value) => {
             updateMarketsViewSettings({ categories: value });
           }}
           options={categoryItems}
           defaultValue={categories}
         />
         <SquareDropdown
-          onChange={value => {
+          onChange={(value) => {
             updateMarketsViewSettings({ sortBy: value });
           }}
           options={sortByItems}
           defaultValue={sortBy}
         />
         <SquareDropdown
-          onChange={value => {
+          onChange={(value) => {
             updateMarketsViewSettings({ reportingState: value });
           }}
           options={marketStatusItems}
           defaultValue={reportingState}
         />
         <SquareDropdown
-          onChange={value => {
+          onChange={(value) => {
             updateMarketsViewSettings({ currency: value });
           }}
           options={currencyItems}
@@ -304,27 +320,30 @@ const MarketsView = () => {
       {showFilter && (
         <SearchInput
           value={filter}
-          onChange={e => setFilter(e.target.value)}
+          onChange={(e) => setFilter(e.target.value)}
           clearValue={() => setFilter('')}
         />
       )}
-      {loading && (
+      {loading ? (
         <section>
           {new Array(PAGE_LIMIT).fill(null).map((m, index) => (
             <LoadingMarketCard key={index} />
           ))}
         </section>
-      )}
-      {!loading && filteredMarkets.length > 0 && (
+      ) : filteredMarkets.length > 0 ? (
         <section>
           {sliceByPage(filteredMarkets, page, PAGE_LIMIT).map(
             (market, index) => (
-              <MarketCard key={`${market.marketId}-${index}`} market={market} />
+              <MarketCard
+                key={`${market.marketId}-${index}`}
+                market={market}
+                handleNoLiquidity={handleNoLiquidity}
+                noLiquidityDisabled={!isLogged}
+              />
             )
           )}
         </section>
-      )}
-      {!loading && filteredMarkets.length === 0 && (
+      ) : (
         <span className={Styles.EmptyMarketsMessage}>
           No markets to show. Try changing the filter options.
         </span>
@@ -334,7 +353,7 @@ const MarketsView = () => {
           page={page}
           itemCount={filteredMarkets.length}
           itemsPerPage={PAGE_LIMIT}
-          action={page => {
+          action={(page) => {
             setPage(page);
           }}
           updateLimit={null}
