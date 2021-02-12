@@ -39,6 +39,7 @@ import { searchMarkets } from '../apollo/client';
 import { SearchInput } from '../common/inputs';
 import { LoadingMarketCard, MarketCard } from './market-card';
 import { useGraphDataStore } from '../stores/graph-data';
+import AnimateHeight from 'react-animate-height';
 
 const PAGE_LIMIT = 21;
 
@@ -301,13 +302,18 @@ const MarketsView = () => {
           }}
         />
       </ul>
-      {showFilter && (
+      <AnimateHeight
+          duration={ 100 }
+          animateOpacity
+          easing='ease-in-out'
+          height={ showFilter ? 56 : 0 } 
+        >
         <SearchInput
           value={filter}
           onChange={e => setFilter(e.target.value)}
           clearValue={() => setFilter('')}
         />
-      )}
+      </AnimateHeight>
       {loading && (
         <section>
           {new Array(PAGE_LIMIT).fill(null).map((m, index) => (
