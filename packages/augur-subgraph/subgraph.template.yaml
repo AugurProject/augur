@@ -198,6 +198,8 @@ dataSources:
           handler: wethWrapperHandleExitPosition
         - event: RemoveLiquidity(address,address)
           handler: wethWrapperHandleRemoveLiquidity
+        - event: TradingProceedsClaimed(address)
+          handler: wethTradingProceedsClaimed
 templates:
   - kind: ethereum/contract
     name: AMMExchange
