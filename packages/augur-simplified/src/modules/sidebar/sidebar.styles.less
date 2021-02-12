@@ -62,7 +62,7 @@ div.Sidebar {
   overflow: auto;
   max-height: calc(100vh - @size-144);
   height: calc(100vh - @size-144);
-
+  
   > div:not(:last-of-type) {
     margin-bottom: @size-24;
   }
@@ -105,8 +105,8 @@ div.Sidebar {
 
 .MobileBrowser {
   > div[class*="Body"] {
-    max-height: calc(100vh - @size-220);
-    height: calc(100vh - @size-220);
+    max-height: unset;
+    height: unset;
   }
 }
 
