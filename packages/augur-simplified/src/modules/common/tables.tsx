@@ -50,8 +50,7 @@ import {
 } from './labels';
 import { useGraphDataStore } from '../stores/graph-data';
 import { useUserStore } from '../stores/user';
-import { isERC1155ContractApproved } from '../hooks/use-approval-callback';
-import { PARA_CONFIG } from '../stores/constants';
+import { useCanClaimETH } from '../stores/utils';
 
 interface PositionsTableProps {
   market: MarketInfo;
@@ -162,41 +161,14 @@ export const PositionFooter = ({
   market: { settlementFee, marketId, amm },
   showTradeButton,
 }: PositionFooterProps) => {
-  const { isLogged, isMobile } = useAppStatusStore();
+  const { isMobile } = useAppStatusStore();
   const {
     account,
     loginAccount,
-    transactions,
     actions: { addTransaction, updateTransaction },
   } = useUserStore();
-  const [canClaimETH, setCanClaimETH] = useState(false);
+  const canClaimETH = useCanClaimETH();
   const isETHClaim = amm?.cash?.name === ETH;
-
-  useEffect(() => {
-    const {
-      addresses: { WethWrapperForAMMExchange },
-    } = PARA_CONFIG;
-    const checkCanEthExit = async () => {
-      const approvalCheck = await isERC1155ContractApproved(
-        claimableWinnings.sharetoken,
-        WethWrapperForAMMExchange,
-        loginAccount,
-        transactions,
-        updateTransaction
-      );
-      setCanClaimETH(Boolean(approvalCheck));
-    };
-    if (isLogged && !canClaimETH && !!claimableWinnings && isETHClaim) {
-      checkCanEthExit();
-    }
-  }, [
-    isLogged,
-    canClaimETH,
-    setCanClaimETH,
-    updateTransaction,
-    transactions,
-    claimableWinnings,
-  ]);
 
   const claim = () => {
     if (amm && account) {

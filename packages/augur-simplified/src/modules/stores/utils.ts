@@ -1,4 +1,10 @@
+import { ETH } from '@augurproject/sdk-lite/build';
+import { useState, useEffect } from 'react';
+import { isERC1155ContractApproved } from '../hooks/use-approval-callback';
 import { MarketInfo } from '../types';
+import { PARA_CONFIG } from './constants';
+import { useGraphDataStore } from './graph-data';
+import { useUserStore } from './user';
 
 const isAsync = (obj) =>
   !!obj &&
@@ -58,3 +64,22 @@ export const arrayToKeyedObjectByProp = (ArrayOfObj: any[], prop: string) =>
     acc[obj[prop]] = obj;
     return acc;
   }, {});
+
+export function useCanClaimETH() {
+  const { cashes } = useGraphDataStore();
+  const { loginAccount, transactions, actions: { updateTransaction }} = useUserStore();
+  const [canClaimETH, setCanClaimETH] = useState(false);
+  const { addresses: { WethWrapperForAMMExchange } } = PARA_CONFIG;
+  const ethCash = keyedObjToArray(cashes).find((c) => c?.name === ETH);
+  useEffect(() => {
+    const checkCanEthExit = async() => {
+      const approvalCheck = await isERC1155ContractApproved(ethCash.shareToken, WethWrapperForAMMExchange, loginAccount, transactions, updateTransaction);
+      setCanClaimETH(Boolean(approvalCheck));
+    }
+    if (!!loginAccount?.account && !canClaimETH) {
+        checkCanEthExit();
+    }
+  }, [canClaimETH, setCanClaimETH, updateTransaction, transactions]);
+
+  return canClaimETH;
+};

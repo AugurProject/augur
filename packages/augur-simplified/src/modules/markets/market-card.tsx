@@ -150,12 +150,12 @@ export const MarketCard = ({
             [Styles.Trading]: reportingState === MARKET_STATUS.TRADING,
           })}
         >
-          <ReportingStateLabel {...{ reportingState }} />
-          <CategoryIcon categories={categories} />
-          <CategoryLabel categories={categories} />
+          <ReportingStateLabel {...{reportingState}} />
+          <CategoryIcon {...{categories}} />
+          <CategoryLabel {...{categories}} />
           <div>
-            <ReportingStateLabel {...{ reportingState }} />
-            <InvalidFlagTipIcon market={market} />
+            <ReportingStateLabel {...{reportingState}} />
+            <InvalidFlagTipIcon {...{market}} />
             <CurrencyTipIcon name={amm?.cash?.name} marketId={marketId} />
           </div>
         </article>
