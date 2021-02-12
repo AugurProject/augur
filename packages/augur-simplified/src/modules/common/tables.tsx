@@ -11,6 +11,7 @@ import {
   REMOVE,
   SWAP,
   TX_STATUS,
+  ETH,
 } from '../constants';
 import { SmallDropdown } from './selection';
 import {
@@ -39,14 +40,18 @@ import {
   ReceiptLink,
 } from '../routes/helpers/links';
 import { sliceByPage, Pagination } from './pagination';
-import {
-  claimWinnings,
-  getLPCurrentValue,
-} from '../../utils/contract-calls';
+import { claimWinnings, getLPCurrentValue } from '../../utils/contract-calls';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
-import { InvalidFlagTipIcon, MovementLabel, WarningBanner, generateTooltip } from './labels';
+import {
+  InvalidFlagTipIcon,
+  MovementLabel,
+  WarningBanner,
+  generateTooltip,
+} from './labels';
 import { useGraphDataStore } from '../stores/graph-data';
 import { useUserStore } from '../stores/user';
+import { isERC1155ContractApproved } from '../hooks/use-approval-callback';
+import { PARA_CONFIG } from '../stores/constants';
 
 interface PositionsTableProps {
   market: MarketInfo;
@@ -94,8 +99,8 @@ const PositionHeader = () => {
             owned
           </>
         ) : (
-            'quantity owned'
-          )}
+          'quantity owned'
+        )}
       </li>
       <li>
         {isMobile ? (
@@ -105,17 +110,29 @@ const PositionHeader = () => {
             price
           </>
         ) : (
-            'avg. price paid'
-          )}
+          'avg. price paid'
+        )}
       </li>
       <li>init. value</li>
       <li>cur.{isMobile ? <br /> : ' '}value</li>
-      <li>p/l {generateTooltip('Display values might be rounded. Dashes are displayed when liquidity is depleted.', 'pnltip-positionheader')}</li>
+      <li>
+        p/l{' '}
+        {generateTooltip(
+          'Display values might be rounded. Dashes are displayed when liquidity is depleted.',
+          'pnltip-positionheader'
+        )}
+      </li>
     </ul>
   );
 };
 
-const PositionRow = ({ position, hasLiquidity = true }: { position: PositionBalance, hasLiquidity: boolean }) => (
+const PositionRow = ({
+  position,
+  hasLiquidity = true,
+}: {
+  position: PositionBalance;
+  hasLiquidity: boolean;
+}) => (
   <ul className={Styles.PositionRow}>
     <li>{position.outcomeName}</li>
     <li>{formatSimpleShares(position.quantity).formattedValue}</li>
@@ -123,12 +140,14 @@ const PositionRow = ({ position, hasLiquidity = true }: { position: PositionBala
     <li>{formatDai(position.initCostUsd).full}</li>
     <li>{hasLiquidity ? formatDai(position.usdValue).full : '-'}</li>
     <li>
-      {hasLiquidity ?
+      {hasLiquidity ? (
         <MovementLabel
           value={formatDai(position.totalChangeUsd)}
           numberValue={parseFloat(position.totalChangeUsd)}
         />
-        : '-'}
+      ) : (
+        '-'
+      )}
     </li>
   </ul>
 );
@@ -143,15 +162,42 @@ export const PositionFooter = ({
   market: { settlementFee, marketId, amm },
   showTradeButton,
 }: PositionFooterProps) => {
-  const {
-    isMobile,
-  } = useAppStatusStore();
+  const { isLogged, isMobile } = useAppStatusStore();
   const {
     account,
     loginAccount,
+    transactions,
     actions: { addTransaction, updateTransaction },
   } = useUserStore();
-  if (isMobile && !claimableWinnings) return null;
+  const [canClaimETH, setCanClaimETH] = useState(false);
+  const isETHClaim = amm?.cash?.name === ETH;
+
+  useEffect(() => {
+    const {
+      addresses: { WethWrapperForAMMExchange },
+    } = PARA_CONFIG;
+    const checkCanEthExit = async () => {
+      const approvalCheck = await isERC1155ContractApproved(
+        claimableWinnings.sharetoken,
+        WethWrapperForAMMExchange,
+        loginAccount,
+        transactions,
+        updateTransaction
+      );
+      setCanClaimETH(Boolean(approvalCheck));
+    };
+    if (isLogged && !canClaimETH && !!claimableWinnings && isETHClaim) {
+      checkCanEthExit();
+    }
+  }, [
+    isLogged,
+    canClaimETH,
+    setCanClaimETH,
+    updateTransaction,
+    transactions,
+    claimableWinnings,
+  ]);
+
   const claim = () => {
     if (amm && account) {
       claimWinnings(account, [marketId], amm?.cash)
@@ -179,16 +225,26 @@ export const PositionFooter = ({
         });
     }
   };
-  if (!claimableWinnings && !showTradeButton) return null;
+  if (
+    (isMobile && !claimableWinnings) ||
+    (!claimableWinnings && !showTradeButton)
+  )
+    return null;
+
   return (
     <div className={Styles.PositionFooter}>
       {claimableWinnings && (
         <>
-          <span>{`${formatPercent(settlementFee).full} fee charged on settlement`}</span>
+          <span>{`${
+            formatPercent(settlementFee).full
+          } fee charged on settlement`}</span>
           <PrimaryButton
-            text={`Claim Winnings (${formatCash(claimableWinnings?.claimableBalance, amm?.cash?.name)
+            text={`${
+              isETHClaim && !canClaimETH ? 'Approve to ' : ''
+            }Claim Winnings (${
+              formatCash(claimableWinnings?.claimableBalance, amm?.cash?.name)
                 .full
-              })`}
+            })`}
             action={claim}
           />
         </>
@@ -208,10 +264,10 @@ export const AllPositionTable = ({ page }) => {
   } = useUserStore();
   const positions = marketShares
     ? ((Object.values(marketShares) as unknown[]) as {
-      ammExchange: AmmExchange;
-      positions: PositionBalance[];
-      claimableWinnings: Winnings;
-    }[])
+        ammExchange: AmmExchange;
+        positions: PositionBalance[];
+        claimableWinnings: Winnings;
+      }[])
     : [];
 
   const positionVis = sliceByPage(
@@ -249,7 +305,7 @@ export const PositionTable = ({
     seenPositionWarnings && seenPositionWarnings[marketAmmId]?.add;
   const seenMarketPositionWarningRemove =
     seenPositionWarnings && seenPositionWarnings[marketAmmId]?.remove;
-  const hasLiquidity = ammExchange.liquidity !== "0";
+  const hasLiquidity = ammExchange.liquidity !== '0';
   return (
     <>
       <div className={Styles.PositionTable}>
@@ -262,7 +318,11 @@ export const PositionTable = ({
           positions
             .filter((p) => p.visible)
             .map((position, id) => (
-              <PositionRow key={id} position={position} hasLiquidity={hasLiquidity} />
+              <PositionRow
+                key={id}
+                position={position}
+                hasLiquidity={hasLiquidity}
+              />
             ))}
         <PositionFooter
           showTradeButton={!singleMarket}
@@ -273,10 +333,10 @@ export const PositionTable = ({
       {!seenMarketPositionWarningAdd &&
         singleMarket &&
         positions.filter((position) => position.positionFromLiquidity).length >
-        0 && (
+          0 && (
           <WarningBanner
             className={Styles.MarginTop}
-            title='Why do I have a position after adding liquidity?'
+            title="Why do I have a position after adding liquidity?"
             subtitle={
               'To maintain the Yes to No percentage ratio, a number of shares are returned to the liquidity provider.'
             }
@@ -289,7 +349,7 @@ export const PositionTable = ({
           .length > 0 && (
           <WarningBanner
             className={Styles.MarginTop}
-            title='Why do I have a position after removing liquidity?'
+            title="Why do I have a position after removing liquidity?"
             subtitle={`To give liquidity providers the most options available to manage their positions. Shares can be sold for ${market?.amm?.cash?.name}.`}
             onClose={() => updateSeenPositionWarning(marketAmmId, true, REMOVE)}
           />
@@ -373,10 +433,10 @@ export const AllLiquidityTable = ({ page }) => {
   const { ammExchanges } = useGraphDataStore();
   const liquidities = lpTokens
     ? Object.keys(lpTokens).map((ammId) => ({
-      ammExchange: ammExchanges[ammId],
-      market: ammExchanges[ammId].market,
-      lpTokens: lpTokens[ammId],
-    }))
+        ammExchange: ammExchanges[ammId],
+        market: ammExchanges[ammId].market,
+        lpTokens: lpTokens[ammId],
+      }))
     : [];
   const liquiditiesViz = sliceByPage(
     liquidities,
@@ -474,17 +534,17 @@ export const PositionsLiquidityViewSwitcher = ({
 
   const positions = marketShares
     ? ((Object.values(marketShares) as unknown[]) as {
-      ammExchange: AmmExchange;
-      positions: PositionBalance[];
-      claimableWinnings: Winnings;
-    }[])
+        ammExchange: AmmExchange;
+        positions: PositionBalance[];
+        claimableWinnings: Winnings;
+      }[])
     : [];
   const liquidities = lpTokens
     ? Object.keys(lpTokens).map((ammId) => ({
-      ammExchange: ammExchanges[ammId],
-      market: ammExchanges[ammId].market,
-      lpTokens: lpTokens[ammId],
-    }))
+        ammExchange: ammExchanges[ammId],
+        market: ammExchanges[ammId].market,
+        lpTokens: lpTokens[ammId],
+      }))
     : [];
   return (
     <div className={Styles.PositionsLiquidityViewSwitcher}>
@@ -600,41 +660,41 @@ const TransactionsHeader = ({
             defaultValue={ALL}
           />
         ) : (
-            <>
-              <span
-                className={classNames({
-                  [Styles.Selected]: selectedType === ALL,
-                })}
-                onClick={() => setSelectedType(ALL)}
-              >
-                all
+          <>
+            <span
+              className={classNames({
+                [Styles.Selected]: selectedType === ALL,
+              })}
+              onClick={() => setSelectedType(ALL)}
+            >
+              all
             </span>
-              <span
-                className={classNames({
-                  [Styles.Selected]: selectedType === SWAP,
-                })}
-                onClick={() => setSelectedType(SWAP)}
-              >
-                swaps
+            <span
+              className={classNames({
+                [Styles.Selected]: selectedType === SWAP,
+              })}
+              onClick={() => setSelectedType(SWAP)}
+            >
+              swaps
             </span>
-              <span
-                className={classNames({
-                  [Styles.Selected]: selectedType === ADD,
-                })}
-                onClick={() => setSelectedType(ADD)}
-              >
-                adds
+            <span
+              className={classNames({
+                [Styles.Selected]: selectedType === ADD,
+              })}
+              onClick={() => setSelectedType(ADD)}
+            >
+              adds
             </span>
-              <span
-                className={classNames({
-                  [Styles.Selected]: selectedType === REMOVE,
-                })}
-                onClick={() => setSelectedType(REMOVE)}
-              >
-                removes
+            <span
+              className={classNames({
+                [Styles.Selected]: selectedType === REMOVE,
+              })}
+              onClick={() => setSelectedType(REMOVE)}
+            >
+              removes
             </span>
-            </>
-          )}
+          </>
+        )}
       </li>
       <li>total value</li>
       <li>token amount</li>
