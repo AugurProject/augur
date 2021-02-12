@@ -91,7 +91,7 @@ export function useCanExitCashPosition(shareToken) {
       );
       setCanExitPosition(Boolean(approvalCheck));
     };
-    if (!!account && !canExitPosition) {
+    if (!!account && !canExitPosition && !!shareToken) {
       checkCanCashExit();
     }
   }, [
@@ -127,7 +127,7 @@ export function useCanEnterCashPosition(cashAddress) {
       );
       setCanEnterPosition(approvalCheck === APPROVED);
     };
-    if (!!account && !canEnterPosition) {
+    if (!!account && !canEnterPosition && !!cashAddress) {
       checkCanCashExit();
     }
   }, [
