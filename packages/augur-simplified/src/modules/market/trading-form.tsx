@@ -347,7 +347,10 @@ const TradingForm = ({
     let actionText = buttonError || orderType;
     let subText = null;
     let disabled = false;
-    if (!hasLiquidity) {
+    if (!isLogged) {
+      actionText = 'Connect Wallet';
+      disabled = true;
+    } else if (!hasLiquidity) {
       actionText = 'Liquidity Depleted';
       disabled = true;
     } else if (Number(amount) === 0 || isNaN(Number(amount)) || amount === '') {
