@@ -81,14 +81,14 @@ export const ClaimWinningsSection = () => {
   const ethCash = keyedCash.find((c) => c?.name === ETH);
   const usdcCash = keyedCash.find((c) => c?.name === USDC);
   const claimableEthMarkets = claimableMarkets.filter(
-    (m) => m.claimableWinnings.sharetoken === ethCash.shareToken
+    (m) => m.claimableWinnings.sharetoken === ethCash?.shareToken
   );
   const claimableUSDCMarkets = claimableMarkets.filter(
     (m) => m.claimableWinnings.sharetoken === usdcCash.shareToken
   );
   const ETHTotals = calculateTotalWinnings(claimableEthMarkets);
   const USDCTotals = calculateTotalWinnings(claimableUSDCMarkets);
-  const canClaimETH = useCanExitCashPosition(ethCash.shareToken);
+  const canClaimETH = useCanExitCashPosition(ethCash?.shareToken);
 
   return (
     <div className={Styles.ClaimableWinningsSection}>
