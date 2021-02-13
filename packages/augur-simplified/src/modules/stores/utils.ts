@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { APPROVED } from '../common/buttons';
 import {
   checkAllowance,
@@ -77,6 +77,7 @@ export function useCanExitCashPosition(shareToken) {
     transactions,
     actions: { updateTransaction },
   } = useUserStore();
+  const approvedAccount = useRef(null);
   const [canExitPosition, setCanExitPosition] = useState(false);
   const {
     addresses: { WethWrapperForAMMExchange },
@@ -91,8 +92,9 @@ export function useCanExitCashPosition(shareToken) {
         updateTransaction
       );
       setCanExitPosition(Boolean(approvalCheck));
+      if (Boolean(approvalCheck)) approvedAccount.current = loginAccount.account;
     };
-    if (!!account && !!shareToken) {
+    if (!!account && !!shareToken && account !== approvedAccount.current) {
       checkCanCashExit();
     }
   }, [
@@ -113,6 +115,7 @@ export function useCanEnterCashPosition({ name, address }: Cash) {
     transactions,
     actions: { updateTransaction },
   } = useUserStore();
+  const approvedAccount = useRef(null);
   const [canEnterPosition, setCanEnterPosition] = useState(name === ETH);
   const {
     addresses: { AMMFactory },
@@ -126,9 +129,10 @@ export function useCanEnterCashPosition({ name, address }: Cash) {
         transactions,
         updateTransaction
       );
-      setCanEnterPosition(approvalCheck === APPROVED);
+      setCanEnterPosition(approvalCheck === APPROVED || name === ETH);
+      if (approvalCheck === APPROVED || name === ETH) approvedAccount.current = loginAccount.account;
     };
-    if (!!account && !!address) {
+    if (!!account && !!address && account !== approvedAccount.current) {
       checkCanCashEnter();
     }
   }, [
