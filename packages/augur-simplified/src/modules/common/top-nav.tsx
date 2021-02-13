@@ -262,14 +262,6 @@ export const TopNav = () => {
       ) {
         logout();
         updateLoginAccount(activeWeb3);
-
-        // TEMPORARY WORKAROUND - MM provider broken on account change
-        const isMetaMask = activeWeb3?.library?.provider?.isMetaMask;
-        if (isMetaMask) {
-          // When we detect a MM account chanage we call updateLoginAccount in order to update the lastUser localStorage
-          // key with the users new selected account and refresh the page to reload the provider using autologin
-          window.location.reload();
-        }
       } else {
         updateLoginAccount(activeWeb3);
       }
