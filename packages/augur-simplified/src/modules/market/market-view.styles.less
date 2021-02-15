@@ -345,14 +345,20 @@
       }
 
       &:last-of-type:not(:first-of-type) {
-        display: none;
 
         > button {
           display: none;
         }
 
+        > div {
+          top: 100%;
+          transition: top 200ms ease-in-out;
+        }
+
         &.ShowTradingForm {
-          display: flex;
+          > div {
+            top: -@simple-top-bar-height;
+          }
         }
       }
     }
