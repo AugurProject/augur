@@ -6,7 +6,7 @@ import {
 } from '../hooks/use-approval-callback';
 import { Cash, MarketInfo } from '../types';
 import { PARA_CONFIG } from './constants';
-import { ETH } from '../constants';
+import { ApprovalState, ETH } from '../constants';
 import { useUserStore } from './user';
 
 const isAsync = (obj) =>
@@ -91,7 +91,7 @@ export function useCanExitCashPosition(shareToken) {
         transactions,
         updateTransaction
       );
-      setCanExitPosition(Boolean(approvalCheck));
+      setCanExitPosition(Boolean(ApprovalState.APPROVED === approvalCheck));
       if (Boolean(approvalCheck)) approvedAccount.current = loginAccount.account;
     };
     if (!!account && !!shareToken && account !== approvedAccount.current) {
