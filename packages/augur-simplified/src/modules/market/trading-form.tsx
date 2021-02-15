@@ -45,25 +45,6 @@ import { useCanEnterCashPosition, useCanExitCashPosition } from '../stores/utils
 const AVG_PRICE_TIP =
   'The difference between the market price and estimated price due to trade size.';
 
-export const DefaultMarketOutcomes = [
-  {
-    id: 0,
-    name: 'Invalid',
-    price: '$0.00',
-    isInvalid: true,
-  },
-  {
-    id: 1,
-    name: 'No',
-    price: '$0.25',
-  },
-  {
-    id: 2,
-    name: 'yes',
-    price: '$0.75',
-  },
-];
-
 interface InfoNumber {
   label: string;
   value: string;
