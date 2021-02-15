@@ -8,6 +8,7 @@ import { Cash, MarketInfo } from '../types';
 import { PARA_CONFIG } from './constants';
 import { ApprovalState, ETH } from '../constants';
 import { useUserStore } from './user';
+import { useGraphDataStore } from './graph-data';
 
 const isAsync = (obj) =>
   !!obj &&
@@ -77,11 +78,16 @@ export function useCanExitCashPosition(shareToken) {
     transactions,
     actions: { updateTransaction },
   } = useUserStore();
+  const {
+    blocknumber,
+  } = useGraphDataStore();
   const approvedAccount = useRef(null);
   const [canExitPosition, setCanExitPosition] = useState(false);
-  const {
+  const [calledBlocknumber, setCalledBlocknumber] = useState(blocknumber);
+    const {
     addresses: { WethWrapperForAMMExchange },
   } = PARA_CONFIG;
+
   useEffect(() => {
     const checkCanCashExit = async () => {
       const approvalCheck = await isERC1155ContractApproved(
@@ -94,8 +100,9 @@ export function useCanExitCashPosition(shareToken) {
       setCanExitPosition(Boolean(ApprovalState.APPROVED === approvalCheck));
       if (Boolean(approvalCheck)) approvedAccount.current = loginAccount.account;
     };
-    if (!!account && !!shareToken && account !== approvedAccount.current) {
+    if (!!account && !!shareToken && (account !== approvedAccount.current || calledBlocknumber !== blocknumber)) {
       checkCanCashExit();
+      setCalledBlocknumber(blocknumber);
     }
   }, [
     canExitPosition,
@@ -103,6 +110,7 @@ export function useCanExitCashPosition(shareToken) {
     updateTransaction,
     transactions,
     account,
+    blocknumber
   ]);
 
   return canExitPosition;
