@@ -67,6 +67,7 @@ export async function getMarketsData(updateHeartbeat) {
     updateHeartbeat(null, null, e);
   }
 
+  if (!responseUsd) return updateHeartbeat(null, null, 'Data could not be retreived');
   if (response) {
     if (response.errors) {
       console.error(JSON.stringify(response.errors, null, 1));
