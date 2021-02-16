@@ -17,11 +17,9 @@ import {
   PositionsLiquidityViewSwitcher,
   TransactionsTable,
 } from '../common/tables';
-import TradingForm, {
-  DefaultMarketOutcomes,
-} from './trading-form';
+import TradingForm from './trading-form';
 import { useAppStatusStore } from '../stores/app-status';
-import { USDC, YES_NO, BUY, MARKET_ID_PARAM_NAME, ETH } from '../constants';
+import { USDC, YES_NO, BUY, MARKET_ID_PARAM_NAME, ETH, DefaultMarketOutcomes } from '../constants';
 import parseQuery from '../routes/helpers/parse-query';
 import { AmmExchange, MarketInfo } from '../types';
 import { formatDai } from '../../utils/format-number';

@@ -1194,6 +1194,7 @@ export interface LiquidityBreakdown {
   yesShares: string;
   noShares: string;
   lpTokens?: string;
+  cashAmount?: string;
 }
 export interface AddLiquidityBreakdown extends LiquidityBreakdown {
   lpTokens: string;
