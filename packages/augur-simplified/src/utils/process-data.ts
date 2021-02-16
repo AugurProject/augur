@@ -203,11 +203,7 @@ const shapeMarketInfo = (
   const feeAsPercent = convertAttoValueToDisplayValue(new BN(market.fee)).times(
     100
   );
-  const reportingFeeAsPercent = new BN(1)
-    .dividedBy(new BN(market.universe.reportingFee))
-    .div(1000)
-    .times(100);
-
+  const reportingFeeAsPercent = new BN(1).dividedBy(new BN(market.universe.reportingFee)).times(100);
   const shareTokenCashes = Object.values(cashes).reduce(
     (p, c) => ({ ...p, [c.shareToken.toLowerCase()]: c }),
     {}
