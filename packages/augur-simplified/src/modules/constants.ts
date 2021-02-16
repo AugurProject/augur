@@ -255,3 +255,21 @@ export const DEFAULT_MARKET_VIEW_SETTINGS = {
 
 export const CREATE = 'create';
 
+export const DefaultMarketOutcomes = [
+  {
+    id: 0,
+    name: 'Invalid',
+    price: '$0.00',
+    isInvalid: true,
+  },
+  {
+    id: 1,
+    name: 'No',
+    price: '$0.25',
+  },
+  {
+    id: 2,
+    name: 'yes',
+    price: '$0.75',
+  },
+];
