@@ -7,6 +7,9 @@ import {
   DisputeCrowdsourcerRedeemed,
   DisputeWindowCreated
 } from "../../generated/Augur/Augur";
+
+import { Market as MarketContract } from '../../generated/Augur/Market';
+
 import {
   getOrCreateUser,
   getOrCreateMarket,
@@ -45,6 +48,8 @@ export function handleInitialReportSubmitted(
     event.params.market.toHexString().concat("-0")
   );
 
+  let marketContractInstance = MarketContract.bind(Address.fromString(event.params.market.toHexString()));
+  market.currentDisputeWindow = marketContractInstance.getDisputeWindow().toHexString();
   market.status = STATUS_REPORTING;
   market.dispute = dispute.id;
   market.report = marketReport.id;
@@ -91,6 +96,8 @@ export function handleDisputeCrowdsourcerCompleted(
 
   disputeCrowdsourcer.bondFilled = true;
 
+  let marketContractInstance = MarketContract.bind(Address.fromString(event.params.market.toHexString()));
+  market.currentDisputeWindow = marketContractInstance.getDisputeWindow().toHexString();
   market.status = STATUS_DISPUTING;
 
   marketReport.payoutNumerators = event.params.payoutNumerators;
@@ -133,6 +140,11 @@ export function handleDisputeCrowdsourcerCreated(
     .toHexString()
     .concat("-")
     .concat(event.params.disputeRound.toString());
+
+  let market = getOrCreateMarket(event.params.market.toHexString());
+  let marketContractInstance = MarketContract.bind(Address.fromString(event.params.market.toHexString()));
+  market.currentDisputeWindow = marketContractInstance.getDisputeWindow().toHexString();
+
   let dispute = getOrCreateDispute(event.params.market.toHexString());
   let disputeRound = getOrCreateDisputeRound(dispute.currentDisputeRound);
   if (disputeRound.id != disputeRoundId) {

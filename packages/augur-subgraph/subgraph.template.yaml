@@ -49,6 +49,8 @@ dataSources:
       abis:
         - name: Augur
           file: ./abis/Augur.json
+        - name: Market
+          file: ./abis/Market.json
       eventHandlers:
         - event: MarketCreated(indexed address,uint256,string,address,indexed address,address,uint256,int256[],uint8,uint256,bytes32[],uint256,uint256)
           handler: handleMarketCreated
