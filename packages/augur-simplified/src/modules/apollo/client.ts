@@ -153,6 +153,8 @@ const getCashTokenData = async (
   return (bulkResults || []).reduce((p, a) => ({ ...p, [a.address]: a }), {});
 };
 
+// https://thegraph.com/explorer/subgraph/augurproject/augur-v2-staging
+// kovan playground
 const getClientConfig = (): { augurClient: string; blockClient: string } => {
   const { networkId } = PARA_CONFIG;
   const clientConfig = {

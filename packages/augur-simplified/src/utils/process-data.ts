@@ -24,6 +24,7 @@ import {
 } from './format-number';
 import {
   BUY,
+  MARKET_STATUS,
   OUTCOME_INVALID_NAME,
   OUTCOME_NO_NAME,
   OUTCOME_YES_NAME,
@@ -48,6 +49,10 @@ interface GraphMarket {
     id: string;
     reportingFee: string;
   };
+  currentDisputeWindow?: {
+    id: string,
+    endTime: string,
+  }
 }
 
 interface GraphClaims {
@@ -200,12 +205,17 @@ const shapeMarketInfo = (
   );
   const reportingFeeAsPercent = new BN(1)
     .dividedBy(new BN(market.universe.reportingFee))
+    .div(1000)
     .times(100);
 
   const shareTokenCashes = Object.values(cashes).reduce(
     (p, c) => ({ ...p, [c.shareToken.toLowerCase()]: c }),
     {}
   );
+  const currentTime= Number(new Date().getTime() / 1000);
+  // set market awaiting finalized to finalized
+  const isFinalized = market?.currentDisputeWindow?.endTime ? currentTime > Number(market?.currentDisputeWindow?.endTime) : false;
+
   const claimedProceeds = market.tradingProceedsClaimed
     .filter((t) => t.numPayoutTokens !== '0')
     .map((t) => {
@@ -243,9 +253,10 @@ const shapeMarketInfo = (
     settlementFee: String(feeAsPercent.plus(reportingFeeAsPercent)),
     outcomes: shapeOutcomes(market.outcomes),
     amm: ammExchange,
-    reportingState: market.status,
+    reportingState: isFinalized ? MARKET_STATUS.FINALIZED : market.status,
     claimedProceeds,
     isInvalid: false,
+    isFinalized
   };
 };
 

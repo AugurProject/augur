@@ -50,6 +50,10 @@ export const GET_MARKETS = blockNumber => {
     prices
     designatedReporter
     extraInfoRaw
+    currentDisputeWindow {
+      id
+      endTime
+    }
     shareTokens {
       id
     }
