@@ -148,7 +148,6 @@ const formatConnectorName = (connector) => {
 }
 
 interface AccountDetailsProps {
-  toggleWalletModal: Function;
   openOptions: Function;
   darkMode: boolean;
   transactions: object[];

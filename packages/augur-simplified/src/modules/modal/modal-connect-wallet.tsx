@@ -13,7 +13,6 @@ import Loader from '../ConnectAccount/components/Loader';
 import AccountDetails from '../ConnectAccount/components/AccountDetails';
 import { useAppStatusStore } from '../stores/app-status';
 import classNames from 'classnames';
-import { MODAL_CONNECT_WALLET } from '../constants';
 import { useUserStore } from '../stores/user';
 import {NETWORK_NAMES} from 'modules/stores/constants';
 
@@ -75,7 +74,7 @@ const PendingWalletView = ({
               setPendingError(false);
               connector && tryActivation(connector);
             }}
-            text="Try again"
+            text='Try again'
           />
         </div>
       ) : (
@@ -88,20 +87,18 @@ const PendingWalletView = ({
         const wallet = SUPPORTED_WALLETS[key];
 
         if (wallet.connector === connector) {
-          if (wallet.connector === injected) {
-            if (isMetamask && wallet.name !== 'MetaMask') {
-              return null;
-            }
-            if (!isMetamask && wallet.name === 'MetaMask') {
-              return null;
-            }
+          if (
+            wallet.connector === injected &&
+            ((isMetamask && wallet.name !== 'MetaMask') || (!isMetamask && wallet.name === 'MetaMask'))
+          ) {
+            return null;
           }
+
           return (
             <WalletButton
               id={`connect-${key}`}
               key={key}
               text={wallet.name}
-              // subheader={wallet.description}
               icon={
                 <img
                   src={
@@ -134,8 +131,7 @@ const ModalConnectWallet = ({
   const {
     isLogged,
     isMobile,
-    actions: { closeModal, setModal },
-    modal: { type },
+    actions: { closeModal },
   } = useAppStatusStore();
   const {
     actions: { removeTransaction, logout },
@@ -149,33 +145,12 @@ const ModalConnectWallet = ({
   const [pendingError, setPendingError] = useState<boolean>();
   const previousAccount = usePrevious(account);
   const [walletList, setWalletList] = useState();
-  const toggleModal = useCallback(() => {
-    if (type === MODAL_CONNECT_WALLET) {
-      closeModal();
-    } else {
-      setModal({
-        type,
-        darkMode,
-        autoLogin,
-        transactions,
-      });
-    }
-  }, [autoLogin, closeModal, darkMode, setModal, transactions, type]);
 
-  const tryActivation = useCallback(
-    (connector: AbstractConnector | undefined) => {
-      let name = '';
-      Object.keys(SUPPORTED_WALLETS).map((key) => {
-        if (connector === SUPPORTED_WALLETS[key].connector) {
-          name = SUPPORTED_WALLETS[key].name;
-          return name;
-        }
-        return true;
-      });
+  const tryActivation = useCallback((connector: AbstractConnector | undefined) => {
       setPendingWallet(connector); // set wallet for pending view
       setWalletView(WALLET_VIEWS.PENDING);
 
-      // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
+      // if the connector is WalletConnect and the user has already tried to connect, manually reset the connector
       if (
         connector instanceof WalletConnectConnector &&
         connector.walletConnectProvider?.wc?.uri
@@ -209,13 +184,7 @@ const ModalConnectWallet = ({
       tryActivation(option.connector);
       setWalletView(WALLET_VIEWS.ACCOUNT);
     }
-  }, [autoLogin, tryActivation, account, previousAccount, toggleModal]);
-
-  // always reset to account view
-  // close wallet modal if fortmatic modal is active
-  useEffect(() => {
-    setPendingError(false);
-  }, [toggleModal]);
+  }, [autoLogin, tryActivation, account, previousAccount]);
 
   // close modal when a connection is successful
   const activePrevious = usePrevious(active);
@@ -242,6 +211,26 @@ const ModalConnectWallet = ({
     const walletButtons = Object.keys(SUPPORTED_WALLETS)
       .map((key) => {
         const wallet = SUPPORTED_WALLETS[key];
+        const commonWalletButtonProps = {
+          action: () =>
+            wallet.connector !== connector &&
+            !wallet.href &&
+            tryActivation(wallet.connector),
+          href: wallet.href,
+          icon: (
+            <img
+              src={
+                require('modules/ConnectAccount/assets/' + wallet.iconName).default
+              }
+              alt={wallet.name}
+            />
+          ),
+          id: `connect-${key}`,
+          key,
+          selected: isLogged && wallet?.connector === connector,
+          text: wallet.name,
+        }
+
         if (isMobile) {
           if (
             !window['web3'] &&
@@ -251,26 +240,7 @@ const ModalConnectWallet = ({
             wallet.name !==  SUPPORTED_WALLETS['INJECTED'].name &&
             wallet.connector !== portis
           ) {
-            return {
-              action: () =>
-                wallet.connector !== connector &&
-                !wallet.href &&
-                tryActivation(wallet.connector),
-              id: `connect-${key}`,
-              key,
-              selected: isLogged && wallet?.connector === connector,
-              href: wallet.href,
-              text: wallet.name,
-              icon: (
-                <img
-                  src={
-                    require('modules/ConnectAccount/assets/' + wallet.iconName)
-                      .default
-                  }
-                  alt={wallet.name}
-                />
-              ),
-            };
+            return commonWalletButtonProps;
           } else {
             if (
               (wallet.name === 'MetaMask' && !isMetamask) ||
@@ -280,27 +250,7 @@ const ModalConnectWallet = ({
             }
 
             if (wallet.mobile && wallet.connector !== portis) {
-
-
-              return {
-                action: () =>
-                  wallet.connector !== connector &&
-                  !wallet.href &&
-                  tryActivation(wallet.connector),
-                id: `connect-${key}`,
-                key,
-                selected: isLogged && wallet?.connector === connector,
-                href: wallet.href,
-                text: wallet.name,
-                icon: (
-                  <img
-                    src={
-                      require('modules/ConnectAccount/assets/' + wallet.iconName).default
-                    }
-                    alt={wallet.name}
-                  />
-                ),
-              };
+              return commonWalletButtonProps;
             }
           }
         } else {
@@ -308,12 +258,10 @@ const ModalConnectWallet = ({
             if (!(window['web3'] || window['ethereum'])) {
               if (wallet.name === SUPPORTED_WALLETS['METAMASK'].name) {
                 return {
-                  id: `connect-${key}`,
-                  key,
+                  ...commonWalletButtonProps,
                   text: 'Install Metamask',
                   href: 'https://metamask.io/',
                   icon: <img src={MetamaskIcon} alt={wallet.name} />,
-                  selected: wallet?.connector === connector,
                 };
               } else {
                 return null;
@@ -326,26 +274,7 @@ const ModalConnectWallet = ({
             }
           }
           if (!wallet.mobileOnly) {
-            return {
-              id: `connect-${key}`,
-              action: () =>
-                wallet.connector === connector
-                  ? setWalletView(WALLET_VIEWS.ACCOUNT)
-                  : !wallet.href && tryActivation(wallet.connector),
-              key,
-              selected: wallet?.connector === connector,
-              href: wallet.href,
-              text: wallet.name,
-              icon: (
-                <img
-                  src={
-                    require('modules/ConnectAccount/assets/' + wallet.iconName)
-                      .default
-                  }
-                  alt={wallet.name}
-                />
-              ),
-            };
+            return commonWalletButtonProps;
           }
         }
         return null;
@@ -395,7 +324,6 @@ const ModalConnectWallet = ({
             />
           ) : account && walletView === WALLET_VIEWS.ACCOUNT ? (
             <AccountDetails
-              toggleWalletModal={() => toggleModal()}
               openOptions={() => setWalletView(WALLET_VIEWS.OPTIONS)}
               darkMode={darkMode}
               transactions={transactions}
@@ -418,8 +346,8 @@ const ModalConnectWallet = ({
               <div className={Styles.LearnMore}>
                 New to Ethereum?{' '}
                 <TextButton
-                  href="https://ethereum.org/wallets/"
-                  text="Learn more about wallets"
+                  href='https://ethereum.org/wallets/'
+                  text='Learn more about wallets'
                 />
               </div>
             </>
