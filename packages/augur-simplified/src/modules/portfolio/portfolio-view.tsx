@@ -8,15 +8,13 @@ import { PrimaryButton } from '../common/buttons';
 import { NetworkMismatchBanner } from '../common/labels';
 import { EthIcon, UsdIcon } from '../common/icons';
 import { keyedObjToArray, useCanExitCashPosition } from '../stores/utils';
-import { ETH, TX_STATUS, USDC } from '../constants';
+import { ACTIVITY, ETH, TABLES, TX_STATUS, USDC } from '../constants';
 import { formatCash } from '../../utils/format-number';
 import { createBigNumber } from '../../utils/create-big-number';
 import { claimWinnings } from '../../utils/contract-calls';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
 import { useGraphDataStore } from '../stores/graph-data';
 import { useUserStore } from '../stores/user';
-const TABLES = 'TABLES';
-const ACTIVITY = 'ACTIVITY';
 
 const calculateTotalWinnings = (claimbleMarketsPerCash) => {
   let total = createBigNumber('0');
@@ -128,6 +126,10 @@ export const PortfolioView = () => {
     window.scrollTo(0, 1);
   }, []);
 
+  useEffect(() => {
+    if (!isMobile) setView(TABLES);
+  }, [isMobile])
+
   return (
     <div className={Styles.PortfolioView}>
       <section>
@@ -138,6 +140,7 @@ export const PortfolioView = () => {
           showActivityButton={isMobile}
           setTables={() => setView(TABLES)}
           setActivity={() => setView(ACTIVITY)}
+          view={view}
         />
         {view === ACTIVITY && <Activity />}
       </section>

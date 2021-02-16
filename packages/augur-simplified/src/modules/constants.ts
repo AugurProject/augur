@@ -66,6 +66,8 @@ export const CASH_LABEL_FORMATS = {
 // Portfolio table views
 export const POSITIONS = 'positions';
 export const LIQUIDITY = 'liquidity';
+export const TABLES = 'TABLES';
+export const ACTIVITY = 'ACTIVITY';
 
 // top categories
 export const MEDICAL = 'medical';
@@ -254,4 +256,3 @@ export const DEFAULT_MARKET_VIEW_SETTINGS = {
 };
 
 export const CREATE = 'create';
-
