@@ -254,7 +254,7 @@ const shapeMarketInfo = (
     fee: String(feeAsPercent),
     reportingFee: String(reportingFeeAsPercent),
     settlementFee: String(feeAsPercent.plus(reportingFeeAsPercent)),
-    outcomes: shapeOutcomes(market.outcomes),
+    outcomes: shapeOutcomes(reportingState, market.outcomes),
     amm: ammExchange,
     reportingState,
     claimedProceeds,
@@ -262,10 +262,10 @@ const shapeMarketInfo = (
   };
 };
 
-const shapeOutcomes = (graphOutcomes: GraphMarketOutcome[]): MarketOutcome[] =>
+const shapeOutcomes = (reportingState: string, graphOutcomes: GraphMarketOutcome[]): MarketOutcome[] =>
   (graphOutcomes || []).map((g) => ({
     id: Number(g.id.split('-')[1]),
-    isFinalNumerator: g.isFinalNumerator,
+    isFinalNumerator: reportingState === MARKET_STATUS.FINALIZED,
     payoutNumerator: g.payoutNumerator,
     name: g.value,
     isInvalid: g.id.indexOf('-0') > -1,
@@ -279,7 +279,7 @@ const shapeAmmExchange = (
   market: GraphMarket
 ): AmmExchange => {
   const marketId = market.id;
-  const outcomes = shapeOutcomes(market.outcomes);
+  const outcomes = shapeOutcomes(null, market.outcomes);
   const cash: Cash = cashes[amm.shareToken.cash.id];
   let transactions = [];
   transactions = transactions.concat(shapeEnterTransactions(amm.enters, cash));
