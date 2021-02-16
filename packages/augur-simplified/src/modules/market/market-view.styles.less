@@ -345,18 +345,21 @@
       }
 
       &:last-of-type:not(:first-of-type) {
-
         > button {
           display: none;
         }
 
         > div {
+          height: 0;
           top: 100%;
-          transition: top 200ms ease-in-out;
+          overflow: hidden;
+          transition: top 200ms ease-in-out, height 200ms ease-in-out;
         }
 
         &.ShowTradingForm {
           > div {
+            height: 100vh;
+            overflow: auto;
             top: -@simple-top-bar-height;
           }
         }
