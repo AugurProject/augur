@@ -176,6 +176,8 @@ type Market @entity {
   amms: [AMMExchange!]! @derivedFrom(field: "market")
 
   tradingProceedsClaimed: [TradingProceedsClaimed!]! @derivedFrom(field: "market")
+
+  currentDisputeWindow: DisputeWindow
 }
 
 interface MarketEvent {
@@ -629,6 +631,8 @@ type DisputeWindow @entity {
 
   "Timestamp of the end of the window"
   endTime: BigInt!
+
+  markets: [Market!]! @derivedFrom(field: "currentDisputeWindow")
 }
 
 type DisputeRound @entity {
