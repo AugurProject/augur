@@ -4,15 +4,44 @@ import { EthIcon, LinkIcon, UsdIcon, XIcon } from './icons';
 import Styles from './inputs.styles.less';
 import { Cash } from '@augurproject/core/build/libraries/GenericContractInterfaces';
 import { ETH } from '@augurproject/sdk-lite/build';
-import { getCashFormat, formatCash, formatSimpleShares, formatCashPrice, formatDai } from '../../utils/format-number';
-import { USDC, ERROR_AMOUNT, SHARES, OUTCOME_YES_NAME, YES_NO } from '../constants';
+import {
+  getCashFormat,
+  formatCash,
+  formatSimpleShares,
+  formatCashPrice,
+  formatDai,
+} from '../../utils/format-number';
+import {
+  USDC,
+  ERROR_AMOUNT,
+  SHARES,
+  OUTCOME_YES_NAME,
+  YES_NO,
+} from '../constants';
 import { useAppStatusStore } from '../stores/app-status';
 import { TinyButton } from './buttons.styles.less';
 import { CurrencyDropdown } from './selection';
 import { AmmOutcome } from '../types';
 
 const ENTER_CHAR_CODE = 13;
-export const SearchInput = ({ value, onChange, clearValue }) => {
+
+interface SearchInputProps {
+  value: string;
+  onChange: Function;
+  clearValue: Function;
+  showFilter: boolean;
+}
+
+export const SearchInput = ({
+  value,
+  onChange,
+  clearValue,
+  showFilter,
+}: SearchInputProps) => {
+  useEffect(() => {
+    if (showFilter) input.current && input.current.focus();
+  }, [showFilter]);
+
   const input = useRef();
   const keypressHandler = (e) => {
     if (e.charCode === ENTER_CHAR_CODE) {
@@ -49,7 +78,6 @@ export const TextInput = ({ placeholder, value, onChange }) => {
     />
   );
 };
-
 
 interface AmountInputProps {
   updateInitialAmount: (string) => void;
@@ -121,7 +149,7 @@ export const AmountInput = ({
         className={classNames(Styles.AmountInputField, {
           [Styles.Edited]: amount !== '',
           [Styles.showCurrencyDropdown]: showCurrencyDropdown,
-          [Styles.Error]: error
+          [Styles.Error]: error,
         })}
       >
         <span>{chosenCash !== SHARES && prepend && symbol}</span>
@@ -164,7 +192,6 @@ export const AmountInput = ({
     </div>
   );
 };
-
 
 const PLACEHOLDER = '0';
 
