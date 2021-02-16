@@ -208,9 +208,16 @@ const shapeMarketInfo = (
     (p, c) => ({ ...p, [c.shareToken.toLowerCase()]: c }),
     {}
   );
-  const currentTime= Number(new Date().getTime() / 1000);
+  let reportingState = MARKET_STATUS.TRADING;
+  const currentTime = Number(Math.floor(new Date().getTime() / 1000));
+
+  if (currentTime > Number(market.endTimestamp)) {
+    reportingState = MARKET_STATUS.REPORTING;
+  }
   // set market awaiting finalized to finalized
-  const isFinalized = market?.currentDisputeWindow?.endTime ? currentTime > Number(market?.currentDisputeWindow?.endTime) : false;
+  if (market?.currentDisputeWindow?.endTime && Number(currentTime) > Number(market?.currentDisputeWindow?.endTime)) {
+    reportingState = MARKET_STATUS.FINALIZED
+  }
 
   const claimedProceeds = market.tradingProceedsClaimed
     .filter((t) => t.numPayoutTokens !== '0')
@@ -249,10 +256,9 @@ const shapeMarketInfo = (
     settlementFee: String(feeAsPercent.plus(reportingFeeAsPercent)),
     outcomes: shapeOutcomes(market.outcomes),
     amm: ammExchange,
-    reportingState: isFinalized ? MARKET_STATUS.FINALIZED : market.status,
+    reportingState,
     claimedProceeds,
     isInvalid: false,
-    isFinalized
   };
 };
 
@@ -450,9 +456,8 @@ const shapeEnterTransactions = (
     const cashValueUsd = new BN(properties.value)
       .times(cash?.usdPrice)
       .toFixed(2);
-    const subheader = `Swap ${cash.name} for ${
-      e.noShares !== '0' ? 'No Shares' : 'Yes Shares'
-    }`;
+    const subheader = `Swap ${cash.name} for ${e.noShares !== '0' ? 'No Shares' : 'Yes Shares'
+      }`;
     return {
       ...e,
       tx_type: TransactionTypes.ENTER,
@@ -471,9 +476,8 @@ const shapeExitTransactions = (
 ): AmmTransaction[] => {
   return transactions.map((e) => {
     const properties = formatTransaction(e, cash);
-    const subheader = `Swap ${
-      e.noShares !== '0' ? 'No Shares' : 'Yes Shares'
-    } for ${cash.name}`;
+    const subheader = `Swap ${e.noShares !== '0' ? 'No Shares' : 'Yes Shares'
+      } for ${cash.name}`;
     const cashValueUsd = new BN(properties.value)
       .abs()
       .times(cash?.usdPrice)
@@ -741,18 +745,17 @@ const getActivityType = (
       const shares =
         tx.yesShares !== '0'
           ? convertOnChainSharesToDisplayShareAmount(
-              tx.yesShares,
-              cash.decimals
-            )
+            tx.yesShares,
+            cash.decimals
+          )
           : convertOnChainSharesToDisplayShareAmount(
-              tx.noShares,
-              cash.decimals
-            );
+            tx.noShares,
+            cash.decimals
+          );
       const shareType = tx.yesShares !== '0' ? 'Yes' : 'No';
       const formattedPrice = formatCashPrice(tx.price, cash.name);
-      subheader = `${
-        formatSimpleShares(String(shares)).full
-      } Shares of ${shareType} @ ${formattedPrice.full}`;
+      subheader = `${formatSimpleShares(String(shares)).full
+        } Shares of ${shareType} @ ${formattedPrice.full}`;
       // when design wants to add usd value
       const cashValue = convertOnChainCashAmountToDisplayCashAmount(
         tx.cash,
@@ -833,7 +836,7 @@ export const formatUserTransactionActvity = (
     }, [])
     .sort((a, b) => (a.timestamp < b.timestamp ? 1 : -1));
 
-    // form array of grouped by date activities
+  // form array of grouped by date activities
   return [...transactions]
     .reduce((p, t) => {
       const item = p.find((x) => x.date === t.date);

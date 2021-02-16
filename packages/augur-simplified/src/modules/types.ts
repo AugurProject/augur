@@ -216,7 +216,6 @@ export interface MarketInfo {
   reportingState: string;
   claimedProceeds: ClaimedProceeds[]
   isInvalid: boolean;
-  isFinalized: boolean;
 }
 
 export interface MarketOutcome {
