@@ -498,7 +498,7 @@ export const getUserBalances = async (
   //const lpAbi = AMMFactoryAbi;
   const lpAbi = ERC20ABI;
   // finalized markets
-  const finalizedMarkets = Object.values(markets).filter(m => m.isFinalized);
+  const finalizedMarkets = Object.values(markets).filter(m => m.reportingState === MARKET_STATUS.FINALIZED);
   const finalizedMarketIds = finalizedMarkets.map(f => f.marketId);
   const finalizedAmmExchanges = Object.values(ammExchanges).filter(a => finalizedMarketIds.includes(a.marketId));
 

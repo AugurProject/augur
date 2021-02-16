@@ -177,7 +177,7 @@ export const PositionFooter = ({
 
   const claim = async () => {
     if (amm && account) {
-      if (canClaimETH) {
+      if (canClaimETH || !isETHClaim) {
         claimWinnings(account, [marketId], amm?.cash)
           .then((response) => {
             // handle transaction response here
