@@ -741,7 +741,7 @@ const ModalAddLiquidity = ({
               <div className={Styles.LineBreak}>
                 <span className={Styles.SmallLabel}>
                   {LIQUIDITY_STRINGS[modalType].customToken.title}
-                  {generateTooltip('Custom token title.', 'customTokenTitle')}
+                  {generateTooltip('Name your AMM outcome share tokens, so they can be distinguished on other trading platforms.', 'customTokenTitle')}
                 </span>
                 <TextInput
                   placeholder="Enter a custom name"
