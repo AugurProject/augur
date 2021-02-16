@@ -223,11 +223,6 @@
   }
 }
 
-.CategoryIcon,
-.CategoryLabel {
-  .RoundedLabel;
-}
-
 .StatsRow {
   .SimpleBorder;
 
@@ -345,14 +340,23 @@
       }
 
       &:last-of-type:not(:first-of-type) {
-        display: none;
-
         > button {
           display: none;
         }
 
+        > div {
+          height: 0;
+          top: 100%;
+          overflow: hidden;
+          transition: top 200ms ease-in-out, height 200ms ease-in-out;
+        }
+
         &.ShowTradingForm {
-          display: flex;
+          > div {
+            height: 100vh;
+            overflow: auto;
+            top: -@simple-top-bar-height;
+          }
         }
       }
     }

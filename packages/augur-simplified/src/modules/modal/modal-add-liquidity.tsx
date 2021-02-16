@@ -217,6 +217,7 @@ const ModalAddLiquidity = ({
   );
 
   const [customName, setCustomName] = useState('');
+  const customNameCapitlized = customName.charAt(0).toUpperCase() + customName.slice(1);
 
   const feePercentFormatted = useMemo(() => {
     const feeOption = TRADING_FEE_OPTIONS.find(
@@ -598,15 +599,15 @@ const ModalAddLiquidity = ({
         breakdown: [
           {
             label: 'Yes',
-            value: `y${customName}`,
+            value: `y${customNameCapitlized}`,
           },
           {
             label: 'No',
-            value: `n${customName}`,
+            value: `n${customNameCapitlized}`,
           },
           {
             label: 'Invalid',
-            value: `i${customName}`,
+            value: `i${customNameCapitlized}`,
           },
         ],
       },
@@ -748,7 +749,7 @@ const ModalAddLiquidity = ({
                   value={customName}
                   onChange={(value) =>
                     setCustomName(
-                      value.charAt(0).toUpperCase() + value.slice(1)
+                      value
                     )
                   }
                 />
