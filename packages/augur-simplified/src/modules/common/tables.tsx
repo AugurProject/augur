@@ -12,6 +12,7 @@ import {
   SWAP,
   TX_STATUS,
   ETH,
+  TABLES,
 } from '../constants';
 import { SmallDropdown } from './selection';
 import {
@@ -488,6 +489,7 @@ interface PositionsLiquidityViewSwitcherProps {
   showActivityButton?: boolean;
   setActivity?: Function;
   setTables?: Function;
+  view?: string;
 }
 
 const POSITIONS_LIQUIDITY_LIMIT = 5;
@@ -497,8 +499,14 @@ export const PositionsLiquidityViewSwitcher = ({
   showActivityButton,
   setActivity,
   setTables,
+  view
 }: PositionsLiquidityViewSwitcherProps) => {
   const [tableView, setTableView] = useState(POSITIONS);
+  useEffect(() => {
+    if (view === TABLES && tableView === null) {
+      setTableView(POSITIONS);
+    }
+  }, [view]);
   const [page, setPage] = useState(1);
   const {
     balances: { lpTokens, marketShares },
