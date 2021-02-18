@@ -172,8 +172,7 @@ export const PositionFooter = ({
   } = useUserStore();
   const canClaimETH = useCanExitCashPosition(claimableWinnings?.sharetoken);
   const isETHClaim = amm?.cash?.name === ETH;
-  const { addresses } = PARA_CONFIG;
-  const { WethWrapperForAMMExchange } = addresses;
+  const { addresses: { WethWrapperForAMMExchange } } = PARA_CONFIG;
 
   const claim = async () => {
     if (amm && account) {
