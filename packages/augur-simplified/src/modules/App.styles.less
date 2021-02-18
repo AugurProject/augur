@@ -17,6 +17,11 @@
   }
 }
 
+.ModalShowing {
+  max-height: 100vh;
+  overflow: hidden;
+}
+
 .SidebarOut {
   @media @breakpoint-mobile-tablet {
     max-height: 100vh;
@@ -34,19 +39,7 @@
 
 
 body {
-  display: flex;
-  flex: 1;
-
-  > div {
-    display: flex;
-    flex: 1;
-  }
-
   @media @breakpoint-mobile-tablet {
     --is-mobile: true;
   }
-}
-
-html {
-  display: flex;
 }

@@ -82,7 +82,6 @@ const AppBody = () => {
       isMounted = false;
       clearInterval(intervalId);
     };
-    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -94,18 +93,12 @@ const AppBody = () => {
     return () => {
       window.removeEventListener('resize', handleRezize);
     };
-    // eslint-disable-next-line
   }, []);
 
   const sidebarOut = sidebarType && isMobile;
   useEffect(() => {
     if (showTradingForm) {
       window.scrollTo(0, 1);
-    }
-    if (showTradingForm || modalShowing || sidebarOut) {
-      document.body.classList.add('App--noScroll');
-    } else {
-      document.body.classList.remove('App--noScroll');
     }
   }, [showTradingForm, modalShowing, sidebarOut]);
 
@@ -155,7 +148,6 @@ const AppBody = () => {
           });
         });
     }
-    // eslint-disable-next-line
   }, [loginAccount, blocknumber, transactions]);
 
   return (
@@ -164,6 +156,7 @@ const AppBody = () => {
       className={classNames(Styles.App, {
         [Styles.SidebarOut]: sidebarOut,
         [Styles.TwoToneContent]: path !== MARKETS,
+        [Styles.ModalShowing]: modalShowing || showTradingForm
       })}
     >
       {modalShowing && <ModalView />}
