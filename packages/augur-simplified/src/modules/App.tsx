@@ -156,6 +156,7 @@ const AppBody = () => {
       className={classNames(Styles.App, {
         [Styles.SidebarOut]: sidebarOut,
         [Styles.TwoToneContent]: path !== MARKETS,
+        [Styles.ModalShowing]: modalShowing
       })}
     >
       {modalShowing && <ModalView />}
