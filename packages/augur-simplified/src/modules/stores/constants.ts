@@ -15,7 +15,6 @@ export const DEFAULT_GRAPH_DATA_STATE: GraphDataState = {
   cashes: {},
   errors: null,
   markets: {},
-  gasPrices: {}
 };
 
 export const GRAPH_DATA_KEYS = {
@@ -24,7 +23,6 @@ export const GRAPH_DATA_KEYS = {
   CASHES: 'cashes',
   ERRORS: 'errors',
   MARKETS: 'markets',
-  GAS_PRICES: 'gasPrices'
 };
 
 export const GRAPH_DATA_ACTIONS = {

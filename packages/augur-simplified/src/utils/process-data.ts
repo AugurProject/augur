@@ -9,7 +9,6 @@ import {
   MarketInfo,
   ActivityData,
   ProcessedData,
-  GasPriceInfo,
 } from '../modules/types';
 import { BigNumber as BN } from 'bignumber.js';
 import { getDayFormat, getDayTimestamp, getTimeFormat } from './date-utils';
@@ -140,11 +139,10 @@ interface GraphData {
   past: GraphMarket[];
   paraShareTokens: {};
   cashes: { [address: string]: Cash };
-  gasPrices: GasPriceInfo
 }
 
 export const processGraphMarkets = (graphData: GraphData): ProcessedData => {
-  const { markets: rawMarkets, past: rawPastMarkets, cashes, gasPrices } = graphData;
+  const { markets: rawMarkets, past: rawPastMarkets, cashes } = graphData;
   const keyedMarkets: { [marketId: string]: GraphMarket } = rawMarkets.reduce(
     (group, a) => ({ ...group, [a.id]: a }),
     {}
@@ -194,7 +192,7 @@ export const processGraphMarkets = (graphData: GraphData): ProcessedData => {
     }
   });
 
-  return { cashes, markets, ammExchanges, gasPrices, errors: null };
+  return { cashes, markets, ammExchanges, errors: null };
 };
 
 const shapeMarketInfo = (
