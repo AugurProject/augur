@@ -28,8 +28,9 @@ import {
   OUTCOME_INVALID_NAME,
   OUTCOME_NO_NAME,
   OUTCOME_YES_NAME,
-  SEC_IN_YEAR,
+  DAYS_IN_YEAR,
   SELL,
+  SEC_IN_DAY,
 } from '../modules/constants';
 import { timeSinceTimestamp } from './time-since';
 
@@ -346,7 +347,11 @@ const shapeAmmExchange = (
     pastLiquidity,
     cash.usdPrice
   );
-  const apy = calculateAmmApy(volumeTotalUSD, amm, liquidityUSD, addLiquidity);
+
+  // TODO: feeDecimal is off by one on graph data, calculating manually update if fixed
+  const feeDecimal = String(new BN(amm.fee).div(1000));
+  const feeInPercent = String(new BN(feeDecimal).times(100));
+  const apy = calculateAmmApy(volumeTotalUSD, amm, feeDecimal, liquidityUSD, addLiquidity);
 
   const priceNoFixed = priceNo.toFixed(4);
   const priceYesFixed = priceYes.toFixed(4);
@@ -370,10 +375,6 @@ const shapeAmmExchange = (
       name: OUTCOME_YES_NAME,
     },
   ];
-
-  // TODO: feeDecimal is off by one on graph data, calculating manually update if fixed
-  const feeDecimal = String(new BN(amm.fee).div(1000));
-  const feeInPercent = String(new BN(feeDecimal).times(100));
 
   return {
     id: amm.id,
@@ -414,6 +415,7 @@ const shapeAmmExchange = (
 const calculateAmmApy = (
   volumeTotalUSD: number,
   amm: GraphAmmExchange,
+  feeDecimal: string,
   liquidityUSD: number,
   addLiquidity: GraphAddLiquidity[] = []
 ): string => {
@@ -428,23 +430,26 @@ const calculateAmmApy = (
     liquidityUSD === 0 ||
     volumeTotalUSD === 0 ||
     startTimestamp === 0 ||
-    amm.fee === '0'
+    feeDecimal === '0'
   )
     return '0';
 
-  const fee = new BN(amm.fee).div(new BN(1000));
-  const totalFeesInUsd = new BN(volumeTotalUSD).times(new BN(fee));
+  const totalFeesInUsd = new BN(volumeTotalUSD).times(new BN(feeDecimal));
   const currTimestamp = Math.floor(new Date().getTime() / 1000); // current time in unix timestamp
   const secondsPast = currTimestamp - startTimestamp;
-  const percentFeeLiquidity = totalFeesInUsd
+  const pastDays = Math.floor(new BN(secondsPast).div(SEC_IN_DAY).toNumber());
+
+  const tradeFeeLiquidityPerDay = totalFeesInUsd
     .div(new BN(liquidityUSD))
-    .div(secondsPast);
-  const percentPerSecondForYear = percentFeeLiquidity
-    .times(SEC_IN_YEAR)
+    .div(new BN(pastDays || 1));
+
+  const tradeFeePerDayInYear = tradeFeeLiquidityPerDay
+    .times(DAYS_IN_YEAR)
     .abs()
+    .times(100)
     .toFixed(4);
 
-  return String(percentPerSecondForYear);
+  return String(tradeFeePerDayInYear);
 };
 
 const shapeEnterTransactions = (

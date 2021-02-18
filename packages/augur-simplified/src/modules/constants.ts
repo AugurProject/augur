@@ -46,7 +46,8 @@ export const THOUSAND = createBigNumber(1000);
 export const MILLION = THOUSAND.times(THOUSAND);
 export const BILLION = MILLION.times(THOUSAND);
 export const TRILLION = BILLION.times(THOUSAND);
-export const SEC_IN_YEAR = createBigNumber(86400).times(createBigNumber(365));
+export const DAYS_IN_YEAR = createBigNumber(365);
+export const SEC_IN_DAY = createBigNumber(86400);
 
 // # Asset Types
 export const ETH = 'ETH';
