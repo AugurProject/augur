@@ -15,6 +15,8 @@ import { claimWinnings } from '../../utils/contract-calls';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
 import { useGraphDataStore } from '../stores/graph-data';
 import { useUserStore } from '../stores/user';
+import { PARA_CONFIG } from '../stores/constants';
+import { approveERC1155Contract } from '../hooks/use-approval-callback';
 
 const calculateTotalWinnings = (claimbleMarketsPerCash) => {
   let total = createBigNumber('0');
@@ -30,10 +32,11 @@ const calculateTotalWinnings = (claimbleMarketsPerCash) => {
   };
 };
 
-const handleClaimAll = (loginAccount, cash, marketIds, addTransaction, updateTransaction) => {
+const handleClaimAll = (loginAccount, cash, marketIds, addTransaction, updateTransaction, canClaim) => {
   const from = loginAccount?.account;
   const chainId = loginAccount?.chainId;
-  if (from) {
+  const { addresses: { WethWrapperForAMMExchange } } = PARA_CONFIG;
+  if (from && canClaim) {
     claimWinnings(from, marketIds, cash).then((response) => {
       // handle transaction response here
       if (response) {
@@ -57,6 +60,18 @@ const handleClaimAll = (loginAccount, cash, marketIds, addTransaction, updateTra
     }).catch(e => {
       // handle error here
     })
+  } else if (from) {
+    const approveEth = async () => {
+      const tx = await approveERC1155Contract(
+        cash?.shareToken,
+        `To Claim Winnings`,
+        WethWrapperForAMMExchange,
+        loginAccount
+      );
+      addTransaction(tx);
+    }
+    // need to approve here
+    approveEth();
   }
 }
 
@@ -97,7 +112,7 @@ export const ClaimWinningsSection = () => {
           })`}
           icon={UsdIcon}
           action={() => {
-            handleClaimAll(loginAccount, usdcCash, USDCTotals.marketIds, addTransaction, updateTransaction)
+            handleClaimAll(loginAccount, usdcCash, USDCTotals.marketIds, addTransaction, updateTransaction, true)
           }}
         />
       )}
@@ -108,7 +123,7 @@ export const ClaimWinningsSection = () => {
           })`}
           icon={EthIcon}
           action={() => {
-            handleClaimAll(loginAccount, ethCash, ETHTotals.marketIds, addTransaction, updateTransaction)
+            handleClaimAll(loginAccount, ethCash, ETHTotals.marketIds, addTransaction, updateTransaction, canClaimETH)
           }}
         />
       )}

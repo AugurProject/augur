@@ -110,7 +110,8 @@ export function useCanExitCashPosition(shareToken) {
     updateTransaction,
     transactions,
     account,
-    blocknumber
+    blocknumber,
+    shareToken
   ]);
 
   return canExitPosition;
