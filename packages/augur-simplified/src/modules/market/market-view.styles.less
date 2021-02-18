@@ -350,20 +350,26 @@
           overflow: hidden;
           transition: top 200ms ease-in-out, height 200ms ease-in-out;
         }
-
-        &.ShowTradingForm {
-          > div {
-            height: 100vh;
-            overflow: auto;
-            top: -@simple-top-bar-height;
-          }
-        }
       }
     }
   }
 
   .MobileLiquidSection {
     display: block;
+  }
+}
+
+.MarketView > section.ShowTradingForm:last-of-type:not(:first-of-type) {
+  > div {
+    height: 100vh;
+    overflow: auto;
+    top: -@simple-top-bar-height;
+  }
+
+  @media @breakpoint-tiny {
+    > div {
+      top: 0;
+    }
   }
 }
 
