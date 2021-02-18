@@ -192,7 +192,7 @@ const MarketsView = () => {
       },
       (err) =>
         updateGraphHeartbeat(
-          { ammExchanges, cashes, markets },
+          { ammExchanges, cashes, markets, gasPrices },
           blocknumber,
           err
         )
