@@ -12,8 +12,11 @@ import { ErrorPolicy, FetchPolicy } from 'apollo-client';
 import { ETH } from '../constants';
 import { SEARCH_MARKETS } from './queries';
 import { PARA_CONFIG } from '../stores/constants';
+import axios from 'axios';
 
 dayjs.extend(utc);
+
+const MAINNET = '1';
 
 const defaultOptions = {
   watchQuery: {
@@ -54,14 +57,17 @@ export function augurV2Client(uri: string) {
 export async function getMarketsData(updateHeartbeat) {
   const cashes = getCashesInfo();
   const clientConfig = getClientConfig();
+  const { networkId } = PARA_CONFIG;
   let response = null;
   let responseUsd = null;
   let newBlock = null;
+  let responseGasPrices = null;
   try {
     newBlock = await getPastDayBlockNumber(clientConfig.blockClient);
     const query = GET_MARKETS(newBlock);
     response = await augurV2Client(clientConfig.augurClient).query({ query });
     responseUsd = await getCashTokenData(cashes);
+    responseGasPrices = await getGasStation(networkId);
   } catch (e) {
     console.error(e);
     updateHeartbeat(null, null, e);
@@ -77,6 +83,7 @@ export async function getMarketsData(updateHeartbeat) {
       {
         ...response.data,
         cashes: responseUsd,
+        gasPrices: responseGasPrices,
       },
       newBlock,
       response?.errors
@@ -158,7 +165,7 @@ const getCashTokenData = async (
 const getClientConfig = (): { augurClient: string; blockClient: string } => {
   const { networkId } = PARA_CONFIG;
   const clientConfig = {
-    '1': {
+    MAINNET: {
       augurClient:
         'https://api.thegraph.com/subgraphs/name/augurproject/augur-v2-staging',
       blockClient:
@@ -177,8 +184,8 @@ const getClientConfig = (): { augurClient: string; blockClient: string } => {
 };
 
 const paraCashes = {
-  '1': {
-    networkId: '1',
+  MAINNET: {
+    networkId: MAINNET,
     Cashes: [
       {
         name: 'ETH',
@@ -234,3 +241,46 @@ const getCashesInfo = (): Cash[] => {
 
   return cashes;
 };
+
+interface GasStation {
+  // all fields but lastUpdate are serialized integers
+  fastest: string;
+  fast: string;
+  standard: string;
+  safeLow: string;
+  lowest: string;
+  lastUpdate: string; // ISO datestamp
+  average?: string; // UI expects this but gnosis gas station does not return it
+}
+
+type MakeGasStationType = (rateLimitSeconds: number) => (networkId: string) => Promise<GasStation>;
+const makeGetGasStation: MakeGasStationType = (rateLimitSeconds: number) => {
+  const rateLimitMS = rateLimitSeconds * 1000;
+  let lastcall = Number(0);
+  let cached: GasStation = null;
+
+  return async (networkId: string) => {
+    if (networkId !== MAINNET) {
+      return {
+        fastest: '5000000000',
+        fast: '4000000000',
+        standard: '1000000000',
+        safeLow: '1000000000',
+        lowest: '1000000000',
+        lastUpdate: (new Date()).toISOString(),
+      }
+    }
+
+    const now = Number(new Date());
+    if (!cached || (lastcall + rateLimitMS < now)) {
+      lastcall = now;
+      cached = await axios.get('https://safe-relay.gnosis.io/api/v1/gas-station/')
+        .then((r) => r.data);
+    }
+
+    return cached
+  }
+};
+
+const RATE_LIMIT_SECONDS = 60 * 5;
+const getGasStation = makeGetGasStation(RATE_LIMIT_SECONDS);

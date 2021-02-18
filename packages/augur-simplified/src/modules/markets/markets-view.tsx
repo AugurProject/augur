@@ -158,6 +158,7 @@ const MarketsView = () => {
     ammExchanges,
     cashes,
     markets,
+    gasPrices,
     actions: { updateGraphHeartbeat },
   } = useGraphDataStore();
   const { sortBy, categories, reportingState, currency } = marketsViewSettings;
@@ -191,7 +192,7 @@ const MarketsView = () => {
       },
       (err) =>
         updateGraphHeartbeat(
-          { ammExchanges, cashes, markets },
+          { ammExchanges, cashes, markets, gasPrices },
           blocknumber,
           err
         )
@@ -224,7 +225,7 @@ const MarketsView = () => {
       },
       (err) =>
         updateGraphHeartbeat(
-          { ammExchanges, cashes, markets },
+          { ammExchanges, cashes, markets, gasPrices },
           blocknumber,
           err
         )

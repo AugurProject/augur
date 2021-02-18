@@ -8,18 +8,19 @@ import {
 } from './constants';
 
 const { UPDATE_GRAPH_HEARTBEAT } = GRAPH_DATA_ACTIONS;
-const { AMM_EXCHANGES, BLOCKNUMBER, CASHES, ERRORS, MARKETS } = GRAPH_DATA_KEYS;
+const { AMM_EXCHANGES, BLOCKNUMBER, CASHES, ERRORS, MARKETS, GAS_PRICES } = GRAPH_DATA_KEYS;
 
 export function GraphDataReducer(state, action) {
   const updatedState = { ...state };
   switch (action.type) {
     case UPDATE_GRAPH_HEARTBEAT: {
-      const { markets, cashes, ammExchanges, errors, blocknumber } = action;
+      const { markets, cashes, ammExchanges, errors, blocknumber, gasPrices } = action;
       updatedState[MARKETS] = markets;
       updatedState[CASHES] = cashes;
       updatedState[AMM_EXCHANGES] = ammExchanges;
       updatedState[ERRORS] = errors || null;
       updatedState[BLOCKNUMBER] = blocknumber;
+      updatedState[GAS_PRICES] = gasPrices;
       break;
     }
     default:
@@ -38,7 +39,7 @@ export const useGraphData = (defaultState = DEFAULT_GRAPH_DATA_STATE) => {
     ...state,
     actions: {
       updateGraphHeartbeat: (
-        { markets, cashes, ammExchanges },
+        { markets, cashes, ammExchanges, gasPrices },
         blocknumber,
         errors
       ) =>
@@ -47,6 +48,7 @@ export const useGraphData = (defaultState = DEFAULT_GRAPH_DATA_STATE) => {
           ammExchanges,
           blocknumber,
           cashes,
+          gasPrices,
           errors,
           markets,
         }),

@@ -684,10 +684,10 @@ export interface OpenOrders {
 }
 
 export interface GasPriceInfo {
-  average: number;
-  fast: number;
-  safeLow: number;
-  userDefinedGasPrice: number;
+  average?: number;
+  fast?: number;
+  safeLow?: number;
+  userDefinedGasPrice?: number;
 }
 
 export enum INVALID_OPTIONS {
@@ -1102,6 +1102,7 @@ export interface ProcessedData {
   ammExchanges: {
     [id: string]: AmmExchange;
   };
+  gasPrices: GasPriceInfo
   errors?: any;
 }
 
@@ -1162,6 +1163,7 @@ export interface GraphDataState {
   markets: {
     [marketIdKey: string]: MarketInfo;
   };
+  gasPrices: GasPriceInfo
 }
 
 export interface UserState {
