@@ -60,8 +60,6 @@ div.Sidebar {
   grid-column: 1;
   grid-row: 2;
   overflow: auto;
-  max-height: calc(100vh - @size-144);
-  height: calc(100vh - @size-144);
   
   > div:not(:last-of-type) {
     margin-bottom: @size-24;
@@ -101,18 +99,4 @@ div.Sidebar {
   .Footer;
 
   justify-content: flex-end;
-}
-
-.MobileBrowser {
-  > div[class*="Body"] {
-    max-height: unset;
-    height: unset;
-  }
-}
-
-.MobileBrowserTall {
-  > div[class*="Body"] {
-    max-height: calc(100vh - @size-260);
-    height: calc(100vh - @size-260);
-  }
 }

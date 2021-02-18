@@ -102,11 +102,6 @@ const AppBody = () => {
     if (showTradingForm) {
       window.scrollTo(0, 1);
     }
-    if (showTradingForm || modalShowing || sidebarOut) {
-      document.body.classList.add('App--noScroll');
-    } else {
-      document.body.classList.remove('App--noScroll');
-    }
   }, [showTradingForm, modalShowing, sidebarOut]);
 
   useEffect(() => {
