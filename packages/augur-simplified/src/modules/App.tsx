@@ -49,6 +49,7 @@ const AppBody = () => {
     ammExchanges,
     cashes,
     markets,
+    gasPrices,
     actions: { updateGraphHeartbeat },
   } = useGraphDataStore();
   const modalShowing = Object.keys(modal).length !== 0;
@@ -61,7 +62,7 @@ const AppBody = () => {
     getMarketsData((graphData, block, errors) => {
       isMounted && !!errors
         ? updateGraphHeartbeat(
-            { ammExchanges, cashes, markets },
+            { ammExchanges, cashes, markets, gasPrices },
             blocknumber,
             errors
           )
@@ -71,7 +72,7 @@ const AppBody = () => {
       getMarketsData((graphData, block, errors) => {
         isMounted && !!errors
           ? updateGraphHeartbeat(
-              { ammExchanges, cashes, markets },
+              { ammExchanges, cashes, markets, gasPrices },
               blocknumber,
               errors
             )
