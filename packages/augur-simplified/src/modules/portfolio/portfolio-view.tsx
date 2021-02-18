@@ -141,6 +141,7 @@ export const PortfolioView = () => {
           setTables={() => setView(TABLES)}
           setActivity={() => setView(ACTIVITY)}
           view={view}
+          claimableFirst
         />
         {view === ACTIVITY && <Activity />}
       </section>
