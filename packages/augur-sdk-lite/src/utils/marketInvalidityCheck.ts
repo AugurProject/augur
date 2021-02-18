@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import { GasStation } from '..';
-import { CLAIM_GAS_COST, DEFAULT_GAS_PRICE_IN_GWEI, EULERS_NUMBER, INVALID_OUTCOME, MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI, SECONDS_IN_A_YEAR, WORST_CASE_FILL } from '../constants';
+import { CLAIM_GAS_COST, DEFAULT_GAS_PRICE_IN_GWEI, EULERS_NUMBER, INVALID_SWAP_GAS_COST, MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI, SECONDS_IN_A_YEAR } from '../constants';
 import { MarketData } from '../logs';
 
 // A Market is marked as True in the invalidFilter if the any bid for Invalid on the book would be profitable to take were the market Valid
@@ -21,7 +21,7 @@ const recalcInvalidFilter = (
 
   // TODO: get better est than 2 outcome estimate
   const estimatedTradeGasCost = ETHInAttoCash.multipliedBy(
-    WORST_CASE_FILL[2]
+    INVALID_SWAP_GAS_COST
   ).div(10 ** 9);
 
   const estimatedClaimGasCost = ETHInAttoCash.multipliedBy(
