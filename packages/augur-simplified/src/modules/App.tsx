@@ -82,7 +82,6 @@ const AppBody = () => {
       isMounted = false;
       clearInterval(intervalId);
     };
-    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -94,7 +93,6 @@ const AppBody = () => {
     return () => {
       window.removeEventListener('resize', handleRezize);
     };
-    // eslint-disable-next-line
   }, []);
 
   const sidebarOut = sidebarType && isMobile;
@@ -150,7 +148,6 @@ const AppBody = () => {
           });
         });
     }
-    // eslint-disable-next-line
   }, [loginAccount, blocknumber, transactions]);
 
   return (

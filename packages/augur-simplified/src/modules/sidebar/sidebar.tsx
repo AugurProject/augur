@@ -148,7 +148,7 @@ export const Sidebar = () => {
   const { sidebarType } = useAppStatusStore();
   return (
     <div
-      className={classNames(Styles.Sidebar)}
+      className={Styles.Sidebar}
     >
       {sidebarType === SIDEBAR_TYPES.FILTERS && <FilterSideBar />}
       {sidebarType === SIDEBAR_TYPES.NAVIGATION && <NavigationSideBar />}
