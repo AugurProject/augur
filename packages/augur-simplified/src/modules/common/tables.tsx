@@ -245,7 +245,7 @@ export const PositionFooter = ({
   );
 };
 
-export const AllPositionTable = ({ page }) => {
+export const AllPositionTable = ({ page, claimableFirst = false }) => {
   const {
     balances: { marketShares },
   } = useUserStore();
@@ -256,7 +256,9 @@ export const AllPositionTable = ({ page }) => {
       claimableWinnings: Winnings;
     }[])
     : [];
-
+  if (claimableFirst) {
+    positions.sort((a, b) => a?.claimableWinnings?.claimableBalance ? -1 : 1);
+  }
   const positionVis = sliceByPage(
     positions,
     page,
@@ -490,6 +492,7 @@ interface PositionsLiquidityViewSwitcherProps {
   setActivity?: Function;
   setTables?: Function;
   view?: string;
+  claimableFirst?: boolean;
 }
 
 const POSITIONS_LIQUIDITY_LIMIT = 5;
@@ -499,7 +502,8 @@ export const PositionsLiquidityViewSwitcher = ({
   showActivityButton,
   setActivity,
   setTables,
-  view
+  view,
+  claimableFirst = false,
 }: PositionsLiquidityViewSwitcherProps) => {
   const [tableView, setTableView] = useState(POSITIONS);
   useEffect(() => {
@@ -580,7 +584,7 @@ export const PositionsLiquidityViewSwitcher = ({
         <div>
           {!ammId && (positions.length > 0 || liquidities.length > 0) && (
             <>
-              {tableView === POSITIONS && <AllPositionTable page={page} />}
+              {tableView === POSITIONS && <AllPositionTable page={page} claimableFirst={claimableFirst} />}
               {tableView === LIQUIDITY && <AllLiquidityTable page={page} />}
             </>
           )}
