@@ -145,3 +145,11 @@ export const NETWORK_NAMES = {
   5: 'Goerli',
   42: 'Kovan'
 };
+
+export const NETWORK_BLOCK_REFRESH_TIME = {
+  1: 15000,
+  3: 5000,
+  4: 5000,
+  5: 5000,
+  42: 5000,
+};
