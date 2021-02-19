@@ -35,6 +35,7 @@ import { searchMarkets } from '../apollo/client';
 import { SearchInput } from '../common/inputs';
 import { LoadingMarketCard, MarketCard } from './market-card';
 import { useGraphDataStore } from '../stores/graph-data';
+import { useScrollToTopOnMount } from '../stores/utils';
 
 const PAGE_LIMIT = 21;
 
@@ -167,16 +168,12 @@ const MarketsView = () => {
   const [filter, setFilter] = useState('');
   const [showFilter, setShowFilter] = useState(false);
 
-  useEffect(() => {
-    document.getElementById('mainContent')?.scrollTo(0, 0);
-    window.scrollTo(0, 1);
-  }, [page]);
-
-  useEffect(() => {
+  useScrollToTopOnMount(page);
+  
+  const handleFilterSort = () => {
     if (Object.values(markets).length > 0) {
       setLoading(false);
     }
-    setPage(1);
     applyFiltersAndSort(
       Object.values(markets),
       setFilteredMarkets,
@@ -196,6 +193,11 @@ const MarketsView = () => {
           err
         )
     );
+  };
+
+  useEffect(() => {
+    setPage(1);
+    handleFilterSort();
   }, [
     sortBy,
     filter,
@@ -207,35 +209,8 @@ const MarketsView = () => {
   ]);
 
   useEffect(() => {
-    if (Object.values(markets).length > 0) {
-      setLoading(false);
-    }
-    applyFiltersAndSort(
-      Object.values(markets),
-      setFilteredMarkets,
-      {
-        filter,
-        categories,
-        sortBy,
-        currency,
-        reportingState,
-        showLiquidMarkets,
-        showInvalidMarkets,
-      },
-      (err) =>
-        updateGraphHeartbeat(
-          { ammExchanges, cashes, markets },
-          blocknumber,
-          err
-        )
-    );
+    handleFilterSort();
   }, [markets]);
-
-  useEffect(() => {
-    // initial render only.
-    document.getElementById('mainContent')?.scrollTo(0, 0);
-    window.scrollTo(0, 1);
-  }, []);
 
   let changedFilters = 0;
 
