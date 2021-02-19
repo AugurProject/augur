@@ -7,7 +7,7 @@ import { useAppStatusStore } from '../stores/app-status';
 import { PrimaryButton } from '../common/buttons';
 import { NetworkMismatchBanner } from '../common/labels';
 import { EthIcon, UsdIcon } from '../common/icons';
-import { keyedObjToArray, useCanExitCashPosition } from '../stores/utils';
+import { keyedObjToArray, useCanExitCashPosition, useScrollToTopOnMount } from '../stores/utils';
 import { ACTIVITY, ETH, TABLES, TX_STATUS, USDC } from '../constants';
 import { formatCash } from '../../utils/format-number';
 import { createBigNumber } from '../../utils/create-big-number';
@@ -135,11 +135,7 @@ export const PortfolioView = () => {
   const { isMobile } = useAppStatusStore();
   const [view, setView] = useState(TABLES);
 
-  useEffect(() => {
-    // initial render only.
-    document.getElementById('mainContent')?.scrollTo(0, 0);
-    window.scrollTo(0, 1);
-  }, []);
+  useScrollToTopOnMount();
 
   useEffect(() => {
     if (!isMobile) setView(TABLES);

@@ -219,6 +219,7 @@ export const TopNav = () => {
   } = useUserStore();
   const { blocknumber } = useGraphDataStore();
   const [lastUser, setLastUser] = useLocalStorage('lastUser', null);
+  
   useEffect(() => {
     if (blocknumber && transactions) {
       transactions

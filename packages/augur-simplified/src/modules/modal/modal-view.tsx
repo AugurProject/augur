@@ -39,7 +39,6 @@ const ModalView = () => {
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -60,7 +59,6 @@ const ModalView = () => {
         }
       }
     });
-    // eslint-disable-next-line
   }, [locationKeys]);
 
   const Modal = selectModal(

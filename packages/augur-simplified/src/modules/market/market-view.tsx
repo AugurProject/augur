@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useLocation } from 'react-router';
 import Styles from './market-view.styles.less';
 import classNames from 'classnames';
@@ -27,7 +27,7 @@ import {
   getMarketEndtimeFull,
   getMarketEndtimeDate,
 } from '../../utils/date-utils';
-import { getCurrentAmms } from '../stores/utils';
+import { getCurrentAmms, useScrollToTopOnMount } from '../stores/utils';
 import { getWinningOutcome } from '../markets/market-card';
 import { ConfirmedCheck } from '../common/icons';
 import { useGraphDataStore } from '../stores/graph-data';
@@ -111,11 +111,8 @@ const MarketView = ({ defaultMarket = null }) => {
     actions: { setShowTradingForm },
   } = useAppStatusStore();
   const { markets } = useGraphDataStore();
-  useEffect(() => {
-    // initial render only.
-    document.getElementById('mainContent')?.scrollTo(0, 0);
-    window.scrollTo(0, 1);
-  }, []);
+  
+  useScrollToTopOnMount();
 
   const market: MarketInfo = !!defaultMarket
     ? defaultMarket

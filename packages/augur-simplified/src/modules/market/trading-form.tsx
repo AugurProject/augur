@@ -192,9 +192,13 @@ const TradingForm = ({
   const hasLiquidity = amm.liquidity !== '0';
 
   useEffect(() => {
-    if (initialSelectedOutcome.id !== selectedOutcomeId) {
+    let isMounted = true;
+    if (initialSelectedOutcome.id !== selectedOutcomeId && isMounted) {
       setSelectedOutcome(initialSelectedOutcome);
       setAmount('');
+    }
+    return () => {
+      isMounted = false;
     }
   }, [initialSelectedOutcome]);
 
@@ -213,15 +217,17 @@ const TradingForm = ({
   const buttonError = amountError ? ERROR_AMOUNT : '';
 
   useEffect(() => {
+    let isMounted = true;
     function handleShowTradingForm() {
-      if (window.innerWidth >= 1200 && showTradingForm) {
+      if (window.innerWidth >= 1200 && showTradingForm && isMounted) {
         setShowTradingForm(false);
         setAmount('');
       }
     }
     window.addEventListener('resize', handleShowTradingForm);
-    setShowTradingForm(false);
+    isMounted && setShowTradingForm(false);
     return () => {
+      isMounted = false;
       window.removeEventListener('resize', handleShowTradingForm);
     };
   }, []);
