@@ -20,7 +20,7 @@ import { TransactionDetails } from './types';
 import ModalView from './modal/modal-view';
 import parsePath from './routes/helpers/parse-path';
 import { MARKETS } from './constants';
-import { PARA_CONFIG } from './stores/constants';
+import { PARA_CONFIG, NETWORK_BLOCK_REFRESH_TIME } from './stores/constants';
 
 function checkIsMobile(setIsMobile) {
   const isMobile =
@@ -77,7 +77,7 @@ const AppBody = () => {
             )
           : updateGraphHeartbeat(processGraphMarkets(graphData), block, errors);
       });
-    }, 15000);
+    }, NETWORK_BLOCK_REFRESH_TIME[PARA_CONFIG.networkId] || NETWORK_BLOCK_REFRESH_TIME[1]);
     return () => {
       isMounted = false;
       clearInterval(intervalId);
