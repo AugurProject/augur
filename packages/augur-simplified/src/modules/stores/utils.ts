@@ -4,11 +4,15 @@ import {
   checkAllowance,
   isERC1155ContractApproved,
 } from '../hooks/use-approval-callback';
-import { Cash, MarketInfo } from '../types';
-import { PARA_CONFIG } from './constants';
+import { Cash, MarketInfo, TransactionDetails } from '../types';
+import { NETWORK_BLOCK_REFRESH_TIME, PARA_CONFIG } from './constants';
 import { ApprovalState, ETH } from '../constants';
 import { useUserStore } from './user';
 import { useGraphDataStore } from './graph-data';
+import { processGraphMarkets } from '../../utils/process-data';
+import { getMarketsData } from '../apollo/client';
+import { augurSdkLite } from '../../utils/augurlitesdk';
+import { getUserBalances } from '../../utils/contract-calls';
 
 const isAsync = (obj) =>
   !!obj &&
@@ -153,4 +157,110 @@ export function useCanEnterCashPosition({ name, address }: Cash) {
   ]);
 
   return canEnterPosition;
+}
+
+export function useGraphHeartbeat() {
+  const {
+    ammExchanges,
+    cashes,
+    markets,
+    blocknumber,
+    actions: { updateGraphHeartbeat }
+  } = useGraphDataStore();
+  useEffect(() => {
+    let isMounted = true;
+    // get data immediately, then setup interval
+    getMarketsData((graphData, block, errors) => {
+      isMounted && !!errors
+        ? updateGraphHeartbeat(
+            { ammExchanges, cashes, markets },
+            blocknumber,
+            errors
+          )
+        : updateGraphHeartbeat(processGraphMarkets(graphData), block, errors);
+    });
+    const intervalId = setInterval(() => {
+      getMarketsData((graphData, block, errors) => {
+        isMounted && !!errors
+          ? updateGraphHeartbeat(
+              { ammExchanges, cashes, markets },
+              blocknumber,
+              errors
+            )
+          : updateGraphHeartbeat(processGraphMarkets(graphData), block, errors);
+      });
+    }, NETWORK_BLOCK_REFRESH_TIME[PARA_CONFIG.networkId] || NETWORK_BLOCK_REFRESH_TIME[1]);
+    return () => {
+      isMounted = false;
+      clearInterval(intervalId);
+    };
+  }, []);
+}
+
+export function useUserBalances() {
+  const {
+    loginAccount,
+    actions: { updateUserBalances },
+  } = useUserStore();
+  const {
+    markets,
+    cashes,
+    ammExchanges 
+  } = useGraphDataStore();
+  useEffect(() => {
+    let isMounted = true;
+    const createClient = (provider, config, account) =>
+      augurSdkLite.makeLiteClient(provider, config, account);
+    const fetchUserBalances = (
+      library,
+      account,
+      ammExchanges,
+      cashes,
+      markets
+    ) => getUserBalances(library, account, ammExchanges, cashes, markets);
+    if (loginAccount?.library && loginAccount?.account) {
+      if (!augurSdkLite.ready())
+        createClient(loginAccount.library, PARA_CONFIG, loginAccount?.account);
+      fetchUserBalances(
+        loginAccount.library,
+        loginAccount.account,
+        ammExchanges,
+        cashes,
+        markets
+      ).then((userBalances) => isMounted && updateUserBalances(userBalances));
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [
+    loginAccount?.account,
+    loginAccount?.library,
+    ammExchanges,
+    cashes,
+    markets,
+    PARA_CONFIG,
+  ]);
+}
+
+export function useFinalizeUserTransactions() {
+  const {
+    blocknumber 
+  } = useGraphDataStore();
+  const {
+    loginAccount,
+    transactions,
+    actions: { finalizeTransaction },
+  } = useUserStore();
+  useEffect(() => {
+    if (loginAccount?.account && blocknumber && transactions?.length > 0) {
+      transactions
+        .filter((t) => !t.confirmedTime)
+        .forEach((t: TransactionDetails) => {
+          loginAccount.library.getTransactionReceipt(t.hash).then((receipt) => {
+            if (receipt) finalizeTransaction(t.hash);
+          });
+        });
+    }
+  }, [loginAccount, blocknumber, transactions]);
 }
