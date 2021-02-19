@@ -182,11 +182,7 @@ const ModalAddLiquidity = ({
         transactions,
         updateTransaction
       );
-      if (approvalCheck === APPROVED) {
-        setCanAddLiquidity(true);
-      } else {
-        setCanAddLiquidity(false);
-      }
+      setCanAddLiquidity(approvalCheck === APPROVED);
     };
 
     if (isLogged && !canAddLiquidity) {
@@ -295,7 +291,7 @@ const ModalAddLiquidity = ({
     buttonError = 'Price is not valid';
   }
 
-  const getBreakdown = () => {
+  useEffect(() => {
     const priceErrorsWithEmptyString = outcomes.filter(
       (outcome) =>
         !outcome.isInvalid &&
@@ -349,10 +345,6 @@ const ModalAddLiquidity = ({
     }
 
     getResults();
-  };
-
-  useEffect(() => {
-    getBreakdown();
   }, [
     account,
     amount,
