@@ -228,6 +228,8 @@ export const NORMAL_FILL = {
   8: new BigNumber('825887', 10),
 };
 export const CLAIM_GAS_COST = new BigNumber(794379);
+export const INVALID_SWAP_GAS_COST = new BigNumber(20000);
+
 export const ORDER_TYPES = {
   BID: new BigNumber(0),
   ASK: new BigNumber(1),
