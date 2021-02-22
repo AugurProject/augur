@@ -1,0 +1,37 @@
+{
+    "compilerOptions": {
+      "outDir": "build",
+      "rootDir": "src",
+      "target": "ES2017",
+      "module": "es2020",
+      "jsx": "react",
+      "noImplicitAny": false,
+      "allowSyntheticDefaultImports": true,
+      "baseUrl": "src",
+      "moduleResolution": "node",
+      "paths": {
+        "assets/*": [
+          "./assets/*"
+        ],
+        "modules/*": [
+          "./modules/*"
+        ],
+        "services/*": [
+          "./services/*"
+        ],
+        "utils/*": [
+          "./utils/*"
+        ]
+      },
+      "esModuleInterop": true,
+      "resolveJsonModule": false
+    },
+    "include": [
+      "./src/**",
+      "./src/externals.d.ts"
+    ],
+    "exclude": [
+      "./src/**/*.test.ts"
+    ],
+  }
+  
