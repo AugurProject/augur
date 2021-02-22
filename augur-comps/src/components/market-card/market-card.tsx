@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 
 import Styles from './market-card.styles.less';
 import {MarketInfo} from '../../utils/types';
 import { formatPercent } from '../../utils/format-number';
+import { getMarketsData } from '../../apollo/client';
 
 export const LoadingMarketCard = () => {
   return (
@@ -26,7 +27,19 @@ export const LoadingMarketCard = () => {
     </article>
   );
 };
-export const MarketCard = ({
+
+export const MarketCard = ({marketId}) => {
+  const [market, setMarket] = useState(null);
+  useEffect(() => {
+    getMarketsData((graphData, block, errors) => {
+      console.log(graphData);
+      setMarket(graphData.markets.find(market => market.id === marketId));
+    });
+  }, []);
+  if (!market) return <LoadingMarketCard />;
+  return <MarketCardView market={market as MarketInfo} />
+}
+export const MarketCardView = ({
   market,
   handleNoLiquidity = (market: MarketInfo) => {},
   noLiquidityDisabled = false,
@@ -51,6 +64,7 @@ export const MarketCard = ({
       })}
       onClick={() => handleNoLiquidity(market)}
     >
+      {description}
       {/* <div>
         <article
           className={classNames({

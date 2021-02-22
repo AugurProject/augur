@@ -6,10 +6,8 @@ import { LoadingMarketCard, MarketCard } from './components/market-card/market-c
 function App() {
   return (
     <div className="App">
-      Loading market card:
-      <LoadingMarketCard />
       Market card:
-      <MarketCard />
+      <MarketCard marketId={'0x0cc49229b93f87f97f657931b50c67af3f9b7845'} />
     </div>
   );
 }
