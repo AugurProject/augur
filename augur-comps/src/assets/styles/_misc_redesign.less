@@ -1,0 +1,187 @@
+// Redesigned Borders, Border Radius, Box Shadow, and Dash Lines values
+//arrangements
+@default-behind: -1;
+@default-z-index: 1;
+@default-above: 2;
+//	Above Content
+@above-all-content: 10;
+@above-all-content-top-layer: 12;
+//	View Chrome
+@mask: 20;
+@mask-above: 30;
+// Modal
+@mask-modal: 100;
+// Toast
+@mask-toast: 110;
+
+// Trading tutorial
+@mask-obscure: 101;
+@mask-illuminate: 102;
+
+//top bar height
+@top-bar-height: 3.5rem; // 56px
+// @top-bar-height-mobile: 4rem; // 64px
+@top-bar-height-mobile: 3rem; // 48px
+@side-bar-top-menu-height-mobile: 4rem; // 64px
+@charts-min-height: 14.5rem;
+@charts-max-height: 17.5rem;
+// top nav height
+@top-nav-height: 2.3125rem; // 37px
+// full top area height
+@multi-top-bar-height-mobile: 6rem;
+@multi-top-bar-height: 93px;
+@footer-height: 40px;
+@tutorial-banner-height: 2rem;
+// android chrome specific
+@chrome-address-bar: 6.5rem;
+
+@simple-top-bar-height: @size-72;
+
+@add-funds-height: 492px;
+
+@markets-list-footer-padding: 250px;
+
+// desktop search bar width
+@search-bar-width: 411px;
+
+// cursors
+@button-cursor: pointer;
+@button-cursor-disabled: not-allowed;
+
+// Landing Page
+@landing-page-margin: 244px;
+@landing-page-width: 411px;
+
+// Account Details
+@account-details-menu-width: 335px;
+
+@login-signup-modal-width: 425px;
+@login-signup-modal-height: 433px;
+
+// default measurements
+@button-height-default: @size-40; // 40px
+
+// borders
+@border-default: 1px solid transparent;
+
+// border radius
+@border-radius-default: @size-3;
+@border-radius-soft: @size-4;
+@border-radius-rounded: @size-6;
+@border-radius-extra-rounded: @size-8;
+@border-radius-full-round: 6.25rem; // 100px
+// box shadows
+
+// dash lines
+@dash-normal: 1 3;
+@dash-long: 1 5;
+
+.default-dashline {
+  fill: none;
+  stroke: var(--color-primary-text);
+}
+
+.dashline-normal {
+  .default-dashline;
+
+  stroke-dasharray: @dash-normal;
+}
+
+.dashline-long {
+  .default-dashline;
+
+  stroke-dasharray: @dash-long;
+}
+
+.limit-lines(@amount) {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: @amount;
+  -webkit-box-orient: vertical;
+  word-break: break-word;
+}
+
+.TwoTonePage {
+  display: flex;
+  flex-flow: row nowrap;
+
+  > section {
+    display: flex;
+    flex: 1 100%;
+    box-sizing: border-box;
+    padding-top: @size-40;
+    padding-bottom: @size-40;
+    width: 100%;
+
+    &:first-of-type {
+      background: var(--light-background-color);
+      flex: 1;
+      max-width: @size-912;
+      padding-left: @size-88;
+      padding-right: @size-44;
+    }
+
+    &:last-of-type {
+      background: var(--simple-light-bg-50);
+      flex: 1;
+      max-width: @size-528;
+      padding-left: @size-44;
+      padding-right: @size-88;
+    }
+  }
+
+  @media @breakpoint-mobile-tiny {
+    > section {
+      &:last-of-type {
+        max-width: @size-340;
+        width: @size-340;
+      }
+    }
+  }
+}
+
+.TwoTonePageGrid {
+  display: grid;
+  grid-template-columns: 1fr minmax(@size-434, @size-528);
+
+  > section {
+    &:first-of-type,
+    &:last-of-type {
+      max-width: 100%;
+      width: 100%;
+    }
+
+    @media @breakpoint-mobile-tablet {
+      &:first-of-type {
+        overflow: hidden;
+      }
+    }
+  }
+}
+
+.TableTitle {
+  .text-20-bold;
+
+  color: var(--simple-secondary-text);
+  text-transform: capitalize;
+}
+
+.SimpleBorder {
+  border: @size-1 solid var(--simple-border);
+  border-radius: @size-8;
+}
+
+.HoverDropShadow {
+  box-shadow: unset;
+  transition: box-shadow 0.3s ease-out;
+
+  &:hover:not(:disabled) {
+    box-shadow: 0 @size-8 @size-40 var(--simple-shadow-10);
+    transition: box-shadow 0.3s ease-out;
+  }
+}
+
+.FixedBoxShadow {
+  box-shadow: 0 @size-8 @size-40 var(--simple-shadow-10);
+}

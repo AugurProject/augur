@@ -1,0 +1,83 @@
+// RESPONSIVE
+// These are determined largely by the content being displayed NOT the device displaying the content.
+// This allows for the most optimal presentation regardless of the device.
+
+// 	Raw Break Points
+// 	The breakpoints encompass:
+// 	Steps (1, 2, etc.) -- Account for large structural view reflows that may need to occur (Ascending in px)
+// 	Sub-Steps (1-1, 2-1, etc.) -- Account for fine styling adjustments between steps (Descending in px)
+//	STEP 2
+//		Steps
+@step-1: 600px;
+@step-1-0: 2000px;
+@step-1-1: 1319px;
+@step-2: 1200px;
+//		Sub-Steps
+@step-2-0: 1280px;
+@step-2-1: 1050px;
+@step-2-15: 965px;
+@step-2-2: 1090px;
+@step-2-25: 768px; // Top bar changes
+@step-2-3: 450px;
+
+@step-3: 575px; // Decreased Height
+@step-3-4: 375px; // iphone X landscape height
+@step-4: 320px; // extra small mobile: iPhone 5/se
+
+//		Rules
+@breakpoint-1-0-0: ~"all and (min-width: @{step-1}) and (max-width: @{step-1-0})";
+@breakpoint-1-0: ~"all and (min-width: @{step-1}) and (max-width: @{step-1-1})";
+
+// Helper Breakpoints
+// Smallish desktop (up to step 2-0)
+@breakpoint-smallish-desktop: ~"all and (max-width: @{step-2-0})";
+// Mobile (up to step-2-25)
+@breakpoint-mobile-mid: ~"all and (max-width: @{step-2-25})"; // 900 TODO: THIS IS THE 768 one that design has in their mock, using it for now
+// Mobile (up to step-1)
+@breakpoint-mobile-medium: ~"all and (max-width: @{step-1})"; // 600
+//	Mobile (up to step-2-2)
+@breakpoint-mobile-small: ~"all and (max-width: @{step-2-3})"; // 450
+// Mobile (up to step-4)
+@breakpoint-mobile-extra-small: ~"all and (max-width: @{step-4})"; // 320
+// Mobile (up-to-step-3)
+@breakpoint-mobile-small-height: ~"all and (max-height: @{step-3})";
+// Mobile (between step 3 and 4) iphoneX landscape
+@breakpoint-mobile-smaller-height: ~"all and (max-height: @{step-3-4})";
+// Mobile (up-to-step-4)
+@breakpoint-mobile-extra-small-height: ~"all and (max-height: @{step-4})";
+
+// TODO remove when side nav is removed
+@breakpoint-temp: ~"(min-width: 1281px) and (max-width: 1420px)";
+
+// new breakpoints
+@mobile: 767px;
+@tablet-min: 768px;
+@tablet-max: 1023px;
+@tiny-min: 1024px;
+@tiny-max: 1199px;
+@desktop-min: 1200px;
+@desktop-max: 1440px;
+@desktop-large: 1441px;
+
+@desktop-min-height: 975px;
+
+// @tablet-max: 1150px;
+// @desktop-min: 1151px;
+// @desktop-max: 1680px;
+// @desktop-large: 2000px;
+
+@breakpoint-mobile: ~"all and (max-width: @{mobile})";
+@breakpoint-tablet: ~"all and (min-width: @{tablet-min}) and (max-width: @{tablet-max})";
+@breakpoint-mobile-tablet: ~"all and (max-width: @{tablet-max})";
+@breakpoint-min-tiny: ~"all and (min-width: @{tiny-min})";
+@breakpoint-tiny: ~"all and (min-width: @{tiny-min}) and (max-width: @{tiny-max})";
+@breakpoint-mobile-tiny: ~"all and (max-width: @{tiny-max})";
+@breakpoint-tablet-tiny: ~"all and (min-width: @{tablet-min}) and (max-width: @{tiny-max})";
+@breakpoint-desktop: ~"all and (min-width: @{desktop-min}) and (max-width: @{desktop-max})";
+@breakpoint-min-desktop-min: ~"all and (min-width: @{desktop-min})";
+@breakpoint-max-desktop-min: ~"all and (max-width: @{desktop-min})";
+@breakpoint-min-desktop: ~"all and (min-width: @{desktop-min})";
+@breakpoint-max-desktop: ~"all and (max-width: @{desktop-max})";
+@breakpoint-desktop-large: ~"all and (min-width: @{desktop-large})";
+
+@breakpoint-min-desktop-min-height: ~"all and (min-height: @{desktop-min-height})";
