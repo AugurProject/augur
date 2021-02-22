@@ -187,9 +187,9 @@ export const PriceHistoryChart = ({
       } else {
         series?.forEach((seriesObj, index) => {
           if (chart.series[index]) {
-            chart.series[index].update(seriesObj, false);
+            chart.series[index].update(seriesObj, true);
           } else {
-            chart.addSeries(seriesObj, false);
+            chart.addSeries(seriesObj, true);
           }
         });
         chart.redraw();
@@ -304,7 +304,8 @@ const handleSeries = (
     ]);
     const baseSeriesOptions = {
       name: formattedOutcomes[index].label,
-      type: 'area',
+      type: 'areaspline',
+      linecap: 'round',
       lineWidth: isSelected ? HIGHLIGHTED_LINE_WIDTH : NORMAL_LINE_WIDTH,
       animation: false,
       states: {
@@ -364,9 +365,9 @@ const getOptions = ({
   chart: {
     alignTicks: false,
     backgroundColor: 'transparent',
-    type: 'area',
+    type: 'areaspline',
     styledMode: false,
-    animation: false,
+    animation: true,
     reflow: true,
     spacing: [8, 0, 8, 0],
     panning: { enabled: false },
@@ -379,9 +380,9 @@ const getOptions = ({
     enabled: false,
   },
   plotOptions: {
-    area: {
+    areaspline: {
       threshold: null,
-      animation: false,
+      animation: true,
     },
   },
   scrollbar: { enabled: false },
