@@ -22,9 +22,10 @@
   }
 
   @media @breakpoint-mobile-tablet {
+    min-height: @size-85;
     border-radius: @size-6;
     height: @size-85;
-    background-image: url("../../assets/images/top-banner-mobile.png");
+    background-position-x: 40%;
 
     > h1 {
       .text-24-semi-bold;
@@ -32,6 +33,9 @@
   }
 
   @media @breakpoint-mobile {
+    background-position-x: 60%;
+    background-image: url("../../assets/images/top-banner-mobile.png");
+
     > h1 {
       .text-16-semi-bold;
     }
