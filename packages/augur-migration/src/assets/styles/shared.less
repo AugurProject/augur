@@ -1,0 +1,175 @@
+// NOTE -- There is import order dependence, so please don't reorder before checking inheritence
+// This is so that there is not circular dependencies amoung these stylesheets
+@import '_colors';
+@import '_typography';
+@import '_misc_redesign';
+@import '_responsive';
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: @size-16;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--light-background-color);
+}
+
+ul,
+ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  color: var(--color-dark-grey);
+  font-family: @Inter;
+  font-size: @size-16;
+  font-style: normal;
+  font-weight: 400;
+  margin: 0;
+}
+
+label {
+  color: var(--color-primary-text);
+  display: block;
+  margin-bottom: @size-10;
+
+  &[for] {
+    cursor: pointer;
+  }
+}
+
+a {
+  text-decoration: none;
+  color: unset;
+
+  &[disabled] {
+    cursor: not-allowed;
+  }
+}
+
+input,
+textarea {
+  background-color: var(--color-dark-grey);
+  border: @size-1 solid transparent;
+  color: var(--color-primary-text);
+  display: block;
+  font-family: @Inter;
+  padding: @size-12 @size-16;
+  width: 100%;
+
+  &:focus {
+    border: @size-1 solid var(--color-secondary-action-outline);
+  }
+
+  &:disabled {
+    background-color: var(--color-inactive-text);
+    cursor: default;
+  }
+
+  &::placeholder {
+    color: var(--color-secondary-text);
+    font-family: @Inter;
+  }
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+:global .App--windowsScrollBars {
+  ::-webkit-scrollbar {
+    width: @size-6;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-secondary-action-outline);
+    border-radius: @border-radius-full-round;
+  }
+}
+
+.RoundedButton {
+  .SimpleBorder;
+  .text-12-semi-bold;
+
+  background: transparent;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  grid-gap: @size-8;
+  outline: none;
+
+  &:hover {
+    border: @size-1 solid var(--simple-secondary-text);
+  }
+}
+
+.RoundedLabel {
+  .RoundedButton;
+  .text-16;
+
+  color: var(--simple-primary-text);
+  line-height: 140%;
+  height: @size-44;
+  min-height: @size-44;
+  max-height: @size-44;
+  white-space: nowrap;
+  padding: 0 @size-16;
+}
+
+.EmptyMessage {
+  .text-12;
+
+  color: var(--simple-primary-text);
+  padding: @size-20 0;
+  background-color: var(--simple-light-bg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom-right-radius: @size-8;
+  border-bottom-left-radius: @size-8;
+}
+
+.ShimmerEmptyBlock {
+  border-radius: @size-8;
+  background: var(--light-background-color);
+  background-image: linear-gradient(
+    to right,
+    #f6f7f8 0%,
+    #edeef1 20%,
+    #f6f7f8 40%,
+    #f6f7f8 100%
+  );
+  background-repeat: no-repeat;
+  background-size: 800px 104px;
+  display: inline-block;
+  position: relative;
+
+  animation-fill-mode: forwards;
+  animation-timing-function: linear;
+  animation: shimmer 2s infinite;
+
+  @keyframes shimmer {
+    0% {
+      background-position: -468px 0;
+    }
+
+    100% {
+      background-position: 468px 0;
+    }
+  }
+}

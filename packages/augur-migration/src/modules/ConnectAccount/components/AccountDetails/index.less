@@ -1,0 +1,241 @@
+@import (reference) '~assets/styles/shared';
+
+.hoverClose {
+  cursor: pointer;
+}
+
+.SVGDark > svg {
+  stroke: #FAFAFA;
+}
+
+.SVGLight > svg {
+  stroke: #1F1F1F;
+}
+
+.darkLink {
+  cursor: pointer;
+  font-weight: 500;
+  color: #FAFAFA;
+  font-size: 0.75rem;
+  margin: auto;
+  display: flex;
+}
+
+.lightLink {
+  cursor: pointer;
+  display: flex;
+  font-weight: 500;
+  font-size: 12px;
+  margin: auto 6px;
+  padding: 4px 8px;
+  border: 1px solid #DBE1E7;
+  border-radius: 8px;
+  color: #8B959E;
+  text-decoration: none;
+}
+
+.AccountDetails {
+  max-width: 432px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  border-radius: @size-16;
+  overflow: hidden;
+
+  > header,
+  > .Content,
+  > footer {
+    display: flex;
+    align-items: center;
+  }
+
+  > header {
+    padding: 0 @size-8 0 @size-32;
+    border-bottom: @size-1 solid var(--simple-border);
+    height: @size-72;
+
+    > h2 {
+      .text-20-bold;
+
+      margin: 0;
+    }
+
+    > span {
+      padding: @size-12 @size-16;
+      margin-left: auto;
+      cursor: pointer;
+
+      > svg {
+        width: @size-24;
+        height: @size-24;
+      }
+    }
+  }
+
+  > .Content {
+    padding: @size-24 @size-24 @size-20 @size-24;
+
+    > .AccountCard {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      border: @size-1 solid var(--simple-border);
+      border-radius: @size-8;
+      padding: @size-16;
+
+      > div {
+        display: flex;
+        align-items: center;
+        padding-bottom: @size-14;
+
+        &:last-of-type {
+          padding-bottom: 0;
+        }
+      }
+
+      > div:first-of-type {
+        > span {
+          .text-14-semi-bold;
+
+          color: var(--color-secondary-text);
+        }
+
+        > button {
+          &:first-of-type {
+            margin-left: auto;
+          }
+
+          &:nth-of-type(2) {
+            margin-left: @size-8;
+          }
+        }
+      }
+
+      > div:nth-of-type(2) {
+        > h3 {
+          margin: 0 0 0 @size-8;
+        }
+
+        > div {
+          display: flex;
+        }
+      }
+
+      > div:nth-of-type(3) {
+        > button {
+          margin-right: @size-8;
+        }
+      }
+    }
+  }
+
+  > section:last-of-type {
+    display: flex;
+    justify-content: flex-end;
+    margin: 0 @size-24 @size-20 0;
+
+    > button:first-of-type {
+      margin: 0 @size-8 0;
+    }
+  }
+
+  > footer {
+    background-color: var(--light-background-color);
+    padding: @size-24;
+
+    > span {
+      .text-16-semi-bold;
+
+      color: var(--color-secondary-text);
+    }
+
+    > .Transactions {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+
+      > div {
+        display: flex;
+      }
+
+      > div:first-of-type {
+        margin-bottom: @size-18;
+
+        > span:first-of-type {
+          .text-16-semi-bold;
+        }
+
+        > span:last-of-type {
+          .text-12-semi-bold;
+
+          color: var(--color-secondary-text);
+          margin-left: auto;
+          cursor: pointer;
+        }
+      }
+
+      > .TransactionList {
+        max-height: @size-280;
+        overflow-y: auto;
+        overflow-x: hidden;
+        flex-direction: column;
+
+        > div {
+          display: flex;
+          align-items: center;
+          width: 100%;
+          margin-bottom: @size-8;
+
+          > span:first-of-type {
+            .text-12-semi-bold;
+
+            margin-right: @size-4;
+          }
+
+
+          > a, div {
+            display: flex;
+            cursor: pointer;
+            margin-right: @size-4;
+
+            > svg {
+              width: @size-16;
+              height: @size-16;
+              stroke-width: 0;
+
+              > path,
+              > polyline,
+              > line {
+                stroke: var(--color-secondary-text);
+              }
+            }
+          }
+
+          > span:nth-of-type(2) {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+
+            &.Success > svg {
+              > path,
+              > polyline {
+                stroke: var(--simple-confirmed);
+              }
+            }
+
+            &.Failure > svg {
+              > circle,
+              > line {
+                stroke: var(--simple-failed);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &.DarkMode {
+    // TODO: add dark mode when layout is available
+  }
+}

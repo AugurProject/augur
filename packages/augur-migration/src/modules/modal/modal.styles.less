@@ -1,0 +1,337 @@
+@import (reference) '~assets/styles/shared';
+
+.ModalView {
+  background-color: var(--simple-primary-text-40);
+  height: 100vh;
+  position: fixed;
+  width: 100vw;
+  z-index: @mask-modal;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  > div {
+    .SimpleBorder;
+
+    border-radius: @size-16;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    justify-content: center;
+    width: fit-content;
+    min-width: @size-288;
+    margin: 0 @size-16;
+    background: var(--simple-light-bg);
+    overflow: hidden;
+  }
+
+  @media @breakpoint-mobile-tablet {
+    width: 100%;
+    height: 100%;
+
+    > div {
+      max-width: 100%;
+      max-height: calc(100% - @size-48);
+      margin: 0 @size-16;
+    }
+  }
+}
+
+.ModalAddLiquidity {
+  .Container;
+
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: @size-395;
+  max-height: calc(100vh - @size-100);
+  overflow-y: auto;
+
+  > main {
+    > button:first-of-type {
+      margin-bottom: @size-8;
+      margin-top: @size-24;
+    }
+
+    > div:first-of-type {
+      margin-top: @size-24;
+    }
+
+    > button:last-of-type {
+      // margin-bottom: @size-24;
+      margin-bottom: 0;
+    }
+
+    > span {
+      margin-bottom: @size-12;
+      margin-top: @size-24;
+    }
+
+    > div > input {
+      margin-bottom: @size-16;
+      width: 100%
+    }
+
+    > div[class*='ErrorBlock'] {
+      margin-top: @size-8;
+    }
+  }
+
+  &.Remove {
+    > main > div:first-of-type {
+      margin-top: 0;
+    }
+
+    > main > div:nth-of-type(2) {
+      margin-top: 0;
+    }
+  }
+
+  &.showBackView {
+    > div:first-of-type {
+      cursor: pointer;
+    }
+
+    > main {
+      > div:first-of-type {
+        .text-20-bold;
+
+        cursor: pointer;
+        border-bottom: @size-1 solid var(--simple-border);
+        color: var(--simple-secondary-text);
+      }
+
+      > div:nth-of-type(2) {
+        margin-top: @size-24;
+      }
+
+      > section {
+        border-bottom: @size-1 solid var(--simple-border);
+        margin-bottom: @size-24;
+        padding-bottom: @size-24;
+
+        > div {
+          margin-top: @size-12;
+        }
+
+        &:last-of-type {
+          border-bottom: 0;
+          padding-bottom: 0;
+          margin-bottom: 0;
+        }
+      }
+
+      > section:first-of-type {
+        margin-top: @size-24;
+      }
+    }
+
+    &.Remove {
+      > main > div:first-of-type {
+        margin-top: @size-24;
+      }
+    }
+  }
+
+  @media @breakpoint-mobile-tablet {
+    width: unset;
+    height: unset;
+    max-height: unset;
+  }
+}
+
+.LineBreak {
+  border-bottom: @size-1 solid var(--simple-border);
+  padding-bottom: @size-24;
+
+  > span {
+    margin-bottom: @size-12;
+    margin-top: @size-24;
+  }
+}
+
+.SmallLabel {
+  .text-16-semi-bold;
+
+  color: var(--simple-primary-text);
+  display: flex;
+
+  > span {
+    margin-left: @size-4;
+  }
+}
+
+.Container {
+  > div[class*='Header'] {
+    margin: 0;
+    padding: @size-24;
+  }
+
+  > main {
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+
+    > div[class*='FooterText'] {
+      margin: 0;
+      margin-top: @size-24;
+    }
+
+    > * {
+      margin-left: @size-24;
+      margin-right: @size-24;
+    }
+  }
+}
+
+.Header {
+  .text-20-bold;
+
+  border-top-left-radius: @size-16;
+  border-top-right-radius: @size-16;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  border-bottom: @size-1 solid var(--simple-border);
+  min-height: @size-72;
+  padding: 0 @size-24 0 @size-32;
+  width: 100%;
+  margin: 0;
+  z-index: @above-all-content;
+  height: @size-72;
+  max-height: @size-72;
+  color: var(--simple-secondary-text);
+
+  > span {
+    .text-20-bold;
+
+    color: var(--simple-primary-text);
+    text-transform: capitalize;
+    flex: 1;
+  }
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-right: @size-32;
+
+    > span:first-of-type {
+      .text-16;
+
+      text-transform: capitalize;
+      color: var(--simple-secondary-text);
+    }
+
+    > span:last-of-type {
+      .text-20-semi-bold;
+
+      color: var(--simple-primary-text);
+      margin-top: @size-4;
+    }
+  }
+
+  > button {
+    background: transparent;
+    outline: 0;
+    border: 0;
+    cursor: pointer;
+    display: flex;
+  }
+
+  > svg {
+    margin-right: @size-8;
+  }
+
+  &:hover {
+    color: var(--simple-primary-text);
+
+    > svg {
+      > path {
+        fill: var(--simple-primary-text);
+      }
+    }
+  }
+}
+
+.FooterText {
+  .text-14;
+
+  color: var(--simple-primary-text);
+  padding: @size-24;
+  background-color: var(--light-background-color);
+  border-top: @size-1 solid var(--simple-border);
+  line-height: @size-22;
+  border-radius: @size-16;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  margin-top: @size-24;
+
+  > span:first-of-type {
+    margin-bottom: @size-12;
+    display: flex;
+  }
+}
+
+.MarketTitle {
+  .SimpleBorder;
+
+  padding: @size-16;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--light-background-color);
+
+  > span:first-of-type {
+    .text-14-semi-bold;
+
+    margin-bottom: @size-8;
+    color: var(--simple-primary-text);
+  }
+
+  > span:last-of-type {
+    .text-12;
+
+    color: var(--simple-primary-text);
+  }
+}
+
+.HeaderLink {
+  cursor: pointer;
+}
+
+.ModalConnectWallet {
+  padding: @size-24 @size-16;
+  max-width: @size-420;
+  width: @size-420;
+
+  @media @breakpoint-mobile {
+    width: calc(100vw - @size-32);
+  }
+
+  > ul {
+    margin-bottom: @size-16;
+
+    > li:not(:last-of-type) {
+      margin-bottom: @size-8;
+    }
+  }
+
+  > .LearnMore {
+    .text-16-semi-bold;
+
+    margin-left: @size-16;
+  }
+
+  > .PendingWalletView {
+    > button {
+      margin-top: @size-16;
+      pointer-events: none;
+      cursor: none;
+    }
+  }
+
+  &.Account {
+    padding: 0;
+  }
+}
