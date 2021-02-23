@@ -1,0 +1,393 @@
+@import (reference) '../../assets/styles/shared.less';
+
+.MarketCard {
+  .HoverDropShadow;
+
+  border-radius: @size-8;
+
+  > div,
+  > section > div {
+    .text-14-bold;
+    .SimpleBorder;
+
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: var(--simple-light-bg);
+    display: grid;
+    height: 100%;
+    grid-template-columns: @size-46 @size-60 1fr;
+    padding: @size-24;
+    grid-template-rows: auto;
+
+    > article {
+      display: grid;
+      grid-template-columns: @size-46 @size-60 1fr;
+      grid-template-rows: @size-32;
+      grid-column: span 3;
+      grid-row: 1;
+      grid-gap: @size-16 0;
+
+      &.Trading {
+        grid-gap: 0;
+      }
+
+      > div[class*='InSettlement'],
+      > div[class*='Resolved'] {
+        display: none;
+        grid-row: 1;
+        grid-column: 1 / span 3;
+      }
+
+      > div[class*='CategoryIcon'] {
+        display: flex;
+        margin-right: @size-8;
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      > div[class*='CategoryLabel'] {
+        grid-column: 2 / span 2;
+        grid-row: 1;
+        width: fit-content;
+      }
+
+      > div:last-of-type {
+        align-items: center;
+        justify-content: flex-end;
+        display: flex;
+        grid-row: 1;
+        grid-column: 3;
+
+        > span:not(:last-of-type) {
+          margin-right: @size-8;
+        }
+      }
+    }
+
+    > span {
+      .text-16-semi-bold;
+      .limit-lines(4);
+
+      color: var(--simple-primary-text);
+      grid-column: 1 / span 3;
+      margin: @size-16 0;
+      text-align: left;
+      height: @size-80;
+    }
+
+    > a {
+      grid-column: 1 / span 3;
+      width: 100%;
+      min-height: @size-180;
+      display: grid;
+      grid-template-columns: @size-46 @size-60 1fr;
+      grid-template-rows: auto;
+      margin-bottom: 0;
+      grid-gap: @size-8;
+
+      > span {
+        .text-16-semi-bold;
+        .text-16-semi-bold;
+        .limit-lines(4);
+
+        color: var(--simple-primary-text);
+        grid-column: 1 / span 3;
+        grid-row: 1;
+        margin: @size-16 0;
+        text-align: left;
+        height: @size-80;
+      }
+
+      > div:first-of-type {
+        grid-column: 1 / span 2;
+        grid-row: 2;
+      }
+
+      > div:nth-of-type(2) {
+        grid-column: 1 / span 2;
+        grid-row: 3;
+        display: flex;
+        align-items: flex-end;
+        height: 100%;
+
+        > span {
+          &:first-of-type {
+            .text-12;
+
+            color: var(--color-secondary-text);
+            margin-right: @size-4;
+          }
+
+          &:last-of-type {
+            .text-12-semi-bold;
+          }
+        }
+      }
+
+      > div.OutcomesTable {
+        grid-column: 3;
+        grid-row: 2 / span 2;
+      }
+    }
+  }
+
+  &.NoLiquidity {
+    > div,
+    > section > div {
+      > div:first-of-type {
+        grid-column: 1 / span 3;
+        margin-right: 0;
+        display: flex;
+        flex-direction: column;
+
+        > span {
+          .text-14-semi-bold;
+
+          color: var(--simple-secondary-text);
+          margin-bottom: @size-16;
+        }
+      }
+    }
+  }
+}
+
+
+.OutcomesTable {
+  border-radius: @size-8;
+  display: flex;
+  flex-direction: column;
+
+  > div {
+    padding: @size-10 @size-16;
+    display: flex;
+
+    &:first-of-type {
+      .SimpleBorder;
+
+      &:not(:last-of-type) {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+
+      &.WinningOutcome {
+        border: @size-1 solid var(--color-brand);
+      }
+    }
+
+    &:last-of-type {
+      .SimpleBorder;
+
+      &:not(:first-of-type) {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+      }
+
+      &.WinningOutcome {
+        border: @size-1 solid var(--color-brand);
+      }
+    }
+
+    > span {
+      display: flex;
+      align-items: center;
+
+      &:first-of-type {
+        .text-14;
+
+        flex: 1;
+        color: var(--simple-primary-text);
+        text-transform: capitalize;
+      }
+
+      &:last-of-type {
+        .text-16-bold;
+
+        color: var(--simple-primary-text);
+      }
+    }
+    &:not(:first-of-type):not(:last-of-type) {
+      border-top: 0;
+    }
+
+    &:last-of-type:not(:first-of-type):not(.WinningOutcome) {
+      border-top: 0;
+    }
+  }
+
+  &.hasWinner {
+    > div:nth-last-child(2):not(.WinningOutcome) {
+      border-bottom: 0;
+    }
+  }
+}
+
+&.WinningOutcome {
+  background: var(--color-brand-20);
+}
+
+
+.LoadingMarketCard {
+  .SimpleBorder;
+
+  background-color: var(--simple-light-bg);
+  padding: @size-24;
+  max-height: @size-280;
+
+  > div {
+    display: grid;
+
+    > div {
+      .ShimmerEmptyBlock;
+    }
+
+    &:nth-of-type(1) {
+      grid-template-columns: @size-40 75px auto;
+      display: grid;
+      grid-template-rows: @size-32;
+      grid-gap: @size-8;
+      margin-bottom: @size-20;
+
+      > div:last-of-type {
+        width: @size-20;
+        height: @size-20;
+        margin-left: auto;
+        border-radius: @size-100;
+        margin-top: auto;
+        margin-bottom: auto;
+      }
+    }
+
+    &:nth-of-type(2) {
+      grid-template-columns: 1fr;
+      grid-template-rows: repeat(3, @size-16);
+      grid-gap: @size-4;
+      margin-bottom: @size-45;
+
+      > div:last-of-type {
+        max-width: 161px;
+      }
+    }
+
+    &:nth-of-type(3) {
+      grid-template-columns: 1fr @size-250;
+      grid-template-rows: @size-46 repeat(2, @size-16);
+      display: grid;
+      grid-column-gap: @size-32;
+      grid-row-gap: @size-4;
+
+      > div:last-of-type {
+        grid-column: 2;
+        grid-row: 1 / span 3;
+      }
+
+      > div:nth-of-type(2) {
+        grid-column: 1;
+        grid-row: 3;
+      }
+
+      > div:first-of-type {
+        grid-row: 2;
+        width: @size-40;
+      }
+    }
+  }
+}
+
+@media @breakpoint-mobile-tablet {
+  .MarketCard {
+    max-width: 100%;
+
+    > div {
+      max-width: 100%;
+
+      > article {
+        &.Trading {
+          grid-template-rows: auto;
+        }
+
+        &:not(.Trading) {
+          > div[class*='InSettlement'],
+          > div[class*='Resolved'] {
+            display: flex;
+            grid-row: 1;
+            grid-column: 1 / span 3;
+            max-width: fit-content;
+            margin-bottom: @size-16;
+          }
+
+          > div[class*='CategoryIcon'],
+          > div[class*='CategoryLabel'],
+          > div:last-of-type {
+            grid-row: 2;
+
+            > div[class*='InSettlement'],
+            > div[class*='Resolved'] {
+              display: none;
+            }
+          }
+        }
+      }
+
+      > span {
+        margin-bottom: @size-16;
+        height: unset;
+      }
+
+      > a {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-between;
+        grid-gap: 0;
+
+        > span {
+          flex: 1 100%;
+          order: 0;
+        }
+
+        > div:first-of-type {
+          align-items: center;
+          justify-content: center;
+          flex: 0;
+          order: 2;
+          display: flex;
+          flex-flow: row nowrap;
+          grid-gap: 0;
+
+          > span:last-of-type {
+            .text-14-semi-bold;
+
+            margin-left: @size-4;
+          }
+        }
+
+        > div:nth-of-type(2) {
+          align-items: center;
+          justify-content: center;
+          flex: 0;
+          order: 3;
+        }
+
+        > div.OutcomesTable {
+          flex: 1 100%;
+          order: 1;
+          margin-bottom: @size-16;
+        }
+      }
+    }
+  }
+
+  .OutcomesTable {
+    grid-row: 3;
+    grid-column: 1 / span 3;
+  }
+}
+
+@media @breakpoint-mobile-tablet {
+  .MarketCard > div > a,
+  .MarketCard > div > a > span {
+    height: unset;
+  }
+}

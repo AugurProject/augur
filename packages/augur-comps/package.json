@@ -1,16 +1,9 @@
 {
-  "name": "@augurproject/simplified",
-  "version": "2.3.0-alpha.0",
+  "name": "@augurproject/augur-comps",
+  "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@augurproject/ethereum-multicall": "^2.3.0-alpha.0",
-    "@augurproject/ethersjs-provider": "^2.3.0-alpha.0",
-    "@augurproject/sdk": "^2.3.0-alpha.0",
-    "@augurproject/sdk-lite": "^2.3.0-alpha.0",
     "@babel/core": "7.12.3",
-    "@ethersproject/experimental": "5.0.7",
-    "@ethersproject/solidity": "^5.0.7",
-    "@ethersproject/units": "5.0.7",
     "@pmmmwh/react-refresh-webpack-plugin": "0.4.2",
     "@svgr/webpack": "5.4.0",
     "@testing-library/jest-dom": "^5.11.4",
@@ -98,17 +91,6 @@
     "webpack-manifest-plugin": "2.2.0",
     "workbox-webpack-plugin": "5.1.4"
   },
-  "devDependencies": {
-    "@teamsupercell/typings-for-css-modules-loader": "2.4.0",
-    "autoprefixer": "9.6.1",
-    "cssnano": "4.1.10",
-    "less": "3.10.3",
-    "less-loader": "5.0.0"
-  },
-  "resolutions": {
-    "**/react": "^17.0.1",
-    "**/react-dom": "^17.0.1"
-  },
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
@@ -118,10 +100,11 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ],
-    "rules": {
-      "react-hooks/exhaustive-deps": "off"
-    }
+    ]
+  },
+  "resolutions": {
+    "**/react": "^17.0.1",
+    "**/react-dom": "^17.0.1"
   },
   "browserslist": {
     "production": [
@@ -134,6 +117,15 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@teamsupercell/typings-for-css-modules-loader": "2.4.0",
+    "autoprefixer": "9.6.1",
+    "css-loader": "^5.0.2",
+    "cssnano": "4.1.10",
+    "less": "3.10.3",
+    "less-loader": "5.0.0",
+    "style-loader": "^2.0.0"
   },
   "jest": {
     "roots": [
@@ -154,9 +146,9 @@
       "<rootDir>/src/**/*.{spec,test}.{js,jsx,ts,tsx}"
     ],
     "testEnvironment": "jsdom",
-    "testRunner": "/Users/johndanz/work/augur/node_modules/jest-circus/runner.js",
+    "testRunner": "/Users/phoebemirman/Desktop/augur_dev/augur/augur-comps/node_modules/jest-circus/runner.js",
     "transform": {
-      "^.+\\.(js|jsx|mjs|cjs|ts|tsx)$": "<rootDir>/node_modules/babel-jest",
+      "^.+\\.(js|jsx|mjs|cjs|ts|tsx)$": "<rootDir>/config/jest/babelTransform.js",
       "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
       "^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
     },
