@@ -2,6 +2,7 @@
   "name": "@augurproject/augur-comps",
   "version": "0.1.0",
   "private": true,
+  "main": "./build",
   "dependencies": {
     "@babel/core": "7.12.3",
     "@pmmmwh/react-refresh-webpack-plugin": "0.4.2",
@@ -119,6 +120,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/preset-react": "^7.12.13",
     "@teamsupercell/typings-for-css-modules-loader": "2.4.0",
     "autoprefixer": "9.6.1",
     "css-loader": "^5.0.2",

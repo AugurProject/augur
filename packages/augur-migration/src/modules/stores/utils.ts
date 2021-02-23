@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { APPROVED } from '../common/buttons';
+// import { APPROVED } from '../common/buttons';
 import {
   checkAllowance,
   isERC1155ContractApproved,
@@ -10,7 +10,7 @@ import { ApprovalState, ETH } from '../constants';
 import { useUserStore } from './user';
 import { useGraphDataStore } from './graph-data';
 import { processGraphMarkets } from '../../utils/process-data';
-import { getMarketsData } from '../apollo/client';
+// import { getMarketsData } from '../apollo/client';
 import { augurSdkLite } from '../../utils/augurlitesdk';
 import { getUserBalances } from '../../utils/contract-calls';
 
@@ -157,44 +157,6 @@ export function useCanEnterCashPosition({ name, address }: Cash) {
   ]);
 
   return canEnterPosition;
-}
-
-export function useGraphHeartbeat() {
-  const {
-    ammExchanges,
-    cashes,
-    markets,
-    blocknumber,
-    actions: { updateGraphHeartbeat }
-  } = useGraphDataStore();
-  useEffect(() => {
-    let isMounted = true;
-    // get data immediately, then setup interval
-    getMarketsData((graphData, block, errors) => {
-      isMounted && !!errors
-        ? updateGraphHeartbeat(
-            { ammExchanges, cashes, markets },
-            blocknumber,
-            errors
-          )
-        : updateGraphHeartbeat(processGraphMarkets(graphData), block, errors);
-    });
-    const intervalId = setInterval(() => {
-      getMarketsData((graphData, block, errors) => {
-        isMounted && !!errors
-          ? updateGraphHeartbeat(
-              { ammExchanges, cashes, markets },
-              blocknumber,
-              errors
-            )
-          : updateGraphHeartbeat(processGraphMarkets(graphData), block, errors);
-      });
-    }, NETWORK_BLOCK_REFRESH_TIME[PARA_CONFIG.networkId] || NETWORK_BLOCK_REFRESH_TIME[1]);
-    return () => {
-      isMounted = false;
-      clearInterval(intervalId);
-    };
-  }, []);
 }
 
 export function useUserBalances() {

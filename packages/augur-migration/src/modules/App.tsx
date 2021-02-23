@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
-import { useLocation } from 'react-router';
+// import { useLocation } from 'react-router';
 import { HashRouter } from 'react-router-dom';
-import Styles from './App.styles.less';
+// import Styles from './App.styles.less';
 import '../assets/styles/shared.less';
 import { AppStatusProvider, useAppStatusStore } from './stores/app-status';
 import { UserProvider } from './stores/user';
 import { ConnectAccountProvider } from './ConnectAccount/connect-account-provider';
-import classNames from 'classnames';
-import parsePath from './routes/helpers/parse-path';
-import { useGraphHeartbeat, useUserBalances, useFinalizeUserTransactions } from './stores/utils';
+// import classNames from 'classnames';
+// import { useUserBalances, useFinalizeUserTransactions } from './stores/utils';
+import { Logo } from '@augurproject/augur-comps';
 
 function checkIsMobile(setIsMobile) {
   const isMobile =
@@ -34,35 +34,32 @@ function useHandleResize() {
 }
 
 const AppBody = () => {
-  const {
-    sidebarType,
-    showTradingForm,
-    isMobile,
-    modal,
-  } = useAppStatusStore();
-  const modalShowing = Object.keys(modal).length !== 0;
-  const location = useLocation();
+  // const {
+  //   sidebarType,
+  //   showTradingForm,
+  //   isMobile,
+  //   modal,
+  // } = useAppStatusStore();
+  // const modalShowing = Object.keys(modal).length !== 0;
+  // const location = useLocation();
 
-  useGraphHeartbeat();
-  useUserBalances();
-  useFinalizeUserTransactions();
+  // useGraphHeartbeat();
+  // useUserBalances();
+  // useFinalizeUserTransactions();
 
-  useHandleResize();
+  // useHandleResize();
 
-  useEffect(() => {
-    if (showTradingForm) {
-      window.scrollTo(0, 1);
-    }
-  }, [modalShowing]);
+  // useEffect(() => {
+  //   if (showTradingForm) {
+  //     window.scrollTo(0, 1);
+  //   }
+  // }, [modalShowing]);
 
   return (
     <div
-      id="mainContent"
-      className={classNames(Styles.App, {
-        [Styles.ModalShowing]: modalShowing || showTradingForm
-      })}
-    >
+      id="mainContent" >
       Migrating App
+      <Logo />
     </div>
   );
 };
