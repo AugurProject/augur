@@ -82,6 +82,7 @@
       "@augurproject/amm-ui/**",
       "@augurproject/simplified/**/",
       "@augurproject/ethereum-multicall/**",
+      "@augurproject/augur-comps/**",
       "**/webpack",
       "**/eslint*",
       "**/jest"

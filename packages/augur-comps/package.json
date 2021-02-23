@@ -1,5 +1,5 @@
 {
-  "name": "augur-comps",
+  "name": "@augurproject/augur-comps",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
