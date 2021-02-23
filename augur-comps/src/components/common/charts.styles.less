@@ -1,0 +1,434 @@
+@import (reference) '~assets/styles/shared';
+
+.PriceHistoryChart {
+  display: flex;
+  flex-flow: column nowrap;
+  grid-gap: @size-24;
+  max-width: 100vw;
+  height: @size-240;
+  max-height: @size-240;
+
+  div {
+    :global {
+      width: 100% !important;
+
+      .highcharts-tooltip {
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: center;
+        justify-content: stretch;
+
+        > span {
+          flex: 1 100%;
+          border: @size-1 solid var(--simple-border);
+          border-radius: @size-8;
+          background: rgba(250, 251, 252, 0.9);
+          padding: @size-8;
+
+          > h5 {
+            .text-12;
+
+            color: var(--simple-primary-text);
+            margin: 0;
+            padding: 0;
+            margin-bottom: @size-4;
+          }
+
+          > ul {
+            display: grid;
+            grid-gap: @size-4;
+
+            > li {
+              display: grid;
+              grid-template-columns: 0fr 1fr;
+              grid-gap: @size-4;
+
+              > span:first-of-type {
+                grid-column: 1;
+                grid-row: 1;
+              }
+
+              > b {
+                .text-14-bold;
+
+                grid-column: 2;
+                grid-row: 1;
+                text-transform: capitalize;
+              }
+
+              > span:last-of-type {
+                .text-12;
+
+                grid-column: 2;
+                grid-row: 2;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  svg {
+    :global {
+      width: 100%;
+
+      .highcharts-background {
+        fill: transparent;
+      }
+
+      .highcharts-no-data {
+        .text-12;
+
+        font-weight: 400;
+        color: var(--simple-primary-text);
+
+        > text,
+        > text > tspan {
+          .text-12;
+
+          font-weight: 400;
+          fill: var(--simple-primary-text);
+        }
+      }
+
+      .highcharts-crosshair-label {
+        background-color: var(--color-module-background);
+        border-radius: @size-5;
+        color: var(--color-primary-text);
+        font-size: @size-10;
+        z-index: @above-all-content;
+        // ugh... we need !important here because inline styles are inserted.
+        > text {
+          color: var(--color-primary-text) !important;
+          fill: var(--color-primary-text) !important;
+
+          > tspan {
+            color: var(--color-primary-text) !important;
+            fill: var(--color-primary-text) !important;
+          }
+        }
+      }
+
+      g.highcharts-yaxis-labels > g.highcharts-crosshair-label {
+        > path {
+          transform: translateX(@size-38);
+        }
+
+        > text {
+          .text-12;
+
+          fill: var(--simple-primary-text);
+          transform: translateX(@size-38);
+
+          > tspan {
+            color: var(--simple-primary-text);
+            fill: var(--simple-primary-text);
+          }
+        }
+      }
+
+      g.highcharts-xaxis-labels > g.highcharts-crosshair-label > path {
+        transform: translateY(@size-4);
+      }
+
+      g.highcharts-xaxis-labels > g.highcharts-crosshair-label > text {
+        .mono-9;
+
+        fill: var(--color-primary-text);
+        transform: translateY(@size-4);
+      }
+
+      .highcharts-crosshair {
+        stroke: var(--simple-chart-color);
+
+        opacity: 1;
+      }
+
+      .highcharts-tooltip {
+        display: none;
+      }
+
+      .highcharts-halo {
+        fill: none;
+        stroke: none;
+      }
+
+      // --- mulitple line styling
+      .highcharts-line-series.highcharts-color-0,
+      .highcharts-area-series.highcharts-color-0 {
+        fill: var(--simple-invalid);
+      }
+
+      g.highcharts-line-series.highcharts-color-0 > path.highcharts-graph,
+      g.highcharts-area-series.highcharts-color-0 > path.highcharts-graph {
+        stroke: var(--simple-invalid);
+      }
+
+      .highcharts-line-series.highcharts-color-1,
+      .highcharts-area-series.highcharts-color-1 {
+        fill: var(--simple-no);
+      }
+
+      g.highcharts-line-series.highcharts-color-1 > path.highcharts-graph,
+      g.highcharts-area-series.highcharts-color-1 > path.highcharts-graph {
+        stroke: var(--simple-no);
+      }
+
+      .highcharts-line-series.highcharts-color-2,
+      .highcharts-area-series.highcharts-color-2 {
+        fill: var(--simple-yes);
+      }
+
+      g.highcharts-line-series.highcharts-color-2 > path.highcharts-graph,
+      g.highcharts-area-series.highcharts-color-2 > path.highcharts-graph {
+        stroke: var(--simple-yes);
+      }
+
+      .highcharts-line-series.highcharts-color-3,
+      .highcharts-area-series.highcharts-color-3 {
+        fill: var(--medical-color);
+      }
+
+      g.highcharts-line-series.highcharts-color-3 > path.highcharts-graph,
+      g.highcharts-area-series.highcharts-color-3 > path.highcharts-graph {
+        stroke: var(--medical-color);
+      }
+
+      .highcharts-line-series.highcharts-color-4,
+      .highcharts-area-series.highcharts-color-4 {
+        fill: var(--entertainment-color);
+      }
+
+      g.highcharts-line-series.highcharts-color-4 > path.highcharts-graph,
+      g.highcharts-area-series.highcharts-color-4 > path.highcharts-graph {
+        stroke: var(--entertainment-color);
+      }
+
+      .highcharts-line-series.highcharts-color-5,
+      .highcharts-area-series.highcharts-color-5 {
+        fill: var(--crypto-color);
+      }
+
+      g.highcharts-line-series.highcharts-color-5 > path.highcharts-graph,
+      g.highcharts-area-series.highcharts-color-5 > path.highcharts-graph {
+        stroke: var(--crypto-color);
+      }
+
+      .highcharts-line-series.highcharts-color-6,
+      .highcharts-area-series.highcharts-color-6 {
+        fill: var(--sports-color);
+      }
+
+      g.highcharts-line-series.highcharts-color-6 > path.highcharts-graph,
+      g.highcharts-area-series.highcharts-color-6 > path.highcharts-graph {
+        stroke: var(--sports-color);
+      }
+
+      .highcharts-line-series.highcharts-color-7,
+      .highcharts-area-series.highcharts-color-7 {
+        fill: var(--politics-color);
+      }
+
+      g.highcharts-line-series.highcharts-color-7 > path.highcharts-graph,
+      g.highcharts-area-series.highcharts-color-7 > path.highcharts-graph {
+        stroke: var(--politics-color);
+      }
+
+      text.highcharts-title tspan,
+      text.highcharts-title > tspan {
+        .text-10;
+
+        color: var(--color-primary-text);
+        fill: var(--color-primary-text);
+        text-transform: capitalize;
+      }
+    }
+  }
+}
+
+.SimpleChartSection {
+  display: flex;
+  flex-flow: column nowrap;
+
+  > * {
+    margin-bottom: @size-16;
+  }
+
+  > div {
+    display: flex;
+    flex-flow: row wrap;
+    margin-bottom: 0;
+
+    > button {
+      margin: 0 @size-8 0 0;
+    }
+  }
+
+  > ul {
+    align-self: flex-end;
+  }
+
+  @media @breakpoint-mobile-tablet {
+    > div > button {
+      margin: 0 0 @size-8 0;
+    }
+  }
+}
+
+.SelectOutcomeButton {
+  .RoundedButton;
+  .text-14;
+
+  background: transparent;
+  color: var(--simple-primary-text);
+  height: @size-44;
+  padding: 0 @size-12;
+  flex: 0 auto;
+  white-space: nowrap;
+  text-transform: capitalize;
+  grid-gap: 0;
+
+  > span {
+    border: @size-2 solid var(--simple-border-dk);
+    border-radius: @size-4;
+    background: var(--simple-light-bg);
+    height: @size-20;
+    width: @size-20;
+    min-height: @size-20;
+    min-width: @size-20;
+    max-height: @size-20;
+    max-width: @size-20;
+    box-sizing: border-box;
+    margin-right: @size-8;
+
+    > svg {
+      height: @size-16;
+      width: @size-16;
+      border-radius: @size-4;
+    }
+  }
+
+  > b {
+    .text-16-semi-bold;
+
+    color: var(--simple-primary-text);
+    margin-left: @size-8;
+  }
+
+  &:hover:not([class*="isSelected_"]) {
+    > span {
+      border: @size-2 solid var(--simple-border-dk);
+      background: transparent;
+
+      > svg {
+        height: .75rem;
+        width: .75rem;
+        margin: auto;
+        background: var(--simple-secondary-text);
+        border-radius: 0;
+
+        > path {
+          fill: var(--simple-secondary-text);
+        }
+      }
+    }
+  }
+
+  &[class*="isSelected_"] > span {
+    border: @size-2 solid transparent;
+  }
+
+  &:first-of-type {
+    // invalid outcome
+    display: none;
+    order: 7;
+  }
+
+  &:nth-of-type(2) {
+    // NO outcome
+    order: 1;
+  }
+
+  &:nth-of-type(3) {
+    // YES outcome
+    order: 0;
+  }
+
+  &:nth-of-type(4) {
+    order: 2;
+  }
+
+  &:nth-of-type(5) {
+    order: 3;
+  }
+
+  &:nth-of-type(6) {
+    order: 4;
+  }
+
+  &:nth-of-type(7) {
+    order: 5;
+  }
+
+  &:nth-of-type(8) {
+    order: 6;
+  }
+
+  @media @breakpoint-mobile-tablet {
+    width: 100%;
+    justify-content: left;
+
+    > b {
+      margin-left: auto;
+    }
+  }
+}
+
+.isSelected_0 {
+  > span {
+    background: var(--simple-invalid);
+  }
+}
+
+.isSelected_1 {
+  > span {
+    background: var(--simple-no);
+  }
+}
+
+.isSelected_2 {
+  > span {
+    background: var(--simple-yes);
+  }
+}
+
+.isSelected_3 {
+  > span {
+    background: var(--medical-color);
+  }
+}
+
+.isSelected_4 {
+  > span {
+    background: var(--entertainment-color);
+  }
+}
+
+.isSelected_5 {
+  > span {
+    background: var(--crypto-color);
+  }
+}
+
+.isSelected_6 {
+  > span {
+    background: var(--sports-color);
+  }
+}
+
+.isSelected_7 {
+  > span {
+    background: var(--politics-color);
+  }
+}

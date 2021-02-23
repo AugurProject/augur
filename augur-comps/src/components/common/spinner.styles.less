@@ -1,0 +1,50 @@
+@import (reference) '~assets/styles/shared';
+
+@keyframes rotate {
+  from { transform: rotate(0deg);   }
+  to   { transform: rotate(360deg); }
+}
+
+.Spinner {
+  animation: rotate 1s linear infinite;
+  background: transparent;
+  border-radius: 50%;
+  height: @size-15;
+  width: @size-15;
+  position: relative;
+  margin: 0;
+
+  &:before,
+  &:after {
+    content: '';
+    position: absolute;
+  }
+
+  &:before {
+    border-radius: 50%;
+    background:
+      linear-gradient(  0deg, transparent 50%, var(--color-secondary-action-outline-25) 100%)   0%   0%,
+      linear-gradient( 90deg, var(--color-secondary-action-outline-25)  0%, var(--color-secondary-action-outline-40) 100%) 100%   0%,
+      linear-gradient(180deg, var(--color-secondary-action-outline-40)  0%, var(--color-secondary-action-outline-70) 100%) 100% 100%,
+      linear-gradient(270deg, var(--color-secondary-action-outline-70) 0%, var(--color-secondary-action-outline) 100%)   0% 100%
+    ;
+    background-repeat: no-repeat;
+    background-size: 50% 50%;
+    color: rgba(var(--color-primary-action), 0.5);
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  &:after {
+    // had to use the opaque hex representation of the transparent color --color-primary-action-40, otherwise
+    // it wouldn't work
+    background-color: var(--light-background-color);
+    border-radius: 50%;
+    top: @size-1;
+    bottom: @size-1;
+    left: @size-1;
+    right: @size-1;
+  }
+}

@@ -13,8 +13,8 @@
         "assets/*": [
           "./assets/*"
         ],
-        "modules/*": [
-          "./modules/*"
+        "components/*": [
+          "./components/*"
         ],
         "services/*": [
           "./services/*"

@@ -2,9 +2,14 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 
 import Styles from './market-card.styles.less';
-import {MarketInfo} from '../../utils/types';
-import { formatPercent } from '../../utils/format-number';
+import { AmmExchange, AmmOutcome, MarketInfo, MarketOutcome } from '../../utils/types';
+import { formatCashPrice, formatDai, formatPercent } from '../../utils/format-number';
 import { getMarketsData } from '../../apollo/client';
+import { CategoryIcon, CategoryLabel, CurrencyTipIcon, InvalidFlagTipIcon, ReportingStateLabel, ValueLabel } from '../common/labels';
+import { MARKET_STATUS } from '../../utils/constants';
+import { PrimaryButton } from '../common/buttons';
+import { MarketLink } from '../../utils/routes/links';
+import { ConfirmedCheck } from '../common/icons';
 
 export const LoadingMarketCard = () => {
   return (
@@ -39,6 +44,76 @@ export const MarketCard = ({marketId}) => {
   if (!market) return <LoadingMarketCard />;
   return <MarketCardView market={market as MarketInfo} />
 }
+
+export const combineOutcomeData = (
+  ammOutcomes: AmmOutcome[],
+  marketOutcomes: MarketOutcome[]
+) => {
+  if (!ammOutcomes || ammOutcomes.length === 0) return [];
+  return marketOutcomes.map((mOutcome, index) => ({
+    ...mOutcome,
+    ...ammOutcomes[index],
+  }));
+};
+
+export const outcomesToDisplay = (
+  ammOutcomes: AmmOutcome[],
+  marketOutcomes: MarketOutcome[]
+) => {
+  const combinedData = combineOutcomeData(ammOutcomes, marketOutcomes);
+  const invalid = combinedData.slice(0, 1);
+  const yes = combinedData.slice(2, 3);
+  const no = combinedData.slice(1, 2);
+  let newOrder = invalid.concat(yes).concat(no).concat(combinedData.slice(3));
+  if (
+    newOrder[0].isFinalNumerator &&
+    newOrder[0].payoutNumerator !== '0' &&
+    newOrder[0].payoutNumerator !== null
+  ) {
+    // invalid is winner -- only pass invalid
+    newOrder = invalid;
+  } else {
+    newOrder = newOrder.filter((outcome) => !outcome.isInvalid);
+  }
+  return newOrder;
+};
+
+const OutcomesTable = ({
+  amm,
+  marketOutcomes,
+}: {
+  amm: AmmExchange;
+  marketOutcomes: MarketOutcome[];
+}) => (
+  <div
+    className={classNames(Styles.OutcomesTable, {
+      [Styles.hasWinner]: marketOutcomes[0].isFinalNumerator,
+    })}
+  >
+    {outcomesToDisplay(amm.ammOutcomes, marketOutcomes).map((outcome) => {
+      const isWinner =
+        outcome.isFinalNumerator && outcome.payoutNumerator !== '0';
+      return (
+        <div
+          key={`${outcome.name}-${amm?.marketId}-${outcome.id}`}
+          className={classNames({ [Styles.WinningOutcome]: isWinner })}
+        >
+          <span>{outcome.name.toLowerCase()}</span>
+          <span>
+            {isWinner
+              ? ConfirmedCheck
+              : outcome.isFinalNumerator
+              ? ''
+              : amm?.liquidity !== '0'
+              ? formatCashPrice(outcome.price, amm?.cash?.name).full
+              : '-'}
+          </span>
+        </div>
+      );
+    })}
+  </div>
+);
+
 export const MarketCardView = ({
   market,
   handleNoLiquidity = (market: MarketInfo) => {},
@@ -64,8 +139,7 @@ export const MarketCardView = ({
       })}
       onClick={() => handleNoLiquidity(market)}
     >
-      {description}
-      {/* <div>
+      <div>
         <article
           className={classNames({
             [Styles.Trading]: reportingState === MARKET_STATUS.TRADING,
@@ -107,7 +181,7 @@ export const MarketCardView = ({
             <OutcomesTable amm={amm} marketOutcomes={outcomes} />
           </MarketLink>
         )}
-      </div> */}
+      </div>
     </article>
   );
 };
