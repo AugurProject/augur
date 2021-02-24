@@ -1,0 +1,820 @@
+@import (reference) '~assets/styles/shared';
+
+.Dropdown {
+  border: @size-1 solid var(--color-secondary-action-outline);
+  border-radius: @border-radius-default;
+  cursor: pointer;
+  display: flex;
+  position: relative;
+  width: 100%;
+
+  > span {
+    display: none;
+  }
+
+  > select {
+    display: none;
+  }
+
+  > button {
+    align-items: center;
+    border-radius: @border-radius-default;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    white-space: nowrap;
+    width: 100%;
+    background: var(--color-secondary-action);
+    color: var(--color-primary-text);
+    cursor: pointer;
+
+    > b {
+      margin-right: auto;
+    }
+
+    // arrow
+    > svg {
+      height: @size-6;
+      margin: 0 @size-1 0 @size-13;
+      width: @size-10;
+
+      > path {
+        fill: var(--color-secondary-text);
+      }
+    }
+
+    &:hover {
+      border: @size-1 solid var(--simple-secondary-text);
+    }
+
+    &:focus {
+      outline: 0;
+    }
+
+    &:focus-visible {
+      border: @size-1 solid var(--color-focused);
+      box-shadow: inset 0 0 0 @size-2 var(--color-focused);
+    }
+
+    &:active {
+      border: @size-1 solid var(--simple-secondary-text);
+    }
+  }
+
+  // div wrapper for hover state when margin-top is not zero.
+  > div {
+    .FixedBoxShadow;
+
+    min-width: 100%;
+    max-height: @size-380;
+    overflow-y: auto;
+    position: absolute;
+    top: 106%;
+    z-index: @default-above;
+    border-radius: @size-8;
+
+    > div:first-of-type {
+      .SimpleBorder;
+
+      background-color: var(--simple-light-bg);
+      display: none;
+      margin-top: @size-2;
+      overflow-x: hidden;
+
+      &.active {
+        display: block;
+      }
+
+      > button {
+        .text-16-semi-bold;
+
+        color: var(--simple-secondary-text);
+        background-color: var(--simple-light-bg);
+        position: relative;
+        text-align: left;
+        white-space: nowrap;
+        width: 100%;
+        border: 0;
+        padding: @size-16 @size-24;
+        cursor: pointer;
+        text-transform: capitalize;
+
+        &:hover {
+          color: var(--simple-primary-text);
+        }
+
+        &:focus {
+          outline: 0;
+        }
+
+        &.Selected {
+          color: var(--simple-primary-text);
+        }
+      }
+    }
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.label {
+  display: flex;
+
+  > span {
+    .text-16-bold;
+
+    color: var(--simple-primary-text);
+    text-transform: capitalize;
+  }
+
+  &.Selected {
+    display: flex;
+  }
+}
+
+.SelectedLabel {
+  color: var(--color-primary-text);
+
+  &.invalidColor {
+    color: var(--color-outcome-invalid);
+  }
+}
+
+.Disabled {
+  pointer-events: none;
+}
+
+// Used in Trading Page - Outcome selector
+.Large {
+  .Dropdown;
+
+  height: @size-32;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+  > button {
+    .text-12-medium;
+
+    background: var(--color-dark-grey);
+    padding: 0 @size-12;
+
+    // vertical line before arrow icon
+    > span {
+      flex: 1;
+      display: flex;
+      border-right: @size-1 solid var(--color-secondary-action-outline);
+      padding: @size-5 @size-8 @size-5 0;
+    }
+
+    &:hover {
+      background: var(--color-secondary-hover);
+    }
+  }
+
+  > div {
+
+    > div {
+      width: 100%;
+    }
+  }
+}
+
+// Used in expiration date selection and top section in outcome candlesticks
+.Normal {
+  .Dropdown;
+
+  max-width: fit-content;
+  max-width: -moz-fit-content;
+  border: 0;
+
+  > button {
+    .text-10-semi-bold;
+    .SimpleBorder;
+
+    background: var(--simple-alternate-background);
+    padding: @size-12 @size-18 @size-12 @size-16;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    // vertical line before arrow icon
+    > span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex: 1;
+      display: flex;
+    }
+
+    // arrow
+    > svg {
+      margin-left: @size-46;
+      display: flex;
+      width: @size-15;
+      height: @size-9;
+    }
+  }
+
+  > div {
+    width: fit-content;
+
+    > div {
+      width: 100%;
+    }
+  }
+}
+
+.isOpen {
+  > button {
+    border: @size-1 solid var(--simple-secondary-text);
+
+    // arrow
+    > svg {
+      transform: rotate(180deg);
+
+      > path {
+        //fill: var(--color-primary-text);
+      }
+    }
+  }
+}
+
+.highlight {
+  > button {
+    background: var(--color-primary-action);
+    border-radius: 0;
+  }
+}
+
+.openTop {
+  > div {
+    bottom: 106%;
+    top: unset;
+  }
+}
+
+// Used in outcome selector in order ticket
+.showColor {
+  position: relative;
+
+  &::before {
+    width: @size-2;
+    content: '';
+    position: absolute;
+    top: @size-1;
+    left: @size-1;
+    bottom: @size-1;
+    border-top-left-radius: @size-3;
+    border-bottom-left-radius: @size-3;
+  }
+
+  .generate-trading-indexed-color-outcome-classes({
+    &.showColor-@{newIndex} {
+      &::before {
+        background-color: @value;
+      };
+    }
+  });
+}
+
+.PillSelection {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  height: @size-24;
+
+  > li {
+    background: transparent;
+    border: @size-1 solid var(--color-secondary-action-outline);
+    border-right: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-flow: column nowrap;
+    height: 100%;
+    justify-content: center;
+    white-space: nowrap;
+
+    &.Selected,
+    &:hover {
+      background: var(--color-secondary-action-outline-30);
+      border-right: @size-1 solid var(--color-secondary-action-outline);
+
+      > button {
+        color: var(--color-primary-text);
+
+        > span {
+          .text-9;
+
+          color: var(--color-secondary-text);
+        }
+      }
+
+      & + li {
+        border-left: 0;
+      }
+    }
+
+    &:first-of-type {
+      border-bottom-left-radius: @border-radius-default;
+      border-top-left-radius: @border-radius-default;
+    }
+
+    &:last-of-type {
+      border-bottom-right-radius: @border-radius-default;
+      border-right: @size-1 solid var(--color-secondary-action-outline);
+      border-top-right-radius: @border-radius-default;
+    }
+
+    > button {
+      .mono-9-semi-bold;
+
+      background: transparent;
+      color: var(--color-secondary-text);
+      height: 100%;
+      padding: @size-4 @size-16;
+      text-transform: capitalize;
+
+      > span {
+        .text-9;
+
+        color: var(--color-secondary-text);
+      }
+    }
+  }
+
+  &.LargePillSelection {
+    display: flex;
+    height: @size-40;
+
+    > li {
+      background: var(--color-module-background);
+
+      &:first-of-type:hover:not([class*='Selected']) {
+        border-right: 0;
+      }
+
+      > button {
+        .text-14-bold;
+
+        color: var(--color-inactive-text);
+        text-transform: capitalize;
+      }
+
+      &[class*='Selected'] {
+        border: @size-1 solid var(--color-primary-text);
+
+        > button {
+          color: var(--color-primary-text);
+        }
+      }
+    }
+  }
+
+  &.hide {
+    display: none;
+  }
+}
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .PillSelection {
+    > li > button {
+      padding: @size-6 @size-8;
+    }
+
+    &.LargePillSelection {
+      > li > button {
+        padding: @size-12 @size-24;
+        height: @size-40;
+      }
+    }
+  }
+}
+
+.Tab {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  height: @size-40;
+
+  > li {
+    box-sizing: border-box;
+    display: flex;
+    flex-flow: column nowrap;
+    height: 100%;
+    justify-content: center;
+    white-space: nowrap;
+    background: transparent;
+    border: 0;
+    border-bottom: @size-1 solid var(--color-secondary-action-outline);
+    border-radius: 0;
+
+    > button {
+      .mono-12-bold;
+
+      height: 100%;
+      color: var(--color-secondary-text);
+      background: var(--color-page-background);
+      padding: 0 @size-24;
+      border-radius: 0;
+      text-transform: capitalize;
+    }
+
+    &.Selected,
+    &:hover {
+      > button {
+        color: var(--color-primary-text);
+      }
+    }
+
+    &:focus {
+      outline: none;
+      border: @size-2 solid var(--color-focused);
+    }
+
+    &:active {
+      border-bottom: @size-2 solid var(--color-primary-text);
+      > button {
+        color: var(--color-primary-text);
+      }
+    }
+
+    &:disabled {
+      opacity: 0.25;
+    }
+  }
+
+  &.TabLarge,
+  &.TabSmall {
+    > li {
+      background: transparent;
+      border: @size-1 solid var(--color-secondary-action-outline);
+      border-right: 0;
+
+      &:first-of-type {
+        border-bottom-left-radius: @border-radius-default;
+        border-top-left-radius: @border-radius-default;
+
+        > button {
+          border-bottom-left-radius: @border-radius-default;
+          border-top-left-radius: @border-radius-default;
+        }
+      }
+
+      &:last-of-type {
+        border-bottom-right-radius: @border-radius-default;
+        border-right: @size-1 solid var(--color-secondary-action-outline);
+        border-top-right-radius: @border-radius-default;
+
+        > button {
+          border-bottom-right-radius: @border-radius-default;
+          border-top-right-radius: @border-radius-default;
+        }
+      }
+
+      &.Selected,
+      &:hover {
+        border: @size-1 solid var(--color-primary-text);
+        border-right: @size-1 solid var(--color-primary-text);
+
+        &:last-of-type {
+          border-right: @size-1 solid var(--color-primary-text);
+        }
+
+        > button {
+          color: var(--color-secondary-text);
+        }
+
+        & + li {
+          border-left: 0;
+        }
+      }
+
+      &:focus {
+        border: @size-2 solid var(--color-focused);
+        border-right: @size-2 solid var(--color-focused);
+
+        &:last-of-type {
+          border-right: @size-2 solid var(--color-focused);
+        }
+
+        & + li {
+          border-left: 0;
+        }
+      }
+
+      &:active {
+        border: @size-1 solid var(--color-primary-text);
+        border-right: @size-1 solid var(--color-primary-text);
+
+        &:last-of-type {
+          border-right: @size-1 solid var(--color-primary-text);
+        }
+
+        & + li {
+          border-left: 0;
+        }
+      }
+
+      &:disabled {
+        border: @size-1 solid var(--color-module-background-25);
+        border-right: @size-1 solid var(--color-module-background-25);
+
+        &:last-of-type {
+          border-right: @size-1 solid var(--color-module-background-25);
+        }
+
+        & + li {
+          border-left: 0;
+        }
+      }
+    }
+  }
+
+  &.TabLarge {
+    height: @size-40;
+
+    > li {
+      > button {
+        .mono-14-bold;
+
+        padding: 0 @size-24;
+        text-transform: none;
+      }
+    }
+  }
+
+  &.TabSmall {
+    height: @size-26;
+
+    > li {
+      > button {
+        .mono-12-semi-bold;
+
+        padding: 0 @size-8;
+      }
+    }
+  }
+}
+
+// Used in Betting UI
+.DotSelection {
+  cursor: pointer;
+  position: relative;
+
+  > button {
+    display: flex;
+    > svg {
+      fill: var(--color-secondary-text);
+      height: @size-16;
+      width: @size-16;
+    }
+  }
+
+  > button:hover,
+  > button:active {
+    > svg {
+      fill: var(--color-primary-text);
+    }
+  }
+}
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .DotSelection {
+    > button {
+      > svg {
+        fill: var(--color-inactive-text);
+        stroke: none;
+      }
+    }
+  }
+}
+
+.MenuOpen {
+  > button > svg {
+    fill: var(--color-primary-text);
+  }
+}
+
+.MenuItems {
+  .text-12-medium;
+
+  align-items: flex-start;
+  background: var(--color-secondary-action);
+  border-radius: @border-radius-default;
+  border: 1px solid var(--color-secondary-action-outline);
+  color: var(--color-primary-text);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: absolute;
+  right: 0;
+  top: 36px;
+  user-select: none;
+  width: 189px;
+  z-index: @default-above;
+  outline: none;
+
+  > div {
+    align-items: center;
+    display: flex;
+    justify-content: flex-start;
+    flex-flow: row wrap;
+    width: 100%;
+    height: @size-32;
+    padding: @size-8 @size-12;
+    outline: none;
+
+    &:not(:last-of-type) {
+      &::after {
+        content: '';
+        height: 1px;
+        background: var(--color-secondary-action-outline);
+        width: 100%;
+        position: relative;
+        top: 7px;
+      }
+    }
+  }
+
+  > div:hover {
+    background: var(--color-secondary-hover);
+  }
+}
+
+.CategorySelector {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  > div {
+    .text-14;
+
+    color: var(--color-inactive-text);
+    cursor: pointer;
+    height: @size-32;
+    margin: @size-24 @size-32 @size-24 0;
+
+    &.selected {
+      color: var(--color-primary-text);
+      border-bottom: @size-1 solid var(--color-primary-text);
+    }
+  }
+}
+
+.CurrencyDropdown {
+  background-color: var(--simple-light-bg);
+  border: 0;
+  border-radius: @size-8;
+
+  > button {
+    background-color: transparent;
+    border: 0;
+    align-items: center;
+    padding: 0 @size-8;
+    border-radius: @size-8;
+
+    > span {
+      .text-16-semi-bold;
+
+      margin-right: @size-8;
+      margin-left: @size-4;
+      justify-content: center;
+      align-items: center;
+      display: flex;
+
+      > svg {
+        margin-right: @size-4;
+        height: @size-22;
+        width: @size-22;
+      }
+    }
+
+    > svg {
+      margin-left: 0;
+      height: @size-6;
+      width: @size-10;
+
+      > path {
+        fill: var(--simple-primary-text);
+      }
+    }
+
+    &:hover,
+    &:active,
+    &:focus {
+      border: 0;
+      outline: 0;
+    }
+  }
+
+  &:hover,
+  &:active,
+  &:focus {
+    border: 0;
+    outline: 0;
+  }
+}
+
+.SelectionGroup {
+  > span {
+    .text-16;
+
+    color: var(--simple-primary-text);
+    text-transform: capitalize;
+    margin-bottom: @size-10;
+    display: flex;
+  }
+
+  > div {
+    display: flex;
+    flex-flow: row wrap;
+
+    > div {
+      margin-right: @size-8;
+      margin-bottom: @size-8;
+    }
+  }
+}
+
+.SharedSelectionItem {
+  .SimpleBorder;
+
+  padding: @size-10 @size-12;
+  display: flex;
+  align-items: center;
+
+  > input {
+    width: @size-20;
+    height: @size-20;
+    margin: 0;
+    display: flex;
+    pointer-events: none;
+  }
+
+  > span {
+    .text-16-semi-bold;
+
+    color: var(--simple-secondary-text);
+    text-transform: capitalize;
+    white-space: nowrap;
+    margin-left: @size-8;
+  }
+
+  &.Selected {
+    > span {
+      color: var(--simple-primary-text);
+    }
+  }
+}
+
+.Checkbox {
+  .SharedSelectionItem;
+}
+
+.RadioBar {
+  .SharedSelectionItem;
+
+  > input {
+    width: @size-20;
+    height: @size-20;
+    margin: 0;
+    display: flex;
+  }
+}
+
+.list {
+  display: flex;
+}
+
+.SmallDropdown {
+  > button {
+    padding: @size-12;
+    background-color: var(--simple-light-bg);
+
+    > span {
+      .text-12-semi-bold;
+    }
+
+    > svg {
+      width: @size-10;
+      height: @size-6;
+
+      > path {
+        fill: var(--simple-secondary-text);
+      }
+    }
+  }
+}
+
+.MultiButtonSelection {
+  display: flex;
+  flex-flow: row nowrap;
+  grid-gap: @size-4;
+
+  > li > button {
+    .RoundedButton;
+  }
+}

@@ -1,0 +1,390 @@
+// theme divided values
+// TRADING is default theme, hence root by itself.
+// branding
+@color-brand: #2AE7A8;
+@color-brand-secondary: #FFFFFF;
+
+:root {
+  // branding
+  --color-brand: @color-brand;
+  --color-brand-20: fade(#2AE7A8, 20%);
+  --color-brand-secondary: @color-brand-secondary;
+  --color-brand-secondary-flip: #0E0E21;
+  // social
+  --color-twitter: #55ACEE;
+  --color-twitter-2: #FFFFFF;
+  --color-facebook: #3B5998;
+  --color-facebook-2: #FFFFFF;
+  // texts
+  --color-primary-text: #D7DDE0;
+  --color-primary-text-15: fade(#D7DDE0, 15%);
+  --color-primary-text-20: fade(#D7DDE0, 20%);
+  --color-primary-text-25: fade(#D7DDE0, 25%);
+  --color-primary-text-30: fade(#D7DDE0, 30%);
+  --color-primary-text-40: fade(#D7DDE0, 40%);
+  --color-primary-text-50: fade(#D7DDE0, 50%);
+  --color-primary-text-80: fade(#D7DDE0, 80%);
+  --color-primary-text-90: fade(#D7DDE0, 90%);
+
+  --color-secondary-text: #9599A5;
+  --color-secondary-text-30: fade(#9599A5, 30%);
+  --color-secondary-text-50: fade(#9599A5, 50%);
+  --color-secondary-text-75: fade(#9599A5, 75%);
+  --color-secondary-text-80: fade(#9599A5, 80%);
+
+  --color-inactive-text: #4E4C57;
+  --color-dark-text: #848294;
+
+  // UI
+  --color-module-background: #1B1A1E;
+  --color-module-background-10: fade(#1B1A1E, 10%);
+  --color-module-background-10-transparent: rgba(27, 26, 30, 0.1);
+  --color-module-background-25: fade(#1B1A1E, 25%);
+  --color-module-background-action-focus: #27262B;
+  --color-page-background: #201E22;
+  --color-page-background-80: fade(#201E22, 80%);
+  --color-dark-grey: #0E0E0F;
+  --color-dark-grey-80: fade(#0E0E0F, 80%);
+  --color-table-header: #161518;
+  --color-table-header-50: fade(#161518, 50%);
+  --color-active-background: #222126;
+  --color-dismissable-notice-background: #DFF1FE;
+  --color-outline: #7EC9FF;
+  --color-outline-50: fade(#7EC9FF, 50%);
+  --color-highlight-template-text: #F9FFD7;
+
+  // market Status:
+  --color-open: #7DFFA8;
+  --color-open-15: fade(#7DFFA8, 15%);
+  --color-open-40: fade(#7DFFA8, 40%);
+  --color-reporting: #F1E700;
+  --color-reporting-15: fade(#F1E700, 15%);
+  --color-reporting-30: fade(#F1E700, 30%);
+  --color-resolved: #F12B00;
+  --color-resolved-15: fade(#F12B00, 15%);
+  --color-scalar: #FFB47E;
+  --color-scalar-20: fade(#FFB47E, 20%);
+  --color-error: #FF2727;
+  --color-error-15: fade(#FF2727, 15%);
+  --color-error-20: fade(#FF2727, 20%);
+  --color-error-50: fade(#FF2727, 50%);
+  --color-altnerate-error: fade(#F3E7E7, 90%);
+
+  // Trading
+  --color-positive: #00F1C4;
+  --color-positive-5: fade(#00F1C4, 5%);
+  --color-positive-10: fade(#00F1C4, 10%);
+  --color-positive-15: fade(#00F1C4, 15%);
+  --color-positive-20: fade(#00F1C4, 20%);
+  --color-positive-30: fade(#00F1C4, 30%);
+  --color-positive-40: fade(#00F1C4, 40%);
+  --color-positive-50: fade(#00F1C4, 50%);
+  --color-negative: #FF7D5E;
+  --color-negative-5: fade(#FF7D5E, 5%);
+  --color-negative-10: fade(#FF7D5E, 10%);
+  --color-negative-15: fade(#FF7D5E, 15%);
+  --color-negative-20: fade(#FF7D5E, 20%);
+  --color-negative-30: fade(#FF7D5E, 30%);
+  --color-negative-40: fade(#FF7D5E, 40%);
+  --color-negative-50: fade(#FF7D5E, 50%);
+
+  // Interactives
+  --color-primary-action: #09CFE1;
+  --color-primary-action-5-dark:#08b9c9;
+  --color-primary-action-15-dark: #068c98;
+  --color-primary-action-5: fade(#09CFE1, 5%);
+  --color-primary-action-10: fade(#09CFE1, 10%);
+  --color-primary-action-15: fade(#09CFE1, 15%);
+  --color-primary-action-20: fade(#09CFE1, 20%);
+  --color-primary-action-40: fade(#09CFE1, 40%);
+  --color-primary-action-70: fade(#09CFE1, 70%);
+  --color-primary-action-80: fade(#09CFE1, 80%);
+  --color-primary-action-90: fade(#09CFE1, 90%);
+
+  --color-secondary-action: #252429;
+  --color-secondary-action-5-light: #313036;
+  --color-secondary-action-50: fade(#252429, 50%);
+  --color-secondary-action-outline: #3C3B43;
+  --color-secondary-action-outline-25: fade(#3C3B43, 25%);
+  --color-secondary-action-outline-30: fade(#3C3B43, 30%);
+  --color-secondary-action-outline-40: fade(#3C3B43, 40%);
+  --color-secondary-action-outline-50: fade(#3C3B43, 50%);
+  --color-secondary-action-outline-70: fade(#3C3B43, 70%);
+  --color-secondary-hover: #302F36;
+  --color-secondary-hover-25: fade(#3C3B43, 25%);
+  --color-secondary-hover-50: fade(#3C3B43, 50%);
+  --color-focused: #09CFE1;
+
+  // outcomes:
+  --color-tenative-winner: #AEFFF0;
+  --color-outcome-invalid: #FF7E9D;
+  --color-outcome-invalid-40: fade(#FF7E9D, 40%);
+  --color-outcome-invalid-50: fade(#FF7E9D, 50%);
+  --color-outcome-one: #F3A2FA;
+  --color-outcome-one-40: fade(#F3A2FA, 40%);
+  --color-outcome-two: #09CFE1;
+  --color-outcome-two-40: fade(#09CFE1, 40%);
+  --color-outcome-three: #665CDF;
+  --color-outcome-three-40: fade(#665CDF, 40%);
+  --color-outcome-four: #5CDF88;
+  --color-outcome-four-40: fade(#5CDF88, 40%);
+  --color-outcome-five: #FD6266;
+  --color-outcome-five-40: fade(#FD6266, 40%);
+  --color-outcome-six: #FFF966;
+  --color-outcome-six-40: fade(#FFF966, 40%);
+  --color-outcome-seven: #FFFFFF;
+  --color-outcome-seven-40: fade(#FFFFFF, 40%);
+
+  // 3box Comments
+  --color-upvote: #7EC9FF;
+  --color-upvote-20: fade(#7EC9FF, 20%);
+  --color-downvote: #FD6266;
+  --color-downvote-20: fade(#FD6266, 20%);
+
+  //Simple UI colors
+  --light-background-color: #F6F7F8;
+  --simple-alternate-background: #EDEFF1;
+  --simple-secondary-text: #8B959E;
+  --simple-primary-text: #15171A;
+  --simple-primary-text-40: fade(#15171A, 40%);
+  --simple-primary-text-85: fade(#15171A, 85%);
+  --simple-secondary-text-50: fade(#8B959E, 50%);
+
+  --simple-border: #DBE1E7;
+  --simple-border-dk: #D1D1D9;
+  --simple-light-bg: #FFFFFF;
+  --simple-light-bg-20: fade(#FFFFFF, 20%);
+  --simple-light-bg-50: fade(#FFFFFF, 50%);
+  --simple-shadow-10: fade(#0e0e21, 10%);
+  --simple-outline-color: #1B91FF;
+
+  --medical-color: #73D2DE; // outcome 3
+  --finance-color: #FF7D5E; // outcome 2 (tech 1 in code, 2 in mocks)
+  --entertainment-color: #FFBC42; // outcome 5
+  --politics-color: #1F71B5; // outcome 7
+  --crypto-color: #218380; // outcome 4
+  --sports-color: #D81159; // outcome 6
+
+  --simple-yes: #05B169; // outcome 1 (tech 2 in code, 1 in mocks)
+  --simple-yes-15: fade(#05B169, 15%);
+  --simple-yes-30: fade(#05B169, 30%);
+  --simple-no: #FF7D5E; // outcome 2 (tech 1 in code, 2 in mocks)
+  --simple-no-15: fade(#FF7D5E, 15%);
+  --simple-invalid: #58586B; // outcome 0 / invalid / augur color for icons
+  --simple-invalid-15: fade(#58586B, 15%);
+  --simple-chart-color: #c4c4c4;
+  --simple-confirmed: @color-brand;
+  --simple-failed: #FF3E13;
+  --simple-failed-5: fade(#FF3E13, 5%);
+  --simple-failed-10: fade(#FF3E13, 10%);
+  --simple-failed-15: fade(#FF3E13, 15%);
+  --simple-warning: #F59300;
+  --simple-warning-5: fade(#F59300, 5%);
+  --simple-warning-10: fade(#F59300, 10%);
+  --simple-warning-15: fade(#F59300, 15%);
+
+  --simple-brand: #2AE7A8;
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  // texts
+  --color-primary-text: #0E0E21;
+  --color-primary-text-15: fade(#0E0E21, 15%);
+  --color-primary-text-20: fade(#0E0E21, 20%);
+  --color-primary-text-25: fade(#0E0E21, 25%);
+  --color-primary-text-30: fade(#0E0E21, 30%);
+  --color-primary-text-40: fade(#0E0E21, 40%);
+  --color-primary-text-50: fade(#0E0E21, 50%);
+  --color-primary-text-80: fade(#0E0E21, 80%);
+  --color-primary-text-90: fade(#0E0E21, 90%);
+
+  --color-secondary-text: #555577;
+  --color-secondary-text-25: fade(#555577, 25%);
+  --color-secondary-text-30: fade(#555577, 30%);
+  --color-secondary-text-50: fade(#555577, 50%);
+  --color-secondary-text-75: fade(#555577, 75%);
+  --color-secondary-text-80: fade(#555577, 80%);
+
+  --color-inactive-text: #555577;
+  --color-dark-text: #9C9CB4;
+
+  // UI
+  --color-module-background: #FFFFFF;
+  --color-module-background-10: fade(#FFFFFF, 10%);
+  --color-module-background-10-transparent: rgba(255, 255, 255, 0.1);
+  --color-module-background-25: fade(#FFFFFF, 25%);
+  --color-module-background-action-focus: #FFFFFF; // no equivalent
+  --color-page-background: #F5F5F8;
+  --color-page-background-80: fade(#F5F5F8, 80%);
+  --color-dark-grey: #D1D1D9;
+  --color-dark-grey-80: fade(#D1D1D9, 80%);
+  --color-table-header: #FAFAFC;
+  --color-table-header-50: fade(#FAFAFC, 50%);
+  --color-active-background: #F5F5F8;
+  --color-dismissable-notice-background: #FFFFFF;
+  --color-outline: #D1D1D9;
+  --color-outline-50: fade(#D1D1D9, 50%);
+  --color-highlight-template-text: #F9FFD7;
+
+  // market Status:
+  --color-open: #18C88D;
+  --color-open-15: fade(#18C88D, 15%);
+  --color-open-20: fade(#18C88D, 20%);
+  --color-open-40: fade(#18C88D, 40%);
+  --color-reporting: #F59300;
+  --color-reporting-15: fade(#F59300, 15%);
+  --color-reporting-30: fade(#F59300, 30%);
+  --color-resolved: #FF4E27;
+  --color-resolved-15: fade(#FF4E27, 15%);
+  --color-resolved-10: fade(#FF4E27, 10%);
+  --color-scalar: #FCBD43;
+  --color-scalar-20: fade(#FCBD43, 20%);
+  --color-error: #FF4E27;
+  --color-error-10: fade(#FF4E27, 10%);
+  --color-error-15: fade(#FF4E27, 15%);
+  --color-error-20: fade(#FF4E27, 20%);
+  --color-error-50: fade(#FF4E27, 50%);
+  --color-alternate-error: #FF4E27;
+
+  // Trading
+  --color-positive: #5A8BEE;
+  --color-positive-5: fade(#5A8BEE, 5%);
+  --color-positive-10: fade(#5A8BEE, 10%);
+  --color-positive-15: fade(#5A8BEE, 15%);
+  --color-positive-20: fade(#5A8BEE, 20%);
+  --color-positive-30: fade(#5A8BEE, 30%);
+  --color-positive-40: fade(#5A8BEE, 40%);
+  --color-positive-50: fade(#5A8BEE, 50%);
+  --color-negative: #EC343F;
+  --color-negative-5: fade(#EC343F, 5%);
+  --color-negative-10: fade(#EC343F, 10%);
+  --color-negative-15: fade(#EC343F, 15%);
+  --color-negative-20: fade(#EC343F, 20%);
+  --color-negative-30: fade(#EC343F, 30%);
+  --color-negative-40: fade(#EC343F, 40%);
+  --color-negative-50: fade(#EC343F, 50%);
+
+  // Interactives
+  --color-primary-action: #0CCE8D;
+  --color-primary-action-5-dark: #0BB77E;
+  --color-primary-action-15-dark: #08875D;
+  --color-primary-action-5: fade(#0CCE8D, 5%);
+  --color-primary-action-10: fade(#0CCE8D, 10%);
+  --color-primary-action-15: fade(#0CCE8D, 15%);
+  --color-primary-action-20: fade(#0CCE8D, 20%);
+  --color-primary-action-40: fade(#0CCE8D, 40%);
+  --color-primary-action-70: fade(#0CCE8D, 70%);
+  --color-primary-action-80: fade(#0CCE8D, 80%);
+  --color-primary-action-90: fade(#0CCE8D, 90%);
+
+  --color-secondary-action: #FFFFFF;
+  --color-secondary-action-5-light: #FFFFFF;
+  --color-secondary-action-50: fade(#FFFFFF, 50%);
+  --color-secondary-action-outline: #D1D1D9;
+  --color-secondary-action-outline-25: fade(#D1D1D9, 25%);
+  --color-secondary-action-outline-30: fade(#D1D1D9, 30%);
+  --color-secondary-action-outline-40: fade(#D1D1D9, 40%);
+  --color-secondary-action-outline-50: fade(#D1D1D9, 50%);
+  --color-secondary-action-outline-70: fade(#D1D1D9, 70%);
+  --color-secondary-hover: #FFFFFF;
+  --color-secondary-hover-25: fade(#FFFFFF, 25%);
+  --color-secondary-hover-50: fade(#FFFFFF, 50%);
+  --color-focused: #1B91FF;
+
+  //outcomes:
+  --color-tenative-winner: #0CCE8D;
+  --color-outcome-invalid: #FF4E27;
+  --color-outcome-invalid-40: fade(#FF4E27, 40%);
+  --color-outcome-invalid-50: fade(#FF4E27, 50%);
+  --color-outcome-one: #FCBD43;
+  --color-outcome-one-40: fade(#FCBD43, 40%);
+  --color-outcome-two: #F55800;
+  --color-outcome-two-40: fade(#F55800, 40%);
+  --color-outcome-three: #FF56B1;
+  --color-outcome-three-40: fade(#FF56B1, 40%);
+  --color-outcome-four: #FF8DED;
+  --color-outcome-four-40: fade(#FF8DED, 40%);
+  --color-outcome-five: #1B91FF;
+  --color-outcome-five-40: fade(#1B91FF, 40%);
+  --color-outcome-six: #09CFE1;
+  --color-outcome-six-40: fade(#09CFE1, 40%);
+  --color-outcome-seven: #2AE7A8;
+  --color-outcome-seven-40: fade(#2AE7A8, 40%);
+}
+// Text
+// @color-primary-text: #D7DDE0;
+// @color-secondary-text: #9599A5;
+// @color-inactive-text: #4E4C57; // 43 files
+// @color-dark-text: #848294;
+
+// UI
+// @color-brand: #2AE7A8; // augur brand color
+// @color-dark-grey: #0E0E0F; // (TBD Name) - 53 files
+// @color-table-header: #161518; // 7 files
+// @color-module-background: #1B1A1E; // 51 files
+// @color-module-background-action-focus: #27262B; // 1 file
+// @color-active-background: #222126;
+// @color-page-background: #201E22; // 3 files
+// @color-dismissable-notice-background: #DFF1FE;
+// @color-outline: #7EC9FF;
+// @color-highlight-template-text: #F9FFD7;
+
+// Market status
+// @color-open: #7DFFA8; // 5 files
+// @color-reporting: #F1E700; // 8 files
+// @color-resolved: #F12B00; // 6 files
+// @color-scalar: #FFB47E;
+// Trades
+// @color-positive: #00F1C4; // 13 files
+// @color-negative: #FF7D5E; // 15 files
+// Interactions:
+// @color-primary-action: #09CFE1; // 19 files
+// @color-secondary-action: #252429; // 26 files
+// @color-secondary-action-outline: #3C3B43; // 25 files
+// @color-secondary-hover: #302F36;
+// Other
+// @color-error: #FF2727;
+// @color-alternate-error: #F3E7E7;
+// Social
+// @color-twitter: #55ACEE;
+// @color-facebook: #3B5998;
+// Outcomes:
+// @color-tenative-winner: #AEFFF0;
+
+// these are left in as a work around for the below mix in.
+@color-outcome-invalid: #FF7E9D;
+@color-outcome-one: #F3A2FA;
+@color-outcome-two: #09CFE1;
+@color-outcome-three: #665CDF;
+@color-outcome-four: #5CDF88;
+@color-outcome-five: #FD6266;
+@color-outcome-six: #FFF966;
+@color-outcome-seven: #FFFFFF;
+//  Chart / Outcome color helpers
+@color-outcome-list: @color-outcome-invalid @color-outcome-one @color-outcome-two @color-outcome-three @color-outcome-four @color-outcome-five @color-outcome-six @color-outcome-seven;
+
+.generate-trading-indexed-color-outcome-classes(@rules) {
+  each(@color-outcome-list, {
+    @newIndex: @index;
+    @rules();
+  });
+}
+
+@color-outcome-invalid-betting: #FF7E9D;
+@color-outcome-one-betting: #FCBD43;
+@color-outcome-two-betting: #F55800;
+@color-outcome-three-betting: #FF56B1;
+@color-outcome-four-betting: #FF8DED;
+@color-outcome-five-betting: #1B91FF;
+@color-outcome-six-betting: #09CFE1;
+@color-outcome-seven-betting: #2AE7A8;
+//  Chart / Outcome color helpers
+@color-outcome-list-betting: @color-outcome-invalid-betting @color-outcome-one-betting @color-outcome-two-betting @color-outcome-three-betting @color-outcome-four-betting @color-outcome-five-betting @color-outcome-six-betting @color-outcome-seven-betting;
+
+.generate-betting-indexed-color-outcome-classes(@rules) {
+  each(@color-outcome-list-betting, {
+    @newIndex: @index;
+    @rules();
+  });
+}

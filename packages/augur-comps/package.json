@@ -2,9 +2,11 @@
   "name": "@augurproject/augur-comps",
   "version": "0.1.0",
   "private": true,
-  "main": "./build",
+  "main": "dist",
   "dependencies": {
     "@babel/core": "7.12.3",
+    "@babel/cli": "7.12.3",
+    "@babel/plugin-transform-typescript": "7.12.3",
     "@pmmmwh/react-refresh-webpack-plugin": "0.4.2",
     "@svgr/webpack": "5.4.0",
     "@testing-library/jest-dom": "^5.11.4",
@@ -95,7 +97,8 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
-    "test": "node scripts/test.js"
+    "test": "node scripts/test.js",
+    "transpile": "babel src -d dist --copy-files"
   },
   "eslintConfig": {
     "extends": [
@@ -183,7 +186,10 @@
   },
   "babel": {
     "presets": [
-      "react-app"
+      "@babel/preset-env", "@babel/preset-react", ["@babel/preset-typescript", {
+        "isTSX": true,
+        "allExtensions": true
+    }]
     ]
   }
 }

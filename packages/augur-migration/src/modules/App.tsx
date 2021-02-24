@@ -3,8 +3,6 @@ import React, { useEffect } from 'react';
 import { HashRouter } from 'react-router-dom';
 // import Styles from './App.styles.less';
 import '../assets/styles/shared.less';
-import { AppStatusProvider, useAppStatusStore } from './stores/app-status';
-import { UserProvider } from './stores/user';
 import { ConnectAccountProvider } from './ConnectAccount/connect-account-provider';
 // import classNames from 'classnames';
 // import { useUserBalances, useFinalizeUserTransactions } from './stores/utils';
@@ -66,15 +64,7 @@ const AppBody = () => {
 
 function App() {
   return (
-    <HashRouter hashType="hashbang">
-      <ConnectAccountProvider>
-        <UserProvider>
-          <AppStatusProvider>
-            <AppBody />
-          </AppStatusProvider>
-        </UserProvider>
-      </ConnectAccountProvider>
-    </HashRouter>
+    <Logo />
   );
 }
 

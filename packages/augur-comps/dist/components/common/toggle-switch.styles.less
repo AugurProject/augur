@@ -1,0 +1,64 @@
+@import (reference) '~assets/styles/shared';
+
+.ToggleSwitch {
+  .SimpleBorder;
+
+  background-color: var(--simple-light-bg);
+  display: flex;
+  position: relative;
+  width: @size-68;
+  height: @size-25;
+  align-items: center;
+  padding: 0;
+  cursor: pointer;
+
+  &:focus {
+    outline: 0;
+  }
+
+  > span {
+    .text-12-semi-bold;
+
+    position: relative;
+    z-index: 2;
+    padding: 0 @size-8;
+
+    &:first-of-type {
+      color: var(--simple-secondary-text);
+    }
+
+    &:last-of-type {
+      color: var(--simple-primary-text);
+    }
+  }
+
+  > div {
+    position: absolute;
+    z-index: 1;
+    display: inline-block;
+    width: @size-34;
+    height: @size-25;
+    background-color: var(--simple-alternate-background);
+    border: @size-1 solid var(--simple-secondary-text);
+    border-radius: @size-8;
+    transform: translateX(100%);
+    transition: all 0.1s linear 0s;
+  }
+
+  &.On {
+    > span {
+      &:first-of-type {
+        color: var(--simple-primary-text);
+      }
+
+      &:last-of-type {
+        color: var(--simple-secondary-text);
+      }
+    }
+
+    > div {
+      transform: translateX(0%);
+      transition: all 0.1s linear 0s;
+    }
+  }
+}
