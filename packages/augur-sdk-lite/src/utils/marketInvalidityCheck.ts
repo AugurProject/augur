@@ -5,7 +5,9 @@ import { CLAIM_GAS_COST, DEFAULT_GAS_PRICE_IN_GWEI, EULERS_NUMBER, INVALID_SWAP_
 // A Market is marked as True in the invalidFilter if the any bid for Invalid on the book would be profitable to take were the market Valid
 const recalcInvalidFilter = (
   invalidOutcomeWeight: BigNumber,
+  cashOutcomeWeight: BigNumber,
   invalidOutcomeLiquidity: BigNumber,
+  invalidOutcomePrice: BigNumber,
   marketData: { endTime: number, numTicks: number},
   feeMultiplier: BigNumber,
   gasLevels: GasStation,
@@ -39,8 +41,7 @@ const recalcInvalidFilter = (
 
   const numTicks = new BigNumber(marketData.numTicks);
 
-  let baseRevenue = numTicks.multipliedBy(feeMultiplier);
-  baseRevenue = baseRevenue.multipliedBy(
+  const baseRevenue = numTicks.multipliedBy(feeMultiplier).multipliedBy(
     (
       EULERS_NUMBER **
       timeTillMarketFinalizesInYears
@@ -50,22 +51,21 @@ const recalcInvalidFilter = (
     ).toPrecision(14)
   );
 
-  let baseCost = estimatedTradeGasCost.plus(
+  let invalidEstimates = estimatedTradeGasCost.plus(
     estimatedClaimGasCost
   );
 
-  const cashWeight = new BigNumber(1).minus(invalidOutcomeWeight);
-  const invalidWeight = new BigNumber(invalidOutcomeWeight);
-
-  const validRevenue = invalidWeight.multipliedBy(baseRevenue);
-  const validCost = baseCost.plus(
-    invalidWeight.multipliedBy(numTicks.minus(cashWeight))
-  );
+  const totalInvalidCost = baseRevenue.plus(invalidEstimates);
+  const targetPrice = new BigNumber(0.02);
+  const priceCalc = targetPrice.div(invalidOutcomePrice)
+  const weightcalc = invalidOutcomeWeight.div(invalidOutcomeWeight.plus(cashOutcomeWeight));
+  const priceWeightCalc = (priceCalc.pow(weightcalc)).minus(new BigNumber(1));
+  const invalidRevenue = invalidOutcomeLiquidity.times(priceWeightCalc);
 
   if (
-    validRevenue
-      .minus(validCost)
-      .gt(MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI)
+    invalidRevenue
+      .minus(totalInvalidCost)
+      .gt(0)
   ) {
     return 1;
   }
