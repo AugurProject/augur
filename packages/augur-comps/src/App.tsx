@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 // import Styles from './App.styles.less';
-// import './assets/styles/shared.less';
+import './assets/styles/shared.less';
 
 import { LoadingMarketCard, MarketCard } from './components/market-card/market-card';
 
