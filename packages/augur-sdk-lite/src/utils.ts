@@ -1,3 +1,5 @@
+import * as invalidCheck from './utils/marketInvalidityCheck';
+
 export function compareObjects(key: string, order: string) {
   return function(a: any, b: any) {
     if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
@@ -37,3 +39,4 @@ export function countNonZeroes(numbers: string[]): number {
   return count;
 }
 
+export const marketInvalidityCheck = invalidCheck;
