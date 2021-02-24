@@ -83,7 +83,32 @@
     }
   }
 
+  &.Dark {
+    .text-12-bold;
 
+    background-color: var(--color-primary-action);
+    color: var(--color-dark-grey);
+    border: 0;
+    height: @size-32;
+    max-height: @size-32;
+    min-height: @size-32;
+    border-radius: @size-3;
+    padding: 0 @size-12;
+
+    &:not(:disabled):not(.Disabled) {
+      &:hover {
+        background-color: var(--color-primary-action-70);
+      }
+  
+      &:focus {
+        background-color: var(--color-primary-action-20);
+      }
+  
+      &:active {
+        background-color: var(--color-primary-action-20);
+      }
+    }
+  }
 }
 
 .SecondaryButton {

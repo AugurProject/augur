@@ -16,6 +16,7 @@ interface ButtonProps {
   rel?: string;
   error?: string;
   title?: string;
+  darkTheme?: boolean;
 }
 
 const Button = ({
@@ -79,7 +80,7 @@ const Button = ({
 export const PrimaryButton = (props: ButtonProps) => (
   <Button
     {...props}
-    className={classNames(Styles.PrimaryButton, props.className)}
+    className={classNames(Styles.PrimaryButton, props.className, {[Styles.Dark]: props.darkTheme})}
   />
 );
 export const SecondaryButton = (props: ButtonProps) => (

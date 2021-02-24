@@ -1,9 +1,8 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { App } from './App';
-import reportWebVitals from './reportWebVitals';
 import { render } from 'react-dom';
 
 export * from './components/common/logo';
+export * from './components/common/buttons';
 
 render(<App />, document.getElementById('root'));
