@@ -1,0 +1,192 @@
+@import (reference) '~assets/styles/shared';
+
+div.Tooltip {
+  .text-12;
+
+  background-color: var(--simple-light-bg);
+  border: @size-1 solid var(--simple-border);
+  border-radius: @size-2;
+  box-shadow: 0 @size-8 @size-40 rgba(14, 14, 33, 0.1);
+  color: var(--simple-primary-text);
+  max-width: 13.7rem;
+  padding: @size-8;
+  pointer-events: auto;
+  text-transform: none;
+  white-space: initial;
+  z-index: @mask-above;
+
+  > h4 {
+    font-weight: 500;
+    margin-bottom: @size-8;
+  }
+
+  > p {
+    margin: 0 0 @size-12;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &:hover {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.TooltipHint {
+  margin-bottom: 0;
+  display: flex;
+}
+
+.Container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+:global {
+  div.__react_component_tooltip {
+    transition: none;
+    border-radius: @size-4;
+
+    &.show {
+      opacity: 1;
+    }
+
+    &.place-top {
+      margin-bottom: -@size-14;
+
+      &::after {
+        border-top: @size-8 solid var(--simple-light-bg);
+        bottom: -@size-8;
+      }
+
+      &.type-light::after {
+        border-left-width: @size-8;
+        border-right-width: @size-8;
+        border-top-width: @size-8;
+        -webkit-filter: drop-shadow(0 @size-2 0 var(--simple-border));
+        filter: drop-shadow(0 @size-2 0 var(--simple-border));
+      }
+
+      &::before {
+        border: 0 solid transparent;
+        border-left: 0 solid transparent;
+        border-right: 0 solid transparent;
+        border-top-color: var(--simple-light-bg);
+        bottom: -@size-22;
+        content: '';
+        display: block;
+        height: 0;
+        left: 50.5%;
+        margin-left: -@size-8;
+        position: absolute;
+        top: unset;
+        width: 0;
+      }
+    }
+
+    &.place-bottom {
+      margin-top: @size-10;
+
+      &::after {
+        border-bottom-color: var(--simple-light-bg);
+        top: -@size-8;
+      }
+
+      &.type-light::after {
+        border-bottom-width: @size-8;
+        border-left-width: @size-8;
+        border-right-width: @size-8;
+        -webkit-filter: drop-shadow(0 -@size-2 0 var(--simple-border));
+        filter: drop-shadow(0 -@size-2 0 var(--simple-border));
+      }
+
+      &::before {
+        border: 0 solid transparent;
+        border-bottom-color: var(--simple-light-bg);
+        border-left: 0 solid transparent;
+        border-right: 0 solid transparent;
+        bottom: 100%;
+        content: '';
+        display: block;
+        height: 0;
+        left: 50.5%;
+        margin-left: -@size-8;
+        position: absolute;
+        top: unset;
+        width: 0;
+      }
+    }
+
+    &.place-left {
+      margin-left: -@size-14;
+      margin-top: -@size-8;
+
+      &::after {
+        border-left-color: var(--simple-light-bg);
+        right: -@size-8;
+      }
+
+      &.type-light::after {
+        border-bottom-width: @size-8;
+        border-left-width: @size-8;
+        border-top-width: @size-8;
+        -webkit-filter: drop-shadow(@size-2 0 0 var(--simple-border));
+        filter: drop-shadow(@size-2 0 0 var(--simple-border));
+      }
+
+      &::before {
+        border: 0 solid transparent;
+        border-bottom: 0 solid transparent;
+        border-left-color: var(--simple-light-bg);
+        border-top: 0 solid transparent;
+        bottom: unset;
+        content: '';
+        display: block;
+        height: 0;
+        left: unset;
+        position: absolute;
+        right: -@size-22;
+        top: 50%;
+        width: 0;
+      }
+    }
+
+    &.place-right {
+      margin-right: -@size-14;
+      margin-top: -@size-8;
+
+      &::after {
+        border-right-color: var(--simple-light-bg);
+        left: -@size-8;
+      }
+
+      &.type-light::after {
+        border-bottom-width: @size-8;
+        border-right-width: @size-8;
+        border-top-width: @size-8;
+        -webkit-filter: drop-shadow(-@size-2 0 0 var(--simple-border));
+        filter: drop-shadow(-@size-2 0 0 var(--simple-border));
+      }
+
+      &::before {
+        border: 0 solid transparent;
+        border-bottom: 0 solid transparent;
+        border-right-color: var(--simple-light-bg);
+        border-top: 0 solid transparent;
+        bottom: unset;
+        content: '';
+        display: block;
+        height: 0;
+        left: -@size-22;
+        position: absolute;
+        right: unset;
+        top: 50%;
+        width: 0;
+      }
+    }
+  }
+}
