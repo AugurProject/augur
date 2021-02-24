@@ -1,7 +1,7 @@
 import React from 'react';
 import { AugurTextLogo, v2AugurLogo } from './icons';
 
-// import Styles from './logo.styles.less';
+import Styles from './logo.styles.less';
 // import { useAppStatusStore } from '../stores/app-status';
 import { MarketsLink } from '../../utils/routes/links';
 
@@ -10,7 +10,7 @@ export const Logo = () => {
 // return <div>logo</div>;
   return (
     // <MarketsLink id="logolink">
-      <section>
+      <section className={Styles.Logo}>
         logo
         {AugurTextLogo}
         {/* {isMobile ? v2AugurLogo : AugurTextLogo} */}

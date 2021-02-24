@@ -98,7 +98,7 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
-    "transpile": "babel src -d build --extensions \".tsx\",\".ts\""
+    "transpile": "babel src --out-dir build --extensions \".tsx\",\".ts\" --source-maps inline --copy-files"
   },
   "eslintConfig": {
     "extends": [
