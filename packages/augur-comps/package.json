@@ -4,9 +4,9 @@
   "private": true,
   "main": "dist",
   "dependencies": {
-    "@babel/core": "7.12.3",
-    "@babel/cli": "7.12.3",
-    "@babel/plugin-transform-typescript": "7.12.3",
+    "@babel/core": "7.13.1",
+    "@babel/cli": "7.13.0",
+    "@babel/preset-typescript": "7.13.0",
     "@pmmmwh/react-refresh-webpack-plugin": "0.4.2",
     "@svgr/webpack": "5.4.0",
     "@testing-library/jest-dom": "^5.11.4",
@@ -98,7 +98,7 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
-    "transpile": "babel src -d dist --copy-files"
+    "transpile": "babel src -d build --extensions \".tsx\""
   },
   "eslintConfig": {
     "extends": [
