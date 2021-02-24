@@ -2,7 +2,7 @@
   "name": "@augurproject/augur-comps",
   "version": "0.1.0",
   "private": true,
-  "main": "dist",
+  "main": "build",
   "dependencies": {
     "@babel/core": "7.13.1",
     "@babel/cli": "7.13.0",
@@ -98,7 +98,7 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
-    "transpile": "babel src -d build --extensions \".tsx\""
+    "transpile": "babel src -d build --extensions \".tsx\",\".ts\""
   },
   "eslintConfig": {
     "extends": [
