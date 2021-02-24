@@ -24,6 +24,8 @@ yarn-debug.log*
 yarn-error.log*
 
 # styles types
+**.d.ts
+**.less.d.ts
 src/assets/**/*.less.d.ts
 src/utils/**/*.less.d.ts
 src/modules/**/*.styles.less.d.ts
