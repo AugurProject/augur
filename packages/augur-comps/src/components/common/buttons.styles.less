@@ -401,3 +401,53 @@
     background: var(--simple-alternate-background);
   }
 }
+
+.ExternalLinkButton {
+  .text-10-semi-bold;
+
+  color: var(--color-primary-text);
+  border: 0;
+  background: transparent;
+  text-transform: uppercase;
+  display: inline-flex;
+
+  > svg {
+    margin-left: @size-4;
+    height: @size-10;
+    width: @size-10;
+    margin-top: auto;
+    margin-bottom: auto;
+
+    > path {
+      &:nth-child(odd) {
+        fill: var(--color-primary-text);
+        stroke: none;
+      }
+
+      &:nth-child(even) {
+        stroke: var(--color-primary-text);
+      }
+    }
+  }
+  
+  &:hover {
+    color: var(--color-secondary-text);
+
+    > a {
+      color: var(--color-secondary-text);
+    }
+
+    > svg {
+      > path {
+        &:nth-child(odd) {
+          fill: var(--color-secondary-text);
+        }
+  
+        &:nth-child(even) {
+          stroke: var(--color-secondary-text);
+        }
+      }
+    }
+  }
+
+}

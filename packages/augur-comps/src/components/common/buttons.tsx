@@ -1,7 +1,7 @@
 import React, { ReactNode, useEffect, useState } from 'react';
 import Styles from './buttons.styles.less';
 import classNames from 'classnames';
-import { Arrow, SearchIcon } from './icons';
+import { Arrow, SearchIcon, ViewIcon } from './icons';
 
 interface ButtonProps {
   text?: string;
@@ -151,4 +151,23 @@ export const SearchButton = (props) => (
     icon={SearchIcon}
     className={classNames(Styles.SearchButton, props.className)}
   />
+);
+
+export interface ExternalLinkButtonProps {
+  label: string;
+  URL?: string;
+}
+
+export const ExternalLinkButton = ({
+  label,
+  URL,
+}: ExternalLinkButtonProps) => (
+  <button className={Styles.ExternalLinkButton}>
+    {URL && (
+      <a href={URL} target="_blank" rel="noopener noreferrer">
+        {label}
+      </a>
+    )}
+    {ViewIcon}
+  </button>
 );
