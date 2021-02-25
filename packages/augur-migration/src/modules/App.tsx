@@ -12,10 +12,6 @@ import { AppStatusProvider, useAppStatusStore } from './stores/app-status';
 import { UserProvider, useUserStore } from './stores/user';
 import { PARA_CONFIG } from './stores/constants';
 
-require('react-dom');
-window.React2 = require('react');
-console.log(window.React1 === window.React2);
-
 const AppBody = () => {
   //   const location = useLocation();
   //   const path = parsePath(location.pathname)[0];
@@ -23,7 +19,7 @@ const AppBody = () => {
   const {
     isLogged,
     isMobile,
-    actions: { setSidebar },
+    actions: { setModal },
   } = useAppStatusStore();
   const {
     account,
@@ -86,6 +82,8 @@ const AppBody = () => {
         updateLoginAccount={handleAccountUpdate}
         autoLogin={autoLogin}
         transactions={transactions}
+        isMobile={false}
+        setModal={setModal}
       />
       <span>Migrate V1 REP</span>
       <Migrate />

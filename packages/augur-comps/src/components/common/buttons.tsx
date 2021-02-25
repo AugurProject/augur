@@ -33,9 +33,6 @@ const Button = ({
   target = '_blank',
   rel = 'noopener noreferrer',
 }: ButtonProps) => {
-  useEffect(() => {
-    console.log('butto');
-  }, [])
   return href ? (
     <a
       title={title}

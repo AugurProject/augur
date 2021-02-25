@@ -60,15 +60,13 @@ const ConnectAccountButton = ({
   updateLoginAccount,
   darkMode = false,
   transactions,
+  isMobile,
+  setModal
 }) => {
   // const {
   //   isMobile,
   //   actions: { setModal },
   // } = useAppStatusStore();
-  const isMobile = false;
-  const setModal = (args) => {
-    console.log('set modal');
-  };
 
   const { account, activate, connector, error } = useWeb3React();
   const activeWeb3 = useActiveWeb3React();
@@ -136,18 +134,18 @@ export const ConnectAccount = ({
   updateLoginAccount,
   darkMode = false,
   transactions,
+  isMobile,
+  setModal
 }) => {
-  // useEffect(() => {
-  //   console.log('hi');
-  // })
   return (
-    <button>connect</button>
-    // <ConnectAccountButton
-    //   autoLogin={autoLogin}
-    //   updateLoginAccount={updateLoginAccount}
-    //   darkMode={darkMode}
-    //   transactions={transactions}
-    // />
+    <ConnectAccountButton
+      autoLogin={autoLogin}
+      updateLoginAccount={updateLoginAccount}
+      darkMode={darkMode}
+      transactions={transactions}
+      isMobile={isMobile}
+      setModal={setModal}
+    />
   );
 };
 

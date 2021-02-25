@@ -83,8 +83,8 @@
       "@augurproject/subgraph-base/@graphprotocol/graph-ts",
       "@augurproject/amm-ui/**",
       "@augurproject/simplified/**/",
+      "@augurproject/migration/**/",
       "@augurproject/ethereum-multicall/**",
-      "@augurproject/augur-comps/**",
       "**/webpack",
       "**/eslint*",
       "**/jest"
