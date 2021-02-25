@@ -11,6 +11,7 @@ import {
 import { AppStatusProvider, useAppStatusStore } from './stores/app-status';
 import { UserProvider, useUserStore } from './stores/user';
 import { PARA_CONFIG } from './stores/constants';
+import ModalView from './modal/modal-view';
 
 const AppBody = () => {
   //   const location = useLocation();
@@ -19,8 +20,10 @@ const AppBody = () => {
   const {
     isLogged,
     isMobile,
+    modal,
     actions: { setModal },
   } = useAppStatusStore();
+  const modalShowing = Object.keys(modal).length !== 0;
   const {
     account,
     loginAccount,
@@ -77,6 +80,7 @@ const AppBody = () => {
   };
   return (
     <div id="mainContent" className={Styles.App}>
+      {modalShowing && <ModalView />}
       <Logo darkTheme />
       <ConnectAccount
         updateLoginAccount={handleAccountUpdate}
@@ -94,13 +98,13 @@ const AppBody = () => {
 function App() {
   return (
     <HashRouter hashType="hashbang">
-      {/* <ConnectAccountProvider> */}
-      <UserProvider>
-        <AppStatusProvider>
-          <AppBody />
-        </AppStatusProvider>
-      </UserProvider>
-      {/* </ConnectAccountProvider> */}
+      <ConnectAccountProvider>
+        <UserProvider>
+          <AppStatusProvider>
+            <AppBody />
+          </AppStatusProvider>
+        </UserProvider>
+      </ConnectAccountProvider>
     </HashRouter>
   );
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Styles from './modal.styles.less';
-import { CloseIcon } from '../common/icons';
+import { CloseIcon } from '@augurproject/augur-comps';
 import { useAppStatusStore } from '../stores/app-status';
 
 export const Header = ({ title, subtitle }) => {

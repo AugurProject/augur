@@ -60,10 +60,10 @@ export function AppStatusReducer(state, action) {
       const { account } = action;
       updatedState[IS_LOGGED] = Boolean(account);
       if (Boolean(account)) {
-        updatedState[SETTINGS] = {
-          ...state[SETTINGS],
-          ...getSavedUserInfo(account)[SETTINGS],
-        };
+        // updatedState[SETTINGS] = {
+        //   ...state[SETTINGS],
+        //   ...getSavedUserInfo(account)[SETTINGS],
+        // };
       }
       break;
     }
