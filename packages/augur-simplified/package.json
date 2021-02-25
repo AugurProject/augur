@@ -3,6 +3,7 @@
   "version": "2.3.0-alpha.0",
   "private": true,
   "dependencies": {
+    "@augurproject/augur-comps": "^0.1.0",
     "@augurproject/ethereum-multicall": "^2.3.0-alpha.0",
     "@augurproject/ethersjs-provider": "^2.3.0-alpha.0",
     "@augurproject/sdk": "^2.3.0-alpha.0",

@@ -27,7 +27,7 @@
       "resolveJsonModule": false
     },
     "include": [
-      "./src/**",
+      "./src/*",
       "./src/externals.d.ts"
     ],
     "exclude": [
