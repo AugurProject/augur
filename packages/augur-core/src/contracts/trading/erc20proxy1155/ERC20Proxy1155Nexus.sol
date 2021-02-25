@@ -31,6 +31,10 @@ contract ERC20Proxy1155Nexus is IERC20Proxy1155Nexus, CloneFactory2 {
         return _erc20;
     }
 
+    function calculateERC20(uint256 _tokenId) public view returns (address) {
+        return clone2Address(address(proxyToClone), _tokenId, address(this));
+    }
+
     function newERC20s(uint256[] memory _tokenIds) public returns (IERC20Proxy1155[] memory) {
         IERC20Proxy1155[] memory erc20s = new IERC20Proxy1155[](_tokenIds.length);
         for (uint i = 0; i < _tokenIds.length; i++) {

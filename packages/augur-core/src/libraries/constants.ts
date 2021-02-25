@@ -148,6 +148,13 @@ export const EXTERNAL_CONTRACTS = [
     'AMMExchange',
     'AMMFactory',
     'WethWrapperForAMMExchange',
+    // WrappedShareToken
+    'WrappedShareTokenFactoryFactory',
+    'WrappedShareTokenFactory',
+    'WrappedShareToken',
+    // Balancer
+    'BFactory',
+    'BPool'
 ];
 
 export const REGISTERED_EXTERNAL_CONTRACTS = [

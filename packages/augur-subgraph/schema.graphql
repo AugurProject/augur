@@ -816,6 +816,20 @@ type AMMExchange @entity {
   enters: [EnterPosition!]! @derivedFrom(field: "ammExchange")
 
   exits: [ExitPosition!]! @derivedFrom(field: "ammExchange")
+
+  invalidPool: BPool!
+}
+
+type BPool @entity {
+  id: ID!
+
+  cashBalance: BigInt!
+
+  cashWeight: BigInt!
+
+  invalidBalance: BigInt!
+
+  invalidWeight: BigInt!
 }
 
 type ParaAugurDeployFinishedEvent @entity {

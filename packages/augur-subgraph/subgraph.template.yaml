@@ -148,8 +148,10 @@ dataSources:
           file: ./abis/ParaShareToken.json
         - name: ERC20
           file: ./abis/ERC20.json
+        - name: BPool
+          file: ./abis/BPool.json
       eventHandlers:
-        - event: AMMCreated(address,address,address,uint256)
+        - event: AMMCreated(address,address,address,uint256,address)
           handler: handleAMMCreated
   - kind: ethereum/contract
     name: ParaDeployer
@@ -233,6 +235,30 @@ templates:
           handler: handleAddLiquidity
         - event: RemoveLiquidity(address,uint256,uint256,uint256)
           handler: handleRemoveLiquidity
+  - kind: ethereum/contract
+    name: BPool
+    network: {{ ethereum.network }}
+    source:
+      abi: BPool
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/bPool.ts
+      entities:
+        - BPool
+      abis:
+        - name: BPool
+          file: ./abis/BPool.json
+      eventHandlers:
+        - event: LOG_CALL(indexed bytes4,indexed address,bytes)
+          handler: handleBPoolActionCall
+        - event: LOG_EXIT(indexed address,indexed address,uint256)
+          handler: handleBPoolActionExit
+        - event: LOG_JOIN(indexed address,indexed address,uint256)
+          handler: handleBPoolActionJoin
+        - event: LOG_SWAP(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleBPoolActionSwap
   - kind: ethereum/contract
     name: Cash
     network: {{ ethereum.network }}

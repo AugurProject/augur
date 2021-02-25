@@ -183,6 +183,7 @@ export interface AmmExchange {
   totalSupply?: string;
   apy?: string;
   ammOutcomes: AmmOutcome[];
+  isAmmMarketInvalid: boolean;
 }
 
 export interface Cashes {
