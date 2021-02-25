@@ -33,9 +33,10 @@ import { sliceByPage, Pagination } from '../common/pagination';
 import { TopBanner } from '../common/top-banner';
 import { searchMarkets } from '../apollo/client';
 import { SearchInput } from '../common/inputs';
-import { LoadingMarketCard, MarketCard } from './market-card';
+import { MarketCard } from './market-card';
 import { useGraphDataStore } from '../stores/graph-data';
 import { useScrollToTopOnMount } from '../stores/utils';
+import { LoadingMarketCard } from '@augurproject/augur-comps';
 
 const PAGE_LIMIT = 21;
 

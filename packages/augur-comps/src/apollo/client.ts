@@ -10,7 +10,6 @@ import gql from 'graphql-tag';
 
 
 // // @ts-ignore
-console.log(process);
 const PARA_CONFIG = process.env.CONFIGURATION || {};
 
   // @ts-ignore
