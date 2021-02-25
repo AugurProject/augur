@@ -11,6 +11,11 @@ export * from './utils/get-number-precision';
 export * from './utils/window-ref';
 export * from './utils/format-number';
 export * from './utils/date-utils';
+
+export * from './components/ConnectAccount/connect-account-provider';
+export * from './components/ConnectAccount/index';
+export * from './components/ConnectAccount/hooks';
+
 // TODO: determine why this even works since we haven't included augur-sdk-lite
 // export { CATEGORIES_ICON_MAP } from './components/common/category-icons-map';
 

@@ -5,12 +5,12 @@ import { ethers } from 'ethers';
 import { SecondaryButton } from '../common/buttons';
 import classNames from 'classnames';
 import ButtonStyles from '../common/buttons.styles.less';
-import { GetWalletIcon } from '../common/get-wallet-icon';
+// import { GetWalletIcon } from '../common/get-wallet-icon';
 import { useActiveWeb3React } from './hooks';
-import { MODAL_CONNECT_WALLET, TX_STATUS } from '../constants';
-import { useAppStatusStore } from '../stores/app-status';
+import { MODAL_CONNECT_WALLET, TX_STATUS } from '../../utils/constants';
+// import { useAppStatusStore } from '../stores/app-status';
 import { tryAutoLogin } from './utils';
-import { Spinner } from '../common/spinner';
+// import { Spinner } from '../common/spinner';
 
 interface LoginButtonProps {
   action: Function;
@@ -61,10 +61,10 @@ const ConnectAccountButton = ({
   darkMode = false,
   transactions,
 }) => {
-  const {
-    isMobile,
-    actions: { setModal },
-  } = useAppStatusStore();
+  // const {
+  //   isMobile,
+  //   actions: { setModal },
+  // } = useAppStatusStore();
   const { account, activate, connector, error } = useWeb3React();
   const activeWeb3 = useActiveWeb3React();
   const pendingTransaction = transactions.filter(
