@@ -9,7 +9,7 @@
     "yarn": ">=1.6.0"
   },
   "scripts": {
-    "build": "tsc -b",
+    "build": "tsc -b && AUGUR_ENV=v2 yarn workspace @augurproject/augur-comps --silent transpile",
     "build:clean": "tsc -b --clean",
     "build:watch": "tsc -b -w",
     "build:release": "tsc -b tsconfig.release.json",
