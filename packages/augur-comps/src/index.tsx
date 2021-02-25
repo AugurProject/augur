@@ -11,6 +11,7 @@ export * from './utils/get-number-precision';
 export * from './utils/window-ref';
 export * from './utils/format-number';
 export * from './utils/date-utils';
+export * from './utils/constants';
 
 export * from './components/ConnectAccount/connect-account-provider';
 export * from './components/ConnectAccount/index';

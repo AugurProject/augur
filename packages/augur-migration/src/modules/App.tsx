@@ -3,6 +3,10 @@ import '../assets/styles/shared.less';
 import { Logo, PrimaryButton } from '@augurproject/augur-comps';
 import Styles from './App.styles.less';
 import { Migrate } from './migrate/migrate';
+import { HashRouter } from 'react-router-dom';
+// import { ConnectAccountProvider } from '@augurproject/augur-comps';
+import { AppStatusProvider, useAppStatusStore } from './stores/app-status';
+// import { UserProvider } from './stores/user';
 
 const AppBody = () => {
   return (
@@ -17,7 +21,15 @@ const AppBody = () => {
 
 function App() {
   return (
-    <AppBody />
+    <HashRouter hashType="hashbang">
+      {/* <ConnectAccountProvider>
+          <UserProvider> */}
+            <AppStatusProvider>
+              <AppBody />
+              </AppStatusProvider>
+          {/* </UserProvider>
+      </ConnectAccountProvider> */}
+    </HashRouter>
   );
 }
 
