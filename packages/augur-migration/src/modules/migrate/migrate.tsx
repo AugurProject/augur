@@ -1,8 +1,13 @@
 import React from 'react';
 import Styles from './migrate.styles.less';
 import { PrimaryButton, ExternalLinkButton } from '@augurproject/augur-comps';
+import { useAppStatusStore } from '../stores/app-status';
+import { ConnectAccountButton } from '../shared/connect-account-button';
 
 export const Migrate = () => {
+  const {
+    isLogged
+  } = useAppStatusStore();
   return (
     <div className={Styles.Migrate}>
       <span>
@@ -11,7 +16,7 @@ export const Migrate = () => {
         100 V1 REP will migrate to 100 V2 REP.{' '}
         <ExternalLinkButton label="learn more" URL="https://www.google.com/" />
       </span>
-      <PrimaryButton text="Connect your wallet" darkTheme />
+      {isLogged ? <PrimaryButton text='Migrate' darkTheme /> : <ConnectAccountButton />}
     </div>
   );
 };

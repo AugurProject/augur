@@ -155,7 +155,7 @@ interface AccountDetailsProps {
   logout: Function;
 }
 
-const AccountDetails = ({
+export const AccountDetails = ({
   openOptions,
   darkMode,
   transactions,
@@ -215,4 +215,3 @@ const AccountDetails = ({
   )
 }
 
-export default AccountDetails;
