@@ -1,9 +1,0 @@
-version: "3.2"
-services:
-  geth:
-    image: "augurproject/dev-pop-geth:core-${AUGUR_CORE_VERSION}"
-    ports:
-      - "8545:8545"
-      - "8546:8546"
-
-    entrypoint: ["/app/wait-for-url.sh", "geth:8545", "--", "/app/docker-entrypoint.sh"]

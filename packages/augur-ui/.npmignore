@@ -1,7 +1,0 @@
-node_modules
-.gitignore
-.npmignore
-.travis.yml
-test
-coverage
-overflow
