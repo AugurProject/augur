@@ -83,7 +83,32 @@
     }
   }
 
+  &.Dark {
+    .text-12-bold;
 
+    background-color: var(--color-primary-action);
+    color: var(--color-dark-grey);
+    border: 0;
+    height: @size-32;
+    max-height: @size-32;
+    min-height: @size-32;
+    border-radius: @size-3;
+    padding: 0 @size-12;
+
+    &:not(:disabled):not(.Disabled) {
+      &:hover {
+        background-color: var(--color-primary-action-70);
+      }
+  
+      &:focus {
+        background-color: var(--color-primary-action-20);
+      }
+  
+      &:active {
+        background-color: var(--color-primary-action-20);
+      }
+    }
+  }
 }
 
 .SecondaryButton {
@@ -375,4 +400,54 @@
   &.Selected {
     background: var(--simple-alternate-background);
   }
+}
+
+.ExternalLinkButton {
+  .text-10-semi-bold;
+
+  color: var(--color-primary-text);
+  border: 0;
+  background: transparent;
+  text-transform: uppercase;
+  display: inline-flex;
+
+  > svg {
+    margin-left: @size-4;
+    height: @size-10;
+    width: @size-10;
+    margin-top: auto;
+    margin-bottom: auto;
+
+    > path {
+      &:nth-child(odd) {
+        fill: var(--color-primary-text);
+        stroke: none;
+      }
+
+      &:nth-child(even) {
+        stroke: var(--color-primary-text);
+      }
+    }
+  }
+  
+  &:hover {
+    color: var(--color-secondary-text);
+
+    > a {
+      color: var(--color-secondary-text);
+    }
+
+    > svg {
+      > path {
+        &:nth-child(odd) {
+          fill: var(--color-secondary-text);
+        }
+  
+        &:nth-child(even) {
+          stroke: var(--color-secondary-text);
+        }
+      }
+    }
+  }
+
 }

@@ -1,45 +1,33 @@
 @import (reference) '~assets/styles/shared.less';
 
 .App {
+  background: var(--color-page-background);
   display: flex;
-  flex-flow: column nowrap;
-  grid-gap: @size-16;
   flex: 1;
-  position: relative;
-  
+  height: 100vh;
+  padding: @size-12 @size-16;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto 1fr;
+
+  > button {
+    margin-left: auto;
+  }
+
+  > span {
+    .text-24-bold;
+
+    margin: @size-42 0 @size-40;
+    color: var(--color-primary-text);
+    grid-column: 1 / span 3;
+    justify-content: center;
+    display: flex;
+  }
+
   > div {
-    max-width: @desktop-max;
-    box-sizing: border-box;
-    margin-top: @simple-top-bar-height;
-    width: 100%;
-    min-height: 100vh;
-    margin: @simple-top-bar-height auto 0;
-  }
-}
-
-.ModalShowing {
-  max-height: 100vh;
-  overflow: hidden;
-}
-
-.SidebarOut {
-  @media @breakpoint-mobile-tablet {
-    max-height: 100vh;
-    overflow-y: hidden;
-  }
-}
-
-.TwoToneContent { 
-  background: linear-gradient(to right, var(--light-background-color), var(--light-background-color) 50%, var(--simple-light-bg) 51%, var(--simple-light-bg));
-
-  @media @breakpoint-mobile-tablet {
-    background: unset;
-  }
-}
-
-
-body {
-  @media @breakpoint-mobile-tablet {
-    --is-mobile: true;
+    grid-row: 3;
+    grid-column: 1 / span 3;
+    margin-left: auto;
+    margin-right: auto;
   }
 }

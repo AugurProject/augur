@@ -1,11 +1,5 @@
 @import (reference) '~assets/styles/shared';
 
-.Logo {
-  color: red;
-  height: @size-32;
-  background: var(--simple-light-bg);
-}
-
 .v2Logo {
   width: @size-96;
   height: @size-32;
@@ -37,6 +31,22 @@
 
         &:first-of-type {
           fill: @color-brand;
+        }
+      }
+    }
+  }
+
+  &.Dark {
+    > svg {
+      &:first-of-type {
+        path:last-of-type {
+          fill: var(--simple-light-bg);
+        }
+      }
+  
+      &:last-of-type {
+        path:nth-of-type(2) {
+          fill: var(--simple-light-bg);
         }
       }
     }

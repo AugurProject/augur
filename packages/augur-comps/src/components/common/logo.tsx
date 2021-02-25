@@ -1,21 +1,19 @@
 import React from 'react';
 import { AugurTextLogo, v2AugurLogo } from './icons';
+import classNames from 'classnames';
 
 import Styles from './logo.styles.less';
-// import { useAppStatusStore } from '../stores/app-status';
-import { MarketsLink } from '../../utils/routes/links';
 
-export const Logo = () => {
-  //const { isMobile } = useAppStatusStore();
-// return <div>logo</div>;
+interface LogoProps {
+  isMobile?: boolean;
+  darkTheme?: boolean;
+}
+
+export const Logo = ({isMobile, darkTheme}: LogoProps) => {
   return (
-    // <MarketsLink id="logolink">
-      <section className={Styles.Logo}>
-        logo
-        {AugurTextLogo}
-        {/* {isMobile ? v2AugurLogo : AugurTextLogo} */}
-      </section>
-    // </MarketsLink>
+    <section className={classNames(Styles.v2Logo, {[Styles.Dark]: darkTheme})}>
+      {isMobile ? v2AugurLogo : AugurTextLogo}
+    </section>
   );
 };
 
