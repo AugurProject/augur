@@ -405,6 +405,7 @@ class ContractsFixture:
             if 'external' in directory: continue
             if '0x' in directory: continue # uploaded separately
             if 'uniswap' in directory: continue # uploaded separately
+            if 'balancer' in directory: continue # uploaded separately
             if 'gsn/v2' in directory: continue # uploaded separately
             if 'gov' in directory: continue # uploaded separately
             if 'trading/erc20proxy' in directory: continue # uploaded separately
@@ -420,7 +421,8 @@ class ContractsFixture:
                 if name == 'Time': continue # In testing and development we swap the Time library for a ControlledTime version which lets us manage block timestamp
                 if name == 'ReputationTokenFactory': continue # In testing and development we use the TestNetReputationTokenFactory which lets us faucet
                 if name == 'Cash': continue # We upload the Test Dai contracts manually after this process
-                if name in ['ParaDeployer', 'ParaAugur', 'FeePot', 'ParaUniverse', 'ParaAugurTrading','AMMExchange', 'AMMFactory', 'ParaShareToken', 'ParaZeroXTrade', 'OINexus']: continue # We upload ParaAugur explicitly and the others are generated via contract
+
+                if name in ['ParaDeployer', 'ParaAugur', 'FeePot', 'ParaUniverse', 'ParaAugurTrading','AMMExchange', 'AMMFactory', 'ParaShareToken', 'ParaZeroXTrade', 'OINexus', 'WrappedShareTokenFactoryFactory', 'WrappedShareTokenFactory', 'WrappedShareToken']: continue # We upload ParaAugur explicitly and the others are generated via contract
                 if name in ['IAugur', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IInitialReporter']: continue # Don't compile interfaces or libraries
                 # TODO these four are necessary for test_universe but break everything else
                 # if name == 'MarketFactory': continue # tests use mock
@@ -450,8 +452,10 @@ class ContractsFixture:
         self.upload("../src/contracts/trading/erc20proxy1155/ERC20Proxy1155Nexus.sol", constructorArgs=[masterProxy.address, shareToken.address])
 
     def uploadAMMContracts(self):
+        b_factory = self.upload("../src/contracts/balancer/BFactory.sol")
         masterProxy = self.upload('../src/contracts/para/AMMExchange.sol')
-        self.upload('../src/contracts/para/AMMFactory.sol', constructorArgs=[masterProxy.address])
+        wrappedShareTokenFactoryFactory = self.upload("../src/contracts/trading/wrappedShareToken/WrappedShareTokenFactoryFactory.sol")
+        self.upload('../src/contracts/para/AMMFactory.sol', constructorArgs=[masterProxy.address, b_factory.address, wrappedShareTokenFactoryFactory.address])
 
     def uploadWethWrappedAmm(self, factory, shareToken):
         return self.upload("../src/contracts/para/WethWrapperForAMMExchange.sol", constructorArgs=[factory.address, shareToken.address])
@@ -499,6 +503,11 @@ class ContractsFixture:
         self.generateAndStoreSignature("../src/contracts/uniswap/UniswapV2Pair.sol")
         wethAddress = self.contracts["WETH9"].address
         self.upload("../src/contracts/uniswap/UniswapV2Router02.sol", constructorArgs=[factory.address, wethAddress])
+
+    def uploadBalancerContracts(self):
+        self.upload("../src/contracts/balancer/BFactory.sol")
+        self.generateAndStoreSignature("../src/contracts/balancer/BFactory.sol")
+        self.generateAndStoreSignature("../src/contracts/balancer/BPool.sol")
 
     def initializeAllContracts(self):
         coreContractsToInitialize = ['Time','ShareToken','WarpSync','RepOracle','AuditFunds']
@@ -582,6 +591,8 @@ class ContractsFixture:
         self.generateAndStoreSignature("../src/contracts/para/ParaShareToken.sol")
         self.generateAndStoreSignature("../src/contracts/para/ParaZeroXTrade.sol")
         self.generateAndStoreSignature("../src/contracts/trading/Orders.sol")
+        self.generateAndStoreSignature("../src/contracts/trading/wrappedShareToken/WrappedShareToken.sol")
+        self.generateAndStoreSignature("../src/contracts/trading/wrappedShareToken/WrappedShareTokenFactory.sol")
 
         paraAugurAddress = paraDeployer.paraAugurs(paraAugurCash.address)
         paraAugurTradingAddress = paraDeployer.paraAugurTradings(paraAugurCash.address)
@@ -592,6 +603,10 @@ class ContractsFixture:
         self.contracts["ParaRepOracle"] = self.applySignature('RepOracle', paraAugur.lookup("ParaRepOracle"))
         self.contracts["ParaShareToken"] = self.applySignature('ParaShareToken', paraAugur.lookup("ShareToken"))
         self.contracts["ParaZeroXTrade"] = self.applySignature('ParaZeroXTrade', paraAugurTrading.lookup("ZeroXTrade"))
+        self.contracts["WrappedShareTokenFactory"] = self.applySignature('WrappedShareTokenFactory', paraAugurTrading.lookup("ShareToken"))
+
+        wrappedShareTokenFactory = self.upload("../src/contracts/trading/wrappedShareToken/WrappedShareTokenFactory.sol", constructorArgs=[paraAugurTrading.lookup("ShareToken")])
+        self.contracts["WrappedShareTokenFactory"] = self.applySignature('WrappedShareTokenFactory', wrappedShareTokenFactory.address)
 
         paraWethAugurAddress = paraDeployer.paraAugurs(WETH9)
         paraWethAugurTradingAddress = paraDeployer.paraAugurTradings(WETH9)
@@ -602,6 +617,9 @@ class ContractsFixture:
         self.contracts["ParaWethRepOracle"] = self.applySignature('RepOracle', paraWethAugur.lookup("ParaRepOracle"))
         self.contracts["ParaWethShareToken"] = self.applySignature('ParaShareToken', paraWethAugur.lookup("ShareToken"))
         self.contracts["ParaWethZeroXTrade"] = self.applySignature('ParaZeroXTrade', paraWethAugurTrading.lookup("ZeroXTrade"))
+
+        wethWrappedShareTokenFactory = self.upload("../src/contracts/trading/wrappedShareToken/WrappedShareTokenFactory.sol", constructorArgs=[paraWethAugurTrading.lookup("ShareToken")])
+        self.contracts["WethWrappedShareTokenFactory"] = self.applySignature('WrappedShareTokenFactory', wethWrappedShareTokenFactory.address)
 
         if self.paraAugur:
             self.contracts['AugurTrading'] = paraAugurTrading
@@ -847,6 +865,7 @@ def augurInitializedSnapshot(fixture, baseSnapshot):
     fixture.uploadParaAugur()
     fixture.uploadSideChainAugur()
     fixture.uploadERC20Proxy1155()
+    fixture.uploadBalancerContracts()
     fixture.uploadAMMContracts()
     if not fixture.paraAugur:
         fixture.doAugurTradingApprovals()

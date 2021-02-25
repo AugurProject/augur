@@ -460,7 +460,7 @@ Requirements
 
 Sets `amount` as the allowance of `spender` over the `owner`s tokens.
 
-This is internal function is equivalent to [`approve`](#ERC20.approve(address,uint256)), and can be used to
+This is internal function is equivalent to [`approve`](trading/wrappedShareToken#ERC20.approve(address,uint256)), and can be used to
 e.g. set automatic allowances for certain subsystems, etc.
 
 Emits an {Approval} event.

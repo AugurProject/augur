@@ -49,6 +49,10 @@ export class USDT extends c.USDT<BigNumber> {
 }
 export class WarpSync extends c.WarpSync<BigNumber> {
 }
+export class BFactory extends c.BFactory<BigNumber> {
+}
+export class BPool extends c.BPool<BigNumber> {
+}
 export class AugurWalletFactory extends c.AugurWalletFactory<BigNumber> {
 }
 export class DisputeCrowdsourcerFactory extends c.DisputeCrowdsourcerFactory<BigNumber> {
@@ -196,6 +200,12 @@ export class ZeroXTrade extends c.ZeroXTrade<BigNumber> {
 export class ERC20Proxy1155 extends c.ERC20Proxy1155<BigNumber> {
 }
 export class ERC20Proxy1155Nexus extends c.ERC20Proxy1155Nexus<BigNumber> {
+}
+export class WrappedShareToken extends c.WrappedShareToken<BigNumber> {
+}
+export class WrappedShareTokenFactory extends c.WrappedShareTokenFactory<BigNumber> {
+}
+export class WrappedShareTokenFactoryFactory extends c.WrappedShareTokenFactoryFactory<BigNumber> {
 }
 export class UniswapV2Factory extends c.UniswapV2Factory<BigNumber> {
 }

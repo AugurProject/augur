@@ -101,6 +101,7 @@ export class ContractCompiler {
                 if (error.message.includes('Unused local variable')) continue;
                 if (error.message.includes('Unused function parameter')) continue;
                 if (error.message.includes('The Yul optimiser is still experimental')) continue;
+                if (error.message.includes('There are more than 256 warnings. Ignoring the rest.')) continue;
                 errors += error.formattedMessage + '\n';
             }
 

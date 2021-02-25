@@ -5,10 +5,9 @@ import { CompilerOutput } from 'solc';
 import { OINexus } from './ContractInterfaces';
 import { Contracts, ContractData } from './Contracts';
 import { Dependencies, ParaDeployer } from './GenericContractInterfaces';
-import { SDKConfiguration, mergeConfig, ParaAddresses } from '@augurproject/utils';
+import { SDKConfiguration, mergeConfig, validConfigOrDie } from '@augurproject/utils';
 import { updateConfig } from '@augurproject/artifacts';
 import { Block, BlockTag } from '@ethersproject/providers';
-import {ContractAddresses, validConfigOrDie} from '@augurproject/utils/build';
 
 const CONTRACTS = [
     "FeePotFactory",
