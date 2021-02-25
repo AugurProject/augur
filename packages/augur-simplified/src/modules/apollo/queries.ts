@@ -109,6 +109,13 @@ export const GET_MARKETS = blockNumber => {
       cashBalance
       fee
       feePercent
+      invalidPool {
+        id
+        cashBalance
+        cashWeight
+        invalidBalance
+        invalidWeight
+      }
       swaps {
         id
         sender {

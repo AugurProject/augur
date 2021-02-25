@@ -420,10 +420,10 @@ const shapeAmmExchange = async (
 
 const getIsMarketInvalid = async (amm: GraphAmmExchange, market: GraphMarket, cash: Cash): Promise<boolean> => {
   const gasLevels = await getGasStation(PARA_CONFIG.networkId as NetworkId);
-  const invalidOutcomeWeight = new BN(.1); // get from bPool on AMM when populated
-  const cashOutcomeWeight = new BN(.9) // get from bPool on AMM when populated
+  const invalidOutcomeWeight = new BN(0.1); // get from bPool on AMM when populated
+  const cashOutcomeWeight = new BN(0.9) // get from bPool on AMM when populated
   const invalidOutcomeLiquidity = new BN(100) // get from bPool on AMM when populated
-  const invalidOutcomePrice = new BN(.3) // get from bPool on AMM when populated
+  const invalidOutcomePrice = new BN(0.3) // get from bPool on AMM when populated
   const cashDecimals = new BN(cash.decimals);
   const reportingFeeDivisor = Number(market.universe.reportingFee);
   const marketProperties = {

@@ -63,8 +63,12 @@ export const isMarketInvalid = (
   const totalInvalidCost = baseRevenue.plus(invalidEstimates);
   const targetPrice = new BigNumber(0.02);
   const priceCalc = targetPrice.div(invalidOutcomePrice)
-  const weightcalc = invalidOutcomeWeight.div(invalidOutcomeWeight.plus(cashOutcomeWeight));
-  const priceWeightCalc = (priceCalc.pow(weightcalc)).minus(new BigNumber(1));
+  // a ** 9 = x
+  console.log('invalidOutcomeWeight.plus(cashOutcomeWeight)', String(cashOutcomeWeight.plus(invalidOutcomeWeight)))
+  const weightcalc = cashOutcomeWeight.div(invalidOutcomeWeight);
+  console.log('weightcalc', String(weightcalc))
+  // todo: replace this with eth_call
+  const priceWeightCalc = (priceCalc.pow(1)).minus(new BigNumber(1));
   const invalidRevenue = invalidOutcomeLiquidity.times(priceWeightCalc);
 
   return invalidRevenue
