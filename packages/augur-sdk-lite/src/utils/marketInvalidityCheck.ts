@@ -8,12 +8,19 @@ export const isMarketInvalid = (
   cashOutcomeWeight: BigNumber,
   invalidOutcomeLiquidity: BigNumber,
   invalidOutcomePrice: BigNumber,
-  marketData: { endTime: number, numTicks: number},
-  feeMultiplier: BigNumber,
+  marketData: { endTime: number, numTicks: number, feeDivisor: number },
+  reportingFeeDivisor: number,
   gasLevels: GasStation,
   ETHInAttoCash: BigNumber, // use 1e18 for ETH, need to pass in for USDC
-): number => {
-  if (invalidOutcomeLiquidity.eq(0)) return 0;
+  ETHToCash: BigNumber, // convert ETH to cash terms for tx costs
+): boolean => {
+  if (invalidOutcomeLiquidity.eq(0) || invalidOutcomePrice.eq(0)) return false;
+
+  const feeDivisor = new BigNumber(marketData.feeDivisor);
+  const numTicks = new BigNumber(marketData.numTicks);
+  const feeMultiplier = new BigNumber(1)
+    .minus(new BigNumber(1).div(reportingFeeDivisor))
+    .minus(new BigNumber(1).div(feeDivisor));
 
   let gasPriceInGwei = DEFAULT_GAS_PRICE_IN_GWEI;
   if (gasLevels && gasLevels.standard) {
@@ -21,11 +28,11 @@ export const isMarketInvalid = (
   }
 
   // TODO: get better est than 2 outcome estimate
-  const estimatedTradeGasCost = ETHInAttoCash.multipliedBy(
+  const estimatedTradeGasCost = ETHInAttoCash.times(
     INVALID_SWAP_GAS_COST
   ).div(10 ** 9);
 
-  const estimatedClaimGasCost = ETHInAttoCash.multipliedBy(
+  const estimatedClaimGasCost = ETHInAttoCash.times(
     CLAIM_GAS_COST
   ).div(10 ** 9);
 
@@ -39,13 +46,11 @@ export const isMarketInvalid = (
     SECONDS_IN_A_YEAR
   );
 
-  const numTicks = new BigNumber(marketData.numTicks);
-
-  const baseRevenue = numTicks.multipliedBy(feeMultiplier).multipliedBy(
+  const baseRevenue = numTicks.times(feeMultiplier).times(
     (
       EULERS_NUMBER **
       timeTillMarketFinalizesInYears
-        .multipliedBy(-0.15)
+        .times(-0.15)
         .precision(14)
         .toNumber()
     ).toPrecision(14)
@@ -62,14 +67,8 @@ export const isMarketInvalid = (
   const priceWeightCalc = (priceCalc.pow(weightcalc)).minus(new BigNumber(1));
   const invalidRevenue = invalidOutcomeLiquidity.times(priceWeightCalc);
 
-  if (
-    invalidRevenue
-      .minus(totalInvalidCost)
-      .gt(0)
-  ) {
-    return 1;
-  }
-
-
-  return 0;
+  return invalidRevenue
+    .minus(totalInvalidCost)
+    .gt(0)
+    ? true : false;
 }

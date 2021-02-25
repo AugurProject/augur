@@ -33,6 +33,8 @@ import {
   SEC_IN_DAY,
 } from '../modules/constants';
 import { timeSinceTimestamp } from './time-since';
+import { getGasStation, marketInvalidityCheck, NetworkId } from '@augurproject/sdk-lite';
+import { PARA_CONFIG } from '../modules/stores/constants';
 
 interface GraphMarket {
   id: string;
@@ -45,6 +47,7 @@ interface GraphMarket {
   categories: string[];
   outcomes: GraphMarketOutcome[];
   amms: GraphAmmExchange[];
+  numTicks: string;
   tradingProceedsClaimed: GraphClaims[];
   universe?: {
     id: string;
@@ -153,7 +156,7 @@ export const processGraphMarkets = (graphData: GraphData): ProcessedData => {
 
   let markets = {};
   let ammExchanges = {};
-  Object.keys(keyedMarkets).forEach((marketId) => {
+  Object.keys(keyedMarkets).forEach(async (marketId) => {
     const market = keyedMarkets[marketId];
     const pastMarket = keyedPastMarkets[marketId];
     const amms = market.amms;
@@ -162,7 +165,7 @@ export const processGraphMarkets = (graphData: GraphData): ProcessedData => {
     if (amms.length === 0) {
       markets[marketId] = shapeMarketInfo(market, null, cashes);
     } else if (amms.length === 1) {
-      const ammExchange = shapeAmmExchange(
+      const ammExchange = await shapeAmmExchange(
         amms[0],
         pastMarket?.amms[0],
         cashes,
@@ -180,10 +183,10 @@ export const processGraphMarkets = (graphData: GraphData): ProcessedData => {
         [marketId: string]: GraphAmmExchange;
       } = pastMarket.amms.reduce((group, a) => ({ ...group, [a.id]: a }), {});
 
-      Object.keys(marketAmms).forEach((ammId) => {
+      Object.keys(marketAmms).forEach(async (ammId) => {
         const amm = marketAmms[ammId];
         const pastAmm = pastMarketAmms[ammId];
-        const newAmmExchange = shapeAmmExchange(amm, pastAmm, cashes, market);
+        const newAmmExchange = await shapeAmmExchange(amm, pastAmm, cashes, market);
         const ammMarket = shapeMarketInfo(market, newAmmExchange, cashes);
         markets[`${marketId}-${ammId}`] = ammMarket;
         ammExchanges[newAmmExchange.id] = newAmmExchange;
@@ -273,12 +276,12 @@ const shapeOutcomes = (reportingState: string, graphOutcomes: GraphMarketOutcome
     isWinner: Boolean(Number(g.payoutNumerator)),
   }));
 
-const shapeAmmExchange = (
+const shapeAmmExchange = async (
   amm: GraphAmmExchange,
   pastAmm: GraphAmmExchange,
   cashes: Cashes,
   market: GraphMarket
-): AmmExchange => {
+): Promise<AmmExchange> => {
   const marketId = market.id;
   const outcomes = shapeOutcomes(null, market.outcomes);
   const cash: Cash = cashes[amm.shareToken.cash.id];
@@ -376,6 +379,8 @@ const shapeAmmExchange = (
     },
   ];
 
+  const isAmmMarketInvalid = await getIsMarketInvalid(amm, market, cash);
+
   return {
     id: amm.id,
     marketId,
@@ -409,9 +414,36 @@ const shapeAmmExchange = (
     totalSupply: amm.totalSupply,
     apy,
     ammOutcomes,
+    isAmmMarketInvalid,
   };
 };
 
+const getIsMarketInvalid = async (amm: GraphAmmExchange, market: GraphMarket, cash: Cash): Promise<boolean> => {
+  const gasLevels = await getGasStation(PARA_CONFIG.networkId as NetworkId);
+  const invalidOutcomeWeight = new BN(.1); // get from bPool on AMM when populated
+  const cashOutcomeWeight = new BN(.9) // get from bPool on AMM when populated
+  const invalidOutcomeLiquidity = new BN(100) // get from bPool on AMM when populated
+  const invalidOutcomePrice = new BN(.3) // get from bPool on AMM when populated
+  const cashDecimals = new BN(cash.decimals);
+  const reportingFeeDivisor = Number(market.universe.reportingFee);
+  const marketProperties = {
+    endTime: Number(market.endTimestamp),
+    numTicks: Number(market.numTicks),
+    feeDivisor: Number(market.fee)
+  }
+  const isInvalid = marketInvalidityCheck.isMarketInvalid(
+    invalidOutcomeWeight,
+    cashOutcomeWeight,
+    invalidOutcomeLiquidity,
+    invalidOutcomePrice,
+    marketProperties,
+    reportingFeeDivisor,
+    gasLevels,
+    new BN(1e18),
+    cashDecimals)
+
+  return isInvalid;
+}
 const calculateAmmApy = (
   volumeTotalUSD: number,
   amm: GraphAmmExchange,
