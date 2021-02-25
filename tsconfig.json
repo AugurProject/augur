@@ -37,6 +37,9 @@
     },
     {
       "path": "./packages/augur-utils"
+    },
+    {
+      "path": "./packages/augur-comps"
     }
   ]
 }
