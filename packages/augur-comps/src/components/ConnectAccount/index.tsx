@@ -5,12 +5,12 @@ import { ethers } from 'ethers';
 import { SecondaryButton } from '../common/buttons';
 import classNames from 'classnames';
 import ButtonStyles from '../common/buttons.styles.less';
-// import { GetWalletIcon } from '../common/get-wallet-icon';
+import { GetWalletIcon } from '../common/get-wallet-icon';
 import { useActiveWeb3React } from './hooks';
 import { MODAL_CONNECT_WALLET, TX_STATUS } from '../../utils/constants';
 // import { useAppStatusStore } from '../stores/app-status';
 import { tryAutoLogin } from './utils';
-// import { Spinner } from '../common/spinner';
+import { Spinner } from '../common/spinner';
 
 interface LoginButtonProps {
   action: Function;
@@ -65,6 +65,11 @@ const ConnectAccountButton = ({
   //   isMobile,
   //   actions: { setModal },
   // } = useAppStatusStore();
+  const isMobile = false;
+  const setModal = (args) => {
+    console.log('set modal');
+  };
+
   const { account, activate, connector, error } = useWeb3React();
   const activeWeb3 = useActiveWeb3React();
   const pendingTransaction = transactions.filter(
@@ -108,12 +113,7 @@ const ConnectAccountButton = ({
       icon: hasPendingTransaction ? (
         <Spinner />
       ) : (
-        connector && (
-          <GetWalletIcon
-            connector={connector}
-            account={account}
-          />
-        )
+        connector && <GetWalletIcon connector={connector} account={account} />
       ),
     };
   } else if (error) {
@@ -121,7 +121,9 @@ const ConnectAccountButton = ({
       ...buttonProps,
       className: ButtonStyles.Error,
       text:
-        error instanceof UnsupportedChainIdError ? 'Unsupported Network' : 'Error',
+        error instanceof UnsupportedChainIdError
+          ? 'Unsupported Network'
+          : 'Error',
       icon: <NetworkIcon />,
     };
   }
@@ -129,18 +131,23 @@ const ConnectAccountButton = ({
   return <LoginButton {...buttonProps} />;
 };
 
-export default function ConnectAccount({
+export const ConnectAccount = ({
   autoLogin,
   updateLoginAccount,
   darkMode = false,
   transactions,
-}) {
+}) => {
+  // useEffect(() => {
+  //   console.log('hi');
+  // })
   return (
-    <ConnectAccountButton
-      autoLogin={autoLogin}
-      updateLoginAccount={updateLoginAccount}
-      darkMode={darkMode}
-      transactions={transactions}
-    />
+    <button>connect</button>
+    // <ConnectAccountButton
+    //   autoLogin={autoLogin}
+    //   updateLoginAccount={updateLoginAccount}
+    //   darkMode={darkMode}
+    //   transactions={transactions}
+    // />
   );
-}
+};
+

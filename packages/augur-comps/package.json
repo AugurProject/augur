@@ -71,11 +71,9 @@
     "postcss-preset-env": "6.7.0",
     "postcss-safe-parser": "5.0.2",
     "prompts": "2.4.0",
-    "react": "^17.0.1",
     "react-apollo": "^3.1.5",
     "react-app-polyfill": "^2.0.0",
     "react-dev-utils": "^11.0.1",
-    "react-dom": "^17.0.1",
     "react-feather": "^2.0.9",
     "react-refresh": "^0.8.3",
     "react-router-dom": "^5.2.0",
@@ -123,6 +121,8 @@
     ]
   },
   "devDependencies": {
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
     "@babel/preset-react": "^7.12.13",
     "@teamsupercell/typings-for-css-modules-loader": "2.4.0",
     "autoprefixer": "9.6.1",
