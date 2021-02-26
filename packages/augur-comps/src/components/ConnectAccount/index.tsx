@@ -7,8 +7,8 @@ import classNames from 'classnames';
 import ButtonStyles from '../common/buttons.styles.less';
 import { GetWalletIcon } from '../common/get-wallet-icon';
 import { useActiveWeb3React } from './hooks';
-import { MODAL_CONNECT_WALLET, TX_STATUS } from '../constants';
-import { useAppStatusStore } from '../stores/app-status';
+import { MODAL_CONNECT_WALLET, TX_STATUS } from '../../utils/constants';
+// import { useAppStatusStore } from '../stores/app-status';
 import { tryAutoLogin } from './utils';
 import { Spinner } from '../common/spinner';
 
@@ -60,11 +60,14 @@ const ConnectAccountButton = ({
   updateLoginAccount,
   darkMode = false,
   transactions,
+  isMobile,
+  setModal
 }) => {
-  const {
-    isMobile,
-    actions: { setModal },
-  } = useAppStatusStore();
+  // const {
+  //   isMobile,
+  //   actions: { setModal },
+  // } = useAppStatusStore();
+
   const { account, activate, connector, error } = useWeb3React();
   const activeWeb3 = useActiveWeb3React();
   const pendingTransaction = transactions.filter(
@@ -108,12 +111,7 @@ const ConnectAccountButton = ({
       icon: hasPendingTransaction ? (
         <Spinner />
       ) : (
-        connector && (
-          <GetWalletIcon
-            connector={connector}
-            account={account}
-          />
-        )
+        connector && <GetWalletIcon connector={connector} account={account} />
       ),
     };
   } else if (error) {
@@ -121,7 +119,9 @@ const ConnectAccountButton = ({
       ...buttonProps,
       className: ButtonStyles.Error,
       text:
-        error instanceof UnsupportedChainIdError ? 'Unsupported Network' : 'Error',
+        error instanceof UnsupportedChainIdError
+          ? 'Unsupported Network'
+          : 'Error',
       icon: <NetworkIcon />,
     };
   }
@@ -129,18 +129,23 @@ const ConnectAccountButton = ({
   return <LoginButton {...buttonProps} />;
 };
 
-export default function ConnectAccount({
+export const ConnectAccount = ({
   autoLogin,
   updateLoginAccount,
   darkMode = false,
   transactions,
-}) {
+  isMobile,
+  setModal
+}) => {
   return (
     <ConnectAccountButton
       autoLogin={autoLogin}
       updateLoginAccount={updateLoginAccount}
       darkMode={darkMode}
       transactions={transactions}
+      isMobile={isMobile}
+      setModal={setModal}
     />
   );
-}
+};
+

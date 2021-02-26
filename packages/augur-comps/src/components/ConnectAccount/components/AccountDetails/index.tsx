@@ -11,7 +11,7 @@ import {TinyButton} from '../../../common/buttons';
 import {Spinner} from '../../../common/spinner';
 import {GetWalletIcon} from '../../../common/get-wallet-icon';
 import {AbstractConnector} from '@web3-react/abstract-connector';
-import { TX_STATUS } from '../../../constants';
+import { TX_STATUS } from '../../../../utils/constants';
 import { LinkIcon } from '../../../common/icons';
 
 interface AccountCardProps {
@@ -155,7 +155,7 @@ interface AccountDetailsProps {
   logout: Function;
 }
 
-const AccountDetails = ({
+export const AccountDetails = ({
   openOptions,
   darkMode,
   transactions,
@@ -215,4 +215,3 @@ const AccountDetails = ({
   )
 }
 
-export default AccountDetails;

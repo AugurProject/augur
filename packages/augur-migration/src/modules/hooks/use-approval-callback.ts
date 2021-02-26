@@ -1,5 +1,7 @@
-import { ApprovalState, ETH, TX_STATUS } from '../constants';
-import { useActiveWeb3React } from '../ConnectAccount/hooks';
+// import { ApprovalState, ETH, TX_STATUS } from '../../constants';
+// import { useActiveWeb3React } from '../ConnectAccount/hooks';
+import { useActiveWeb3React, ApprovalState, ETH, TX_STATUS } from '@augurproject/augur-comps';
+
 import { useCallback, useMemo } from 'react';
 import {
   getERC1155ApprovedForAll,

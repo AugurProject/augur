@@ -191,6 +191,7 @@
         "isTSX": true,
         "allExtensions": true
     }]
-    ]
+    ], 
+    "plugins": ["@babel/plugin-proposal-class-properties"]
   }
 }

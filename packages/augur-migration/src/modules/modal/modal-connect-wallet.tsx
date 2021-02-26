@@ -1,20 +1,31 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Header } from './common';
 import Styles from './modal.styles.less';
-import { SecondaryButton, TextButton, WalletButton } from '../common/buttons';
+import {
+  SecondaryButton,
+  TextButton,
+  AccountDetails,
+  WalletButton,
+  Loader,
+  SUPPORTED_WALLETS,
+  injected,
+  NETWORK_CHAIN_ID,
+  portis,
+  ErrorBlock,
+} from '@augurproject/augur-comps';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { AbstractConnector } from '@web3-react/abstract-connector';
-import { SUPPORTED_WALLETS } from '../ConnectAccount/constants';
+// import { SUPPORTED_WALLETS } from '../ConnectAccount/constants';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import {injected, NETWORK_CHAIN_ID, portis} from '../ConnectAccount/connectors';
-import MetamaskIcon from '../ConnectAccount/assets/metamask.png';
-import { ErrorBlock } from '../common/labels';
-import Loader from '../ConnectAccount/components/Loader';
-import AccountDetails from '../ConnectAccount/components/AccountDetails';
+// import {injected, NETWORK_CHAIN_ID, portis} from '../ConnectAccount/connectors';
+// import MetamaskIcon from '../ConnectAccount/assets/metamask.png';
+// import { ErrorBlock } from '../common/labels';
+// import Loader from '../ConnectAccount/components/Loader';
+// import AccountDetails from '../ConnectAccount/components/AccountDetails';
 import { useAppStatusStore } from '../stores/app-status';
 import classNames from 'classnames';
 import { useUserStore } from '../stores/user';
-import {NETWORK_NAMES} from 'modules/stores/constants';
+import { NETWORK_NAMES } from '../stores/constants';
 
 const WALLET_VIEWS = {
   OPTIONS: 'options',
@@ -74,7 +85,7 @@ const PendingWalletView = ({
               setPendingError(false);
               connector && tryActivation(connector);
             }}
-            text='Try again'
+            text="Try again"
           />
         </div>
       ) : (
@@ -89,7 +100,8 @@ const PendingWalletView = ({
         if (wallet.connector === connector) {
           if (
             wallet.connector === injected &&
-            ((isMetamask && wallet.name !== 'MetaMask') || (!isMetamask && wallet.name === 'MetaMask'))
+            ((isMetamask && wallet.name !== 'MetaMask') ||
+              (!isMetamask && wallet.name === 'MetaMask'))
           ) {
             return null;
           }
@@ -99,14 +111,14 @@ const PendingWalletView = ({
               id={`connect-${key}`}
               key={key}
               text={wallet.name}
-              icon={
-                <img
-                  src={
-                    require('modules/ConnectAccount/assets/' + wallet.iconName)
-                      .default
-                  }
-                  alt={wallet.name}
-                />
+              icon={null
+                // <img
+                //   src={
+                //     require('modules/ConnectAccount/assets/' + wallet.iconName)
+                //       .default
+                //   }
+                //   alt={wallet.name}
+                // />
               }
             />
           );
@@ -146,7 +158,8 @@ const ModalConnectWallet = ({
   const previousAccount = usePrevious(account);
   const [walletList, setWalletList] = useState();
 
-  const tryActivation = useCallback((connector: AbstractConnector | undefined) => {
+  const tryActivation = useCallback(
+    (connector: AbstractConnector | undefined) => {
       setPendingWallet(connector); // set wallet for pending view
       setWalletView(WALLET_VIEWS.PENDING);
 
@@ -217,19 +230,20 @@ const ModalConnectWallet = ({
             !wallet.href &&
             tryActivation(wallet.connector),
           href: wallet.href,
-          icon: (
-            <img
-              src={
-                require('modules/ConnectAccount/assets/' + wallet.iconName).default
-              }
-              alt={wallet.name}
-            />
+          icon: (null
+            // <img
+            //   src={
+            //     require('modules/ConnectAccount/assets/' + wallet.iconName)
+            //       .default
+            //   }
+            //   alt={wallet.name}
+            // />
           ),
           id: `connect-${key}`,
           key,
           selected: isLogged && wallet?.connector === connector,
           text: wallet.name,
-        }
+        };
 
         if (isMobile) {
           if (
@@ -237,14 +251,15 @@ const ModalConnectWallet = ({
             !window['ethereum'] &&
             wallet.mobile &&
             wallet.name !== SUPPORTED_WALLETS['METAMASK'].name &&
-            wallet.name !==  SUPPORTED_WALLETS['INJECTED'].name &&
+            wallet.name !== SUPPORTED_WALLETS['INJECTED'].name &&
             wallet.connector !== portis
           ) {
             return commonWalletButtonProps;
           } else {
             if (
               (wallet.name === 'MetaMask' && !isMetamask) ||
-              (wallet.name === SUPPORTED_WALLETS['INJECTED'].name && !isMetamask)
+              (wallet.name === SUPPORTED_WALLETS['INJECTED'].name &&
+                !isMetamask)
             ) {
               return null;
             }
@@ -261,14 +276,16 @@ const ModalConnectWallet = ({
                   ...commonWalletButtonProps,
                   text: 'Install Metamask',
                   href: 'https://metamask.io/',
-                  icon: <img src={MetamaskIcon} alt={wallet.name} />,
+                //   icon: <img src={MetamaskIcon} alt={wallet.name} />,
                 };
               } else {
                 return null;
               }
             } else if (
-              (wallet.name === SUPPORTED_WALLETS['METAMASK'].name && !isMetamask) ||
-              (wallet.name === SUPPORTED_WALLETS['INJECTED'].name && !isMetamask)
+              (wallet.name === SUPPORTED_WALLETS['METAMASK'].name &&
+                !isMetamask) ||
+              (wallet.name === SUPPORTED_WALLETS['INJECTED'].name &&
+                !isMetamask)
             ) {
               return null;
             }
@@ -346,8 +363,8 @@ const ModalConnectWallet = ({
               <div className={Styles.LearnMore}>
                 New to Ethereum?{' '}
                 <TextButton
-                  href='https://ethereum.org/wallets/'
-                  text='Learn more about wallets'
+                  href="https://ethereum.org/wallets/"
+                  text="Learn more about wallets"
                 />
               </div>
             </>
