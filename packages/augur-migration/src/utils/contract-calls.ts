@@ -11,9 +11,11 @@ import {
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers'
 import { convertDisplayCashAmountToOnChainCashAmount, convertDisplayShareAmountToOnChainShareAmount, convertOnChainCashAmountToDisplayCashAmount, convertOnChainSharesToDisplayShareAmount, isSameAddress } from './format-number';
 import { augurSdkLite } from './augurlitesdk';
-import { ETH, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_NO_OUTCOMES_NAMES, YES_OUTCOME_ID, INVALID_OUTCOME_ID, MARKET_STATUS } from '@augurproject/augur-comps';
+import { augurSdk } from './augursdk';
+import { ZERO, ETH, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_NO_OUTCOMES_NAMES, YES_OUTCOME_ID, INVALID_OUTCOME_ID, MARKET_STATUS } from '@augurproject/augur-comps';
 import { getProviderOrSigner } from '@augurproject/augur-comps';
 import { createBigNumber } from './create-big-number';
+import { PARA_CONFIG } from '../modules/stores/constants';
 
 const isValidPrice = (price: string): boolean => {
   return price !== null && price !== undefined && price !== "0" && price !== "0.00";
@@ -1181,15 +1183,17 @@ const ERC20ABI = [
 //   return balance;
 // }
 
-// export async function getLegacyRepBalance(
-//   address: string
-// ): Promise<BigNumber> {
-//   if (!address) return ZERO;
-//   const { contracts } = augurSdk.get();
-//   const lagacyRep = contracts.legacyReputationToken.address;
-//   const networkId = getNetworkId();
-//   const balance = !!address ? await contracts
-//     .reputationTokenFromAddress(lagacyRep, networkId)
-//     .balanceOf_(address) : createBigNumber(0);
-//   return balance;
-// }
+export async function getLegacyRepBalance(
+  address: string
+): Promise<BigNumber> {
+  //PARA_CONFIG.addresses.LegacyReputationToken
+  if (!address) return ZERO;
+  const { networkId, addresses } = PARA_CONFIG;
+
+ const { contracts } = augurSdk.get();
+  const legacyRep = addresses.LegacyReputationToken;
+  const balance = !!address ? await contracts
+    .reputationTokenFromAddress(legacyRep, networkId)
+    .balanceOf_(address) : createBigNumber(0);
+  return balance;
+}
