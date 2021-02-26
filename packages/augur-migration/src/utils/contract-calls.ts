@@ -11,7 +11,7 @@ import {
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers'
 import { convertDisplayCashAmountToOnChainCashAmount, convertDisplayShareAmountToOnChainShareAmount, convertOnChainCashAmountToDisplayCashAmount, convertOnChainSharesToDisplayShareAmount, isSameAddress } from './format-number';
 import { augurSdkLite } from './augurlitesdk';
-import { ETH, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_NO_OUTCOMES_NAMES, YES_OUTCOME_ID, INVALID_OUTCOME_ID, MARKET_STATUS } from '../modules/constants';
+import { ETH, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_NO_OUTCOMES_NAMES, YES_OUTCOME_ID, INVALID_OUTCOME_ID, MARKET_STATUS } from '@augurproject/augur-comps';
 import { getProviderOrSigner } from '@augurproject/augur-comps';
 import { createBigNumber } from './create-big-number';
 
@@ -585,7 +585,6 @@ export const getUserBalances = async (
   const balanceResult: ContractCallResults = await multicall.call(
     balananceCalls
   );
-  console.log(balanceResult);
   Object.keys(balanceResult.results).forEach((key) => {
     const value = String(
       new BN(
@@ -1165,3 +1164,32 @@ const ERC20ABI = [
     type: 'event',
   },
 ];
+
+
+// export async function getRepBalance(
+//   universe: string,
+//   address: string
+// ): Promise<BigNumber> {
+//   const { contracts } = augurSdk.get();
+//   const networkId = getNetworkId();
+//   const repToken = await contracts
+//     .universeFromAddress(universe)
+//     .getReputationToken_();
+//   const balance = await contracts
+//     .reputationTokenFromAddress(repToken, networkId)
+//     .balanceOf_(address);
+//   return balance;
+// }
+
+// export async function getLegacyRepBalance(
+//   address: string
+// ): Promise<BigNumber> {
+//   if (!address) return ZERO;
+//   const { contracts } = augurSdk.get();
+//   const lagacyRep = contracts.legacyReputationToken.address;
+//   const networkId = getNetworkId();
+//   const balance = !!address ? await contracts
+//     .reputationTokenFromAddress(lagacyRep, networkId)
+//     .balanceOf_(address) : createBigNumber(0);
+//   return balance;
+// }
