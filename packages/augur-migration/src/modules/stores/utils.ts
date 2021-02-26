@@ -12,7 +12,9 @@ import { useGraphDataStore } from './graph-data';
 import { processGraphMarkets } from '../../utils/process-data';
 import { getMarketsData } from '../apollo/client';
 import { augurSdkLite } from '../../utils/augurlitesdk';
-import { getUserBalances } from '../../utils/contract-calls';
+import {
+  getLegacyRepBalance,
+} from '../../utils/contract-calls';
 
 const isAsync = (obj) =>
   !!obj &&
@@ -73,99 +75,13 @@ export const arrayToKeyedObjectByProp = (ArrayOfObj: any[], prop: string) =>
     return acc;
   }, {});
 
-// CUSTOM HOOKS
-
-// export function useCanExitCashPosition(shareToken) {
-//   const {
-//     account,
-//     loginAccount,
-//     transactions,
-//     actions: { updateTransaction },
-//   } = useUserStore();
-//   const {
-//     blocknumber,
-//   } = useGraphDataStore();
-//   const approvedAccount = useRef(null);
-//   const [canExitPosition, setCanExitPosition] = useState(false);
-//   const [calledBlocknumber, setCalledBlocknumber] = useState(blocknumber);
-//     const {
-//     addresses: { WethWrapperForAMMExchange },
-//   } = PARA_CONFIG;
-
-//   useEffect(() => {
-//     const checkCanCashExit = async () => {
-//       const approvalCheck = await isERC1155ContractApproved(
-//         shareToken,
-//         WethWrapperForAMMExchange,
-//         loginAccount,
-//         transactions,
-//         updateTransaction
-//       );
-//       setCanExitPosition(Boolean(ApprovalState.APPROVED === approvalCheck));
-//       if (Boolean(approvalCheck)) approvedAccount.current = loginAccount.account;
-//     };
-//     if (!!account && !!shareToken && (account !== approvedAccount.current || calledBlocknumber !== blocknumber)) {
-//       checkCanCashExit();
-//       setCalledBlocknumber(blocknumber);
-//     }
-//   }, [
-//     canExitPosition,
-//     setCanExitPosition,
-//     updateTransaction,
-//     transactions,
-//     account,
-//     blocknumber,
-//     shareToken
-//   ]);
-
-//   return canExitPosition;
-// }
-
-// export function useCanEnterCashPosition({ name, address }: Cash) {
-//   const {
-//     account,
-//     loginAccount,
-//     transactions,
-//     actions: { updateTransaction },
-//   } = useUserStore();
-//   const approvedAccount = useRef(null);
-//   const [canEnterPosition, setCanEnterPosition] = useState(name === ETH);
-//   const {
-//     addresses: { AMMFactory },
-//   } = PARA_CONFIG;
-//   useEffect(() => {
-//     const checkCanCashEnter = async () => {
-//       const approvalCheck = await checkAllowance(
-//         address,
-//         AMMFactory,
-//         loginAccount,
-//         transactions,
-//         updateTransaction
-//       );
-//       setCanEnterPosition(approvalCheck === APPROVED || name === ETH);
-//       if (approvalCheck === APPROVED || name === ETH) approvedAccount.current = loginAccount.account;
-//     };
-//     if (!!account && !!address && account !== approvedAccount.current) {
-//       checkCanCashEnter();
-//     }
-//   }, [
-//     canEnterPosition,
-//     setCanEnterPosition,
-//     updateTransaction,
-//     transactions,
-//     account,
-//   ]);
-
-//   return canEnterPosition;
-// }
-
 export function useGraphHeartbeat() {
   const {
     ammExchanges,
     cashes,
     markets,
     blocknumber,
-    actions: { updateGraphHeartbeat }
+    actions: { updateGraphHeartbeat },
   } = useGraphDataStore();
   useEffect(() => {
     let isMounted = true;
@@ -202,34 +118,16 @@ export function useUserBalances() {
     loginAccount,
     actions: { updateUserBalances },
   } = useUserStore();
-  const {
-    markets,
-    cashes,
-    ammExchanges 
-  } = useGraphDataStore();
+  const { markets, cashes, ammExchanges } = useGraphDataStore();
   useEffect(() => {
     let isMounted = true;
     const createClient = (provider, config, account) => {
       augurSdkLite.makeLiteClient(provider, config, account);
-    }
-    const fetchUserBalances = (
-      library,
-      account,
-      ammExchanges,
-      cashes,
-      markets
-    ) => null
-    //getUserBalances(library, account, ammExchanges, cashes, markets);
+    };
     if (loginAccount?.library && loginAccount?.account) {
       if (!augurSdkLite.ready())
         createClient(loginAccount.library, PARA_CONFIG, loginAccount?.account);
-      fetchUserBalances(
-        loginAccount.library,
-        loginAccount.account,
-        ammExchanges,
-        cashes,
-        markets
-      ).then((userBalances) => isMounted && updateUserBalances(userBalances));
+        getLegacyRepBalance(loginAccount.library, loginAccount.account);
     }
 
     return () => {
@@ -246,9 +144,7 @@ export function useUserBalances() {
 }
 
 export function useFinalizeUserTransactions() {
-  const {
-    blocknumber 
-  } = useGraphDataStore();
+  const { blocknumber } = useGraphDataStore();
   const {
     loginAccount,
     transactions,
