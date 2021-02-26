@@ -15,6 +15,7 @@ import { useAppStatusStore } from '../stores/app-status';
 import classNames from 'classnames';
 import { useUserStore } from '../stores/user';
 import {NETWORK_NAMES} from 'modules/stores/constants';
+import {isSafari} from '../ConnectAccount/utils/';
 
 const WALLET_VIEWS = {
   OPTIONS: 'options',
@@ -208,7 +209,10 @@ const ModalConnectWallet = ({
 
   const getWalletButtons = useCallback(() => {
     const isMetamask = window['ethereum'] && window['ethereum']['isMetaMask'];
+    const isWeb3 = window['web3'] || window['ethereum'];
+
     const walletButtons = Object.keys(SUPPORTED_WALLETS)
+      .filter(wallet => !(wallet === 'PORTIS' && isSafari()))
       .map((key) => {
         const wallet = SUPPORTED_WALLETS[key];
         const commonWalletButtonProps = {
@@ -242,10 +246,11 @@ const ModalConnectWallet = ({
           ) {
             return commonWalletButtonProps;
           } else {
-            if (
-              (wallet.name === 'MetaMask' && !isMetamask) ||
-              (wallet.name === SUPPORTED_WALLETS['INJECTED'].name && !isMetamask)
-            ) {
+            if (wallet.name === 'MetaMask' && !isMetamask) {
+              return null;
+            }
+
+            if (wallet.name === SUPPORTED_WALLETS['INJECTED'].name && !isWeb3) {
               return null;
             }
 
