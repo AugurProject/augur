@@ -11,12 +11,14 @@ import { AppStatusProvider, useAppStatusStore } from './stores/app-status';
 import { UserProvider } from './stores/user';
 import ModalView from './modal/modal-view';
 import { ConnectAccountButton } from './shared/connect-account-button';
+import { useUserBalances } from './stores/utils';
 
 const AppBody = () => {
   const {
     modal,
   } = useAppStatusStore();
   const modalShowing = Object.keys(modal).length !== 0;
+  useUserBalances();
   return (
     <div id="mainContent" className={Styles.App}>
       {modalShowing && <ModalView />}

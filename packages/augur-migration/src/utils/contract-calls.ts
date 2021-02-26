@@ -519,7 +519,6 @@ export const getUserBalances = async (
   );
 
   userBalances.ETH = await getEthBalance(provider, cashes, account);
-
   const multicall = new Multicall({ ethersProvider: provider });
 
   const contractLpBalanceCall: ContractCallContext[] = ammAddresses.map(
@@ -586,7 +585,7 @@ export const getUserBalances = async (
   const balanceResult: ContractCallResults = await multicall.call(
     balananceCalls
   );
-
+  console.log(balanceResult);
   Object.keys(balanceResult.results).forEach((key) => {
     const value = String(
       new BN(

@@ -18,6 +18,7 @@ export { ConnectAccountProvider } from './components/ConnectAccount/connect-acco
 export { ConnectAccount } from './components/ConnectAccount/index';
 export * from './components/ConnectAccount/hooks';
 export * from './components/ConnectAccount/constants';
+export * from './components/ConnectAccount/utils';
 export * from './components/ConnectAccount/connectors';
 export { Loader } from './components/ConnectAccount/components/Loader/index';
 export { AccountDetails } from './components/ConnectAccount/components/AccountDetails/index';

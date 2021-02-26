@@ -209,8 +209,9 @@ export function useUserBalances() {
   } = useGraphDataStore();
   useEffect(() => {
     let isMounted = true;
-    const createClient = (provider, config, account) =>
+    const createClient = (provider, config, account) => {
       augurSdkLite.makeLiteClient(provider, config, account);
+    }
     const fetchUserBalances = (
       library,
       account,
