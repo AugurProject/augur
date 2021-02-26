@@ -461,22 +461,6 @@ jobs:
       triggerBranch: refs/heads/v2
       cloudfrontDistributionId: E34VY4MHHEDAH9
 
-  - template: .azure-templates/ui-build-to-s3.yml
-    parameters:
-      name: deploy_dev_to_dev
-      environment: dev
-      deployBucketName: dev.augur.net
-      triggerBranch: refs/heads/dev
-      cloudfrontDistributionId: E2K6239JF3WYG6
-
-  - template: .azure-templates/ui-build-to-s3.yml
-    parameters:
-      name: deploy_para_deploys_to_para
-      environment: v2
-      deployBucketName: para.augur.net
-      triggerBranch: refs/heads/para_deploys
-      cloudfrontDistributionId: E2XU7PSKOBRVV4
-
   - template: .azure-templates/simplified-ui-build-to-s3.yml
     parameters:
       name: deploy_simplified_to_dev

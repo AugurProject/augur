@@ -1,3 +1,0 @@
-User-agent: *
-Sitemap: https://v2.augur.net/#!/sitemap.xml
-Disallow:
