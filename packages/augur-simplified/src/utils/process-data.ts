@@ -111,6 +111,13 @@ interface GraphRemoveLiquidity extends GraphTransaction {
   noShareCashValue: string;
 }
 
+interface GraphInvalidPool {
+  id: string;
+  cashBalance: string;
+  cashWeight: string;
+  invalidBalance: string;
+  invalidWeight: string;
+}
 interface GraphAmmExchange {
   id: string;
   cashBalance: string;
@@ -135,6 +142,7 @@ interface GraphAmmExchange {
   addLiquidity: GraphAddLiquidity[];
   removeLiquidity: GraphRemoveLiquidity[];
   totalSupply: string;
+  invalidPool: GraphInvalidPool
 }
 
 interface GraphData {
@@ -379,8 +387,6 @@ const shapeAmmExchange = async (
     },
   ];
 
-  const isAmmMarketInvalid = await getIsMarketInvalid(amm, market, cash);
-
   return {
     id: amm.id,
     marketId,
@@ -414,36 +420,12 @@ const shapeAmmExchange = async (
     totalSupply: amm.totalSupply,
     apy,
     ammOutcomes,
-    isAmmMarketInvalid,
+    isAmmMarketInvalid: false, // this will be calc by process
+    invalidPool: amm?.invalidPool
   };
 };
 
-const getIsMarketInvalid = async (amm: GraphAmmExchange, market: GraphMarket, cash: Cash): Promise<boolean> => {
-  const gasLevels = await getGasStation(PARA_CONFIG.networkId as NetworkId);
-  const invalidOutcomeWeight = new BN(0.1); // get from bPool on AMM when populated
-  const cashOutcomeWeight = new BN(0.9) // get from bPool on AMM when populated
-  const invalidOutcomeLiquidity = new BN(100) // get from bPool on AMM when populated
-  const invalidOutcomePrice = new BN(0.3) // get from bPool on AMM when populated
-  const cashDecimals = new BN(cash.decimals);
-  const reportingFeeDivisor = Number(market.universe.reportingFee);
-  const marketProperties = {
-    endTime: Number(market.endTimestamp),
-    numTicks: Number(market.numTicks),
-    feeDivisor: Number(market.fee)
-  }
-  const isInvalid = marketInvalidityCheck.isMarketInvalid(
-    invalidOutcomeWeight,
-    cashOutcomeWeight,
-    invalidOutcomeLiquidity,
-    invalidOutcomePrice,
-    marketProperties,
-    reportingFeeDivisor,
-    gasLevels,
-    new BN(1e18),
-    cashDecimals)
 
-  return isInvalid;
-}
 const calculateAmmApy = (
   volumeTotalUSD: number,
   amm: GraphAmmExchange,
