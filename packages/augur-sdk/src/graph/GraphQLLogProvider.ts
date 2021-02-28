@@ -50,43 +50,54 @@ const GENERIC_LOG_FIELDS = ["name", "blockNumber", "logIndex"];
 
 const entityPluralSuffix = 'Events';
 
+type LogAndPosition = Log & {
+  logPosition: string;
+}
 type LogFieldDescriptions = {
   [logName: string]: string[]
 }
 
 type LogQueryResponse = {
-  [logEntityName:string]: Log[]
+  [logEntityName:string]: LogAndPosition[]
 };
 
-type SkipCounts = {[ogEntityName: string]: number};
+type LastLogPositions = {[logEntityName: string]: string};
 
-function buildQuery(fromBlockNumber: number, toBlockNumber: number, logFieldDescriptions: LogFieldDescriptions, skipCounts: SkipCounts) {
+function buildQuery(fromBlockNumber: number, toBlockNumber: number, logFieldDescriptions: LogFieldDescriptions, lastLogPositions: LastLogPositions) {
   let eventQueries = "";
   for (const [logName, eventFields] of Object.entries(logFieldDescriptions)) {
     const entityName = `${logName}${entityPluralSuffix}`;
-    if(typeof skipCounts[entityName] === "undefined") continue;
+    const lastLogPosition = lastLogPositions[entityName];
+
+    // When a particular entity type has no more logs to fetch it is removed from
+    // `lastLogPositions` -- which means that we can skip it when fetching
+    if(typeof lastLogPositions === "undefined") continue;
+
     const fields = GENERIC_LOG_FIELDS.concat(eventFields);
-    eventQueries += `${entityName}(where: { blockNumber_gte: ${fromBlockNumber}, blockNumber_lte: ${toBlockNumber}}, first: 1000, skip: ${skipCounts[entityName]}) {\n${fields.join(",\n")}}\n`;
+    eventQueries += `${entityName}(where: { blockNumber_gte: ${fromBlockNumber}, blockNumber_lte: ${toBlockNumber}, logPosition_gt: ${JSON.stringify(lastLogPosition)}}, first: 1000) {\n${fields.join(",\n")}}\n`;
   }
   return `{
       ${eventQueries}
     }`;
 }
 
-export function* logQuery(fromBlockNumber: number, toBlockNumber: number, logFieldDescriptions: LogFieldDescriptions): Generator<string, Log[], LogQueryResponse> {
+export function* logQuery(fromBlockNumber: number, toBlockNumber: number, logFieldDescriptions: LogFieldDescriptions): Generator<string, LogAndPosition[], LogQueryResponse> {
   let allLogs = [];
-  let skipCounts = Object.keys(logFieldDescriptions).reduce<SkipCounts>((acc, logName) => {
+  let lastLogPositions = Object.keys(logFieldDescriptions).reduce<LastLogPositions>((acc, logName) => {
     return {
       ...acc,
-      [`${logName}${entityPluralSuffix}`]: 0
+      [`${logName}${entityPluralSuffix}`]: ""
     }
   }, {});
 
-  while (Object.keys(skipCounts).length > 0) {
-    const lastLogs = yield buildQuery(fromBlockNumber, toBlockNumber, logFieldDescriptions, skipCounts);
-    skipCounts = Object.entries(skipCounts).reduce((acc, [key, skipCount]) => {
-      if(lastLogs[key].length < 1000) return acc; // Ignore this entity, no more can be fetched
-      acc[key] = skipCount + lastLogs[key].length;
+  while (Object.keys(lastLogPositions).length > 0) {
+    const lastLogs = yield buildQuery(fromBlockNumber, toBlockNumber, logFieldDescriptions, lastLogPositions);
+    lastLogPositions = Object.keys(lastLogPositions).reduce((acc, key) => {
+      if(lastLogs[key].length === 1000) {
+        // We've fetched the max number of logs for this range -- so we could have more that we need
+        // to page through.
+        acc[key] = _.last(lastLogs[key]).logPosition;
+      }
       return acc;
     }, {});
 
