@@ -149,26 +149,6 @@ jobs:
           testRunner: JUnit
           testResultsFiles: '**/junit.xml'
 
-  - job: BuildUI
-    pool:
-      vmImage: $(VM_IMAGE)
-    dependsOn:
-      - PreFlightCheck
-    variables:
-      JOB_TRIGGER_UI: $[dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_UI']]
-    condition:  eq(variables['Build.Reason'], 'PullRequest')
-    steps:
-      - template: .azure-templates/node-setup.yml
-      - bash: |
-          set -euo pipefail
-          export ETHEREUM_NETWORK=v2
-          ( cd packages/orbit-web && ./node_modules/.bin/webpack)
-          ( cd packages/augur-ui && ./node_modules/.bin/webpack)
-          #yarn workspace @augurproject/ui build:kovan
-        displayName: ui build
-        env:
-          NODE_OPTIONS: "--max_old_space_size=6144"
-
   - job: ContractSanityCheck
     dependsOn:
       - PreFlightCheck
@@ -444,22 +424,6 @@ jobs:
           set -exuo pipefail
           docker kill geth
         displayName: Stop 3rd Party Dockers
-
-  - template: .azure-templates/ui-build-to-s3.yml
-    parameters:
-      name: deploy_v2_to_staging
-      environment: v2
-      deployBucketName: staging.augur.net
-      triggerBranch: refs/heads/v2
-      cloudfrontDistributionId: E3RQRY8KA1PEUL
-
-  - template: .azure-templates/ui-build-to-s3.yml
-    parameters:
-      name: deploy_v2_to_reporting
-      environment: reporting
-      deployBucketName: v2-reporting.augur.net
-      triggerBranch: refs/heads/v2
-      cloudfrontDistributionId: E34VY4MHHEDAH9
 
   - template: .azure-templates/simplified-ui-build-to-s3.yml
     parameters:
