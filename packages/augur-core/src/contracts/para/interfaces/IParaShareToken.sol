@@ -4,6 +4,7 @@ import 'ROOT/para/interfaces/IParaUniverse.sol';
 import 'ROOT/ICash.sol';
 import 'ROOT/reporting/IMarket.sol';
 
+
 interface IParaShareToken {
     function cash() external view returns (ICash);
     function augur() external view returns (address);
