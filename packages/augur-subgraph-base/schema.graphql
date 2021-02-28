@@ -7,6 +7,9 @@ type CompleteSetsPurchasedEvent @entity {
 
   logIndex: Int!
 
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
+
   name: String!
 
   transactionHash: String!
@@ -33,6 +36,9 @@ type CompleteSetsSoldEvent @entity {
   blockNumber: Int!
 
   logIndex: Int!
+
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
 
   name: String!
 
@@ -63,6 +69,9 @@ type DesignatedReportStakeChangedEvent @entity {
 
   logIndex: Int!
 
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
+
   name: String!
 
   transactionHash: String!
@@ -83,6 +92,9 @@ type DisputeCrowdsourcerCompletedEvent @entity {
   blockNumber: Int!
 
   logIndex: Int!
+
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
 
   name: String!
 
@@ -123,6 +135,9 @@ type DisputeCrowdsourcerContributionEvent @entity {
 
   logIndex: Int!
 
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
+
   name: String!
 
   transactionHash: String!
@@ -162,6 +177,9 @@ type DisputeCrowdsourcerCreatedEvent @entity {
 
   logIndex: Int!
 
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
+
   name: String!
 
   transactionHash: String!
@@ -190,6 +208,9 @@ type DisputeCrowdsourcerRedeemedEvent @entity {
   blockNumber: Int!
 
   logIndex: Int!
+
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
 
   name: String!
 
@@ -224,6 +245,9 @@ type DisputeWindowCreatedEvent @entity {
 
   logIndex: Int!
 
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
+
   name: String!
 
   transactionHash: String!
@@ -251,6 +275,9 @@ type FinishDeploymentEvent @entity {
 
   logIndex: Int!
 
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
+
   name: String!
 
   transactionHash: String!
@@ -267,6 +294,9 @@ type InitialReportSubmittedEvent @entity {
   blockNumber: Int!
 
   logIndex: Int!
+
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
 
   name: String!
 
@@ -307,6 +337,9 @@ type InitialReporterRedeemedEvent @entity {
 
   logIndex: Int!
 
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
+
   name: String!
 
   transactionHash: String!
@@ -340,6 +373,9 @@ type InitialReporterTransferredEvent @entity {
 
   logIndex: Int!
 
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
+
   name: String!
 
   transactionHash: String!
@@ -364,6 +400,9 @@ type MarketCreatedEvent @entity {
   blockNumber: Int!
 
   logIndex: Int!
+
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
 
   name: String!
 
@@ -408,6 +447,9 @@ type MarketFinalizedEvent @entity {
 
   logIndex: Int!
 
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
+
   name: String!
 
   transactionHash: String!
@@ -433,6 +475,9 @@ type MarketMigratedEvent @entity {
 
   logIndex: Int!
 
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
+
   name: String!
 
   transactionHash: String!
@@ -455,6 +500,9 @@ type MarketOIChangedEvent @entity {
   blockNumber: Int!
 
   logIndex: Int!
+
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
 
   name: String!
 
@@ -479,6 +527,9 @@ type MarketParticipantsDisavowedEvent @entity {
 
   logIndex: Int!
 
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
+
   name: String!
 
   transactionHash: String!
@@ -499,6 +550,9 @@ type MarketRepBondTransferredEvent @entity {
   blockNumber: Int!
 
   logIndex: Int!
+
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
 
   name: String!
 
@@ -525,6 +579,9 @@ type MarketTransferredEvent @entity {
 
   logIndex: Int!
 
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
+
   name: String!
 
   transactionHash: String!
@@ -550,6 +607,9 @@ type NoShowBondChangedEvent @entity {
 
   logIndex: Int!
 
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
+
   name: String!
 
   transactionHash: String!
@@ -570,6 +630,9 @@ type ParticipationTokensRedeemedEvent @entity {
   blockNumber: Int!
 
   logIndex: Int!
+
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
 
   name: String!
 
@@ -600,6 +663,9 @@ type RegisterContractEvent @entity {
 
   logIndex: Int!
 
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
+
   name: String!
 
   transactionHash: String!
@@ -621,6 +687,9 @@ type ReportingFeeChangedEvent @entity {
 
   logIndex: Int!
 
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
+
   name: String!
 
   transactionHash: String!
@@ -641,6 +710,9 @@ type ReportingParticipantDisavowedEvent @entity {
   blockNumber: Int!
 
   logIndex: Int!
+
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
 
   name: String!
 
@@ -664,6 +736,9 @@ type ShareTokenBalanceChangedEvent @entity {
   blockNumber: Int!
 
   logIndex: Int!
+
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
 
   name: String!
 
@@ -692,6 +767,9 @@ type TimestampSetEvent @entity {
 
   logIndex: Int!
 
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
+
   name: String!
 
   transactionHash: String!
@@ -710,6 +788,9 @@ type TokenBalanceChangedEvent @entity {
   blockNumber: Int!
 
   logIndex: Int!
+
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
 
   name: String!
 
@@ -742,6 +823,9 @@ type TokensBurnedEvent @entity {
 
   logIndex: Int!
 
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
+
   name: String!
 
   transactionHash: String!
@@ -772,6 +856,9 @@ type TokensMintedEvent @entity {
   blockNumber: Int!
 
   logIndex: Int!
+
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
 
   name: String!
 
@@ -804,6 +891,9 @@ type TokensTransferredEvent @entity {
 
   logIndex: Int!
 
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
+
   name: String!
 
   transactionHash: String!
@@ -834,6 +924,9 @@ type TradingProceedsClaimedEvent @entity {
   blockNumber: Int!
 
   logIndex: Int!
+
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
 
   name: String!
 
@@ -868,6 +961,9 @@ type UniverseCreatedEvent @entity {
 
   logIndex: Int!
 
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
+
   name: String!
 
   transactionHash: String!
@@ -893,6 +989,9 @@ type UniverseForkedEvent @entity {
 
   logIndex: Int!
 
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
+
   name: String!
 
   transactionHash: String!
@@ -914,6 +1013,9 @@ type ValidityBondChangedEvent @entity {
 
   logIndex: Int!
 
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
+
   name: String!
 
   transactionHash: String!
@@ -934,6 +1036,9 @@ type WarpSyncDataUpdatedEvent @entity {
   blockNumber: Int!
 
   logIndex: Int!
+
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
 
   name: String!
 
@@ -957,6 +1062,9 @@ type CancelZeroXOrderEvent @entity {
   blockNumber: Int!
 
   logIndex: Int!
+
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
 
   name: String!
 
@@ -991,6 +1099,9 @@ type MarketVolumeChangedEvent @entity {
 
   logIndex: Int!
 
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
+
   name: String!
 
   transactionHash: String!
@@ -1019,6 +1130,9 @@ type OrderEventEvent @entity {
   blockNumber: Int!
 
   logIndex: Int!
+
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
 
   name: String!
 
@@ -1052,6 +1166,9 @@ type ProfitLossChangedEvent @entity {
   blockNumber: Int!
 
   logIndex: Int!
+
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
 
   name: String!
 
@@ -1090,6 +1207,9 @@ type ApprovalForAllEvent @entity {
 
   logIndex: Int!
 
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
+
   name: String!
 
   transactionHash: String!
@@ -1112,6 +1232,9 @@ type TransferBatchEvent @entity {
   blockNumber: Int!
 
   logIndex: Int!
+
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
 
   name: String!
 
@@ -1140,6 +1263,9 @@ type TransferSingleEvent @entity {
 
   logIndex: Int!
 
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
+
   name: String!
 
   transactionHash: String!
@@ -1164,6 +1290,9 @@ type URIEvent @entity {
   blockNumber: Int!
 
   logIndex: Int!
+
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
 
   name: String!
 

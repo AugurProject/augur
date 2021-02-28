@@ -21,6 +21,7 @@ export function handleApprovalForAllEvent(event: ApprovalForAllEvent): void {
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "ApprovalForAll";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -39,6 +40,7 @@ export function handleTransferBatchEvent(event: TransferBatchEvent): void {
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "TransferBatch";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -59,6 +61,7 @@ export function handleTransferSingleEvent(event: TransferSingleEvent): void {
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "TransferSingle";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -79,6 +82,7 @@ export function handleURIEvent(event: URIEvent): void {
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "URI";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();

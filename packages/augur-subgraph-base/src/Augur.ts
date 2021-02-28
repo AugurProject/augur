@@ -83,6 +83,7 @@ export function handleCompleteSetsPurchasedEvent(event: CompleteSetsPurchasedEve
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "CompleteSetsPurchased";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -103,6 +104,7 @@ export function handleCompleteSetsSoldEvent(event: CompleteSetsSoldEvent): void 
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "CompleteSetsSold";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -124,6 +126,7 @@ export function handleDesignatedReportStakeChangedEvent(event: DesignatedReportS
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "DesignatedReportStakeChanged";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -141,6 +144,7 @@ export function handleDisputeCrowdsourcerCompletedEvent(event: DisputeCrowdsourc
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "DisputeCrowdsourcerCompleted";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -167,6 +171,7 @@ export function handleDisputeCrowdsourcerContributionEvent(event: DisputeCrowdso
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "DisputeCrowdsourcerContribution";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -193,6 +198,7 @@ export function handleDisputeCrowdsourcerCreatedEvent(event: DisputeCrowdsourcer
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "DisputeCrowdsourcerCreated";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -214,6 +220,7 @@ export function handleDisputeCrowdsourcerRedeemedEvent(event: DisputeCrowdsource
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "DisputeCrowdsourcerRedeemed";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -237,6 +244,7 @@ export function handleDisputeWindowCreatedEvent(event: DisputeWindowCreatedEvent
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "DisputeWindowCreated";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -258,6 +266,7 @@ export function handleFinishDeploymentEvent(event: FinishDeploymentEvent): void 
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "FinishDeployment";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -273,6 +282,7 @@ export function handleInitialReportSubmittedEvent(event: InitialReportSubmittedE
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "InitialReportSubmitted";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -299,6 +309,7 @@ export function handleInitialReporterRedeemedEvent(event: InitialReporterRedeeme
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "InitialReporterRedeemed";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -322,6 +333,7 @@ export function handleInitialReporterTransferredEvent(event: InitialReporterTran
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "InitialReporterTransferred";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -341,6 +353,7 @@ export function handleMarketCreatedEvent(event: MarketCreatedEvent): void {
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "MarketCreated";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -369,6 +382,7 @@ export function handleMarketFinalizedEvent(event: MarketFinalizedEvent): void {
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "MarketFinalized";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -388,6 +402,7 @@ export function handleMarketMigratedEvent(event: MarketMigratedEvent): void {
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "MarketMigrated";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -412,6 +427,7 @@ export function handleMarketOIChangedEvent(event: MarketOIChangedEvent): void {
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "MarketOIChanged";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -430,6 +446,7 @@ export function handleMarketParticipantsDisavowedEvent(event: MarketParticipants
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "MarketParticipantsDisavowed";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -447,6 +464,7 @@ export function handleMarketRepBondTransferredEvent(event: MarketRepBondTransfer
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "MarketRepBondTransferred";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -466,6 +484,7 @@ export function handleMarketTransferredEvent(event: MarketTransferredEvent): voi
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "MarketTransferred";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -485,6 +504,7 @@ export function handleNoShowBondChangedEvent(event: NoShowBondChangedEvent): voi
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "NoShowBondChanged";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -502,6 +522,7 @@ export function handleParticipationTokensRedeemedEvent(event: ParticipationToken
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "ParticipationTokensRedeemed";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -523,6 +544,7 @@ export function handleRegisterContractEvent(event: RegisterContractEvent): void 
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "RegisterContract";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -540,6 +562,7 @@ export function handleReportingFeeChangedEvent(event: ReportingFeeChangedEvent):
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "ReportingFeeChanged";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -557,6 +580,7 @@ export function handleReportingParticipantDisavowedEvent(event: ReportingPartici
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "ReportingParticipantDisavowed";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -583,6 +607,7 @@ export function handleShareTokenBalanceChangedEvent(event: ShareTokenBalanceChan
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "ShareTokenBalanceChanged";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -603,6 +628,7 @@ export function handleTimestampSetEvent(event: TimestampSetEvent): void {
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "TimestampSet";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -626,6 +652,7 @@ export function handleTokenBalanceChangedEvent(event: TokenBalanceChangedEvent):
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "TokenBalanceChanged";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -648,6 +675,7 @@ export function handleTokensBurnedEvent(event: TokensBurnedEvent): void {
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "TokensBurned";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -670,6 +698,7 @@ export function handleTokensMintedEvent(event: TokensMintedEvent): void {
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "TokensMinted";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -692,6 +721,7 @@ export function handleTokensTransferredEvent(event: TokensTransferredEvent): voi
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "TokensTransferred";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -714,6 +744,7 @@ export function handleTradingProceedsClaimedEvent(event: TradingProceedsClaimedE
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "TradingProceedsClaimed";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -737,6 +768,7 @@ export function handleUniverseCreatedEvent(event: UniverseCreatedEvent): void {
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "UniverseCreated";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -756,6 +788,7 @@ export function handleUniverseForkedEvent(event: UniverseForkedEvent): void {
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "UniverseForked";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -773,6 +806,7 @@ export function handleValidityBondChangedEvent(event: ValidityBondChangedEvent):
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "ValidityBondChanged";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -790,6 +824,7 @@ export function handleWarpSyncDataUpdatedEvent(event: WarpSyncDataUpdatedEvent):
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "WarpSyncDataUpdated";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();

@@ -21,6 +21,7 @@ export function handleCancelZeroXOrderEvent(event: CancelZeroXOrderEvent): void 
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "CancelZeroXOrder";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -50,6 +51,7 @@ export function handleMarketVolumeChangedEvent(event: MarketVolumeChangedEvent):
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "MarketVolumeChanged";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -71,6 +73,7 @@ export function handleOrderEventEvent(event: OrderEventEvent): void {
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "OrderEvent";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
@@ -94,6 +97,7 @@ export function handleProfitLossChangedEvent(event: ProfitLossChangedEvent): voi
   entity.blockHash = event.block.hash.toHexString();
   entity.blockNumber = event.block.number.toI32();
   entity.logIndex = event.logIndex.toI32();
+  entity.logPosition = event.block.number.toString().padStart(10, "0") + "-" + event.logIndex.toString().padStart(5, "0");
   entity.name = "ProfitLossChanged";
   entity.transactionHash = event.transaction.hash.toHexString();
   entity.origin = event.transaction.from.toHexString();
