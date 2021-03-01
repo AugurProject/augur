@@ -163,22 +163,17 @@ export function doAmmLiquidity(
   const poolYesPercent = new BN(convertPriceToPercent(priceNo));
   const poolNoPercent = new BN(convertPriceToPercent(priceYes));
 
-  return hasLiquidity ? augurClient.amm.doAddSubsequentLiquidity(
+  return augurClient.amm.doAddLiquidity(
+    account,
+    ammAddress,
+    hasLiquidity,
     marketId,
     sharetoken,
     new BN(fee),
     new BN(amount),
-    account,
-  ) :
-    augurClient.amm.doAddInitialLiquidity(
-      marketId,
-      sharetoken,
-      new BN(fee),
-      new BN(amount),
-      poolYesPercent,
-      poolNoPercent,
-      account,
-    );
+    poolYesPercent,
+    poolNoPercent
+  );
 }
 
 export async function getRemoveLiquidity(
@@ -933,7 +928,7 @@ const accumLpSharesRemovesPrice = (transactions: AmmTransaction[], isYesOutcome:
 
 const lastClaimTimestamp = (amm: AmmExchange, isYesOutcome: boolean, account: string): number => {
   const shareToken = amm.cash.shareToken;
-  const claims = amm.market.claimedProceeds.filter(c => isSameAddress(c.shareToken, shareToken) && isSameAddress(c.user, account) && c.outcome === (isYesOutcome ? YES_OUTCOME_ID : NO_OUTCOME_ID))
+  const claims = amm.market.claimedProceeds.filter(c => isSameAddress(c.shareToken, shareToken) && isSameAddress(c.user, account) && c.outcome === (isYesOutcome ? YES_OUTCOME_ID : NO_OUTCOME_ID) )
   return claims.reduce((p, c) => Number(c.timestamp) > p ? Number(c.timestamp) : p, 0);
 }
 
