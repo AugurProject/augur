@@ -13,7 +13,7 @@ import { processGraphMarkets } from '../../utils/process-data';
 import { getMarketsData } from '../apollo/client';
 import { augurSdkLite } from '../../utils/augurlitesdk';
 import {
-  getLegacyRepBalance,
+  getLegacyRepBalance, getRepBalance, isRepV2Approved,
 } from '../../utils/contract-calls';
 
 const isAsync = (obj) =>
@@ -113,21 +113,32 @@ export function useGraphHeartbeat() {
   }, []);
 }
 
+export async function getRepBalances(provider, address) {
+  const rep = await getRepBalance(provider, address);
+  const legacyRep = await getLegacyRepBalance(provider, address);  
+  isRepV2Approved(provider, address);
+  return {
+    rep: rep.toString(), 
+    legacyRep: legacyRep.toString()
+  }
+}
+
 export function useUserBalances() {
   const {
     loginAccount,
     actions: { updateUserBalances },
   } = useUserStore();
-  console.log(loginAccount);
   useEffect(() => {
     let isMounted = true;
-    // const createClient = (provider, config, account) => {
-    //   augurSdkLite.makeLiteClient(provider, config, account);
-    // };
+    const fetchUserBalances = (
+      library,
+      account,
+    ) => getRepBalances(library, account);
     if (loginAccount?.library && loginAccount?.account) {
-      //if (!augurSdkLite.ready())
-        //createClient(loginAccount.library, PARA_CONFIG, loginAccount?.account);
-        getLegacyRepBalance(loginAccount.library, loginAccount.account);
+      fetchUserBalances(
+        loginAccount.library,
+        loginAccount.account
+      ).then((userBalances) => isMounted && updateUserBalances(userBalances));
     }
 
     return () => {
