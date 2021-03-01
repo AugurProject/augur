@@ -118,15 +118,15 @@ export function useUserBalances() {
     loginAccount,
     actions: { updateUserBalances },
   } = useUserStore();
-  const { markets, cashes, ammExchanges } = useGraphDataStore();
+  console.log(loginAccount);
   useEffect(() => {
     let isMounted = true;
-    const createClient = (provider, config, account) => {
-      augurSdkLite.makeLiteClient(provider, config, account);
-    };
+    // const createClient = (provider, config, account) => {
+    //   augurSdkLite.makeLiteClient(provider, config, account);
+    // };
     if (loginAccount?.library && loginAccount?.account) {
-      if (!augurSdkLite.ready())
-        createClient(loginAccount.library, PARA_CONFIG, loginAccount?.account);
+      //if (!augurSdkLite.ready())
+        //createClient(loginAccount.library, PARA_CONFIG, loginAccount?.account);
         getLegacyRepBalance(loginAccount.library, loginAccount.account);
     }
 
@@ -136,9 +136,6 @@ export function useUserBalances() {
   }, [
     loginAccount?.account,
     loginAccount?.library,
-    ammExchanges,
-    cashes,
-    markets,
     PARA_CONFIG,
   ]);
 }

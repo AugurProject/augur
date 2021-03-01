@@ -17,7 +17,7 @@ import { client } from './apollo/client';
 const AppBody = () => {
   const { modal } = useAppStatusStore();
   const modalShowing = Object.keys(modal).length !== 0;
-  useGraphHeartbeat();
+  // useGraphHeartbeat();
   useUserBalances();
   useFinalizeUserTransactions();
 

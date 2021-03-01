@@ -10,6 +10,7 @@ import { ZERO, ETH, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_NO_OUTCOMES_NAMES, YE
 import { getProviderOrSigner } from '@augurproject/augur-comps';
 import { createBigNumber } from './create-big-number';
 import { PARA_CONFIG } from '../modules/stores/constants';
+import Web3 from 'web3';
 
 const isValidPrice = (price: string): boolean => {
   return price !== null && price !== undefined && price !== "0" && price !== "0.00";
@@ -406,9 +407,9 @@ export async function getLegacyRepBalance(
   if (!address) return ZERO;
   const { addresses } = PARA_CONFIG;
   const legacyRep = addresses.LegacyReputationToken;
+  // console.log(provider.ethers);
   const contract = getErc20Contract(legacyRep, provider, address);
   let balance = await contract.balanceOf(address);
-  console.log(balance);
   const balVal = convertOnChainCashAmountToDisplayCashAmount(
     new BN(String(balance._hex)),
     18
