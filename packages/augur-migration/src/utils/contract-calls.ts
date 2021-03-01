@@ -455,7 +455,6 @@ export async function getLegacyRepBalance(
 ): Promise<BigNumber> {
   if (!address) return ZERO;
   const { addresses } = PARA_CONFIG;
-  console.log(PARA_CONFIG);
   const legacyRep = addresses.LegacyReputationToken;
   const contract = getErc20Contract(legacyRep, provider, address);
   if (contract) {
@@ -473,10 +472,13 @@ export async function isRepV2Approved(
   account: string
 ): Promise<boolean> {
   const { addresses } = PARA_CONFIG;
+  console.log(PARA_CONFIG);
   const legacyRep = addresses.LegacyReputationToken;
   const contract = getErc20Contract(legacyRep, provider, account);
   try {
+    console.log(contract);
     const currentAllowance = await contract.allowance(account, kovanRepAddress);
+    console.log(currentAllowance.toString());
     if (currentAllowance.lte(0)) {
       return false;
     }
@@ -507,18 +509,13 @@ export async function convertV1ToV2Approve(
   provider: Web3Provider,
   account: string
 ) {
-  const allowance = createBigNumber(99999999999999999999).times(
-    TEN_TO_THE_EIGHTEENTH_POWER
-  );
   let response = null;
+  const APPROVAL_AMOUNT = String(new BN(2 ** 255).minus(1));
   try {
-    const reputationToken = getReputationTokenContract(provider, account);
     const { addresses } = PARA_CONFIG;
     const legacyRep = addresses.LegacyReputationToken;
-    // const contract = getErc20Contract(legacyRep, provider, account);
     const contract = getLegacyReputationTokenContract(provider, account, legacyRep);
-    console.log(contract);
-    response = await contract.approve(reputationToken, allowance);
+    response = await contract.approve(account, APPROVAL_AMOUNT);
   } catch (e) {
     console.error(e);
   }
@@ -529,7 +526,6 @@ export async function convertV1ToV2(provider: Web3Provider, account: string) {
   let response = false;
   try {
     const reputationToken = getReputationTokenContract(provider, account);
-    console.log(reputationToken);
     response = await reputationToken.migrateFromLegacyReputationToken();
   } catch (e) {
     console.error(e);

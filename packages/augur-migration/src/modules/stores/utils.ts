@@ -52,11 +52,6 @@ export const getRelatedMarkets = (
     .filter((mrkt) => mrkt.includes(market.marketId))
     .map((mid) => markets[mid]);
 
-export const getCurrentAmms = (
-  market: MarketInfo,
-  markets: Array<MarketInfo>
-) => getRelatedMarkets(market, markets).map((m) => m.amm.cash.name);
-
 export const dispatchMiddleware = (dispatch) => (action) =>
   middleware(dispatch, action);
 
@@ -116,14 +111,16 @@ export function useGraphHeartbeat() {
 export async function getRepBalances(provider, address) {
   const rep = await getRepBalance(provider, address);
   const legacyRep = await getLegacyRepBalance(provider, address);  
-  isRepV2Approved(provider, address);
- convertV1ToV2Approve(provider, address);
+  // const isApproved = await isRepV2Approved(provider, address);
+  // console.log(isApproved);
+  // convertV1ToV2Approve(provider, address);
 //  convertV1ToV2(provider, address); 
  return {
     rep: rep.toString(), 
     legacyRep: legacyRep.toString()
   }
 }
+
 
 export function useUserBalances() {
   const {
