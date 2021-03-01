@@ -46,7 +46,7 @@ const eventFields = {
   "cancelZeroXOrder": ["universe", "market", "account", "outcome", "price", "amount", "orderType", "orderHash"]
 }
 
-const GENERIC_LOG_FIELDS = ["name", "blockNumber", "logIndex"];
+const GENERIC_LOG_FIELDS = ["name", "blockNumber", "logIndex", "logPosition"];
 
 const entityPluralSuffix = 'Events';
 
@@ -71,7 +71,7 @@ function buildQuery(fromBlockNumber: number, toBlockNumber: number, logFieldDesc
 
     // When a particular entity type has no more logs to fetch it is removed from
     // `lastLogPositions` -- which means that we can skip it when fetching
-    if(typeof lastLogPositions === "undefined") continue;
+    if(typeof lastLogPosition === "undefined") continue;
 
     const fields = GENERIC_LOG_FIELDS.concat(eventFields);
     eventQueries += `${entityName}(where: { blockNumber_gte: ${fromBlockNumber}, blockNumber_lte: ${toBlockNumber}, logPosition_gt: ${JSON.stringify(lastLogPosition)}}, first: 1000) {\n${fields.join(",\n")}}\n`;
