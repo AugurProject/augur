@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Styles from './migrate.styles.less';
-import { PrimaryButton, ExternalLinkButton } from '@augurproject/augur-comps';
+import { PrimaryButton, ExternalLinkButton, formatRep } from '@augurproject/augur-comps';
 import { useAppStatusStore } from '../stores/app-status';
 import { ConnectAccountButton } from '../shared/connect-account-button';
 import {
@@ -24,38 +24,34 @@ export const Migrate = () => {
   return (
     <div className={Styles.Migrate}>
       <span>
-        Migrate your V1 REP to V2 REP to use it in Augur V2. The quantity of V1
-        REP shown below will migrate to an equal amount of V2 REP. For example
-        100 V1 REP will migrate to 100 V2 REP.{' '}
-        <ExternalLinkButton label="learn more" URL="https://www.google.com/" />
+        <span>Migrate your V1 REP to REP V2</span>
+        <span>For example 100 V1 REP will migrate to 100 REP V2.</span>
       </span>
       <div>
         <div>
           <span>V1 REP</span>
-          {balances.legacyRep}
+          {formatRep(balances.legacyRep).formatted}
         </div>
         <div>
           <span>V2 REP</span>
-          {balances.rep}
+          {formatRep(balances.rep).formatted}
         </div>
       </div>
       {isLogged ? (
-        <>
+        <div>
           <PrimaryButton
             text="Approve"
-            darkTheme
             action={() =>
               convertV1ToV2Approve(loginAccount.library, loginAccount.account)
             }
           />{' '}
           <PrimaryButton
             text="Migrate"
-            darkTheme
             action={() => {
               convertV1ToV2(loginAccount.library, loginAccount.account);
             }}
           />
-        </>
+        </div>
       ) : (
         <ConnectAccountButton />
       )}

@@ -1,56 +1,76 @@
 @import (reference) '~assets/styles/shared.less';
 
 .Migrate {
-    background-color: var(--color-module-background);
-    padding: @size-40 @size-38;
-    color: var(--color-secondary-text);
-    max-width: 644px;
-    height: fit-content;
+  background-color: var(--simple-light-bg);
+  padding: @size-40 @size-38;
+  color: var(--simple-secondary-text);
+  max-width: 644px;
+  height: fit-content;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  border: @size-1 solid var(--simple-border);
+  box-shadow: 0 @size-8 @size-40 rgba(14, 14, 33, 0.1);
+  border-radius: @size-16;
+
+  > span {
     display: flex;
-    justify-content: center;
     flex-direction: column;
-    align-items: center;
-    border-radius: @size-3;
+    text-align: center;
+    margin-bottom: @size-40;
+    > span:first-of-type {
+      .text-16-semi-bold;
 
-    > span {
-        text-align: center;
-
-        > button {
-            margin-left: @size-4;
-        }
+      color: var(--simple-primary-text);
+      margin-bottom: @size-8;
     }
+  }
+
+  > div:first-of-type {
+    display: flex;
 
     > div {
-        display: flex;
+      .text-20-semi-bold;
 
-        > div {
-            .text-20-semi-bold;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--light-background-color);
+      padding: @size-16;
+      color: var(--simple-primary-text);
+      height: 86px;
+      width: 196px;
+      border-radius: @size-8;
+      justify-content: center;
+      align-items: center;
 
-            display: flex;
-            flex-direction: column;
-            background-color: var(--light-background-color);
-            padding: @size-16;
-            color: var(--simple-primary-text);
-            height: 196px;
-            width: 86px;
-            border-radius: @size-8;
-            justify-content: center;
-            align-items: center;
+      > span {
+        .text-16;
 
-            > span {
-                .text-16;
+        margin-bottom: @size-8;
+        color: var(--simple-secondary-text);
+      }
 
-                margin-bottom: @size-8;
-                color: var(--simple-secondary-text);
-            }
-
-            &:first-of-type {
-                margin-right: @size-50;
-            }
-        }
+      &:first-of-type {
+        margin-right: @size-50;
+      }
     }
+  }
+  > div:nth-of-type(2) {
+    margin-top: @size-38;
+    display: flex;
+
     > button {
-        margin-top: @size-38;
-        width: fit-content;
+      width: fit-content;
+
+      &:first-of-type {
+        margin-right: @size-12;
+      }
     }
+  }
+
+  > button {
+    margin-top: @size-38;
+    width: fit-content;
+  }
 }

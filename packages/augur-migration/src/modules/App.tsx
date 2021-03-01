@@ -9,7 +9,11 @@ import { AppStatusProvider, useAppStatusStore } from './stores/app-status';
 import { UserProvider } from './stores/user';
 import ModalView from './modal/modal-view';
 import { ConnectAccountButton } from './shared/connect-account-button';
-import { useUserBalances, useGraphHeartbeat, useFinalizeUserTransactions } from './stores/utils';
+import {
+  useUserBalances,
+  useGraphHeartbeat,
+  useFinalizeUserTransactions,
+} from './stores/utils';
 import { GraphDataProvider } from './stores/graph-data';
 import { ApolloProvider } from 'react-apollo';
 import { client } from './apollo/client';
@@ -24,8 +28,11 @@ const AppBody = () => {
   return (
     <div id="mainContent" className={Styles.App}>
       {modalShowing && <ModalView />}
-      <Logo darkTheme />
-      <ConnectAccountButton />
+      <div>
+        <Logo />
+        <ConnectAccountButton />
+      </div>
+
       <span>Migrate V1 REP</span>
       <Migrate />
     </div>
