@@ -5,7 +5,7 @@ import {
 } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 
-const Web3ProviderNetwork = createWeb3ReactRoot('NETWORK');
+const Web3ProviderNetwork = createWeb3ReactRoot('NETWORK_COMPS');
 
 function getLibrary(provider) {
   const library = new Web3Provider(provider, 'any');
