@@ -12,11 +12,14 @@ import { useUserStore } from '../stores/user';
 
 export const Migrate = () => {
   const { isLogged } = useAppStatusStore();
-  const { loginAccount } = useUserStore();
+  const { loginAccount, balances } = useUserStore();
   const [isApproved, setIsApproved] = useState(false);
-  loginAccount && isRepV2Approved(loginAccount.library, loginAccount.account).then(isApproved => {
-    setIsApproved(isApproved);
-  });
+  loginAccount &&
+    isRepV2Approved(loginAccount.library, loginAccount.account).then(
+      (isApproved) => {
+        setIsApproved(isApproved);
+      }
+    );
   console.log(isApproved);
   return (
     <div className={Styles.Migrate}>
@@ -26,6 +29,16 @@ export const Migrate = () => {
         100 V1 REP will migrate to 100 V2 REP.{' '}
         <ExternalLinkButton label="learn more" URL="https://www.google.com/" />
       </span>
+      <div>
+        <div>
+          <span>V1 REP</span>
+          {balances.legacyRep}
+        </div>
+        <div>
+          <span>V2 REP</span>
+          {balances.rep}
+        </div>
+      </div>
       {isLogged ? (
         <>
           <PrimaryButton
@@ -38,12 +51,9 @@ export const Migrate = () => {
           <PrimaryButton
             text="Migrate"
             darkTheme
-            action={() =>
-              {
-                convertV1ToV2(loginAccount.library, loginAccount.account)
-
-              }
-            }
+            action={() => {
+              convertV1ToV2(loginAccount.library, loginAccount.account);
+            }}
           />
         </>
       ) : (

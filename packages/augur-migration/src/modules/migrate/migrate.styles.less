@@ -20,6 +20,35 @@
         }
     }
 
+    > div {
+        display: flex;
+
+        > div {
+            .text-20-semi-bold;
+
+            display: flex;
+            flex-direction: column;
+            background-color: var(--light-background-color);
+            padding: @size-16;
+            color: var(--simple-primary-text);
+            height: 196px;
+            width: 86px;
+            border-radius: @size-8;
+            justify-content: center;
+            align-items: center;
+
+            > span {
+                .text-16;
+
+                margin-bottom: @size-8;
+                color: var(--simple-secondary-text);
+            }
+
+            &:first-of-type {
+                margin-right: @size-50;
+            }
+        }
+    }
     > button {
         margin-top: @size-38;
         width: fit-content;
