@@ -111,10 +111,6 @@ export function useGraphHeartbeat() {
 export async function getRepBalances(provider, address) {
   const rep = await getRepBalance(provider, address);
   const legacyRep = await getLegacyRepBalance(provider, address);  
-  // const isApproved = await isRepV2Approved(provider, address);
-  // console.log(isApproved);
-  // convertV1ToV2Approve(provider, address);
-//  convertV1ToV2(provider, address); 
  return {
     rep: rep.toString(), 
     legacyRep: legacyRep.toString()

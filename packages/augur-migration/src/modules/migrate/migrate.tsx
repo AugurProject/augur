@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Styles from './migrate.styles.less';
 import { PrimaryButton, ExternalLinkButton } from '@augurproject/augur-comps';
 import { useAppStatusStore } from '../stores/app-status';
@@ -13,8 +13,11 @@ import { useUserStore } from '../stores/user';
 export const Migrate = () => {
   const { isLogged } = useAppStatusStore();
   const { loginAccount } = useUserStore();
-  loginAccount && isRepV2Approved(loginAccount.library, loginAccount.account);
-  //console.log(isApproved);
+  const [isApproved, setIsApproved] = useState(false);
+  loginAccount && isRepV2Approved(loginAccount.library, loginAccount.account).then(isApproved => {
+    setIsApproved(isApproved);
+  });
+  console.log(isApproved);
   return (
     <div className={Styles.Migrate}>
       <span>

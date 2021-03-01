@@ -1,24 +1,9 @@
 import BigNumber, { BigNumber as BN } from 'bignumber.js';
 import { ParaShareToken, AddLiquidityRate } from '@augurproject/sdk-lite';
 import {
-  TradingDirection,
   AmmExchange,
-  AmmExchanges,
-  AmmMarketShares,
-  AmmTransaction,
-  Cashes,
-  CurrencyBalance,
-  PositionBalance,
-  TransactionTypes,
-  UserBalances,
-  MarketInfos,
-  LPTokens,
-  EstimateTradeResult,
   Cash,
-  AddLiquidityBreakdown,
-  LiquidityBreakdown,
   AmmOutcome,
-  Web3,
 } from '../modules/types';
 import ethers from 'ethers';
 import { Contract } from '@ethersproject/contracts';
@@ -98,109 +83,6 @@ export const checkConvertLiquidityProperties = (
     priceYes,
   };
 };
-
-const convertPriceToPercent = (price: string) => {
-  return String(new BN(price).times(100));
-};
-
-export async function estimateAddLiquidity(
-  account: string,
-  amm: AmmExchange,
-  marketId: string,
-  cash: Cash,
-  fee: string,
-  cashAmount: string,
-  priceNo: string,
-  priceYes: string
-): Promise<AddLiquidityBreakdown> {
-  const augurClient = augurSdkLite.get();
-  if (!augurClient || !augurClient.amm) {
-    console.error('augurClient is null');
-    return null;
-  }
-
-  const hasLiquidity =
-    amm !== null && amm?.id !== undefined && amm?.liquidity !== '0';
-  const sharetoken = cash?.shareToken;
-  const ammAddress = amm?.id;
-  const amount = convertDisplayCashAmountToOnChainCashAmount(
-    cashAmount,
-    cash.decimals
-  );
-  console.log(
-    'getAddAmmLiquidity',
-    account,
-    'amm address',
-    ammAddress,
-    hasLiquidity,
-    'marketId',
-    marketId,
-    'sharetoken',
-    sharetoken,
-    fee,
-    String(amount),
-    'No',
-    String(priceNo),
-    'Yes',
-    String(priceYes)
-  );
-
-  // converting odds to pool percentage. odds is the opposit of pool percentage
-  // same when converting pool percentage to price
-  const poolYesPercent = new BN(convertPriceToPercent(priceNo));
-  const poolNoPercent = new BN(convertPriceToPercent(priceYes));
-
-  const liqNo = amm?.liquidityNo
-    ? convertDisplayShareAmountToOnChainShareAmount(
-        new BN(amm?.liquidityNo || '0'),
-        new BN(amm?.cash?.decimals)
-      )
-    : new BN(0);
-  const liqYes = amm?.liquidityYes
-    ? convertDisplayShareAmountToOnChainShareAmount(
-        new BN(amm?.liquidityYes || '0'),
-        new BN(amm?.cash?.decimals)
-      )
-    : new BN(0);
-
-  const addLiquidityResults: AddLiquidityRate = await augurClient.amm.getAddLiquidity(
-    new BN(amm?.totalSupply || '0'),
-    liqNo,
-    liqYes,
-    new BN(amount),
-    poolYesPercent,
-    poolNoPercent
-  );
-
-  if (addLiquidityResults) {
-    const lpTokens = trimDecimalValue(
-      convertOnChainSharesToDisplayShareAmount(
-        String(addLiquidityResults.lpTokens),
-        cash.decimals
-      )
-    );
-    const noShares = trimDecimalValue(
-      convertOnChainSharesToDisplayShareAmount(
-        String(addLiquidityResults.short),
-        cash.decimals
-      )
-    );
-    const yesShares = trimDecimalValue(
-      convertOnChainSharesToDisplayShareAmount(
-        String(addLiquidityResults.long),
-        cash.decimals
-      )
-    );
-
-    return {
-      lpTokens,
-      yesShares,
-      noShares,
-    };
-  }
-
-  return null;
-}
 
 export const isAddress = (value) => {
   try {
@@ -472,13 +354,10 @@ export async function isRepV2Approved(
   account: string
 ): Promise<boolean> {
   const { addresses } = PARA_CONFIG;
-  console.log(PARA_CONFIG);
   const legacyRep = addresses.LegacyReputationToken;
   const contract = getErc20Contract(legacyRep, provider, account);
   try {
-    console.log(contract);
     const currentAllowance = await contract.allowance(account, kovanRepAddress);
-    console.log(currentAllowance.toString());
     if (currentAllowance.lte(0)) {
       return false;
     }
