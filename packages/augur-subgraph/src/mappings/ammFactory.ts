@@ -3,6 +3,7 @@ import { AMMCreated } from '../../generated/AMMFactory/AMMFactory';
 import { AMMExchange, ParaShareToken, BPool } from '../../generated/schema';
 import { AMMExchange as AMMExchangeTemplate, BPool as BPoolTemplate  } from '../../generated/templates';
 import { updateAMM } from '../utils/helpers/amm';
+import {updateOrCreateBPool} from './bPool';
 
 export function handleAMMCreated(event: AMMCreated): void {
   let id = event.params.amm.toHexString();
@@ -15,9 +16,7 @@ export function handleAMMCreated(event: AMMCreated): void {
     return;
   }
 
-  let bPool = new BPool(event.params.bPool.toHexString());
-  bPool.save();
-
+  updateOrCreateBPool(event.params.bPool.toHexString());
   BPoolTemplate.create(event.params.bPool);
 
   let ZERO = BigDecimal.fromString('0');
