@@ -13,7 +13,7 @@ import { processGraphMarkets } from '../../utils/process-data';
 import { getMarketsData } from '../apollo/client';
 import { augurSdkLite } from '../../utils/augurlitesdk';
 import {
-  getLegacyRepBalance, getRepBalance, isRepV2Approved,
+  getLegacyRepBalance, getRepBalance, isRepV2Approved, convertV1ToV2, convertV1ToV2Approve
 } from '../../utils/contract-calls';
 
 const isAsync = (obj) =>
@@ -117,7 +117,9 @@ export async function getRepBalances(provider, address) {
   const rep = await getRepBalance(provider, address);
   const legacyRep = await getLegacyRepBalance(provider, address);  
   isRepV2Approved(provider, address);
-  return {
+ convertV1ToV2Approve(provider, address);
+//  convertV1ToV2(provider, address); 
+ return {
     rep: rep.toString(), 
     legacyRep: legacyRep.toString()
   }

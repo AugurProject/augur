@@ -18,6 +18,7 @@ import {
   AddLiquidityBreakdown,
   LiquidityBreakdown,
   AmmOutcome,
+  Web3,
 } from '../modules/types';
 import ethers from 'ethers';
 import { Contract } from '@ethersproject/contracts';
@@ -32,19 +33,16 @@ import {
 import { augurSdkLite } from './augurlitesdk';
 import {
   ZERO,
-  ETH,
   NO_OUTCOME_ID,
   NULL_ADDRESS,
-  USDC,
-  YES_NO_OUTCOMES_NAMES,
   YES_OUTCOME_ID,
-  INVALID_OUTCOME_ID,
-  MARKET_STATUS,
-  getProviderOrSigner
+  getProviderOrSigner,
+  TEN_TO_THE_EIGHTEENTH_POWER,
 } from '@augurproject/augur-comps';
 import { createBigNumber } from './create-big-number';
 import { PARA_CONFIG } from '../modules/stores/constants';
-import Web3 from 'web3';
+import ReputationTokenABI from './ReputationTokenABI.json';
+import LegacyReputationTokenABI from './LegacyReputationTokenABI.json';
 
 const isValidPrice = (price: string): boolean => {
   return (
@@ -202,61 +200,6 @@ export async function estimateAddLiquidity(
   }
 
   return null;
-}
-
-export function doAmmLiquidity(
-  account: string,
-  amm: AmmExchange,
-  marketId: string,
-  cash: Cash,
-  fee: string,
-  cashAmount: string,
-  hasLiquidity: boolean,
-  priceNo: string,
-  priceYes: string
-): Promise<TransactionResponse | null> {
-  const augurClient = augurSdkLite.get();
-  if (!augurClient || !augurClient.amm) {
-    console.error('augurClient is null');
-    return null;
-  }
-  const sharetoken = cash?.shareToken;
-  const ammAddress = amm?.id;
-  const amount = convertDisplayCashAmountToOnChainCashAmount(
-    cashAmount,
-    cash.decimals
-  );
-  console.log(
-    'doAmmLiquidity',
-    account,
-    ammAddress,
-    hasLiquidity,
-    marketId,
-    sharetoken,
-    fee,
-    String(amount),
-    'No',
-    String(priceNo),
-    'Yes',
-    String(priceYes)
-  );
-
-  // converting odds to pool percentage. odds is the opposit of pool percentage
-  // same when converting pool percentage to price
-  const poolYesPercent = new BN(convertPriceToPercent(priceNo));
-  const poolNoPercent = new BN(convertPriceToPercent(priceYes));
-
-  return augurClient.amm.doAddLiquidity(
-    account,
-    ammAddress,
-    hasLiquidity,
-    marketId,
-    sharetoken,
-    new BN(fee),
-    new BN(amount),
-    poolYesPercent,
-    poolNoPercent
-  );
 }
 
 export const isAddress = (value) => {
@@ -486,6 +429,8 @@ const ERC20ABI = [
     type: 'event',
   },
 ];
+
+const mainnetRepAddress = '0x221657776846890989a759ba2973e427dff5c9bb';
 const kovanRepAddress = '0xdc3d8D4Ea1CE2ffB65070787C47faBECAD22897a';
 
 export async function getRepBalance(
@@ -493,7 +438,6 @@ export async function getRepBalance(
   address: string
 ): Promise<BigNumber> {
   if (!address) return ZERO;
-  // kovan address
   const contract = getErc20Contract(kovanRepAddress, provider, address);
   if (contract) {
     let balance = await contract.balanceOf(address);
@@ -511,6 +455,7 @@ export async function getLegacyRepBalance(
 ): Promise<BigNumber> {
   if (!address) return ZERO;
   const { addresses } = PARA_CONFIG;
+  console.log(PARA_CONFIG);
   const legacyRep = addresses.LegacyReputationToken;
   const contract = getErc20Contract(legacyRep, provider, address);
   if (contract) {
@@ -523,19 +468,15 @@ export async function getLegacyRepBalance(
   }
 }
 
-export async function isRepV2Approved(provider, account): Promise<boolean> {
-  //const { contracts } = augurSdk.get();
+export async function isRepV2Approved(
+  provider: Web3Provider,
+  account: string
+): Promise<boolean> {
   const { addresses } = PARA_CONFIG;
   const legacyRep = addresses.LegacyReputationToken;
   const contract = getErc20Contract(legacyRep, provider, account);
   try {
-    console.log(contract);
-    const currentAllowance = await contract.allowance(
-      account,
-      kovanRepAddress
-    );
-    console.log(currentAllowance.lte(0));
-
+    const currentAllowance = await contract.allowance(account, kovanRepAddress);
     if (currentAllowance.lte(0)) {
       return false;
     }
@@ -545,28 +486,53 @@ export async function isRepV2Approved(provider, account): Promise<boolean> {
   }
 }
 
-export async function convertV1ToV2Approve() {
+export const getReputationTokenContract = (provider: Web3Provider, account: string) => {
+  return new Contract(
+    kovanRepAddress,
+    ReputationTokenABI,
+    getProviderOrSigner(provider, account) as any
+  );
+};
 
+export const getLegacyReputationTokenContract = (provider: Web3Provider, account: string, contractAddress: string) => {
+  return new Contract(
+    contractAddress,
+    LegacyReputationTokenABI,
+    getProviderOrSigner(provider, account) as any
+  );
+};
+
+
+export async function convertV1ToV2Approve(
+  provider: Web3Provider,
+  account: string
+) {
   const allowance = createBigNumber(99999999999999999999).times(
     TEN_TO_THE_EIGHTEENTH_POWER
   );
   let response = null;
   try {
-    const getReputationToken = await contracts.universe.getReputationToken_();
-    response = await contracts.legacyReputationToken.approve(getReputationToken, allowance);
+    const reputationToken = getReputationTokenContract(provider, account);
+    const { addresses } = PARA_CONFIG;
+    const legacyRep = addresses.LegacyReputationToken;
+    // const contract = getErc20Contract(legacyRep, provider, account);
+    const contract = getLegacyReputationTokenContract(provider, account, legacyRep);
+    console.log(contract);
+    response = await contract.approve(reputationToken, allowance);
   } catch (e) {
     console.error(e);
   }
   return response;
 }
 
-export async function convertV1ToV2() {
-  // const { contracts } = augurSdk.get();
-  // let response = false;
-  // try {
-  //   response = await contracts.reputationToken.migrateFromLegacyReputationToken();
-  // } catch (e) {
-  //   console.error(e);
-  // }
-  // return response;
+export async function convertV1ToV2(provider: Web3Provider, account: string) {
+  let response = false;
+  try {
+    const reputationToken = getReputationTokenContract(provider, account);
+    console.log(reputationToken);
+    response = await reputationToken.migrateFromLegacyReputationToken();
+  } catch (e) {
+    console.error(e);
+  }
+  return response;
 }
