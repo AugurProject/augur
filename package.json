@@ -96,7 +96,7 @@
     "**/puppeteer": "https://github.com/AugurProject/blackhole.git",
     "**/scrypt": "https://github.com/AugurProject/blackhole.git",
     "**/bcrypto": "https://github.com/AugurProject/blackhole.git",
-    "**/pull-ws": "https://github.com/AugurProject/blackhole.git",
+    "**/pull-ws": "https://github.com/pull-stream/pull-ws.git",
     "lodash": "4.17.15",
     "ethers": "5.0.15",
     "@ethersproject/hash": "5.0.9",
