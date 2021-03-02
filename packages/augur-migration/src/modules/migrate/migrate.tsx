@@ -1,10 +1,6 @@
 import React from 'react';
 import Styles from './migrate.styles.less';
-import {
-  PrimaryButton,
-  formatRep,
-  PointedArrow
-} from '@augurproject/augur-comps';
+import { Buttons, Icons, Utils } from '@augurproject/augur-comps';
 import { useAppStatusStore } from '../stores/app-status';
 import { ConnectAccountButton } from '../shared/connect-account-button';
 import {
@@ -12,6 +8,9 @@ import {
   convertV1ToV2,
 } from '../../utils/contract-calls';
 import { useUserStore } from '../stores/user';
+const { PrimaryButton } = Buttons;
+const { PointedArrow } = Icons;
+const { formatter: { formatRep }} = Utils;
 
 export const Migrate = () => {
   const { isLogged } = useAppStatusStore();

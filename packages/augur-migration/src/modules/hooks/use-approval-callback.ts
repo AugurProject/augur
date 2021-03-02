@@ -1,7 +1,6 @@
 // import { ApprovalState, ETH, TX_STATUS } from '../../constants';
 // import { useActiveWeb3React } from '../ConnectAccount/hooks';
-import { useActiveWeb3React, ApprovalState, ETH, TX_STATUS } from '@augurproject/augur-comps';
-
+import { ConnectAccount, Constants } from '@augurproject/augur-comps';
 import { useCallback, useMemo } from 'react';
 import {
   getERC1155ApprovedForAll,
@@ -15,6 +14,8 @@ import { AmmExchange, LoginAccount, TransactionDetails } from '../types';
 import { useUserStore } from '../stores/user';
 import { PARA_CONFIG } from '../stores/constants';
 
+const { hooks: { useActiveWeb3React } } = ConnectAccount;
+const { ApprovalState, ETH, TX_STATUS } = Constants;
 const APPROVAL_AMOUNT = String(new BN(2 ** 255).minus(1));
 
 export const useIsTokenApproved = (tokenAddress: string): Promise<boolean> => {

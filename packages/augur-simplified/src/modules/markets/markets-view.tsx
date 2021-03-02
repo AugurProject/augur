@@ -36,8 +36,8 @@ import { SearchInput } from '../common/inputs';
 import { MarketCard } from './market-card';
 import { useGraphDataStore } from '../stores/graph-data';
 import { useScrollToTopOnMount } from '../stores/utils';
-import { LoadingMarketCard } from '@augurproject/augur-comps';
-
+import { MarketCard as MarketCardComps } from '@augurproject/augur-comps';
+const { LoadingMarketCard } = MarketCardComps;
 const PAGE_LIMIT = 21;
 
 const applyFiltersAndSort = (
@@ -117,6 +117,7 @@ const applyFiltersAndSort = (
         return true;
       }
     );
+
     updatedFilteredMarkets = updatedFilteredMarkets.sort((marketA, marketB) => {
       if (sortBy === TOTAL_VOLUME) {
         return (marketB?.amm?.volumeTotalUSD || 0) >
@@ -170,7 +171,7 @@ const MarketsView = () => {
   const [showFilter, setShowFilter] = useState(false);
 
   useScrollToTopOnMount(page);
-  
+
   const handleFilterSort = () => {
     if (Object.values(markets).length > 0) {
       setLoading(false);
