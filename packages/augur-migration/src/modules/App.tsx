@@ -17,19 +17,9 @@ import {
 const AppBody = () => {
   const { modal } = useAppStatusStore();
   const modalShowing = Object.keys(modal).length !== 0;
+  
   useUserBalances();
   useFinalizeUserTransactions();
-  const { loginAccount, actions: {updateLoginAccount} } = useUserStore();
-
-  // if (loginAccount) {
-  //   const login = loginAccount;
-  //   login.library.provider = loginAccount?.library?.provider.on("block", (blockNumber) => {
-  //     // Emitted on every block change
-  //     console.log(blockNumber);
-  //   });
-  //   updateLoginAccount(login);
-  // }
-  
 
   return (
     <div id="mainContent" className={Styles.App}>
