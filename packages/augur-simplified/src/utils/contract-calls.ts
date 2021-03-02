@@ -1,5 +1,5 @@
 import BigNumber, { BigNumber as BN } from 'bignumber.js'
-import { ParaShareToken, AddLiquidityRate } from '@augurproject/sdk-lite'
+import { ParaShareToken, AddLiquidityRate, marketInvalidityCheck, getGasStation, NetworkId } from '@augurproject/sdk-lite'
 import { TradingDirection, AmmExchange, AmmExchanges, AmmMarketShares, AmmTransaction, Cashes, CurrencyBalance, PositionBalance, TransactionTypes, UserBalances, MarketInfos, LPTokens, EstimateTradeResult, Cash, AddLiquidityBreakdown, LiquidityBreakdown, AmmOutcome } from '../modules/types'
 import ethers from 'ethers';
 import { Contract } from '@ethersproject/contracts'
@@ -14,6 +14,7 @@ import { augurSdkLite } from './augurlitesdk';
 import { ETH, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_NO_OUTCOMES_NAMES, YES_OUTCOME_ID, INVALID_OUTCOME_ID, MARKET_STATUS } from '../modules/constants';
 import { getProviderOrSigner } from '../modules/ConnectAccount/utils';
 import { createBigNumber } from './create-big-number';
+import { PARA_CONFIG } from '../modules/stores/constants';
 
 const isValidPrice = (price: string): boolean => {
   return price !== null && price !== undefined && price !== "0" && price !== "0.00";
@@ -930,6 +931,36 @@ const lastClaimTimestamp = (amm: AmmExchange, isYesOutcome: boolean, account: st
   const shareToken = amm.cash.shareToken;
   const claims = amm.market.claimedProceeds.filter(c => isSameAddress(c.shareToken, shareToken) && isSameAddress(c.user, account) && c.outcome === (isYesOutcome ? YES_OUTCOME_ID : NO_OUTCOME_ID) )
   return claims.reduce((p, c) => Number(c.timestamp) > p ? Number(c.timestamp) : p, 0);
+}
+
+const getIsMarketInvalid = async (amm: AmmExchange, cashs: Cashes): Promise<boolean> => {
+  const gasLevels = await getGasStation(PARA_CONFIG.networkId as NetworkId);
+  const { invalidPool, market, cash } = amm;
+
+  console.log('invalidPool', invalidPool)
+  const invalidOutcomeWeight = new BN(0.1); // get from bPool on AMM when populated
+  const cashOutcomeWeight = new BN(0.9) // get from bPool on AMM when populated
+  const invalidOutcomeLiquidity = new BN(100) // get from bPool on AMM when populated
+  const invalidOutcomePrice = new BN(0.3) // get from bPool on AMM when populated
+  const cashDecimals = new BN(cash.decimals);
+  const reportingFeeDivisor = Number(market.reportingFee);
+  const marketProperties = {
+    endTime: Number(market.endTimestamp),
+    numTicks: Number(market.numTicks),
+    feeDivisor: Number(market.fee)
+  }
+  const isInvalid = marketInvalidityCheck.isMarketInvalid(
+    invalidOutcomeWeight,
+    cashOutcomeWeight,
+    invalidOutcomeLiquidity,
+    invalidOutcomePrice,
+    marketProperties,
+    reportingFeeDivisor,
+    gasLevels,
+    new BN(1e18),
+    cashDecimals)
+
+  return isInvalid;
 }
 
 const getEthBalance = async (provider: Web3Provider, cashes: Cashes, account: string): Promise<CurrencyBalance> => {
