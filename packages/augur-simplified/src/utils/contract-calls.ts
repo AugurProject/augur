@@ -15,6 +15,8 @@ import { ETH, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_NO_OUTCOMES_NAMES, YES_OUTC
 import { getProviderOrSigner } from '../modules/ConnectAccount/utils';
 import { createBigNumber } from './create-big-number';
 import { PARA_CONFIG } from '../modules/stores/constants';
+import ERC20ABI from './ERC20ABI.json';
+import BPoolABI from './BPoolABI.json';
 
 const isValidPrice = (price: string): boolean => {
   return price !== null && price !== undefined && price !== "0" && price !== "0.00";
@@ -494,10 +496,7 @@ export const getUserBalances = async (
 
   const BALANCE_OF = 'balanceOf';
   const MARKET_SHARE_BALANCE = 'balanceOfMarketOutcome';
-
-  // TODO: use amm factory abi when that's available in sdk-lite
-  //const lpAbi = AMMFactoryAbi;
-  const lpAbi = ERC20ABI;
+  const CALC_OUT_GIVEN_IN = "calcOutGivenIn";
   // finalized markets
   const finalizedMarkets = Object.values(markets).filter(m => m.reportingState === MARKET_STATUS.FINALIZED);
   const finalizedMarketIds = finalizedMarkets.map(f => f.marketId);
@@ -522,20 +521,41 @@ export const getUserBalances = async (
   userBalances.ETH = await getEthBalance(provider, cashes, account);
 
   const multicall = new Multicall({ ethersProvider: provider });
-
-  const contractLpBalanceCall: ContractCallContext[] = ammAddresses.map(
-    (address) => ({
-      reference: address,
-      contractAddress: address,
-      abi: lpAbi,
+  const contractLpBalanceCall: ContractCallContext[] = exchanges.reduce(
+    (p, exchange) => [...p,
+    {
+      reference: exchange.id,
+      contractAddress: exchange.id,
+      abi: ERC20ABI,
       calls: [
         {
-          reference: address,
+          reference: exchange.id,
           methodName: BALANCE_OF,
           methodParameters: [account],
         },
       ],
-    })
+    },
+    {
+      reference: `${exchange?.id}-bPool`,
+      contractAddress: exchange?.invalidPool?.id,
+      abi: BPoolABI,
+      calls: [
+        {
+          reference: `${exchange?.id}-bPool`,
+          methodName: CALC_OUT_GIVEN_IN,
+          methodParameters: [
+            exchange?.invalidPool?.invalidBalance,
+            exchange?.invalidPool?.invalidWeight,
+            exchange?.invalidPool?.cashBalance,
+            exchange?.invalidPool?.cashWeight,
+            String(convertDisplayCashAmountToOnChainCashAmount("1", exchange?.cash?.decimals)),
+            exchange?.invalidPool?.swapFee || "0"],
+          context: {
+            ammExchange: exchange?.id
+          }
+        },
+      ],
+    }], []
   );
 
   const contractMarketShareBalanceCall: ContractCallContext[] = marketIds.reduce(
@@ -929,7 +949,7 @@ const accumLpSharesRemovesPrice = (transactions: AmmTransaction[], isYesOutcome:
 
 const lastClaimTimestamp = (amm: AmmExchange, isYesOutcome: boolean, account: string): number => {
   const shareToken = amm.cash.shareToken;
-  const claims = amm.market.claimedProceeds.filter(c => isSameAddress(c.shareToken, shareToken) && isSameAddress(c.user, account) && c.outcome === (isYesOutcome ? YES_OUTCOME_ID : NO_OUTCOME_ID) )
+  const claims = amm.market.claimedProceeds.filter(c => isSameAddress(c.shareToken, shareToken) && isSameAddress(c.user, account) && c.outcome === (isYesOutcome ? YES_OUTCOME_ID : NO_OUTCOME_ID))
   return claims.reduce((p, c) => Number(c.timestamp) > p ? Number(c.timestamp) : p, 0);
 }
 
@@ -949,16 +969,15 @@ const getIsMarketInvalid = async (amm: AmmExchange, cashs: Cashes): Promise<bool
     numTicks: Number(market.numTicks),
     feeDivisor: Number(market.fee)
   }
+  const sellInvalidProfit = new BN(1); // used for testing
+
   const isInvalid = marketInvalidityCheck.isMarketInvalid(
-    invalidOutcomeWeight,
-    cashOutcomeWeight,
+    sellInvalidProfit,
     invalidOutcomeLiquidity,
     invalidOutcomePrice,
     marketProperties,
     reportingFeeDivisor,
-    gasLevels,
-    new BN(1e18),
-    cashDecimals)
+    gasLevels)
 
   return isInvalid;
 }
@@ -1079,121 +1098,3 @@ export const getERC1155ApprovedForAll = async (tokenAddress: string, provider: W
 
   return isApproved;
 }
-
-const ERC20ABI = [
-  {
-    constant: true,
-    inputs: [],
-    name: 'name',
-    outputs: [{ name: '', type: 'string' }],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    constant: false,
-    inputs: [
-      { name: '_spender', type: 'address' },
-      { name: '_value', type: 'uint256' },
-    ],
-    name: 'approve',
-    outputs: [{ name: '', type: 'bool' }],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'totalSupply',
-    outputs: [{ name: '', type: 'uint256' }],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    constant: false,
-    inputs: [
-      { name: '_from', type: 'address' },
-      { name: '_to', type: 'address' },
-      { name: '_value', type: 'uint256' },
-    ],
-    name: 'transferFrom',
-    outputs: [{ name: '', type: 'bool' }],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'decimals',
-    outputs: [{ name: '', type: 'uint8' }],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    constant: true,
-    inputs: [{ name: '_owner', type: 'address' }],
-    name: 'balanceOf',
-    outputs: [{ name: 'balance', type: 'uint256' }],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'symbol',
-    outputs: [{ name: '', type: 'string' }],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    constant: false,
-    inputs: [
-      { name: '_to', type: 'address' },
-      { name: '_value', type: 'uint256' },
-    ],
-    name: 'transfer',
-    outputs: [{ name: '', type: 'bool' }],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    constant: true,
-    inputs: [
-      { name: '_owner', type: 'address' },
-      { name: '_spender', type: 'address' },
-    ],
-    name: 'allowance',
-    outputs: [{ name: '', type: 'uint256' }],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function',
-  },
-  { payable: true, stateMutability: 'payable', type: 'fallback' },
-  {
-    anonymous: false,
-    inputs: [
-      { indexed: true, name: 'owner', type: 'address' },
-      { indexed: true, name: 'spender', type: 'address' },
-      { indexed: false, name: 'value', type: 'uint256' },
-    ],
-    name: 'Approval',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      { indexed: true, name: 'from', type: 'address' },
-      { indexed: true, name: 'to', type: 'address' },
-      { indexed: false, name: 'value', type: 'uint256' },
-    ],
-    name: 'Transfer',
-    type: 'event',
-  },
-];

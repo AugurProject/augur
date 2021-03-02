@@ -1,5 +1,5 @@
+import { GasStation } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
-import { GasStation } from '..';
 import { CLAIM_GAS_COST, DEFAULT_GAS_PRICE_IN_GWEI, INVALID_SWAP_GAS_COST, EULERS_NUMBER, SECONDS_IN_A_YEAR } from '../constants';
 
 // A Market is marked as True in the invalidFilter if the any bid for Invalid on the book would be profitable to take were the market Valid
