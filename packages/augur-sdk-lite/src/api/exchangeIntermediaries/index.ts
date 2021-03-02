@@ -12,11 +12,11 @@ export interface ExchangeContractIntermediary {
   addAMMWithLiquidity(
     market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber,
     ratio: BigNumber, keepLong: Boolean,
-    recipient: string): Promise<TransactionResponse>
+    recipient: string, symbolRoot: string): Promise<TransactionResponse>
 
   rateAddAMMWithLiquidity(
     market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber,
-    ratio: BigNumber, keepLong: Boolean, recipient: string): Promise<BigNumber>
+    ratio: BigNumber, keepLong: Boolean, recipient: string, symbolRoot: string): Promise<BigNumber>
 
   addInitialLiquidity(
     market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber,

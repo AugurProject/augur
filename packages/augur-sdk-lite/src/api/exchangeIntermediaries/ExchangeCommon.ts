@@ -16,6 +16,12 @@ export interface RemoveLiquidityRate {
   long: BigNumber
 }
 
+export const generateSymbols = (root:string) => ([
+  `i${root}`,
+  `n${root}`,
+  `y${root}`
+]);
+
 export abstract class ExchangeCommon {
   readonly factory: ethers.Contract;
   readonly signerOrProvider: SignerOrProvider;

@@ -3,7 +3,7 @@ import { BigNumber } from 'bignumber.js';
 import { ethers } from 'ethers';
 import { WethWrapperForAMMExchangeAbi } from '../../abi/WethWrapperForAMMExchangeAbi';
 import { SignerOrProvider } from '../../constants';
-import { ExchangeCommon } from './ExchangeCommon';
+import {ExchangeCommon, generateSymbols} from './ExchangeCommon';
 import { ExchangeContractIntermediary } from './index';
 
 export class ExchangeETH extends ExchangeCommon implements ExchangeContractIntermediary {
@@ -22,11 +22,11 @@ export class ExchangeETH extends ExchangeCommon implements ExchangeContractInter
     return this.wrapper.callStatic.addLiquidity(market, fee.toFixed(), recipient, { value: cash.toFixed() });
   }
 
-  async rateAddAMMWithLiquidity(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, ratio: BigNumber, keepLong: Boolean, recipient: string): Promise<BigNumber> {
-    return this.wrapper.callStatic.addAMMWithLiquidity(market, fee.toFixed(), ratio.toFixed(), keepLong, recipient);
+  async rateAddAMMWithLiquidity(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, ratio: BigNumber, keepLong: Boolean, recipient: string, symbolRoot:string): Promise<BigNumber> {
+    return this.wrapper.callStatic.addAMMWithLiquidity(market, fee.toFixed(), ratio.toFixed(), keepLong, recipient, generateSymbols(symbolRoot));
   }
 
-  async addAMMWithLiquidity(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, ratio: BigNumber, keepLong: Boolean, recipient: string): Promise<TransactionResponse> {
+  async addAMMWithLiquidity(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, ratio: BigNumber, keepLong: Boolean, recipient: string, symbolRoot:string): Promise<TransactionResponse> {
     return this.wrapper.addAMMWithLiquidity(market, fee.toFixed(), ratio.toFixed(), keepLong, recipient, { value: cash.toFixed() });
   }
 

@@ -127,10 +127,16 @@ export function addAMMScripts(flash: FlashSession) {
         abbr: 'r',
         description: 'Percentage of YES shares for initial liquidity. [0,100]. Defaults to 50.',
       },
+      {
+        name: 'symbol',
+        abbr: 's',
+        description: 'The symbol root to use for the erc20 token names.'
+      }
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const account = this.getAccount().address;
       const market = args.market as string;
+      const symbol = args.symbol as string || 'unknown';
       const fee = typeof args.fee === 'undefined' ? new BigNumber(3) : new BigNumber(args.fee as string);
       const cash = args.cash ? new BigNumber(args.cash as string) : new BigNumber(0);
       const yesPercent = args.ratio ? new BigNumber(args.ratio as string) : new BigNumber(50);
@@ -152,7 +158,8 @@ export function addAMMScripts(flash: FlashSession) {
         fee,
         cash,
         yesPercent,
-        noPercent
+        noPercent,
+        symbol
       );
       const lpTokens = await amm.liquidityTokenBalance(market, paraShareToken, fee, account);
 
@@ -185,11 +192,17 @@ export function addAMMScripts(flash: FlashSession) {
         abbr: 'r',
         description: 'Which address to send LP tokens to. Defaults to you.'
       },
+      {
+        name: 'symbol',
+        abbr: 's',
+        description: 'The symbol root to use for the erc20 token names.'
+      }
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const account = this.getAccount().address;
 
       const market = args.market as string;
+      const symbol = args.symbol as string || 'unknown';
       const fee = typeof args.fee === 'undefined' ? new BigNumber(3) : new BigNumber(args.fee as string);
       const cash = new BigNumber(args.cash as string);
       const recipient = args.recipient as string || account;
@@ -198,7 +211,7 @@ export function addAMMScripts(flash: FlashSession) {
       const amm = ammMiddleware(this.provider, this.config);
 
       const originalLpTokens = await amm.liquidityTokenBalance(market, paraShareToken, fee, account);
-      await amm.doAddLiquidity(recipient, null, true, market, paraShareToken, fee, cash);
+      await amm.doAddLiquidity(recipient, null, true, market, paraShareToken, fee, cash, new BigNumber(50), new BigNumber(50), symbol);
       const currentLpTokens = await amm.liquidityTokenBalance(market, paraShareToken, fee, account);
       const gainedLpTokens = currentLpTokens.minus(originalLpTokens);
 
@@ -236,11 +249,17 @@ export function addAMMScripts(flash: FlashSession) {
         abbr: 't',
         description: 'Which address to send LP tokens to. Defaults to you.'
       },
+      {
+        name: 'symbol',
+        abbr: 's',
+        description: 'The symbol root to use for the erc20 token names.'
+      },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const account = this.getAccount().address;
 
       const market = args.market as string;
+      const symbol = args.symbol as string || 'unknown';
       const fee = typeof args.fee === 'undefined' ? new BigNumber(3) : new BigNumber(args.fee as string);
       const cash = new BigNumber(args.cash as string);
       const yesPercent = args.ratio ? new BigNumber(args.ratio as string) : new BigNumber(50);
@@ -253,7 +272,7 @@ export function addAMMScripts(flash: FlashSession) {
       const amm = ammMiddleware(this.provider, this.config);
 
       const originalLpTokens = await amm.liquidityTokenBalance(market, paraShareToken, fee, account);
-      await amm.doAddLiquidity(recipient, null, true, market, paraShareToken, fee, cash, yesPercent, noPercent);
+      await amm.doAddLiquidity(recipient, null, true, market, paraShareToken, fee, cash, yesPercent, noPercent, symbol);
       const currentLpTokens = await amm.liquidityTokenBalance(market, paraShareToken, fee, account);
       const gainedLpTokens = currentLpTokens.minus(originalLpTokens);
 

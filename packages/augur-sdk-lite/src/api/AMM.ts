@@ -51,7 +51,8 @@ export class AMM {
     fee: BigNumber,
     cash: BigNumber = new BigNumber(0),
     longPercent = new BigNumber(50),
-    shortPercent = new BigNumber(50)
+    shortPercent = new BigNumber(50),
+    symbolRoot: string,
   ): Promise<TransactionResponse> {
     const exchangeAddress = existingAmmAddress || await this.exchangeAddress(market, paraShareToken, fee);
 
@@ -74,7 +75,7 @@ export class AMM {
     }
 
     // Create new AMM with liquidity
-    return this.doCreateExchangeWithLiquidity(market, paraShareToken, fee, cash, longPercent, shortPercent, recipient);
+    return this.doCreateExchangeWithLiquidity(market, paraShareToken, fee, cash, longPercent, shortPercent, recipient, symbolRoot);
   }
 
   async claimMarketsProceeds(_markets:string[], _shareTokens:string[], _shareHolder: string, _fingerprint: string) {
@@ -269,11 +270,12 @@ export class AMM {
     cash: BigNumber,
     longPercent: BigNumber,
     shortPercent: BigNumber,
-    recipient: string
+    recipient: string,
+    symbolRoot: string
   ): Promise<TransactionResponse> {
     const keepLong = AMM.keepLong(longPercent, shortPercent);
     const ratio = AMM.calculateLiquidityRatio(longPercent, shortPercent);
-    return this.intermediary(paraShareToken).addAMMWithLiquidity(market, paraShareToken, fee, cash, ratio, keepLong, recipient);
+    return this.intermediary(paraShareToken).addAMMWithLiquidity(market, paraShareToken, fee, cash, ratio, keepLong, recipient, symbolRoot);
   }
 
   private getRateAddLiquidity(
