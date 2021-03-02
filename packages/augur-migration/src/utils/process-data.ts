@@ -31,7 +31,7 @@ import {
   DAYS_IN_YEAR,
   SELL,
   SEC_IN_DAY,
-} from '../modules/constants';
+} from '@augurproject/augur-comps';
 import { timeSinceTimestamp } from './time-since';
 
 interface GraphMarket {

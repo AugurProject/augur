@@ -1,30 +1,38 @@
 @import (reference) '~assets/styles/shared.less';
 
 .App {
-  background: var(--color-page-background);
+  background: var(--light-background-color);
   display: flex;
   flex: 1;
   height: 100vh;
-  padding: @size-12 @size-16;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto auto 1fr;
 
-  > button {
-    margin-left: auto;
+  > div:first-of-type {
+    border-bottom: @size-1 solid var(--simple-border);
+    padding: @size-16;
+    grid-column: 1 / span 3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    > button {
+      margin-left: auto;
+    }
   }
 
   > span {
     .text-24-bold;
 
     margin: @size-42 0 @size-40;
-    color: var(--color-primary-text);
+    color: var(--simple-primary-text);
     grid-column: 1 / span 3;
     justify-content: center;
     display: flex;
   }
 
-  > div {
+  > div:last-of-type {
     grid-row: 3;
     grid-column: 1 / span 3;
     margin-left: auto;
