@@ -2,10 +2,10 @@ import ApolloClient from 'apollo-boost';
 
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-// import { Cash } from '../types';
+import { Cash } from '../utils/types';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ErrorPolicy, FetchPolicy } from 'apollo-client';
-// import { ETH } from '../constants';
+import { ETH } from '../utils/constants';
 import gql from 'graphql-tag';
 
 
@@ -287,10 +287,11 @@ function augurV2Client(uri) {
       addTypename: false,
     }),
   });
+  // @ts-ignore
   client.defaultOptions = defaultOptions;
   return client;
 }
-// // @ts-ignore
+// @ts-ignore
 export async function getMarketsData(updateHeartbeat) {
   //const cashes = getCashesInfo();
   const clientConfig = getClientConfig();
@@ -429,9 +430,8 @@ async function getPastDayBlockNumber(blockClient) {
   return block;
 }
 
-export const ETH = 'ETH';
-
 const getCashesInfo = () => {
+    // @ts-ignore
     const { networkId, paraDeploys } = PARA_CONFIG;
     const paraValues = Object.values({paraDeploys});
     const keysValues = paraValues.reduce((p, v) => ({ ...p, [v.name]: v }), {});

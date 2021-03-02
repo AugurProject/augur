@@ -8,26 +8,27 @@ import {
 import ethers from 'ethers';
 import { Contract } from '@ethersproject/contracts';
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
-import {
-  convertDisplayCashAmountToOnChainCashAmount,
-  convertDisplayShareAmountToOnChainShareAmount,
-  convertOnChainCashAmountToDisplayCashAmount,
-  convertOnChainSharesToDisplayShareAmount,
-  isSameAddress,
-} from './format-number';
+// import {
+//   convertDisplayCashAmountToOnChainCashAmount,
+//   convertDisplayShareAmountToOnChainShareAmount,
+//   convertOnChainCashAmountToDisplayCashAmount,
+//   convertOnChainSharesToDisplayShareAmount,
+//   isSameAddress,
+// } from './format-number';
 import { augurSdkLite } from './augurlitesdk';
-import {
+import { Utils, Constants, ConnectAccount } from '@augurproject/augur-comps';
+import { PARA_CONFIG } from '../modules/stores/constants';
+import ReputationTokenABI from './ReputationTokenABI.json';
+import LegacyReputationTokenABI from './LegacyReputationTokenABI.json';
+const { createBigNumber, formatter: { convertOnChainCashAmountToDisplayCashAmount } } = Utils;
+const { utils: { getProviderOrSigner } } = ConnectAccount;
+const { 
   ZERO,
   NO_OUTCOME_ID,
   NULL_ADDRESS,
   YES_OUTCOME_ID,
-  getProviderOrSigner,
   TEN_TO_THE_EIGHTEENTH_POWER,
-} from '@augurproject/augur-comps';
-import { createBigNumber } from './create-big-number';
-import { PARA_CONFIG } from '../modules/stores/constants';
-import ReputationTokenABI from './ReputationTokenABI.json';
-import LegacyReputationTokenABI from './LegacyReputationTokenABI.json';
+} = Constants;
 
 const isValidPrice = (price: string): boolean => {
   return (

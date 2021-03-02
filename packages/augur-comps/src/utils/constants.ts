@@ -1,19 +1,19 @@
-// import { MarketTypeName } from '@augurproject/sdk-lite';
-import { createBigNumber } from '../utils/create-big-number';
-// import {
-//   CryptoIcon,
-//   EntertainmentIcon,
-//   FinanceIcon,
-//   MedicalIcon,
-//   PoliticsIcon,
-//   SportsIcon,
-// } from './common/category-icons';
-// import { EthIcon, UsdIcon } from './common/icons';
+import { MarketTypeName } from '@augurproject/sdk-lite';
+import { createBigNumber } from './create-big-number';
+import {
+  CryptoIcon,
+  EntertainmentIcon,
+  FinanceIcon,
+  MedicalIcon,
+  PoliticsIcon,
+  SportsIcon,
+} from '../components/common/category-icons';
+import { EthIcon, UsdIcon } from '../components/common/icons';
 
 // # Market Types
-// export const YES_NO = MarketTypeName.YesNo;
-// export const CATEGORICAL = MarketTypeName.Categorical;
-// export const SCALAR = MarketTypeName.Scalar;
+export const YES_NO = MarketTypeName.YesNo;
+export const CATEGORICAL = MarketTypeName.Categorical;
+export const SCALAR = MarketTypeName.Scalar;
 
 // MAIN VIEWS
 export const MARKET = 'market';
@@ -58,11 +58,11 @@ export const USDC = 'USDC';
 export const SHARES = 'SHARES';
 export const ALL_CURRENCIES = 'All Currencies';
 
-// export const CASH_LABEL_FORMATS = {
-//   ETH: { symbol: 'Ξ', prepend: true, displayDecimals: 4, icon: EthIcon },
-//   USDC: { symbol: '$', prepend: true, displayDecimals: 2, icon: UsdIcon },
-//   SHARES: { symbol: '', prepend: true, displayDecimals: 4, icon: null },
-// };
+export const CASH_LABEL_FORMATS = {
+  ETH: { symbol: 'Ξ', prepend: true, displayDecimals: 4, icon: EthIcon },
+  USDC: { symbol: '$', prepend: true, displayDecimals: 2, icon: UsdIcon },
+  SHARES: { symbol: '', prepend: true, displayDecimals: 4, icon: null },
+};
 
 // Portfolio table views
 export const POSITIONS = 'positions';
@@ -88,14 +88,14 @@ export const FEDERAL_FUNDS = 'federal funds';
 export const REPUSD = 'REP USD';
 export const PRESIDENTIAL_ELECTION = 'electoral college';
 
-// export const POPULAR_CATEGORIES_ICONS = {
-//   [MEDICAL]: MedicalIcon,
-//   [POLITICS]: PoliticsIcon,
-//   [CRYPTO]: CryptoIcon,
-//   [FINANCE]: FinanceIcon,
-//   [SPORTS]: SportsIcon,
-//   [ENTERTAINMENT]: EntertainmentIcon,
-// };
+export const POPULAR_CATEGORIES_ICONS = {
+  [MEDICAL]: MedicalIcon,
+  [POLITICS]: PoliticsIcon,
+  [CRYPTO]: CryptoIcon,
+  [FINANCE]: FinanceIcon,
+  [SPORTS]: SportsIcon,
+  [ENTERTAINMENT]: EntertainmentIcon,
+};
 
 // side bar types
 export const NAVIGATION = 'NAVIGATION';
