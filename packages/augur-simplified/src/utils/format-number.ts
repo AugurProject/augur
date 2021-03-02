@@ -247,7 +247,7 @@ export function formatDai(
           .abs()
           .toFixed(2)
         : v;
-      return `${isNegative ? '-' : ''}$${val}`;
+      return `${isNegative ? '-$' : '$'}${val}`;
     },
     positiveSign: false,
     zeroStyled: false,
