@@ -13,6 +13,7 @@ import { processGraphMarkets } from '../../utils/process-data';
 import { getMarketsData } from '../apollo/client';
 import { augurSdkLite } from '../../utils/augurlitesdk';
 import { getUserBalances } from '../../utils/contract-calls';
+import { Web3Provider } from '@ethersproject/providers'
 
 const isAsync = (obj) =>
   !!obj &&
@@ -88,7 +89,7 @@ export function useCanExitCashPosition(shareToken) {
   const approvedAccount = useRef(null);
   const [canExitPosition, setCanExitPosition] = useState(false);
   const [calledBlocknumber, setCalledBlocknumber] = useState(blocknumber);
-    const {
+  const {
     addresses: { WethWrapperForAMMExchange },
   } = PARA_CONFIG;
 
@@ -159,7 +160,7 @@ export function useCanEnterCashPosition({ name, address }: Cash) {
   return canEnterPosition;
 }
 
-export function useGraphHeartbeat() {
+export function useGraphHeartbeat(library?: Web3Provider) {
   const {
     ammExchanges,
     cashes,
@@ -170,31 +171,31 @@ export function useGraphHeartbeat() {
   useEffect(() => {
     let isMounted = true;
     // get data immediately, then setup interval
-    getMarketsData((graphData, block, errors) => {
+    getMarketsData(async (graphData, block, errors) => {
       isMounted && !!errors
         ? updateGraphHeartbeat(
+          { ammExchanges, cashes, markets },
+          blocknumber,
+          errors
+        )
+        : updateGraphHeartbeat(await processGraphMarkets(graphData, library), block, errors);
+    });
+    const intervalId = setInterval(() => {
+      getMarketsData(async (graphData, block, errors) => {
+        isMounted && !!errors
+          ? updateGraphHeartbeat(
             { ammExchanges, cashes, markets },
             blocknumber,
             errors
           )
-        : updateGraphHeartbeat(processGraphMarkets(graphData), block, errors);
-    });
-    const intervalId = setInterval(() => {
-      getMarketsData((graphData, block, errors) => {
-        isMounted && !!errors
-          ? updateGraphHeartbeat(
-              { ammExchanges, cashes, markets },
-              blocknumber,
-              errors
-            )
-          : updateGraphHeartbeat(processGraphMarkets(graphData), block, errors);
+          : updateGraphHeartbeat(await processGraphMarkets(graphData, library), block, errors);
       });
     }, NETWORK_BLOCK_REFRESH_TIME[PARA_CONFIG.networkId] || NETWORK_BLOCK_REFRESH_TIME[1]);
     return () => {
       isMounted = false;
       clearInterval(intervalId);
     };
-  }, []);
+  }, [library]);
 }
 
 export function useUserBalances() {
@@ -205,7 +206,7 @@ export function useUserBalances() {
   const {
     markets,
     cashes,
-    ammExchanges 
+    ammExchanges
   } = useGraphDataStore();
   useEffect(() => {
     let isMounted = true;
@@ -245,7 +246,7 @@ export function useUserBalances() {
 
 export function useFinalizeUserTransactions() {
   const {
-    blocknumber 
+    blocknumber
   } = useGraphDataStore();
   const {
     loginAccount,

@@ -117,6 +117,7 @@ const applyFiltersAndSort = (
         return true;
       }
     );
+
     updatedFilteredMarkets = updatedFilteredMarkets.sort((marketA, marketB) => {
       if (sortBy === TOTAL_VOLUME) {
         return (marketB?.amm?.volumeTotalUSD || 0) >
@@ -170,7 +171,7 @@ const MarketsView = () => {
   const [showFilter, setShowFilter] = useState(false);
 
   useScrollToTopOnMount(page);
-  
+
   const handleFilterSort = () => {
     if (Object.values(markets).length > 0) {
       setLoading(false);

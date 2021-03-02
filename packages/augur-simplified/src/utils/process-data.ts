@@ -33,6 +33,8 @@ import {
   SEC_IN_DAY,
 } from '../modules/constants';
 import { timeSinceTimestamp } from './time-since';
+import { getMarketInvalidity } from './contract-calls';
+import { Web3Provider } from '@ethersproject/providers'
 interface GraphMarket {
   id: string;
   description: string;
@@ -150,7 +152,7 @@ interface GraphData {
   cashes: { [address: string]: Cash };
 }
 
-export const processGraphMarkets = (graphData: GraphData): ProcessedData => {
+export const processGraphMarkets = async (graphData: GraphData, provider?: Web3Provider): Promise<ProcessedData> => {
   const { markets: rawMarkets, past: rawPastMarkets, cashes } = graphData;
   const keyedMarkets: { [marketId: string]: GraphMarket } = rawMarkets.reduce(
     (group, a) => ({ ...group, [a.id]: a }),
@@ -171,7 +173,7 @@ export const processGraphMarkets = (graphData: GraphData): ProcessedData => {
     if (amms.length === 0) {
       markets[marketId] = shapeMarketInfo(market, null, cashes);
     } else if (amms.length === 1) {
-      const ammExchange = await shapeAmmExchange(
+      const ammExchange = shapeAmmExchange(
         amms[0],
         pastMarket?.amms[0],
         cashes,
@@ -192,7 +194,7 @@ export const processGraphMarkets = (graphData: GraphData): ProcessedData => {
       Object.keys(marketAmms).forEach(async (ammId) => {
         const amm = marketAmms[ammId];
         const pastAmm = pastMarketAmms[ammId];
-        const newAmmExchange = await shapeAmmExchange(amm, pastAmm, cashes, market);
+        const newAmmExchange = shapeAmmExchange(amm, pastAmm, cashes, market);
         const ammMarket = shapeMarketInfo(market, newAmmExchange, cashes);
         markets[`${marketId}-${ammId}`] = ammMarket;
         ammExchanges[newAmmExchange.id] = newAmmExchange;
@@ -201,7 +203,15 @@ export const processGraphMarkets = (graphData: GraphData): ProcessedData => {
     }
   });
 
-  return { cashes, markets, ammExchanges, errors: null };
+  let uMarkets = markets;
+  let uAmmExchanges = ammExchanges;
+  if (provider) {
+    const result = await getMarketInvalidity(provider, markets, ammExchanges, cashes);
+    uMarkets = result.markets;
+    uAmmExchanges = result.ammExchanges;
+  }
+
+  return { cashes, markets: uMarkets, ammExchanges: uAmmExchanges, errors: null };
 };
 
 const shapeMarketInfo = (
@@ -283,12 +293,12 @@ const shapeOutcomes = (reportingState: string, graphOutcomes: GraphMarketOutcome
     isWinner: Boolean(Number(g.payoutNumerator)),
   }));
 
-const shapeAmmExchange = async (
+const shapeAmmExchange = (
   amm: GraphAmmExchange,
   pastAmm: GraphAmmExchange,
   cashes: Cashes,
   market: GraphMarket
-): Promise<AmmExchange> => {
+): AmmExchange => {
   const marketId = market.id;
   const outcomes = shapeOutcomes(null, market.outcomes);
   const cash: Cash = cashes[amm.shareToken.cash.id];
