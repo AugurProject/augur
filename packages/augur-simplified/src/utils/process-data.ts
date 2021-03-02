@@ -33,9 +33,6 @@ import {
   SEC_IN_DAY,
 } from '../modules/constants';
 import { timeSinceTimestamp } from './time-since';
-import { getGasStation, marketInvalidityCheck, NetworkId } from '@augurproject/sdk-lite';
-import { PARA_CONFIG } from '../modules/stores/constants';
-
 interface GraphMarket {
   id: string;
   description: string;
@@ -117,6 +114,7 @@ interface GraphInvalidPool {
   cashWeight: string;
   invalidBalance: string;
   invalidWeight: string;
+  swapFee: string;
 }
 interface GraphAmmExchange {
   id: string;
@@ -257,6 +255,7 @@ const shapeMarketInfo = (
 
   return {
     marketId: market.id,
+    numTicks: market.numTicks,
     description: market.description,
     longDescription: extraInfo.longDescription,
     categories: extraInfo?.categories || [],
