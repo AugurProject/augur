@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import Styles from './migrate.styles.less';
-import { PrimaryButton, ExternalLinkButton, formatRep } from '@augurproject/augur-comps';
+import {
+  PrimaryButton,
+  ExternalLinkButton,
+  formatRep,
+} from '@augurproject/augur-comps';
 import { useAppStatusStore } from '../stores/app-status';
 import { ConnectAccountButton } from '../shared/connect-account-button';
 import {
@@ -14,13 +18,16 @@ export const Migrate = () => {
   const { isLogged } = useAppStatusStore();
   const { loginAccount, balances } = useUserStore();
   const [isApproved, setIsApproved] = useState(false);
-  loginAccount &&
-    isRepV2Approved(loginAccount.library, loginAccount.account).then(
-      (isApproved) => {
-        setIsApproved(isApproved);
-      }
-    );
-  console.log(isApproved);
+  useEffect(() => {
+    loginAccount &&
+      isRepV2Approved(loginAccount.library, loginAccount.account).then(
+        (isApproved) => {
+          setIsApproved(isApproved);
+        }
+      );
+    console.log(isApproved);
+  }, [loginAccount]);
+
   return (
     <div className={Styles.Migrate}>
       <span>
@@ -41,12 +48,14 @@ export const Migrate = () => {
         <div>
           <PrimaryButton
             text="Approve"
+            disabled={isApproved}
             action={() =>
               convertV1ToV2Approve(loginAccount.library, loginAccount.account)
             }
           />{' '}
           <PrimaryButton
             text="Migrate"
+            disabled={!isApproved}
             action={() => {
               convertV1ToV2(loginAccount.library, loginAccount.account);
             }}

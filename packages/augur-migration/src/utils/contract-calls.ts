@@ -394,7 +394,7 @@ export async function convertV1ToV2Approve(
     const { addresses } = PARA_CONFIG;
     const legacyRep = addresses.LegacyReputationToken;
     const contract = getLegacyReputationTokenContract(provider, account, legacyRep);
-    response = await contract.approve(account, APPROVAL_AMOUNT);
+    response = await contract.approve(kovanRepAddress, APPROVAL_AMOUNT);
   } catch (e) {
     console.error(e);
   }
