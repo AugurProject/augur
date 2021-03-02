@@ -41,7 +41,7 @@ export const Migrate = () => {
       (transaction) =>
         transaction.type === MIGRATE && transaction.status === TX_STATUS.PENDING
     ) !== undefined;
-    
+
   return (
     <div className={Styles.Migrate}>
       <span>
@@ -62,7 +62,7 @@ export const Migrate = () => {
       {isLogged ? (
         <div>
           <PrimaryButton
-            text="Approve"
+            text={isApproved ? 'Approved' : 'Approve'}
             disabled={isApproved !== null && isApproved}
             pending={approvalPending}
             action={() =>
