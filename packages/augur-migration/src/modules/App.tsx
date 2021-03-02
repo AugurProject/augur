@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import '../assets/styles/shared.less';
 import { Logo, ConnectAccount } from '@augurproject/augur-comps';
 import Styles from './App.styles.less';
@@ -14,33 +14,62 @@ import {
   useFinalizeUserTransactions,
   useUpdateApprovals,
 } from './stores/utils';
+import { PARA_CONFIG } from './stores/constants';
+import { networkSettings } from './constants';
 
 const { ConnectAccountProvider } = ConnectAccount;
 
-const kovanTime = 3000; 
+function checkIsMobile(setIsMobile) {
+  const isMobile =
+    (
+      window.getComputedStyle(document.body).getPropertyValue('--is-mobile') ||
+      ''
+    ).indexOf('true') !== -1;
+  setIsMobile(isMobile);
+}
+
+function useHandleResize() {
+  const {
+    actions: { setIsMobile },
+  } = useAppStatusStore();
+  useEffect(() => {
+    const handleResize = () => checkIsMobile(setIsMobile);
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+}
 
 const AppBody = () => {
-  const { modal, actions: { setTimestamp } } = useAppStatusStore();
+  const {
+    isMobile,
+    modal,
+    actions: { setTimestamp },
+  } = useAppStatusStore();
   const modalShowing = Object.keys(modal).length !== 0;
-  
+
   useUserBalances();
   useFinalizeUserTransactions();
   useUpdateApprovals();
+  useHandleResize();
+  const { networkId } = PARA_CONFIG;
 
   useEffect(() => {
-      const timer = window.setInterval(() => {
-        setTimestamp(Date.now() + 1);
-      }, kovanTime);
-      return () => {
-        window.clearInterval(timer);
-      };
+    const timer = window.setInterval(() => {
+      setTimestamp(Date.now() + 1);
+    }, networkSettings[networkId].updateTime);
+    return () => {
+      window.clearInterval(timer);
+    };
   }, []);
 
   return (
     <div id="mainContent" className={Styles.App}>
       {modalShowing && <ModalView />}
       <div>
-        <Logo />
+        <Logo isMobile={isMobile} />
         <ConnectAccountButton />
       </div>
 
@@ -54,11 +83,11 @@ function App() {
   return (
     <HashRouter hashType="hashbang">
       <ConnectAccountProvider>
-          <UserProvider>
-            <AppStatusProvider>
-              <AppBody />
-            </AppStatusProvider>
-          </UserProvider>
+        <UserProvider>
+          <AppStatusProvider>
+            <AppBody />
+          </AppStatusProvider>
+        </UserProvider>
       </ConnectAccountProvider>
     </HashRouter>
   );
