@@ -48,7 +48,7 @@ export const DEFAULT_USER_STATE: UserState = {
     rep: '0',
     legacyRep: '0',
   },
-  isApproved: false,
+  isApproved: null,
   loginAccount: null,
   seenPositionWarnings: {},
   transactions: [],
@@ -129,3 +129,7 @@ export const NETWORK_BLOCK_REFRESH_TIME = {
   5: 5000,
   42: 5000,
 };
+
+// transaction types
+export const MIGRATE = 'MIGRATE';
+export const APPROVE = 'APPROVE';

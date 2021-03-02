@@ -1168,6 +1168,7 @@ export interface TransactionDetails {
   receipt?: any;
   lastCheckedBlockNumber?: number;
   addedTime: number;
+  type?: string;
   confirmedTime?: number;
   timestamp?: number;
   seen?: boolean;
