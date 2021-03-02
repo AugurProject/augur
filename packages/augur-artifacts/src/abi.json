@@ -24101,8 +24101,8 @@
 					"type": "address"
 				},
 				{
-					"internalType": "contract WrappedShareTokenFactoryFactory",
-					"name": "_wrappedShareTokenFactoryFactory",
+					"internalType": "contract WrappedShareTokenFactory",
+					"name": "_wrappedShareTokenFactory",
 					"type": "address"
 				}
 			],
@@ -53112,18 +53112,6 @@
 	],
 	"WrappedShareTokenFactory": [
 		{
-			"inputs": [
-				{
-					"internalType": "contract IParaShareToken",
-					"name": "_paraShareToken",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "constructor"
-		},
-		{
 			"anonymous": false,
 			"inputs": [
 				{
@@ -53158,6 +53146,11 @@
 			"constant": true,
 			"inputs": [
 				{
+					"internalType": "contract IParaShareToken",
+					"name": "_shareToken",
+					"type": "address"
+				},
+				{
 					"internalType": "uint256",
 					"name": "_tokenId",
 					"type": "uint256"
@@ -53184,6 +53177,11 @@
 			"constant": false,
 			"inputs": [
 				{
+					"internalType": "contract IParaShareToken",
+					"name": "_shareToken",
+					"type": "address"
+				},
+				{
 					"internalType": "uint256",
 					"name": "_tokenId",
 					"type": "uint256"
@@ -53209,6 +53207,11 @@
 		{
 			"constant": false,
 			"inputs": [
+				{
+					"internalType": "contract IParaShareToken",
+					"name": "_shareToken",
+					"type": "address"
+				},
 				{
 					"internalType": "uint256[]",
 					"name": "_tokenIds",
@@ -53241,6 +53244,11 @@
 					"type": "address"
 				},
 				{
+					"internalType": "contract IParaShareToken",
+					"name": "_shareToken",
+					"type": "address"
+				},
+				{
 					"internalType": "string[]",
 					"name": "_symbols",
 					"type": "string[]"
@@ -53266,6 +53274,11 @@
 		{
 			"constant": false,
 			"inputs": [
+				{
+					"internalType": "contract IParaShareToken",
+					"name": "_shareToken",
+					"type": "address"
+				},
 				{
 					"internalType": "contract IMarket",
 					"name": "_market",
@@ -53300,23 +53313,13 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [],
-			"name": "shareToken",
-			"outputs": [
-				{
-					"internalType": "contract IParaShareToken",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
+				{
+					"internalType": "contract IParaShareToken",
+					"name": "_shareToken",
+					"type": "address"
+				},
 				{
 					"internalType": "uint256",
 					"name": "_tokenId",
@@ -53337,6 +53340,11 @@
 		{
 			"constant": false,
 			"inputs": [
+				{
+					"internalType": "contract IParaShareToken",
+					"name": "_shareToken",
+					"type": "address"
+				},
 				{
 					"internalType": "uint256[]",
 					"name": "_tokenIds",
@@ -53363,6 +53371,11 @@
 			"constant": false,
 			"inputs": [
 				{
+					"internalType": "contract IParaShareToken",
+					"name": "_shareToken",
+					"type": "address"
+				},
+				{
 					"internalType": "uint256",
 					"name": "_tokenId",
 					"type": "uint256"
@@ -53387,6 +53400,11 @@
 		{
 			"constant": false,
 			"inputs": [
+				{
+					"internalType": "contract IParaShareToken",
+					"name": "_shareToken",
+					"type": "address"
+				},
 				{
 					"internalType": "uint256[]",
 					"name": "_tokenIds",
@@ -53418,6 +53436,11 @@
 			"constant": false,
 			"inputs": [
 				{
+					"internalType": "contract IParaShareToken",
+					"name": "_shareToken",
+					"type": "address"
+				},
+				{
 					"internalType": "uint256",
 					"name": "_tokenId",
 					"type": "uint256"
@@ -53440,110 +53463,6 @@
 			],
 			"name": "wrapShares",
 			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				},
-				{
-					"internalType": "string",
-					"name": "",
-					"type": "string"
-				}
-			],
-			"name": "wrappers",
-			"outputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		}
-	],
-	"WrappedShareTokenFactoryFactory": [
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": false,
-					"internalType": "contract WrappedShareTokenFactory",
-					"name": "_wrappedShareTokenFactory",
-					"type": "address"
-				}
-			],
-			"name": "WrappedShareTokenFactoryCreated",
-			"type": "event"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "contract IParaShareToken",
-					"name": "_shareToken",
-					"type": "address"
-				}
-			],
-			"name": "createWrappedShareTokenFactory",
-			"outputs": [
-				{
-					"internalType": "contract WrappedShareTokenFactory",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"name": "factories",
-			"outputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "contract IParaShareToken",
-					"name": "_shareToken",
-					"type": "address"
-				}
-			],
-			"name": "getOrCreateWrappedShareTokenFactory",
-			"outputs": [
-				{
-					"internalType": "contract WrappedShareTokenFactory",
-					"name": "",
-					"type": "address"
-				}
-			],
 			"payable": false,
 			"stateMutability": "nonpayable",
 			"type": "function"

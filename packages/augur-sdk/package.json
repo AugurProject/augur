@@ -87,7 +87,7 @@
     "@types/node": "10.14.18",
     "@types/node-fetch": "2.5.1",
     "@types/web3": "1.0.19",
-    "ganache-core": "2.9.1",
+    "ganache-core": "2.13.2",
     "jest": "24.9.0",
     "ts-jest": "24.0.2",
     "ts-node": "9.0.0",

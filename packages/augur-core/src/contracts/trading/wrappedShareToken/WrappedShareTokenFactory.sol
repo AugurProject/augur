@@ -14,33 +14,23 @@ import 'ROOT/para/interfaces/IParaShareToken.sol';
 contract WrappedShareTokenFactory {
     using ContractExists for address;
 
-    IParaShareToken public shareToken;
-
-    mapping(uint256 => mapping(string => address)) public wrappers;
-
     event WrappedShareTokenCreated(IParaShareToken indexed shareToken, uint256 indexed tokenId, address tokenAddress, string symbol);
-
-    /**@dev sets value for {shareToken}
-     * @param _paraShareToken address of shareToken associated with a augur universe
-     */
-    constructor(IParaShareToken _paraShareToken) public {
-        shareToken = _paraShareToken;
-    }
 
     /**@dev creates new ERC20 wrappers for a outcome of a market
      *@param _tokenId token id associated with a outcome of a market
      *@param _symbol symbol for the ERC20 wrapper
      */
     function getOrCreateWrappedShareToken(
+        IParaShareToken _shareToken,
         uint256 _tokenId,
         string memory _symbol
     ) public returns (WrappedShareToken) {
-        address _wrappedShareTokenAddress = calculateShareTokenAddress(_tokenId, _symbol);
+        address _wrappedShareTokenAddress = calculateShareTokenAddress(_shareToken, _tokenId, _symbol);
         if(_wrappedShareTokenAddress.exists()) {
             return WrappedShareToken(_wrappedShareTokenAddress);
         }
         {
-            bytes32 _salt = keccak256(abi.encodePacked(_tokenId, _symbol));
+            bytes32 _salt = keccak256(abi.encodePacked(_shareToken, _tokenId, _symbol));
             bytes memory _code = abi.encodePacked(type(WrappedShareToken).creationCode);
             assembly {
                 _wrappedShareTokenAddress := create2(0x0, add(_code, 0x20), mload(_code), _salt)
@@ -50,25 +40,26 @@ contract WrappedShareTokenFactory {
 
         WrappedShareToken _wrappedShareToken = WrappedShareToken(_wrappedShareTokenAddress);
         _wrappedShareToken.initialize(
-            shareToken,
+            _shareToken,
             _tokenId,
             _symbol
         );
 
-        emit WrappedShareTokenCreated(shareToken, _tokenId, _wrappedShareTokenAddress, _symbol);
+        emit WrappedShareTokenCreated(_shareToken, _tokenId, _wrappedShareTokenAddress, _symbol);
 
         return _wrappedShareToken;
     }
 
     /**@dev creates new ERC20 wrappers for multiple tokenIds*/
     function getOrCreateWrappedShareTokens(
+        IParaShareToken _shareToken,
         uint256[] memory _tokenIds,
         string[] memory _symbols
     ) public returns (WrappedShareToken[] memory _wrappedShareTokens){
         require(_tokenIds.length == _symbols.length, "Each token must have one symbol");
         _wrappedShareTokens = new WrappedShareToken[](_tokenIds.length);
         for (uint256 _i = 0; _i < _tokenIds.length; _i++) {
-            _wrappedShareTokens[_i] = getOrCreateWrappedShareToken(_tokenIds[_i], _symbols[_i]);
+            _wrappedShareTokens[_i] = getOrCreateWrappedShareToken(_shareToken, _tokenIds[_i], _symbols[_i]);
         }
     }
 
@@ -81,13 +72,14 @@ contract WrappedShareTokenFactory {
      * @param _amount  amount of tokens to be wrapped
      */
     function wrapShares(
+        IParaShareToken _shareToken,
         uint256 _tokenId,
         string memory _symbol,
         address _account,
         uint256 _amount
     ) public {
-        WrappedShareToken _wrappedShareToken = WrappedShareToken(getOrCreateWrappedShareToken(_tokenId, _symbol));
-        shareToken.unsafeTransferFrom(
+        WrappedShareToken _wrappedShareToken = getOrCreateWrappedShareToken(_shareToken, _tokenId, _symbol);
+        _shareToken.unsafeTransferFrom(
             msg.sender,
             address(_wrappedShareToken),
             _tokenId,
@@ -105,36 +97,38 @@ contract WrappedShareTokenFactory {
      * @param _symbol The humab readable representation of the token
      * @param _amount amount of tokens to be unwrapped
      */
-    function unwrapShares(uint256 _tokenId, string memory _symbol, uint256 _amount) public {
-        WrappedShareToken WrappedShareToken = WrappedShareToken(calculateShareTokenAddress(_tokenId, _symbol));
+    function unwrapShares(IParaShareToken _shareToken, uint256 _tokenId, string memory _symbol, uint256 _amount) public {
+        WrappedShareToken WrappedShareToken = WrappedShareToken(calculateShareTokenAddress(_shareToken, _tokenId, _symbol));
         WrappedShareToken.unwrapShares(msg.sender, msg.sender, _amount);
     }
 
-    function unwrapAllShares(uint256 _tokenId, string memory _symbol) public {
-        WrappedShareToken WrappedShareToken = WrappedShareToken(calculateShareTokenAddress(_tokenId, _symbol));
+    function unwrapAllShares(IParaShareToken _shareToken, uint256 _tokenId, string memory _symbol) public {
+        WrappedShareToken WrappedShareToken = WrappedShareToken(calculateShareTokenAddress(_shareToken, _tokenId, _symbol));
         WrappedShareToken.unwrapShares(msg.sender, msg.sender, WrappedShareToken.balanceOf(msg.sender));
     }
 
     /**@dev wraps multiple tokens */
     function wrapMultipleShares(
+        IParaShareToken _shareToken,
         uint256[] memory _tokenIds,
         string[] memory _symbols,
         address _account,
         uint256[] memory _amounts
     ) public {
         for (uint256 i = 0; i < _tokenIds.length; i++) {
-            wrapShares(_tokenIds[i], _symbols[i], _account, _amounts[i]);
+            wrapShares(_shareToken, _tokenIds[i], _symbols[i], _account, _amounts[i]);
         }
     }
 
     /**@dev unwraps multiple tokens */
     function unwrapMultipleShares(
+        IParaShareToken _shareToken,
         uint256[] memory _tokenIds,
         string[] memory _symbols,
         uint256[] memory _amounts
     ) public {
         for (uint256 i = 0; i < _tokenIds.length; i++) {
-            unwrapShares(_tokenIds[i], _symbols[i], _amounts[i]);
+            unwrapShares(_shareToken, _tokenIds[i], _symbols[i], _amounts[i]);
         }
     }
 
@@ -144,18 +138,20 @@ contract WrappedShareTokenFactory {
      * @param _amount The number of complete sets to purchase
      * @return Bool True
      */
-    function publicBuyCompleteSets(IMarket _market, string[] calldata _symbols, uint256 _amount) external returns (bool) {
-        if(!shareToken.isMarketInitialized(_market)) {
-            shareToken.initializeMarket(_market);
+    function publicBuyCompleteSets(IMarket _market, IParaShareToken _shareToken, string[] calldata _symbols, uint256 _amount) external returns (bool) {
+        if(!_shareToken.isMarketInitialized(_market)) {
+            _shareToken.initializeMarket(_market);
         }
         require(_market.getNumberOfOutcomes() == _symbols.length, "Must pass in one symbol name for each outcome");
 
-        shareToken.buyCompleteSets(_market, address(this), _amount);
+        _shareToken.cash().approve(_shareToken.augur(), _amount * _market.getNumTicks());
+        _shareToken.cash().transferFrom(msg.sender, address(this), _amount * _market.getNumTicks());
+        _shareToken.publicBuyCompleteSets(_market, _amount);
 
         for (uint256 _i = 0; _i < _symbols.length; _i++) {
-            uint256 _tokenId = TokenId.getTokenId(_market, _i);
-            WrappedShareToken _wrappedShareToken = WrappedShareToken(getOrCreateWrappedShareToken(_tokenId, _symbols[_i]));
-            shareToken.unsafeTransferFrom(
+            uint256 _tokenId = _shareToken.getTokenId(_market, _i);
+            WrappedShareToken _wrappedShareToken = getOrCreateWrappedShareToken(_shareToken, _tokenId, _symbols[_i]);
+            _shareToken.unsafeTransferFrom(
                 address(this),
                 address(_wrappedShareToken),
                 _tokenId,
@@ -163,6 +159,8 @@ contract WrappedShareTokenFactory {
             );
             _wrappedShareToken.trustedWrapShares(msg.sender, _amount);
         }
+
+        return true;
     }
 
     /**
@@ -171,17 +169,17 @@ contract WrappedShareTokenFactory {
      * @param _symbols The token symbols for which you are selling, e.g yOutcome, nOutcome, iOutcome
      * @param _amount the number of complete sets to sell
      */
-    function publicSellCompleteSets(IMarket _market, string[] calldata _symbols, uint256 _amount) external returns (uint256 _creatorFee, uint256 _reportingFee) {
-        require(shareToken.isMarketInitialized(_market));
+    function publicSellCompleteSets(IParaShareToken _shareToken, IMarket _market, string[] calldata _symbols, uint256 _amount) external returns (uint256 _creatorFee, uint256 _reportingFee) {
+        require(_shareToken.isMarketInitialized(_market));
         require(_market.getNumberOfOutcomes() == _symbols.length, "Must pass in one symbol name for each outcome");
 
         for (uint256 _i = 0; _i < _symbols.length; _i++) {
             uint256 _tokenId = TokenId.getTokenId(_market, _i);
-            WrappedShareToken _wrappedShareToken = WrappedShareToken(getOrCreateWrappedShareToken(_tokenId, _symbols[_i]));
+            WrappedShareToken _wrappedShareToken = WrappedShareToken(getOrCreateWrappedShareToken(_shareToken, _tokenId, _symbols[_i]));
             _wrappedShareToken.unwrapShares(msg.sender, address(this), _amount);
         }
 
-        return shareToken.sellCompleteSets(_market, address(this), msg.sender, _amount, bytes32(0));
+        return _shareToken.sellCompleteSets(_market, address(this), msg.sender, _amount, bytes32(0));
     }
 
     /**@notice get the address for a particular WrappedShareToken
@@ -190,9 +188,9 @@ contract WrappedShareTokenFactory {
      *@param _symbol symbol for the ERC20 wrapper
      *@param decimals decimals for the ERC20 wrapper
      */
-    function calculateShareTokenAddress(uint256 _tokenId, string memory _symbol) public view returns (address) {
+    function calculateShareTokenAddress(IParaShareToken _shareToken, uint256 _tokenId, string memory _symbol) public view returns (address) {
         bytes1 _const = 0xff;
-        bytes32 _salt = keccak256(abi.encodePacked(_tokenId, _symbol));
+        bytes32 _salt = keccak256(abi.encodePacked(_shareToken, _tokenId, _symbol));
         return address(uint160(uint256(keccak256(abi.encodePacked(
             _const,
             address(this),
@@ -200,5 +198,4 @@ contract WrappedShareTokenFactory {
             keccak256(abi.encodePacked(type(WrappedShareToken).creationCode))
         )))));
     }
-
 }

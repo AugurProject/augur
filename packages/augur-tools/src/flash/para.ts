@@ -84,7 +84,7 @@ export function addParaScripts(flash: FlashSession) {
         compilerOutput
       );
 
-      const factory = await contractDeployer.uploadWrappedShareTokenFactoryFactory();
+      const factory = await contractDeployer.uploadWrappedShareTokenFactory();
       const addresses: Partial<ContractAddresses> = {
         WrappedShareTokenFactoryFactory: factory
       }

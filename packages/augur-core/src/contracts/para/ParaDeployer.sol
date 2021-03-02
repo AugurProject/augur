@@ -43,7 +43,6 @@ contract ParaDeployer is Ownable {
         ZEROX_TRADE,
         INITIALIZE,
         GENESIS_UNIVERSE,
-        WRAPPED_SHARE_TOKEN_FACTORY,
         FINISHED
     }
 
@@ -137,8 +136,6 @@ contract ParaDeployer is Ownable {
             initialize(_token);
         } else if (_tokenProgress == DeployProgress.GENESIS_UNIVERSE) {
             createGenesisUniverse(_token);
-        } else if (_tokenProgress == DeployProgress.WRAPPED_SHARE_TOKEN_FACTORY) {
-
         }
         paraDeployProgress[_token] = DeployProgress(uint256(_tokenProgress) + 1);
 

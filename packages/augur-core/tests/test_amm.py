@@ -2,7 +2,8 @@
 
 from tests.reporting_utils import proceedToInitialReporting
 from pytest import raises, fixture, mark, skip
-from utils import nullAddress, stringToBytes
+from utils import nullAddress, stringToBytes, PrintGasUsed
+
 
 def calc_ratio(yesPercent):
     noPercent = 1 - yesPercent
@@ -20,12 +21,6 @@ BALANCER_POOL_MIN = 10 ** 6
 TOTAL_BALANCER_POOL_MIN = 2 * BALANCER_POOL_MIN
 
 SYMBOLS = ["Invalid", "No", "Yes"]
-
-@fixture
-def nexus(sessionFixture, shareToken):
-    nexus = sessionFixture.contracts['ERC20Proxy1155Nexus']
-    shareToken.setApprovalForAll(nexus.address, True)
-    return nexus
 
 @fixture
 def factory(sessionFixture):
@@ -46,7 +41,26 @@ def test_amm_calc_addr(contractsFixture, factory, shareToken, market):
     address = factory.calculateAMMAddress(market.address, shareToken.address, FEE)
     assert address != nullAddress
 
-def test_amm_add_additional_liquidity(contractsFixture, market, cash, shareToken, factory, nexus, account0, account1):
+def test_calc_gas_costs(contractsFixture, market, shareToken, factory, account0, cash):
+    if not contractsFixture.paraAugur:
+        return skip("Test is only for para augur")
+
+    numticks = market.getNumTicks()
+    cost = 200 * TOTAL_BALANCER_POOL_MIN * numticks
+
+    cash.faucet(cost)
+    cash.approve(factory.address, 2**256-1)
+
+    ammAddress = ""
+    with PrintGasUsed(contractsFixture, "createAMM", 0):
+        ammAddress = factory.createAMM(market.address, shareToken.address, FEE)
+
+    cash.transfer(factory.address, cost)
+
+    with PrintGasUsed(contractsFixture, "createBPool", 0):
+        factory.createBPool(ammAddress, shareToken.address, market.address, FEE, account0, SYMBOLS)
+
+def test_amm_add_additional_liquidity(contractsFixture, market, cash, shareToken, factory, account0, account1):
     if not contractsFixture.paraAugur:
         return skip("Test is only for para augur")
 

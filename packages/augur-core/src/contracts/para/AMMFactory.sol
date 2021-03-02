@@ -10,7 +10,7 @@ import 'ROOT/para/interfaces/IAMMExchange.sol';
 import 'ROOT/para/interfaces/IParaShareToken.sol';
 import 'ROOT/balancer/BFactory.sol';
 import 'ROOT/balancer/BPool.sol';
-import 'ROOT/trading/wrappedShareToken/WrappedShareTokenFactoryFactory.sol';
+import 'ROOT/trading/wrappedShareToken/WrappedShareTokenFactory.sol';
 import 'ROOT/trading/wrappedShareToken/WrappedShareToken.sol';
 
 contract AMMFactory is IAMMFactory, CloneFactory2 {
@@ -18,16 +18,16 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
 
     IAMMExchange internal proxyToClone;
     BFactory internal bFactory;
-    WrappedShareTokenFactoryFactory internal wrappedShareTokenFactoryFactory;
+    WrappedShareTokenFactory internal wrappedShareTokenFactory;
     mapping (address => address) public balancerPools;
 
     event AMMCreated(IAMMExchange amm, IMarket market, IParaShareToken shareToken, uint256 fee, BPool bPool);
     event BPoolCreated(WrappedShareToken wrappedShareToken);
 
-    constructor(address _proxyToClone, BFactory _bFactory, WrappedShareTokenFactoryFactory _wrappedShareTokenFactoryFactory) public {
+    constructor(address _proxyToClone, BFactory _bFactory, WrappedShareTokenFactory _wrappedShareTokenFactory) public {
         bFactory = _bFactory;
         proxyToClone = IAMMExchange(_proxyToClone);
-        wrappedShareTokenFactoryFactory = _wrappedShareTokenFactoryFactory;
+        wrappedShareTokenFactory = _wrappedShareTokenFactory;
     }
 
     function addLiquidity(
@@ -61,7 +61,6 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         uint256 _poolTokensToSell,
         string[] memory _symbols
     ) public returns (uint256 _shortShare, uint256 _longShare) {
-        WrappedShareTokenFactory wrappedShareTokenFactory = wrappedShareTokenFactoryFactory.getOrCreateWrappedShareTokenFactory(_para);
         address _ammAddress = exchanges[address(_market)][address(_para)][_fee];
         IAMMExchange _amm = IAMMExchange(_ammAddress);
 
@@ -96,7 +95,7 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         _bPool.transferFrom(msg.sender, address(this), _lpTokenBalance);
         _bPool.exitPool(_lpTokenBalance, _minAmountsOut);
 
-        wrappedShareTokenFactory.unwrapAllShares(_para.getTokenId(_market, 0), _symbol);
+        wrappedShareTokenFactory.unwrapAllShares(_para, _para.getTokenId(_market, 0), _symbol);
     }
 
     function sendAllShares(
@@ -179,8 +178,6 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         address _recipient,
         string[] memory _symbols
     ) internal {
-        WrappedShareTokenFactory wrappedShareTokenFactory = wrappedShareTokenFactoryFactory.getOrCreateWrappedShareTokenFactory(_para);
-
         uint _poolCashBalance = _bPool.getBalance(address(_para.cash()));
         uint _poolLPTokenTotalSupply = _bPool.totalSupply();
 
@@ -191,7 +188,7 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
 
         _para.publicBuyCompleteSets(_market, _setsToBuy);
 
-        wrappedShareTokenFactory.wrapShares(_para.getTokenId(_market, 0), _symbols[0], address(this), _setsToBuy);
+        wrappedShareTokenFactory.wrapShares(_para, _para.getTokenId(_market, 0), _symbols[0], address(this), _setsToBuy);
 
         uint256[] memory _maxAmountsIn = new uint256[](2);
         // The max amount is constrained by the _lpTokenOut.
@@ -230,8 +227,7 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
 
         uint256 _invalidTokenId = _para.getTokenId(_market, 0);
 
-        WrappedShareTokenFactory wrappedShareTokenFactory = wrappedShareTokenFactoryFactory.getOrCreateWrappedShareTokenFactory(_para);
-        WrappedShareToken wrappedShareToken = wrappedShareTokenFactory.getOrCreateWrappedShareToken(_invalidTokenId, _symbols[0]);
+        WrappedShareToken wrappedShareToken = wrappedShareTokenFactory.getOrCreateWrappedShareToken(_para, _invalidTokenId, _symbols[0]);
 
         _para.setApprovalForAll(address(wrappedShareTokenFactory), true);
         wrappedShareToken.approve(address(_bPool), 2**256-1);
@@ -247,7 +243,8 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         // Setup bPool....
         uint256 _setsToBuy = MIN_BALANCE.div(_numTicks);
         _para.publicBuyCompleteSets(_market, _setsToBuy);
-        wrappedShareTokenFactory.wrapShares(_invalidTokenId, _symbols[0], address(this), _setsToBuy);
+
+        wrappedShareTokenFactory.wrapShares(_para, _invalidTokenId, _symbols[0], address(this), _setsToBuy);
 
         // Send cash to balancer bPool
         // Pool weight == 90%
@@ -259,6 +256,9 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
 
         _bPool.finalize();
 
+
+
+
         uint256[] memory _tokenIds = new uint256[](2);
         _tokenIds[0] = _para.getTokenId(_market, 1);
         _tokenIds[1] = _para.getTokenId(_market, 2);
@@ -268,6 +268,7 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         _amounts[1] = _setsToBuy;
 
         _para.unsafeBatchTransferFrom(address(this), _recipient, _tokenIds, _amounts);
+
     }
 
     function transferCash(
