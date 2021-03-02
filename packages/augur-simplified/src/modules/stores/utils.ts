@@ -195,7 +195,7 @@ export function useGraphHeartbeat(library?: Web3Provider) {
       isMounted = false;
       clearInterval(intervalId);
     };
-  }, []);
+  }, [library]);
 }
 
 export function useUserBalances() {
