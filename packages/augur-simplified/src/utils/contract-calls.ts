@@ -463,7 +463,7 @@ interface UserTrades {
   exits: AmmTransaction[]
 }
 
-export const getUserBalancesMulticalls = async (
+export const getUserBalances = async (
   provider: Web3Provider,
   account: string,
   ammExchanges: AmmExchanges,
@@ -496,7 +496,6 @@ export const getUserBalancesMulticalls = async (
 
   const BALANCE_OF = 'balanceOf';
   const MARKET_SHARE_BALANCE = 'balanceOfMarketOutcome';
-  const CALC_OUT_GIVEN_IN = "calcOutGivenIn";
   // finalized markets
   const finalizedMarkets = Object.values(markets).filter(m => m.reportingState === MARKET_STATUS.FINALIZED);
   const finalizedMarketIds = finalizedMarkets.map(f => f.marketId);
@@ -505,7 +504,6 @@ export const getUserBalancesMulticalls = async (
   // balance of
   const ammAddresses: string[] = Object.keys(ammExchanges);
   const exchanges = Object.values(ammExchanges);
-  const invalidMarkets: string[] = [];
   // share tokens
   const shareTokens: string[] = Object.keys(cashes).map(
     (id) => cashes[id].shareToken
@@ -533,27 +531,6 @@ export const getUserBalancesMulticalls = async (
           reference: exchange.id,
           methodName: BALANCE_OF,
           methodParameters: [account],
-        },
-      ],
-    },
-    {
-      reference: `${exchange?.id}-bPool-50`,
-      contractAddress: exchange?.invalidPool?.id,
-      abi: BPoolABI,
-      calls: [
-        {
-          reference: `${exchange?.id}-bPool-50`,
-          methodName: CALC_OUT_GIVEN_IN,
-          methodParameters: [
-            exchange?.invalidPool?.invalidBalance,
-            exchange?.invalidPool?.invalidWeight,
-            exchange?.invalidPool?.cashBalance,
-            exchange?.invalidPool?.cashWeight,
-            String(PORTION_OF_INVALID_POOL_SELL.times(new BN(exchange?.invalidPool?.invalidBalance))),
-            exchange?.invalidPool?.swapFee || "0"],
-          context: {
-            ammExchangeId: exchange?.id
-          }
         },
       ],
     }], []
@@ -660,20 +637,6 @@ export const getUserBalancesMulticalls = async (
           userBalances.lpTokens[contractAddress] = { balance: String(balance), rawBalance };
         }
       }
-    } else if (method === CALC_OUT_GIVEN_IN) {
-      const amm = ammExchanges[context.ammExchangeId];
-      amm.swapInvalidForCashInETH = rawBalance
-      if (amm.cash.name !== ETH) {
-        // converting raw value in cash to cash in ETH. needed for invalidity check
-        const ethCash = Object.values(cashes).find(c => c.name === ETH);
-        amm.swapInvalidForCashInETH = new BN(rawBalance).div(new BN(ethCash.usdPrice)).toFixed();
-      }
-
-      amm.isAmmMarketInvalid = await getIsMarketInvalid(amm);
-      console.log(amm.isAmmMarketInvalid, amm.cash.name, 'raw', rawBalance, 'calc rev', amm.swapInvalidForCashInETH, amm.invalidPool)
-      if (amm.isAmmMarketInvalid) {
-        invalidMarkets.push(amm.marketId);
-      }
     } else if (method === MARKET_SHARE_BALANCE) {
       const cash = Object.values(cashes).find(
         (c) => c.shareToken.toLowerCase() === contractAddress.toLowerCase()
@@ -719,12 +682,6 @@ export const getUserBalancesMulticalls = async (
     populateClaimableWinnings(keyedFinalizedMarkets, finalizedAmmExchanges, userBalances.marketShares);
   }
 
-  // reset all invalid flags
-  Object.values(markets).forEach(m => {
-    const isInvalid = invalidMarkets.includes(m.marketId);
-    if (m.isInvalid !== isInvalid) m.isInvalid = isInvalid;
-  })
-
   normalizeNoInvalidPositionsBalances(userBalances.marketShares, ammExchanges);
   const userPositions = getTotalPositions(userBalances.marketShares);
   const availableFundsUsd = String(new BN(userBalances.ETH.usdValue).plus(new BN(userBalances.USDC.usdValue)));
@@ -732,6 +689,88 @@ export const getUserBalancesMulticalls = async (
   await populateInitLPValues(userBalances.lpTokens, ammExchanges, account);
 
   return { ...userBalances, ...userPositions, totalAccountValue, availableFundsUsd }
+}
+
+
+export const getMarketInvalidity = async (
+  provider: Web3Provider,
+  markets: MarketInfos,
+  ammExchanges: AmmExchanges,
+  cashes: Cashes,
+): Promise<{ markets: MarketInfos, ammExchanges: AmmExchanges }> => {
+
+  if (!provider) return null;
+
+  const CALC_OUT_GIVEN_IN = "calcOutGivenIn";
+  const exchanges = Object.values(ammExchanges);
+  const invalidMarkets: string[] = [];
+
+  const multicall = new Multicall({ ethersProvider: provider });
+  const contractLpBalanceCall: ContractCallContext[] = exchanges.reduce(
+    (p, exchange) => [...p,
+    {
+      reference: `${exchange?.id}-bPool`,
+      contractAddress: exchange?.invalidPool?.id,
+      abi: BPoolABI,
+      calls: [
+        {
+          reference: `${exchange?.id}-bPool`,
+          methodName: CALC_OUT_GIVEN_IN,
+          methodParameters: [
+            exchange?.invalidPool?.invalidBalance,
+            exchange?.invalidPool?.invalidWeight,
+            exchange?.invalidPool?.cashBalance,
+            exchange?.invalidPool?.cashWeight,
+            String(PORTION_OF_INVALID_POOL_SELL.times(new BN(exchange?.invalidPool?.invalidBalance))),
+            exchange?.invalidPool?.swapFee || "0"],
+          context: {
+            ammExchangeId: exchange?.id
+          }
+        },
+      ],
+    }], []
+  );
+
+  const balanceResult: ContractCallResults = await multicall.call(
+    contractLpBalanceCall
+  );
+
+  for(let i = 0; i < Object.keys(balanceResult.results).length; i++) {
+    const key = Object.keys(balanceResult.results)[i];
+    const method = String(
+      balanceResult.results[key].originalContractCallContext.calls[0].methodName
+    );
+    const balanceValue = balanceResult.results[key].callsReturnContext[0]
+      .returnValues as ethers.utils.Result;
+    const context = balanceResult.results[key].originalContractCallContext.calls[0].context;
+    const rawBalance = new BN(balanceValue.hex).toFixed();
+
+    console.log('method', method)
+   if (method === CALC_OUT_GIVEN_IN) {
+      const amm = ammExchanges[context.ammExchangeId];
+      amm.swapInvalidForCashInETH = rawBalance
+      if (amm.cash.name !== ETH) {
+        // converting raw value in cash to cash in ETH. needed for invalidity check
+        const ethCash = Object.values(cashes).find(c => c.name === ETH);
+        amm.swapInvalidForCashInETH = new BN(rawBalance).div(new BN(ethCash.usdPrice)).toFixed();
+      }
+
+      amm.isAmmMarketInvalid = await getIsMarketInvalid(amm);
+      console.log(amm.isAmmMarketInvalid, amm.cash.name, 'raw', rawBalance, 'calc rev', amm.swapInvalidForCashInETH, amm.invalidPool)
+      if (amm.isAmmMarketInvalid) {
+        invalidMarkets.push(amm.marketId);
+      }
+    }
+  }
+
+  console.log('invalidMarkets', invalidMarkets)
+  // reset all invalid flags
+  Object.values(markets).forEach(m => {
+    const isInvalid = invalidMarkets.includes(m.marketId);
+    if (m.isInvalid !== isInvalid) m.isInvalid = isInvalid;
+  })
+
+  return { markets, ammExchanges }
 }
 
 const populateClaimableWinnings = (finalizedMarkets: MarketInfos = {}, finalizedAmmExchanges: AmmExchange[] = [], marketShares: AmmMarketShares = {}): void => {

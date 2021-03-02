@@ -74,7 +74,6 @@ const applyFiltersAndSort = (
         ) {
           return false;
         }
-        console.log('show invalid markets', !showInvalidMarkets, market.isInvalid)
         if (!showInvalidMarkets && market.isInvalid) {
           return false;
         }
@@ -118,6 +117,7 @@ const applyFiltersAndSort = (
         return true;
       }
     );
+
     updatedFilteredMarkets = updatedFilteredMarkets.sort((marketA, marketB) => {
       if (sortBy === TOTAL_VOLUME) {
         return (marketB?.amm?.volumeTotalUSD || 0) >

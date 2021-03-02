@@ -12,7 +12,7 @@ import { useGraphDataStore } from './graph-data';
 import { processGraphMarkets } from '../../utils/process-data';
 import { getMarketsData } from '../apollo/client';
 import { augurSdkLite } from '../../utils/augurlitesdk';
-import { getUserBalancesMulticalls } from '../../utils/contract-calls';
+import { getUserBalances } from '../../utils/contract-calls';
 
 const isAsync = (obj) =>
   !!obj &&
@@ -88,7 +88,7 @@ export function useCanExitCashPosition(shareToken) {
   const approvedAccount = useRef(null);
   const [canExitPosition, setCanExitPosition] = useState(false);
   const [calledBlocknumber, setCalledBlocknumber] = useState(blocknumber);
-    const {
+  const {
     addresses: { WethWrapperForAMMExchange },
   } = PARA_CONFIG;
 
@@ -161,6 +161,9 @@ export function useCanEnterCashPosition({ name, address }: Cash) {
 
 export function useGraphHeartbeat() {
   const {
+    loginAccount,
+  } = useUserStore();
+  const {
     ammExchanges,
     cashes,
     markets,
@@ -170,31 +173,33 @@ export function useGraphHeartbeat() {
   useEffect(() => {
     let isMounted = true;
     // get data immediately, then setup interval
-    getMarketsData((graphData, block, errors) => {
+    getMarketsData(async (graphData, block, errors) => {
       isMounted && !!errors
         ? updateGraphHeartbeat(
+          { ammExchanges, cashes, markets },
+          blocknumber,
+          errors
+        )
+        : updateGraphHeartbeat(await processGraphMarkets(graphData, loginAccount?.library), block, errors);
+    });
+    const intervalId = setInterval(() => {
+      getMarketsData(async (graphData, block, errors) => {
+        isMounted && !!errors
+          ? updateGraphHeartbeat(
             { ammExchanges, cashes, markets },
             blocknumber,
             errors
           )
-        : updateGraphHeartbeat(processGraphMarkets(graphData), block, errors);
-    });
-    const intervalId = setInterval(() => {
-      getMarketsData((graphData, block, errors) => {
-        isMounted && !!errors
-          ? updateGraphHeartbeat(
-              { ammExchanges, cashes, markets },
-              blocknumber,
-              errors
-            )
-          : updateGraphHeartbeat(processGraphMarkets(graphData), block, errors);
+          : updateGraphHeartbeat(await processGraphMarkets(graphData, loginAccount?.library), block, errors);
       });
     }, NETWORK_BLOCK_REFRESH_TIME[PARA_CONFIG.networkId] || NETWORK_BLOCK_REFRESH_TIME[1]);
     return () => {
       isMounted = false;
       clearInterval(intervalId);
     };
-  }, []);
+  }, [
+    loginAccount?.library
+  ]);
 }
 
 export function useUserBalances() {
@@ -217,7 +222,7 @@ export function useUserBalances() {
       ammExchanges,
       cashes,
       markets
-    ) => getUserBalancesMulticalls(library, account, ammExchanges, cashes, markets);
+    ) => getUserBalances(library, account, ammExchanges, cashes, markets);
     if (loginAccount?.library && loginAccount?.account) {
       if (!augurSdkLite.ready())
         createClient(loginAccount.library, PARA_CONFIG, loginAccount?.account);

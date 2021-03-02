@@ -53,7 +53,7 @@ export const isMarketInvalid = (
   );
 
   const totalInvalidCost = (invalidAmountSold.times(baseRevenue)).plus(invalidEstimates);
-  console.log(sellInvalidProfitInETH.gt(totalInvalidCost), 'totalInvalidCost', totalInvalidCost.toFixed(0), 'sellInvalidProfitInETH', sellInvalidProfitInETH.toFixed(0));
+  //console.log(sellInvalidProfitInETH.gt(totalInvalidCost), 'totalInvalidCost', totalInvalidCost.toFixed(0), 'sellInvalidProfitInETH', sellInvalidProfitInETH.toFixed(0));
 
   return sellInvalidProfitInETH
     .minus(totalInvalidCost)
