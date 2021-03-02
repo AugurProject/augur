@@ -9,7 +9,7 @@ import TopNav from './common/top-nav';
 import '../assets/styles/shared.less';
 import { AppStatusProvider, useAppStatusStore } from './stores/app-status';
 import { GraphDataProvider } from './stores/graph-data';
-import { UserProvider } from './stores/user';
+import { UserProvider, useUserStore } from './stores/user';
 import { Sidebar } from './sidebar/sidebar';
 import { ConnectAccountProvider } from './ConnectAccount/connect-account-provider';
 import classNames from 'classnames';
@@ -48,12 +48,15 @@ const AppBody = () => {
     isMobile,
     modal,
   } = useAppStatusStore();
+  const {
+    loginAccount,
+  } = useUserStore();
   const modalShowing = Object.keys(modal).length !== 0;
   const location = useLocation();
   const path = parsePath(location.pathname)[0];
   const sidebarOut = sidebarType && isMobile;
 
-  useGraphHeartbeat();
+  useGraphHeartbeat(loginAccount ? loginAccount.library : null);
   useUserBalances();
   useFinalizeUserTransactions();
 

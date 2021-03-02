@@ -13,6 +13,7 @@ import { processGraphMarkets } from '../../utils/process-data';
 import { getMarketsData } from '../apollo/client';
 import { augurSdkLite } from '../../utils/augurlitesdk';
 import { getUserBalances } from '../../utils/contract-calls';
+import { Web3Provider } from '@ethersproject/providers'
 
 const isAsync = (obj) =>
   !!obj &&
@@ -159,10 +160,7 @@ export function useCanEnterCashPosition({ name, address }: Cash) {
   return canEnterPosition;
 }
 
-export function useGraphHeartbeat() {
-  const {
-    loginAccount,
-  } = useUserStore();
+export function useGraphHeartbeat(library?: Web3Provider) {
   const {
     ammExchanges,
     cashes,
@@ -180,7 +178,7 @@ export function useGraphHeartbeat() {
           blocknumber,
           errors
         )
-        : updateGraphHeartbeat(await processGraphMarkets(graphData, loginAccount?.library), block, errors);
+        : updateGraphHeartbeat(await processGraphMarkets(graphData, library), block, errors);
     });
     const intervalId = setInterval(() => {
       getMarketsData(async (graphData, block, errors) => {
@@ -190,16 +188,14 @@ export function useGraphHeartbeat() {
             blocknumber,
             errors
           )
-          : updateGraphHeartbeat(await processGraphMarkets(graphData, loginAccount?.library), block, errors);
+          : updateGraphHeartbeat(await processGraphMarkets(graphData, library), block, errors);
       });
     }, NETWORK_BLOCK_REFRESH_TIME[PARA_CONFIG.networkId] || NETWORK_BLOCK_REFRESH_TIME[1]);
     return () => {
       isMounted = false;
       clearInterval(intervalId);
     };
-  }, [
-    loginAccount?.library
-  ]);
+  }, []);
 }
 
 export function useUserBalances() {
