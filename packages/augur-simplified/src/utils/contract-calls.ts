@@ -964,16 +964,15 @@ const getIsMarketInvalid = async (amm: AmmExchange, cashs: Cashes): Promise<bool
     numTicks: Number(market.numTicks),
     feeDivisor: Number(market.fee)
   }
+  const sellInvalidProfit = new BN(1); // used for testing
+
   const isInvalid = marketInvalidityCheck.isMarketInvalid(
-    invalidOutcomeWeight,
-    cashOutcomeWeight,
+    sellInvalidProfit,
     invalidOutcomeLiquidity,
     invalidOutcomePrice,
     marketProperties,
     reportingFeeDivisor,
-    gasLevels,
-    new BN(1e18),
-    cashDecimals)
+    gasLevels)
 
   return isInvalid;
 }
