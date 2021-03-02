@@ -150,6 +150,15 @@ export interface AmmExchangeOutcome {
   price: string;
   name: string;
 }
+
+export interface InvalidPool {
+  id: string;
+  cashBalance: string;
+  cashWeight: string;
+  invalidBalance: string;
+  invalidWeight: string;
+  swapFee: string;
+}
 export interface AmmExchange {
   id: string;
   marketId: string;
@@ -184,6 +193,7 @@ export interface AmmExchange {
   apy?: string;
   ammOutcomes: AmmOutcome[];
   isAmmMarketInvalid: boolean;
+  invalidPool: InvalidPool;
 }
 
 export interface Cashes {
@@ -209,6 +219,7 @@ export interface MarketInfo {
   extraInfoRaw: string;
   longDescription: string;
   fee: string;
+  numTicks: string;
   reportingFee: string;
   settlementFee: string;
   categories: string[];
