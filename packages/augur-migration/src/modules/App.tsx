@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import '../assets/styles/shared.less';
 import { Logo } from '@augurproject/augur-comps';
 import Styles from './App.styles.less';
@@ -12,14 +12,27 @@ import { ConnectAccountButton } from './shared/connect-account-button';
 import {
   useUserBalances,
   useFinalizeUserTransactions,
+  useUpdateApprovals,
 } from './stores/utils';
 
+const kovanTime = 3000; 
+
 const AppBody = () => {
-  const { modal } = useAppStatusStore();
+  const { modal, actions: { setTimestamp } } = useAppStatusStore();
   const modalShowing = Object.keys(modal).length !== 0;
   
   useUserBalances();
   useFinalizeUserTransactions();
+  useUpdateApprovals();
+  
+  useEffect(() => {
+      const timer = window.setInterval(() => {
+        setTimestamp(Date.now() + 1);
+      }, kovanTime);
+      return () => {
+        window.clearInterval(timer);
+      };
+  }, []);
 
   return (
     <div id="mainContent" className={Styles.App}>

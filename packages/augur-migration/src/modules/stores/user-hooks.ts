@@ -15,6 +15,7 @@ const {
   UPDATE_USER_BALANCES,
   UPDATE_TRANSACTION,
   LOGOUT,
+  UPDATE_APPROVAL
 } = USER_ACTIONS;
 const {
   ACCOUNT,
@@ -22,6 +23,7 @@ const {
   LOGIN_ACCOUNT,
   SEEN_POSITION_WARNINGS,
   TRANSACTIONS,
+  IS_APPROVED
 } = USER_KEYS;
 
 const updateLocalStorage = (userAccount, updatedState) => {
@@ -73,11 +75,12 @@ export function UserReducer(state, action) {
         updatedState[TRANSACTIONS] = accTransactions;
       } else if (!!account && action?.account?.library?.provider?.isMetamask) {
         // no saved info for this account, must be first login...
-        window.localStorage.setItem(
-          account,
-          JSON.stringify({ account })
-        );
+        window.localStorage.setItem(account, JSON.stringify({ account }));
       }
+      break;
+    }
+    case UPDATE_APPROVAL: {
+      updatedState[IS_APPROVED] = action.isApproved;
       break;
     }
     case UPDATE_USER_BALANCES: {
@@ -122,11 +125,12 @@ export function UserReducer(state, action) {
     }
     case UPDATE_SEEN_POSITION_WARNING: {
       if (updatedState[SEEN_POSITION_WARNINGS][action.id]) {
-        updatedState[SEEN_POSITION_WARNINGS][action.id][action.warningType] = action.seenPositionWarning;
+        updatedState[SEEN_POSITION_WARNINGS][action.id][action.warningType] =
+          action.seenPositionWarning;
       } else {
         updatedState[SEEN_POSITION_WARNINGS][action.id] = {
-          [action.warningType]: action.seenPositionWarning
-        }
+          [action.warningType]: action.seenPositionWarning,
+        };
       }
       break;
     }
@@ -153,6 +157,8 @@ export const useUser = (defaultState = DEFAULT_USER_STATE) => {
   return {
     ...state,
     actions: {
+      updateApproval: (isApproved) =>
+        dispatch({ type: UPDATE_APPROVAL, isApproved }),
       updateLoginAccount: (account) =>
         dispatch({ type: SET_LOGIN_ACCOUNT, account }),
       updateUserBalances: (userBalances: UserBalances) =>
@@ -170,7 +176,7 @@ export const useUser = (defaultState = DEFAULT_USER_STATE) => {
           type: UPDATE_SEEN_POSITION_WARNING,
           id,
           seenPositionWarning,
-          warningType
+          warningType,
         }),
       addSeenPositionWarnings: (seenPositionWarnings) =>
         dispatch({ type: ADD_SEEN_POSITION_WARNINGS, seenPositionWarnings }),

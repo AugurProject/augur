@@ -1,17 +1,13 @@
-import { useState, useEffect, useRef } from 'react';
-// import { APPROVED } from '../common/buttons';
-import {
-  checkAllowance,
-  isERC1155ContractApproved,
-} from '../hooks/use-approval-callback';
-import { Cash, MarketInfo, TransactionDetails } from '../types';
-import { NETWORK_BLOCK_REFRESH_TIME, PARA_CONFIG } from './constants';
-// import { ApprovalState, ETH } from '../constants';
+import { useEffect } from 'react';
+import { MarketInfo, TransactionDetails } from '../types';
+import { PARA_CONFIG } from './constants';
 import { useUserStore } from './user';
-import { useGraphDataStore } from './graph-data';
 import {
-  getLegacyRepBalance, getRepBalance, isRepV2Approved, convertV1ToV2, convertV1ToV2Approve
+  getLegacyRepBalance,
+  getRepBalance,
+  isRepV2Approved,
 } from '../../utils/contract-calls';
+import { useAppStatusStore } from './app-status';
 
 const isAsync = (obj) =>
   !!obj &&
@@ -41,79 +37,49 @@ export const middleware = (dispatch, action) => {
 export const getSavedUserInfo = (account) =>
   JSON.parse(window.localStorage.getItem(account)) || null;
 
-export const getRelatedMarkets = (
-  market: MarketInfo,
-  markets: Array<MarketInfo>
-) =>
-  keyedObjToKeyArray(markets)
-    .filter((mrkt) => mrkt.includes(market.marketId))
-    .map((mid) => markets[mid]);
-
 export const dispatchMiddleware = (dispatch) => (action) =>
   middleware(dispatch, action);
 
-export const keyedObjToArray = (KeyedObject: object) =>
-  Object.entries(KeyedObject).map((i) => i[1]);
-
-export const keyedObjToKeyArray = (KeyedObject: object) =>
-  Object.entries(KeyedObject).map((i) => i[0]);
-
-export const arrayToKeyedObject = (ArrayOfObj: Array<{ id: string }>) =>
-  arrayToKeyedObjectByProp(ArrayOfObj, 'id');
-
-export const arrayToKeyedObjectByProp = (ArrayOfObj: any[], prop: string) =>
-  ArrayOfObj.reduce((acc, obj) => {
-    acc[obj[prop]] = obj;
-    return acc;
-  }, {});
-
 export async function getRepBalances(provider, address) {
   const rep = await getRepBalance(provider, address);
-  const legacyRep = await getLegacyRepBalance(provider, address);  
- return {
-    rep: rep.toString(), 
-    legacyRep: legacyRep.toString()
-  }
+  const legacyRep = await getLegacyRepBalance(provider, address);
+  return {
+    rep: rep.toString(),
+    legacyRep: legacyRep.toString(),
+  };
 }
-
 
 export function useUserBalances() {
   const {
     loginAccount,
     actions: { updateUserBalances },
   } = useUserStore();
+  const { timestamp } = useAppStatusStore();
   useEffect(() => {
     let isMounted = true;
-    const fetchUserBalances = (
-      library,
-      account,
-    ) => getRepBalances(library, account);
+    const fetchUserBalances = (library, account) =>
+      getRepBalances(library, account);
     if (loginAccount?.library && loginAccount?.account) {
-      fetchUserBalances(
-        loginAccount.library,
-        loginAccount.account
-      ).then((userBalances) => isMounted && updateUserBalances(userBalances));
+      fetchUserBalances(loginAccount.library, loginAccount.account).then(
+        (userBalances) => isMounted && updateUserBalances(userBalances)
+      );
     }
 
     return () => {
       isMounted = false;
     };
-  }, [
-    loginAccount?.account,
-    loginAccount?.library,
-    PARA_CONFIG,
-  ]);
+  }, [loginAccount?.account, loginAccount?.library, PARA_CONFIG, timestamp]);
 }
 
 export function useFinalizeUserTransactions() {
-  const { blocknumber } = useGraphDataStore();
   const {
     loginAccount,
     transactions,
     actions: { finalizeTransaction },
   } = useUserStore();
+  const { timestamp } = useAppStatusStore();
   useEffect(() => {
-    if (loginAccount?.account && blocknumber && transactions?.length > 0) {
+    if (loginAccount?.account && transactions?.length > 0) {
       transactions
         .filter((t) => !t.confirmedTime)
         .forEach((t: TransactionDetails) => {
@@ -122,13 +88,26 @@ export function useFinalizeUserTransactions() {
           });
         });
     }
-  }, [loginAccount, blocknumber, transactions]);
+  }, [loginAccount, timestamp, transactions]);
 }
 
-export function useScrollToTopOnMount(...optionsTriggers) {
+export function useUpdateApprovals() {
+  const {
+    loginAccount,
+    actions: { updateApproval },
+  } = useUserStore();
+  const { timestamp } = useAppStatusStore();
   useEffect(() => {
-    // initial render only.
-    document.getElementById('mainContent')?.scrollTo(0, 0);
-    window.scrollTo(0, 1);
-  }, [...optionsTriggers]);
+    let isMounted = true;
+    const checkApproval = (library, account) =>
+      isRepV2Approved(library, account);
+    if (loginAccount?.library && loginAccount?.account) {
+      checkApproval(loginAccount.library, loginAccount.account).then(
+        (isApproved) => isMounted && updateApproval(isApproved)
+      );
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [loginAccount?.account, loginAccount?.library, PARA_CONFIG, timestamp]);
 }

@@ -16,17 +16,17 @@ import { useUserStore } from '../stores/user';
 
 export const Migrate = () => {
   const { isLogged } = useAppStatusStore();
-  const { loginAccount, balances } = useUserStore();
-  const [isApproved, setIsApproved] = useState(false);
-  useEffect(() => {
-    loginAccount &&
-      isRepV2Approved(loginAccount.library, loginAccount.account).then(
-        (isApproved) => {
-          setIsApproved(isApproved);
-        }
-      );
-    console.log(isApproved);
-  }, [loginAccount]);
+  const { loginAccount, balances, isApproved } = useUserStore();
+  // const [isApproved, setIsApproved] = useState(false);
+  // useEffect(() => {
+  //   loginAccount &&
+  //     isRepV2Approved(loginAccount.library, loginAccount.account).then(
+  //       (isApproved) => {
+  //         setIsApproved(isApproved);
+  //       }
+  //     );
+  //   console.log(isApproved);
+  // }, [loginAccount]);
 
   return (
     <div className={Styles.Migrate}>
