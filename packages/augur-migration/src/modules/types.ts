@@ -1090,6 +1090,8 @@ export interface UserBalances {
   lpTokens: LPTokens;
   marketShares: AmmMarketShares;
   claimableWinnings: PositionWinnings;
+  rep: string;
+  legacyRep: string;
 }
 
 export interface ProcessedData {
