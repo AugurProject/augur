@@ -11,19 +11,26 @@ import ModalView from './modal/modal-view';
 import { ConnectAccountButton } from './shared/connect-account-button';
 import {
   useUserBalances,
-  useGraphHeartbeat,
   useFinalizeUserTransactions,
 } from './stores/utils';
-import { GraphDataProvider } from './stores/graph-data';
-import { ApolloProvider } from 'react-apollo';
-import { client } from './apollo/client';
 
 const AppBody = () => {
   const { modal } = useAppStatusStore();
   const modalShowing = Object.keys(modal).length !== 0;
-  // useGraphHeartbeat();
   useUserBalances();
   useFinalizeUserTransactions();
+  const { loginAccount, actions: {updateLoginAccount} } = useUserStore();
+
+  // if (loginAccount) {
+  //   const login = loginAccount;
+  //   login.library.provider = loginAccount?.library?.provider.on("block", (blockNumber) => {
+  //     // Emitted on every block change
+  //     console.log(blockNumber);
+  //   });
+  //   updateLoginAccount(login);
+  // }
+  
+
   return (
     <div id="mainContent" className={Styles.App}>
       {modalShowing && <ModalView />}
@@ -42,15 +49,11 @@ function App() {
   return (
     <HashRouter hashType="hashbang">
       <ConnectAccountProvider>
-        <ApolloProvider client={client}>
-          <GraphDataProvider>
-            <UserProvider>
-              <AppStatusProvider>
-                <AppBody />
-              </AppStatusProvider>
-            </UserProvider>
-          </GraphDataProvider>
-        </ApolloProvider>
+          <UserProvider>
+            <AppStatusProvider>
+              <AppBody />
+            </AppStatusProvider>
+          </UserProvider>
       </ConnectAccountProvider>
     </HashRouter>
   );

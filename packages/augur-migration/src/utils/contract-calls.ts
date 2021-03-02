@@ -398,6 +398,7 @@ export async function convertV1ToV2Approve(
   } catch (e) {
     console.error(e);
   }
+  console.log(response);
   return response;
 }
 
