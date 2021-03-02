@@ -543,7 +543,13 @@ export const getUserBalances = async (
         {
           reference: `${exchange?.id}-bPool`,
           methodName: CALC_OUT_GIVEN_IN,
-          methodParameters: [exchange?.invalidPool?.invalidBalance, exchange?.invalidPool?.invalidWeight, exchange?.invalidPool?.cashBalance, exchange?.invalidPool?.cashWeight, String(convertDisplayCashAmountToOnChainCashAmount("1", exchange?.cash?.decimals)), exchange?.invalidPool?.swapFee],
+          methodParameters: [
+            exchange?.invalidPool?.invalidBalance,
+            exchange?.invalidPool?.invalidWeight,
+            exchange?.invalidPool?.cashBalance,
+            exchange?.invalidPool?.cashWeight,
+            String(convertDisplayCashAmountToOnChainCashAmount("1", exchange?.cash?.decimals)),
+            exchange?.invalidPool?.swapFee || "0"],
           context: {
             ammExchange: exchange?.id
           }
