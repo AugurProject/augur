@@ -105,6 +105,7 @@ describe('AMM Middleware for ERC20', () => {
         initialLiquidity,
         longPercent,
         shortPercent,
+        'symbol',
       );
     });
 

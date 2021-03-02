@@ -160,6 +160,7 @@ describe('AMM Middleware for ETH', () => {
         ONE_ETH,
         longPercent,
         shortPercent,
+        'symbol',
       );
     });
 

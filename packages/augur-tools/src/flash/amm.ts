@@ -59,7 +59,7 @@ export function addAMMScripts(flash: FlashSession) {
       if (!bFactory) return console.error('Must deploy BFactory: omit -skipBFactory (-B).');
 
       const shareWrapper = deployShareWrapper
-        ? await contractDeployer.uploadWrappedShareTokenFactoryFactory()
+        ? await contractDeployer.uploadWrappedShareTokenFactory()
         : this.config.addresses.WrappedShareTokenFactoryFactory
       if (!shareWrapper) return console.error('Must deploy WrappedShareTokenFactoryFactory: omit -skipShareWrapper (-S).');
 
