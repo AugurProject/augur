@@ -13,6 +13,7 @@ export * from './utils/format-number';
 export * from './utils/date-utils';
 export * from './utils/constants';
 export * from './utils/routes/parse-path';
+export * from './components/common/icons';
 
 export { ConnectAccountProvider } from './components/ConnectAccount/connect-account-provider';
 export { ConnectAccount } from './components/ConnectAccount/index';

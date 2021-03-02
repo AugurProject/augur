@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import Styles from './migrate.styles.less';
 import {
   PrimaryButton,
-  ExternalLinkButton,
   formatRep,
+  PointedArrow
 } from '@augurproject/augur-comps';
 import { useAppStatusStore } from '../stores/app-status';
 import { ConnectAccountButton } from '../shared/connect-account-button';
@@ -39,6 +39,7 @@ export const Migrate = () => {
           <span>V1 REP</span>
           {formatRep(balances.legacyRep).formatted}
         </div>
+        {PointedArrow}
         <div>
           <span>V2 REP</span>
           {formatRep(balances.rep).formatted}

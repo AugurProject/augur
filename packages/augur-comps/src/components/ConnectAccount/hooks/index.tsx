@@ -7,7 +7,7 @@ import { useState, useCallback, useEffect } from 'react'
 
 export function useActiveWeb3React(): Web3ReactContextInterface<Web3Provider> & { chainId?: ChainId } {
   const context = useWeb3ReactCore<Web3Provider>()
-  const contextNetwork = useWeb3ReactCore<Web3Provider>('NETWORK')
+  const contextNetwork = useWeb3ReactCore<Web3Provider>('NETWORK_COMPS')
   return context.active ? context : contextNetwork
 }
 
