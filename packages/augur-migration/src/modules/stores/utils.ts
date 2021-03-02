@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { MarketInfo, TransactionDetails } from '../types';
+import { TransactionDetails } from '../types';
 import { PARA_CONFIG } from './constants';
 import { useUserStore } from './user';
 import {

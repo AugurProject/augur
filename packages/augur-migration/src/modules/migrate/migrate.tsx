@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Styles from './migrate.styles.less';
 import {
   PrimaryButton,
@@ -9,7 +9,6 @@ import { useAppStatusStore } from '../stores/app-status';
 import { ConnectAccountButton } from '../shared/connect-account-button';
 import {
   convertV1ToV2Approve,
-  isRepV2Approved,
   convertV1ToV2,
 } from '../../utils/contract-calls';
 import { useUserStore } from '../stores/user';
@@ -17,16 +16,6 @@ import { useUserStore } from '../stores/user';
 export const Migrate = () => {
   const { isLogged } = useAppStatusStore();
   const { loginAccount, balances, isApproved } = useUserStore();
-  // const [isApproved, setIsApproved] = useState(false);
-  // useEffect(() => {
-  //   loginAccount &&
-  //     isRepV2Approved(loginAccount.library, loginAccount.account).then(
-  //       (isApproved) => {
-  //         setIsApproved(isApproved);
-  //       }
-  //     );
-  //   console.log(isApproved);
-  // }, [loginAccount]);
 
   return (
     <div className={Styles.Migrate}>
