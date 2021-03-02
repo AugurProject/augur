@@ -433,6 +433,22 @@ jobs:
       triggerBranch: refs/heads/dev
       cloudfrontDistributionId: E2O15YTS7NLFRA
 
+  - template: .azure-templates/migration-ui-build-to-s3.yml
+    parameters:
+      name: deploy_migration_to_dev
+      environment: v2
+      deployBucketName: migration.augur.sh
+      triggerBranch: refs/heads/dev
+      cloudfrontDistributionId: E2S9HFAX540JON
+
+  - template: .azure-templates/simplified-ui-build-to-s3.yml
+    parameters:
+      name: deploy_simplified_to_chad
+      environment: v2
+      deployBucketName: chad.augur.sh
+      triggerBranch: refs/heads/chad
+      cloudfrontDistributionId: E2HAMPZED8493G
+
   - template: .azure-templates/amm-build-to-s3.yml
     parameters:
       name: deploy_amm_deploys_to_amm
