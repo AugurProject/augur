@@ -8,6 +8,9 @@ type {{name}}Event @entity {
 
   logIndex: Int!
 
+  "A composite key of blockNumber+logIndex used for easily paging through logs"
+  logPosition: String!
+
   name: String!
 
   transactionHash: String!
