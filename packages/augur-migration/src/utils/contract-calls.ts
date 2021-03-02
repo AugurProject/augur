@@ -2,18 +2,14 @@ import BigNumber, { BigNumber as BN } from 'bignumber.js';
 import ethers from 'ethers';
 import { Contract } from '@ethersproject/contracts';
 import { Web3Provider } from '@ethersproject/providers';
-import {
-  convertOnChainCashAmountToDisplayCashAmount,
-} from './format-number';
-import {
-  ZERO,
-  NULL_ADDRESS,
-  getProviderOrSigner,
-} from '@augurproject/augur-comps';
+import { convertOnChainCashAmountToDisplayCashAmount } from './format-number';
+import { ZERO, NULL_ADDRESS, ConnectAccount } from '@augurproject/augur-comps';
 import { PARA_CONFIG } from '../modules/stores/constants';
 import ReputationTokenABI from './ReputationTokenABI.json';
 import LegacyReputationTokenABI from './LegacyReputationTokenABI.json';
-
+const {
+  utils: { getProviderOrSigner },
+} = ConnectAccount;
 export const isAddress = (value) => {
   try {
     return ethers.utils.getAddress(value.toLowerCase());
@@ -226,7 +222,10 @@ export async function isRepV2Approved(
   }
 }
 
-export const getReputationTokenContract = (provider: Web3Provider, account: string) => {
+export const getReputationTokenContract = (
+  provider: Web3Provider,
+  account: string
+) => {
   return new Contract(
     kovanRepAddress,
     ReputationTokenABI,
@@ -234,14 +233,17 @@ export const getReputationTokenContract = (provider: Web3Provider, account: stri
   );
 };
 
-export const getLegacyReputationTokenContract = (provider: Web3Provider, account: string, contractAddress: string) => {
+export const getLegacyReputationTokenContract = (
+  provider: Web3Provider,
+  account: string,
+  contractAddress: string
+) => {
   return new Contract(
     contractAddress,
     LegacyReputationTokenABI,
     getProviderOrSigner(provider, account) as any
   );
 };
-
 
 export async function convertV1ToV2Approve(
   provider: Web3Provider,
@@ -252,7 +254,11 @@ export async function convertV1ToV2Approve(
   try {
     const { addresses } = PARA_CONFIG;
     const legacyRep = addresses.LegacyReputationToken;
-    const contract = getLegacyReputationTokenContract(provider, account, legacyRep);
+    const contract = getLegacyReputationTokenContract(
+      provider,
+      account,
+      legacyRep
+    );
     response = await contract.approve(kovanRepAddress, APPROVAL_AMOUNT);
   } catch (e) {
     console.error(e);
