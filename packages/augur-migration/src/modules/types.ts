@@ -1080,16 +1080,6 @@ export interface AmmMarketShares {
 }
 
 export interface UserBalances {
-  ETH: CurrencyBalance;
-  USDC: CurrencyBalance;
-  totalAccountValue: string;
-  totalPositionUsd: string;
-  total24hrPositionUsd: string;
-  change24hrPositionUsd: string;
-  availableFundsUsd: string;
-  lpTokens: LPTokens;
-  marketShares: AmmMarketShares;
-  claimableWinnings: PositionWinnings;
   rep: string;
   legacyRep: string;
 }
@@ -1138,18 +1128,10 @@ export interface SeenPositionWarnings {
 }
 
 export interface AppStatusState {
-  marketsViewSettings: {
-    categories: string;
-    reportingState: string;
-    sortBy: string;
-    currency: string;
-  };
+  timestamp: number;
   isMobile: boolean;
   isLogged: boolean;
-  showTradingForm: boolean;
-  sidebarType: string;
   modal: Modal;
-  settings: Settings;
 }
 
 export interface GraphDataState {
@@ -1173,6 +1155,7 @@ export interface UserState {
   seenPositionWarnings: {
     [id: string]: SeenPositionWarnings;
   }
+  isApproved: boolean;
   transactions: TransactionDetails[];
 }
 

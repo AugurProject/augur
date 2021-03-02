@@ -1,89 +1,18 @@
 import BigNumber, { BigNumber as BN } from 'bignumber.js';
-import { ParaShareToken, AddLiquidityRate } from '@augurproject/sdk-lite';
-import {
-  AmmExchange,
-  Cash,
-  AmmOutcome,
-} from '../modules/types';
 import ethers from 'ethers';
 import { Contract } from '@ethersproject/contracts';
-import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
-// import {
-//   convertDisplayCashAmountToOnChainCashAmount,
-//   convertDisplayShareAmountToOnChainShareAmount,
-//   convertOnChainCashAmountToDisplayCashAmount,
-//   convertOnChainSharesToDisplayShareAmount,
-//   isSameAddress,
-// } from './format-number';
-import { augurSdkLite } from './augurlitesdk';
-import { Utils, Constants, ConnectAccount } from '@augurproject/augur-comps';
+import { Web3Provider } from '@ethersproject/providers';
+import {
+  convertOnChainCashAmountToDisplayCashAmount,
+} from './format-number';
+import {
+  ZERO,
+  NULL_ADDRESS,
+  getProviderOrSigner,
+} from '@augurproject/augur-comps';
 import { PARA_CONFIG } from '../modules/stores/constants';
 import ReputationTokenABI from './ReputationTokenABI.json';
 import LegacyReputationTokenABI from './LegacyReputationTokenABI.json';
-const { createBigNumber, formatter: { convertOnChainCashAmountToDisplayCashAmount } } = Utils;
-const { utils: { getProviderOrSigner } } = ConnectAccount;
-const { 
-  ZERO,
-  NO_OUTCOME_ID,
-  NULL_ADDRESS,
-  YES_OUTCOME_ID,
-  TEN_TO_THE_EIGHTEENTH_POWER,
-} = Constants;
-
-const isValidPrice = (price: string): boolean => {
-  return (
-    price !== null && price !== undefined && price !== '0' && price !== '0.00'
-  );
-};
-
-const trimDecimalValue = (value: string | BigNumber) =>
-  createBigNumber(value).toFixed(6);
-interface LiquidityProperties {
-  account: string;
-  amm: AmmExchange;
-  marketId: string;
-  cash: Cash;
-  fee: string;
-  amount: string;
-  priceNo: string;
-  priceYes: string;
-}
-
-export const checkConvertLiquidityProperties = (
-  account: string,
-  marketId: string,
-  amount: string,
-  fee: string,
-  outcomes: AmmOutcome[],
-  cash: Cash,
-  amm: AmmExchange
-): LiquidityProperties => {
-  if (
-    !account ||
-    !marketId ||
-    !amount ||
-    !outcomes ||
-    outcomes.length === 0 ||
-    !cash
-  )
-    return null;
-  const priceNo = outcomes[NO_OUTCOME_ID]?.price;
-  const priceYes = outcomes[YES_OUTCOME_ID]?.price;
-  if (!isValidPrice(priceNo) || !isValidPrice(priceYes)) return null;
-  if (amount === '0' || amount === '0.00') return null;
-  if (Number(fee) < 0) return null;
-
-  return {
-    account,
-    amm,
-    marketId,
-    cash,
-    fee,
-    amount,
-    priceNo,
-    priceYes,
-  };
-};
 
 export const isAddress = (value) => {
   try {
@@ -123,77 +52,6 @@ export const getErc20Contract = (
     return null;
   }
 };
-
-export const getErc1155Contract = (
-  tokenAddress: string,
-  library: Web3Provider,
-  account: string
-): Contract | null => {
-  if (!tokenAddress || !library) return null;
-  try {
-    return getContract(tokenAddress, ParaShareToken.ABI, library, account);
-  } catch (error) {
-    console.error('Failed to get contract', error);
-    return null;
-  }
-};
-
-// export const getERC20Allowance = async (tokenAddress: string, provider: Web3Provider, account: string, spender: string): Promise<string> => {
-//   const multicall = new Multicall({ ethersProvider: provider });
-
-//   const contractAllowanceCall: ContractCallContext[] = [{
-//     reference: tokenAddress,
-//     contractAddress: tokenAddress,
-//     abi: ERC20ABI,
-//     calls: [
-//       {
-//         reference: tokenAddress,
-//         methodName: 'allowance',
-//         methodParameters: [account, spender],
-//       },
-//     ],
-//   }];
-
-//   const allowance: ContractCallResults = await multicall.call(
-//     contractAllowanceCall
-//   );
-
-//   let allowanceAmount = "0";
-//   Object.keys(allowance.results).forEach((key) => {
-//     const value = allowance.results[key].callsReturnContext[0].returnValues as ethers.utils.Result;
-//     allowanceAmount = String(new BN(value.hex));
-//   })
-
-//   return allowanceAmount;
-// }
-
-// export const getERC1155ApprovedForAll = async (tokenAddress: string, provider: Web3Provider, account: string, spender: string): Promise<boolean> => {
-//   const multicall = new Multicall({ ethersProvider: provider });
-
-//   const contractAllowanceCall: ContractCallContext[] = [{
-//     reference: tokenAddress,
-//     contractAddress: tokenAddress,
-//     abi: ParaShareToken.ABI,
-//     calls: [
-//       {
-//         reference: tokenAddress,
-//         methodName: 'isApprovedForAll',
-//         methodParameters: [account, spender],
-//       },
-//     ],
-//   }];
-//   const isApprovedResult: ContractCallResults = await multicall.call(
-//     contractAllowanceCall
-//   );
-
-//   let isApproved = false;
-//   Object.keys(isApprovedResult.results).forEach((key) => {
-//     const value = isApprovedResult.results[key].callsReturnContext[0].returnValues as ethers.utils.Result;
-//     isApproved = Boolean(value)
-//   })
-
-//   return isApproved;
-// }
 
 const ERC20ABI = [
   {

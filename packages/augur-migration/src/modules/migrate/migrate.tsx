@@ -1,31 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Styles from './migrate.styles.less';
 import { Buttons, Icons, Utils } from '@augurproject/augur-comps';
 import { useAppStatusStore } from '../stores/app-status';
 import { ConnectAccountButton } from '../shared/connect-account-button';
 import {
   convertV1ToV2Approve,
-  isRepV2Approved,
   convertV1ToV2,
 } from '../../utils/contract-calls';
 import { useUserStore } from '../stores/user';
+
 const { PrimaryButton } = Buttons;
 const { PointedArrow } = Icons;
-const { formatter: { formatRep }} = Utils;
+const { Formatter: { formatRep }} = Utils;
 
 export const Migrate = () => {
   const { isLogged } = useAppStatusStore();
-  const { loginAccount, balances } = useUserStore();
-  const [isApproved, setIsApproved] = useState(false);
-  useEffect(() => {
-    loginAccount &&
-      isRepV2Approved(loginAccount.library, loginAccount.account).then(
-        (isApproved) => {
-          setIsApproved(isApproved);
-        }
-      );
-    console.log(isApproved);
-  }, [loginAccount]);
+  const { loginAccount, balances, isApproved } = useUserStore();
 
   return (
     <div className={Styles.Migrate}>

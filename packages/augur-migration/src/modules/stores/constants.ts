@@ -38,31 +38,17 @@ export const STUBBED_USER_ACTIONS = {
   updateSeenPositionWarning: (id, seenPositionWarning, warningType) => {},
   updateTransaction: (hash, updates) => {},
   updateUserBalances: (balances) => {},
+  updateApproval: isApproved => {},
   logout: () => {},
 };
 
 export const DEFAULT_USER_STATE: UserState = {
   account: null,
   balances: {
-    ETH: {
-      balance: '0',
-      rawBalance: '0',
-      usdValue: '0',
-    },
-    USDC: {
-      balance: '0',
-      rawBalance: '0',
-      usdValue: '0',
-    },
-    totalAccountValue: '0',
-    totalPositionUsd: '0',
-    total24hrPositionUsd: '0',
-    change24hrPositionUsd: '0',
-    availableFundsUsd: '0',
-    lpTokens: {},
-    marketShares: {},
-    claimableWinnings: {},
+    rep: '0',
+    legacyRep: '0',
   },
+  isApproved: false,
   loginAccount: null,
   seenPositionWarnings: {},
   transactions: [],
@@ -74,6 +60,7 @@ export const USER_KEYS = {
   LOGIN_ACCOUNT: 'loginAccount',
   SEEN_POSITION_WARNINGS: 'seenPositionWarnings',
   TRANSACTIONS: 'transactions',
+  IS_APPROVED: 'isApproved'
 };
 
 export const USER_ACTIONS = {
@@ -85,6 +72,7 @@ export const USER_ACTIONS = {
   ADD_SEEN_POSITION_WARNINGS: 'ADD_SEEN_POSITION_WARNINGS',
   SET_LOGIN_ACCOUNT: 'SET_LOGIN_ACCOUNT',
   UPDATE_USER_BALANCES: 'UPDATE_USER_BALANCES',
+  UPDATE_APPROVAL: 'UPDATE_APPROVAL',
   LOGOUT: 'LOGOUT',
 };
 
@@ -97,11 +85,13 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   setModal: (modal) => {},
   closeModal: () => {},
   setIsLogged: (account) => {},
+  setTimestamp: (timestamp) => {}
 };
 
 export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
   isMobile: false,
   isLogged: false,
+  timestamp: 0,
   modal: {}
 };
 
@@ -109,6 +99,7 @@ export const APP_STATE_KEYS = {
   IS_MOBILE: 'isMobile',
   MODAL: 'modal',
   IS_LOGGED: 'isLogged',
+  TIMESTAMP: 'timestamp',
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -116,6 +107,7 @@ export const APP_STATUS_ACTIONS = {
   SET_MODAL: 'SET_MODAL',
   CLOSE_MODAL: 'CLOSE_MODAL',
   SET_IS_LOGGED: 'SET_IS_LOGGED',
+  SET_TIMESTAMP: 'SET_TIMESTAMP'
 };
 
 export const MOCK_APP_STATUS_STATE = {
