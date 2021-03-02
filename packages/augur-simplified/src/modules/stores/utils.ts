@@ -12,7 +12,7 @@ import { useGraphDataStore } from './graph-data';
 import { processGraphMarkets } from '../../utils/process-data';
 import { getMarketsData } from '../apollo/client';
 import { augurSdkLite } from '../../utils/augurlitesdk';
-import { getUserBalances } from '../../utils/contract-calls';
+import { getUserBalancesMulticalls } from '../../utils/contract-calls';
 
 const isAsync = (obj) =>
   !!obj &&
@@ -205,7 +205,7 @@ export function useUserBalances() {
   const {
     markets,
     cashes,
-    ammExchanges 
+    ammExchanges
   } = useGraphDataStore();
   useEffect(() => {
     let isMounted = true;
@@ -217,7 +217,7 @@ export function useUserBalances() {
       ammExchanges,
       cashes,
       markets
-    ) => getUserBalances(library, account, ammExchanges, cashes, markets);
+    ) => getUserBalancesMulticalls(library, account, ammExchanges, cashes, markets);
     if (loginAccount?.library && loginAccount?.account) {
       if (!augurSdkLite.ready())
         createClient(loginAccount.library, PARA_CONFIG, loginAccount?.account);
@@ -245,7 +245,7 @@ export function useUserBalances() {
 
 export function useFinalizeUserTransactions() {
   const {
-    blocknumber 
+    blocknumber
   } = useGraphDataStore();
   const {
     loginAccount,

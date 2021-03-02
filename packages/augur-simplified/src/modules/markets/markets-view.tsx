@@ -74,6 +74,7 @@ const applyFiltersAndSort = (
         ) {
           return false;
         }
+        console.log('show invalid markets', !showInvalidMarkets, market.isInvalid)
         if (!showInvalidMarkets && market.isInvalid) {
           return false;
         }
@@ -170,7 +171,7 @@ const MarketsView = () => {
   const [showFilter, setShowFilter] = useState(false);
 
   useScrollToTopOnMount(page);
-  
+
   const handleFilterSort = () => {
     if (Object.values(markets).length > 0) {
       setLoading(false);

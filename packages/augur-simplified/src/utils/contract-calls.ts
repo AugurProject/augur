@@ -11,7 +11,7 @@ import {
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers'
 import { convertDisplayCashAmountToOnChainCashAmount, convertDisplayShareAmountToOnChainShareAmount, convertOnChainCashAmountToDisplayCashAmount, convertOnChainSharesToDisplayShareAmount, isSameAddress } from './format-number';
 import { augurSdkLite } from './augurlitesdk';
-import { ETH, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_NO_OUTCOMES_NAMES, YES_OUTCOME_ID, INVALID_OUTCOME_ID, MARKET_STATUS } from '../modules/constants';
+import { ETH, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_NO_OUTCOMES_NAMES, YES_OUTCOME_ID, INVALID_OUTCOME_ID, MARKET_STATUS, PORTION_OF_INVALID_POOL_SELL } from '../modules/constants';
 import { getProviderOrSigner } from '../modules/ConnectAccount/utils';
 import { createBigNumber } from './create-big-number';
 import { PARA_CONFIG } from '../modules/stores/constants';
@@ -463,7 +463,7 @@ interface UserTrades {
   exits: AmmTransaction[]
 }
 
-export const getUserBalances = async (
+export const getUserBalancesMulticalls = async (
   provider: Web3Provider,
   account: string,
   ammExchanges: AmmExchanges,
@@ -505,6 +505,7 @@ export const getUserBalances = async (
   // balance of
   const ammAddresses: string[] = Object.keys(ammExchanges);
   const exchanges = Object.values(ammExchanges);
+  const invalidMarkets: string[] = [];
   // share tokens
   const shareTokens: string[] = Object.keys(cashes).map(
     (id) => cashes[id].shareToken
@@ -536,22 +537,22 @@ export const getUserBalances = async (
       ],
     },
     {
-      reference: `${exchange?.id}-bPool`,
+      reference: `${exchange?.id}-bPool-50`,
       contractAddress: exchange?.invalidPool?.id,
       abi: BPoolABI,
       calls: [
         {
-          reference: `${exchange?.id}-bPool`,
+          reference: `${exchange?.id}-bPool-50`,
           methodName: CALC_OUT_GIVEN_IN,
           methodParameters: [
             exchange?.invalidPool?.invalidBalance,
             exchange?.invalidPool?.invalidWeight,
             exchange?.invalidPool?.cashBalance,
             exchange?.invalidPool?.cashWeight,
-            String(convertDisplayCashAmountToOnChainCashAmount("1", exchange?.cash?.decimals)),
+            String(PORTION_OF_INVALID_POOL_SELL.times(new BN(exchange?.invalidPool?.invalidBalance))),
             exchange?.invalidPool?.swapFee || "0"],
           context: {
-            ammExchange: exchange?.id
+            ammExchangeId: exchange?.id
           }
         },
       ],
@@ -572,6 +573,11 @@ export const getUserBalances = async (
                 reference: `${shareToken}-${marketId}-${outcome}`,
                 methodName: MARKET_SHARE_BALANCE,
                 methodParameters: [marketId, outcome, account],
+                context: {
+                  marketId,
+                  outcome,
+                  shareToken
+                }
               },
             ],
           }));
@@ -592,7 +598,7 @@ export const getUserBalances = async (
         reference: 'usdc-balance',
         contractAddress: usdc.address,
         abi: ERC20ABI,
-        calls: [{ reference: 'usdcBalance', methodName: BALANCE_OF, methodParameters: [account] }]
+        calls: [{ reference: 'usdcBalance', methodName: BALANCE_OF, methodParameters: [account] }],
       }
     ]
   }
@@ -608,7 +614,8 @@ export const getUserBalances = async (
     balananceCalls
   );
 
-  Object.keys(balanceResult.results).forEach((key) => {
+  for(let i = 0; i < Object.keys(balanceResult.results).length; i++) {
+    const key = Object.keys(balanceResult.results)[i];
     const value = String(
       new BN(
         JSON.parse(
@@ -626,13 +633,11 @@ export const getUserBalances = async (
     const contractAddress = String(
       balanceResult.results[key].originalContractCallContext.contractAddress
     );
-    const params = String(
-      balanceResult.results[key].originalContractCallContext.calls[0]
-        .methodParameters
-    );
+
     const balanceValue = balanceResult.results[key].callsReturnContext[0]
       .returnValues as ethers.utils.Result;
-    const rawBalance = String(new BN(balanceValue.hex));
+    const context = balanceResult.results[key].originalContractCallContext.calls[0].context;
+    const rawBalance = new BN(balanceValue.hex).toFixed();
 
     if (method === BALANCE_OF) {
       if (usdc && contractAddress === usdc.address) {
@@ -655,8 +660,21 @@ export const getUserBalances = async (
           userBalances.lpTokens[contractAddress] = { balance: String(balance), rawBalance };
         }
       }
-    } else if (method === MARKET_SHARE_BALANCE) {
+    } else if (method === CALC_OUT_GIVEN_IN) {
+      const amm = ammExchanges[context.ammExchangeId];
+      amm.swapInvalidForCashInETH = rawBalance
+      if (amm.cash.name !== ETH) {
+        // converting raw value in cash to cash in ETH. needed for invalidity check
+        const ethCash = Object.values(cashes).find(c => c.name === ETH);
+        amm.swapInvalidForCashInETH = new BN(rawBalance).div(new BN(ethCash.usdPrice)).toFixed();
+      }
 
+      amm.isAmmMarketInvalid = await getIsMarketInvalid(amm);
+      console.log(amm.isAmmMarketInvalid, amm.cash.name, 'raw', rawBalance, 'calc rev', amm.swapInvalidForCashInETH, amm.invalidPool)
+      if (amm.isAmmMarketInvalid) {
+        invalidMarkets.push(amm.marketId);
+      }
+    } else if (method === MARKET_SHARE_BALANCE) {
       const cash = Object.values(cashes).find(
         (c) => c.shareToken.toLowerCase() === contractAddress.toLowerCase()
       );
@@ -665,7 +683,9 @@ export const getUserBalances = async (
         cash?.decimals
       ));
 
-      const [marketId, outcome] = params.split(',');
+      const marketId = context.marketId;
+      const outcome = String(context.outcome);
+
       const amm = exchanges.find(
         (e) =>
           e.sharetoken.toLowerCase() === contractAddress.toLowerCase() &&
@@ -692,12 +712,18 @@ export const getUserBalances = async (
         }
       }
     }
-  })
+  }
 
   if (finalizedMarkets.length > 0) {
     const keyedFinalizedMarkets = finalizedMarkets.reduce((p, f) => ({ ...p, [f.marketId]: f }), {})
     populateClaimableWinnings(keyedFinalizedMarkets, finalizedAmmExchanges, userBalances.marketShares);
   }
+
+  // reset all invalid flags
+  Object.values(markets).forEach(m => {
+    const isInvalid = invalidMarkets.includes(m.marketId);
+    if (m.isInvalid !== isInvalid) m.isInvalid = isInvalid;
+  })
 
   normalizeNoInvalidPositionsBalances(userBalances.marketShares, ammExchanges);
   const userPositions = getTotalPositions(userBalances.marketShares);
@@ -953,28 +979,22 @@ const lastClaimTimestamp = (amm: AmmExchange, isYesOutcome: boolean, account: st
   return claims.reduce((p, c) => Number(c.timestamp) > p ? Number(c.timestamp) : p, 0);
 }
 
-const getIsMarketInvalid = async (amm: AmmExchange, cashs: Cashes): Promise<boolean> => {
+const getIsMarketInvalid = async (amm: AmmExchange): Promise<boolean> => {
   const gasLevels = await getGasStation(PARA_CONFIG.networkId as NetworkId);
-  const { invalidPool, market, cash } = amm;
+  const { invalidPool, market, swapInvalidForCashInETH } = amm;
+  const { invalidBalance } = invalidPool;
 
-  console.log('invalidPool', invalidPool)
-  const invalidOutcomeWeight = new BN(0.1); // get from bPool on AMM when populated
-  const cashOutcomeWeight = new BN(0.9) // get from bPool on AMM when populated
-  const invalidOutcomeLiquidity = new BN(100) // get from bPool on AMM when populated
-  const invalidOutcomePrice = new BN(0.3) // get from bPool on AMM when populated
-  const cashDecimals = new BN(cash.decimals);
   const reportingFeeDivisor = Number(market.reportingFee);
   const marketProperties = {
     endTime: Number(market.endTimestamp),
     numTicks: Number(market.numTicks),
     feeDivisor: Number(market.fee)
   }
-  const sellInvalidProfit = new BN(1); // used for testing
 
   const isInvalid = marketInvalidityCheck.isMarketInvalid(
-    sellInvalidProfit,
-    invalidOutcomeLiquidity,
-    invalidOutcomePrice,
+    new BN(swapInvalidForCashInETH),
+    new BN(invalidBalance).times(PORTION_OF_INVALID_POOL_SELL),
+    new BN(invalidBalance),
     marketProperties,
     reportingFeeDivisor,
     gasLevels)

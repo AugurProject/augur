@@ -6,12 +6,12 @@ import { CLAIM_GAS_COST, DEFAULT_GAS_PRICE_IN_GWEI, INVALID_SWAP_GAS_COST, EULER
 export const isMarketInvalid = (
   sellInvalidProfitInETH: BigNumber,
   invalidOutcomeLiquidity: BigNumber,
-  invalidOutcomePrice: BigNumber,
+  invalidAmountSold: BigNumber,
   marketData: { endTime: number, numTicks: number, feeDivisor: number },
   reportingFeeDivisor: number,
   gasLevels: GasStation,
 ): boolean => {
-  if (invalidOutcomeLiquidity.eq(0) || invalidOutcomePrice.eq(0)) return false;
+  if (invalidOutcomeLiquidity.eq(0)) return false;
 
   const feeDivisor = new BigNumber(marketData.feeDivisor);
   const numTicks = new BigNumber(marketData.numTicks);
@@ -46,13 +46,14 @@ export const isMarketInvalid = (
         .precision(14)
         .toNumber()
     ).toPrecision(14)
-  );
+  ).abs();
 
   const invalidEstimates = estimatedTradeGasCost.plus(
     estimatedClaimGasCost
   );
 
-  const totalInvalidCost = baseRevenue.plus(invalidEstimates);
+  const totalInvalidCost = (invalidAmountSold.times(baseRevenue)).plus(invalidEstimates);
+  console.log(sellInvalidProfitInETH.gt(totalInvalidCost), 'totalInvalidCost', totalInvalidCost.toFixed(0), 'sellInvalidProfitInETH', sellInvalidProfitInETH.toFixed(0));
 
   return sellInvalidProfitInETH
     .minus(totalInvalidCost)
