@@ -44,7 +44,7 @@
     "@types/node": "10.14.18",
     "@types/supertest": "2.0.8",
     "@web3-js/scrypt-shim": "0.1.0",
-    "ganache-core": "2.9.1",
+    "ganache-core": "2.13.2",
     "ipfsd-ctl": "3.0.0",
     "supertest": "4.0.2",
     "ts-node": "9.0.0",

@@ -2,8 +2,10 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { BigNumber } from 'bignumber.js';
 import { ethers } from 'ethers';
 import { SignerOrProvider } from '../../constants';
-import { ExchangeCommon } from './ExchangeCommon';
+import {ExchangeCommon, generateSymbols} from './ExchangeCommon';
 import { ExchangeContractIntermediary } from './index';
+
+
 
 export class ExchangeERC20 extends ExchangeCommon implements ExchangeContractIntermediary {
   readonly factory: ethers.Contract;
@@ -21,8 +23,8 @@ export class ExchangeERC20 extends ExchangeCommon implements ExchangeContractInt
     return this.factory.callStatic.addAMMWithLiquidity(market, paraShareToken, fee.toFixed(), cash.toFixed(), ratio.toFixed(), keepLong, recipient);
   }
 
-  async addAMMWithLiquidity(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, ratio: BigNumber, keepLong: Boolean, recipient: string): Promise<TransactionResponse> {
-    return this.factory.addAMMWithLiquidity(market, paraShareToken, fee.toFixed(), cash.toFixed(), ratio.toFixed(), keepLong, recipient);
+  async addAMMWithLiquidity(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, ratio: BigNumber, keepLong: Boolean, recipient: string, symbolRoot: string): Promise<TransactionResponse> {
+    return this.factory.addAMMWithLiquidity(market, paraShareToken, fee.toFixed(), cash.toFixed(), ratio.toFixed(), keepLong, recipient, generateSymbols(symbolRoot));
   }
 
   async addInitialLiquidity(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, ratio: BigNumber, keepLong: Boolean, recipient: string): Promise<TransactionResponse> {
