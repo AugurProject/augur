@@ -745,7 +745,6 @@ export const getMarketInvalidity = async (
     const context = balanceResult.results[key].originalContractCallContext.calls[0].context;
     const rawBalance = new BN(balanceValue.hex).toFixed();
 
-    console.log('method', method)
    if (method === CALC_OUT_GIVEN_IN) {
       const amm = ammExchanges[context.ammExchangeId];
       amm.swapInvalidForCashInETH = rawBalance
@@ -756,14 +755,12 @@ export const getMarketInvalidity = async (
       }
 
       amm.isAmmMarketInvalid = await getIsMarketInvalid(amm);
-      console.log(amm.isAmmMarketInvalid, amm.cash.name, 'raw', rawBalance, 'calc rev', amm.swapInvalidForCashInETH, amm.invalidPool)
       if (amm.isAmmMarketInvalid) {
         invalidMarkets.push(amm.marketId);
       }
     }
   }
 
-  console.log('invalidMarkets', invalidMarkets)
   // reset all invalid flags
   Object.values(markets).forEach(m => {
     const isInvalid = invalidMarkets.includes(m.marketId);
