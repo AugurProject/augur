@@ -1,9 +1,11 @@
 import { AugurLite } from '@augurproject/sdk-lite';
 import { NetworkId } from '@augurproject/utils';
 import { ethers } from 'ethers';
-import { getProviderOrSigner } from '@augurproject/augur-comps';
+import { ConnectAccount } from '@augurproject/augur-comps';
 import { createBigNumber } from './create-big-number';
-import { Web3Provider } from '@ethersproject/providers'
+import { Web3Provider } from '@ethersproject/providers';
+
+const { utils: { getProviderOrSigner }} = ConnectAccount;
 
 export class SDKLite {
   client: AugurLite | null = null;

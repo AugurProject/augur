@@ -19,6 +19,7 @@ import { ConnectAccount as _ConnectAccount } from './components/ConnectAccount/i
 import * as _ConnectHooks from './components/ConnectAccount/hooks';
 import * as _ConnectConstants from './components/ConnectAccount/constants';
 import * as _ConnectConnectors from './components/ConnectAccount/connectors';
+import * as _ConnectUtils from './components/ConnectAccount/utils';
 import { Loader as _Loader } from './components/ConnectAccount/components/Loader/index';
 import { AccountDetails as _AccountDetails } from './components/ConnectAccount/components/AccountDetails/index';
 import _parsePath from './utils/routes/parse-path';
@@ -35,6 +36,7 @@ export const ConnectAccount = {
   connectors: _ConnectConnectors,
   Loader: _Loader,
   AccountDetails: _AccountDetails,
+  utils: _ConnectUtils,
 };
 export const Constants = _Constants;
 export const Utils = {
