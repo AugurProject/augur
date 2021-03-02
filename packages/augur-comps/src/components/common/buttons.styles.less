@@ -69,6 +69,12 @@
   background-color: var(--simple-yes-15);
   border: @size-1 solid var(--simple-yes);
 
+  > div {
+    &::after {
+      background-color: var(--simple-yes-15-builtin);
+    }
+  }
+
   &:not(:disabled):not(.Disabled) {
     &:hover {
       background-color: var(--simple-yes-30);

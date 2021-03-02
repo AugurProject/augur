@@ -2,6 +2,7 @@ import React, { ReactNode, useEffect, useState } from 'react';
 import Styles from './buttons.styles.less';
 import classNames from 'classnames';
 import { Arrow, SearchIcon, ViewIcon } from './icons';
+import { Spinner } from './spinner';
 
 interface ButtonProps {
   text?: string;
@@ -17,6 +18,7 @@ interface ButtonProps {
   error?: string;
   title?: string;
   darkTheme?: boolean;
+  pending?: boolean;
 }
 
 const Button = ({
@@ -32,6 +34,7 @@ const Button = ({
   title,
   target = '_blank',
   rel = 'noopener noreferrer',
+  pending
 }: ButtonProps) => {
   return href ? (
     <a
@@ -62,7 +65,7 @@ const Button = ({
         Styles.Button,
         {
           [Styles.TextAndIcon]: text && icon,
-          [Styles.Disabled]: disabled,
+          [Styles.Disabled]: disabled || pending,
           [Styles.Selected]: selected,
           [Styles.Error]: error && error !== '',
         },
@@ -70,9 +73,10 @@ const Button = ({
       )}
       onClick={(e) => action && action(e)}
     >
-      {error && error !== '' ? error : text}
-      {icon && icon}
-      {subText && <span>{subText}</span>}
+      {pending && <Spinner />}
+      {!pending && (error && error !== '' ? error : text)}
+      {!pending && icon && icon}
+      {!pending && subText && <span>{subText}</span>}
     </button>
   );
 };
