@@ -496,10 +496,7 @@ export const getUserBalances = async (
 
   const BALANCE_OF = 'balanceOf';
   const MARKET_SHARE_BALANCE = 'balanceOfMarketOutcome';
-
-  // TODO: use amm factory abi when that's available in sdk-lite
-  //const lpAbi = AMMFactoryAbi;
-  const lpAbi = ERC20ABI;
+  const CALC_OUT_GIVEN_IN = "calcOutGivenIn";
   // finalized markets
   const finalizedMarkets = Object.values(markets).filter(m => m.reportingState === MARKET_STATUS.FINALIZED);
   const finalizedMarketIds = finalizedMarkets.map(f => f.marketId);
@@ -524,30 +521,32 @@ export const getUserBalances = async (
   userBalances.ETH = await getEthBalance(provider, cashes, account);
 
   const multicall = new Multicall({ ethersProvider: provider });
-
-  const contractLpBalanceCall: ContractCallContext[] = ammAddresses.reduce(
-    (p, address) => [...p,
+  const contractLpBalanceCall: ContractCallContext[] = exchanges.reduce(
+    (p, exchange) => [...p,
     {
-      reference: address,
-      contractAddress: address,
-      abi: lpAbi,
+      reference: exchange.id,
+      contractAddress: exchange.id,
+      abi: ERC20ABI,
       calls: [
         {
-          reference: address,
+          reference: exchange.id,
           methodName: BALANCE_OF,
           methodParameters: [account],
         },
       ],
     },
     {
-      reference: `${address}`,
-      contractAddress: address,
-      abi: lpAbi,
+      reference: `${exchange?.id}-bPool`,
+      contractAddress: exchange?.invalidPool?.id,
+      abi: BPoolABI,
       calls: [
         {
-          reference: address,
-          methodName: BALANCE_OF,
-          methodParameters: [account],
+          reference: `${exchange?.id}-bPool`,
+          methodName: CALC_OUT_GIVEN_IN,
+          methodParameters: [exchange?.invalidPool?.invalidBalance, exchange?.invalidPool?.invalidWeight, exchange?.invalidPool?.cashBalance, exchange?.invalidPool?.cashWeight, String(convertDisplayCashAmountToOnChainCashAmount("1", exchange?.cash?.decimals)), exchange?.invalidPool?.swapFee],
+          context: {
+            ammExchange: exchange?.id
+          }
         },
       ],
     }], []
@@ -944,7 +943,7 @@ const accumLpSharesRemovesPrice = (transactions: AmmTransaction[], isYesOutcome:
 
 const lastClaimTimestamp = (amm: AmmExchange, isYesOutcome: boolean, account: string): number => {
   const shareToken = amm.cash.shareToken;
-  const claims = amm.market.claimedProceeds.filter(c => isSameAddress(c.shareToken, shareToken) && isSameAddress(c.user, account) && c.outcome === (isYesOutcome ? YES_OUTCOME_ID : NO_OUTCOME_ID) )
+  const claims = amm.market.claimedProceeds.filter(c => isSameAddress(c.shareToken, shareToken) && isSameAddress(c.user, account) && c.outcome === (isYesOutcome ? YES_OUTCOME_ID : NO_OUTCOME_ID))
   return claims.reduce((p, c) => Number(c.timestamp) > p ? Number(c.timestamp) : p, 0);
 }
 
