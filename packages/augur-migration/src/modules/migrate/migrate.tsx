@@ -8,9 +8,10 @@ import {
   convertV1ToV2,
 } from '../../utils/contract-calls';
 import { useUserStore } from '../stores/user';
+
 const { PrimaryButton } = Buttons;
 const { PointedArrow } = Icons;
-const { formatter: { formatRep }} = Utils;
+const { Formatter: { formatRep }} = Utils;
 
 export const Migrate = () => {
   const { isLogged } = useAppStatusStore();
