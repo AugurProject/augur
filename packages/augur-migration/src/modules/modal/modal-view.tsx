@@ -3,14 +3,14 @@ import React, {useEffect, useState} from 'react';
 import {useHistory} from 'react-router';
 import Styles from './modal.styles.less';
 import {useAppStatusStore} from '../stores/app-status';
-import {MODAL_CONNECT_WALLET} from '@augurproject/augur-comps';
+import { Constants } from '@augurproject/augur-comps';
 import ModalConnectWallet from './modal-connect-wallet';
 
 function selectModal(type, modal) {
   switch (type) {
     // case MODAL_ADD_LIQUIDITY:
     //   return <ModalAddLiquidity {...modal} />;
-    case MODAL_CONNECT_WALLET:
+    case Constants.MODAL_CONNECT_WALLET:
       return <ModalConnectWallet {...modal} />
     default:
       return <div />;

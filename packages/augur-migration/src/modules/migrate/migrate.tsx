@@ -1,9 +1,9 @@
 import React from 'react';
 import Styles from './migrate.styles.less';
-import { PrimaryButton, ExternalLinkButton } from '@augurproject/augur-comps';
+import { Buttons } from '@augurproject/augur-comps';
 import { useAppStatusStore } from '../stores/app-status';
 import { ConnectAccountButton } from '../shared/connect-account-button';
-
+const { PrimaryButton, ExternalLinkButton } = Buttons;
 export const Migrate = () => {
   const {
     isLogged

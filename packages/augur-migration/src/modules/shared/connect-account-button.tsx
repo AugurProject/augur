@@ -4,9 +4,10 @@ import { PARA_CONFIG } from '../stores/constants';
 import { useLocalStorage } from '../stores/local-storage';
 import { useUserStore } from '../stores/user';
 import {
-  ConnectAccount,
+  ConnectAccount as CompsConnectAccount,
 } from '@augurproject/augur-comps';
 
+const { ConnectAccount } = CompsConnectAccount;
 export const ConnectAccountButton = () => {
   const { networkId } = PARA_CONFIG;
   const {

@@ -1,18 +1,18 @@
-// import { tickSizeToNumTickWithDisplayPrices } from '@augurproject/sdk';
-// import {
-//   convertDisplayAmountToOnChainAmount,
-//   convertOnChainAmountToDisplayAmount,
-//   encodeNumberAsBase10String,
-//   encodeNumberAsJSNumber,
-//   unfix,
-// } from '@augurproject/utils';
+import { tickSizeToNumTickWithDisplayPrices } from '@augurproject/sdk';
+import {
+  convertDisplayAmountToOnChainAmount,
+  convertOnChainAmountToDisplayAmount,
+  encodeNumberAsBase10String,
+  encodeNumberAsJSNumber,
+  unfix,
+} from '@augurproject/utils';
 import {
   ETHER,
   GWEI_CONVERSION,
-  // SCALAR,
+  SCALAR,
   TEN,
   ZERO,
-  //CASH_LABEL_FORMATS,
+  CASH_LABEL_FORMATS,
   THOUSAND,
   MILLION,
   BILLION,
@@ -170,29 +170,29 @@ export function formatShares(
   return formattedShares;
 }
 
-// export function formatMarketShares(
-//   marketType: string,
-//   num: NumStrBigNumber,
-//   opts: FormattedNumberOptions = {}
-// ): FormattedNumber {
-//   let decimals = SHARES_NUMBER_OF_DECIMALS
-//   if (marketType === SCALAR) {
-//     decimals = SHARES_SCALAR_NUMBER_OF_DECIMALS;
-//   }
-//   const formattedShares = formatNumber(num, {
-//     decimals: decimals,
-//     decimalsRounded: decimals,
-//     denomination: v => `${v} Shares`,
-//     minimized: false,
-//     zeroStyled: false,
-//     blankZero: false,
-//     roundDown: true,
-//     bigUnitPostfix: true,
-//     ...opts,
-//   });
+export function formatMarketShares(
+  marketType: string,
+  num: NumStrBigNumber,
+  opts: FormattedNumberOptions = {}
+): FormattedNumber {
+  let decimals = SHARES_NUMBER_OF_DECIMALS
+  if (marketType === SCALAR) {
+    decimals = SHARES_SCALAR_NUMBER_OF_DECIMALS;
+  }
+  const formattedShares = formatNumber(num, {
+    decimals: decimals,
+    decimalsRounded: decimals,
+    denomination: v => `${v} Shares`,
+    minimized: false,
+    zeroStyled: false,
+    blankZero: false,
+    roundDown: true,
+    bigUnitPostfix: true,
+    ...opts,
+  });
 
-//   return formattedShares;
-// }
+  return formattedShares;
+}
 
 export function formatBestPrice(
   num: NumStrBigNumber,
@@ -247,7 +247,7 @@ export function formatDai(
           .abs()
           .toFixed(2)
         : v;
-      return `${isNegative ? '-' : ''}$${val}`;
+      return `${isNegative ? '-$' : '$'}${val}`;
     },
     positiveSign: false,
     zeroStyled: false,
@@ -336,30 +336,30 @@ export function optionsBlank(): FormattedNumberOptions {
     precisionFullLabel: false,
   };
 }
-// export function sumAndformatGasCostToEther(
-//   gases: NumStrBigNumber[],
-//   opts: FormattedNumberOptions = optionsBlank(),
-//   gasPrice: NumStrBigNumber
-// ): string {
-//   const summedGas = gases.reduce(
-//     (p, g) => createBigNumber(unfix(g, 'number')).plus(p),
-//     ZERO
-//   );
+export function sumAndformatGasCostToEther(
+  gases: NumStrBigNumber[],
+  opts: FormattedNumberOptions = optionsBlank(),
+  gasPrice: NumStrBigNumber
+): string {
+  const summedGas = gases.reduce(
+    (p, g) => createBigNumber(unfix(g, 'number')).plus(p),
+    ZERO
+  );
 
-//   const estimatedGasCost = createBigNumber(summedGas).times(
-//     createBigNumber(gasPrice)
-//   );
+  const estimatedGasCost = createBigNumber(summedGas).times(
+    createBigNumber(gasPrice)
+  );
 
-//   return formatGasCost(estimatedGasCost, opts).formatted;
-// }
+  return formatGasCost(estimatedGasCost, opts).formatted;
+}
 
-// export function formatGasCostToEther(
-//   num: NumStrBigNumber,
-//   opts: FormattedNumberOptions = optionsBlank(),
-//   gasPrice: NumStrBigNumber
-// ): string {
-//   return sumAndformatGasCostToEther([num], opts, gasPrice);
-// }
+export function formatGasCostToEther(
+  num: NumStrBigNumber,
+  opts: FormattedNumberOptions = optionsBlank(),
+  gasPrice: NumStrBigNumber
+): string {
+  return sumAndformatGasCostToEther([num], opts, gasPrice);
+}
 
 export function formatAttoRep(
   num: NumStrBigNumber,
@@ -581,9 +581,9 @@ export function formatNumber(
     o.roundedFormatted = bigUnitPostfix
       ? addBigUnitPostfix(value, o.roundedValue.toFixed(decimalsRounded), removeComma)
       : addCommas(o.roundedValue.toFixed(decimalsRounded), removeComma);
-    // o.minimized = addCommas(encodeNumberAsBase10String(o.formattedValue), removeComma);
-    // o.rounded = encodeNumberAsBase10String(o.roundedValue);
-    // o.formattedValue = encodeNumberAsJSNumber(o.formattedValue, false);
+    o.minimized = addCommas(encodeNumberAsBase10String(o.formattedValue), removeComma);
+    o.rounded = encodeNumberAsBase10String(o.roundedValue);
+    o.formattedValue = encodeNumberAsJSNumber(o.formattedValue, false);
   }
 
   if (positiveSign && !bigUnitPostfix) {
@@ -638,35 +638,35 @@ export function cutOffDecimal(value, numDigits) {
   return value;
 }
 
-// export function calcPriceFromPercentage(
-//   percentage: string,
-//   minPrice: string,
-//   maxPrice: string,
-//   tickSize: number
-// ): number {
-//   if (percentage === undefined || percentage === null) return Number(0);
-//   const numTicks = tickSizeToNumTickWithDisplayPrices(
-//     createBigNumber(tickSize),
-//     createBigNumber(minPrice),
-//     createBigNumber(maxPrice)
-//   );
-//   const bnMinPrice = createBigNumber(minPrice);
-//   const bnMaxPrice = createBigNumber(maxPrice);
-//   const percentNumTicks = createBigNumber(numTicks).times(
-//     createBigNumber(percentage).dividedBy(100)
-//   );
-//   if (percentNumTicks.lt(tickSize)) {
-//     return bnMinPrice.plus(tickSize).toNumber();
-//   }
-//   const calcPrice = percentNumTicks.times(tickSize).plus(bnMinPrice);
-//   if (calcPrice.eq(maxPrice)) {
-//     return bnMaxPrice.minus(tickSize).toNumber();
-//   }
-//   const correctDec = formatBestPrice(calcPrice, tickSize);
-//   const precision = getPrecision(tickSize, 0);
-//   const value = createBigNumber(correctDec.fullPrecision).toFixed(precision);
-//   return Number(value);
-// }
+export function calcPriceFromPercentage(
+  percentage: string,
+  minPrice: string,
+  maxPrice: string,
+  tickSize: number
+): number {
+  if (percentage === undefined || percentage === null) return Number(0);
+  const numTicks = tickSizeToNumTickWithDisplayPrices(
+    createBigNumber(tickSize),
+    createBigNumber(minPrice),
+    createBigNumber(maxPrice)
+  );
+  const bnMinPrice = createBigNumber(minPrice);
+  const bnMaxPrice = createBigNumber(maxPrice);
+  const percentNumTicks = createBigNumber(numTicks).times(
+    createBigNumber(percentage).dividedBy(100)
+  );
+  if (percentNumTicks.lt(tickSize)) {
+    return bnMinPrice.plus(tickSize).toNumber();
+  }
+  const calcPrice = percentNumTicks.times(tickSize).plus(bnMinPrice);
+  if (calcPrice.eq(maxPrice)) {
+    return bnMaxPrice.minus(tickSize).toNumber();
+  }
+  const correctDec = formatBestPrice(calcPrice, tickSize);
+  const precision = getPrecision(tickSize, 0);
+  const value = createBigNumber(correctDec.fullPrecision).toFixed(precision);
+  return Number(value);
+}
 
 export function calcPercentageFromPrice(
   price: string,
@@ -685,16 +685,16 @@ export function calcPercentageFromPrice(
   return Number(percentage.toFixed(2));
 }
 
-// export function convertOnChainSharesToDisplayShareAmount(
-//   onChainAmount: NumStrBigNumber,
-//   precision: NumStrBigNumber,
-// ): BigNumber {
-//   return convertOnChainAmountToDisplayAmount(createBigNumber(onChainAmount), YES_NO_TICK_SIZE, createBigNumber(10).pow(createBigNumber(precision)));
-// }
+export function convertOnChainSharesToDisplayShareAmount(
+  onChainAmount: NumStrBigNumber,
+  precision: NumStrBigNumber,
+): BigNumber {
+  return convertOnChainAmountToDisplayAmount(createBigNumber(onChainAmount), YES_NO_TICK_SIZE, createBigNumber(10).pow(createBigNumber(precision)));
+}
 
-// export function convertDisplayShareAmountToOnChainShareAmount(displayAmount: NumStrBigNumber, precision: NumStrBigNumber): BigNumber {
-//   return convertDisplayAmountToOnChainAmount(createBigNumber(displayAmount), YES_NO_TICK_SIZE, createBigNumber(10).pow(createBigNumber(precision)));
-// }
+export function convertDisplayShareAmountToOnChainShareAmount(displayAmount: NumStrBigNumber, precision: NumStrBigNumber): BigNumber {
+  return convertDisplayAmountToOnChainAmount(createBigNumber(displayAmount), YES_NO_TICK_SIZE, createBigNumber(10).pow(createBigNumber(precision)));
+}
 
 export function convertOnChainCashAmountToDisplayCashAmount(
   onChainAmount: NumStrBigNumber,
@@ -712,4 +712,3 @@ export function convertDisplayCashAmountToOnChainCashAmount(
 
 export const isSameAddress = (address1: string, address2: string) =>
   address1 && address2 && address1.toLowerCase() === address2.toLowerCase();
-

@@ -2,16 +2,9 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Header } from './common';
 import Styles from './modal.styles.less';
 import {
-  SecondaryButton,
-  TextButton,
-  AccountDetails,
-  WalletButton,
-  Loader,
-  SUPPORTED_WALLETS,
-  injected,
-  NETWORK_CHAIN_ID,
-  portis,
-  ErrorBlock,
+  Buttons,
+  ConnectAccount,
+  Labels,
 } from '@augurproject/augur-comps';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { AbstractConnector } from '@web3-react/abstract-connector';
@@ -26,6 +19,23 @@ import { useAppStatusStore } from '../stores/app-status';
 import classNames from 'classnames';
 import { useUserStore } from '../stores/user';
 import { NETWORK_NAMES } from '../stores/constants';
+
+const {
+  SecondaryButton,
+  TextButton,
+  WalletButton,
+} = Buttons;
+const {
+  AccountDetails,
+  Loader,
+  constants: { SUPPORTED_WALLETS },
+  connectors: {
+    NETWORK_CHAIN_ID,
+    portis,
+    injected,
+  }
+} = ConnectAccount; 
+const { ErrorBlock } = Labels;
 
 const WALLET_VIEWS = {
   OPTIONS: 'options',
