@@ -28,6 +28,14 @@ import _makePath from './utils/routes/make-path';
 import _makeQuery from './utils/routes/make-query';
 import _parseStringToArray from './utils/routes/parse-string-to-array';
 import { CATEGORIES_ICON_MAP as _CATEGORIES_ICON_MAP } from './components/common/category-icons-map';
+import _GraphDataStore from './stores/graph-data';
+import { useGraphHeartbeat } from './stores/utils';
+export const Stores = {
+  GraphData: _GraphDataStore,
+  Hooks: {
+    useGraphHeartbeat,
+  },
+};
 
 export const ConnectAccount = {
   ConnectAccount: _ConnectAccount,
@@ -75,6 +83,7 @@ const AugurComps = {
   Logo,
   MarketCard,
   Routes,
+  Stores,
   Types,
   Utils,
   CATEGORIES_ICON_MAP,
