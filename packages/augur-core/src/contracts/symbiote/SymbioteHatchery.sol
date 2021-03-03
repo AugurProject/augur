@@ -59,6 +59,7 @@ contract SymbioteHatchery is Initializable {
         require(MIN_OUTCOMES <= _outcomeSymbols.length && _outcomeSymbols.length <= MAX_OUTCOMES, "SymbioteHatchery.createSymbiote: Number of outcomes is not acceptable");
         require(_outcomeSymbols.length == _outcomeNames.length, "SymbioteHatchery.createSymbiote: outcome names and outcome symbols differ in length");
         require(_creatorFee <= MAX_FEE, "SymbioteHatchery.createSymbiote: market creator fee too high");
+        uint256 _id = symbiotes.length;
         {
             symbiotes.push(Symbiote(
                 msg.sender,
@@ -69,7 +70,6 @@ contract SymbioteHatchery is Initializable {
                 0
             ));
         }
-        uint256 _id = symbiotes.length-1;
         _arbiter.onSymbioteCreated(_id, _outcomeSymbols, _outcomeNames, _numTicks, _arbiterConfiguration);
         emit SymbioteCreated();
         return _id;
