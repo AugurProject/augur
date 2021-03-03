@@ -39,6 +39,8 @@ export const STUBBED_USER_ACTIONS = {
   updateTransaction: (hash, updates) => {},
   updateUserBalances: (balances) => {},
   updateApproval: isApproved => {},
+  updateMigrated: isMigrated => {},
+  updateTxFailed: txFailed => {},
   logout: () => {},
 };
 
@@ -52,6 +54,8 @@ export const DEFAULT_USER_STATE: UserState = {
   loginAccount: null,
   seenPositionWarnings: {},
   transactions: [],
+  txFailed: false,
+  isMigrated: false,
 };
 
 export const USER_KEYS = {
@@ -60,7 +64,9 @@ export const USER_KEYS = {
   LOGIN_ACCOUNT: 'loginAccount',
   SEEN_POSITION_WARNINGS: 'seenPositionWarnings',
   TRANSACTIONS: 'transactions',
-  IS_APPROVED: 'isApproved'
+  IS_APPROVED: 'isApproved',
+  TX_FAILED: 'txFailed',
+  IS_MIGRATED: 'isMigrated'
 };
 
 export const USER_ACTIONS = {
@@ -74,6 +80,8 @@ export const USER_ACTIONS = {
   UPDATE_USER_BALANCES: 'UPDATE_USER_BALANCES',
   UPDATE_APPROVAL: 'UPDATE_APPROVAL',
   LOGOUT: 'LOGOUT',
+  UPDATE_MIGRATED: 'UPDATE_MIGRATED',
+  UPDATE_TX_FAILED: 'UPDATE_TX_FAILED'
 };
 
 export const STUBBED_APP_STATUS_ACTIONS = {

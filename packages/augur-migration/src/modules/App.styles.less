@@ -7,7 +7,7 @@
   height: 100vh;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto auto 1fr;
+  grid-template-rows: auto auto auto 1fr;
 
   > div:first-of-type {
     border-bottom: @size-1 solid var(--simple-border);
@@ -22,7 +22,7 @@
     }
   }
 
-  > span {
+  > span:first-of-type {
     .text-24-bold;
 
     margin: @size-42 0 @size-40;
@@ -33,15 +33,33 @@
   }
 
   > div:last-of-type {
-    grid-row: 3;
     grid-column: 1 / span 3;
     margin-left: auto;
     margin-right: auto;
   }
+  
+  > span:nth-of-type(2) {
+    grid-column: 1 / span 3;
+    margin-top: @size-40;
+    margin-left: auto;
+    margin-right: auto;
+  }
 
-  @media @breakpoint-mobile-tablet {    
+  > article {
+    grid-column: 1 / span 3;
+    max-width: 603px;
+    margin: @size-20 auto;
+  }
+
+  @media @breakpoint-mobile-tablet { 
+    margin-bottom: @size-50;
+   
     > div:last-of-type {
-      margin: 0 @size-24;
+      margin: 0 auto;
+    }
+
+    > article {
+      max-width: 306px;
     }
   }
 }

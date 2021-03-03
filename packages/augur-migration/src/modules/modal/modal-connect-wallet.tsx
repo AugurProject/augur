@@ -1,11 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Header } from './common';
 import Styles from './modal.styles.less';
-import {
-  Buttons,
-  ConnectAccount,
-  Labels,
-} from '@augurproject/augur-comps';
+import { Buttons, ConnectAccount, Labels } from '@augurproject/augur-comps';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 // import { SUPPORTED_WALLETS } from '../ConnectAccount/constants';
@@ -20,21 +16,14 @@ import classNames from 'classnames';
 import { useUserStore } from '../stores/user';
 import { NETWORK_NAMES } from '../stores/constants';
 
-const {
-  SecondaryButton,
-  TextButton,
-  WalletButton,
-} = Buttons;
+const { SecondaryButton, TextButton, WalletButton } = Buttons;
 const {
   AccountDetails,
   Loader,
+  utils: { isSafari },
   constants: { SUPPORTED_WALLETS },
-  connectors: {
-    NETWORK_CHAIN_ID,
-    portis,
-    injected,
-  }
-} = ConnectAccount; 
+  connectors: { NETWORK_CHAIN_ID, portis, injected },
+} = ConnectAccount;
 const { ErrorBlock } = Labels;
 
 const WALLET_VIEWS = {
@@ -121,7 +110,8 @@ const PendingWalletView = ({
               id={`connect-${key}`}
               key={key}
               text={wallet.name}
-              icon={null
+              icon={
+                null
                 // <img
                 //   src={
                 //     require('modules/ConnectAccount/assets/' + wallet.iconName)
@@ -231,7 +221,9 @@ const ModalConnectWallet = ({
 
   const getWalletButtons = useCallback(() => {
     const isMetamask = window['ethereum'] && window['ethereum']['isMetaMask'];
+    const isWeb3 = window['web3'] || window['ethereum'];
     const walletButtons = Object.keys(SUPPORTED_WALLETS)
+      .filter((wallet) => !(wallet === 'PORTIS' && isSafari()))
       .map((key) => {
         const wallet = SUPPORTED_WALLETS[key];
         const commonWalletButtonProps = {
@@ -240,15 +232,14 @@ const ModalConnectWallet = ({
             !wallet.href &&
             tryActivation(wallet.connector),
           href: wallet.href,
-          icon: (null
-            // <img
-            //   src={
-            //     require('modules/ConnectAccount/assets/' + wallet.iconName)
-            //       .default
-            //   }
-            //   alt={wallet.name}
-            // />
-          ),
+          icon: null,
+          // <img
+          //   src={
+          //     require('modules/ConnectAccount/assets/' + wallet.iconName)
+          //       .default
+          //   }
+          //   alt={wallet.name}
+          // />
           id: `connect-${key}`,
           key,
           selected: isLogged && wallet?.connector === connector,
@@ -266,11 +257,11 @@ const ModalConnectWallet = ({
           ) {
             return commonWalletButtonProps;
           } else {
-            if (
-              (wallet.name === 'MetaMask' && !isMetamask) ||
-              (wallet.name === SUPPORTED_WALLETS['INJECTED'].name &&
-                !isMetamask)
-            ) {
+            if (wallet.name === 'MetaMask' && !isMetamask) {
+              return null;
+            }
+
+            if (wallet.name === SUPPORTED_WALLETS['INJECTED'].name && !isWeb3) {
               return null;
             }
 
@@ -286,7 +277,7 @@ const ModalConnectWallet = ({
                   ...commonWalletButtonProps,
                   text: 'Install Metamask',
                   href: 'https://metamask.io/',
-                //   icon: <img src={MetamaskIcon} alt={wallet.name} />,
+                  //   icon: <img src={MetamaskIcon} alt={wallet.name} />,
                 };
               } else {
                 return null;
