@@ -7,7 +7,7 @@
   height: 100vh;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto auto 1fr;
+  grid-template-rows: auto auto auto 1fr;
 
   > div:first-of-type {
     border-bottom: @size-1 solid var(--simple-border);
@@ -38,10 +38,19 @@
     margin-left: auto;
     margin-right: auto;
   }
+  
+  > section {
+    grid-column: 1 / span 3;
+    margin-top: @size-40;
+    margin-left: auto;
+    margin-right: auto;
+  }
 
-  @media @breakpoint-mobile-tablet {    
+  @media @breakpoint-mobile-tablet { 
+    margin-bottom: @size-50;
+   
     > div:last-of-type {
-      margin: 0 @size-24;
+      margin: 0 auto;
     }
   }
 }

@@ -1,0 +1,24 @@
+@import (reference) '~assets/styles/shared';
+
+.ErrorMessage {
+    .text-16-semi-bold;
+
+    border-radius: @size-8;
+    color: var(--simple-yes);
+    padding: @size-12;
+    background-color: var(--simple-yes-15);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: @size-48;
+    width: 620px;
+
+    @media @breakpoint-mobile-tablet {
+        width: 363px;
+    }
+}
+
+.error {
+    color: var(--simple-failed);
+    background-color: var(--simple-failed-15);
+}

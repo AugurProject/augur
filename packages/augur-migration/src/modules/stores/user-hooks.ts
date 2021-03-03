@@ -17,7 +17,9 @@ const {
   UPDATE_USER_BALANCES,
   UPDATE_TRANSACTION,
   LOGOUT,
-  UPDATE_APPROVAL
+  UPDATE_APPROVAL,
+  UPDATE_MIGRATED,
+  UPDATE_TX_FAILED,
 } = USER_ACTIONS;
 const {
   ACCOUNT,
@@ -25,7 +27,9 @@ const {
   LOGIN_ACCOUNT,
   SEEN_POSITION_WARNINGS,
   TRANSACTIONS,
-  IS_APPROVED
+  IS_APPROVED,
+  IS_MIGRATED,
+  TX_FAILED,
 } = USER_KEYS;
 
 const updateLocalStorage = (userAccount, updatedState) => {
@@ -140,6 +144,14 @@ export function UserReducer(state, action) {
       updatedState[SEEN_POSITION_WARNINGS] = action.seenPositionWarnings;
       break;
     }
+    case UPDATE_MIGRATED: {
+      updatedState[IS_MIGRATED] = action.isMigrated;
+      break;
+    }
+    case UPDATE_TX_FAILED: {
+      updatedState[TX_FAILED] = action.txFailed;
+      break;
+    }
     default:
       console.log(`Error: ${action.type} not caught by Graph Data reducer`);
   }
@@ -173,6 +185,10 @@ export const useUser = (defaultState = DEFAULT_USER_STATE) => {
         dispatch({ type: REMOVE_TRANSACTION, hash }),
       finalizeTransaction: (hash) =>
         dispatch({ type: FINALIZE_TRANSACTION, hash }),
+      updateTxFailed: (txFailed) =>
+        dispatch({ type: UPDATE_TX_FAILED, txFailed }),
+      updateMigrated: (isMigrated) =>
+        dispatch({ type: UPDATE_MIGRATED, isMigrated }),
       updateSeenPositionWarning: (id, seenPositionWarning, warningType) =>
         dispatch({
           type: UPDATE_SEEN_POSITION_WARNING,

@@ -1157,6 +1157,8 @@ export interface UserState {
   }
   isApproved: boolean;
   transactions: TransactionDetails[];
+  isMigrated: boolean;
+  txFailed: boolean;
 }
 
 export interface TransactionDetails {
