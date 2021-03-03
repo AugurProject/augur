@@ -7,7 +7,7 @@ variables:
   - name: CORE_IMAGE_LATEST
     value: augurproject/augur-core:monorepo
   - name: PRIMARY_NODE_VERSION
-    value: 12.18.x
+    value: 15.11.x
   - name: GETH_VERSION
     value: v1.9.19
   - name: SOLC_VERSION
