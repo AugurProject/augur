@@ -4,13 +4,8 @@ import Styles from './modal.styles.less';
 import { Buttons, ConnectAccount, Labels } from '@augurproject/augur-comps';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { AbstractConnector } from '@web3-react/abstract-connector';
-// import { SUPPORTED_WALLETS } from '../ConnectAccount/constants';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-// import {injected, NETWORK_CHAIN_ID, portis} from '../ConnectAccount/connectors';
-// import MetamaskIcon from '../../assets/icons/metamask.png';
-// import { ErrorBlock } from '../common/labels';
-// import Loader from '../ConnectAccount/components/Loader';
-// import AccountDetails from '../ConnectAccount/components/AccountDetails';
+import MetamaskIcon from '../../assets/icons/metamask.png';
 import { useAppStatusStore } from '../stores/app-status';
 import classNames from 'classnames';
 import { useUserStore } from '../stores/user';
@@ -274,7 +269,7 @@ const ModalConnectWallet = ({
                   ...commonWalletButtonProps,
                   text: 'Install Metamask',
                   href: 'https://metamask.io/',
-                  icon: <img src={null} alt={wallet.name} />,
+                  icon: <img src={MetamaskIcon} alt={wallet.name} />,
                 };
               } else {
                 return null;
