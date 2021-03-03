@@ -7,7 +7,7 @@ import { AbstractConnector } from '@web3-react/abstract-connector';
 // import { SUPPORTED_WALLETS } from '../ConnectAccount/constants';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 // import {injected, NETWORK_CHAIN_ID, portis} from '../ConnectAccount/connectors';
-// import MetamaskIcon from '../ConnectAccount/assets/metamask.png';
+// import MetamaskIcon from '../../assets/icons/metamask.png';
 // import { ErrorBlock } from '../common/labels';
 // import Loader from '../ConnectAccount/components/Loader';
 // import AccountDetails from '../ConnectAccount/components/AccountDetails';
@@ -111,14 +111,10 @@ const PendingWalletView = ({
               key={key}
               text={wallet.name}
               icon={
-                null
-                // <img
-                //   src={
-                //     require('modules/ConnectAccount/assets/' + wallet.iconName)
-                //       .default
-                //   }
-                //   alt={wallet.name}
-                // />
+                <img
+                  src={require('../../assets/icons/' + wallet.iconName).default}
+                  alt={wallet.name}
+                />
               }
             />
           );
@@ -232,14 +228,15 @@ const ModalConnectWallet = ({
             !wallet.href &&
             tryActivation(wallet.connector),
           href: wallet.href,
-          icon: null,
-          // <img
-          //   src={
-          //     require('modules/ConnectAccount/assets/' + wallet.iconName)
-          //       .default
-          //   }
-          //   alt={wallet.name}
-          // />
+          icon: (
+            <img
+              src={
+                require('../../assets/icons/' + wallet.iconName)
+                  .default
+              }
+              alt={wallet.name}
+            />
+          ),
           id: `connect-${key}`,
           key,
           selected: isLogged && wallet?.connector === connector,
@@ -277,7 +274,7 @@ const ModalConnectWallet = ({
                   ...commonWalletButtonProps,
                   text: 'Install Metamask',
                   href: 'https://metamask.io/',
-                  //   icon: <img src={MetamaskIcon} alt={wallet.name} />,
+                  icon: <img src={null} alt={wallet.name} />,
                 };
               } else {
                 return null;
