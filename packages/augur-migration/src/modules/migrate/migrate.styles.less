@@ -72,7 +72,25 @@
   }
 
   > button {
-    margin-top: @size-38;
     width: fit-content;
+  }
+
+  @media @breakpoint-mobile-tablet {    
+    > div:first-of-type {
+      flex-direction: column;
+
+      > svg {
+        margin: @size-24 0;
+        transform: rotate(90deg);
+      }
+    }
+
+    > span:first-of-type {
+      margin-bottom: @size-32;
+    }
+
+    > div:last-of-type {
+      margin-top: @size-32;
+    }
   }
 }
