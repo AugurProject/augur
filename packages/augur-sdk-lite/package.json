@@ -9,8 +9,14 @@
     "src": "src"
   },
   "scripts": {
-    "prepare:abi:ParaShareToken": "node ../augur-tools/build/flash/cli.js abi -c ParaShareToken > src/abi/ParaShareToken.json",
-    "prepare:abi": "yarn prepare:abi:ParaShareToken",
+    "prepare:abi:AccountLoader": "node ../augur-tools/build/flash/cli.js abi -t -c AccountLoader > src/abi/AccountLoaderAbi.ts",
+    "prepare:abi:AMMExchange": "node ../augur-tools/build/flash/cli.js abi -t -c AMMExchange > src/abi/AMMExchangeAbi.ts",
+    "prepare:abi:AMMFactory": "node ../augur-tools/build/flash/cli.js abi -t -c AMMFactory > src/abi/AMMFactoryAbi.ts",
+    "prepare:abi:HotLoading": "node ../augur-tools/build/flash/cli.js abi -t -c HotLoading > src/abi/HotLoadingAbi.ts",
+    "prepare:abi:ParaShareToken": "node ../augur-tools/build/flash/cli.js abi -t -c ParaShareToken > src/abi/ParaShareTokenAbi.ts",
+    "prepare:abi:WarpSync": "node ../augur-tools/build/flash/cli.js abi -t -c WarpSync > src/abi/WarpSyncAbi.ts",
+    "prepare:abi:WethWrapperForAMMExchange": "node ../augur-tools/build/flash/cli.js abi -t -c WethWrapperForAMMExchange > src/abi/WethWrapperForAMMExchangeAbi.ts",
+    "prepare:abi": "yarn prepare:abi:AccountLoader;yarn prepare:abi:AMMExchange;yarn prepare:abi:AMMFactory;yarn prepare:abi:HotLoading;yarn prepare:abi:ParaShareToken;yarn prepare:abi:WarpSync;yarn prepare:abi:WethWrapperForAMMExchange;",
     "build": "tsc -b",
     "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; yarn clean",
     "check": "gts check",

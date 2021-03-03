@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { SignerOrProvider } from '../constants';
-import ParaShareTokenAbi from '../abi/ParaShareToken.json'
+import { ParaShareTokenAbi } from '../abi/ParaShareTokenAbi';
 
 export class ParaShareToken {
   static readonly ABI = ParaShareTokenAbi;
