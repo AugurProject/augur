@@ -7,7 +7,7 @@ export const WethWrapperForAMMExchangeAbi = [
         "type": "address"
       },
       {
-        "internalType": "contract ParaShareToken",
+        "internalType": "contract IParaShareToken",
         "name": "_shareToken",
         "type": "address"
       }
@@ -93,6 +93,19 @@ export const WethWrapperForAMMExchangeAbi = [
     "type": "event"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "TradingProceedsClaimed",
+    "type": "event"
+  },
+  {
     "payable": true,
     "stateMutability": "payable",
     "type": "fallback"
@@ -124,6 +137,11 @@ export const WethWrapperForAMMExchangeAbi = [
         "internalType": "address",
         "name": "_recipient",
         "type": "address"
+      },
+      {
+        "internalType": "string[]",
+        "name": "_symbols",
+        "type": "string[]"
       }
     ],
     "name": "addAMMWithLiquidity",
@@ -431,7 +449,7 @@ export const WethWrapperForAMMExchangeAbi = [
     "name": "shareToken",
     "outputs": [
       {
-        "internalType": "contract ParaShareToken",
+        "internalType": "contract IParaShareToken",
         "name": "",
         "type": "address"
       }
@@ -455,4 +473,4 @@ export const WethWrapperForAMMExchangeAbi = [
     "stateMutability": "view",
     "type": "function"
   }
-]
+];

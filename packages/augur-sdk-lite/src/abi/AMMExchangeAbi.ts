@@ -149,6 +149,12 @@ export const AMMExchangeAbi = [
         "internalType": "uint256",
         "name": "longShares",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "lpTokensBurnt",
+        "type": "uint256"
       }
     ],
     "name": "RemoveLiquidity",
@@ -656,7 +662,7 @@ export const AMMExchangeAbi = [
         "type": "address"
       },
       {
-        "internalType": "contract ParaShareToken",
+        "internalType": "contract IParaShareToken",
         "name": "_shareToken",
         "type": "address"
       },
@@ -828,7 +834,7 @@ export const AMMExchangeAbi = [
     "name": "shareToken",
     "outputs": [
       {
-        "internalType": "contract ParaShareToken",
+        "internalType": "contract IParaShareToken",
         "name": "",
         "type": "address"
       }
@@ -940,4 +946,4 @@ export const AMMExchangeAbi = [
     "stateMutability": "nonpayable",
     "type": "function"
   }
-]
+];

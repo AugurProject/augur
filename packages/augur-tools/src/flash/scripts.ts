@@ -110,15 +110,29 @@ export function addScripts(flash: FlashSession) {
         name: 'contract',
         abbr: 'c',
         description: 'The contract which ABI you would like to print, default: all',
+      },
+      {
+        name: 'typescript',
+        abbr: 't',
+        flag: true,
+        description: 'Output the file as typescript'
       }
     ],
     async call(this: FlashSession, args: FlashArguments) {
+      const outputTypescript = !Boolean(args.typescript)
+
       let output = abi;
       if (args.contract) {
         output = abi[String(args.contract)] || [];
       }
 
-      console.log(JSON.stringify(output, null, 2));
+      const contractAbi = JSON.stringify(output, null, 2);
+      if(outputTypescript) {
+        console.log(contractAbi);
+        return;
+      }
+
+      console.log(`export const ${args.contract}Abi = ${contractAbi};`);
     }
   });
 

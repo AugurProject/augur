@@ -5,6 +5,16 @@ export const AMMFactoryAbi = [
         "internalType": "address",
         "name": "_proxyToClone",
         "type": "address"
+      },
+      {
+        "internalType": "contract BFactory",
+        "name": "_bFactory",
+        "type": "address"
+      },
+      {
+        "internalType": "contract WrappedShareTokenFactory",
+        "name": "_wrappedShareTokenFactory",
+        "type": "address"
       }
     ],
     "payable": false,
@@ -12,35 +22,54 @@ export const AMMFactoryAbi = [
     "type": "constructor"
   },
   {
-    "constant": false,
+    "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "contract IAMMExchange",
+        "name": "amm",
+        "type": "address"
+      },
+      {
+        "indexed": false,
         "internalType": "contract IMarket",
-        "name": "_market",
+        "name": "market",
         "type": "address"
       },
       {
-        "internalType": "contract ParaShareToken",
-        "name": "_para",
+        "indexed": false,
+        "internalType": "contract IParaShareToken",
+        "name": "shareToken",
         "type": "address"
       },
       {
+        "indexed": false,
         "internalType": "uint256",
-        "name": "_fee",
+        "name": "fee",
         "type": "uint256"
-      }
-    ],
-    "name": "addAMM",
-    "outputs": [
+      },
       {
-        "internalType": "address",
-        "name": "",
+        "indexed": false,
+        "internalType": "contract BPool",
+        "name": "bPool",
         "type": "address"
       }
     ],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "name": "AMMCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "contract WrappedShareToken",
+        "name": "wrappedShareToken",
+        "type": "address"
+      }
+    ],
+    "name": "BPoolCreated",
+    "type": "event"
   },
   {
     "constant": false,
@@ -51,7 +80,7 @@ export const AMMFactoryAbi = [
         "type": "address"
       },
       {
-        "internalType": "contract ParaShareToken",
+        "internalType": "contract IParaShareToken",
         "name": "_para",
         "type": "address"
       },
@@ -79,6 +108,11 @@ export const AMMFactoryAbi = [
         "internalType": "address",
         "name": "_recipient",
         "type": "address"
+      },
+      {
+        "internalType": "string[]",
+        "name": "_symbols",
+        "type": "string[]"
       }
     ],
     "name": "addAMMWithLiquidity",
@@ -99,6 +133,114 @@ export const AMMFactoryAbi = [
     "type": "function"
   },
   {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "contract IMarket",
+        "name": "_market",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IParaShareToken",
+        "name": "_para",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_fee",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_cash",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_cashToInvalidPool",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string[]",
+        "name": "_symbols",
+        "type": "string[]"
+      }
+    ],
+    "name": "addLiquidity",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "contract IMarket",
+        "name": "_market",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IParaShareToken",
+        "name": "_para",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_fee",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_account",
+        "type": "address"
+      }
+    ],
+    "name": "balanceOf",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "balancerPools",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "constant": true,
     "inputs": [
       {
@@ -107,7 +249,7 @@ export const AMMFactoryAbi = [
         "type": "address"
       },
       {
-        "internalType": "contract ParaShareToken",
+        "internalType": "contract IParaShareToken",
         "name": "_para",
         "type": "address"
       },
@@ -127,6 +269,42 @@ export const AMMFactoryAbi = [
     ],
     "payable": false,
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "contract IMarket[]",
+        "name": "_markets",
+        "type": "address[]"
+      },
+      {
+        "internalType": "contract IParaShareToken[]",
+        "name": "_shareTokens",
+        "type": "address[]"
+      },
+      {
+        "internalType": "address payable",
+        "name": "_shareHolder",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "_fingerprint",
+        "type": "bytes32"
+      }
+    ],
+    "name": "claimMarketsProceeds",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -192,6 +370,83 @@ export const AMMFactoryAbi = [
     "type": "function"
   },
   {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "contract IMarket",
+        "name": "_market",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IParaShareToken",
+        "name": "_para",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_fee",
+        "type": "uint256"
+      }
+    ],
+    "name": "getAMM",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "contract IMarket",
+        "name": "_market",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IParaShareToken",
+        "name": "_para",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_fee",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_poolTokensToSell",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string[]",
+        "name": "_symbols",
+        "type": "string[]"
+      }
+    ],
+    "name": "removeLiquidity",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "_shortShare",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_longShare",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "constant": true,
     "inputs": [
       {
@@ -200,7 +455,7 @@ export const AMMFactoryAbi = [
         "type": "address"
       },
       {
-        "internalType": "contract ParaShareToken",
+        "internalType": "contract IParaShareToken",
         "name": "_para",
         "type": "address"
       },
@@ -231,7 +486,7 @@ export const AMMFactoryAbi = [
         "type": "address"
       },
       {
-        "internalType": "contract ParaShareToken",
+        "internalType": "contract IParaShareToken",
         "name": "_para",
         "type": "address"
       },
@@ -281,7 +536,7 @@ export const AMMFactoryAbi = [
         "type": "address"
       },
       {
-        "internalType": "contract ParaShareToken",
+        "internalType": "contract IParaShareToken",
         "name": "_para",
         "type": "address"
       },
@@ -312,4 +567,4 @@ export const AMMFactoryAbi = [
     "stateMutability": "nonpayable",
     "type": "function"
   }
-]
+];
