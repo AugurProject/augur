@@ -24,7 +24,7 @@
         ]
       },
       "esModuleInterop": true,
-      "resolveJsonModule": false
+      "resolveJsonModule": true
     },
     "include": [
       "./src/*",
