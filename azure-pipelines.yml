@@ -165,7 +165,7 @@ jobs:
       - template: .azure-templates/node-setup.yml
       - task: UsePythonVersion@0
         inputs:
-          versionSpec: '3.6'
+          versionSpec: '3.9'
       - bash: |
           set -euo pipefail
           python3 -m venv venv && \
@@ -279,7 +279,7 @@ jobs:
       - template: .azure-templates/node-setup.yml
       - task: UsePythonVersion@0
         inputs:
-          versionSpec: '3.6'
+          versionSpec: '3.9'
       - bash: |
           set -exuo pipefail
           echo "$(SOLC_MD5) */usr/local/bin/solc" > solc.md5 && \
