@@ -16,7 +16,7 @@ import {
 } from './stores/utils';
 import { PARA_CONFIG } from './stores/constants';
 import { networkSettings } from './constants';
-import { ErrorMessage } from './shared/error-message';
+import { ErrorMessage, NetworkMismatchBanner } from './shared/error-message';
 
 const { ConnectAccountProvider } = ConnectAccount;
 
@@ -74,7 +74,7 @@ const AppBody = () => {
         <Logo isMobile={isMobile} />
         <ConnectAccountButton />
       </div>
-
+      <NetworkMismatchBanner />
       <span>Migrate V1 REP</span>
       <Migrate />
       {txFailed && <ErrorMessage type='error' message='Transaction Failed' />}

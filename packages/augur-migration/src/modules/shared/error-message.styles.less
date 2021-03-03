@@ -22,3 +22,34 @@
     color: var(--simple-failed);
     background-color: var(--simple-failed-15);
 }
+
+
+.NetworkMismatch {
+    .SimpleBorder;
+    .text-16-bold;
+  
+    border: none;
+    background: var(--simple-no-15);
+    color: var(--simple-failed);
+    text-align: center;
+    width: 100%;
+    flex: 1;
+    padding: @size-13 @size-16;
+    max-height: @size-48;
+    min-height: @size-48;
+    height: @size-48;
+    white-space: nowrap;
+  
+    @media @breakpoint-mobile-tablet {
+      margin-top: 0;
+    }
+  
+    &.Market {
+      margin-bottom: -@size-24;
+  
+      @media @breakpoint-mobile-tablet {
+        margin-bottom: @size-16;
+      }
+    }
+  }
+  

@@ -33,7 +33,6 @@
   }
 
   > div:last-of-type {
-    grid-row: 3;
     grid-column: 1 / span 3;
     margin-left: auto;
     margin-right: auto;
@@ -46,11 +45,21 @@
     margin-right: auto;
   }
 
+  > article {
+    grid-column: 1 / span 3;
+    max-width: 603px;
+    margin: @size-20 auto;
+  }
+
   @media @breakpoint-mobile-tablet { 
     margin-bottom: @size-50;
    
     > div:last-of-type {
       margin: 0 auto;
+    }
+
+    > article {
+      max-width: 306px;
     }
   }
 }
