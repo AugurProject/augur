@@ -86,6 +86,9 @@ contract KBCArbiter is IArbiter, Initializable {
     IERC20 public cash;
     IUniverse public universe;
 
+    event Stake(uint256 symbioteId, uint256[] payout, uint256 amount, bool isWinner, address staker);
+    event Withdraw(uint256 symbioteId, address staker, uint256 amount);
+
     function initialize(ISymbioteHatchery _hatchery) public returns (bool) {
         endInitialization();
         hatchery = address(_hatchery);
@@ -167,6 +170,7 @@ contract KBCArbiter is IArbiter, Initializable {
                 symbioteData[_id].endTime = _currentTime + symbioteData[_id].responseDuration;
             }
         }
+        emit Stake(_id, _payout, _amount, symbioteData[_id].winningPayoutHash == _payoutHash, msg.sender);
     }
 
     function validatePayout(uint256 _id, uint256[] memory _payout) public returns (bool) {
@@ -194,6 +198,7 @@ contract KBCArbiter is IArbiter, Initializable {
         uint256 _totalStake = symbioteData[_id].totalStake;
         uint256 _repPayout = _userStake * _totalStake / _totalPayoutStake;
         reputationToken.transfer(msg.sender, _repPayout);
+        emit Withdraw(_id, msg.sender, _repPayout);
     }
 
     // Fallback Market Functions

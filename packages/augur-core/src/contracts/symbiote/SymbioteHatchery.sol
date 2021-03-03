@@ -35,11 +35,10 @@ contract SymbioteHatchery is Initializable {
     IFeePot public feePot;
     IERC20 public underlyingCurrency;
 
-    event SymbioteCreated();
-    event CompleteSetsMinted();
-    event CompleteSetsBurned();
-    event Claim();
-    event AugurResolutionInitiated();
+    event SymbioteCreated(uint256 creatorFee, string[] outcomeSymbols, bytes32[] outcomeNames, uint256 numTicks, IArbiter arbiter, bytes arbiterConfiguration);
+    event CompleteSetsMinted(uint256 symbioteId, uint256 amount, address target);
+    event CompleteSetsBurned(uint256 symbioteId, uint256 amount, address target);
+    event Claim(uint256 symbioteId);
 
     function initialize(IParaUniverse _universe, ISymbioteShareTokenFactory _tokenFactory) public returns (bool) {
         endInitialization();
@@ -71,7 +70,7 @@ contract SymbioteHatchery is Initializable {
             ));
         }
         _arbiter.onSymbioteCreated(_id, _outcomeSymbols, _outcomeNames, _numTicks, _arbiterConfiguration);
-        emit SymbioteCreated();
+        emit SymbioteCreated(_creatorFee, _outcomeSymbols, _outcomeNames, _numTicks, _arbiter, _arbiterConfiguration);
         return _id;
     }
 
@@ -87,7 +86,7 @@ contract SymbioteHatchery is Initializable {
         for (uint256 _i = 0; _i < symbiotes[_id].shareTokens.length; _i++) {
             symbiotes[_id].shareTokens[_i].trustedMint(_receiver, _amount);
         }
-        emit CompleteSetsMinted();
+        emit CompleteSetsMinted(_id, _amount, _receiver);
         return true;
     }
 
@@ -97,7 +96,7 @@ contract SymbioteHatchery is Initializable {
         }
         uint256 _numTicks = symbiotes[_id].numTicks;
         payout(_id, msg.sender, _amount.mul(_numTicks), false, false);
-        emit CompleteSetsBurned();
+        emit CompleteSetsBurned(_id, _amount, msg.sender);
         return true;
     }
 
@@ -109,7 +108,7 @@ contract SymbioteHatchery is Initializable {
             _winningBalance = _winningBalance.add(symbiotes[_id].shareTokens[_i].trustedBurnAll(msg.sender) * _winningPayout[_i]);
         }
         payout(_id, msg.sender, _winningBalance, true, _winningPayout[0] != 0);
-        emit Claim();
+        emit Claim(_id);
         return true;
     }
 
