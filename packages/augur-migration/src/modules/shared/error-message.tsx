@@ -10,12 +10,12 @@ interface ErrorMessageProps {
 
 export const ErrorMessage = ({ type, message }: ErrorMessageProps) => {
   return (
-    <section
+    <span
       className={classNames(Styles.ErrorMessage, {
         [Styles.error]: type === 'error',
       })}
     >
       {message}
-    </section>
+    </span>
   );
 };
