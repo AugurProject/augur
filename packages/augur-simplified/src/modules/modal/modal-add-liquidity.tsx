@@ -23,6 +23,7 @@ import {
   ONE,
   ERROR_AMOUNT,
   ETH,
+  PORTION_OF_CASH_INVALID_POOL,
 } from '../constants';
 import {
   InfoNumbers,
@@ -390,7 +391,7 @@ const ModalAddLiquidity = ({
     },
   ];
 
-  const invalidCashAmount = formatCash(0, cash?.name).full;
+  const invalidCashAmount = formatCash(createBigNumber(amount === '' ? "0" : amount).times(PORTION_OF_CASH_INVALID_POOL), cash?.name).full;
 
   const confirmAction = async () => {
     const properties = checkConvertLiquidityProperties(
@@ -604,7 +605,7 @@ const ModalAddLiquidity = ({
         ],
       },
       footerText:
-        "By adding initial liquidity you'll earn your set trading fee percentage of all trades on this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.",
+        `By adding initial liquidity you'll earn your set trading fee percentage of all trades on this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity. ${invalidCashAmount} will be added to the invalid balancer pool.`,
       breakdown: addCreateBreakdown,
       approvalButtonText: `approve ${chosenCash}`,
       confirmOverview: {
