@@ -27,6 +27,7 @@ import _parseQuery from './utils/routes/parse-query';
 import _makePath from './utils/routes/make-path';
 import _makeQuery from './utils/routes/make-query';
 import _parseStringToArray from './utils/routes/parse-string-to-array';
+import { CATEGORIES_ICON_MAP as _CATEGORIES_ICON_MAP } from './components/common/category-icons-map';
 
 export const ConnectAccount = {
   ConnectAccount: _ConnectAccount,
@@ -63,7 +64,7 @@ export const Logo = _Logo;
 export const Buttons = _Buttons;
 export const Labels = _Labels;
 export const Icons = _Icons;
-
+export const CATEGORIES_ICON_MAP = _CATEGORIES_ICON_MAP;
 
 const AugurComps = {
   Buttons,
@@ -76,6 +77,7 @@ const AugurComps = {
   Routes,
   Types,
   Utils,
+  CATEGORIES_ICON_MAP,
 };
 
 export default AugurComps;
