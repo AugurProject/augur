@@ -20,7 +20,7 @@ const { SecondaryButton, TextButton, WalletButton } = Buttons;
 const {
   AccountDetails,
   Loader,
-  Utils: { isSafari },
+  utils: { isSafari },
   constants: { SUPPORTED_WALLETS },
   connectors: { NETWORK_CHAIN_ID, portis, injected },
 } = ConnectAccount;
