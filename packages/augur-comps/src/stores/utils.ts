@@ -1,19 +1,19 @@
-import { useEffect } from 'react';
-// import { APPROVED } from '../common/buttons';
-// import {
-//   checkAllowance,
-//   isERC1155ContractApproved,
-// } from '../hooks/use-approval-callback';
+import { useEffect, useState, useRef } from 'react';
+import {
+  checkAllowance,
+  isERC1155ContractApproved,
+} from './use-approval-callback';
 import { Cash, MarketInfo, TransactionDetails } from '../utils/types';
 import { NETWORK_BLOCK_REFRESH_TIME, PARA_CONFIG } from './constants';
 import { ApprovalState, ETH } from '../utils/constants';
-// import { useUserStore } from './user';
+import { useUserStore } from './user';
 import { useGraphDataStore } from './graph-data';
 import { processGraphMarkets } from './process-data';
 import { getMarketsData } from '../apollo/client';
-// import { augurSdkLite } from '../../utils/augurlitesdk';
-// import { getUserBalances } from '../../utils/contract-calls';
+import { augurSdkLite } from '../utils/augurlitesdk';
+import { getUserBalances } from '../utils/contract-calls';
 import { Web3Provider } from '@ethersproject/providers';
+const { APPROVED } = ApprovalState;
 
 const isAsync = (obj) =>
   !!obj &&
@@ -76,89 +76,89 @@ export const arrayToKeyedObjectByProp = (ArrayOfObj: any[], prop: string) =>
 
 // CUSTOM HOOKS
 
-// export function useCanExitCashPosition(shareToken) {
-//   const {
-//     account,
-//     loginAccount,
-//     transactions,
-//     actions: { updateTransaction },
-//   } = useUserStore();
-//   const {
-//     blocknumber,
-//   } = useGraphDataStore();
-//   const approvedAccount = useRef(null);
-//   const [canExitPosition, setCanExitPosition] = useState(false);
-//   const [calledBlocknumber, setCalledBlocknumber] = useState(blocknumber);
-//   const {
-//     addresses: { WethWrapperForAMMExchange },
-//   } = PARA_CONFIG;
+export function useCanExitCashPosition(shareToken) {
+  const {
+    account,
+    loginAccount,
+    transactions,
+    actions: { updateTransaction },
+  } = useUserStore();
+  const {
+    blocknumber,
+  } = useGraphDataStore();
+  const approvedAccount = useRef(null);
+  const [canExitPosition, setCanExitPosition] = useState(false);
+  const [calledBlocknumber, setCalledBlocknumber] = useState(blocknumber);
+  const {
+    addresses: { WethWrapperForAMMExchange },
+  } = PARA_CONFIG;
 
-//   useEffect(() => {
-//     const checkCanCashExit = async () => {
-//       const approvalCheck = await isERC1155ContractApproved(
-//         shareToken,
-//         WethWrapperForAMMExchange,
-//         loginAccount,
-//         transactions,
-//         updateTransaction
-//       );
-//       setCanExitPosition(Boolean(ApprovalState.APPROVED === approvalCheck));
-//       if (Boolean(approvalCheck)) approvedAccount.current = loginAccount.account;
-//     };
-//     if (!!account && !!shareToken && (account !== approvedAccount.current || calledBlocknumber !== blocknumber)) {
-//       checkCanCashExit();
-//       setCalledBlocknumber(blocknumber);
-//     }
-//   }, [
-//     canExitPosition,
-//     setCanExitPosition,
-//     updateTransaction,
-//     transactions,
-//     account,
-//     blocknumber,
-//     shareToken
-//   ]);
+  useEffect(() => {
+    const checkCanCashExit = async () => {
+      const approvalCheck = await isERC1155ContractApproved(
+        shareToken,
+        WethWrapperForAMMExchange,
+        loginAccount,
+        transactions,
+        updateTransaction
+      );
+      setCanExitPosition(Boolean(ApprovalState.APPROVED === approvalCheck));
+      if (Boolean(approvalCheck)) approvedAccount.current = loginAccount.account;
+    };
+    if (!!account && !!shareToken && (account !== approvedAccount.current || calledBlocknumber !== blocknumber)) {
+      checkCanCashExit();
+      setCalledBlocknumber(blocknumber);
+    }
+  }, [
+    canExitPosition,
+    setCanExitPosition,
+    updateTransaction,
+    transactions,
+    account,
+    blocknumber,
+    shareToken
+  ]);
 
-//   return canExitPosition;
-// }
+  return canExitPosition;
+}
 
-// export function useCanEnterCashPosition({ name, address }: Cash) {
-//   const {
-//     account,
-//     loginAccount,
-//     transactions,
-//     actions: { updateTransaction },
-//   } = useUserStore();
-//   const approvedAccount = useRef(null);
-//   const [canEnterPosition, setCanEnterPosition] = useState(name === ETH);
-//   const {
-//     addresses: { AMMFactory },
-//   } = PARA_CONFIG;
-//   useEffect(() => {
-//     const checkCanCashEnter = async () => {
-//       const approvalCheck = await checkAllowance(
-//         address,
-//         AMMFactory,
-//         loginAccount,
-//         transactions,
-//         updateTransaction
-//       );
-//       setCanEnterPosition(approvalCheck === APPROVED || name === ETH);
-//       if (approvalCheck === APPROVED || name === ETH) approvedAccount.current = loginAccount.account;
-//     };
-//     if (!!account && !!address && account !== approvedAccount.current) {
-//       checkCanCashEnter();
-//     }
-//   }, [
-//     canEnterPosition,
-//     setCanEnterPosition,
-//     updateTransaction,
-//     transactions,
-//     account,
-//   ]);
+export function useCanEnterCashPosition({ name, address }: Cash) {
+  const {
+    account,
+    loginAccount,
+    transactions,
+    actions: { updateTransaction },
+  } = useUserStore();
+  const approvedAccount = useRef(null);
+  const [canEnterPosition, setCanEnterPosition] = useState(name === ETH);
+  const {
+    addresses: { AMMFactory },
+  } = PARA_CONFIG;
+  useEffect(() => {
+    const checkCanCashEnter = async () => {
+      const approvalCheck = await checkAllowance(
+        address,
+        AMMFactory,
+        loginAccount,
+        transactions,
+        updateTransaction
+      );
+      setCanEnterPosition(approvalCheck === APPROVED || name === ETH);
+      if (approvalCheck === APPROVED || name === ETH) approvedAccount.current = loginAccount.account;
+    };
+    if (!!account && !!address && account !== approvedAccount.current) {
+      checkCanCashEnter();
+    }
+  }, [
+    canEnterPosition,
+    setCanEnterPosition,
+    updateTransaction,
+    transactions,
+    account,
+  ]);
 
-//   return canEnterPosition;
-// }
+  return canEnterPosition;
+}
 
 export function useGraphHeartbeat(library?: Web3Provider) {
   const {
@@ -198,78 +198,78 @@ export function useGraphHeartbeat(library?: Web3Provider) {
   }, [library]);
 }
 
-// export function useUserBalances() {
-//   const {
-//     loginAccount,
-//     actions: { updateUserBalances },
-//   } = useUserStore();
-//   const {
-//     markets,
-//     cashes,
-//     ammExchanges
-//   } = useGraphDataStore();
-//   useEffect(() => {
-//     let isMounted = true;
-//     const createClient = (provider, config, account) =>
-//       augurSdkLite.makeLiteClient(provider, config, account);
-//     const fetchUserBalances = (
-//       library,
-//       account,
-//       ammExchanges,
-//       cashes,
-//       markets
-//     ) => getUserBalances(library, account, ammExchanges, cashes, markets);
-//     if (loginAccount?.library && loginAccount?.account) {
-//       if (!augurSdkLite.ready())
-//         createClient(loginAccount.library, PARA_CONFIG, loginAccount?.account);
-//       fetchUserBalances(
-//         loginAccount.library,
-//         loginAccount.account,
-//         ammExchanges,
-//         cashes,
-//         markets
-//       ).then((userBalances) => isMounted && updateUserBalances(userBalances));
-//     }
+export function useUserBalances() {
+  const {
+    loginAccount,
+    actions: { updateUserBalances },
+  } = useUserStore();
+  const {
+    markets,
+    cashes,
+    ammExchanges
+  } = useGraphDataStore();
+  useEffect(() => {
+    let isMounted = true;
+    const createClient = (provider, config, account) =>
+      augurSdkLite.makeLiteClient(provider, config, account);
+    const fetchUserBalances = (
+      library,
+      account,
+      ammExchanges,
+      cashes,
+      markets
+    ) => getUserBalances(library, account, ammExchanges, cashes, markets);
+    if (loginAccount?.library && loginAccount?.account) {
+      if (!augurSdkLite.ready())
+        createClient(loginAccount.library, PARA_CONFIG, loginAccount?.account);
+      fetchUserBalances(
+        loginAccount.library,
+        loginAccount.account,
+        ammExchanges,
+        cashes,
+        markets
+      ).then((userBalances) => isMounted && updateUserBalances(userBalances));
+    }
 
-//     return () => {
-//       isMounted = false;
-//     };
-//   }, [
-//     loginAccount?.account,
-//     loginAccount?.library,
-//     ammExchanges,
-//     cashes,
-//     markets,
-//     PARA_CONFIG,
-//   ]);
-// }
+    return () => {
+      isMounted = false;
+    };
+  }, [
+    loginAccount?.account,
+    loginAccount?.library,
+    ammExchanges,
+    cashes,
+    markets,
+    PARA_CONFIG,
+  ]);
+}
 
-// export function useFinalizeUserTransactions() {
-//   const {
-//     blocknumber
-//   } = useGraphDataStore();
-//   const {
-//     loginAccount,
-//     transactions,
-//     actions: { finalizeTransaction },
-//   } = useUserStore();
-//   useEffect(() => {
-//     if (loginAccount?.account && blocknumber && transactions?.length > 0) {
-//       transactions
-//         .filter((t) => !t.confirmedTime)
-//         .forEach((t: TransactionDetails) => {
-//           loginAccount.library.getTransactionReceipt(t.hash).then((receipt) => {
-//             if (receipt) finalizeTransaction(t.hash);
-//           });
-//         });
-//     }
-//   }, [loginAccount, blocknumber, transactions]);
-// }
+export function useFinalizeUserTransactions() {
+  const {
+    blocknumber
+  } = useGraphDataStore();
+  const {
+    loginAccount,
+    transactions,
+    actions: { finalizeTransaction },
+  } = useUserStore();
+  useEffect(() => {
+    if (loginAccount?.account && blocknumber && transactions?.length > 0) {
+      transactions
+        .filter((t) => !t.confirmedTime)
+        .forEach((t: TransactionDetails) => {
+          loginAccount.library.getTransactionReceipt(t.hash).then((receipt) => {
+            if (receipt) finalizeTransaction(t.hash);
+          });
+        });
+    }
+  }, [loginAccount, blocknumber, transactions]);
+}
 
-// export function useScrollToTopOnMount(...optionsTriggers) {
-//   useEffect(() => {
-//     // initial render only.
-//     document.getElementById('mainContent')?.scrollTo(0, 0);
-//     window.scrollTo(0, 1);
-//   }, [...optionsTriggers]);
-// }
+export function useScrollToTopOnMount(...optionsTriggers) {
+  useEffect(() => {
+    // initial render only.
+    document.getElementById('mainContent')?.scrollTo(0, 0);
+    window.scrollTo(0, 1);
+  }, [...optionsTriggers]);
+}

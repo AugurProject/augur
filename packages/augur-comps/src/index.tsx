@@ -1,4 +1,3 @@
-
 import addCommasToNumber from './utils/add-commas-to-number';
 import { isMobileBrowser, isMobileBrowserTall } from './utils/common-functions';
 import * as _Constants from './utils/constants';
@@ -29,19 +28,34 @@ import _makeQuery from './utils/routes/make-query';
 import _parseStringToArray from './utils/routes/parse-string-to-array';
 import { CATEGORIES_ICON_MAP as _CATEGORIES_ICON_MAP } from './components/common/category-icons-map';
 import _GraphDataStore from './stores/graph-data';
-import { useGraphHeartbeat } from './stores/utils';
+import _UserDataStore from './stores/user';
+import {
+  useGraphHeartbeat,
+  useCanExitCashPosition,
+  useCanEnterCashPosition,
+  useUserBalances,
+  useFinalizeUserTransactions,
+  useScrollToTopOnMount,
+} from './stores/utils';
+
 export const Stores = {
   GraphData: _GraphDataStore,
+  User: _UserDataStore,
   Hooks: {
     useGraphHeartbeat,
+    useCanExitCashPosition,
+    useCanEnterCashPosition,
+    useUserBalances,
+    useFinalizeUserTransactions,
+    useScrollToTopOnMount,
   },
 };
 
 export const ConnectAccount = {
   ConnectAccount: _ConnectAccount,
   ConnectAccountProvider: _ConnectAccountProvider,
-  hooks:  _ConnectHooks,
-  constants:  _ConnectConstants,
+  hooks: _ConnectHooks,
+  constants: _ConnectConstants,
   connectors: _ConnectConnectors,
   Loader: _Loader,
   AccountDetails: _AccountDetails,
@@ -65,8 +79,8 @@ export const Routes = {
   makePath: _makePath,
   makeQuery: _makeQuery,
   parseStringToArray: _parseStringToArray,
-}
-export const Types = _Types
+};
+export const Types = _Types;
 export const MarketCard = _MarketCard;
 export const Logo = _Logo;
 export const Buttons = _Buttons;
