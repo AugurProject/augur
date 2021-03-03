@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-// import ModalAddLiquidity from './modal-add-liquidity';
 import {useHistory} from 'react-router';
 import Styles from './modal.styles.less';
 import {useAppStatusStore} from '../stores/app-status';
@@ -8,8 +7,6 @@ import ModalConnectWallet from './modal-connect-wallet';
 
 function selectModal(type, modal) {
   switch (type) {
-    // case MODAL_ADD_LIQUIDITY:
-    //   return <ModalAddLiquidity {...modal} />;
     case Constants.MODAL_CONNECT_WALLET:
       return <ModalConnectWallet {...modal} />
     default:

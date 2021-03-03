@@ -48,17 +48,19 @@ export const Migrate = () => {
         <span>Migrate your V1 REP to REP V2</span>
         <span>For example 100 V1 REP will migrate to 100 REP V2.</span>
       </span>
-      <div>
+      {isLogged && (
         <div>
-          <span>V1 REP</span>
-          {formattedLegacyRep.formatted}
+          <div>
+            <span>V1 REP</span>
+            {formattedLegacyRep.formatted}
+          </div>
+          {PointedArrow}
+          <div>
+            <span>V2 REP</span>
+            {formatRep(balances.rep).formatted}
+          </div>
         </div>
-        {PointedArrow}
-        <div>
-          <span>V2 REP</span>
-          {formatRep(balances.rep).formatted}
-        </div>
-      </div>
+      )}
       {isLogged ? (
         <div>
           <PrimaryButton
