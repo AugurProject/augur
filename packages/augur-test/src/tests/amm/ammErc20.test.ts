@@ -10,7 +10,7 @@ import {makeProvider} from '../../libs';
 import {ContractInterfaces} from '@augurproject/core';
 
 
-describe.skip('AMM Middleware for ERC20', () => {
+describe('AMM Middleware for ERC20', () => {
   let john: TestContractAPI;
   let mary: TestContractAPI;
   let bob: TestContractAPI;
