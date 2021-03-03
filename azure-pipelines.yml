@@ -164,7 +164,7 @@ jobs:
     steps:
       - template: .azure-templates/node-setup.yml
       - script: |
-          curl https://sh.rustup.rs -sSf | sh -s -- -y
+          curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain nightly
           echo "##vso[task.setvariable variable=PATH;]$PATH:$HOME/.cargo/bin"
         displayName: Install rust
       - task: UsePythonVersion@0
@@ -282,7 +282,7 @@ jobs:
     steps:
       - template: .azure-templates/node-setup.yml
       - script: |
-          curl https://sh.rustup.rs -sSf | sh -s -- -y
+          curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain nightly
           echo "##vso[task.setvariable variable=PATH;]$PATH:$HOME/.cargo/bin"
         displayName: Install rust
       - task: UsePythonVersion@0
