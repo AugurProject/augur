@@ -1128,7 +1128,6 @@ export interface SeenPositionWarnings {
 }
 
 export interface AppStatusState {
-  timestamp: number;
   isMobile: boolean;
   isLogged: boolean;
   modal: Modal;

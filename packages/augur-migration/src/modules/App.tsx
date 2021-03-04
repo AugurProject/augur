@@ -17,6 +17,7 @@ import {
 import { PARA_CONFIG } from './stores/constants';
 import { networkSettings } from './constants';
 import { ErrorMessage, NetworkMismatchBanner } from './shared/error-message';
+import { MigrationProvider, useMigrationStore } from './stores/migration-store';
 
 const { ConnectAccountProvider } = ConnectAccount;
 
@@ -47,8 +48,10 @@ const AppBody = () => {
   const {
     isMobile,
     modal,
-    actions: { setTimestamp },
   } = useAppStatusStore();
+  const {
+    actions: { setTimestamp },
+  } = useMigrationStore();
   const { txFailed, isMigrated } = useUserStore();
   const modalShowing = Object.keys(modal).length !== 0;
 
@@ -77,8 +80,8 @@ const AppBody = () => {
       <NetworkMismatchBanner />
       <span>Migrate V1 REP</span>
       <Migrate />
-      {txFailed && <ErrorMessage type='error' message='Transaction Failed' />}
-      {isMigrated && <ErrorMessage message='Migration Successful' />}
+      {txFailed && <ErrorMessage type="error" message="Transaction Failed" />}
+      {isMigrated && <ErrorMessage message="Migration Successful" />}
     </div>
   );
 };
@@ -87,11 +90,13 @@ function App() {
   return (
     <HashRouter hashType="hashbang">
       <ConnectAccountProvider>
-        <UserProvider>
-          <AppStatusProvider>
-            <AppBody />
-          </AppStatusProvider>
-        </UserProvider>
+        <MigrationProvider>
+          <UserProvider>
+            <AppStatusProvider>
+              <AppBody />
+            </AppStatusProvider>
+          </UserProvider>
+        </MigrationProvider>
       </ConnectAccountProvider>
     </HashRouter>
   );

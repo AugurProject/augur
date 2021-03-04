@@ -93,13 +93,11 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   setModal: (modal) => {},
   closeModal: () => {},
   setIsLogged: (account) => {},
-  setTimestamp: (timestamp) => {}
 };
 
 export const DEFAULT_APP_STATUS_STATE: AppStatusState = {
   isMobile: false,
   isLogged: false,
-  timestamp: 0,
   modal: {}
 };
 
@@ -107,7 +105,6 @@ export const APP_STATE_KEYS = {
   IS_MOBILE: 'isMobile',
   MODAL: 'modal',
   IS_LOGGED: 'isLogged',
-  TIMESTAMP: 'timestamp',
 };
 
 export const APP_STATUS_ACTIONS = {
@@ -115,7 +112,6 @@ export const APP_STATUS_ACTIONS = {
   SET_MODAL: 'SET_MODAL',
   CLOSE_MODAL: 'CLOSE_MODAL',
   SET_IS_LOGGED: 'SET_IS_LOGGED',
-  SET_TIMESTAMP: 'SET_TIMESTAMP'
 };
 
 export const MOCK_APP_STATUS_STATE = {
@@ -141,3 +137,23 @@ export const NETWORK_BLOCK_REFRESH_TIME = {
 // transaction types
 export const MIGRATE = 'MIGRATE';
 export const APPROVE = 'APPROVE';
+
+export const STUBBED_MIGRATION_ACTIONS = {
+  setTimestamp: (timestamp) => {}
+};
+
+export const DEFAULT_MIGRATION_STATE = {
+  timestamp: 0,
+};
+
+export const MIGRATION_KEYS = {
+  TIMESTAMP: 'timestamp',
+};
+
+export const MIGRATION_ACTIONS = {
+  SET_TIMESTAMP: 'SET_TIMESTAMP'
+};
+
+export const MOCK_MIGRATION_STATE = {
+  ...DEFAULT_MIGRATION_STATE,
+};

@@ -5,5 +5,6 @@ import { windowRef } from '@augurproject/augur-comps';
 
 windowRef.appStatus = {};
 windowRef.user = {};
+windowRef.migration = {};
 
 render(<App />, document.getElementById('root'));

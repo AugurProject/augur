@@ -8,6 +8,7 @@ import {
   isRepV2Approved,
 } from '../../utils/contract-calls';
 import { useAppStatusStore } from './app-status';
+import { useMigrationStore } from './migration-store';
 
 const isAsync = (obj) =>
   !!obj &&
@@ -54,7 +55,7 @@ export function useUserBalances() {
     loginAccount,
     actions: { updateUserBalances },
   } = useUserStore();
-  const { timestamp } = useAppStatusStore();
+  const { timestamp } = useMigrationStore();
   useEffect(() => {
     let isMounted = true;
     const fetchUserBalances = (library, account) =>
@@ -77,7 +78,7 @@ export function useFinalizeUserTransactions() {
     transactions,
     actions: { finalizeTransaction, updateMigrated },
   } = useUserStore();
-  const { timestamp } = useAppStatusStore();
+  const { timestamp } = useMigrationStore();
   useEffect(() => {
     if (loginAccount?.account && transactions?.length > 0) {
       transactions
@@ -99,7 +100,7 @@ export function useUpdateApprovals() {
     loginAccount,
     actions: { updateApproval },
   } = useUserStore();
-  const { timestamp } = useAppStatusStore();
+  const { timestamp } = useMigrationStore();
   useEffect(() => {
     let isMounted = true;
     const checkApproval = (library, account) =>
