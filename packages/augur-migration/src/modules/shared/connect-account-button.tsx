@@ -17,7 +17,7 @@ export const ConnectAccountButton = () => {
     account,
     loginAccount,
     transactions,
-    actions: { updateLoginAccount, logout, updateTransaction },
+    actions: { updateLoginAccount, logout },
   } = useUserStore();
   const [lastUser, setLastUser] = useLocalStorage('lastUser', null);
 
