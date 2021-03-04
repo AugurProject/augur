@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Header } from './common';
 import Styles from './modal.styles.less';
-import { Buttons, ConnectAccount, Labels } from '@augurproject/augur-comps';
+import { ButtonComps, ConnectAccount, LabelComps } from '@augurproject/augur-comps';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
@@ -11,7 +11,7 @@ import classNames from 'classnames';
 import { useUserStore } from '../stores/user';
 import { NETWORK_NAMES } from '../stores/constants';
 
-const { SecondaryButton, TextButton, WalletButton } = Buttons;
+const { SecondaryButton, TextButton, WalletButton } = ButtonComps;
 const {
   AccountDetails,
   Loader,
@@ -19,7 +19,7 @@ const {
   constants: { SUPPORTED_WALLETS },
   connectors: { NETWORK_CHAIN_ID, portis, injected },
 } = ConnectAccount;
-const { ErrorBlock } = Labels;
+const { ErrorBlock } = LabelComps;
 
 const WALLET_VIEWS = {
   OPTIONS: 'options',

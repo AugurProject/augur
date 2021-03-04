@@ -1,6 +1,6 @@
 import React from 'react';
 import Styles from './migrate.styles.less';
-import { Buttons, Icons, Utils, Constants } from '@augurproject/augur-comps';
+import { ButtonComps, Icons, createBigNumber, Formatter, Constants } from '@augurproject/augur-comps';
 import { useAppStatusStore } from '../stores/app-status';
 import { ConnectAccountButton } from '../shared/connect-account-button';
 import {
@@ -12,12 +12,11 @@ import { TransactionResponse } from '@ethersproject/providers';
 import { APPROVE, MIGRATE } from '../stores/constants';
 
 const { TX_STATUS, ZERO } = Constants;
-const { PrimaryButton } = Buttons;
+const { PrimaryButton } = ButtonComps;
 const { PointedArrow } = Icons;
 const {
-  Formatter: { formatRep },
-  createBigNumber,
-} = Utils;
+  formatRep,
+} = Formatter;
 
 export const Migrate = () => {
   const { isLogged } = useAppStatusStore();
