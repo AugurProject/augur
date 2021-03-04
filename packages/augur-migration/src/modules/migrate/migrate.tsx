@@ -1,6 +1,14 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import classNames from 'classnames';
+
 import Styles from './migrate.styles.less';
-import { ButtonComps, Icons, createBigNumber, Formatter, Constants } from '@augurproject/augur-comps';
+import {
+  ButtonComps,
+  Icons,
+  createBigNumber,
+  Formatter,
+  Constants,
+} from '@augurproject/augur-comps';
 import { useAppStatusStore } from '../stores/app-status';
 import { ConnectAccountButton } from '../shared/connect-account-button';
 import {
@@ -14,9 +22,7 @@ import { APPROVE, MIGRATE } from '../stores/constants';
 const { TX_STATUS, ZERO } = Constants;
 const { PrimaryButton } = ButtonComps;
 const { PointedArrow } = Icons;
-const {
-  formatRep,
-} = Formatter;
+const { formatRep } = Formatter;
 
 export const Migrate = () => {
   const { isLogged } = useAppStatusStore();
@@ -25,10 +31,11 @@ export const Migrate = () => {
     balances,
     isApproved,
     transactions,
-    actions: { addTransaction, updateTxFailed },
+    actions: { updateMigrated, addTransaction, updateTxFailed },
   } = useUserStore();
 
   const formattedLegacyRep = formatRep(balances.legacyRep);
+  const formattedRep = formatRep(balances.rep);
 
   const approvalPending =
     transactions.find(
@@ -49,14 +56,22 @@ export const Migrate = () => {
       </span>
       {isLogged && (
         <div>
-          <div>
+          <div
+            className={classNames({
+              [Styles.grey]: createBigNumber(formattedLegacyRep.value).eq(ZERO),
+            })}
+          >
             <span>V1 REP</span>
-            {formattedLegacyRep.formatted}
+            <span>{formattedLegacyRep.formatted}</span>
           </div>
           {PointedArrow}
-          <div>
+          <div
+            className={classNames({
+              [Styles.grey]: createBigNumber(formattedRep.value).eq(ZERO),
+            })}
+          >
             <span>V2 REP</span>
-            {formatRep(balances.rep).formatted}
+            <span>{formattedRep.formatted}</span>
           </div>
         </div>
       )}
@@ -67,7 +82,8 @@ export const Migrate = () => {
             disabled={isApproved !== null && isApproved}
             pending={approvalPending}
             action={() => {
-              updateTxFailed(false);
+              updateTxFailed(false);      
+              updateMigrated(false);
               convertV1ToV2Approve(loginAccount.library, loginAccount.account)
                 .then((response: TransactionResponse) => {
                   if (response) {
@@ -99,6 +115,7 @@ export const Migrate = () => {
             }
             action={() => {
               updateTxFailed(false);
+              updateMigrated(false);
               convertV1ToV2(loginAccount.library, loginAccount.account)
                 .then((response: TransactionResponse) => {
                   if (response) {
