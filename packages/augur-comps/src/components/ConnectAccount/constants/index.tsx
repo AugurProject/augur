@@ -9,7 +9,7 @@ export interface WalletInfo {
   href: string | null
   color: string
   primary?: true
-  mobile?: true
+  mobile?: boolean
   mobileOnly?: true
 }
 
@@ -48,16 +48,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     iconName: 'coinbaseWalletIcon.svg',
     description: 'Use Coinbase Wallet app on mobile device',
     href: null,
-    color: '#315CF5'
-  },
-  COINBASE_LINK: {
-    name: 'Open in Coinbase Wallet',
-    iconName: 'coinbaseWalletIcon.svg',
-    description: 'Open in Coinbase Wallet app.',
-    href: 'https://go.cb-w.com/mtUDhEZPy1',
     color: '#315CF5',
-    mobile: true,
-    mobileOnly: true
   },
   FORTMATIC: {
     connector: fortmatic,
@@ -68,13 +59,13 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     color: '#6748FF',
     mobile: true
   },
-  Portis: {
+  PORTIS: {
     connector: portis,
     name: 'Portis',
     iconName: 'portisIcon.png',
     description: 'Login using Portis hosted wallet',
     href: null,
     color: '#4A6C9B',
-    mobile: true
+    mobile: true,
   }
 }

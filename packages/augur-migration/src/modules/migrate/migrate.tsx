@@ -26,7 +26,7 @@ export const Migrate = () => {
     balances,
     isApproved,
     transactions,
-    actions: { addTransaction },
+    actions: { addTransaction, updateTxFailed },
   } = useUserStore();
 
   const formattedLegacyRep = formatRep(balances.legacyRep);
@@ -67,25 +67,30 @@ export const Migrate = () => {
             text={isApproved ? 'Approved' : 'Approve'}
             disabled={isApproved !== null && isApproved}
             pending={approvalPending}
-            action={() =>
+            action={() => {
+              updateTxFailed(false);
               convertV1ToV2Approve(loginAccount.library, loginAccount.account)
                 .then((response: TransactionResponse) => {
-                  const { hash } = response;
-                  addTransaction({
-                    hash,
-                    status: TX_STATUS.PENDING,
-                    chainId: loginAccount.chainId,
-                    addedTime: new Date().getTime(),
-                    from: loginAccount.account,
-                    message: `Approved spending REP`,
-                    type: APPROVE,
-                  });
+                  if (response) {
+                    const { hash } = response;
+                    addTransaction({
+                      hash,
+                      status: TX_STATUS.PENDING,
+                      chainId: loginAccount.chainId,
+                      addedTime: new Date().getTime(),
+                      from: loginAccount.account,
+                      message: `Approved spending REP`,
+                      type: APPROVE,
+                    });
+                  } else {
+                    updateTxFailed(true);
+                  }
                 })
                 .catch((error: Error) => {
                   console.debug('Failed to approve', error);
                   throw error;
-                })
-            }
+                });
+            }}
           />{' '}
           <PrimaryButton
             text="Migrate"
@@ -94,18 +99,23 @@ export const Migrate = () => {
               !isApproved || createBigNumber(formattedLegacyRep.value).eq(ZERO)
             }
             action={() => {
+              updateTxFailed(false);
               convertV1ToV2(loginAccount.library, loginAccount.account)
                 .then((response: TransactionResponse) => {
-                  const { hash } = response;
-                  addTransaction({
-                    hash,
-                    status: TX_STATUS.PENDING,
-                    chainId: loginAccount.chainId,
-                    addedTime: new Date().getTime(),
-                    from: loginAccount.account,
-                    message: `Migrated REP`,
-                    type: MIGRATE,
-                  });
+                  if (response) {
+                    const { hash } = response;
+                    addTransaction({
+                      hash,
+                      status: TX_STATUS.PENDING,
+                      chainId: loginAccount.chainId,
+                      addedTime: new Date().getTime(),
+                      from: loginAccount.account,
+                      message: `Migrated REP`,
+                      type: MIGRATE,
+                    });
+                  } else {
+                    updateTxFailed(true);
+                  }
                 })
                 .catch((error: Error) => {
                   console.debug('Failed to migrate', error);

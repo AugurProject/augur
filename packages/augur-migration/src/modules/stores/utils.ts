@@ -75,7 +75,7 @@ export function useFinalizeUserTransactions() {
   const {
     loginAccount,
     transactions,
-    actions: { finalizeTransaction },
+    actions: { finalizeTransaction, updateMigrated },
   } = useUserStore();
   const { timestamp } = useAppStatusStore();
   useEffect(() => {
@@ -84,6 +84,9 @@ export function useFinalizeUserTransactions() {
         .filter((t) => !t.confirmedTime)
         .forEach((t: TransactionDetails) => {
           loginAccount.library.getTransactionReceipt(t.hash).then((receipt) => {
+            if (receipt && t.type === 'MIGRATE') {
+              updateMigrated(true);
+            }
             if (receipt) finalizeTransaction(t.hash);
           });
         });
