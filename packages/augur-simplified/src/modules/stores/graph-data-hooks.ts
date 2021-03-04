@@ -1,6 +1,6 @@
 import { dispatchMiddleware } from './utils';
 import { useReducer } from 'react';
-import { windowRef } from '../../utils/window-ref';
+import { windowRef } from '@augurproject/augur-comps';
 import {
   GRAPH_DATA_ACTIONS,
   GRAPH_DATA_KEYS,

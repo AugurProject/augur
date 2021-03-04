@@ -49,7 +49,8 @@ import {
   WarningBanner,
   generateTooltip,
 } from './labels';
-import { useGraphDataStore } from '../stores/graph-data';
+// import { useGraphDataStore } from '../stores/graph-data';
+import { useGraphDataStore } from '@augurproject/augur-comps';
 import { useUserStore } from '../stores/user';
 import { useCanExitCashPosition } from '../stores/utils';
 import { approveERC1155Contract } from '../hooks/use-approval-callback';

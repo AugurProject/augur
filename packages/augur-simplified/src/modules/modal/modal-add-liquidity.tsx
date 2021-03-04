@@ -53,7 +53,8 @@ import { createBigNumber } from '../../utils/create-big-number';
 import { BackIcon } from '../common/icons';
 import { checkAllowance } from '../hooks/use-approval-callback';
 import { AmountInput, isInvalidNumber, OutcomesGrid, TextInput } from '../common/inputs';
-import { useGraphDataStore } from '../stores/graph-data';
+// import { useGraphDataStore } from '../stores/graph-data';
+import { useGraphDataStore } from '@augurproject/augur-comps';
 import { useUserStore, UserStore } from '../stores/user';
 import { PARA_CONFIG } from '../stores/constants';
 

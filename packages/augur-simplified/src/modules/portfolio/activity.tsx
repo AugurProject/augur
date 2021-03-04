@@ -1,7 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import Styles from './activity.styles.less';
 import { useAppStatusStore } from '../stores/app-status';
-import { useGraphDataStore } from '../stores/graph-data';
+// import { useGraphDataStore } from '../stores/graph-data';
+import { useGraphDataStore } from '@augurproject/augur-comps';
 import { ActivityItem } from '../types';
 import { ReceiptLink } from '../routes/helpers/links';
 import { Pagination, sliceByPage } from '../common/pagination';
