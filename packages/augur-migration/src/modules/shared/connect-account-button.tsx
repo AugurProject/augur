@@ -40,9 +40,9 @@ export const ConnectAccountButton = () => {
         updateLoginAccount({ chainId: activeWeb3.chainId });
       } else if (account && account !== activeWeb3.account) {
         logout();
+        updateLoginAccount(activeWeb3);
         updateTxFailed(false);
         updateMigrated(false);
-        updateLoginAccount(activeWeb3);
       } else {
         updateLoginAccount(activeWeb3);
       }
