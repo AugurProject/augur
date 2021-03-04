@@ -1,5 +1,5 @@
 import BigNumber, { BigNumber as BN } from 'bignumber.js'
-import { ParaShareToken, AddLiquidityRate, marketInvalidityCheck, getGasStation, NetworkId } from '@augurproject/sdk-lite'
+import { AddLiquidityRate, marketInvalidityCheck, getGasStation, NetworkId } from '@augurproject/sdk-lite'
 import { TradingDirection, AmmExchange, AmmExchanges, AmmMarketShares, AmmTransaction, Cashes, CurrencyBalance, PositionBalance, TransactionTypes, UserBalances, MarketInfos, LPTokens, EstimateTradeResult, Cash, AddLiquidityBreakdown, LiquidityBreakdown, AmmOutcome } from '../modules/types'
 import ethers from 'ethers';
 import { Contract } from '@ethersproject/contracts'
@@ -17,6 +17,7 @@ import { createBigNumber } from './create-big-number';
 import { PARA_CONFIG } from '../modules/stores/constants';
 import ERC20ABI from './ERC20ABI.json';
 import BPoolABI from './BPoolABI.json';
+import ParaShareTokenABI from './ParaShareTokenABI.json';
 
 const isValidPrice = (price: string): boolean => {
   return price !== null && price !== undefined && price !== "0" && price !== "0.00";
@@ -544,7 +545,7 @@ export const getUserBalances = async (
           const outcomeShareBalances = [0, 1, 2].map((outcome) => ({
             reference: `${shareToken}-${marketId}-${outcome}`,
             contractAddress: shareToken,
-            abi: ParaShareToken.ABI,
+            abi: ParaShareTokenABI,
             calls: [
               {
                 reference: `${shareToken}-${marketId}-${outcome}`,
@@ -1091,7 +1092,7 @@ export const getErc20Contract = (tokenAddress: string, library: Web3Provider, ac
 export const getErc1155Contract = (tokenAddress: string, library: Web3Provider, account: string): Contract | null => {
   if (!tokenAddress || !library) return null
   try {
-    return getContract(tokenAddress, ParaShareToken.ABI, library, account)
+    return getContract(tokenAddress, ParaShareTokenABI, library, account)
   } catch (error) {
     console.error('Failed to get contract', error)
     return null
@@ -1133,7 +1134,7 @@ export const getERC1155ApprovedForAll = async (tokenAddress: string, provider: W
   const contractAllowanceCall: ContractCallContext[] = [{
     reference: tokenAddress,
     contractAddress: tokenAddress,
-    abi: ParaShareToken.ABI,
+    abi: ParaShareTokenABI,
     calls: [
       {
         reference: tokenAddress,
