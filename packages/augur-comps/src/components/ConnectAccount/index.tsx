@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { Activity as NetworkIcon } from 'react-feather';
 import { ethers } from 'ethers';
@@ -63,20 +63,21 @@ const ConnectAccountButton = ({
   isMobile,
   setModal
 }) => {
-  // const {
-  //   isMobile,
-  //   actions: { setModal },
-  // } = useAppStatusStore();
-
   const { account, activate, connector, error } = useWeb3React();
   const activeWeb3 = useActiveWeb3React();
+  const [ initialLogin, setInitalLogin ]= useState(false);
   const pendingTransaction = transactions.filter(
     (tx) => tx.status === TX_STATUS.PENDING
   );
   const hasPendingTransaction = pendingTransaction.length > 0 || false;
 
   useEffect(() => {
-    if (autoLogin && !account) tryAutoLogin(activate);
+    if (autoLogin && !account) {
+      if (!initialLogin) {
+        setInitalLogin(true);
+        tryAutoLogin(activate);
+      }
+    }
   }, [autoLogin, account, activate]);
 
   useEffect(() => {
