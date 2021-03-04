@@ -84,10 +84,10 @@ export const Routes = {
   parseStringToArray: _parseStringToArray,
 };
 export const Types = _Types;
-export const MarketCard = _MarketCard;
+export const MarketCardComps = _MarketCard;
 export const Logo = _Logo;
-export const Buttons = _Buttons;
-export const Labels = _Labels;
+export const ButtonComps = _Buttons;
+export const LabelComps = _Labels;
 export const Icons = {
   ..._Icons,
   CATEGORIES_ICON_MAP: _CATEGORIES_ICON_MAP,
@@ -110,16 +110,16 @@ export {
   DateUtils,
   windowRef,
 };
-
+export const Components = {
+  ButtonComps,
+  ConnectAccount,
+  LabelComps,
+  Logo,
+  MarketCardComps,
+};
 // create default object
 const AugurComps = {
-  Components: {
-    Buttons,
-    ConnectAccount,
-    Labels,
-    Logo,
-    MarketCard,
-  },
+  Components,
   Constants,
   Icons,
   Routes,

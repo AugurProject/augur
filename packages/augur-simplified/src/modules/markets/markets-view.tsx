@@ -36,7 +36,7 @@ import { SearchInput } from '../common/inputs';
 import { MarketCard } from './market-card';
 import { useGraphDataStore } from '../stores/graph-data';
 import { useScrollToTopOnMount } from '../stores/utils';
-import { MarketCard as MarketCardComps } from '@augurproject/augur-comps';
+import { MarketCardComps } from '@augurproject/augur-comps';
 const { LoadingMarketCard } = MarketCardComps;
 const PAGE_LIMIT = 21;
 

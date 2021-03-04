@@ -1,9 +1,8 @@
 import { dispatchMiddleware, getSavedUserInfo } from './utils';
 import { useReducer } from 'react';
-import { windowRef } from '../../utils/window-ref';
 import { USER_ACTIONS, USER_KEYS, DEFAULT_USER_STATE } from './constants';
 import { UserBalances, TransactionDetails } from '../types';
-import { Constants } from '@augurproject/augur-comps';
+import { Constants, windowRef } from '@augurproject/augur-comps';
 
 const { TX_STATUS } = Constants;
 

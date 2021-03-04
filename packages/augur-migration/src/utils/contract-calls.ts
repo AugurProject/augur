@@ -3,19 +3,21 @@ import ethers from 'ethers';
 import { Contract } from '@ethersproject/contracts';
 import { Web3Provider } from '@ethersproject/providers';
 import {
-  ZERO,
-  NULL_ADDRESS,
+  Constants,
   ConnectAccount,
-  Utils,
+  Formatter,
 } from '@augurproject/augur-comps';
 import { PARA_CONFIG } from '../modules/stores/constants';
 import ReputationTokenABI from './ReputationTokenABI.json';
 import LegacyReputationTokenABI from './LegacyReputationTokenABI.json';
 import { networkSettings } from '../modules/constants';
-
+const { 
+  ZERO,
+  NULL_ADDRESS,
+} = Constants;
 const {
-  Formatter: { convertOnChainCashAmountToDisplayCashAmount },
-} = Utils;
+   convertOnChainCashAmountToDisplayCashAmount,
+} = Formatter;
 const {
   utils: { getProviderOrSigner },
 } = ConnectAccount;
