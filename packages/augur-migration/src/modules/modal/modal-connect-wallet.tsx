@@ -140,7 +140,13 @@ const ModalConnectWallet = ({
     actions: { removeTransaction, logout },
   } = useUserStore();
   // important that these are destructed from the account-specific web3-react context
+
+  const {
+    hooks: { useActiveWeb3React },
+  } = ConnectAccount;
+
   const { active, account, connector, activate, error } = useWeb3React();
+  const { deactivate } = useActiveWeb3React();
   const [walletView, setWalletView] = useState(WALLET_VIEWS.ACCOUNT);
   const [pendingWallet, setPendingWallet] = useState<
     AbstractConnector | undefined
@@ -339,6 +345,7 @@ const ModalConnectWallet = ({
               transactions={transactions}
               removeTransaction={removeTransaction}
               logout={() => {
+                deactivate();
                 closeModal();
                 logout();
               }}
