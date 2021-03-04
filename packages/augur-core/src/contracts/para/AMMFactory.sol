@@ -245,6 +245,7 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         _para.publicBuyCompleteSets(_market, _setsToBuy);
 
         wrappedShareTokenFactory.wrapShares(_para, _invalidTokenId, _symbols[0], address(this), _setsToBuy);
+        uint256 amountToBPool = wrappedShareToken.balanceOf(address(this));
 
         // Send cash to balancer bPool
         // Pool weight == 90%
@@ -252,7 +253,7 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
 
         // Move just minted invalid shares to the balancer pool.
         // Pool weight == 10%
-        _bPool.bind(address(wrappedShareToken),  _setsToBuy, 5 * 10**18);
+        _bPool.bind(address(wrappedShareToken),  amountToBPool, 5 * 10**18);
 
         _bPool.finalize();
 
