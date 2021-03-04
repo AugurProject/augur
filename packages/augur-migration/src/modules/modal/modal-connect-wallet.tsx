@@ -10,6 +10,7 @@ import { useAppStatusStore } from '../stores/app-status';
 import classNames from 'classnames';
 import { useUserStore } from '../stores/user';
 import { NETWORK_NAMES } from '../stores/constants';
+import { useMigrationStore } from '../stores/migration-store';
 
 const { SecondaryButton, TextButton, WalletButton } = ButtonComps;
 const {
@@ -303,6 +304,10 @@ const ModalConnectWallet = ({
     setWalletList(getWalletButtons());
   }, [getWalletButtons]);
 
+  const {
+    actions: {updateTxFailed, updateMigrated}
+  } = useMigrationStore();
+
   return (
     <section>
       <Header
@@ -348,6 +353,8 @@ const ModalConnectWallet = ({
                 deactivate();
                 closeModal();
                 logout();
+                updateTxFailed(false);
+                updateMigrated(false);
               }}
             />
           ) : walletView === WALLET_VIEWS.PENDING ? (
