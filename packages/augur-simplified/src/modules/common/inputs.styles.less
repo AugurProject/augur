@@ -213,7 +213,6 @@
   }
 }
 
-
 .Outcomes {
   display: flex;
   flex-direction: column;
@@ -281,7 +280,8 @@
   max-height: @size-106;
   justify-content: center;
 
-  > span {
+  > span,
+  > a > span {
     &:first-of-type {
       .text-14-semi-bold;
     }
@@ -314,12 +314,19 @@
       color: var(--simple-primary-text);
       border: @size-1 solid var(--simple-invalid);
 
-      > svg {
+      > a > svg {
         > path {
           fill: var(--simple-primary-text);
         }
       }
     }
+  }
+
+  > a {
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+    align-items: center;
   }
 
   &.YesNo {
@@ -339,7 +346,8 @@
       border-left-color: transparent;
     }
 
-    > span {
+    > span,
+    > a > span {
       &:first-of-type {
         .text-16-bold;
       }

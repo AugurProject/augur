@@ -242,34 +242,39 @@ const Outcome = ({
         [Styles.Invalid]: outcome.isInvalid,
         [Styles.InvalidSelected]: invalidSelected,
         [Styles.loggedOut]: !isLogged,
-        [Styles.disabled]: !isLogged && outcome.isInvalid,
         [Styles.Error]: error,
       })}
     >
-      <span>{outcome.name}</span>
-      {editable ? (
-        <div onClick={() => input.current && input.current.focus()}>
-          <span>{`${prepend && symbol}0.`}</span>
-          <input
-            value={customVal}
-            onChange={(v) => {
-              setCustomVal(`${v.target.value}`);
-              setEditableValue(
-                v.target.value && v.target.value !== '0'
-                  ? `.${v.target.value}`
-                  : `${v.target.value}`
-              );
-            }}
-            type="text"
-            placeholder={PLACEHOLDER}
-            ref={input}
-            // @ts-ignore
-            onWheel={(e) => e?.target?.blur()}
-          />
-        </div>
+      {outcome.isInvalid ? (
+        <a href="https://www.google.com/" target="_blank" rel="noopener noreferrer">
+          <span>{outcome.name}</span>
+          {outcome.isInvalid && LinkIcon}
+        </a>
       ) : (
         <>
-          {!outcome.isInvalid && (
+          <span>{outcome.name}</span>
+
+          {editable ? (
+            <div onClick={() => input.current && input.current.focus()}>
+              <span>{`${prepend && symbol}0.`}</span>
+              <input
+                value={customVal}
+                onChange={(v) => {
+                  setCustomVal(`${v.target.value}`);
+                  setEditableValue(
+                    v.target.value && v.target.value !== '0'
+                      ? `.${v.target.value}`
+                      : `${v.target.value}`
+                  );
+                }}
+                type="text"
+                placeholder={PLACEHOLDER}
+                ref={input}
+                // @ts-ignore
+                onWheel={(e) => e?.target?.blur()}
+              />
+            </div>
+          ) : (
             <span>
               {
                 formatCashPrice(formattedPrice.fullPrecision, ammCash?.name)
@@ -277,7 +282,6 @@ const Outcome = ({
               }
             </span>
           )}
-          {outcome.isInvalid && LinkIcon}
         </>
       )}
     </div>
