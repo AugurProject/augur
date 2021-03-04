@@ -54,7 +54,7 @@ export function useUserBalances() {
     loginAccount,
     actions: { updateUserBalances },
   } = useUserStore();
-  const { timestamp } = useMigrationStore();
+  const { timestamp, isMigrated } = useMigrationStore();
   useEffect(() => {
     let isMounted = true;
     const fetchUserBalances = (library, account) =>
@@ -68,7 +68,7 @@ export function useUserBalances() {
     return () => {
       isMounted = false;
     };
-  }, [loginAccount?.account, loginAccount?.library, PARA_CONFIG, timestamp]);
+  }, [loginAccount?.account, loginAccount?.library, PARA_CONFIG, timestamp, isMigrated]);
 }
 
 export function useFinalizeUserTransactions() {
