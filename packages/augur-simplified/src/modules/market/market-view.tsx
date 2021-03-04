@@ -28,10 +28,30 @@ import {
   getMarketEndtimeDate,
 } from '../../utils/date-utils';
 import { getCurrentAmms, useScrollToTopOnMount } from '../stores/utils';
-import { getWinningOutcome } from '../markets/market-card';
 import { ConfirmedCheck } from '../common/icons';
 import { useGraphDataStore } from '@augurproject/augur-comps';
 import { OutcomesGrid } from '../common/inputs';
+
+import { AmmOutcome, MarketOutcome } from '../types';
+
+export const combineOutcomeData = (
+  ammOutcomes: AmmOutcome[],
+  marketOutcomes: MarketOutcome[]
+) => {
+  if (!ammOutcomes || ammOutcomes.length === 0) return [];
+  return marketOutcomes.map((mOutcome, index) => ({
+    ...mOutcome,
+    ...ammOutcomes[index],
+  }));
+};
+
+export const getWinningOutcome = (
+  ammOutcomes: AmmOutcome[],
+  marketOutcomes: MarketOutcome[]
+) =>
+  combineOutcomeData(ammOutcomes, marketOutcomes).filter(
+    ({ payoutNumerator }) => payoutNumerator !== null && payoutNumerator !== '0'
+  );
 
 const WinningOutcomeLabel = ({ winningOutcome }) => (
   <span className={Styles.WinningOutcomeLabel}>

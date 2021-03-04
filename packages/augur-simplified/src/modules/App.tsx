@@ -16,7 +16,7 @@ import ModalView from './modal/modal-view';
 import parsePath from './routes/helpers/parse-path';
 import { MARKETS } from './constants';
 import { useUserBalances, useFinalizeUserTransactions } from './stores/utils';
-import { Stores, Hooks } from '@augurproject/augur-comps';
+import { Stores, useGraphHeartbeat } from '@augurproject/augur-comps';
 
 function checkIsMobile(setIsMobile) {
   const isMobile =
@@ -55,7 +55,7 @@ const AppBody = () => {
   const location = useLocation();
   const path = parsePath(location.pathname)[0];
   const sidebarOut = sidebarType && isMobile;
-  const { useGraphHeartbeat } = Hooks;
+  
   useGraphHeartbeat(loginAccount ? loginAccount.library : null);
   useUserBalances();
   useFinalizeUserTransactions();
