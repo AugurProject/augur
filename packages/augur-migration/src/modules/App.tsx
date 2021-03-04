@@ -6,7 +6,7 @@ import { Migrate } from './migrate/migrate';
 import { HashRouter } from 'react-router-dom';
 // import { ConnectAccountProvider } from '@augurproject/augur-comps';
 import { AppStatusProvider, useAppStatusStore } from './stores/app-status';
-import { UserProvider, useUserStore } from './stores/user';
+import { UserProvider } from './stores/user';
 import ModalView from './modal/modal-view';
 import { ConnectAccountButton } from './shared/connect-account-button';
 import {
@@ -17,6 +17,7 @@ import {
 import { PARA_CONFIG } from './stores/constants';
 import { networkSettings } from './constants';
 import { ErrorMessage, NetworkMismatchBanner } from './shared/error-message';
+import { MigrationProvider, useMigrationStore } from './stores/migration-store';
 
 const { ConnectAccountProvider } = ConnectAccount;
 
@@ -47,9 +48,11 @@ const AppBody = () => {
   const {
     isMobile,
     modal,
-    actions: { setTimestamp },
   } = useAppStatusStore();
-  const { txFailed, isMigrated } = useUserStore();
+  const {
+    actions: { setTimestamp },
+  } = useMigrationStore();
+  const { txFailed, isMigrated } = useMigrationStore();
   const modalShowing = Object.keys(modal).length !== 0;
 
   useUserBalances();
@@ -77,8 +80,8 @@ const AppBody = () => {
       <NetworkMismatchBanner />
       <span>Migrate V1 REP</span>
       <Migrate />
-      {txFailed && <ErrorMessage type='error' message='Transaction Failed' />}
-      {isMigrated && <ErrorMessage message='Migration Successful' />}
+      {txFailed && <ErrorMessage type="error" message="Transaction Failed" />}
+      {isMigrated && <ErrorMessage message="Migration Successful" />}
     </div>
   );
 };
@@ -87,11 +90,13 @@ function App() {
   return (
     <HashRouter hashType="hashbang">
       <ConnectAccountProvider>
-        <UserProvider>
-          <AppStatusProvider>
-            <AppBody />
-          </AppStatusProvider>
-        </UserProvider>
+        <MigrationProvider>
+          <UserProvider>
+            <AppStatusProvider>
+              <AppBody />
+            </AppStatusProvider>
+          </UserProvider>
+        </MigrationProvider>
       </ConnectAccountProvider>
     </HashRouter>
   );

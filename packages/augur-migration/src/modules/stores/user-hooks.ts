@@ -16,9 +16,6 @@ const {
   UPDATE_USER_BALANCES,
   UPDATE_TRANSACTION,
   LOGOUT,
-  UPDATE_APPROVAL,
-  UPDATE_MIGRATED,
-  UPDATE_TX_FAILED,
 } = USER_ACTIONS;
 const {
   ACCOUNT,
@@ -26,9 +23,6 @@ const {
   LOGIN_ACCOUNT,
   SEEN_POSITION_WARNINGS,
   TRANSACTIONS,
-  IS_APPROVED,
-  IS_MIGRATED,
-  TX_FAILED,
 } = USER_KEYS;
 
 const updateLocalStorage = (userAccount, updatedState) => {
@@ -81,10 +75,6 @@ export function UserReducer(state, action) {
         // no saved info for this account, must be first login...
         window.localStorage.setItem(account, JSON.stringify({ account }));
       }
-      break;
-    }
-    case UPDATE_APPROVAL: {
-      updatedState[IS_APPROVED] = action.isApproved;
       break;
     }
     case UPDATE_USER_BALANCES: {
@@ -143,14 +133,6 @@ export function UserReducer(state, action) {
       updatedState[SEEN_POSITION_WARNINGS] = action.seenPositionWarnings;
       break;
     }
-    case UPDATE_MIGRATED: {
-      updatedState[IS_MIGRATED] = action.isMigrated;
-      break;
-    }
-    case UPDATE_TX_FAILED: {
-      updatedState[TX_FAILED] = action.txFailed;
-      break;
-    }
     default:
       console.log(`Error: ${action.type} not caught by Graph Data reducer`);
   }
@@ -170,8 +152,6 @@ export const useUser = (defaultState = DEFAULT_USER_STATE) => {
   return {
     ...state,
     actions: {
-      updateApproval: (isApproved) =>
-        dispatch({ type: UPDATE_APPROVAL, isApproved }),
       updateLoginAccount: (account) =>
         dispatch({ type: SET_LOGIN_ACCOUNT, account }),
       updateUserBalances: (userBalances: UserBalances) =>
@@ -184,10 +164,6 @@ export const useUser = (defaultState = DEFAULT_USER_STATE) => {
         dispatch({ type: REMOVE_TRANSACTION, hash }),
       finalizeTransaction: (hash) =>
         dispatch({ type: FINALIZE_TRANSACTION, hash }),
-      updateTxFailed: (txFailed) =>
-        dispatch({ type: UPDATE_TX_FAILED, txFailed }),
-      updateMigrated: (isMigrated) =>
-        dispatch({ type: UPDATE_MIGRATED, isMigrated }),
       updateSeenPositionWarning: (id, seenPositionWarning, warningType) =>
         dispatch({
           type: UPDATE_SEEN_POSITION_WARNING,

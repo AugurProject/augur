@@ -11,37 +11,13 @@ const {
   SET_MODAL,
   CLOSE_MODAL,
   SET_IS_LOGGED,
-  SET_TIMESTAMP
 } = APP_STATUS_ACTIONS;
 
 const {
   IS_MOBILE,
   MODAL,
   IS_LOGGED,
-  TIMESTAMP
 } = APP_STATE_KEYS;
-
-// const updateLocalStorage = (userAccount, updatedState) => {
-//   const userData = JSON.parse(window.localStorage.getItem(userAccount)) || null;
-//   if (userData) {
-//     window.localStorage.setItem(
-//       userAccount,
-//       JSON.stringify({
-//         ...userData,
-//         settings: updatedState[SETTINGS],
-//       })
-//     );
-//   } else if (!!userAccount) {
-//     window.localStorage.setItem(
-//       userAccount,
-//       JSON.stringify({
-//         account: userAccount,
-//         settings: updatedState[SETTINGS],
-//       })
-//     );
-//   }
-// };
-
 
 export function AppStatusReducer(state, action) {
   const updatedState = { ...state };
@@ -63,10 +39,6 @@ export function AppStatusReducer(state, action) {
       updatedState[IS_LOGGED] = Boolean(account);
       break;
     }
-    case SET_TIMESTAMP: {
-      updatedState[TIMESTAMP] = action.timestamp;
-      break;
-    }
     default:
       console.log(`Error: ${action.type} not caught by App Status reducer`);
   }
@@ -86,7 +58,6 @@ export const useAppStatus = (defaultState = MOCK_APP_STATUS_STATE) => {
       setModal: (modal) => dispatch({ type: SET_MODAL, modal }),
       closeModal: () => dispatch({ type: CLOSE_MODAL }),
       setIsLogged: (account) => dispatch({ type: SET_IS_LOGGED, account }),
-      setTimestamp: (timestamp) => dispatch({type: SET_TIMESTAMP, timestamp})
     },
   };
 };

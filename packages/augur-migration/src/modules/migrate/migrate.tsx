@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 
 import Styles from './migrate.styles.less';
@@ -18,6 +18,7 @@ import {
 import { useUserStore } from '../stores/user';
 import { TransactionResponse } from '@ethersproject/providers';
 import { APPROVE, MIGRATE } from '../stores/constants';
+import { useMigrationStore } from '../stores/migration-store';
 
 const { TX_STATUS, ZERO } = Constants;
 const { PrimaryButton } = ButtonComps;
@@ -29,10 +30,14 @@ export const Migrate = () => {
   const {
     loginAccount,
     balances,
-    isApproved,
     transactions,
-    actions: { updateMigrated, addTransaction, updateTxFailed },
+    actions: { addTransaction },
   } = useUserStore();
+
+  const {
+    isApproved,
+    actions: { updateMigrated, updateTxFailed },
+  } = useMigrationStore();
 
   const formattedLegacyRep = formatRep(balances.legacyRep);
   const formattedRep = formatRep(balances.rep);

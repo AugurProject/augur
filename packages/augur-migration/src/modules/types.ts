@@ -1128,7 +1128,6 @@ export interface SeenPositionWarnings {
 }
 
 export interface AppStatusState {
-  timestamp: number;
   isMobile: boolean;
   isLogged: boolean;
   modal: Modal;
@@ -1155,10 +1154,7 @@ export interface UserState {
   seenPositionWarnings: {
     [id: string]: SeenPositionWarnings;
   }
-  isApproved: boolean;
   transactions: TransactionDetails[];
-  isMigrated: boolean;
-  txFailed: boolean;
 }
 
 export interface TransactionDetails {
