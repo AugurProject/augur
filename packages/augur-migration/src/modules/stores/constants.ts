@@ -38,9 +38,6 @@ export const STUBBED_USER_ACTIONS = {
   updateSeenPositionWarning: (id, seenPositionWarning, warningType) => {},
   updateTransaction: (hash, updates) => {},
   updateUserBalances: (balances) => {},
-  updateApproval: isApproved => {},
-  updateMigrated: isMigrated => {},
-  updateTxFailed: txFailed => {},
   logout: () => {},
 };
 
@@ -50,12 +47,9 @@ export const DEFAULT_USER_STATE: UserState = {
     rep: '0',
     legacyRep: '0',
   },
-  isApproved: null,
   loginAccount: null,
   seenPositionWarnings: {},
   transactions: [],
-  txFailed: false,
-  isMigrated: false,
 };
 
 export const USER_KEYS = {
@@ -64,9 +58,6 @@ export const USER_KEYS = {
   LOGIN_ACCOUNT: 'loginAccount',
   SEEN_POSITION_WARNINGS: 'seenPositionWarnings',
   TRANSACTIONS: 'transactions',
-  IS_APPROVED: 'isApproved',
-  TX_FAILED: 'txFailed',
-  IS_MIGRATED: 'isMigrated'
 };
 
 export const USER_ACTIONS = {
@@ -78,10 +69,7 @@ export const USER_ACTIONS = {
   ADD_SEEN_POSITION_WARNINGS: 'ADD_SEEN_POSITION_WARNINGS',
   SET_LOGIN_ACCOUNT: 'SET_LOGIN_ACCOUNT',
   UPDATE_USER_BALANCES: 'UPDATE_USER_BALANCES',
-  UPDATE_APPROVAL: 'UPDATE_APPROVAL',
   LOGOUT: 'LOGOUT',
-  UPDATE_MIGRATED: 'UPDATE_MIGRATED',
-  UPDATE_TX_FAILED: 'UPDATE_TX_FAILED'
 };
 
 export const STUBBED_APP_STATUS_ACTIONS = {
@@ -139,19 +127,31 @@ export const MIGRATE = 'MIGRATE';
 export const APPROVE = 'APPROVE';
 
 export const STUBBED_MIGRATION_ACTIONS = {
-  setTimestamp: (timestamp) => {}
+  setTimestamp: (timestamp) => {},
+  updateApproval: isApproved => {},
+  updateMigrated: isMigrated => {},
+  updateTxFailed: txFailed => {}
 };
 
 export const DEFAULT_MIGRATION_STATE = {
   timestamp: 0,
+  isApproved: null,
+  txFailed: false,
+  isMigrated: false,
 };
 
 export const MIGRATION_KEYS = {
   TIMESTAMP: 'timestamp',
+  IS_APPROVED: 'isApproved',
+  TX_FAILED: 'txFailed',
+  IS_MIGRATED: 'isMigrated',
 };
 
 export const MIGRATION_ACTIONS = {
-  SET_TIMESTAMP: 'SET_TIMESTAMP'
+  SET_TIMESTAMP: 'SET_TIMESTAMP',
+  UPDATE_MIGRATED: 'UPDATE_MIGRATED',
+  UPDATE_TX_FAILED: 'UPDATE_TX_FAILED',
+  UPDATE_APPROVAL: 'UPDATE_APPROVAL',
 };
 
 export const MOCK_MIGRATION_STATE = {

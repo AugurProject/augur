@@ -6,7 +6,7 @@ import { Migrate } from './migrate/migrate';
 import { HashRouter } from 'react-router-dom';
 // import { ConnectAccountProvider } from '@augurproject/augur-comps';
 import { AppStatusProvider, useAppStatusStore } from './stores/app-status';
-import { UserProvider, useUserStore } from './stores/user';
+import { UserProvider } from './stores/user';
 import ModalView from './modal/modal-view';
 import { ConnectAccountButton } from './shared/connect-account-button';
 import {
@@ -52,7 +52,7 @@ const AppBody = () => {
   const {
     actions: { setTimestamp },
   } = useMigrationStore();
-  const { txFailed, isMigrated } = useUserStore();
+  const { txFailed, isMigrated } = useMigrationStore();
   const modalShowing = Object.keys(modal).length !== 0;
 
   useUserBalances();
