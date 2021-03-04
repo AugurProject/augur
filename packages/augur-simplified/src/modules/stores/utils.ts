@@ -8,7 +8,6 @@ import { Cash, MarketInfo, TransactionDetails } from '../types';
 import { NETWORK_BLOCK_REFRESH_TIME, PARA_CONFIG } from './constants';
 import { ApprovalState, ETH } from '../constants';
 import { useUserStore } from './user';
-// import { useGraphDataStore } from './graph-data';
 import { useGraphDataStore } from '@augurproject/augur-comps';
 import { processGraphMarkets } from '../../utils/process-data';
 import { getMarketsData } from '../apollo/client';

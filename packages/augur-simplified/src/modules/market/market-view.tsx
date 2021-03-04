@@ -30,7 +30,6 @@ import {
 import { getCurrentAmms, useScrollToTopOnMount } from '../stores/utils';
 import { getWinningOutcome } from '../markets/market-card';
 import { ConfirmedCheck } from '../common/icons';
-// import { useGraphDataStore } from '../stores/graph-data';
 import { useGraphDataStore } from '@augurproject/augur-comps';
 import { OutcomesGrid } from '../common/inputs';
 
