@@ -83,3 +83,24 @@ def test_wrapped_share_token_calculate_share_token_address(contractsFixture, cas
     )
 
     assert calculatedShareTokenAddress == deployedShareTokenAddress
+
+def test_wrapped_share_token_calculate_share_token_decimals(augur, contractsFixture, cash, shareToken, account0, market, wrappedShareTokenFactory):
+    if not contractsFixture.paraAugur:
+        return skip("Test is only for para augur")
+
+    # USDC/USDT both have 6 decimals.
+    cash.setDecimals(6)
+    setsToBuy = 100 * ATTO
+    initialCost = setsToBuy * market.getNumTicks()
+
+    cash.faucet(initialCost * 2)
+    cash.approve(wrappedShareTokenFactory.address, initialCost)
+    cash.approve(augur.address, initialCost)
+
+    wrappedShareTokenFactory.publicBuyCompleteSets(market.address, shareToken.address, SYMBOLS, setsToBuy)
+
+    invalidTokenId = shareToken.getTokenId(market.address, 0)
+    invalidTokenAddress = wrappedShareTokenFactory.getOrCreateWrappedShareToken(shareToken.address, invalidTokenId, SYMBOLS[0])
+    invalidToken = contractsFixture.applySignature("WrappedShareToken", invalidTokenAddress)
+
+    assert invalidToken.balanceOf(account0) == setsToBuy * 10**12
