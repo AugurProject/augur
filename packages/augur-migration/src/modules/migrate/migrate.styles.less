@@ -50,7 +50,7 @@
       justify-content: center;
       align-items: center;
 
-      > span {
+      > span:first-of-type {
         .text-16;
 
         margin-bottom: @size-8;
@@ -94,5 +94,11 @@
     > div:last-of-type {
       margin-top: @size-32;
     }
+  }
+}
+
+.grey {
+  > span:nth-of-type(2) {
+    color: var(--simple-secondary-text);
   }
 }

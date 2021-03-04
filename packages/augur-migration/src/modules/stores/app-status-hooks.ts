@@ -5,7 +5,7 @@ import {
   APP_STATE_KEYS,
 } from './constants';
 import { windowRef } from '@augurproject/augur-comps';
-import { dispatchMiddleware, getSavedUserInfo } from './utils';
+import { dispatchMiddleware } from './utils';
 const {
   SET_IS_MOBILE,
   SET_MODAL,
@@ -61,12 +61,6 @@ export function AppStatusReducer(state, action) {
     case SET_IS_LOGGED: {
       const { account } = action;
       updatedState[IS_LOGGED] = Boolean(account);
-      if (Boolean(account)) {
-        // updatedState[SETTINGS] = {
-        //   ...state[SETTINGS],
-        //   ...getSavedUserInfo(account)[SETTINGS],
-        // };
-      }
       break;
     }
     case SET_TIMESTAMP: {
