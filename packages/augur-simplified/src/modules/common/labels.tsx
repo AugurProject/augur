@@ -28,7 +28,7 @@ import {
   ADD,
 } from '../constants';
 import { FormattedNumber, MarketInfo } from '../types';
-import { useGraphDataStore } from '../stores/graph-data';
+import { useGraphDataStore } from '@augurproject/augur-comps';
 import { PARA_CONFIG } from '../stores/constants';
 import { useUserStore } from '../stores/user';
 import {UnsupportedChainIdError, useWeb3React} from '@web3-react/core';

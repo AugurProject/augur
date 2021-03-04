@@ -120,8 +120,8 @@ export const MarketCardView = ({
   noLiquidityDisabled = false,
 }: {
   market: MarketInfo;
-  handleNoLiquidity: Function;
-  noLiquidityDisabled: boolean;
+  handleNoLiquidity?: Function;
+  noLiquidityDisabled?: boolean;
 }) => {
   const {
     categories,

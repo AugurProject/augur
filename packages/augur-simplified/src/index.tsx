@@ -1,9 +1,8 @@
 import React from 'react';
 import { render } from 'react-dom';
 import App from './modules/App';
-import AugurComps, { windowRef } from '@augurproject/augur-comps';
-console.log('next is default:');
-console.log(AugurComps);
+import { windowRef } from '@augurproject/augur-comps';
+
 windowRef.appStatus = {};
 windowRef.graphData = {};
 windowRef.user = {};

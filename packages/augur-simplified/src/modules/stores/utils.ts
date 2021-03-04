@@ -5,15 +5,12 @@ import {
   isERC1155ContractApproved,
 } from '../hooks/use-approval-callback';
 import { Cash, MarketInfo, TransactionDetails } from '../types';
-import { NETWORK_BLOCK_REFRESH_TIME, PARA_CONFIG } from './constants';
+import { PARA_CONFIG } from './constants';
 import { ApprovalState, ETH } from '../constants';
 import { useUserStore } from './user';
-import { useGraphDataStore } from './graph-data';
-import { processGraphMarkets } from '../../utils/process-data';
-import { getMarketsData } from '../apollo/client';
+import { useGraphDataStore } from '@augurproject/augur-comps';
 import { augurSdkLite } from '../../utils/augurlitesdk';
 import { getUserBalances } from '../../utils/contract-calls';
-import { Web3Provider } from '@ethersproject/providers'
 
 const isAsync = (obj) =>
   !!obj &&
@@ -158,44 +155,6 @@ export function useCanEnterCashPosition({ name, address }: Cash) {
   ]);
 
   return canEnterPosition;
-}
-
-export function useGraphHeartbeat(library?: Web3Provider) {
-  const {
-    ammExchanges,
-    cashes,
-    markets,
-    blocknumber,
-    actions: { updateGraphHeartbeat }
-  } = useGraphDataStore();
-  useEffect(() => {
-    let isMounted = true;
-    // get data immediately, then setup interval
-    getMarketsData(async (graphData, block, errors) => {
-      isMounted && !!errors
-        ? updateGraphHeartbeat(
-          { ammExchanges, cashes, markets },
-          blocknumber,
-          errors
-        )
-        : updateGraphHeartbeat(await processGraphMarkets(graphData, library), block, errors);
-    });
-    const intervalId = setInterval(() => {
-      getMarketsData(async (graphData, block, errors) => {
-        isMounted && !!errors
-          ? updateGraphHeartbeat(
-            { ammExchanges, cashes, markets },
-            blocknumber,
-            errors
-          )
-          : updateGraphHeartbeat(await processGraphMarkets(graphData, library), block, errors);
-      });
-    }, NETWORK_BLOCK_REFRESH_TIME[PARA_CONFIG.networkId] || NETWORK_BLOCK_REFRESH_TIME[1]);
-    return () => {
-      isMounted = false;
-      clearInterval(intervalId);
-    };
-  }, [library]);
 }
 
 export function useUserBalances() {

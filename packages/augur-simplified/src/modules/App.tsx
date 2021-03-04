@@ -8,7 +8,6 @@ import Routes from './routes/routes';
 import TopNav from './common/top-nav';
 import '../assets/styles/shared.less';
 import { AppStatusProvider, useAppStatusStore } from './stores/app-status';
-import { GraphDataProvider } from './stores/graph-data';
 import { UserProvider, useUserStore } from './stores/user';
 import { Sidebar } from './sidebar/sidebar';
 import { ConnectAccountProvider } from './ConnectAccount/connect-account-provider';
@@ -16,8 +15,8 @@ import classNames from 'classnames';
 import ModalView from './modal/modal-view';
 import parsePath from './routes/helpers/parse-path';
 import { MARKETS } from './constants';
-import { useGraphHeartbeat, useUserBalances, useFinalizeUserTransactions } from './stores/utils';
-import * as AugurComps from '@augurproject/augur-comps';
+import { useUserBalances, useFinalizeUserTransactions } from './stores/utils';
+import { Stores, useGraphHeartbeat } from '@augurproject/augur-comps';
 
 function checkIsMobile(setIsMobile) {
   const isMobile =
@@ -56,7 +55,7 @@ const AppBody = () => {
   const location = useLocation();
   const path = parsePath(location.pathname)[0];
   const sidebarOut = sidebarType && isMobile;
-
+  
   useGraphHeartbeat(loginAccount ? loginAccount.library : null);
   useUserBalances();
   useFinalizeUserTransactions();
@@ -87,8 +86,11 @@ const AppBody = () => {
 };
 
 function App() {
-  console.log("next is * as");
-  console.log(AugurComps);
+  const {
+    GraphData: {
+      GraphDataProvider
+    },
+  } = Stores;
   return (
     <HashRouter hashType="hashbang">
       <ConnectAccountProvider>
