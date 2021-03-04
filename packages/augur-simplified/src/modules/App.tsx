@@ -17,6 +17,7 @@ import ModalView from './modal/modal-view';
 import parsePath from './routes/helpers/parse-path';
 import { MARKETS } from './constants';
 import { useGraphHeartbeat, useUserBalances, useFinalizeUserTransactions } from './stores/utils';
+import * as AugurComps from '@augurproject/augur-comps';
 
 function checkIsMobile(setIsMobile) {
   const isMobile =
@@ -86,6 +87,8 @@ const AppBody = () => {
 };
 
 function App() {
+  console.log("next is * as");
+  console.log(AugurComps);
   return (
     <HashRouter hashType="hashbang">
       <ConnectAccountProvider>
