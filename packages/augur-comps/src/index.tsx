@@ -27,8 +27,11 @@ import _makePath from './utils/routes/make-path';
 import _makeQuery from './utils/routes/make-query';
 import _parseStringToArray from './utils/routes/parse-string-to-array';
 import { CATEGORIES_ICON_MAP as _CATEGORIES_ICON_MAP } from './components/common/category-icons-map';
-import _GraphDataStore from './stores/graph-data';
-import _UserDataStore from './stores/user';
+import _GraphDataStore, {
+  useGraphDataStore,
+  GraphDataStore,
+} from './stores/graph-data';
+import _UserDataStore, { useUserStore, UserStore } from './stores/user';
 import {
   useGraphHeartbeat,
   useCanExitCashPosition,
@@ -85,22 +88,44 @@ export const MarketCard = _MarketCard;
 export const Logo = _Logo;
 export const Buttons = _Buttons;
 export const Labels = _Labels;
-export const Icons = _Icons;
-export const CATEGORIES_ICON_MAP = _CATEGORIES_ICON_MAP;
+export const Icons = {
+  ..._Icons,
+  CATEGORIES_ICON_MAP: _CATEGORIES_ICON_MAP,
+};
 
+// export extremely commonly used functions as top level non-default exports:
+export {
+  useGraphHeartbeat,
+  useUserStore,
+  UserStore,
+  useCanExitCashPosition,
+  useCanEnterCashPosition,
+  useUserBalances,
+  useFinalizeUserTransactions,
+  useScrollToTopOnMount,
+  useGraphDataStore,
+  GraphDataStore,
+  createBigNumber,
+  Formatter,
+  DateUtils,
+  windowRef,
+};
+
+// create default object
 const AugurComps = {
-  Buttons,
-  ConnectAccount,
+  Components: {
+    Buttons,
+    ConnectAccount,
+    Labels,
+    Logo,
+    MarketCard,
+  },
   Constants,
   Icons,
-  Labels,
-  Logo,
-  MarketCard,
   Routes,
   Stores,
   Types,
   Utils,
-  CATEGORIES_ICON_MAP,
 };
 
 export default AugurComps;
