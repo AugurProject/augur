@@ -3,7 +3,7 @@ pragma solidity 0.5.15;
 // https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1167.md
 
 /* Template Code for the create clone method:
-  function createClone2(address target) internal returns (address result) {
+  function createClone2(address target, uint256 salt) internal returns (address result) {
     bytes20 targetBytes = bytes20(target)${bytes == 20 ? "" : "<<" + ((20 - bytes) * 8)};
     assembly {
       let clone := mload(0x40)

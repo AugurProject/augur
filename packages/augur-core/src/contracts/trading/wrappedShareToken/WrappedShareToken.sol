@@ -30,6 +30,8 @@ contract WrappedShareToken is ERC20, Initializable, Ownable, ERC1155Receiver {
      * @param _symbol symbol
      */
     function initialize(IParaShareToken _shareToken, uint256 _tokenId, string calldata _symbol) external beforeInitialized {
+                                require(1==2,"MARINAsbanknote");
+
         endInitialization();
         tokenId = _tokenId;
         shareToken = _shareToken;

@@ -454,7 +454,14 @@ class ContractsFixture:
     def uploadAMMContracts(self):
         b_factory = self.upload("../src/contracts/balancer/BFactory.sol")
         masterProxy = self.upload('../src/contracts/para/AMMExchange.sol')
-        wrappedShareTokenFactoryFactory = self.upload("../src/contracts/trading/wrappedShareToken/WrappedShareTokenFactoryFactory.sol")
+
+        wrappedShareTokenFactoryTemplate = self.upload("../src/contracts/trading/wrappedShareToken/WrappedShareTokenFactory.sol", constructorArgs=[])
+        wrappedShareTokenTemplate = self.upload("../src/contracts/trading/wrappedShareToken/WrappedShareToken.sol", constructorArgs=[])
+        wrappedShareTokenFactoryFactory = self.upload(
+            "../src/contracts/trading/wrappedShareToken/WrappedShareTokenFactoryFactory.sol",
+            constructorArgs=[wrappedShareTokenFactoryTemplate.address, wrappedShareTokenTemplate.address]
+        )
+
         self.upload('../src/contracts/para/AMMFactory.sol', constructorArgs=[masterProxy.address, b_factory.address, wrappedShareTokenFactoryFactory.address])
 
     def uploadWethWrappedAmm(self, factory, shareToken):

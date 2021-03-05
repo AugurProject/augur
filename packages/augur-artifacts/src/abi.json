@@ -53112,18 +53112,6 @@
 	],
 	"WrappedShareTokenFactory": [
 		{
-			"inputs": [
-				{
-					"internalType": "contract IParaShareToken",
-					"name": "_paraShareToken",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "constructor"
-		},
-		{
 			"anonymous": false,
 			"inputs": [
 				{
@@ -53181,6 +53169,52 @@
 			"type": "function"
 		},
 		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "target",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "salt",
+					"type": "uint256"
+				},
+				{
+					"internalType": "address",
+					"name": "creator",
+					"type": "address"
+				}
+			],
+			"name": "clone2Address",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getInitialized",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -53228,6 +53262,26 @@
 					"type": "address[]"
 				}
 			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "contract IParaShareToken",
+					"name": "_paraShareToken",
+					"type": "address"
+				},
+				{
+					"internalType": "contract WrappedShareToken",
+					"name": "_tokenTemplate",
+					"type": "address"
+				}
+			],
+			"name": "initialize",
+			"outputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
 			"type": "function"
@@ -53306,6 +53360,21 @@
 			"outputs": [
 				{
 					"internalType": "contract IParaShareToken",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "tokenTemplate",
+			"outputs": [
+				{
+					"internalType": "contract WrappedShareToken",
 					"name": "",
 					"type": "address"
 				}
@@ -53473,6 +53542,23 @@
 	],
 	"WrappedShareTokenFactoryFactory": [
 		{
+			"inputs": [
+				{
+					"internalType": "contract WrappedShareTokenFactory",
+					"name": "_factoryTemplate",
+					"type": "address"
+				},
+				{
+					"internalType": "contract WrappedShareToken",
+					"name": "_tokenTemplate",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "constructor"
+		},
+		{
 			"anonymous": false,
 			"inputs": [
 				{
@@ -53484,6 +53570,58 @@
 			],
 			"name": "WrappedShareTokenFactoryCreated",
 			"type": "event"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "contract IParaShareToken",
+					"name": "_shareToken",
+					"type": "address"
+				}
+			],
+			"name": "calculateFactoryAddress",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "target",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "salt",
+					"type": "uint256"
+				},
+				{
+					"internalType": "address",
+					"name": "creator",
+					"type": "address"
+				}
+			],
+			"name": "clone2Address",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
 		},
 		{
 			"constant": false,
@@ -53528,6 +53666,21 @@
 			"type": "function"
 		},
 		{
+			"constant": true,
+			"inputs": [],
+			"name": "factoryTemplate",
+			"outputs": [
+				{
+					"internalType": "contract WrappedShareTokenFactory",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -53546,6 +53699,21 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "tokenTemplate",
+			"outputs": [
+				{
+					"internalType": "contract WrappedShareToken",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		}
 	],

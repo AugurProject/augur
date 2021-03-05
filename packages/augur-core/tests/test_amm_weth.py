@@ -10,6 +10,7 @@ ATTO = 10 ** 18
 INVALID = 0
 NO = 1
 YES = 2
+SYMBOLS = ["Invalid", "No", "Yes"]
 
 
 @fixture
@@ -43,8 +44,8 @@ def weth_amm(sessionFixture, factory, para_weth_share_token):
 
 
 @fixture
-def amm(sessionFixture, factory, market, para_weth_share_token):
-    ammAddress = factory.addAMM(market.address, para_weth_share_token.address, FEE)
+def amm(sessionFixture, weth_amm, market):
+    ammAddress = weth_amm.addAMMWithLiquidity(market.address, FEE, ATTO, True, account0, SYMBOLS, value=0)[0]
     return sessionFixture.applySignature("AMMExchange", ammAddress)
 
 
@@ -171,7 +172,7 @@ def test_amm_weth_yes_position2(contractsFixture, sessionFixture, market, factor
 
     para_weth_share_token.setApprovalForAll(weth_amm.address, True)
 
-    factory.addAMM(market.address, para_weth_share_token.address, FEE)
+    weth_amm.addAMMWithLiquidity(market.address, FEE, ATTO, True, account0, SYMBOLS, value=0)
     weth_amm.addInitialLiquidity(market.address, FEE, ratio_50_50, True, account1, value=liquidityCost)
 
     yesPositionSets = 10 * ATTO
@@ -207,7 +208,7 @@ def test_amm_weth_claim_from_multiple_markets(sessionFixture, universe, factory,
         numticks = market.getNumTicks()
         liquidityCost = sets * numticks
 
-        factory.addAMM(market.address, para_weth_share_token.address, FEE)
+        weth_amm.addAMMWithLiquidity(market.address, FEE, ATTO, True, account0, SYMBOLS, value=0)
         weth_amm.addInitialLiquidity(market.address, FEE, ratio_50_50, True, account1, value=liquidityCost)
 
         yesPositionSets = 10 * ATTO

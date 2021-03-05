@@ -46,7 +46,7 @@ def test_amm_calc_addr(contractsFixture, factory, shareToken, market):
     address = factory.calculateAMMAddress(market.address, shareToken.address, FEE)
     assert address != nullAddress
 
-def test_amm_add_additional_liquidity(contractsFixture, market, cash, shareToken, factory, nexus, account0, account1):
+def test_amm_add_additional_liquidity(contractsFixture, market, cash, shareToken, factory, account0, account1):
     if not contractsFixture.paraAugur:
         return skip("Test is only for para augur")
 

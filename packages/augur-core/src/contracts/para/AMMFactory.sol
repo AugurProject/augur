@@ -152,7 +152,7 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         _para.cash().approve(address(_para.augur()), 2**256-1);
 
         IAMMExchange _amm = createAMM(_market, _para, _fee);
-        BPool _bPool = createBPool(_ammAddress, _para, _market, _fee, _recipient, _symbols);
+        BPool _bPool = createBPool(_ammAddress, _para, _market, _fee, _recipient, _symbols); // TODO fails here
 
         balancerPools[address(_amm)] = address(_bPool);
 
@@ -225,12 +225,30 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         exchanges[address(_market)][address(_para)][_fee] = _ammAddress;
     }
 
+function isContract(address addr) public view returns (bool) {
+  uint size;
+  assembly { size := extcodesize(addr) }
+  return size > 0;
+}
+
     function createBPool(address _ammAddress, IParaShareToken _para, IMarket _market, uint256 _fee, address _recipient, string[] memory _symbols) private returns (BPool _bPool){
         _bPool = bFactory.newBPool();
 
         uint256 _invalidTokenId = _para.getTokenId(_market, 0);
 
         WrappedShareTokenFactory wrappedShareTokenFactory = wrappedShareTokenFactoryFactory.getOrCreateWrappedShareTokenFactory(_para);
+
+        require(address(wrappedShareTokenFactory) != address(0), "factory was not created");
+        require(isContract(address(wrappedShareTokenFactory)), "factory has no code");
+
+        // TODO these do not actually run the associated code, but also do not fail
+        wrappedShareTokenFactory.initializea(IParaShareToken(address(this)), WrappedShareToken(address(this)));
+        wrappedShareTokenFactory.initializea(IParaShareToken(address(this)), WrappedShareToken(address(this)));
+//        wrappedShareTokenFactory.tokenTemplate(); // TODO debug. this fails
+        // TODO this fails even though the method exists
+        wrappedShareTokenFactory.calculateShareTokenAddress(uint256(1), _symbols[0]);
+        require(1==2,"If you got here then cloning works!");
+
         WrappedShareToken wrappedShareToken = wrappedShareTokenFactory.getOrCreateWrappedShareToken(_invalidTokenId, _symbols[0]);
 
         _para.setApprovalForAll(address(wrappedShareTokenFactory), true);

@@ -545,8 +545,15 @@ Deploying to: ${env}
 
     async uploadWrappedShareTokenFactoryFactory(): Promise<string> {
         console.log('Uploading WrappedShareTokenFactoryFactory contract');
+
+        const factoryTemplate = this.contracts.get('WrappedShareTokenFactory');
+        factoryTemplate.address = await this.construct(factoryTemplate, []);
+
+        const tokenTemplate = this.contracts.get('WrappedShareToken');
+        tokenTemplate.address = await this.construct(tokenTemplate, []);
+
         const metaFactory = this.contracts.get('WrappedShareTokenFactoryFactory');
-        metaFactory.address = await this.construct(metaFactory, []);
+        metaFactory.address = await this.construct(metaFactory, [factoryTemplate.address, tokenTemplate.address]);
         return metaFactory.address;
     }
 
