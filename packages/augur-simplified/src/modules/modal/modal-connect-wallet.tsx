@@ -1,25 +1,27 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import { Header } from './common';
 import Styles from './modal.styles.less';
-import { SecondaryButton, TextButton, WalletButton } from '../common/buttons';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { AbstractConnector } from '@web3-react/abstract-connector';
-import { SUPPORTED_WALLETS } from '../ConnectAccount/constants';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import {injected, NETWORK_CHAIN_ID, portis} from '../ConnectAccount/connectors';
 import MetamaskIcon from '../ConnectAccount/assets/metamask.png';
-import { ErrorBlock } from '../common/labels';
-import Loader from '../ConnectAccount/components/Loader';
-import AccountDetails from '../ConnectAccount/components/AccountDetails';
 import { useAppStatusStore } from '../stores/app-status';
 import classNames from 'classnames';
-import { useUserStore, Stores } from '@augurproject/augur-comps';
-import {isSafari} from '../ConnectAccount/utils/';
+import { useUserStore, Stores, ButtonComps, ConnectAccount, LabelComps  } from '@augurproject/augur-comps';
 const {
   Constants: {
     NETWORK_NAMES,
   }
 } = Stores;
+const { SecondaryButton, TextButton, WalletButton } = ButtonComps;
+const {
+  AccountDetails,
+  Loader,
+  utils: { isSafari },
+  constants: { SUPPORTED_WALLETS },
+  connectors: { NETWORK_CHAIN_ID, portis, injected },
+} = ConnectAccount;
+const { ErrorBlock } = LabelComps;
 const WALLET_VIEWS = {
   OPTIONS: 'options',
   OPTIONS_SECONDARY: 'options_secondary',

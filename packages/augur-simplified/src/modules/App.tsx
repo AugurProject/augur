@@ -9,7 +9,6 @@ import TopNav from './common/top-nav';
 import '../assets/styles/shared.less';
 import { AppStatusProvider, useAppStatusStore } from './stores/app-status';
 import { Sidebar } from './sidebar/sidebar';
-import { ConnectAccountProvider } from './ConnectAccount/connect-account-provider';
 import classNames from 'classnames';
 import ModalView from './modal/modal-view';
 import parsePath from './routes/helpers/parse-path';
@@ -85,6 +84,9 @@ const AppBody = () => {
 
 function App() {
   const {
+    ConnectAccount: {
+      ConnectAccountProvider
+    },
     GraphData: {
       GraphDataProvider
     },
