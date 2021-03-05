@@ -8,6 +8,7 @@ import parseQuery from '../modules/routes/helpers/parse-query';
 const GA_TRACKING_ID = 'G-6REXDMP9F3';
 let tracker = null;
 const activate = PARA_CONFIG.networkId !== MAINNET;
+const APP_NAME = 'simplifed';
 
 const getTracker = () => {
   if (!tracker && activate) {
@@ -16,7 +17,7 @@ const getTracker = () => {
       debug: true,
       titleCase: false,
       gaOptions: {
-        name: 'simplified',
+        name: APP_NAME,
         userId: userId,
       }
     });
