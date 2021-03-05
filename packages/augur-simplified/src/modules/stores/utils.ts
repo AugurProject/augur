@@ -224,11 +224,3 @@ export function useFinalizeUserTransactions() {
     }
   }, [loginAccount, blocknumber, transactions]);
 }
-
-export function useScrollToTopOnMount(...optionsTriggers) {
-  useEffect(() => {
-    // initial render only.
-    document.getElementById('mainContent')?.scrollTo(0, 0);
-    window.scrollTo(0, 1);
-  }, [...optionsTriggers]);
-}

@@ -27,9 +27,9 @@ import {
   getMarketEndtimeFull,
   getMarketEndtimeDate,
 } from '../../utils/date-utils';
-import { getCurrentAmms, useScrollToTopOnMount } from '../stores/utils';
+import { getCurrentAmms } from '../stores/utils';
 import { ConfirmedCheck } from '../common/icons';
-import { useGraphDataStore } from '@augurproject/augur-comps';
+import { useGraphDataStore, useScrollToTopOnMount } from '@augurproject/augur-comps';
 import { OutcomesGrid } from '../common/inputs';
 
 import { AmmOutcome, MarketOutcome } from '../types';

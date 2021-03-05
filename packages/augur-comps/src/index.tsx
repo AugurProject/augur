@@ -39,11 +39,23 @@ import {
   useUserBalances,
   useFinalizeUserTransactions,
   useScrollToTopOnMount,
+  getSavedUserInfo,
+  getRelatedMarkets,
+  getCurrentAmms,
+  middleware,
+  dispatchMiddleware,
+  keyedObjToArray,
+  keyedObjToKeyArray,
+  arrayToKeyedObject,
+  arrayToKeyedObjectByProp,
 } from './stores/utils';
-
+import * as _ApprovalHooks from './stores/use-approval-callback';
 export const Stores = {
   GraphData: _GraphDataStore,
   User: _UserDataStore,
+  ConnectAccount: {
+    ConnectAccountProvider: _ConnectAccountProvider,
+  },
   Hooks: {
     useGraphHeartbeat,
     useCanExitCashPosition,
@@ -51,7 +63,19 @@ export const Stores = {
     useUserBalances,
     useFinalizeUserTransactions,
     useScrollToTopOnMount,
+    ..._ApprovalHooks,
   },
+  Utils: {
+    getSavedUserInfo,
+    getRelatedMarkets,
+    getCurrentAmms,
+    middleware,
+    dispatchMiddleware,
+    keyedObjToArray,
+    keyedObjToKeyArray,
+    arrayToKeyedObject,
+    arrayToKeyedObjectByProp,
+  }
 };
 
 export const ConnectAccount = {
@@ -92,6 +116,7 @@ export const Icons = {
   ..._Icons,
   CATEGORIES_ICON_MAP: _CATEGORIES_ICON_MAP,
 };
+export const ApprovalHooks = _ApprovalHooks;
 
 // export extremely commonly used functions as top level non-default exports:
 export {
