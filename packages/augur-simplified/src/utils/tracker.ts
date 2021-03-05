@@ -3,6 +3,7 @@ import ReactGA from 'react-ga';
 import { MAINNET, PARA_CONFIG } from '../modules/stores/constants';
 import { useLocation } from 'react-router';
 import parsePath from '../modules/routes/helpers/parse-path';
+import parseQuery from '../modules/routes/helpers/parse-query';
 
 const GA_TRACKING_ID = 'G-6REXDMP9F3';
 let tracker = null;
@@ -24,20 +25,21 @@ const getTracker = () => {
   return tracker;
 }
 
-const pageview = (page: string) => {
+const pageview = (page: string, data: string[]) => {
   const tracker = getTracker();
   if (tracker) {
-    console.log('tracker', page);
-    tracker.pageview(page);
+    console.log('tracker', page, data);
+    tracker.pageview(page, data);
   }
 }
 
 export const usePageView = () => {
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
   useEffect(() => {
-    const page = parsePath(pathname)[0];
-    pageview(page);
-  }, [pathname]);
+    const page = parsePath(pathname);
+    const data = parseQuery(search)
+    pageview(page[0], data);
+  }, [pathname, search]);
 }
 
 const genUserId = () => {
