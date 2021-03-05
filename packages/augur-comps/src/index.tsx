@@ -32,6 +32,8 @@ import _GraphDataStore, {
   GraphDataStore,
 } from './stores/graph-data';
 import _UserDataStore, { useUserStore, UserStore } from './stores/user';
+import * as _StoreConstants from './stores/constants';
+import * as _ProcessData from './stores/process-data';
 import {
   useGraphHeartbeat,
   useCanExitCashPosition,
@@ -39,11 +41,23 @@ import {
   useUserBalances,
   useFinalizeUserTransactions,
   useScrollToTopOnMount,
+  getSavedUserInfo,
+  getRelatedMarkets,
+  getCurrentAmms,
+  middleware,
+  dispatchMiddleware,
+  keyedObjToArray,
+  keyedObjToKeyArray,
+  arrayToKeyedObject,
+  arrayToKeyedObjectByProp,
 } from './stores/utils';
-
+import * as _ApprovalHooks from './stores/use-approval-callback';
 export const Stores = {
   GraphData: _GraphDataStore,
   User: _UserDataStore,
+  ConnectAccount: {
+    ConnectAccountProvider: _ConnectAccountProvider,
+  },
   Hooks: {
     useGraphHeartbeat,
     useCanExitCashPosition,
@@ -51,7 +65,21 @@ export const Stores = {
     useUserBalances,
     useFinalizeUserTransactions,
     useScrollToTopOnMount,
+    ..._ApprovalHooks,
   },
+  Utils: {
+    ..._ProcessData,
+    getSavedUserInfo,
+    getRelatedMarkets,
+    getCurrentAmms,
+    middleware,
+    dispatchMiddleware,
+    keyedObjToArray,
+    keyedObjToKeyArray,
+    arrayToKeyedObject,
+    arrayToKeyedObjectByProp,
+  },
+  Constants: _StoreConstants
 };
 
 export const ConnectAccount = {
@@ -64,7 +92,8 @@ export const ConnectAccount = {
   AccountDetails: _AccountDetails,
   utils: _ConnectUtils,
 };
-export const Constants = _Constants;
+export const PARA_CONFIG = _StoreConstants.PARA_CONFIG;
+export const Constants = {..._Constants, PARA_CONFIG };
 export const Utils = {
   addCommasToNumber,
   isMobileBrowser,
@@ -92,7 +121,8 @@ export const Icons = {
   ..._Icons,
   CATEGORIES_ICON_MAP: _CATEGORIES_ICON_MAP,
 };
-
+export const ApprovalHooks = _ApprovalHooks;
+export const ProcessData = _ProcessData;
 // export extremely commonly used functions as top level non-default exports:
 export {
   useGraphHeartbeat,

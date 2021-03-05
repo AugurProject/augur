@@ -7,10 +7,12 @@ import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import MetamaskIcon from '../ConnectAccount/assets/metamask.png';
 import { useAppStatusStore } from '../stores/app-status';
 import classNames from 'classnames';
-import { useUserStore } from '../stores/user';
-import {NETWORK_NAMES} from '../stores/constants';
-
-import { ButtonComps, ConnectAccount, LabelComps } from '@augurproject/augur-comps';
+import { useUserStore, Stores, ButtonComps, ConnectAccount, LabelComps  } from '@augurproject/augur-comps';
+const {
+  Constants: {
+    NETWORK_NAMES,
+  }
+} = Stores;
 const { SecondaryButton, TextButton, WalletButton } = ButtonComps;
 const {
   AccountDetails,
@@ -20,7 +22,6 @@ const {
   connectors: { NETWORK_CHAIN_ID, portis, injected },
 } = ConnectAccount;
 const { ErrorBlock } = LabelComps;
-
 const WALLET_VIEWS = {
   OPTIONS: 'options',
   OPTIONS_SECONDARY: 'options_secondary',

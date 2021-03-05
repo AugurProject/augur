@@ -1,19 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import Styles from './tables.styles.less';
-import { EthIcon, UpArrow, UsdIcon } from './icons';
 import { PrimaryButton, SecondaryButton, TinyButton } from './buttons';
 import classNames from 'classnames';
-import {
-  POSITIONS,
-  LIQUIDITY,
-  ALL,
-  ADD,
-  REMOVE,
-  SWAP,
-  TX_STATUS,
-  ETH,
-  TABLES,
-} from '../constants';
 import { SmallDropdown } from './selection';
 import {
   AmmExchange,
@@ -25,14 +13,6 @@ import {
   Winnings,
   TransactionTypes,
 } from '../types';
-import {
-  formatDai,
-  formatCash,
-  formatSimplePrice,
-  formatSimpleShares,
-  formatPercent,
-} from '../../utils/format-number';
-import { MODAL_ADD_LIQUIDITY, USDC } from '../constants';
 import { useAppStatusStore } from '../stores/app-status';
 import {
   AddressLink,
@@ -49,11 +29,28 @@ import {
   WarningBanner,
   generateTooltip,
 } from './labels';
-import { useGraphDataStore } from '@augurproject/augur-comps';
-import { useUserStore } from '../stores/user';
-import { useCanExitCashPosition } from '../stores/utils';
-import { approveERC1155Contract } from '../hooks/use-approval-callback';
-import { PARA_CONFIG } from '../stores/constants';
+import { PARA_CONFIG, useGraphDataStore, useUserStore, ApprovalHooks, Constants, Formatter, Icons } from '@augurproject/augur-comps';
+const { useCanExitCashPosition, approveERC1155Contract } = ApprovalHooks;
+const {
+  formatDai,
+  formatCash,
+  formatSimplePrice,
+  formatSimpleShares,
+  formatPercent,
+} = Formatter;
+const {
+  MODAL_ADD_LIQUIDITY, USDC,
+  POSITIONS,
+  LIQUIDITY,
+  ALL,
+  ADD,
+  REMOVE,
+  SWAP,
+  TX_STATUS,
+  ETH,
+  TABLES,
+} = Constants;
+const { EthIcon, UpArrow, UsdIcon } = Icons;
 
 interface PositionsTableProps {
   market: MarketInfo;

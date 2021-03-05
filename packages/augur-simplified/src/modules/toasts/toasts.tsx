@@ -2,10 +2,11 @@ import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
 import Styles from './toasts.styles.less';
-import { CloseIcon, FailedX, ConfirmedCheck } from '../common/icons';
+import { Icons, Constants, useUserStore } from '@augurproject/augur-comps';
 import { ReceiptLink } from '../routes/helpers/links';
-import { TX_STATUS } from '../constants';
-import { useUserStore } from '../stores/user';
+
+const { CloseIcon, FailedX, ConfirmedCheck } = Icons;
+const { TX_STATUS } = Constants;
 
 export const Toasts = () => {
   const {

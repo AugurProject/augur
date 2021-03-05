@@ -37,11 +37,15 @@ import {
 } from '../../utils/contract-calls';
 import { BigNumber as BN } from 'bignumber.js';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
-import { CloseIcon } from '../common/icons';
 import { AmountInput, OutcomesGrid } from '../common/inputs';
-import { useUserStore } from '../stores/user';
-import { useCanEnterCashPosition, useCanExitCashPosition } from '../stores/utils';
-
+import { useUserStore, ApprovalHooks, Icons } from '@augurproject/augur-comps';
+const {
+  useCanEnterCashPosition,
+  useCanExitCashPosition,
+} = ApprovalHooks;
+const {
+  CloseIcon
+} = Icons;
 const AVG_PRICE_TIP =
   'The difference between the market price and estimated price due to trade size.';
 

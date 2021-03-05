@@ -1,7 +1,7 @@
 import React from 'react';
 import { DEFAULT_APP_STATUS_STATE, STUBBED_APP_STATUS_ACTIONS } from '../stores/constants';
 import { useAppStatus } from '../stores/app-status-hooks';
-import { useUserStore } from './user';
+import { useUserStore } from '@augurproject/augur-comps';
 
 export const AppStatusContext = React.createContext({
   ...DEFAULT_APP_STATUS_STATE,

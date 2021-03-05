@@ -23,8 +23,11 @@ import { Toasts } from '../toasts/toasts';
 import { ToggleSwitch } from 'modules/common/toggle-switch';
 import { generateTooltip } from 'modules/common/labels';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
-import { useGraphDataStore, ConnectAccount as CompsConnectAccount } from '@augurproject/augur-comps';
-import { useUserStore } from '../stores/user';
+import {
+  useGraphDataStore,
+  useUserStore,
+  ConnectAccount as CompsConnectAccount,
+} from '@augurproject/augur-comps';
 
 const { ConnectAccount } = CompsConnectAccount;
 
@@ -33,9 +36,7 @@ export const SettingsButton = () => {
     settings: { slippage, showInvalidMarkets, showLiquidMarkets },
     actions: { updateSettings },
   } = useAppStatusStore();
-  const {
-    account
-  } = useUserStore();
+  const { account } = useUserStore();
   const [open, setOpened] = useState(false);
   const [customVal, setCustomVal] = useState('');
   const settingsRef = useRef(null);
@@ -184,7 +185,10 @@ export const SettingsButton = () => {
             <ToggleSwitch
               toggle={showInvalidMarkets}
               setToggle={() =>
-                updateSettings({ showInvalidMarkets: !showInvalidMarkets }, account)
+                updateSettings(
+                  { showInvalidMarkets: !showInvalidMarkets },
+                  account
+                )
               }
             />
           </li>
@@ -193,7 +197,10 @@ export const SettingsButton = () => {
             <ToggleSwitch
               toggle={showLiquidMarkets}
               setToggle={() =>
-                updateSettings({ showLiquidMarkets: !showLiquidMarkets }, account)
+                updateSettings(
+                  { showLiquidMarkets: !showLiquidMarkets },
+                  account
+                )
               }
             />
           </li>
@@ -220,7 +227,7 @@ export const TopNav = () => {
   } = useUserStore();
   const { blocknumber } = useGraphDataStore();
   const [lastUser, setLastUser] = useLocalStorage('lastUser', null);
-  
+
   useEffect(() => {
     if (blocknumber && transactions) {
       transactions
@@ -258,10 +265,7 @@ export const TopNav = () => {
     if (activeWeb3) {
       if (String(networkId) !== String(activeWeb3.chainId)) {
         updateLoginAccount({ chainId: activeWeb3.chainId });
-      } else if (
-        account &&
-        account !== activeWeb3.account
-      ) {
+      } else if (account && account !== activeWeb3.account) {
         logout();
         updateLoginAccount(activeWeb3);
       } else {
@@ -310,7 +314,7 @@ export const TopNav = () => {
             autoLogin,
             transactions,
             setModal,
-            isMobile
+            isMobile,
           }}
         />
         {isMobile ? (
