@@ -124,6 +124,14 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         return exchanges[address(_market)][address(_para)][_fee];
     }
 
+    function getBPool(
+        IMarket _market,
+        IParaShareToken _para,
+        uint256 _fee
+    ) public returns (address) {
+        return balancerPools[getAMM(_market, _para, _fee)];
+    }
+
     function balanceOf(
         IMarket _market,
         IParaShareToken _para,

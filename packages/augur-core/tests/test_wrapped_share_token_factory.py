@@ -90,8 +90,8 @@ def test_wrapped_share_token_calculate_share_token_decimals(augur, contractsFixt
 
     # USDC/USDT both have 6 decimals.
     cash.setDecimals(6)
-    setsToBuy = 100 * ATTO
-    initialCost = setsToBuy * market.getNumTicks()
+    initialCost = 10**6
+    setsToBuy = initialCost // market.getNumTicks()
 
     cash.faucet(initialCost * 2)
     cash.approve(wrappedShareTokenFactory.address, initialCost)
@@ -103,4 +103,4 @@ def test_wrapped_share_token_calculate_share_token_decimals(augur, contractsFixt
     invalidTokenAddress = wrappedShareTokenFactory.getOrCreateWrappedShareToken(shareToken.address, invalidTokenId, SYMBOLS[0])
     invalidToken = contractsFixture.applySignature("WrappedShareToken", invalidTokenAddress)
 
-    assert invalidToken.balanceOf(account0) == setsToBuy * 10**12
+    assert invalidToken.balanceOf(account0) == initialCost

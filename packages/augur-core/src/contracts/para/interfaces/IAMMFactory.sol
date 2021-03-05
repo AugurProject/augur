@@ -11,6 +11,7 @@ contract IAMMFactory {
 
     function addAMMWithLiquidity(IMarket _market, IParaShareToken _para, uint256 _fee, uint256 _cash, uint256 _ratioFactor, bool _keepYes, address _recipient, string[] memory _symbols) public returns (address _ammAddress, uint256 _lpTokens);
     function addLiquidity(IMarket _market, IParaShareToken _para, uint256 _fee, uint256 _cash, address _recipient, uint256 _cashToInvalidPool, string[] memory _symbols) public returns (uint256);
+    function getBPool(IMarket _market, IParaShareToken _para, uint256 _fee) public returns (address);
     function removeLiquidity(IMarket _market, IParaShareToken _para, uint256 _fee, uint256 _poolTokensToSell, string[] memory _symbols) public returns (uint256 _shortShare, uint256 _longShare);
     function balanceOf(IMarket _market, IParaShareToken _para, uint256 _fee, address _account) public returns (uint256);
     function salt(IMarket _market, IParaShareToken _para, uint256 _fee) public pure returns (uint256);
