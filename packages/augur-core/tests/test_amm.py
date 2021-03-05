@@ -65,9 +65,9 @@ def test_amm_add_additional_liquidity(contractsFixture, market, cash, shareToken
         return skip("Test is only for para augur")
 
     numticks = market.getNumTicks()
-    cost = 2 * TOTAL_BALANCER_POOL_MIN * numticks
+    cost = ATTO
     # BALANCER_POOL_MIN accounts for cash and sets. Must divide in half.
-    sets = cost // (numticks * 2);
+    sets = cost // numticks;
     keepYes = True
 
     cash.faucet(cost)
@@ -89,8 +89,8 @@ def test_amm_add_additional_liquidity(contractsFixture, market, cash, shareToken
     assert shareToken.balanceOfMarketOutcome(market.address, NO, ammAddress) == sets * 0.9
 
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == 0
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == (sets // 2) * 1.1
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == (sets // 2) * 1.1
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == (sets // 100)
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == (sets // 100)
 
     assert amm.balanceOf(account0) == sets * 0.9
 
@@ -98,7 +98,89 @@ def test_amm_add_additional_liquidity(contractsFixture, market, cash, shareToken
     # If the account received *some* bTokens that is sufficient here.
     assert bPool.balanceOf(account0) > 0
 
-    setsToBuy = 10 * ATTO
+    setsToBuy = 10 * 10**6
+    cashToSend = setsToBuy * numticks
+    cashToBPool = cashToSend // 10
+
+    cash.faucet(cashToSend, sender=account1)
+    cash.approve(factory.address, 2 ** 256 - 1, sender=account1)
+
+    # Contribute 10% to the BPool.
+    lpTokens = factory.addLiquidity(market.address, shareToken.address, FEE, cashToSend, account1, cashToBPool, SYMBOLS, sender=account1)
+    assert lpTokens == (setsToBuy - (cashToBPool // numticks))
+    assert factory.balanceOf(market.address, shareToken.address, FEE, account1) == lpTokens
+
+    # confirm share balances
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, factory.address) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, factory.address) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, factory.address) == 0
+
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, ammAddress) == (sets * 90 // 100) + lpTokens
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, ammAddress) == (sets * 90 // 100) + lpTokens
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, ammAddress) == (sets * 90 // 100) + lpTokens
+
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account1) == 0
+
+    # This should represent 10% of the cash.
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account1) == setsToBuy // 20
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account1) == setsToBuy // 20
+
+    bPoolBalance = bPool.balanceOf(account1)
+    bPool.approve(factory.address, bPoolBalance, sender=account1)
+
+    amm = contractsFixture.applySignature("AMMExchange", ammAddress)
+    amm.approve(factory.address, amm.balanceOf(account1), sender=account1)
+
+    factory.removeLiquidity(market.address, shareToken.address, FEE, lpTokens, SYMBOLS,sender=account1)
+
+    assert bPool.balanceOf(account1) == 0
+    assert cash.balanceOf(factory.address) == 0
+
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account1) == (setsToBuy * 95) // 100
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account1) == (setsToBuy * 95) // 100
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account1) == (setsToBuy * 95) // 100
+    assert cash.balanceOf(account1) == (setsToBuy * 5 * numticks) // 100
+
+def test_amm_add_additional_liquidity_USDC(contractsFixture, market, cash, shareToken, factory, account0, account1):
+    if not contractsFixture.paraAugur:
+        return skip("Test is only for para augur")
+
+    cash.setDecimals(6)
+    numticks = market.getNumTicks()
+    cost = 2 * TOTAL_BALANCER_POOL_MIN * numticks
+    # BALANCER_POOL_MIN accounts for cash and sets. Must divide in half.
+    sets = cost // numticks;
+    keepYes = True
+
+    cash.faucet(cost)
+    cash.approve(factory.address, 2**256-1)
+
+    ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, cost, RATIO_50_50, keepYes, account0, SYMBOLS)[0]
+    amm = contractsFixture.applySignature("AMMExchange", ammAddress)
+
+    ammCreatedEvent = factory.getLogs('AMMCreated')
+    bPool = contractsFixture.applySignature("BPool", ammCreatedEvent[0].args.bPool)
+
+    # The factory should not have any shares.
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, factory.address) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, factory.address) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, factory.address) == 0
+
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, ammAddress) == sets * 0.9
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, ammAddress) == sets * 0.9
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, ammAddress) == sets * 0.9
+
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == (sets // 100)
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == (sets // 100)
+
+    assert amm.balanceOf(account0) == sets * 0.9
+
+    # TODO: Figure out the precise value here.
+    # If the account received *some* bTokens that is sufficient here.
+    assert bPool.balanceOf(account0) > 0
+
+    setsToBuy = 10 * 10**6
     cashToSend = setsToBuy * numticks
     cashToBPool = cashToSend // 10
 
@@ -145,10 +227,10 @@ def test_amm_add_with_liquidity(contractsFixture, market, cash, shareToken, fact
     if not contractsFixture.paraAugur:
         return skip("Test is only for para augur")
 
-    setsToBuy = 10 * ATTO
+    cash.setDecimals(6)
     keepYes = True
 
-    cost = setsToBuy * 10000
+    cost = 10**6
     cash.faucet(cost)
     cash.approve(factory.address, 10 ** 48)
 

@@ -60,6 +60,14 @@ contract WethWrapperForAMMExchange {
         return _amm;
     }
 
+    function getBPool(
+        IMarket _market,
+        IParaShareToken _para,
+        uint256 _fee
+    ) public returns (address) {
+        return factory.getBPool(_market, _para, _fee);
+    }
+
     function addInitialLiquidity(IMarket _market, uint256 _fee, uint256 _ratioFactor, bool _keepLong, address _recipient) external payable returns (uint256) {
         weth.deposit.value(msg.value)();
         IAMMExchange _amm = getAMM(_market, _fee);

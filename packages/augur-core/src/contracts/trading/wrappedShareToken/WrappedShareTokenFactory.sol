@@ -98,13 +98,13 @@ contract WrappedShareTokenFactory {
      * @param _amount amount of tokens to be unwrapped
      */
     function unwrapShares(IParaShareToken _shareToken, uint256 _tokenId, string memory _symbol, uint256 _amount) public {
-        WrappedShareToken WrappedShareToken = WrappedShareToken(calculateShareTokenAddress(_shareToken, _tokenId, _symbol));
-        WrappedShareToken.unwrapShares(msg.sender, msg.sender, _amount);
+        WrappedShareToken wrappedShareToken = WrappedShareToken(calculateShareTokenAddress(_shareToken, _tokenId, _symbol));
+        wrappedShareToken.unwrapShares(msg.sender, msg.sender, _amount);
     }
 
     function unwrapAllShares(IParaShareToken _shareToken, uint256 _tokenId, string memory _symbol) public {
-        WrappedShareToken WrappedShareToken = WrappedShareToken(calculateShareTokenAddress(_shareToken, _tokenId, _symbol));
-        WrappedShareToken.unwrapShares(msg.sender, msg.sender, WrappedShareToken.balanceOf(msg.sender));
+        WrappedShareToken wrappedShareToken = WrappedShareToken(calculateShareTokenAddress(_shareToken, _tokenId, _symbol));
+        wrappedShareToken.unwrapShares(msg.sender, msg.sender, wrappedShareToken.balanceOf(msg.sender));
     }
 
     /**@dev wraps multiple tokens */

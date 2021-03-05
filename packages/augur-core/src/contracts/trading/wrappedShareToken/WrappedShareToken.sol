@@ -66,20 +66,20 @@ contract WrappedShareToken is ERC20, Initializable, Ownable, ERC1155Receiver {
 
     /** @notice A function that burns ERC20s and gives back ERC1155s
      * @param _holder account the newly minted ERC20s will go to
-     * @param _amountOut amount of tokens to be unwrapped
+     * @param _amountIn amount of tokens to be unwrapped.
      */
-    function unwrapShares(address _holder, address _recipient, uint256 _amountOut) public {
+    function unwrapShares(address _holder, address _recipient, uint256 _amountIn) public {
         if (msg.sender == _holder || msg.sender == owner) {
-            _burn(_holder, _amountOut.mul(precisionMultiplier)); // burn!!
+            _burn(_holder, _amountIn); // burn!!
         } else {
-            _burnFrom(_holder, _amountOut.mul(precisionMultiplier)); // burn and deduct approval from caller allowance
+            _burnFrom(_holder, _amountIn); // burn and deduct approval from caller allowance
         }
 
         shareToken.unsafeTransferFrom(
             address(this),
             _recipient,
             tokenId,
-            _amountOut
+            _amountIn.div(precisionMultiplier)
         );
     }
 
