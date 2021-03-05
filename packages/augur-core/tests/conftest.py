@@ -245,8 +245,6 @@ class ContractsFixture:
                 print('%sContract %s is OVER the size limit by %d bytes%s' % (bcolors.FAIL, name, contractSize - CONTRACT_SIZE_LIMIT, bcolors.ENDC))
             elif (contractSize >= CONTRACT_SIZE_WARN_LEVEL):
                 print('%sContract %s is under size limit by only %d bytes%s' % (bcolors.WARN, name, CONTRACT_SIZE_LIMIT - contractSize, bcolors.ENDC))
-            elif (contractSize > 0):
-                print('Contract %s Size: %i' % (name, contractSize))
             ContractsFixture.compiledCode[name] = compiledCode
             return(compiledCode)
 
@@ -410,6 +408,7 @@ class ContractsFixture:
             if 'gov' in directory: continue # uploaded separately
             if 'trading/erc20proxy' in directory: continue # uploaded separately
             if 'sidechain' in directory: continue # uploaded separately
+            if 'symbiote' in directory: continue # uploaded separately
             for filename in filenames:
                 name = path.splitext(filename)[0]
                 extension = path.splitext(filename)[1]
@@ -576,13 +575,11 @@ class ContractsFixture:
         paraAugurCash = self.upload("../src/contracts/Cash.sol", "ParaAugurCash", "Cash")
         paraDeployer.addToken(paraAugurCash.address, 10**19)
         while paraDeployer.paraDeployProgress(paraAugurCash.address) < 14:
-            with PrintGasUsed(self, "PARA DEPLOY CASH STAGE: %i" % paraDeployer.paraDeployProgress(paraAugurCash.address), 0):
-                paraDeployer.progressDeployment(paraAugurCash.address)
+            paraDeployer.progressDeployment(paraAugurCash.address)
 
         paraDeployer.addToken(WETH9, 10 ** 18)
         while paraDeployer.paraDeployProgress(WETH9) < 14:
-            with PrintGasUsed(self, "PARA DEPLOY WETH STAGE: %i" % paraDeployer.paraDeployProgress(WETH9), 0):
-                paraDeployer.progressDeployment(WETH9)
+            paraDeployer.progressDeployment(WETH9)
 
         self.generateAndStoreSignature("../src/contracts/para/FeePot.sol")
         self.generateAndStoreSignature("../src/contracts/para/ParaUniverse.sol")

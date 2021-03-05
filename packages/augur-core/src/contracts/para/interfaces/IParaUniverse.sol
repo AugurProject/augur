@@ -7,6 +7,9 @@ import 'ROOT/reporting/IMarket.sol';
 
 
 interface IParaUniverse {
+    function augur() external view returns (address);
+    function cash() external view returns (address);
+    function openInterestCash() external view returns (address);
     function getFeePot() external view returns (IFeePot);
     function getReputationToken() external view returns (IV2ReputationToken);
     function originUniverse() external view returns (IUniverse);
