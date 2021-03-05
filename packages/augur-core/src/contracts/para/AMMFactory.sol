@@ -151,19 +151,16 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         _para.cash().approve(address(_para.augur()), 2**256-1);
 
         IAMMExchange _amm = createAMM(_market, _para, _fee);
-        BPool _bPool = createBPool(_ammAddress, _para, _market, _fee, _recipient, _symbols);
+
+        // Move 10% of remaining cash to the balancer pool.
+        uint256 _cashToSendToPool = (_cash * 10 * 10**16) / 10**18;
+        BPool _bPool = createBPool(_ammAddress, _para, _market, _fee, _recipient, _symbols, _cashToSendToPool);
 
         balancerPools[address(_amm)] = address(_bPool);
 
         emit AMMCreated(_amm, _market, _para, _fee, _bPool);
 
         _ammAddress = address(_amm);
-
-        _cash = _para.cash().balanceOf(address(this));
-
-        // Move 10% of remaining cash to the balancer pool.
-        uint256 _cashToSendToPool = (_cash * 10 * 10**16) / 10**18;
-        addLiquidityToBPool(_market, _para, _bPool, _cashToSendToPool, _recipient, _symbols);
 
         _cash = _para.cash().balanceOf(address(this));
         _lpTokens = _amm.addInitialLiquidity(_cash, _ratioFactor, _keepLong, _recipient);
@@ -222,7 +219,7 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         exchanges[address(_market)][address(_para)][_fee] = _ammAddress;
     }
 
-    function createBPool(address _ammAddress, IParaShareToken _para, IMarket _market, uint256 _fee, address _recipient, string[] memory _symbols) private returns (BPool _bPool){
+    function createBPool(address _ammAddress, IParaShareToken _para, IMarket _market, uint256 _fee, address _recipient, string[] memory _symbols, uint256 _cashToSendToPool) private returns (BPool _bPool){
         _bPool = bFactory.newBPool();
 
         uint256 _invalidTokenId = _para.getTokenId(_market, 0);
@@ -236,12 +233,11 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         uint256 _numTicks = _market.getNumTicks();
 
         // Create pool.
-        // MIN_BALANCE needed to setup pool is 10**18 / 10**12.
-        // Will send MIN_BALANCE * numTicks cash because we need MIN_BALANCE complete sets.
-        uint256 MIN_BALANCE = 10**6 * _numTicks;
+        // Send 90% of the cash as cash to the bpool.
+        uint256 cashToBPool = (_cashToSendToPool * 90 * 10**16) / 10**18;
 
-        // Setup bPool....
-        uint256 _setsToBuy = MIN_BALANCE.div(_numTicks);
+        // Send 10% of the cash as invalid shares to the bpool.
+        uint256 _setsToBuy = (_cashToSendToPool.div(_numTicks) * 10 * 10**16) / 10**18;
         _para.publicBuyCompleteSets(_market, _setsToBuy);
 
         wrappedShareTokenFactory.wrapShares(_para, _invalidTokenId, _symbols[0], address(this), _setsToBuy);
@@ -249,16 +245,13 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
 
         // Send cash to balancer bPool
         // Pool weight == 90%
-        _bPool.bind(address(_para.cash()), MIN_BALANCE, 45 * 10**18);
+        _bPool.bind(address(_para.cash()), cashToBPool, 45 * 10**18);
 
         // Move just minted invalid shares to the balancer pool.
         // Pool weight == 10%
         _bPool.bind(address(wrappedShareToken),  amountToBPool, 5 * 10**18);
 
         _bPool.finalize();
-
-
-
 
         uint256[] memory _tokenIds = new uint256[](2);
         _tokenIds[0] = _para.getTokenId(_market, 1);
@@ -270,6 +263,8 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
 
         _para.unsafeBatchTransferFrom(address(this), _recipient, _tokenIds, _amounts);
 
+        uint256 _lpTokenBalance = _bPool.balanceOf(address(this));
+        _bPool.transferFrom(address(this), _recipient, _lpTokenBalance);
     }
 
     function transferCash(
