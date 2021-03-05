@@ -8,7 +8,6 @@ import ButtonStyles from '../common/buttons.styles.less';
 import { GetWalletIcon } from '../common/get-wallet-icon';
 import { useActiveWeb3React } from './hooks';
 import { MODAL_CONNECT_WALLET, TX_STATUS } from '../../utils/constants';
-// import { useAppStatusStore } from '../stores/app-status';
 import { tryAutoLogin } from './utils';
 import { Spinner } from '../common/spinner';
 
