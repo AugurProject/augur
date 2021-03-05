@@ -24,8 +24,7 @@ import { Toasts } from '../toasts/toasts';
 import { ToggleSwitch } from 'modules/common/toggle-switch';
 import { generateTooltip } from 'modules/common/labels';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
-import { useGraphDataStore } from '@augurproject/augur-comps';
-import { useUserStore } from '../stores/user';
+import { useGraphDataStore, useUserStore } from '@augurproject/augur-comps';
 
 export const SettingsButton = () => {
   const {

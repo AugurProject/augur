@@ -2,16 +2,16 @@ import React, { ReactNode, useEffect, useState } from 'react';
 import Styles from './buttons.styles.less';
 import classNames from 'classnames';
 import { Arrow, SearchIcon } from './icons';
-import {
+import { ApprovalAction, ApprovalState, ETH } from '../constants';
+import { AmmExchange, Cash } from '../types';
+import { useUserStore, ApprovalHooks } from '@augurproject/augur-comps';
+import { PARA_CONFIG } from '../stores/constants';
+const {
   approveERC20Contract,
   approveERC1155Contract,
   checkAllowance,
   isERC1155ContractApproved,
-} from '../hooks/use-approval-callback';
-import { ApprovalAction, ApprovalState, ETH } from '../constants';
-import { AmmExchange, Cash } from '../types';
-import { useUserStore } from '../stores/user';
-import { PARA_CONFIG } from '../stores/constants';
+} = ApprovalHooks;
 
 interface ButtonProps {
   text?: string;

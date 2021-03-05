@@ -13,10 +13,13 @@ import Loader from '../ConnectAccount/components/Loader';
 import AccountDetails from '../ConnectAccount/components/AccountDetails';
 import { useAppStatusStore } from '../stores/app-status';
 import classNames from 'classnames';
-import { useUserStore } from '../stores/user';
-import {NETWORK_NAMES} from 'modules/stores/constants';
+import { useUserStore, Stores } from '@augurproject/augur-comps';
 import {isSafari} from '../ConnectAccount/utils/';
-
+const {
+  Constants: {
+    NETWORK_NAMES,
+  }
+} = Stores;
 const WALLET_VIEWS = {
   OPTIONS: 'options',
   OPTIONS_SECONDARY: 'options_secondary',

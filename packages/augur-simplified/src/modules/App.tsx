@@ -8,15 +8,13 @@ import Routes from './routes/routes';
 import TopNav from './common/top-nav';
 import '../assets/styles/shared.less';
 import { AppStatusProvider, useAppStatusStore } from './stores/app-status';
-import { UserProvider, useUserStore } from './stores/user';
 import { Sidebar } from './sidebar/sidebar';
 import { ConnectAccountProvider } from './ConnectAccount/connect-account-provider';
 import classNames from 'classnames';
 import ModalView from './modal/modal-view';
 import parsePath from './routes/helpers/parse-path';
 import { MARKETS } from './constants';
-import { useUserBalances, useFinalizeUserTransactions } from './stores/utils';
-import { Stores, useGraphHeartbeat } from '@augurproject/augur-comps';
+import { Stores, useUserStore, useGraphHeartbeat, useUserBalances, useFinalizeUserTransactions } from '@augurproject/augur-comps';
 
 function checkIsMobile(setIsMobile) {
   const isMobile =
@@ -90,6 +88,9 @@ function App() {
     GraphData: {
       GraphDataProvider
     },
+    User: {
+      UserProvider
+    }
   } = Stores;
   return (
     <HashRouter hashType="hashbang">

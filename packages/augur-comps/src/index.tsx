@@ -32,6 +32,8 @@ import _GraphDataStore, {
   GraphDataStore,
 } from './stores/graph-data';
 import _UserDataStore, { useUserStore, UserStore } from './stores/user';
+import * as _StoreConstants from './stores/constants';
+import * as _ProcessData from './stores/process-data';
 import {
   useGraphHeartbeat,
   useCanExitCashPosition,
@@ -66,6 +68,7 @@ export const Stores = {
     ..._ApprovalHooks,
   },
   Utils: {
+    ..._ProcessData,
     getSavedUserInfo,
     getRelatedMarkets,
     getCurrentAmms,
@@ -75,7 +78,8 @@ export const Stores = {
     keyedObjToKeyArray,
     arrayToKeyedObject,
     arrayToKeyedObjectByProp,
-  }
+  },
+  Constants: _StoreConstants
 };
 
 export const ConnectAccount = {
@@ -88,7 +92,8 @@ export const ConnectAccount = {
   AccountDetails: _AccountDetails,
   utils: _ConnectUtils,
 };
-export const Constants = _Constants;
+export const PARA_CONFIG = _StoreConstants.PARA_CONFIG;
+export const Constants = {..._Constants, PARA_CONFIG };
 export const Utils = {
   addCommasToNumber,
   isMobileBrowser,
@@ -117,7 +122,7 @@ export const Icons = {
   CATEGORIES_ICON_MAP: _CATEGORIES_ICON_MAP,
 };
 export const ApprovalHooks = _ApprovalHooks;
-
+export const ProcessData = _ProcessData;
 // export extremely commonly used functions as top level non-default exports:
 export {
   useGraphHeartbeat,
