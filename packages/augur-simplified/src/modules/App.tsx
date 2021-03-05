@@ -10,13 +10,14 @@ import '../assets/styles/shared.less';
 import { AppStatusProvider, useAppStatusStore } from './stores/app-status';
 import { UserProvider, useUserStore } from './stores/user';
 import { Sidebar } from './sidebar/sidebar';
-import { ConnectAccountProvider } from './ConnectAccount/connect-account-provider';
 import classNames from 'classnames';
 import ModalView from './modal/modal-view';
 import parsePath from './routes/helpers/parse-path';
 import { MARKETS } from './constants';
 import { useUserBalances, useFinalizeUserTransactions } from './stores/utils';
-import { Stores, useGraphHeartbeat } from '@augurproject/augur-comps';
+import { Stores, useGraphHeartbeat, ConnectAccount } from '@augurproject/augur-comps';
+
+const { ConnectAccountProvider } = ConnectAccount;
 
 function checkIsMobile(setIsMobile) {
   const isMobile =

@@ -1,5 +1,4 @@
 import { ApprovalState, ETH, TX_STATUS } from '../constants';
-import { useActiveWeb3React } from '../ConnectAccount/hooks';
 import { useCallback, useMemo } from 'react';
 import {
   getERC1155ApprovedForAll,
@@ -12,6 +11,11 @@ import { TransactionResponse } from '@ethersproject/providers';
 import { AmmExchange, LoginAccount, TransactionDetails } from '../types';
 import { useUserStore } from '../stores/user';
 import { PARA_CONFIG } from '../stores/constants';
+import { ConnectAccount } from '@augurproject/augur-comps';
+
+const {
+  hooks: { useActiveWeb3React },
+} = ConnectAccount;
 
 const APPROVAL_AMOUNT = String(new BN(2 ** 255).minus(1));
 

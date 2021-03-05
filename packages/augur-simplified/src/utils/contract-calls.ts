@@ -12,12 +12,16 @@ import { TransactionResponse, Web3Provider } from '@ethersproject/providers'
 import { convertDisplayCashAmountToOnChainCashAmount, convertDisplayShareAmountToOnChainShareAmount, convertOnChainCashAmountToDisplayCashAmount, convertOnChainSharesToDisplayShareAmount, isSameAddress } from './format-number';
 import { augurSdkLite } from './augurlitesdk';
 import { ETH, NO_OUTCOME_ID, NULL_ADDRESS, USDC, YES_NO_OUTCOMES_NAMES, YES_OUTCOME_ID, INVALID_OUTCOME_ID, MARKET_STATUS, PORTION_OF_INVALID_POOL_SELL } from '../modules/constants';
-import { getProviderOrSigner } from '../modules/ConnectAccount/utils';
 import { createBigNumber } from './create-big-number';
 import { PARA_CONFIG } from '../modules/stores/constants';
 import ERC20ABI from './ERC20ABI.json';
 import BPoolABI from './BPoolABI.json';
 import ParaShareTokenABI from './ParaShareTokenABI.json';
+import { ConnectAccount } from '@augurproject/augur-comps';
+
+const {
+  utils: { getProviderOrSigner },
+} = ConnectAccount;
 
 const isValidPrice = (price: string): boolean => {
   return price !== null && price !== undefined && price !== "0" && price !== "0.00";

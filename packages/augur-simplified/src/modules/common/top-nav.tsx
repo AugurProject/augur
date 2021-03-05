@@ -18,14 +18,15 @@ import classNames from 'classnames';
 import { GearIcon, ThreeLinesIcon } from './icons';
 import { useAppStatusStore } from '../stores/app-status';
 import { useLocalStorage } from '../stores/local-storage';
-import ConnectAccount from '../ConnectAccount/index';
 import { SecondaryButton, TinyButton } from './buttons';
 import { Toasts } from '../toasts/toasts';
 import { ToggleSwitch } from 'modules/common/toggle-switch';
 import { generateTooltip } from 'modules/common/labels';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
-import { useGraphDataStore } from '@augurproject/augur-comps';
+import { useGraphDataStore, ConnectAccount as CompsConnectAccount } from '@augurproject/augur-comps';
 import { useUserStore } from '../stores/user';
+
+const { ConnectAccount } = CompsConnectAccount;
 
 export const SettingsButton = () => {
   const {
@@ -209,7 +210,7 @@ export const TopNav = () => {
   const {
     isLogged,
     isMobile,
-    actions: { setSidebar },
+    actions: { setSidebar, setModal },
   } = useAppStatusStore();
   const {
     account,
@@ -308,6 +309,8 @@ export const TopNav = () => {
             updateLoginAccount: handleAccountUpdate,
             autoLogin,
             transactions,
+            setModal,
+            isMobile
           }}
         />
         {isMobile ? (
