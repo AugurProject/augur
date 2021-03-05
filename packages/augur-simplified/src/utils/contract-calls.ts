@@ -1035,7 +1035,6 @@ const getIsMarketInvalid = async (amm: AmmExchange): Promise<boolean> => {
   const isInvalid = marketInvalidityCheck.isMarketInvalid(
     new BN(swapInvalidForCashInETH),
     new BN(invalidBalance).times(PORTION_OF_INVALID_POOL_SELL),
-    new BN(invalidBalance),
     marketProperties,
     reportingFeeDivisor,
     gasLevels)
