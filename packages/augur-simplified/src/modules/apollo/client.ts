@@ -11,7 +11,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ErrorPolicy, FetchPolicy } from 'apollo-client';
 import { ETH } from '../constants';
 import { SEARCH_MARKETS } from './queries';
-import { PARA_CONFIG } from '../stores/constants';
+import { KOVAN, MAINNET, PARA_CONFIG } from '../stores/constants';
 
 dayjs.extend(utc);
 
@@ -158,14 +158,14 @@ const getCashTokenData = async (
 const getClientConfig = (): { augurClient: string; blockClient: string } => {
   const { networkId } = PARA_CONFIG;
   const clientConfig = {
-    '1': {
+    [MAINNET]: {
       augurClient:
         'https://api.thegraph.com/subgraphs/name/augurproject/augur-v2-staging',
       blockClient:
         'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks',
       network: 'mainnet',
     },
-    '42': {
+    [KOVAN]: {
       augurClient:
         'https://api.thegraph.com/subgraphs/name/augurproject/augur-v2-staging',
       blockClient:
@@ -177,8 +177,8 @@ const getClientConfig = (): { augurClient: string; blockClient: string } => {
 };
 
 const paraCashes = {
-  '1': {
-    networkId: '1',
+  [MAINNET]: {
+    networkId: MAINNET,
     Cashes: [
       {
         name: 'ETH',
@@ -191,8 +191,8 @@ const paraCashes = {
     ],
     network: 'mainnet',
   },
-  '42': {
-    networkId: '42',
+  [KOVAN]: {
+    networkId: KOVAN,
     Cashes: [
       {
         name: 'ETH',

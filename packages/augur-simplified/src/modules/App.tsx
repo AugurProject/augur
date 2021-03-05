@@ -17,6 +17,7 @@ import parsePath from './routes/helpers/parse-path';
 import { MARKETS } from './constants';
 import { useUserBalances, useFinalizeUserTransactions } from './stores/utils';
 import { Stores, useGraphHeartbeat } from '@augurproject/augur-comps';
+import { usePageView } from '../utils/tracker';
 
 function checkIsMobile(setIsMobile) {
   const isMobile =
@@ -55,12 +56,13 @@ const AppBody = () => {
   const location = useLocation();
   const path = parsePath(location.pathname)[0];
   const sidebarOut = sidebarType && isMobile;
-  
+
   useGraphHeartbeat(loginAccount ? loginAccount.library : null);
   useUserBalances();
   useFinalizeUserTransactions();
 
   useHandleResize();
+  usePageView();
 
   useEffect(() => {
     if (showTradingForm) {
