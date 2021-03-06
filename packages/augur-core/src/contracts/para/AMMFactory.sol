@@ -257,7 +257,6 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         // Move just minted invalid shares to the balancer pool.
         // Pool weight == 10%
         _bPool.bind(address(wrappedShareToken),  amountToBPool, 5 * 10**18);
-
         _bPool.finalize();
 
         uint256[] memory _tokenIds = new uint256[](2);

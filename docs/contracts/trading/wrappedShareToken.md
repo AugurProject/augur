@@ -2777,6 +2777,28 @@ been updated. To accept the transfer(s), this must return
 
 
 
+### `CloneFactory2`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#CloneFactory2.createClone2(address,uint256)"><code class="function-signature">createClone2(address target, uint256 salt)</code></a></li><li><a href="#CloneFactory2.clone2Address(address,uint256,address)"><code class="function-signature">clone2Address(address target, uint256 salt, address creator)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="CloneFactory2.createClone2(address,uint256)"></a><code class="function-signature">createClone2(address target, uint256 salt) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="CloneFactory2.clone2Address(address,uint256,address)"></a><code class="function-signature">clone2Address(address target, uint256 salt, address creator) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+
+
 ### `ContractExists`
 
 
@@ -2797,13 +2819,20 @@ been updated. To accept the transfer(s), this must return
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#WrappedShareTokenFactory.getOrCreateWrappedShareToken(contract IParaShareToken,uint256,string)"><code class="function-signature">getOrCreateWrappedShareToken(contract IParaShareToken _shareToken, uint256 _tokenId, string _symbol)</code></a></li><li><a href="#WrappedShareTokenFactory.getOrCreateWrappedShareTokens(contract IParaShareToken,uint256[],string[])"><code class="function-signature">getOrCreateWrappedShareTokens(contract IParaShareToken _shareToken, uint256[] _tokenIds, string[] _symbols)</code></a></li><li><a href="#WrappedShareTokenFactory.wrapShares(contract IParaShareToken,uint256,string,address,uint256)"><code class="function-signature">wrapShares(contract IParaShareToken _shareToken, uint256 _tokenId, string _symbol, address _account, uint256 _amount)</code></a></li><li><a href="#WrappedShareTokenFactory.unwrapShares(contract IParaShareToken,uint256,string,uint256)"><code class="function-signature">unwrapShares(contract IParaShareToken _shareToken, uint256 _tokenId, string _symbol, uint256 _amount)</code></a></li><li><a href="#WrappedShareTokenFactory.unwrapAllShares(contract IParaShareToken,uint256,string)"><code class="function-signature">unwrapAllShares(contract IParaShareToken _shareToken, uint256 _tokenId, string _symbol)</code></a></li><li><a href="#WrappedShareTokenFactory.wrapMultipleShares(contract IParaShareToken,uint256[],string[],address,uint256[])"><code class="function-signature">wrapMultipleShares(contract IParaShareToken _shareToken, uint256[] _tokenIds, string[] _symbols, address _account, uint256[] _amounts)</code></a></li><li><a href="#WrappedShareTokenFactory.unwrapMultipleShares(contract IParaShareToken,uint256[],string[],uint256[])"><code class="function-signature">unwrapMultipleShares(contract IParaShareToken _shareToken, uint256[] _tokenIds, string[] _symbols, uint256[] _amounts)</code></a></li><li><a href="#WrappedShareTokenFactory.publicBuyCompleteSets(contract IMarket,contract IParaShareToken,string[],uint256)"><code class="function-signature">publicBuyCompleteSets(contract IMarket _market, contract IParaShareToken _shareToken, string[] _symbols, uint256 _amount)</code></a></li><li><a href="#WrappedShareTokenFactory.publicSellCompleteSets(contract IParaShareToken,contract IMarket,string[],uint256)"><code class="function-signature">publicSellCompleteSets(contract IParaShareToken _shareToken, contract IMarket _market, string[] _symbols, uint256 _amount)</code></a></li><li><a href="#WrappedShareTokenFactory.calculateShareTokenAddress(contract IParaShareToken,uint256,string)"><code class="function-signature">calculateShareTokenAddress(contract IParaShareToken _shareToken, uint256 _tokenId, string _symbol)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#WrappedShareTokenFactory.WrappedShareTokenCreated(contract IParaShareToken,uint256,address,string)"><code class="function-signature">WrappedShareTokenCreated(contract IParaShareToken shareToken, uint256 tokenId, address tokenAddress, string symbol)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#WrappedShareTokenFactory.constructor(contract WrappedShareToken)"><code class="function-signature">constructor(contract WrappedShareToken _tokenTemplate)</code></a></li><li><a href="#WrappedShareTokenFactory.getOrCreateWrappedShareToken(contract IParaShareToken,uint256,string)"><code class="function-signature">getOrCreateWrappedShareToken(contract IParaShareToken _shareToken, uint256 _tokenId, string _symbol)</code></a></li><li><a href="#WrappedShareTokenFactory.getOrCreateWrappedShareTokens(contract IParaShareToken,uint256[],string[])"><code class="function-signature">getOrCreateWrappedShareTokens(contract IParaShareToken _shareToken, uint256[] _tokenIds, string[] _symbols)</code></a></li><li><a href="#WrappedShareTokenFactory.wrapShares(contract IParaShareToken,uint256,string,address,uint256)"><code class="function-signature">wrapShares(contract IParaShareToken _shareToken, uint256 _tokenId, string _symbol, address _account, uint256 _amount)</code></a></li><li><a href="#WrappedShareTokenFactory.unwrapShares(contract IParaShareToken,uint256,string,uint256)"><code class="function-signature">unwrapShares(contract IParaShareToken _shareToken, uint256 _tokenId, string _symbol, uint256 _amount)</code></a></li><li><a href="#WrappedShareTokenFactory.unwrapAllShares(contract IParaShareToken,uint256,string)"><code class="function-signature">unwrapAllShares(contract IParaShareToken _shareToken, uint256 _tokenId, string _symbol)</code></a></li><li><a href="#WrappedShareTokenFactory.wrapMultipleShares(contract IParaShareToken,uint256[],string[],address,uint256[])"><code class="function-signature">wrapMultipleShares(contract IParaShareToken _shareToken, uint256[] _tokenIds, string[] _symbols, address _account, uint256[] _amounts)</code></a></li><li><a href="#WrappedShareTokenFactory.unwrapMultipleShares(contract IParaShareToken,uint256[],string[],uint256[])"><code class="function-signature">unwrapMultipleShares(contract IParaShareToken _shareToken, uint256[] _tokenIds, string[] _symbols, uint256[] _amounts)</code></a></li><li><a href="#WrappedShareTokenFactory.publicBuyCompleteSets(contract IMarket,contract IParaShareToken,string[],uint256)"><code class="function-signature">publicBuyCompleteSets(contract IMarket _market, contract IParaShareToken _shareToken, string[] _symbols, uint256 _amount)</code></a></li><li><a href="#WrappedShareTokenFactory.publicSellCompleteSets(contract IParaShareToken,contract IMarket,string[],uint256)"><code class="function-signature">publicSellCompleteSets(contract IParaShareToken _shareToken, contract IMarket _market, string[] _symbols, uint256 _amount)</code></a></li><li><a href="#WrappedShareTokenFactory.calculateShareTokenAddress(contract IParaShareToken,uint256,string)"><code class="function-signature">calculateShareTokenAddress(contract IParaShareToken _shareToken, uint256 _tokenId, string _symbol)</code></a></li><li class="inherited"><a href="wrappedShareToken#CloneFactory2.createClone2(address,uint256)"><code class="function-signature">createClone2(address target, uint256 salt)</code></a></li><li class="inherited"><a href="wrappedShareToken#CloneFactory2.clone2Address(address,uint256,address)"><code class="function-signature">clone2Address(address target, uint256 salt, address creator)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#WrappedShareTokenFactory.WrappedShareTokenCreated(contract IParaShareToken,uint256,address,string)"><code class="function-signature">WrappedShareTokenCreated(contract IParaShareToken shareToken, uint256 tokenId, address tokenAddress, string symbol)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="WrappedShareTokenFactory.constructor(contract WrappedShareToken)"></a><code class="function-signature">constructor(contract WrappedShareToken _tokenTemplate)</code><span class="function-visibility">public</span></h4>
+
+
 
 
 
 <h4><a class="anchor" aria-hidden="true" id="WrappedShareTokenFactory.getOrCreateWrappedShareToken(contract IParaShareToken,uint256,string)"></a><code class="function-signature">getOrCreateWrappedShareToken(contract IParaShareToken _shareToken, uint256 _tokenId, string _symbol) <span class="return-arrow">→</span> <span class="return-type">contract WrappedShareToken</span></code><span class="function-visibility">public</span></h4>
 
 creates new ERC20 wrappers for a outcome of a market
+param _paraShareToken address of shareToken associated with a augur universe
 param _tokenId token id associated with a outcome of a market
 param _symbol symbol for the ERC20 wrapper
 

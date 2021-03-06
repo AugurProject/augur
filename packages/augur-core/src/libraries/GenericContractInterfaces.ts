@@ -21099,6 +21099,13 @@ export class WrappedShareTokenFactory<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
+	public clone2Address_ = async (target: string, salt: TBigNumber, creator: string, options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"target","type":"address"},{"internalType":"uint256","name":"salt","type":"uint256"},{"internalType":"address","name":"creator","type":"address"}],"name":"clone2Address","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"pure","type":"function"}
+		const result = await this.localCall(abi, [target, salt, creator], options.sender)
+		return <string>result[0]
+	}
+
 	public getOrCreateWrappedShareToken = async (shareToken: string, tokenId: TBigNumber, symbol: string, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IParaShareToken","name":"_shareToken","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"},{"internalType":"string","name":"_symbol","type":"string"}],"name":"getOrCreateWrappedShareToken","outputs":[{"internalType":"contract WrappedShareToken","name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
@@ -21173,6 +21180,13 @@ export class WrappedShareTokenFactory<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IParaShareToken","name":"_shareToken","type":"address"},{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"string[]","name":"_symbols","type":"string[]"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"publicSellCompleteSets","outputs":[{"internalType":"uint256","name":"_creatorFee","type":"uint256"},{"internalType":"uint256","name":"_reportingFee","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		const result = await this.localCall(abi, [shareToken, market, symbols, amount], options.sender)
 		return <{_creatorFee: TBigNumber, _reportingFee: TBigNumber}>result
+	}
+
+	public tokenTemplate_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"tokenTemplate","outputs":[{"internalType":"contract WrappedShareToken","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
 	}
 
 	public unwrapAllShares = async (shareToken: string, tokenId: TBigNumber, symbol: string, options?: { sender?: string }): Promise<Array<Event>> => {
@@ -21263,6 +21277,13 @@ export class WrappedShareTokenFactory<TBigNumber> extends Contract<TBigNumber> {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IParaShareToken","name":"_shareToken","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"},{"internalType":"string","name":"_symbol","type":"string"},{"internalType":"address","name":"_account","type":"address"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"wrapShares","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		await this.localCall(abi, [shareToken, tokenId, symbol, account, amount], options.sender)
+	}
+
+	public wrappers_ = async (arg0: string, arg1: TBigNumber, arg2: string, options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"string","name":"","type":"string"}],"name":"wrappers","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [arg0, arg1, arg2], options.sender)
+		return <string>result[0]
 	}
 }
 

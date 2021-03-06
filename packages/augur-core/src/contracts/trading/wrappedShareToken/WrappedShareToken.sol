@@ -38,6 +38,7 @@ contract WrappedShareToken is ERC20, Initializable, Ownable, ERC1155Receiver {
         uint256 _decimals = cash.decimals();
         require(_decimals <= 18, "Cannot support cash with >18 decimals");
         precisionMultiplier = 10**(18 - _decimals);
+        owner = msg.sender;
     }
 
     /**@dev A function that gets ERC1155s and mints ERC20s
