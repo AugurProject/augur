@@ -201,7 +201,7 @@ const ModalAddLiquidity = ({
         checkCanCashAdd();
       }
     }
-    if (isLogged && !canRemoveLiquidity) {
+    if (isLogged && !canRemoveLiquidity && modalType === REMOVE) {
         checkCanRemoveAmm();
     }
   }, [
@@ -212,6 +212,7 @@ const ModalAddLiquidity = ({
     setCanRemoveLiquidity,
     updateTransaction,
     transactions,
+    modalType,
   ]);
 
   const userTokenBalance = cash?.name ? balances[cash?.name]?.balance : '0';
