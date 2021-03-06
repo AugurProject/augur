@@ -278,7 +278,7 @@ export const ApprovalButton = ({
           }
           case REMOVE_LIQUIDITY: {
             approvalCheck = await checkAllowance(
-              amm.invalidPool.id,
+              amm?.invalidPool?.id,
               AMMFactory,
               loginAccount,
               transactions,
@@ -309,7 +309,13 @@ export const ApprovalButton = ({
             break;
           }
           case REMOVE_LIQUIDITY: {
-            approvalCheck = APPROVED;
+            approvalCheck = await checkAllowance(
+              amm?.invalidPool?.id,
+              AMMFactory,
+              loginAccount,
+              transactions,
+              updateTransaction
+            );
             break;
           }
           case ENTER_POSITION:
