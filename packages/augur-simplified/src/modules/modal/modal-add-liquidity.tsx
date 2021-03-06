@@ -520,10 +520,6 @@ const ModalAddLiquidity = ({
             label: 'your share of the liquidity pool',
             value: `${userPercentOfPool}`,
           },
-          {
-            label: 'your total fees earned',
-            value: '-',
-          },
         ],
       },
       confirmOverview: {
