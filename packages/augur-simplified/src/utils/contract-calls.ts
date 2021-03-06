@@ -142,6 +142,7 @@ export function doAmmLiquidity(
   hasLiquidity: boolean,
   priceNo: string,
   priceYes: string,
+  symbolRoot: string,
 ): Promise<TransactionResponse | null> {
   const augurClient = augurSdkLite.get();
   if (!augurClient || !augurClient.amm) {
@@ -164,6 +165,8 @@ export function doAmmLiquidity(
     String(priceNo),
     'Yes',
     String(priceYes),
+    'symbol',
+    symbolRoot
   );
 
   // converting odds to pool percentage. odds is the opposit of pool percentage
@@ -180,7 +183,8 @@ export function doAmmLiquidity(
     new BN(fee),
     new BN(amount),
     poolYesPercent,
-    poolNoPercent
+    poolNoPercent,
+    symbolRoot
   );
 }
 

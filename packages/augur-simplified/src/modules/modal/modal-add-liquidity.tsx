@@ -457,7 +457,8 @@ const ModalAddLiquidity = ({
           ? amm !== null && amm?.id !== undefined && amm?.liquidity !== '0'
           : false,
         properties.priceNo,
-        properties.priceYes
+        properties.priceYes,
+        customName
       )
         .then((response) => {
           const { hash } = response;
