@@ -549,7 +549,7 @@ Deploying to: ${env}
         const tokenTemplate = this.contracts.get('WrappedShareToken');
 
         tokenTemplate.address = await this.construct(tokenTemplate, []);
-        factory.address = await this.construct(factory, []);
+        factory.address = await this.construct(factory, [tokenTemplate.address]);
         return factory.address;
     }
 

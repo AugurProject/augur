@@ -212,7 +212,7 @@ export interface ContractAddresses extends TradingAddresses {
   WethWrapperForAMMExchange?: string;
 
   // Wrapped Share Tokens
-  WrappedShareTokenFactoryFactory?: string;
+  WrappedShareTokenFactory?: string;
 
   // Balancer
   BFactory?: string;

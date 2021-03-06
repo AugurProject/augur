@@ -44,6 +44,9 @@ def weth_amm(sessionFixture, factory, para_weth_share_token):
 
 
 def test_amm_create_with_initial_liquidity(sessionFixture, market, weth_amm, account0):
+    if not sessionFixture.paraAugur:
+        return skip("Test is only for para augur")
+
     initialLiquidity = 5 * ATTO
     numticks = 1000
     (address, lpTokens) = weth_amm.addAMMWithLiquidity(market.address, FEE, ATTO, False, account0,
