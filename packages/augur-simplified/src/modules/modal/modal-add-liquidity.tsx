@@ -201,7 +201,7 @@ const ModalAddLiquidity = ({
         checkCanCashAdd();
       }
     }
-    if (isLogged && !canRemoveLiquidity) {
+    if (isLogged && !canRemoveLiquidity && modalType === REMOVE) {
         checkCanRemoveAmm();
     }
   }, [
@@ -212,6 +212,7 @@ const ModalAddLiquidity = ({
     setCanRemoveLiquidity,
     updateTransaction,
     transactions,
+    modalType,
   ]);
 
   const userTokenBalance = cash?.name ? balances[cash?.name]?.balance : '0';
@@ -457,7 +458,8 @@ const ModalAddLiquidity = ({
           ? amm !== null && amm?.id !== undefined && amm?.liquidity !== '0'
           : false,
         properties.priceNo,
-        properties.priceYes
+        properties.priceYes,
+        customName
       )
         .then((response) => {
           const { hash } = response;
@@ -517,10 +519,6 @@ const ModalAddLiquidity = ({
           {
             label: 'your share of the liquidity pool',
             value: `${userPercentOfPool}`,
-          },
-          {
-            label: 'your total fees earned',
-            value: '-',
           },
         ],
       },
