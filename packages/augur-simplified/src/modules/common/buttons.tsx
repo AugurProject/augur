@@ -231,9 +231,9 @@ export const ApprovalButton = ({
         }
         case REMOVE_LIQUIDITY: {
           const tx = await approveERC20Contract(
-            amm.id,
+            amm.invalidPool.id,
             `Liquidity (${approvingName})`,
-            WethWrapperForAMMExchange,
+            AMMFactory,
             loginAccount
           );
           tx.marketDescription = marketDescription;
@@ -278,8 +278,8 @@ export const ApprovalButton = ({
           }
           case REMOVE_LIQUIDITY: {
             approvalCheck = await checkAllowance(
-              amm.id,
-              WethWrapperForAMMExchange,
+              amm.invalidPool.id,
+              AMMFactory,
               loginAccount,
               transactions,
               updateTransaction
@@ -357,6 +357,10 @@ export const ApprovalButton = ({
     }
     case EXIT_POSITION: {
       buttonText = 'Approve to Sell';
+      break;
+    }
+    case REMOVE_LIQUIDITY: {
+      buttonText = 'Approve Removal';
       break;
     }
     default:

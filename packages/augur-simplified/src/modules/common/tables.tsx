@@ -29,8 +29,8 @@ import {
   WarningBanner,
   generateTooltip,
 } from './labels';
-import { PARA_CONFIG, useGraphDataStore, useUserStore, ApprovalHooks, Constants, Formatter, Icons } from '@augurproject/augur-comps';
-const { useCanExitCashPosition, approveERC1155Contract } = ApprovalHooks;
+import { PARA_CONFIG, useGraphDataStore, useUserStore, useCanExitCashPosition, Constants, Formatter, Icons } from '@augurproject/augur-comps';
+
 const {
   formatDai,
   formatCash,

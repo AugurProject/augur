@@ -38,11 +38,8 @@ import {
 import { BigNumber as BN } from 'bignumber.js';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
 import { AmountInput, OutcomesGrid } from '../common/inputs';
-import { useUserStore, ApprovalHooks, Icons } from '@augurproject/augur-comps';
-const {
-  useCanEnterCashPosition,
-  useCanExitCashPosition,
-} = ApprovalHooks;
+import { useUserStore, useCanEnterCashPosition, useCanExitCashPosition, Icons } from '@augurproject/augur-comps';
+
 const {
   CloseIcon
 } = Icons;
