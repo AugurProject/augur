@@ -231,7 +231,7 @@ export const ApprovalButton = ({
         }
         case REMOVE_LIQUIDITY: {
           const tx = await approveERC20Contract(
-            amm.invalidPool.id,
+            amm?.invalidPool?.id,
             `Liquidity (${approvingName})`,
             AMMFactory,
             loginAccount
