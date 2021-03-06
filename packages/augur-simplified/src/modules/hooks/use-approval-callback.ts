@@ -9,7 +9,7 @@ import {
 import { BigNumber as BN } from 'bignumber.js';
 import { TransactionResponse } from '@ethersproject/providers';
 import { AmmExchange, LoginAccount, TransactionDetails } from '../types';
-import { useUserStore } from '../stores/user';
+import { useUserStore } from '@augurproject/augur-comps';
 import { PARA_CONFIG } from '../stores/constants';
 import { ConnectAccount } from '@augurproject/augur-comps';
 

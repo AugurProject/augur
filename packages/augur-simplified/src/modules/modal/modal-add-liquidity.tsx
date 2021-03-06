@@ -39,7 +39,7 @@ import {
 } from '../../utils/format-number';
 import { MultiButtonSelection } from '../common/selection';
 import classNames from 'classnames';
-import { AmmOutcome, LiquidityBreakdown, MarketInfo } from '../types';
+import { AmmOutcome, Cash, LiquidityBreakdown, MarketInfo } from '../types';
 import {
   checkConvertLiquidityProperties,
   doAmmLiquidity,
@@ -159,8 +159,9 @@ const ModalAddLiquidity = ({
     TRADING_FEE_OPTIONS[2].id
   );
   const [canAddLiquidity, setCanAddLiquidity] = useState(false);
+  const [canRemoveLiquidity, setCanRemoveLiquidity] = useState(false);
 
-  const cash = useMemo(() => {
+  const cash: Cash = useMemo(() => {
     return cashes && chosenCash
       ? Object.values(cashes).find((c) => c.name === chosenCash)
       : Object.values(cashes)[0];
@@ -168,7 +169,7 @@ const ModalAddLiquidity = ({
 
   const isETH = cash?.name === ETH;
   const { addresses: { AMMFactory } } = PARA_CONFIG;
-  const isApproved = modalType === REMOVE ? true : canAddLiquidity;
+  const isApproved = modalType === REMOVE ? canRemoveLiquidity : canAddLiquidity;
 
   useEffect(() => {
     const checkCanCashAdd = async () => {
@@ -182,6 +183,17 @@ const ModalAddLiquidity = ({
       setCanAddLiquidity(approvalCheck === APPROVED);
     };
 
+    const checkCanRemoveAmm = async () => {
+      const approvalCheck = await checkAllowance(
+        amm?.invalidPool?.id,
+        AMMFactory,
+        loginAccount,
+        transactions,
+        updateTransaction
+      );
+      setCanRemoveLiquidity(approvalCheck === APPROVED);
+    };
+
     if (isLogged && !canAddLiquidity) {
       if (isETH) {
         setCanAddLiquidity(true);
@@ -189,10 +201,15 @@ const ModalAddLiquidity = ({
         checkCanCashAdd();
       }
     }
+    if (isLogged && !canRemoveLiquidity) {
+        checkCanRemoveAmm();
+    }
   }, [
     isLogged,
     canAddLiquidity,
+    canRemoveLiquidity,
     setCanAddLiquidity,
+    setCanRemoveLiquidity,
     updateTransaction,
     transactions,
   ]);

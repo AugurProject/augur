@@ -1,17 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import { APPROVED } from '../common/buttons';
 import { Cash, MarketInfo, TransactionDetails } from '../types';
-import {
-  ApprovalHooks,
-  Constants,
-  PARA_CONFIG,
-  useGraphDataStore,
-  useUserStore,
-} from '@augurproject/augur-comps';
+import { PARA_CONFIG } from './constants';
+import { ApprovalState, ETH } from '../constants';
+import { useUserStore } from '@augurproject/augur-comps';
+import { useGraphDataStore } from '@augurproject/augur-comps';
 import { augurSdkLite } from '../../utils/augurlitesdk';
 import { getUserBalances } from '../../utils/contract-calls';
-const { ApprovalState, ETH } = Constants;
-const { checkAllowance, isERC1155ContractApproved } = ApprovalHooks;
+import { checkAllowance, isERC1155ContractApproved } from '../hooks/use-approval-callback';
+
 const isAsync = (obj) =>
   !!obj &&
   (typeof obj === 'object' || typeof obj === 'function') &&
@@ -80,7 +77,9 @@ export function useCanExitCashPosition(shareToken) {
     transactions,
     actions: { updateTransaction },
   } = useUserStore();
-  const { blocknumber } = useGraphDataStore();
+  const {
+    blocknumber,
+  } = useGraphDataStore();
   const approvedAccount = useRef(null);
   const [canExitPosition, setCanExitPosition] = useState(false);
   const [calledBlocknumber, setCalledBlocknumber] = useState(blocknumber);
@@ -98,14 +97,9 @@ export function useCanExitCashPosition(shareToken) {
         updateTransaction
       );
       setCanExitPosition(Boolean(ApprovalState.APPROVED === approvalCheck));
-      if (Boolean(approvalCheck))
-        approvedAccount.current = loginAccount.account;
+      if (Boolean(approvalCheck)) approvedAccount.current = loginAccount.account;
     };
-    if (
-      !!account &&
-      !!shareToken &&
-      (account !== approvedAccount.current || calledBlocknumber !== blocknumber)
-    ) {
+    if (!!account && !!shareToken && (account !== approvedAccount.current || calledBlocknumber !== blocknumber)) {
       checkCanCashExit();
       setCalledBlocknumber(blocknumber);
     }
@@ -116,7 +110,7 @@ export function useCanExitCashPosition(shareToken) {
     transactions,
     account,
     blocknumber,
-    shareToken,
+    shareToken
   ]);
 
   return canExitPosition;
@@ -144,8 +138,7 @@ export function useCanEnterCashPosition({ name, address }: Cash) {
         updateTransaction
       );
       setCanEnterPosition(approvalCheck === APPROVED || name === ETH);
-      if (approvalCheck === APPROVED || name === ETH)
-        approvedAccount.current = loginAccount.account;
+      if (approvalCheck === APPROVED || name === ETH) approvedAccount.current = loginAccount.account;
     };
     if (!!account && !!address && account !== approvedAccount.current) {
       checkCanCashEnter();
@@ -166,7 +159,11 @@ export function useUserBalances() {
     loginAccount,
     actions: { updateUserBalances },
   } = useUserStore();
-  const { markets, cashes, ammExchanges } = useGraphDataStore();
+  const {
+    markets,
+    cashes,
+    ammExchanges
+  } = useGraphDataStore();
   useEffect(() => {
     let isMounted = true;
     const createClient = (provider, config, account) =>
@@ -204,7 +201,9 @@ export function useUserBalances() {
 }
 
 export function useFinalizeUserTransactions() {
-  const { blocknumber } = useGraphDataStore();
+  const {
+    blocknumber
+  } = useGraphDataStore();
   const {
     loginAccount,
     transactions,
@@ -221,4 +220,12 @@ export function useFinalizeUserTransactions() {
         });
     }
   }, [loginAccount, blocknumber, transactions]);
+}
+
+export function useScrollToTopOnMount(...optionsTriggers) {
+  useEffect(() => {
+    // initial render only.
+    document.getElementById('mainContent')?.scrollTo(0, 0);
+    window.scrollTo(0, 1);
+  }, [...optionsTriggers]);
 }
