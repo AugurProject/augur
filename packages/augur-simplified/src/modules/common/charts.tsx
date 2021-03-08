@@ -1,14 +1,13 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react';
 import Highcharts from 'highcharts/highstock';
 import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
-import { createBigNumber } from '../../utils/create-big-number';
 import Styles from './charts.styles.less';
 import classNames from 'classnames';
-import { formatCashPrice } from '../../utils/format-number';
-import { Checkbox } from './icons';
 import { MarketInfo } from '../types';
 import { MultiButtonSelection } from './selection';
-
+import { createBigNumber, Formatter, Icons } from '@augurproject/augur-comps';
+const { formatCashPrice } = Formatter;
+const { Checkbox } = Icons;
 const HIGHLIGHTED_LINE_WIDTH = 2;
 const NORMAL_LINE_WIDTH = 2;
 const DEFAULT_SELECTED_ID = 2;

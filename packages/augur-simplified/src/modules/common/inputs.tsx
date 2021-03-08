@@ -1,26 +1,29 @@
 import React, { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
-import { EthIcon, LinkIcon, UsdIcon, XIcon } from './icons';
 import Styles from './inputs.styles.less';
-import { ETH } from '@augurproject/sdk-lite/build';
-import {
-  getCashFormat,
-  formatCash,
-  formatSimpleShares,
-  formatCashPrice,
-  formatDai,
-} from '../../utils/format-number';
-import {
+import { useAppStatusStore } from '../stores/app-status';
+import { TinyButton } from './buttons.styles.less';
+import { CurrencyDropdown } from './selection';
+import { AmmOutcome, Cash } from '../types';
+import { Constants, Icons, Formatter } from '@augurproject/augur-comps';
+const {
+  ETH,
   USDC,
   ERROR_AMOUNT,
   SHARES,
   OUTCOME_YES_NAME,
   YES_NO,
-} from '../constants';
-import { useAppStatusStore } from '../stores/app-status';
-import { TinyButton } from './buttons.styles.less';
-import { CurrencyDropdown } from './selection';
-import { AmmOutcome, Cash } from '../types';
+} = Constants;
+const {
+  EthIcon, LinkIcon, UsdIcon, XIcon
+} = Icons;
+const {
+  getCashFormat,
+  formatCash,
+  formatSimpleShares,
+  formatCashPrice,
+  formatDai,
+} = Formatter;
 
 const ENTER_CHAR_CODE = 13;
 
