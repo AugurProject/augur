@@ -17,7 +17,6 @@ import parsePath from '../routes/helpers/parse-path';
 import classNames from 'classnames';
 import { GearIcon, ThreeLinesIcon } from './icons';
 import { useAppStatusStore } from '../stores/app-status';
-import { useLocalStorage } from '../stores/local-storage';
 import { SecondaryButton, TinyButton } from './buttons';
 import { Toasts } from '../toasts/toasts';
 import { ToggleSwitch } from 'modules/common/toggle-switch';
@@ -27,8 +26,8 @@ import {
   useGraphDataStore,
   useUserStore,
   ConnectAccount as CompsConnectAccount,
+  useLocalStorage,
 } from '@augurproject/augur-comps';
-
 const { ConnectAccount } = CompsConnectAccount;
 
 export const SettingsButton = () => {

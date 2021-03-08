@@ -6,9 +6,9 @@ import { PositionsLiquidityViewSwitcher } from '../common/tables';
 import { useAppStatusStore } from '../stores/app-status';
 import { PrimaryButton } from '../common/buttons';
 import { NetworkMismatchBanner } from '../common/labels';
-import { claimWinnings } from '../../utils/contract-calls';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
 import {
+  ContractCalls,
   Formatter,
   Icons,
   Constants,
@@ -16,11 +16,13 @@ import {
   Stores,
   useGraphDataStore,
   useScrollToTopOnMount,
+  useCanExitCashPosition,
   useUserStore,
   PARA_CONFIG,
   ApprovalHooks,
 } from '@augurproject/augur-comps';
-const { approveERC1155Contract, useCanExitCashPosition } = ApprovalHooks;
+const { claimWinnings } = ContractCalls;
+const { approveERC1155Contract } = ApprovalHooks;
 const { formatCash } = Formatter;
 const { EthIcon, UsdIcon } = Icons;
 const { ACTIVITY, ETH, TABLES, TX_STATUS, USDC } = Constants;

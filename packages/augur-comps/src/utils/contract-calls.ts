@@ -20,7 +20,7 @@ import BPoolABI from './BPoolABI.json';
 
 const isValidPrice = (price: string): boolean => {
   return price !== null && price !== undefined && price !== "0" && price !== "0.00";
-}
+};
 
 const trimDecimalValue = (value: string | BigNumber) => createBigNumber(value).toFixed(6);
 interface LiquidityProperties {
@@ -137,6 +137,7 @@ export function doAmmLiquidity(
   hasLiquidity: boolean,
   priceNo: string,
   priceYes: string,
+  symbolRoot: string,
 ): Promise<TransactionResponse | null> {
   const augurClient = augurSdkLite.get();
   if (!augurClient || !augurClient.amm) {
@@ -159,6 +160,8 @@ export function doAmmLiquidity(
     String(priceNo),
     'Yes',
     String(priceYes),
+    'symbol',
+    symbolRoot
   );
 
   // converting odds to pool percentage. odds is the opposit of pool percentage
@@ -175,7 +178,8 @@ export function doAmmLiquidity(
     new BN(fee),
     new BN(amount),
     poolYesPercent,
-    poolNoPercent
+    poolNoPercent,
+    symbolRoot
   );
 }
 
@@ -544,7 +548,7 @@ export const getUserBalances = async (
           const outcomeShareBalances = [0, 1, 2].map((outcome) => ({
             reference: `${shareToken}-${marketId}-${outcome}`,
             contractAddress: shareToken,
-            abi: ParaShareToken.ABI,
+            abi: ParaShareTokenABI,
             calls: [
               {
                 reference: `${shareToken}-${marketId}-${outcome}`,
@@ -1091,7 +1095,7 @@ export const getErc20Contract = (tokenAddress: string, library: Web3Provider, ac
 export const getErc1155Contract = (tokenAddress: string, library: Web3Provider, account: string): Contract | null => {
   if (!tokenAddress || !library) return null
   try {
-    return getContract(tokenAddress, ParaShareToken.ABI, library, account)
+    return getContract(tokenAddress, ParaShareTokenABI, library, account)
   } catch (error) {
     console.error('Failed to get contract', error)
     return null
@@ -1133,7 +1137,7 @@ export const getERC1155ApprovedForAll = async (tokenAddress: string, provider: W
   const contractAllowanceCall: ContractCallContext[] = [{
     reference: tokenAddress,
     contractAddress: tokenAddress,
-    abi: ParaShareToken.ABI,
+    abi: ParaShareTokenABI,
     calls: [
       {
         reference: tokenAddress,
