@@ -149,7 +149,6 @@ export const EXTERNAL_CONTRACTS = [
     'AMMFactory',
     'WethWrapperForAMMExchange',
     // WrappedShareToken
-    'WrappedShareTokenFactoryFactory',
     'WrappedShareTokenFactory',
     'WrappedShareToken',
     // Balancer

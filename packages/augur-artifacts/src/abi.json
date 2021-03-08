@@ -53167,6 +53167,18 @@
 	],
 	"WrappedShareTokenFactory": [
 		{
+			"inputs": [
+				{
+					"internalType": "contract WrappedShareToken",
+					"name": "_tokenTemplate",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "constructor"
+		},
+		{
 			"anonymous": false,
 			"inputs": [
 				{
@@ -53226,6 +53238,37 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "target",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "salt",
+					"type": "uint256"
+				},
+				{
+					"internalType": "address",
+					"name": "creator",
+					"type": "address"
+				}
+			],
+			"name": "clone2Address",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -53365,6 +53408,21 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "tokenTemplate",
+			"outputs": [
+				{
+					"internalType": "contract WrappedShareToken",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -53520,6 +53578,37 @@
 			"outputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				},
+				{
+					"internalType": "string",
+					"name": "",
+					"type": "string"
+				}
+			],
+			"name": "wrappers",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		}
 	],

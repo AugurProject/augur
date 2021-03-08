@@ -326,6 +326,8 @@ jobs:
             (cd packages/augur-core && yarn test:unit $(TESTS))
           fi
         displayName: integration tests
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
 
   - job: Docker_populated_geth_images
     dependsOn:

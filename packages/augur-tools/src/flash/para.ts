@@ -67,7 +67,7 @@ export function addParaScripts(flash: FlashSession) {
   });
 
   flash.addScript({
-    name: 'deploy-WrappedShareTokenFactoryFactory',
+    name: 'deploy-WrappedShareTokenFactory',
     async call(this: FlashSession) {
       if (this.noProvider()) return;
 
@@ -86,7 +86,7 @@ export function addParaScripts(flash: FlashSession) {
 
       const factory = await contractDeployer.uploadWrappedShareTokenFactory();
       const addresses: Partial<ContractAddresses> = {
-        WrappedShareTokenFactoryFactory: factory
+        WrappedShareTokenFactory: factory
       }
 
       await updateConfig(this.network, {

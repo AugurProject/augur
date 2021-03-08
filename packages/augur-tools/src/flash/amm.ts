@@ -24,13 +24,13 @@ export function addAMMScripts(flash: FlashSession) {
       {
         name: 'skipShareWrapper',
         abbr: 'S',
-        description: 'Do NOT deploy the eth wrapper.',
+        description: 'Do NOT deploy the share token wrapper.',
         flag: true
       },
       {
         name: 'skipBFactory',
         abbr: 'B',
-        description: 'Do NOT deploy the eth wrapper.',
+        description: 'Do NOT deploy the balancer factory.',
         flag: true
       },
     ],
@@ -60,14 +60,14 @@ export function addAMMScripts(flash: FlashSession) {
 
       const shareWrapper = deployShareWrapper
         ? await contractDeployer.uploadWrappedShareTokenFactory()
-        : this.config.addresses.WrappedShareTokenFactoryFactory
-      if (!shareWrapper) return console.error('Must deploy WrappedShareTokenFactoryFactory: omit -skipShareWrapper (-S).');
+        : this.config.addresses.WrappedShareTokenFactory
+      if (!shareWrapper) return console.error('Must deploy WrappedShareTokenFactory: omit -skipShareWrapper (-S).');
 
       const factory = await contractDeployer.uploadAMMContracts(bFactory, shareWrapper);
       const addresses: Partial<ContractAddresses> = {
         AMMFactory: factory,
         BFactory: bFactory,
-        WrappedShareTokenFactoryFactory: shareWrapper
+        WrappedShareTokenFactory: shareWrapper
       }
 
       if (deployETHWrapper) {

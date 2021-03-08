@@ -545,9 +545,12 @@ Deploying to: ${env}
 
     async uploadWrappedShareTokenFactory(): Promise<string> {
         console.log('Uploading WrappedShareTokenFactory contract');
-        const metaFactory = this.contracts.get('WrappedShareTokenFactory');
-        metaFactory.address = await this.construct(metaFactory, []);
-        return metaFactory.address;
+        const factory = this.contracts.get('WrappedShareTokenFactory');
+        const tokenTemplate = this.contracts.get('WrappedShareToken');
+
+        tokenTemplate.address = await this.construct(tokenTemplate, []);
+        factory.address = await this.construct(factory, [tokenTemplate.address]);
+        return factory.address;
     }
 
     // fee is thousandths of a percent; valid values are [0,30], for max fee of 3%
