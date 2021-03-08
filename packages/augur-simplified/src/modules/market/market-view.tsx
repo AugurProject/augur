@@ -33,6 +33,8 @@ import { useGraphDataStore, useScrollToTopOnMount } from '@augurproject/augur-co
 import { OutcomesGrid } from '../common/inputs';
 
 import { AmmOutcome, MarketOutcome } from '../types';
+import {SEO} from '../common/seo';
+import {MARKETS_LIST_HEAD_TAGS} from '../seo-config';
 
 export const combineOutcomeData = (
   ammOutcomes: AmmOutcome[],
@@ -131,7 +133,7 @@ const MarketView = ({ defaultMarket = null }) => {
     actions: { setShowTradingForm },
   } = useAppStatusStore();
   const { markets } = useGraphDataStore();
-  
+
   useScrollToTopOnMount();
 
   const market: MarketInfo = !!defaultMarket
@@ -158,6 +160,12 @@ const MarketView = ({ defaultMarket = null }) => {
   const winningOutcomes = getWinningOutcome(amm?.ammOutcomes, outcomes);
   return (
     <div className={Styles.MarketView}>
+      <SEO
+        {...MARKETS_LIST_HEAD_TAGS}
+        title={market.description}
+        ogTitle={market.description}
+        twitterTitle={market.description}
+      />
       <section>
         <NetworkMismatchBanner />
         {isMobile && <ReportingStateLabel {...{ reportingState, big: true }} />}
