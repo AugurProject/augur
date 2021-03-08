@@ -36,7 +36,7 @@ export interface ExchangeContractIntermediary {
     recipient: string): Promise<BigNumber>
 
   removeLiquidity(
-    market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber, symbolRoot: string
+    market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber, symbols: string[]
   ): Promise<TransactionResponse>
 
   rateRemoveLiquidity(

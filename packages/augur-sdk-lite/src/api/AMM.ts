@@ -140,12 +140,12 @@ export class AMM {
     }
   }
 
-  async doRemoveLiquidity(market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber, symbolRoot: string): Promise<TransactionResponse> {
-    return this.intermediary(paraShareToken).removeLiquidity(market, paraShareToken, fee, lpTokens, symbolRoot);
+  async doRemoveLiquidity(market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber, symbols: string[]): Promise<TransactionResponse> {
+    return this.intermediary(paraShareToken).removeLiquidity(market, paraShareToken, fee, lpTokens, symbols);
   }
 
-  async getRemoveLiquidity(market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber, symbolRoot: string): Promise<RemoveLiquidityRate> {
-    return this.intermediary(paraShareToken).rateRemoveLiquidity(market, paraShareToken, fee, lpTokens, symbolRoot);
+  async getRemoveLiquidity(market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber): Promise<RemoveLiquidityRate> {
+    return this.intermediary(paraShareToken).rateRemoveLiquidity(market, paraShareToken, fee, lpTokens);
   }
 
   async doSwap(market: string, paraShareToken: string, fee: BigNumber, inputShares: BigNumber, outputLong: Boolean, minShares: BigNumber): Promise<TransactionResponse> {
