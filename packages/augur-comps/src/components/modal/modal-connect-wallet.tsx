@@ -4,8 +4,7 @@ import Styles from './modal.styles.less';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-// import MetamaskIcon from '../ConnectAccount/assets/metamask.png';
-// import { useAppStatusStore } from '../stores/app-status';
+import MetamaskIcon from '../ConnectAccount/assets/metamask.png';
 import classNames from 'classnames';
 import { NETWORK_NAMES } from '../../stores/constants';
 import { SecondaryButton, TextButton, WalletButton } from '../common/buttons';
@@ -108,9 +107,8 @@ const PendingWalletView = ({
               icon={
                 <img
                   src={
-                    null
-                    // require('modules/ConnectAccount/assets/' + wallet.iconName)
-                    //   .default
+                    require('../ConnectAccount/assets/' + wallet.iconName)
+                      .default
                   }
                   alt={wallet.name}
                 />
@@ -133,6 +131,8 @@ interface ModalConnectWalletProps {
   closeModal: Function;
   removeTransaction: Function;
   logout: Function;
+  updateTxFailed?: Function;
+  updateMigrated?: Function;
 }
 
 const ModalConnectWallet = ({
@@ -144,6 +144,8 @@ const ModalConnectWallet = ({
   closeModal,
   removeTransaction,
   logout,
+  updateTxFailed,
+  updateMigrated,
 }: ModalConnectWalletProps) => {
   const { active, account, connector, activate, error } = useWeb3React();
   const { deactivate } = useActiveWeb3React();
@@ -231,9 +233,9 @@ const ModalConnectWallet = ({
           href: wallet.href,
           icon: (
             <img
-              src={null
-                // require('../../assets/icons/' + wallet.iconName)
-                //   .default
+              src={
+                require('../ConnectAccount/assets/' + wallet.iconName)
+                  .default
               }
               alt={wallet.name}
             />
@@ -303,10 +305,6 @@ const ModalConnectWallet = ({
     setWalletList(getWalletButtons());
   }, [getWalletButtons]);
 
-//   const {
-//     actions: {updateTxFailed, updateMigrated}
-//   } = useMigrationStore();
-
   return (
     <section>
       <Header
@@ -352,8 +350,8 @@ const ModalConnectWallet = ({
                 deactivate();
                 closeModal();
                 logout();
-                // updateTxFailed(false);
-                // updateMigrated(false);
+                updateTxFailed && updateTxFailed(false);
+                updateMigrated && updateMigrated(false);
               }}
             />
           ) : walletView === WALLET_VIEWS.PENDING ? (

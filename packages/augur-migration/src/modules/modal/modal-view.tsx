@@ -3,8 +3,8 @@ import { useHistory } from 'react-router';
 import Styles from './modal.styles.less';
 import { useAppStatusStore } from '../stores/app-status';
 import { Constants, Modals } from '@augurproject/augur-comps';
-// import ModalConnectWallet from './modal-connect-wallet';
 import { useUserStore } from '../stores/user';
+import { useMigrationStore } from '../stores/migration-store';
 
 const { ModalConnectWallet } = Modals;
 function selectModal(
@@ -14,7 +14,9 @@ function selectModal(
   closeModal,
   removeTransaction,
   isLogged,
-  isMobile
+  isMobile,
+  updateTxFailed,
+  updateMigrated
 ) {
   switch (type) {
     case Constants.MODAL_CONNECT_WALLET:
@@ -26,6 +28,8 @@ function selectModal(
           isLogged={isLogged}
           isMobile={isMobile}
           removeTransaction={removeTransaction}
+          updateTxFailed={updateTxFailed}
+          updateMigrated={updateMigrated}
         />
       );
     default:
@@ -46,6 +50,9 @@ const ModalView = () => {
   const {
     actions: { logout, removeTransaction },
   } = useUserStore();
+  const {
+    actions: { updateTxFailed, updateMigrated },
+  } = useMigrationStore();
   const [locationKeys, setLocationKeys] = useState([]);
 
   const handleKeyDown = (e) => {
@@ -89,7 +96,9 @@ const ModalView = () => {
     closeModal,
     removeTransaction,
     isLogged,
-    isMobile
+    isMobile,
+    updateTxFailed,
+    updateMigrated
   );
 
   return (
