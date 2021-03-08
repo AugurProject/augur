@@ -34,6 +34,7 @@ import _GraphDataStore, {
 import _UserDataStore, { useUserStore, UserStore } from './stores/user';
 import * as _StoreConstants from './stores/constants';
 import * as _ProcessData from './stores/process-data';
+import { useLocalStorage } from './stores/local-storage';
 import {
   useGraphHeartbeat,
   useCanExitCashPosition,
@@ -68,6 +69,7 @@ export const Stores = {
     useUserBalances,
     useFinalizeUserTransactions,
     useScrollToTopOnMount,
+    useLocalStorage,
     ..._ApprovalHooks,
   },
   Utils: {
@@ -128,6 +130,7 @@ export const ApprovalHooks = _ApprovalHooks;
 export const ProcessData = _ProcessData;
 // export extremely commonly used functions as top level non-default exports:
 export {
+  useLocalStorage,
   useGraphHeartbeat,
   useUserStore,
   UserStore,

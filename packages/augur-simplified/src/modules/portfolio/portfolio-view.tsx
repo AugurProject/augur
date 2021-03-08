@@ -16,11 +16,12 @@ import {
   Stores,
   useGraphDataStore,
   useScrollToTopOnMount,
+  useCanExitCashPosition,
   useUserStore,
   PARA_CONFIG,
   ApprovalHooks,
 } from '@augurproject/augur-comps';
-const { approveERC1155Contract, useCanExitCashPosition } = ApprovalHooks;
+const { approveERC1155Contract } = ApprovalHooks;
 const { formatCash } = Formatter;
 const { EthIcon, UsdIcon } = Icons;
 const { ACTIVITY, ETH, TABLES, TX_STATUS, USDC } = Constants;
