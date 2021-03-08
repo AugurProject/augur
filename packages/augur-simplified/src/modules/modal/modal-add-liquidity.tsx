@@ -337,7 +337,8 @@ const ModalAddLiquidity = ({
           properties.marketId,
           cash,
           onChainFee,
-          amount
+          amount,
+          amm.symbols
         );
       } else {
         results = await estimateAddLiquidity(
