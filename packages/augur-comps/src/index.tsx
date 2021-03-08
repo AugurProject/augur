@@ -55,6 +55,7 @@ import {
 } from './stores/utils';
 import * as _ApprovalHooks from './stores/use-approval-callback';
 import * as _GraphClient from './apollo/client';
+import ModalConnectWallet from './components/modal/modal-connect-wallet';
 
 export const ContractCalls = _ContractCalls;
 export const GraphClient = _GraphClient;
@@ -155,6 +156,9 @@ export const Components = {
   Logo,
   MarketCardComps,
 };
+export const Modals = {
+  ModalConnectWallet
+};
 // create default object
 const AugurComps = {
   Components,
@@ -166,6 +170,7 @@ const AugurComps = {
   Stores,
   Types,
   Utils,
+  Modals
 };
 
 export default AugurComps;
