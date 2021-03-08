@@ -5,28 +5,27 @@ import { CLAIM_GAS_COST, DEFAULT_GAS_PRICE_IN_GWEI, INVALID_SWAP_GAS_COST, EULER
 // A Market is marked as True in the invalidFilter if the any bid for Invalid on the book would be profitable to take were the market Valid
 export const isMarketInvalid = (
   sellInvalidProfitInETH: BigNumber,
-  invalidOutcomeLiquidity: BigNumber,
   invalidAmountSold: BigNumber,
   marketData: { endTime: number, numTicks: number, feeDivisor: number },
   reportingFeeDivisor: number,
   gasLevels: GasStation,
 ): boolean => {
-  if (invalidOutcomeLiquidity.eq(0)) return false;
+  if (invalidAmountSold.eq(0)) return false;
 
   const feeDivisor = new BigNumber(marketData.feeDivisor);
   const numTicks = new BigNumber(marketData.numTicks);
-  const feeMultiplier = new BigNumber(1)
+  const feeMultiplier = feeDivisor.eq(0) ? new BigNumber(1) : new BigNumber(1)
     .minus(new BigNumber(1).div(reportingFeeDivisor))
     .minus(new BigNumber(1).div(feeDivisor));
 
   let gasPriceInGwei = DEFAULT_GAS_PRICE_IN_GWEI;
   if (gasLevels && gasLevels.standard) {
-    gasPriceInGwei = Number(new BigNumber(gasLevels.standard).dividedBy(10 ** 9));
+    gasPriceInGwei = Number(new BigNumber(gasLevels.standard).div(10 ** 9));
   }
 
   // gas estimates in ETH
-  const estimatedTradeGasCost = INVALID_SWAP_GAS_COST.times(gasPriceInGwei);
-  const estimatedClaimGasCost = CLAIM_GAS_COST.times(gasPriceInGwei);
+  const estimatedTradeGasCostInETH = INVALID_SWAP_GAS_COST.times(gasPriceInGwei).div(10 ** 9);
+  const estimatedClaimGasCostInETH = CLAIM_GAS_COST.times(gasPriceInGwei).div(10 ** 9);
 
   let timeTillMarketFinalizesInSeconds = new BigNumber(
     marketData.endTime
@@ -48,12 +47,14 @@ export const isMarketInvalid = (
     ).toPrecision(14)
   ).abs();
 
-  const invalidEstimates = estimatedTradeGasCost.plus(
-    estimatedClaimGasCost
+  const invalidEstimatesInETH = estimatedTradeGasCostInETH.plus(
+    estimatedClaimGasCostInETH
   );
 
-  const totalInvalidCost = (invalidAmountSold.times(baseRevenue)).plus(invalidEstimates);
-  //console.log(sellInvalidProfitInETH.gt(totalInvalidCost), 'totalInvalidCost', totalInvalidCost.toFixed(0), 'sellInvalidProfitInETH', sellInvalidProfitInETH.toFixed(0));
+  /**
+   * cost is TVoM and transaction cost and the origianl purchase amount for shares
+   */
+  const totalInvalidCost = (invalidAmountSold.times(baseRevenue)).plus(invalidEstimatesInETH).plus(invalidAmountSold);
 
   return sellInvalidProfitInETH
     .minus(totalInvalidCost)

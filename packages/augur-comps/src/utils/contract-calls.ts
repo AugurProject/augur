@@ -17,6 +17,7 @@ import { createBigNumber } from './create-big-number';
 import { PARA_CONFIG } from '../stores/constants';
 import ERC20ABI from './ERC20ABI.json';
 import BPoolABI from './BPoolABI.json';
+import { raw } from 'express';
 
 const isValidPrice = (price: string): boolean => {
   return price !== null && price !== undefined && price !== "0" && price !== "0.00";
@@ -747,13 +748,14 @@ export const getMarketInvalidity = async (
 
    if (method === CALC_OUT_GIVEN_IN) {
       const amm = ammExchanges[context.ammExchangeId];
-      amm.swapInvalidForCashInETH = rawBalance
+      const ouputCash = convertOnChainCashAmountToDisplayCashAmount(new BN(rawBalance), amm?.cash?.decimals);
+      amm.swapInvalidForCashInETH = ouputCash.toFixed();
       if (amm.cash.name !== ETH) {
         // converting raw value in cash to cash in ETH. needed for invalidity check
         const ethCash = Object.values(cashes).find(c => c.name === ETH);
-        amm.swapInvalidForCashInETH = new BN(rawBalance).div(new BN(ethCash.usdPrice)).toFixed();
+        amm.swapInvalidForCashInETH = ouputCash.div(new BN(ethCash.usdPrice)).toFixed();
       }
-
+      console.log('rawBalance', rawBalance, amm.swapInvalidForCashInETH);
       amm.isAmmMarketInvalid = await getIsMarketInvalid(amm);
       if (amm.isAmmMarketInvalid) {
         invalidMarkets.push(amm.marketId);
@@ -1027,10 +1029,14 @@ const getIsMarketInvalid = async (amm: AmmExchange): Promise<boolean> => {
     feeDivisor: Number(market.fee)
   }
 
+  // TODO: there might be more coversion needed because of how wrapped shares works with balancer pool
+  // numTicks might play a roll here
+  // invalid shares are Mega Shares, need to div by num ticks.
+  const sharesSold = convertOnChainSharesToDisplayShareAmount(new BN(invalidBalance).div(marketProperties.numTicks).times(PORTION_OF_INVALID_POOL_SELL), 18)
+
   const isInvalid = marketInvalidityCheck.isMarketInvalid(
     new BN(swapInvalidForCashInETH),
-    new BN(invalidBalance).times(PORTION_OF_INVALID_POOL_SELL),
-    new BN(invalidBalance),
+    sharesSold,
     marketProperties,
     reportingFeeDivisor,
     gasLevels)
