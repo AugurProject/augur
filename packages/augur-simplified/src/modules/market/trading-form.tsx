@@ -30,16 +30,15 @@ import {
   YES_NO,
 } from '../constants';
 import { generateTooltip } from '../common/labels';
-import {
-  doTrade,
-  estimateEnterTrade,
-  estimateExitTrade,
-} from '../../utils/contract-calls';
 import { BigNumber as BN } from 'bignumber.js';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
 import { AmountInput, OutcomesGrid } from '../common/inputs';
-import { useUserStore, useCanEnterCashPosition, useCanExitCashPosition, Icons } from '@augurproject/augur-comps';
-
+import { ContractCalls, useUserStore, useCanEnterCashPosition, useCanExitCashPosition, Icons } from '@augurproject/augur-comps';
+const {
+  doTrade,
+  estimateEnterTrade,
+  estimateExitTrade,
+} = ContractCalls;
 const {
   CloseIcon
 } = Icons;

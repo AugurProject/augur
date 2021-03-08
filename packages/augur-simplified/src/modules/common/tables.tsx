@@ -21,7 +21,6 @@ import {
   ReceiptLink,
 } from '../routes/helpers/links';
 import { sliceByPage, Pagination } from './pagination';
-import { claimWinnings, getLPCurrentValue } from '../../utils/contract-calls';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
 import {
   InvalidFlagTipIcon,
@@ -29,8 +28,8 @@ import {
   WarningBanner,
   generateTooltip,
 } from './labels';
-import { PARA_CONFIG, useGraphDataStore, useUserStore, useCanExitCashPosition, Constants, Formatter, Icons } from '@augurproject/augur-comps';
-
+import { PARA_CONFIG, useGraphDataStore, useUserStore, useCanExitCashPosition, Constants, Formatter, Icons, ContractCalls } from '@augurproject/augur-comps';
+const { claimWinnings, getLPCurrentValue } = ContractCalls;
 const {
   formatDai,
   formatCash,

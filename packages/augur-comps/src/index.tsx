@@ -1,3 +1,4 @@
+import * as _ContractCalls from './utils/contract-calls';
 import addCommasToNumber from './utils/add-commas-to-number';
 import { isMobileBrowser, isMobileBrowserTall } from './utils/common-functions';
 import * as _Constants from './utils/constants';
@@ -55,6 +56,7 @@ import {
 import * as _ApprovalHooks from './stores/use-approval-callback';
 import * as _GraphClient from './apollo/client';
 
+export const ContractCalls = _ContractCalls;
 export const GraphClient = _GraphClient;
 export const Stores = {
   GraphData: _GraphDataStore,
@@ -155,9 +157,10 @@ export const Components = {
 };
 // create default object
 const AugurComps = {
-  GraphClient,
   Components,
   Constants,
+  ContractCalls,
+  GraphClient,
   Icons,
   Routes,
   Stores,
