@@ -63,8 +63,8 @@ export abstract class ExchangeCommon {
     }
   }
 
-  async removeLiquidity(market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber, symbolRoot: string): Promise<TransactionResponse> {
-    return this.factory.removeLiquidity(market, paraShareToken, fee.toFixed(), lpTokens.toFixed(), generateSymbols(symbolRoot));
+  async removeLiquidity(market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber, symbols:string[]): Promise<TransactionResponse> {
+    return this.factory.removeLiquidity(market, paraShareToken, fee.toFixed(), lpTokens.toFixed(), symbols);
   }
 
   async swap(market: string, paraShareToken: string, fee: BigNumber, inputShares: BigNumber, outputLong: Boolean, minShares: BigNumber): Promise<TransactionResponse> {
