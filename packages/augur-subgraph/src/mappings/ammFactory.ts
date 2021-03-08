@@ -35,6 +35,7 @@ export function handleAMMCreated(event: AMMCreated): void {
   amm.percentageNo = ZERO;
   amm.percentageYes = ZERO;
   amm.totalSupply =  BigInt.fromI32(0);
+  amm.symbols = event.params._symbols;
   amm.volumeNo = ZERO;
   amm.volumeYes = ZERO;
 

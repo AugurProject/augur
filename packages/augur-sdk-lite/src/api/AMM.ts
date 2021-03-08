@@ -68,9 +68,9 @@ export class AMM {
     // Just add liquidity
     if (AMM.exchangeExists(exchangeAddress)) {
       if (hasLiquidity) {
-        return this.doAddSubsequentLiquidity(market, paraShareToken, fee, cash, recipient);
+        return this.doAddSubsequentLiquidity(market, paraShareToken, fee, cash, recipient, symbolRoot);
       } else {
-        return this.doAddInitialLiquidity(market, paraShareToken, fee, cash, longPercent, shortPercent, recipient);
+        return this.doAddInitialLiquidity(market, paraShareToken, fee, cash, longPercent, shortPercent, recipient, symbolRoot);
       }
     }
 
@@ -140,8 +140,8 @@ export class AMM {
     }
   }
 
-  async doRemoveLiquidity(market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber): Promise<TransactionResponse> {
-    return this.intermediary(paraShareToken).removeLiquidity(market, paraShareToken, fee, lpTokens);
+  async doRemoveLiquidity(market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber, symbolRoot: string): Promise<TransactionResponse> {
+    return this.intermediary(paraShareToken).removeLiquidity(market, paraShareToken, fee, lpTokens, symbolRoot);
   }
 
   async getRemoveLiquidity(market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber): Promise<RemoveLiquidityRate> {
@@ -247,8 +247,8 @@ export class AMM {
 
   // Private methods
 
-  private async doAddSubsequentLiquidity(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, recipient: string): Promise<TransactionResponse> {
-    return this.intermediary(paraShareToken).addLiquidity(market, paraShareToken, fee, cash, recipient);
+  private async doAddSubsequentLiquidity(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, recipient: string, symbolRoot: string): Promise<TransactionResponse> {
+    return this.intermediary(paraShareToken).addLiquidity(market, paraShareToken, fee, cash, recipient, symbolRoot);
   }
 
   private async doAddInitialLiquidity(
@@ -256,11 +256,12 @@ export class AMM {
     cash: BigNumber,
     longPercent: BigNumber,
     shortPercent: BigNumber,
-    recipient: string
+    recipient: string,
+    symbolRoot: string
   ): Promise<TransactionResponse> {
     const keepLong = AMM.keepLong(longPercent, shortPercent);
     const ratio = AMM.calculateLiquidityRatio(longPercent, shortPercent);
-    return this.intermediary(paraShareToken).addInitialLiquidity(market, paraShareToken, fee, cash, ratio, keepLong, recipient);
+    return this.intermediary(paraShareToken).addInitialLiquidity(market, paraShareToken, fee, cash, ratio, keepLong, recipient, symbolRoot);
   }
 
   private async doCreateExchangeWithLiquidity(
