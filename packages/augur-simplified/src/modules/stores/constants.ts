@@ -1,92 +1,9 @@
 import { DEFAULT_MARKET_VIEW_SETTINGS, SETTINGS_SLIPPAGE } from '../constants';
-import { AppStatusState, GraphDataState, UserState, ParaDeploys } from '../types';
+import { AppStatusState, ParaDeploys } from '../types';
 
 // @ts-ignore
 export const PARA_CONFIG: ParaDeploys =
   ((process.env.CONFIGURATION as unknown) as ParaDeploys) || {};
-
-export const STUBBED_GRAPH_DATA_ACTIONS = {
-  updateGraphHeartbeat: (processed, blocknumber, errors) => {},
-};
-
-export const DEFAULT_GRAPH_DATA_STATE: GraphDataState = {
-  ammExchanges: {},
-  blocknumber: null,
-  cashes: {},
-  errors: null,
-  markets: {},
-};
-
-export const GRAPH_DATA_KEYS = {
-  AMM_EXCHANGES: 'ammExchanges',
-  BLOCKNUMBER: 'blocknumber',
-  CASHES: 'cashes',
-  ERRORS: 'errors',
-  MARKETS: 'markets',
-};
-
-export const GRAPH_DATA_ACTIONS = {
-  UPDATE_GRAPH_HEARTBEAT: 'UPDATE_GRAPH_HEARTBEAT',
-};
-
-export const STUBBED_USER_ACTIONS = {
-  addSeenPositionWarnings: (seenPositionWarnings) => {},
-  addTransaction: (transaction) => {},
-  finalizeTransaction: (hash) => {},
-  removeTransaction: (hash) => {},
-  updateLoginAccount: (updateLoginAccount) => {},
-  updateSeenPositionWarning: (id, seenPositionWarning, warningType) => {},
-  updateTransaction: (hash, updates) => {},
-  updateUserBalances: (balances) => {},
-  logout: () => {},
-};
-
-export const DEFAULT_USER_STATE: UserState = {
-  account: null,
-  balances: {
-    ETH: {
-      balance: '0',
-      rawBalance: '0',
-      usdValue: '0',
-    },
-    USDC: {
-      balance: '0',
-      rawBalance: '0',
-      usdValue: '0',
-    },
-    totalAccountValue: '0',
-    totalPositionUsd: '0',
-    total24hrPositionUsd: '0',
-    change24hrPositionUsd: '0',
-    availableFundsUsd: '0',
-    lpTokens: {},
-    marketShares: {},
-    claimableWinnings: {},
-  },
-  loginAccount: null,
-  seenPositionWarnings: {},
-  transactions: [],
-};
-
-export const USER_KEYS = {
-  ACCOUNT: 'account',
-  BALANCES: 'balances',
-  LOGIN_ACCOUNT: 'loginAccount',
-  SEEN_POSITION_WARNINGS: 'seenPositionWarnings',
-  TRANSACTIONS: 'transactions',
-};
-
-export const USER_ACTIONS = {
-  ADD_TRANSACTION: 'ADD_TRANSACTION',
-  REMOVE_TRANSACTION: 'REMOVE_TRANSACTION',
-  FINALIZE_TRANSACTION: 'FINALIZE_TRANSACTION',
-  UPDATE_SEEN_POSITION_WARNING: 'UPDATE_SEEN_POSITION_WARNING',
-  UPDATE_TRANSACTION: 'UPDATE_TRANSACTION',
-  ADD_SEEN_POSITION_WARNINGS: 'ADD_SEEN_POSITION_WARNINGS',
-  SET_LOGIN_ACCOUNT: 'SET_LOGIN_ACCOUNT',
-  UPDATE_USER_BALANCES: 'UPDATE_USER_BALANCES',
-  LOGOUT: 'LOGOUT',
-};
 
 export const STUBBED_APP_STATUS_ACTIONS = {
   setIsMobile: (isMobile) => {},

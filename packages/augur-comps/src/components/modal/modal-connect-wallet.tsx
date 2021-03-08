@@ -1,26 +1,24 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Header } from './common';
 import Styles from './modal.styles.less';
-import { ButtonComps, ConnectAccount, LabelComps } from '@augurproject/augur-comps';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import MetamaskIcon from '../../assets/icons/metamask.png';
-import { useAppStatusStore } from '../stores/app-status';
+import MetamaskIcon from '../ConnectAccount/assets/metamask.png';
 import classNames from 'classnames';
-import { useUserStore } from '../stores/user';
-import { NETWORK_NAMES } from '../stores/constants';
-import { useMigrationStore } from '../stores/migration-store';
-
-const { SecondaryButton, TextButton, WalletButton } = ButtonComps;
-const {
-  AccountDetails,
-  Loader,
-  utils: { isSafari },
-  constants: { SUPPORTED_WALLETS },
-  connectors: { NETWORK_CHAIN_ID, portis, injected },
-} = ConnectAccount;
-const { ErrorBlock } = LabelComps;
+import { NETWORK_NAMES } from '../../stores/constants';
+import { SecondaryButton, TextButton, WalletButton } from '../common/buttons';
+import { ErrorBlock } from '../common/labels';
+import { isSafari } from '../ConnectAccount/utils';
+import { SUPPORTED_WALLETS } from '../ConnectAccount/constants';
+import {
+  NETWORK_CHAIN_ID,
+  portis,
+  injected,
+} from '../ConnectAccount/connectors';
+import { Loader } from '../ConnectAccount/components/Loader';
+import { AccountDetails } from '../ConnectAccount/components/AccountDetails';
+import { useActiveWeb3React } from '../ConnectAccount/hooks';
 
 const WALLET_VIEWS = {
   OPTIONS: 'options',
@@ -108,7 +106,10 @@ const PendingWalletView = ({
               text={wallet.name}
               icon={
                 <img
-                  src={require('../../assets/icons/' + wallet.iconName).default}
+                  src={
+                    require('../ConnectAccount/assets/' + wallet.iconName)
+                      .default
+                  }
                   alt={wallet.name}
                 />
               }
@@ -125,27 +126,27 @@ interface ModalConnectWalletProps {
   darkMode: boolean;
   autoLogin: boolean;
   transactions: any;
+  isLogged: boolean;
+  isMobile: boolean;
+  closeModal: Function;
+  removeTransaction: Function;
+  logout: Function;
+  updateTxFailed?: Function;
+  updateMigrated?: Function;
 }
 
 const ModalConnectWallet = ({
   darkMode,
   autoLogin,
   transactions,
+  isLogged,
+  isMobile,
+  closeModal,
+  removeTransaction,
+  logout,
+  updateTxFailed,
+  updateMigrated,
 }: ModalConnectWalletProps) => {
-  const {
-    isLogged,
-    isMobile,
-    actions: { closeModal },
-  } = useAppStatusStore();
-  const {
-    actions: { removeTransaction, logout },
-  } = useUserStore();
-  // important that these are destructed from the account-specific web3-react context
-
-  const {
-    hooks: { useActiveWeb3React },
-  } = ConnectAccount;
-
   const { active, account, connector, activate, error } = useWeb3React();
   const { deactivate } = useActiveWeb3React();
   const [walletView, setWalletView] = useState(WALLET_VIEWS.ACCOUNT);
@@ -233,7 +234,7 @@ const ModalConnectWallet = ({
           icon: (
             <img
               src={
-                require('../../assets/icons/' + wallet.iconName)
+                require('../ConnectAccount/assets/' + wallet.iconName)
                   .default
               }
               alt={wallet.name}
@@ -304,10 +305,6 @@ const ModalConnectWallet = ({
     setWalletList(getWalletButtons());
   }, [getWalletButtons]);
 
-  const {
-    actions: {updateTxFailed, updateMigrated}
-  } = useMigrationStore();
-
   return (
     <section>
       <Header
@@ -353,8 +350,8 @@ const ModalConnectWallet = ({
                 deactivate();
                 closeModal();
                 logout();
-                updateTxFailed(false);
-                updateMigrated(false);
+                updateTxFailed && updateTxFailed(false);
+                updateMigrated && updateMigrated(false);
               }}
             />
           ) : walletView === WALLET_VIEWS.PENDING ? (

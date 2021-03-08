@@ -31,13 +31,12 @@ import {
 } from '../constants';
 import { sliceByPage, Pagination } from '../common/pagination';
 import { TopBanner } from '../common/top-banner';
-import { searchMarkets } from '../apollo/client';
 import { SearchInput } from '../common/inputs';
-import { MarketCardComps, useGraphDataStore, useScrollToTopOnMount } from '@augurproject/augur-comps';
-import { SEO } from '@augurproject/augur-comps';
+import { MarketCardComps, useGraphDataStore, useScrollToTopOnMount, GraphClient, SEO } from '@augurproject/augur-comps';
 import { MARKETS_LIST_HEAD_TAGS } from '../seo-config';
 const { LoadingMarketCard, MarketCardView } = MarketCardComps;
 const PAGE_LIMIT = 21;
+const { searchMarkets } = GraphClient;
 
 const applyFiltersAndSort = (
   passedInMarkets,

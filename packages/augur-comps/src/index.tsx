@@ -1,3 +1,4 @@
+import * as _ContractCalls from './utils/contract-calls';
 import addCommasToNumber from './utils/add-commas-to-number';
 import { isMobileBrowser, isMobileBrowserTall } from './utils/common-functions';
 import * as _Constants from './utils/constants';
@@ -35,6 +36,7 @@ import _GraphDataStore, {
 import _UserDataStore, { useUserStore, UserStore } from './stores/user';
 import * as _StoreConstants from './stores/constants';
 import * as _ProcessData from './stores/process-data';
+import { useLocalStorage } from './stores/local-storage';
 import {
   useGraphHeartbeat,
   useCanExitCashPosition,
@@ -53,6 +55,11 @@ import {
   arrayToKeyedObjectByProp,
 } from './stores/utils';
 import * as _ApprovalHooks from './stores/use-approval-callback';
+import * as _GraphClient from './apollo/client';
+import ModalConnectWallet from './components/modal/modal-connect-wallet';
+
+export const ContractCalls = _ContractCalls;
+export const GraphClient = _GraphClient;
 export const Stores = {
   GraphData: _GraphDataStore,
   User: _UserDataStore,
@@ -66,6 +73,7 @@ export const Stores = {
     useUserBalances,
     useFinalizeUserTransactions,
     useScrollToTopOnMount,
+    useLocalStorage,
     ..._ApprovalHooks,
   },
   Utils: {
@@ -127,6 +135,7 @@ export const ProcessData = _ProcessData;
 export const SEO = _SEO;
 // export extremely commonly used functions as top level non-default exports:
 export {
+  useLocalStorage,
   useGraphHeartbeat,
   useUserStore,
   UserStore,
@@ -150,15 +159,21 @@ export const Components = {
   MarketCardComps,
   SEO,
 };
+export const Modals = {
+  ModalConnectWallet
+};
 // create default object
 const AugurComps = {
   Components,
   Constants,
+  ContractCalls,
+  GraphClient,
   Icons,
   Routes,
   Stores,
   Types,
   Utils,
+  Modals
 };
 
 export default AugurComps;

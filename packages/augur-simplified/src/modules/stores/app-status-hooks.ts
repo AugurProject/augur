@@ -4,8 +4,10 @@ import {
   MOCK_APP_STATUS_STATE,
   APP_STATE_KEYS,
 } from './constants';
-import { windowRef } from '@augurproject/augur-comps';
-import { dispatchMiddleware, getSavedUserInfo } from './utils';
+import { windowRef, Stores } from '@augurproject/augur-comps';
+const {
+  Utils: { dispatchMiddleware, getSavedUserInfo },
+} = Stores;
 const {
   SET_SHOW_TRADING_FORM,
   SET_IS_MOBILE,
@@ -47,7 +49,6 @@ const updateLocalStorage = (userAccount, updatedState) => {
     );
   }
 };
-
 
 export function AppStatusReducer(state, action) {
   const updatedState = { ...state };

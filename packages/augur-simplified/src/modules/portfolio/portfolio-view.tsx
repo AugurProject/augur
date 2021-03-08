@@ -6,9 +6,9 @@ import { PositionsLiquidityViewSwitcher } from '../common/tables';
 import { useAppStatusStore } from '../stores/app-status';
 import { PrimaryButton } from '../common/buttons';
 import { NetworkMismatchBanner } from '../common/labels';
-import { claimWinnings } from '../../utils/contract-calls';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
 import {
+  ContractCalls,
   Formatter,
   Icons,
   Constants,
@@ -16,13 +16,16 @@ import {
   Stores,
   useGraphDataStore,
   useScrollToTopOnMount,
+  useCanExitCashPosition,
   useUserStore,
   PARA_CONFIG,
   ApprovalHooks,
+  SEO,
 } from '@augurproject/augur-comps';
-import { SEO } from '@augurproject/augur-comps';
 import { PORTFOLIO_HEAD_TAGS } from '../seo-config';
-const { approveERC1155Contract, useCanExitCashPosition } = ApprovalHooks;
+
+const { claimWinnings } = ContractCalls;
+const { approveERC1155Contract } = ApprovalHooks;
 const { formatCash } = Formatter;
 const { EthIcon, UsdIcon } = Icons;
 const { ACTIVITY, ETH, TABLES, TX_STATUS, USDC } = Constants;
@@ -123,7 +126,7 @@ export const ClaimWinningsSection = () => {
   );
   const ETHTotals = calculateTotalWinnings(claimableEthMarkets);
   const USDCTotals = calculateTotalWinnings(claimableUSDCMarkets);
-  const canClaimETH = useCanExitCashPosition(ethCash?.shareToken);
+  const canClaimETH = useCanExitCashPosition(ethCash);
 
   return (
     <div className={Styles.ClaimableWinningsSection}>

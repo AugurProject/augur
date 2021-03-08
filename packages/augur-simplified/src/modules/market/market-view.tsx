@@ -19,22 +19,35 @@ import {
 } from '../common/tables';
 import TradingForm from './trading-form';
 import { useAppStatusStore } from '../stores/app-status';
-import { USDC, YES_NO, BUY, MARKET_ID_PARAM_NAME, ETH, DefaultMarketOutcomes } from '../constants';
+import {
+  USDC,
+  YES_NO,
+  BUY,
+  MARKET_ID_PARAM_NAME,
+  ETH,
+  DefaultMarketOutcomes,
+} from '../constants';
 import parseQuery from '../routes/helpers/parse-query';
 import { AmmExchange, MarketInfo } from '../types';
-import { formatDai } from '../../utils/format-number';
-import {
-  getMarketEndtimeFull,
-  getMarketEndtimeDate,
-} from '../../utils/date-utils';
-import { getCurrentAmms } from '../stores/utils';
 import { ConfirmedCheck } from '../common/icons';
-import { useGraphDataStore, useScrollToTopOnMount } from '@augurproject/augur-comps';
+import {
+  useGraphDataStore,
+  useScrollToTopOnMount,
+  Stores,
+  Utils,
+} from '@augurproject/augur-comps';
 import { OutcomesGrid } from '../common/inputs';
-
 import { AmmOutcome, MarketOutcome } from '../types';
 import { SEO } from '@augurproject/augur-comps';
 import { MARKETS_LIST_HEAD_TAGS } from '../seo-config';
+
+const {
+  Utils: { getCurrentAmms },
+} = Stores;
+const {
+  DateUtils: { getMarketEndtimeDate, getMarketEndtimeFull },
+  Formatter: { formatDai },
+} = Utils;
 
 export const combineOutcomeData = (
   ammOutcomes: AmmOutcome[],
@@ -65,7 +78,7 @@ const WinningOutcomeLabel = ({ winningOutcome }) => (
   </span>
 );
 
-const getDetails = market => {
+const getDetails = (market) => {
   const rawInfo = market?.extraInfoRaw || '{}';
   const { longDescription } = JSON.parse(rawInfo, (key, value) => {
     if (key === 'longDescription') {
@@ -90,35 +103,35 @@ const EmptyMarketView = () => {
     <div className={classNames(Styles.MarketView, Styles.EmptyMarketView)}>
       <section>
         <section>
-          <div/>
-          <div/>
-          <div/>
+          <div />
+          <div />
+          <div />
         </section>
         <section>
-          <div/>
-          <div/>
-          <div/>
+          <div />
+          <div />
+          <div />
         </section>
         <section>
-          <div/>
-          <div/>
-          <div/>
-          <div/>
+          <div />
+          <div />
+          <div />
+          <div />
         </section>
         <section>
-          <div/>
-          <div/>
-          <div/>
-          <div/>
+          <div />
+          <div />
+          <div />
+          <div />
         </section>
         <section>
-          <div/>
+          <div />
         </section>
       </section>
       <section>
-        <div/>
-        <div/>
-        <div/>
+        <div />
+        <div />
+        <div />
       </section>
     </div>
   );
@@ -204,7 +217,7 @@ const MarketView = ({ defaultMarket = null }) => {
           outcomes={amm?.ammOutcomes}
           selectedOutcome={amm?.ammOutcomes[2]}
           showAllHighlighted
-          setSelectedOutcome={outcome => {
+          setSelectedOutcome={(outcome) => {
             setSelectedOutcome(outcome);
             setShowTradingForm(true);
           }}

@@ -30,29 +30,29 @@ import {
 } from '../market/trading-form';
 import { ApprovalButton, APPROVED, BuySellButton } from '../common/buttons';
 import { generateTooltip } from '../common/labels';
-import {
-  convertDisplayShareAmountToOnChainShareAmount,
-  formatPercent,
-  convertOnChainSharesToDisplayShareAmount,
-  formatSimpleShares,
-  formatCash,
-} from '../../utils/format-number';
 import { MultiButtonSelection } from '../common/selection';
 import classNames from 'classnames';
 import { AmmOutcome, Cash, LiquidityBreakdown, MarketInfo } from '../types';
-import {
+import { useAppStatusStore } from '../stores/app-status';
+import { BigNumber as BN } from 'bignumber.js';
+import { BackIcon } from '../common/icons';
+import { AmountInput, isInvalidNumber, OutcomesGrid, TextInput } from '../common/inputs';
+import { ContractCalls, createBigNumber, PARA_CONFIG, useGraphDataStore, useUserStore, UserStore, ApprovalHooks, Formatter } from '@augurproject/augur-comps';
+const { checkAllowance } = ApprovalHooks;
+const {
   checkConvertLiquidityProperties,
   doAmmLiquidity,
   doRemoveAmmLiquidity,
   estimateAddLiquidity,
   getRemoveLiquidity,
-} from '../../utils/contract-calls';
-import { useAppStatusStore } from '../stores/app-status';
-import { BigNumber as BN } from 'bignumber.js';
-import { BackIcon } from '../common/icons';
-import { AmountInput, isInvalidNumber, OutcomesGrid, TextInput } from '../common/inputs';
-import { createBigNumber, PARA_CONFIG, useGraphDataStore, useUserStore, UserStore, ApprovalHooks } from '@augurproject/augur-comps';
-const { checkAllowance } = ApprovalHooks;
+} = ContractCalls;
+const {
+  convertDisplayShareAmountToOnChainShareAmount,
+  formatPercent,
+  convertOnChainSharesToDisplayShareAmount,
+  formatSimpleShares,
+  formatCash,
+} = Formatter;
 const TRADING_FEE_OPTIONS = [
   {
     id: 0,

@@ -1,16 +1,11 @@
 import React from 'react';
 
 import Styles from './modal.styles.less';
-import { Icons } from '@augurproject/augur-comps';
-import { useAppStatusStore } from '../stores/app-status';
+import * as Icons from '../common/icons';
 
 const { CloseIcon } = Icons;
 
-export const Header = ({ title, subtitle }) => {
-  const {
-    actions: { closeModal },
-  } = useAppStatusStore();
-
+export const Header = ({ title, subtitle, closeModal }) => {
   return (
     <div className={Styles.Header}>
       <span>{title}</span>

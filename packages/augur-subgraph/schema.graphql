@@ -818,6 +818,8 @@ type AMMExchange @entity {
   exits: [ExitPosition!]! @derivedFrom(field: "ammExchange")
 
   invalidPool: BPool!
+
+  symbols: [String]!
 }
 
 type BPool @entity {

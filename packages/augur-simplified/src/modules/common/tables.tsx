@@ -21,7 +21,6 @@ import {
   ReceiptLink,
 } from '../routes/helpers/links';
 import { sliceByPage, Pagination } from './pagination';
-import { claimWinnings, getLPCurrentValue } from '../../utils/contract-calls';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
 import {
   InvalidFlagTipIcon,
@@ -29,8 +28,8 @@ import {
   WarningBanner,
   generateTooltip,
 } from './labels';
-import { PARA_CONFIG, useGraphDataStore, useUserStore, useCanExitCashPosition, Constants, Formatter, Icons } from '@augurproject/augur-comps';
-
+import { PARA_CONFIG, useGraphDataStore, useUserStore, useCanExitCashPosition, Constants, Formatter, Icons, ContractCalls, ApprovalHooks } from '@augurproject/augur-comps';
+const { claimWinnings, getLPCurrentValue } = ContractCalls;
 const {
   formatDai,
   formatCash,
@@ -51,6 +50,7 @@ const {
   TABLES,
 } = Constants;
 const { EthIcon, UpArrow, UsdIcon } = Icons;
+const { approveERC1155Contract } = ApprovalHooks;
 
 interface PositionsTableProps {
   market: MarketInfo;
@@ -167,7 +167,7 @@ export const PositionFooter = ({
     loginAccount,
     actions: { addTransaction, updateTransaction },
   } = useUserStore();
-  const canClaimETH = useCanExitCashPosition(claimableWinnings?.sharetoken);
+  const canClaimETH = useCanExitCashPosition({ name: amm?.cash?.name, shareToken: claimableWinnings?.sharetoken });
   const isETHClaim = amm?.cash?.name === ETH;
   const { addresses: { WethWrapperForAMMExchange } } = PARA_CONFIG;
 

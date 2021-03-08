@@ -444,7 +444,7 @@ jobs:
   - template: .azure-templates/migration-ui-build-to-s3.yml
     parameters:
       name: deploy_migration_to_dev
-      environment: v2
+      environment: mainnet
       deployBucketName: migration.augur.sh
       triggerBranch: refs/heads/dev
       cloudfrontDistributionId: E2S9HFAX540JON

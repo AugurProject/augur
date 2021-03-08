@@ -9,14 +9,29 @@ import {
   EstimateTradeResult,
   TradingDirection,
 } from '../types';
+import { ApprovalButton, BuySellButton } from '../common/buttons';
+import { generateTooltip } from '../common/labels';
+import { BigNumber as BN } from 'bignumber.js';
+import { updateTxStatus } from '../modal/modal-add-liquidity';
+import { AmountInput, OutcomesGrid } from '../common/inputs';
 import {
+  Formatter,
+  Constants,
+  ContractCalls,
+  useUserStore,
+  useCanEnterCashPosition,
+  useCanExitCashPosition,
+  Icons,
+} from '@augurproject/augur-comps';
+const { doTrade, estimateEnterTrade, estimateExitTrade } = ContractCalls;
+const { CloseIcon } = Icons;
+const {
   formatCash,
   formatCashPrice,
   formatPercent,
   formatSimpleShares,
-} from '../../utils/format-number';
-import { ApprovalButton, BuySellButton } from '../common/buttons';
-import {
+} = Formatter;
+const {
   ApprovalAction,
   SHARES,
   YES_OUTCOME_ID,
@@ -28,21 +43,7 @@ import {
   BUY,
   SELL,
   YES_NO,
-} from '../constants';
-import { generateTooltip } from '../common/labels';
-import {
-  doTrade,
-  estimateEnterTrade,
-  estimateExitTrade,
-} from '../../utils/contract-calls';
-import { BigNumber as BN } from 'bignumber.js';
-import { updateTxStatus } from '../modal/modal-add-liquidity';
-import { AmountInput, OutcomesGrid } from '../common/inputs';
-import { useUserStore, useCanEnterCashPosition, useCanExitCashPosition, Icons } from '@augurproject/augur-comps';
-
-const {
-  CloseIcon
-} = Icons;
+} = Constants;
 const AVG_PRICE_TIP =
   'The difference between the market price and estimated price due to trade size.';
 
@@ -187,9 +188,10 @@ const TradingForm = ({
   const ammCash = amm?.cash;
   const outcomes = amm?.ammOutcomes || [];
   const isBuy = orderType === BUY;
-  const canExitPosition = useCanExitCashPosition(ammCash?.shareToken);
+  const canExitPosition = useCanExitCashPosition(ammCash);
   const canEnterPosition = useCanEnterCashPosition(ammCash);
   const isApprovedTrade = isBuy ? canEnterPosition : canExitPosition;
+
   const hasLiquidity = amm.liquidity !== '0';
 
   useEffect(() => {
@@ -200,7 +202,7 @@ const TradingForm = ({
     }
     return () => {
       isMounted = false;
-    }
+    };
   }, [initialSelectedOutcome]);
 
   const approvalAction = !isApprovedTrade
