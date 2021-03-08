@@ -123,7 +123,7 @@ export const ClaimWinningsSection = () => {
   );
   const ETHTotals = calculateTotalWinnings(claimableEthMarkets);
   const USDCTotals = calculateTotalWinnings(claimableUSDCMarkets);
-  const canClaimETH = useCanExitCashPosition(ethCash?.shareToken);
+  const canClaimETH = useCanExitCashPosition(ethCash);
 
   return (
     <div className={Styles.ClaimableWinningsSection}>
