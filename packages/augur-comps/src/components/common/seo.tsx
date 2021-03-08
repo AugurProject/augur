@@ -117,4 +117,6 @@ export const SEO = ({
       <meta name="twitter:creator" content={twitterCreator} />
     )}
   </Helmet>
-)
+);
+
+export default SEO;

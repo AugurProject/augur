@@ -21,6 +21,7 @@ import * as _ConnectConnectors from './components/ConnectAccount/connectors';
 import * as _ConnectUtils from './components/ConnectAccount/utils';
 import { Loader as _Loader } from './components/ConnectAccount/components/Loader/index';
 import { AccountDetails as _AccountDetails } from './components/ConnectAccount/components/AccountDetails/index';
+import _SEO from './components/common/seo';
 import _parsePath from './utils/routes/parse-path';
 import _parseQuery from './utils/routes/parse-query';
 import _makePath from './utils/routes/make-path';
@@ -123,6 +124,7 @@ export const Icons = {
 };
 export const ApprovalHooks = _ApprovalHooks;
 export const ProcessData = _ProcessData;
+export const SEO = _SEO;
 // export extremely commonly used functions as top level non-default exports:
 export {
   useGraphHeartbeat,
@@ -146,6 +148,7 @@ export const Components = {
   LabelComps,
   Logo,
   MarketCardComps,
+  SEO,
 };
 // create default object
 const AugurComps = {

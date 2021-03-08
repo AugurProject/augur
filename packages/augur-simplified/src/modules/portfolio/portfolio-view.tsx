@@ -20,8 +20,8 @@ import {
   PARA_CONFIG,
   ApprovalHooks,
 } from '@augurproject/augur-comps';
+import { SEO } from '@augurproject/augur-comps';
 import { PORTFOLIO_HEAD_TAGS } from '../seo-config';
-import { SEO } from '../common/seo';
 const { approveERC1155Contract, useCanExitCashPosition } = ApprovalHooks;
 const { formatCash } = Formatter;
 const { EthIcon, UsdIcon } = Icons;

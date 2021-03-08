@@ -33,8 +33,8 @@ import { useGraphDataStore, useScrollToTopOnMount } from '@augurproject/augur-co
 import { OutcomesGrid } from '../common/inputs';
 
 import { AmmOutcome, MarketOutcome } from '../types';
-import {SEO} from '../common/seo';
-import {MARKETS_LIST_HEAD_TAGS} from '../seo-config';
+import { SEO } from '@augurproject/augur-comps';
+import { MARKETS_LIST_HEAD_TAGS } from '../seo-config';
 
 export const combineOutcomeData = (
   ammOutcomes: AmmOutcome[],

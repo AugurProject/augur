@@ -34,8 +34,8 @@ import { TopBanner } from '../common/top-banner';
 import { searchMarkets } from '../apollo/client';
 import { SearchInput } from '../common/inputs';
 import { MarketCardComps, useGraphDataStore, useScrollToTopOnMount } from '@augurproject/augur-comps';
-import { COMMON_HEAD_TAGS } from '../seo-config';
-import { SEO } from '../common/seo';
+import { SEO } from '@augurproject/augur-comps';
+import { MARKETS_LIST_HEAD_TAGS } from '../seo-config';
 const { LoadingMarketCard, MarketCardView } = MarketCardComps;
 const PAGE_LIMIT = 21;
 
@@ -238,7 +238,7 @@ const MarketsView = () => {
         [Styles.SearchOpen]: showFilter,
       })}
     >
-      <SEO {...COMMON_HEAD_TAGS} />
+      <SEO {...MARKETS_LIST_HEAD_TAGS} />
       <NetworkMismatchBanner />
       {isLogged ? <AppViewStats showCashAmounts /> : <TopBanner />}
       {isMobile && (
