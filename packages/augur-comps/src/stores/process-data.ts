@@ -48,6 +48,7 @@ interface GraphMarket {
   amms: GraphAmmExchange[];
   numTicks: string;
   tradingProceedsClaimed: GraphClaims[];
+  symbols: string[];
   universe?: {
     id: string;
     reportingFee: string;
@@ -142,7 +143,8 @@ interface GraphAmmExchange {
   addLiquidity: GraphAddLiquidity[];
   removeLiquidity: GraphRemoveLiquidity[];
   totalSupply: string;
-  invalidPool: GraphInvalidPool
+  invalidPool: GraphInvalidPool;
+  symbols: string[];
 }
 
 interface GraphData {
@@ -430,7 +432,8 @@ const shapeAmmExchange = (
     apy,
     ammOutcomes,
     isAmmMarketInvalid: false, // this will be calc by process
-    invalidPool: amm?.invalidPool
+    invalidPool: amm?.invalidPool,
+    symbols: amm.symbols,
   };
 };
 
