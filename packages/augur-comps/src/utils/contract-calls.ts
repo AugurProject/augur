@@ -17,7 +17,6 @@ import { createBigNumber } from './create-big-number';
 import { PARA_CONFIG } from '../stores/constants';
 import ERC20ABI from './ERC20ABI.json';
 import BPoolABI from './BPoolABI.json';
-import { raw } from 'express';
 
 const isValidPrice = (price: string): boolean => {
   return price !== null && price !== undefined && price !== "0" && price !== "0.00";
