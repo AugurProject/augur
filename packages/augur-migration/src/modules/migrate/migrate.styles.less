@@ -32,10 +32,6 @@
     justify-content: center;
     align-items: center;
 
-    > svg {
-        margin: 0 @size-24;
-    }
-
     > div {
       .text-20-semi-bold;
 
@@ -49,6 +45,10 @@
       border-radius: @size-8;
       justify-content: center;
       align-items: center;
+
+      &:first-of-type {
+        margin-right: @size-24;
+      }
 
       > span:first-of-type {
         .text-16;
@@ -81,9 +81,9 @@
     > div:first-of-type {
       flex-direction: column;
 
-      > svg {
-        margin: @size-24 0;
-        transform: rotate(90deg);
+      > div:first-of-type {
+        margin: 0;
+        margin-bottom: @size-24;
       }
     }
 
