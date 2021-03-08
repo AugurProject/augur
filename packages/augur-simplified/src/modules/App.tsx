@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { ApolloProvider } from 'react-apollo';
-import { client } from './apollo/client';
 import { useLocation } from 'react-router';
 import { HashRouter } from 'react-router-dom';
 import Styles from './App.styles.less';
@@ -13,8 +12,7 @@ import classNames from 'classnames';
 import ModalView from './modal/modal-view';
 import parsePath from './routes/helpers/parse-path';
 import { MARKETS } from './constants';
-import { Stores, useUserStore, useGraphHeartbeat, useFinalizeUserTransactions } from '@augurproject/augur-comps';
-import { useUserBalances } from './stores/utils';
+import { Stores, useUserStore, useGraphHeartbeat, useFinalizeUserTransactions, useUserBalances, GraphClient } from '@augurproject/augur-comps';
 
 function checkIsMobile(setIsMobile) {
   const isMobile =
@@ -98,7 +96,7 @@ function App() {
   return (
     <HashRouter hashType="hashbang">
       <ConnectAccountProvider>
-        <ApolloProvider client={client}>
+        <ApolloProvider client={GraphClient.client}>
           <GraphDataProvider>
             <UserProvider>
               <AppStatusProvider>

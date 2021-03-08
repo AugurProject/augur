@@ -52,6 +52,9 @@ import {
   arrayToKeyedObjectByProp,
 } from './stores/utils';
 import * as _ApprovalHooks from './stores/use-approval-callback';
+import * as _GraphClient from './apollo/client';
+
+export const GraphClient = _GraphClient;
 export const Stores = {
   GraphData: _GraphDataStore,
   User: _UserDataStore,
@@ -149,6 +152,7 @@ export const Components = {
 };
 // create default object
 const AugurComps = {
+  GraphClient,
   Components,
   Constants,
   Icons,
