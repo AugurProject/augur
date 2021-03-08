@@ -192,7 +192,6 @@ const TradingForm = ({
   const canEnterPosition = useCanEnterCashPosition(ammCash);
   const isApprovedTrade = isBuy ? canEnterPosition : canExitPosition;
 
-  console.log(isApprovedTrade, canExitPosition)
   const hasLiquidity = amm.liquidity !== '0';
 
   useEffect(() => {
