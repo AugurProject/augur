@@ -21,8 +21,7 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
     WrappedShareTokenFactory internal wrappedShareTokenFactory;
     mapping (address => address) public balancerPools;
 
-    event AMMCreated(IAMMExchange amm, IMarket market, IParaShareToken shareToken, uint256 fee, BPool bPool);
-    event BPoolCreated(WrappedShareToken wrappedShareToken);
+    event AMMCreated(IAMMExchange amm, IMarket market, IParaShareToken shareToken, uint256 fee, BPool bPool, string[] _symbols);
 
     constructor(address _proxyToClone, BFactory _bFactory, WrappedShareTokenFactory _wrappedShareTokenFactory) public {
         bFactory = _bFactory;
@@ -166,7 +165,7 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
 
         balancerPools[address(_amm)] = address(_bPool);
 
-        emit AMMCreated(_amm, _market, _para, _fee, _bPool);
+        emit AMMCreated(_amm, _market, _para, _fee, _bPool, _symbols);
 
         _ammAddress = address(_amm);
 
