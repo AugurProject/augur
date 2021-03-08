@@ -195,6 +195,7 @@ export interface AmmExchange {
   isAmmMarketInvalid: boolean;
   invalidPool: InvalidPool;
   swapInvalidForCashInETH?: string;
+  symbols: string[];
 }
 
 export interface Cashes {
