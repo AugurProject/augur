@@ -32,7 +32,8 @@ interface LiquidityProperties {
   fee: string,
   amount: string,
   priceNo: string,
-  priceYes: string
+  priceYes: string,
+  symbols: string[]
 }
 
 export const checkConvertLiquidityProperties = (account: string, marketId: string,
@@ -52,7 +53,8 @@ export const checkConvertLiquidityProperties = (account: string, marketId: strin
     fee,
     amount,
     priceNo,
-    priceYes
+    priceYes,
+    symbols: amm?.symbols
   };
 }
 
@@ -215,11 +217,7 @@ export async function getRemoveLiquidity(
   };
 }
 
-export function doRemoveAmmLiquidity(
-  marketId: string,
-  cash: Cash,
-  fee: string,
-  lpTokenBalance: string,
+export function doRemoveAmmLiquidity({ marketId, cash, fee, lpTokenBalance, symbols }: { marketId: string, cash: Cash, fee: string, lpTokenBalance: string, symbols: string[] },
 ): Promise<TransactionResponse | null> {
   const augurClient = augurSdkLite.get();
   if (!augurClient || !marketId || !cash?.shareToken || !fee) {
@@ -596,7 +594,7 @@ export const getUserBalances = async (
     balananceCalls
   );
 
-  for(let i = 0; i < Object.keys(balanceResult.results).length; i++) {
+  for (let i = 0; i < Object.keys(balanceResult.results).length; i++) {
     const key = Object.keys(balanceResult.results)[i];
     const value = String(
       new BN(
@@ -740,7 +738,7 @@ export const getMarketInvalidity = async (
     contractLpBalanceCall
   );
 
-  for(let i = 0; i < Object.keys(balanceResult.results).length; i++) {
+  for (let i = 0; i < Object.keys(balanceResult.results).length; i++) {
     const key = Object.keys(balanceResult.results)[i];
     const method = String(
       balanceResult.results[key].originalContractCallContext.calls[0].methodName
@@ -750,7 +748,7 @@ export const getMarketInvalidity = async (
     const context = balanceResult.results[key].originalContractCallContext.calls[0].context;
     const rawBalance = new BN(balanceValue.hex).toFixed();
 
-   if (method === CALC_OUT_GIVEN_IN) {
+    if (method === CALC_OUT_GIVEN_IN) {
       const amm = ammExchanges[context.ammExchangeId];
       const ouputCash = convertOnChainCashAmountToDisplayCashAmount(new BN(rawBalance), amm?.cash?.decimals);
       amm.swapInvalidForCashInETH = ouputCash.toFixed();
