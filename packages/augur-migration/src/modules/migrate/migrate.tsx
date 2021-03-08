@@ -66,16 +66,15 @@ export const Migrate = () => {
               [Styles.grey]: createBigNumber(formattedLegacyRep.value).eq(ZERO),
             })}
           >
-            <span>V1 REP</span>
+            <span>V1 REP Balance</span>
             <span>{formattedLegacyRep.formatted}</span>
           </div>
-          {PointedArrow}
           <div
             className={classNames({
               [Styles.grey]: createBigNumber(formattedRep.value).eq(ZERO),
             })}
           >
-            <span>V2 REP</span>
+            <span>V2 REP Balance</span>
             <span>{formattedRep.formatted}</span>
           </div>
         </div>
