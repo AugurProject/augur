@@ -230,6 +230,7 @@ export function doRemoveAmmLiquidity({ marketId, cash, fee, lpTokenBalance, symb
     cash.shareToken,
     new BN(fee),
     new BN(balance),
+    symbols
   );
 }
 
