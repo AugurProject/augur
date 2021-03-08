@@ -452,7 +452,7 @@ jobs:
   - template: .azure-templates/simplified-ui-build-to-s3.yml
     parameters:
       name: deploy_simplified_to_chad
-      environment: v2
+      environment: chad
       deployBucketName: chad.augur.sh
       triggerBranch: refs/heads/chad
       cloudfrontDistributionId: E2HAMPZED8493G
