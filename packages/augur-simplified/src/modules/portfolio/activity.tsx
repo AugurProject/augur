@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import Styles from './activity.styles.less';
 import { useAppStatusStore } from '../stores/app-status';
-import { useGraphDataStore, useUserStore, Formatter, ProcessData, Links } from '@augurproject/augur-comps';
+import { useGraphDataStore, useUserStore, Formatter, ProcessData, Links, PaginationComps } from '@augurproject/augur-comps';
 import { ActivityItem } from '../types';
-import { Pagination, sliceByPage } from '../common/pagination';
+const { Pagination, sliceByPage } = PaginationComps;
 const { ReceiptLink } = Links;
 const { shapeUserActvity } = ProcessData;
 const { getCashFormat } = Formatter;

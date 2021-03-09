@@ -14,6 +14,7 @@ import * as _MarketCard from './components/market-card/market-card';
 import _Logo from './components/common/logo';
 import * as _Labels from './components/common/labels';
 import * as _Buttons from './components/common/buttons';
+import * as _Pagination from './components/common/pagination';
 import { ConnectAccountProvider as _ConnectAccountProvider } from './components/ConnectAccount/connect-account-provider';
 import { ConnectAccount as _ConnectAccount } from './components/ConnectAccount/index';
 import * as _ConnectHooks from './components/ConnectAccount/hooks';
@@ -123,6 +124,7 @@ export const Utils = {
   PathUtils,
   windowRef,
 };
+export const PaginationComps = _Pagination;
 export const Types = _Types;
 export const MarketCardComps = _MarketCard;
 export const Logo = _Logo;
@@ -162,6 +164,7 @@ export const Components = {
   Links,
   Logo,
   MarketCardComps,
+  PaginationComps,
   SEO,
 };
 export const Modals = {

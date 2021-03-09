@@ -5,12 +5,12 @@ import classNames from 'classnames';
 import { SquareDropdown } from '../common/selection';
 import { useAppStatusStore } from '../stores/app-status';
 import { MarketInfo } from '../types';
-import { sliceByPage, Pagination } from '../common/pagination';
 import { TopBanner } from '../common/top-banner';
 import { SearchInput } from '../common/inputs';
-import { MarketCardComps, useGraphDataStore, useScrollToTopOnMount, GraphClient, SEO, Icons, ButtonComps, Constants } from '@augurproject/augur-comps';
+import { MarketCardComps, useGraphDataStore, useScrollToTopOnMount, GraphClient, SEO, Icons, ButtonComps, Constants, PaginationComps } from '@augurproject/augur-comps';
 import { MARKETS_LIST_HEAD_TAGS } from '../seo-config';
 
+const { sliceByPage, Pagination } = PaginationComps;
 const { LoadingMarketCard, MarketCardView } = MarketCardComps;
 const { searchMarkets } = GraphClient;
 const { SearchButton, SecondaryButton } = ButtonComps;

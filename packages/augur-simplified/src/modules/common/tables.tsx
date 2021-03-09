@@ -13,7 +13,6 @@ import {
   TransactionTypes,
 } from '../types';
 import { useAppStatusStore } from '../stores/app-status';
-import { sliceByPage, Pagination } from './pagination';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
 import {
   InvalidFlagTipIcon,
@@ -21,7 +20,8 @@ import {
   WarningBanner,
   generateTooltip,
 } from './labels';
-import { PARA_CONFIG, useGraphDataStore, useUserStore, useCanExitCashPosition, Constants, Formatter, Icons, ContractCalls, ApprovalHooks, ButtonComps, Links } from '@augurproject/augur-comps';
+import { PARA_CONFIG, useGraphDataStore, useUserStore, useCanExitCashPosition, Constants, Formatter, Icons, ContractCalls, ApprovalHooks, ButtonComps, Links, PaginationComps } from '@augurproject/augur-comps';
+const { sliceByPage, Pagination } = PaginationComps;
 const { PrimaryButton, SecondaryButton, TinyButton } = ButtonComps;
 const { claimWinnings, getLPCurrentValue } = ContractCalls;
 const {
