@@ -10,9 +10,9 @@ import { AppStatusProvider, useAppStatusStore } from './stores/app-status';
 import { Sidebar } from './sidebar/sidebar';
 import classNames from 'classnames';
 import ModalView from './modal/modal-view';
-import parsePath from './routes/helpers/parse-path';
-import { MARKETS } from './constants';
-import { Stores, useUserStore, useGraphHeartbeat, useFinalizeUserTransactions, useUserBalances, GraphClient } from '@augurproject/augur-comps';
+import { Stores, useUserStore, useGraphHeartbeat, useFinalizeUserTransactions, useUserBalances, GraphClient, PathUtils, Constants } from '@augurproject/augur-comps';
+const { MARKETS } = Constants;
+const { parsePath } = PathUtils;
 
 function checkIsMobile(setIsMobile) {
   const isMobile =

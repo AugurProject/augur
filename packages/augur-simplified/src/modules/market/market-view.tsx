@@ -19,34 +19,35 @@ import {
 } from '../common/tables';
 import TradingForm from './trading-form';
 import { useAppStatusStore } from '../stores/app-status';
+import { AmmExchange, MarketInfo } from '../types';
 import {
+  Icons,
+  Constants,
+  useGraphDataStore,
+  useScrollToTopOnMount,
+  SEO,
+  Stores,
+  Utils,
+} from '@augurproject/augur-comps';
+import { OutcomesGrid } from '../common/inputs';
+import { AmmOutcome, MarketOutcome } from '../types';
+import { MARKETS_LIST_HEAD_TAGS } from '../seo-config';
+const { ConfirmedCheck } = Icons;
+const {
   USDC,
   YES_NO,
   BUY,
   MARKET_ID_PARAM_NAME,
   ETH,
   DefaultMarketOutcomes,
-} from '../constants';
-import parseQuery from '../routes/helpers/parse-query';
-import { AmmExchange, MarketInfo } from '../types';
-import { ConfirmedCheck } from '../common/icons';
-import {
-  useGraphDataStore,
-  useScrollToTopOnMount,
-  Stores,
-  Utils,
-} from '@augurproject/augur-comps';
-import { OutcomesGrid } from '../common/inputs';
-import { AmmOutcome, MarketOutcome } from '../types';
-import { SEO } from '@augurproject/augur-comps';
-import { MARKETS_LIST_HEAD_TAGS } from '../seo-config';
-
+} = Constants;
 const {
   Utils: { getCurrentAmms },
 } = Stores;
 const {
   DateUtils: { getMarketEndtimeDate, getMarketEndtimeFull },
   Formatter: { formatDai },
+  PathUtils: { parseQuery },
 } = Utils;
 
 export const combineOutcomeData = (
