@@ -325,7 +325,8 @@ const ModalAddLiquidity = ({
       onChainFee,
       outcomes,
       cash,
-      amm
+      amm,
+      customName
     );
     if (!properties) {
       return setBreakdown(defaultAddLiquidityBreakdown);
@@ -415,7 +416,8 @@ const ModalAddLiquidity = ({
       onChainFee,
       outcomes,
       cash,
-      amm
+      amm,
+      customName
     );
     if (!properties) {
       setBreakdown(defaultAddLiquidityBreakdown);
@@ -456,7 +458,7 @@ const ModalAddLiquidity = ({
           : false,
         properties.priceNo,
         properties.priceYes,
-        customName
+        properties.symbolRoot
       )
         .then((response) => {
           const { hash } = response;

@@ -33,17 +33,23 @@ interface LiquidityProperties {
   amount: string,
   priceNo: string,
   priceYes: string,
-  symbols: string[]
+  symbols: string[],
+  symbolRoot: string,
 }
 
 export const checkConvertLiquidityProperties = (account: string, marketId: string,
-  amount: string, fee: string, outcomes: AmmOutcome[], cash: Cash, amm: AmmExchange): LiquidityProperties => {
+  amount: string, fee: string, outcomes: AmmOutcome[], cash: Cash, amm: AmmExchange, customName: string): LiquidityProperties => {
   if (!account || !marketId || !amount || !outcomes || outcomes.length === 0 || !cash) return null;
   const priceNo = outcomes[NO_OUTCOME_ID]?.price;
   const priceYes = outcomes[YES_OUTCOME_ID]?.price;
+  let symbolRoot = customName;
   if (!isValidPrice(priceNo) || !isValidPrice(priceYes)) return null;
   if (amount === "0" || amount === "0.00") return null;
   if (Number(fee) < 0) return null;
+  if (amm?.symbols && amm?.symbols.length > 0) {
+    // derive symbol root
+    symbolRoot = amm?.symbols[0].slice(1);
+  }
 
   return {
     account,
@@ -54,7 +60,8 @@ export const checkConvertLiquidityProperties = (account: string, marketId: strin
     amount,
     priceNo,
     priceYes,
-    symbols: amm?.symbols
+    symbols: amm?.symbols,
+    symbolRoot
   };
 }
 
