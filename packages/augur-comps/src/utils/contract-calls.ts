@@ -732,7 +732,7 @@ export const getMarketInvalidity = async (
             exchange?.invalidPool?.invalidWeight,
             exchange?.invalidPool?.cashBalance,
             exchange?.invalidPool?.cashWeight,
-            String(PORTION_OF_INVALID_POOL_SELL.times(new BN(exchange?.invalidPool?.invalidBalance))),
+            String(PORTION_OF_INVALID_POOL_SELL.times(new BN(exchange?.invalidPool?.invalidBalance).decimalPlaces(0))),
             exchange?.invalidPool?.swapFee || "0"],
           context: {
             ammExchangeId: exchange?.id
