@@ -51,14 +51,8 @@ def test_calc_gas_costs(contractsFixture, market, shareToken, factory, account0,
     cash.faucet(cost)
     cash.approve(factory.address, 2**256-1)
 
-    ammAddress = ""
     with PrintGasUsed(contractsFixture, "createAMM", 0):
-        ammAddress = factory.createAMM(market.address, shareToken.address, FEE)
-
-    cash.transfer(factory.address, cost)
-
-    with PrintGasUsed(contractsFixture, "createBPool", 0):
-        factory.createBPool(ammAddress, shareToken.address, market.address, FEE, account0, SYMBOLS)
+        factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, cost, RATIO_50_50, True, account0, SYMBOLS)
 
 def test_amm_add_additional_liquidity(contractsFixture, market, cash, shareToken, factory, account0, account1):
     if not contractsFixture.paraAugur:
