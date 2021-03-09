@@ -330,7 +330,8 @@ class ContractsFixture:
         if key not in ContractsFixture.signatures:
             ContractsFixture.signatures[key] = self.generateSignature(resolvedPath)
 
-    def upload(self, relativeFilePath, lookupKey = None, signatureKey = None, constructorArgs=[]):
+    def upload(self, relativeFilePath, lookupKey = None, signatureKey = None, constructorArgs=None):
+        constructorArgs = constructorArgs or []
         resolvedPath = resolveRelativePath(relativeFilePath)
         if self.coverageMode:
             resolvedPath = resolvedPath.replace("tests", "coverageEnv").replace("src/", "coverageEnv/", 1)
@@ -416,7 +417,6 @@ class ContractsFixture:
                 if extension != '.sol': continue
                 if name == 'augur': continue
                 if name == 'Augur': continue
-                if name == 'WethWrapperForAMMExchange': continue # TODO
                 if name == 'Orders': continue # In testing we use the TestOrders version which lets us call protected methods
                 if name == 'Time': continue # In testing and development we swap the Time library for a ControlledTime version which lets us manage block timestamp
                 if name == 'ReputationTokenFactory': continue # In testing and development we use the TestNetReputationTokenFactory which lets us faucet
@@ -454,8 +454,11 @@ class ContractsFixture:
     def uploadAMMContracts(self):
         b_factory = self.upload("../src/contracts/balancer/BFactory.sol")
         masterProxy = self.upload('../src/contracts/para/AMMExchange.sol')
-        wrappedShareTokenFactory = self.upload("../src/contracts/trading/wrappedShareToken/WrappedShareTokenFactory.sol")
-
+        wrappedShareTokenTemplate = self.upload("../src/contracts/trading/wrappedShareToken/WrappedShareToken.sol")
+        wrappedShareTokenFactory = self.upload(
+            "../src/contracts/trading/wrappedShareToken/WrappedShareTokenFactory.sol",
+            constructorArgs=[wrappedShareTokenTemplate.address]
+        )
         self.upload('../src/contracts/para/AMMFactory.sol', constructorArgs=[
             masterProxy.address,
             b_factory.address,
