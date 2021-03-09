@@ -29,7 +29,7 @@ import _parsePath from './utils/links/parse-path';
 import _parseQuery from './utils/links/parse-query';
 import _makePath from './utils/links/make-path';
 import _makeQuery from './utils/links/make-query';
-import _parseStringToArray from './utils/routes/parse-string-to-array';
+import _parseStringToArray from './utils/links/parse-string-to-array';
 import { CATEGORIES_ICON_MAP as _CATEGORIES_ICON_MAP } from './components/common/category-icons-map';
 import _GraphDataStore, {
   useGraphDataStore,
