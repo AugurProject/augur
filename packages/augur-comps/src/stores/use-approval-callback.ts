@@ -244,7 +244,8 @@ export function useApproveERC1155Callback(
 method                  | USDx                  | ETH
 ----------------------------------------------------------------
 doAddLiquidity          | cash: factory         | none
-doRemoveLiquidity       | bal pool: factory     | bal pool: factory
+doRemoveLiquidity (1)   | bal pool: factory     | bal pool: factory
+doRemoveLiquidity (2)   | amm: factory          | amm: factory
 doEnterPosition         | cash: factory         | none
 doExitPosition          | share: factory        | share: wrapper
 doSwap                  | share: factory        | share: factory
