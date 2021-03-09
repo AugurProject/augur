@@ -3,7 +3,50 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Styles from './modal.styles.less';
 import { Header } from './common';
 import { useHistory } from 'react-router';
+import { InfoNumbers } from '../market/trading-form';
+import { generateTooltip } from '../common/labels';
+import { MultiButtonSelection } from '../common/selection';
+import classNames from 'classnames';
+import { AmmOutcome, Cash, LiquidityBreakdown, MarketInfo } from '../types';
+import { useAppStatusStore } from '../stores/app-status';
+import { BigNumber as BN } from 'bignumber.js';
 import {
+  AmountInput,
+  isInvalidNumber,
+  OutcomesGrid,
+  TextInput,
+} from '../common/inputs';
+import {
+  ContractCalls,
+  createBigNumber,
+  PARA_CONFIG,
+  useGraphDataStore,
+  useUserStore,
+  UserStore,
+  ApprovalHooks,
+  Formatter,
+  Constants,
+  ButtonComps,
+  Icons,
+} from '@augurproject/augur-comps';
+const { checkAllowance } = ApprovalHooks;
+const {
+  checkConvertLiquidityProperties,
+  doAmmLiquidity,
+  doRemoveAmmLiquidity,
+  estimateAddLiquidity,
+  getRemoveLiquidity,
+} = ContractCalls;
+const {
+  convertDisplayShareAmountToOnChainShareAmount,
+  formatPercent,
+  convertOnChainSharesToDisplayShareAmount,
+  formatSimpleShares,
+  formatCash,
+} = Formatter;
+const { BackIcon } = Icons;
+const { ApprovalButton, APPROVED, BuySellButton } = ButtonComps;
+const {
   YES_NO,
   BUY,
   USDC,
@@ -24,35 +67,8 @@ import {
   ERROR_AMOUNT,
   ETH,
   PORTION_OF_CASH_INVALID_POOL,
-} from '../constants';
-import {
-  InfoNumbers,
-} from '../market/trading-form';
-import { ApprovalButton, APPROVED, BuySellButton } from '../common/buttons';
-import { generateTooltip } from '../common/labels';
-import { MultiButtonSelection } from '../common/selection';
-import classNames from 'classnames';
-import { AmmOutcome, Cash, LiquidityBreakdown, MarketInfo } from '../types';
-import { useAppStatusStore } from '../stores/app-status';
-import { BigNumber as BN } from 'bignumber.js';
-import { BackIcon } from '../common/icons';
-import { AmountInput, isInvalidNumber, OutcomesGrid, TextInput } from '../common/inputs';
-import { ContractCalls, createBigNumber, PARA_CONFIG, useGraphDataStore, useUserStore, UserStore, ApprovalHooks, Formatter } from '@augurproject/augur-comps';
-const { checkAllowance } = ApprovalHooks;
-const {
-  checkConvertLiquidityProperties,
-  doAmmLiquidity,
-  doRemoveAmmLiquidity,
-  estimateAddLiquidity,
-  getRemoveLiquidity,
-} = ContractCalls;
-const {
-  convertDisplayShareAmountToOnChainShareAmount,
-  formatPercent,
-  convertOnChainSharesToDisplayShareAmount,
-  formatSimpleShares,
-  formatCash,
-} = Formatter;
+} = Constants;
+
 const TRADING_FEE_OPTIONS = [
   {
     id: 0,
@@ -116,7 +132,7 @@ const ModalAddLiquidity = ({
     balances,
     transactions,
     loginAccount,
-    actions: { addTransaction, updateTransaction }
+    actions: { addTransaction, updateTransaction },
   } = useUserStore();
   const { cashes } = useGraphDataStore();
   const history = useHistory();
@@ -168,8 +184,11 @@ const ModalAddLiquidity = ({
   }, [chosenCash]);
 
   const isETH = cash?.name === ETH;
-  const { addresses: { AMMFactory } } = PARA_CONFIG;
-  const isApproved = modalType === REMOVE ? canRemoveLiquidity : canAddLiquidity;
+  const {
+    addresses: { AMMFactory },
+  } = PARA_CONFIG;
+  const isApproved =
+    modalType === REMOVE ? canRemoveLiquidity : canAddLiquidity;
 
   useEffect(() => {
     const checkCanCashAdd = async () => {
@@ -202,7 +221,7 @@ const ModalAddLiquidity = ({
       }
     }
     if (isLogged && !canRemoveLiquidity && modalType === REMOVE) {
-        checkCanRemoveAmm();
+      checkCanRemoveAmm();
     }
   }, [
     isLogged,
@@ -228,7 +247,8 @@ const ModalAddLiquidity = ({
   );
 
   const [customName, setCustomName] = useState('');
-  const customNameCapitlized = customName.charAt(0).toUpperCase() + customName.slice(1);
+  const customNameCapitlized =
+    customName.charAt(0).toUpperCase() + customName.slice(1);
 
   const feePercentFormatted = useMemo(() => {
     const feeOption = TRADING_FEE_OPTIONS.find(
@@ -337,7 +357,7 @@ const ModalAddLiquidity = ({
           properties.marketId,
           cash,
           onChainFee,
-          amount,
+          amount
         );
       } else {
         results = await estimateAddLiquidity(
@@ -405,7 +425,12 @@ const ModalAddLiquidity = ({
     },
   ];
 
-  const invalidCashAmount = formatCash(createBigNumber(amount === '' ? "0" : amount).times(PORTION_OF_CASH_INVALID_POOL), cash?.name).full;
+  const invalidCashAmount = formatCash(
+    createBigNumber(amount === '' ? '0' : amount).times(
+      PORTION_OF_CASH_INVALID_POOL
+    ),
+    cash?.name
+  ).full;
 
   const confirmAction = async () => {
     const properties = checkConvertLiquidityProperties(
@@ -421,9 +446,7 @@ const ModalAddLiquidity = ({
       setBreakdown(defaultAddLiquidityBreakdown);
     }
     if (modalType === REMOVE) {
-      doRemoveAmmLiquidity(
-        properties
-      )
+      doRemoveAmmLiquidity(properties)
         .then((response) => {
           const { hash } = response;
           addTransaction({
@@ -612,8 +635,7 @@ const ModalAddLiquidity = ({
           },
         ],
       },
-      footerText:
-        `By adding initial liquidity you'll earn your set trading fee percentage of all trades on this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity. ${invalidCashAmount} will be added to the invalid balancer pool.`,
+      footerText: `By adding initial liquidity you'll earn your set trading fee percentage of all trades on this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity. ${invalidCashAmount} will be added to the invalid balancer pool.`,
       breakdown: addCreateBreakdown,
       approvalButtonText: `approve ${chosenCash}`,
       confirmOverview: {
@@ -743,16 +765,15 @@ const ModalAddLiquidity = ({
               <div className={Styles.LineBreak}>
                 <span className={Styles.SmallLabel}>
                   {LIQUIDITY_STRINGS[modalType].customToken.title}
-                  {generateTooltip('Name your AMM outcome share tokens, so they can be distinguished on other trading platforms.', 'customTokenTitle')}
+                  {generateTooltip(
+                    'Name your AMM outcome share tokens, so they can be distinguished on other trading platforms.',
+                    'customTokenTitle'
+                  )}
                 </span>
                 <TextInput
                   placeholder="Enter a custom name"
                   value={customName}
-                  onChange={(value) =>
-                    setCustomName(
-                      value
-                    )
-                  }
+                  onChange={(value) => setCustomName(value)}
                 />
                 <InfoNumbers
                   infoNumbers={

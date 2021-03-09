@@ -104,7 +104,7 @@ export const ConnectAccount = {
 };
 export const PARA_CONFIG = _StoreConstants.PARA_CONFIG;
 export const Constants = {..._Constants, PARA_CONFIG };
-export const PathUtils = {
+const PathUtils = {
   parsePath: _parsePath,
   parseQuery: _parseQuery,
   makePath: _makePath,
@@ -151,6 +151,8 @@ export {
   createBigNumber,
   Formatter,
   DateUtils,
+  PathUtils,
+  Links,
   windowRef,
 };
 export const Components = {

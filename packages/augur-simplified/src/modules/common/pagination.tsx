@@ -1,6 +1,7 @@
 import React from 'react';
 import Styles from './pagination.styles.less';
-import { DirectionButton } from './buttons';
+import { ButtonComps } from '@augurproject/augur-comps';
+const { DirectionButton } = ButtonComps;
 
 interface PaginationProps {
   page: number;

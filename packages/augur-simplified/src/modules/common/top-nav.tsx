@@ -3,32 +3,35 @@ import { useLocation } from 'react-router';
 import Styles from './top-nav.styles.less';
 import ButtonStyles from './buttons.styles.less';
 import { Link } from 'react-router-dom';
+import Logo from './logo';
+import classNames from 'classnames';
+import { useAppStatusStore } from '../stores/app-status';
+import { Toasts } from '../toasts/toasts';
+import { ToggleSwitch } from '../common/toggle-switch';
+import { generateTooltip } from '../common/labels';
+import { updateTxStatus } from '../modal/modal-add-liquidity';
 import {
+  Icons,
+  useGraphDataStore,
+  useUserStore,
+  ConnectAccount as CompsConnectAccount,
+  useLocalStorage,
+  ButtonComps,
+  PathUtils,
+  PARA_CONFIG,
+  Constants,
+} from '@augurproject/augur-comps';
+const { GearIcon, ThreeLinesIcon } = Icons;
+const { ConnectAccount } = CompsConnectAccount;
+const { SecondaryButton, TinyButton } = ButtonComps;
+const { parsePath, makePath } = PathUtils;
+const {
   MARKET,
   MARKETS,
   PORTFOLIO,
   SIDEBAR_TYPES,
   TX_STATUS,
-} from '../constants';
-import { PARA_CONFIG } from '../stores/constants';
-import makePath from '../routes/helpers/make-path';
-import Logo from './logo';
-import parsePath from '../routes/helpers/parse-path';
-import classNames from 'classnames';
-import { GearIcon, ThreeLinesIcon } from './icons';
-import { useAppStatusStore } from '../stores/app-status';
-import { SecondaryButton, TinyButton } from './buttons';
-import { Toasts } from '../toasts/toasts';
-import { ToggleSwitch } from 'modules/common/toggle-switch';
-import { generateTooltip } from 'modules/common/labels';
-import { updateTxStatus } from '../modal/modal-add-liquidity';
-import {
-  useGraphDataStore,
-  useUserStore,
-  ConnectAccount as CompsConnectAccount,
-  useLocalStorage,
-} from '@augurproject/augur-comps';
-const { ConnectAccount } = CompsConnectAccount;
+} = Constants;
 
 export const SettingsButton = () => {
   const {
