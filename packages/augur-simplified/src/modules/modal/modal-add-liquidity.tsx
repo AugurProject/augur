@@ -337,7 +337,7 @@ const ModalAddLiquidity = ({
           properties.marketId,
           cash,
           onChainFee,
-          amount
+          amount,
         );
       } else {
         results = await estimateAddLiquidity(
@@ -422,10 +422,7 @@ const ModalAddLiquidity = ({
     }
     if (modalType === REMOVE) {
       doRemoveAmmLiquidity(
-        properties.marketId,
-        properties.cash,
-        properties.fee,
-        properties.amount
+        properties
       )
         .then((response) => {
           const { hash } = response;

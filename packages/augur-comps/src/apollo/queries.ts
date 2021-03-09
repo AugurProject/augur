@@ -116,6 +116,7 @@ export const GET_MARKETS = blockNumber => {
         invalidBalance
         invalidWeight
       }
+      symbols
       swaps {
         id
         sender {

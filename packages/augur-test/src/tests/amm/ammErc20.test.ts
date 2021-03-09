@@ -27,6 +27,11 @@ describe('AMM Middleware for ERC20', () => {
   const INCLUDE_FEE = true;
   const EXCLUDE_FEE = false;
   const SYMBOL_ROOT = 'symbol';
+  const SYMBOLS = [
+    `i${SYMBOL_ROOT}`,
+    `n${SYMBOL_ROOT}`,
+    `y${SYMBOL_ROOT}`
+  ];
 
   function makeAMMMiddleware(user: TestContractAPI): AMM {
     const wethParaShareTokenAddress = config?.paraDeploys[config.addresses.WETH9]?.addresses.ShareToken;
@@ -238,7 +243,7 @@ describe('AMM Middleware for ERC20', () => {
       });
 
       console.log('Selling 1/3rd of LP tokens via removeLiquidity, then selling the resulting shares');
-      await middleware.doRemoveLiquidity(market.address, usdtParaShare.address, fee, lpTokensToBurn, SYMBOL_ROOT);
+      await middleware.doRemoveLiquidity(market.address, usdtParaShare.address, fee, lpTokensToBurn, SYMBOLS);
 
       const postInvalid = await usdtParaShare.balanceOf_(mary.account.address, INVALID);
       const postNo = await usdtParaShare.balanceOf_(mary.account.address, NO);
@@ -272,7 +277,7 @@ describe('AMM Middleware for ERC20', () => {
       });
 
       console.log('Removing remaining liquidity without selling any received shares')
-      await middleware.doRemoveLiquidity(market.address, usdtParaShare.address, fee, lpTokens, SYMBOL_ROOT);
+      await middleware.doRemoveLiquidity(market.address, usdtParaShare.address, fee, lpTokens, SYMBOLS);
 
       const postInvalid = await usdtParaShare.balanceOf_(mary.account.address, INVALID);
       const postNo = await usdtParaShare.balanceOf_(mary.account.address, NO);
