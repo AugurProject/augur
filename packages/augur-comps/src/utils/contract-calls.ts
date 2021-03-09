@@ -217,14 +217,14 @@ export async function getRemoveLiquidity(
   };
 }
 
-export function doRemoveAmmLiquidity({ marketId, cash, fee, lpTokenBalance, symbols }: { marketId: string, cash: Cash, fee: string, lpTokenBalance: string, symbols: string[] },
+export function doRemoveAmmLiquidity({ marketId, cash, fee, amount, symbols }: { marketId: string, cash: Cash, fee: string, amount: string, symbols: string[] },
 ): Promise<TransactionResponse | null> {
   const augurClient = augurSdkLite.get();
   if (!augurClient || !marketId || !cash?.shareToken || !fee) {
     console.error('doRemoveLiquidity: augurClient is null or no amm address');
     return null;
   }
-  const balance = convertDisplayShareAmountToOnChainShareAmount(lpTokenBalance, cash?.decimals);
+  const balance = convertDisplayShareAmountToOnChainShareAmount(amount, cash?.decimals);
   return augurClient.amm.doRemoveLiquidity(
     marketId,
     cash.shareToken,
