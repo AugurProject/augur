@@ -710,14 +710,14 @@ export const getMarketInvalidity = async (
   cashes: Cashes,
 ): Promise<{ markets: MarketInfos, ammExchanges: AmmExchanges }> => {
 
-  if (!provider) return null;
+  if (!provider) return { markets, ammExchanges };
 
   const CALC_OUT_GIVEN_IN = "calcOutGivenIn";
   const exchanges = Object.values(ammExchanges);
   const invalidMarkets: string[] = [];
 
   const multicall = new Multicall({ ethersProvider: provider });
-  const contractLpBalanceCall: ContractCallContext[] = exchanges.reduce(
+  const contractLpBalanceCall: ContractCallContext[] = exchanges.filter(e => e.invalidPool.invalidBalance !== "0").reduce(
     (p, exchange) => [...p,
     {
       reference: `${exchange?.id}-bPool`,
