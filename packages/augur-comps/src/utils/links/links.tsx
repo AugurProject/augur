@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import makePath from './make-path';
 import makeQuery from './make-query';
 import { MARKET, MARKETS, MARKET_ID_PARAM_NAME } from '../constants';
-// import { PARA_CONFIG } from '../../stores/constants';
+import { PARA_CONFIG } from '../../stores/constants';
 
 interface MarketLinkProps {
   id: string;
@@ -85,25 +85,25 @@ export const ExternalLink = ({ URL, label }: ExternalLinkProps) => (
   </a>
 );
 
-// interface ReceiptLinkProps {
-//   hash: string;
-//   label?: string;
-// }
+interface ReceiptLinkProps {
+  hash: string;
+  label?: string;
+}
 
-// export const ReceiptLink = ({ hash, label = 'View Txn' }: ReceiptLinkProps) => {
-//   const URL = `${RECEIPT_LINKS[PARA_CONFIG.networkId] || RECEIPT_LINKS[1]}${hash}`;
-//   return <ExternalLink {...{ URL, label }} />;
-// };
+export const ReceiptLink = ({ hash, label = 'View Txn' }: ReceiptLinkProps) => {
+  const URL = `${RECEIPT_LINKS[PARA_CONFIG.networkId] || RECEIPT_LINKS[1]}${hash}`;
+  return <ExternalLink {...{ URL, label }} />;
+};
 
 interface AccountLinkProps {
   account: string;
   short?: boolean;
 }
 
-// export const AddressLink = ({ account, short = false }: AccountLinkProps) => {
-//   const label = short
-//     ? `${account.slice(0, 6)}...${account.slice(38, 42)}`
-//     : account;
-//   const URL = `${ADDRESS_LINKS[PARA_CONFIG.networkId] || ADDRESS_LINKS[1]}${account}`;
-//   return <ExternalLink {...{ URL, label }} />;
-// };
+export const AddressLink = ({ account, short = false }: AccountLinkProps) => {
+  const label = short
+    ? `${account.slice(0, 6)}...${account.slice(38, 42)}`
+    : account;
+  const URL = `${ADDRESS_LINKS[PARA_CONFIG.networkId] || ADDRESS_LINKS[1]}${account}`;
+  return <ExternalLink {...{ URL, label }} />;
+};

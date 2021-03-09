@@ -11,8 +11,7 @@ import {
   useGraphDataStore,
   useUserStore,
   Icons,
-  Formatter,
-  Routes,
+  Utils,
   Constants,
   PARA_CONFIG,
 } from '@augurproject/augur-comps';
@@ -24,8 +23,10 @@ const {
   MARKET,
   ADD,
 } = Constants;
-const { formatDai } = Formatter;
-const { parsePath } = Routes;
+const {
+  PathUtils: { parsePath },
+  Formatter: { formatDai },
+} = Utils;
 const {
   HelpIcon,
   USDCIcon,

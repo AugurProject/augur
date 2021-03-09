@@ -23,10 +23,11 @@ import * as _ConnectUtils from './components/ConnectAccount/utils';
 import { Loader as _Loader } from './components/ConnectAccount/components/Loader/index';
 import { AccountDetails as _AccountDetails } from './components/ConnectAccount/components/AccountDetails/index';
 import _SEO from './components/common/seo';
-import _parsePath from './utils/routes/parse-path';
-import _parseQuery from './utils/routes/parse-query';
-import _makePath from './utils/routes/make-path';
-import _makeQuery from './utils/routes/make-query';
+import * as Links from './utils/links/links';
+import _parsePath from './utils/links/parse-path';
+import _parseQuery from './utils/links/parse-query';
+import _makePath from './utils/links/make-path';
+import _makeQuery from './utils/links/make-query';
 import _parseStringToArray from './utils/routes/parse-string-to-array';
 import { CATEGORIES_ICON_MAP as _CATEGORIES_ICON_MAP } from './components/common/category-icons-map';
 import _GraphDataStore, {
@@ -103,6 +104,13 @@ export const ConnectAccount = {
 };
 export const PARA_CONFIG = _StoreConstants.PARA_CONFIG;
 export const Constants = {..._Constants, PARA_CONFIG };
+export const PathUtils = {
+  parsePath: _parsePath,
+  parseQuery: _parseQuery,
+  makePath: _makePath,
+  makeQuery: _makeQuery,
+  parseStringToArray: _parseStringToArray,
+};
 export const Utils = {
   addCommasToNumber,
   isMobileBrowser,
@@ -112,14 +120,8 @@ export const Utils = {
   Formatter,
   getPrecision,
   logError,
+  PathUtils,
   windowRef,
-};
-export const Routes = {
-  parsePath: _parsePath,
-  parseQuery: _parseQuery,
-  makePath: _makePath,
-  makeQuery: _makeQuery,
-  parseStringToArray: _parseStringToArray,
 };
 export const Types = _Types;
 export const MarketCardComps = _MarketCard;
@@ -155,6 +157,7 @@ export const Components = {
   ButtonComps,
   ConnectAccount,
   LabelComps,
+  Links,
   Logo,
   MarketCardComps,
   SEO,
@@ -169,7 +172,6 @@ const AugurComps = {
   ContractCalls,
   GraphClient,
   Icons,
-  Routes,
   Stores,
   Types,
   Utils,
