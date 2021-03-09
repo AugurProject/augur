@@ -26,6 +26,7 @@ trigger:
   branches:
     include:
       - dev
+      - chad
       - v2
       - release/*
       - azure/*
