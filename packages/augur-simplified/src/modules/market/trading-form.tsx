@@ -9,7 +9,6 @@ import {
   EstimateTradeResult,
   TradingDirection,
 } from '../types';
-import { ApprovalButton, BuySellButton } from '../common/buttons';
 import { generateTooltip } from '../common/labels';
 import { BigNumber as BN } from 'bignumber.js';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
@@ -22,6 +21,7 @@ import {
   useCanEnterCashPosition,
   useCanExitCashPosition,
   Icons,
+  ButtonComps,
 } from '@augurproject/augur-comps';
 const { doTrade, estimateEnterTrade, estimateExitTrade } = ContractCalls;
 const { CloseIcon } = Icons;
@@ -44,6 +44,7 @@ const {
   SELL,
   YES_NO,
 } = Constants;
+const { ApprovalButton, BuySellButton } = ButtonComps;
 const AVG_PRICE_TIP =
   'The difference between the market price and estimated price due to trade size.';
 

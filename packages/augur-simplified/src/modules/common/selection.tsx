@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 import Styles from './selection.styles.less';
-import {
+import { Icons, ButtonComps, Constants } from '@augurproject/augur-comps';
+const {
   CheckedRadioButton,
   EmptyCheckbox,
   EthIcon,
@@ -9,9 +10,9 @@ import {
   RadioButton,
   SimpleChevron,
   UsdIcon,
-} from './icons';
-import { USDC, ETH } from '../constants';
-import { TinyButton } from './buttons';
+} = Icons;
+const { USDC, ETH } = Constants;
+const { TinyButton } = ButtonComps;
 
 export interface NameValuePair {
   label: string;

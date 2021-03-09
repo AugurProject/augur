@@ -4,7 +4,6 @@ import { AppViewStats } from '../common/labels';
 import Activity from './activity';
 import { PositionsLiquidityViewSwitcher } from '../common/tables';
 import { useAppStatusStore } from '../stores/app-status';
-import { PrimaryButton } from '../common/buttons';
 import { NetworkMismatchBanner } from '../common/labels';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
 import {
@@ -21,6 +20,7 @@ import {
   PARA_CONFIG,
   ApprovalHooks,
   SEO,
+  ButtonComps,
 } from '@augurproject/augur-comps';
 import { PORTFOLIO_HEAD_TAGS } from '../seo-config';
 
@@ -32,6 +32,7 @@ const { ACTIVITY, ETH, TABLES, TX_STATUS, USDC } = Constants;
 const {
   keyedObjToArray
 } = Stores.Utils;
+const { PrimaryButton } = ButtonComps;
 
 const calculateTotalWinnings = (claimbleMarketsPerCash) => {
   let total = createBigNumber('0');

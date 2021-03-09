@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import Styles from './tables.styles.less';
-import { PrimaryButton, SecondaryButton, TinyButton } from './buttons';
 import classNames from 'classnames';
 import { SmallDropdown } from './selection';
 import {
@@ -14,13 +13,6 @@ import {
   TransactionTypes,
 } from '../types';
 import { useAppStatusStore } from '../stores/app-status';
-import {
-  AddressLink,
-  createMarketAmmId,
-  MarketLink,
-  ReceiptLink,
-} from '../routes/helpers/links';
-import { sliceByPage, Pagination } from './pagination';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
 import {
   InvalidFlagTipIcon,
@@ -28,7 +20,9 @@ import {
   WarningBanner,
   generateTooltip,
 } from './labels';
-import { PARA_CONFIG, useGraphDataStore, useUserStore, useCanExitCashPosition, Constants, Formatter, Icons, ContractCalls, ApprovalHooks } from '@augurproject/augur-comps';
+import { PARA_CONFIG, useGraphDataStore, useUserStore, useCanExitCashPosition, Constants, Formatter, Icons, ContractCalls, ApprovalHooks, ButtonComps, Links, PaginationComps } from '@augurproject/augur-comps';
+const { sliceByPage, Pagination } = PaginationComps;
+const { PrimaryButton, SecondaryButton, TinyButton } = ButtonComps;
 const { claimWinnings, getLPCurrentValue } = ContractCalls;
 const {
   formatDai,
@@ -51,6 +45,12 @@ const {
 } = Constants;
 const { EthIcon, UpArrow, UsdIcon } = Icons;
 const { approveERC1155Contract } = ApprovalHooks;
+const {
+  AddressLink,
+  createMarketAmmId,
+  MarketLink,
+  ReceiptLink,
+} = Links;
 
 interface PositionsTableProps {
   market: MarketInfo;
