@@ -53,22 +53,15 @@ export const AMMFactoryAbi = [
         "internalType": "contract BPool",
         "name": "bPool",
         "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string[]",
+        "name": "_symbols",
+        "type": "string[]"
       }
     ],
     "name": "AMMCreated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "contract WrappedShareToken",
-        "name": "wrappedShareToken",
-        "type": "address"
-      }
-    ],
-    "name": "BPoolCreated",
     "type": "event"
   },
   {
@@ -389,6 +382,37 @@ export const AMMFactoryAbi = [
       }
     ],
     "name": "getAMM",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "contract IMarket",
+        "name": "_market",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IParaShareToken",
+        "name": "_para",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_fee",
+        "type": "uint256"
+      }
+    ],
+    "name": "getBPool",
     "outputs": [
       {
         "internalType": "address",

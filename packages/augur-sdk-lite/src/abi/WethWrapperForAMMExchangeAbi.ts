@@ -444,6 +444,37 @@ export const WethWrapperForAMMExchangeAbi = [
     "type": "function"
   },
   {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "contract IMarket",
+        "name": "_market",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IParaShareToken",
+        "name": "_para",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_fee",
+        "type": "uint256"
+      }
+    ],
+    "name": "getBPool",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "constant": true,
     "inputs": [],
     "name": "shareToken",

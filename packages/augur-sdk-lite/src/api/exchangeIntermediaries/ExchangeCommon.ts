@@ -50,7 +50,7 @@ export abstract class ExchangeCommon {
   }
 
   async addLiquidity(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, recipient: string, symbolRoot:string): Promise<TransactionResponse> {
-    return this.factory.addLiquidity(market, paraShareToken, fee.toFixed(), cash.toFixed(), recipient, cash.times(0.1).toFixed(), generateSymbols(symbolRoot));
+    return this.factory.addLiquidity(market, paraShareToken, fee.toFixed(), cash.toFixed(), recipient, cash.idiv(10).toFixed(), generateSymbols(symbolRoot));
   }
 
   async rateRemoveLiquidity(market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber): Promise<RemoveLiquidityRate> {
