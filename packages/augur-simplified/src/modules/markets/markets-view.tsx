@@ -32,7 +32,8 @@ import {
 import { sliceByPage, Pagination } from '../common/pagination';
 import { TopBanner } from '../common/top-banner';
 import { SearchInput } from '../common/inputs';
-import { MarketCardComps, useGraphDataStore, useScrollToTopOnMount, GraphClient } from '@augurproject/augur-comps';
+import { MarketCardComps, useGraphDataStore, useScrollToTopOnMount, GraphClient, SEO } from '@augurproject/augur-comps';
+import { MARKETS_LIST_HEAD_TAGS } from '../seo-config';
 const { LoadingMarketCard, MarketCardView } = MarketCardComps;
 const PAGE_LIMIT = 21;
 const { searchMarkets } = GraphClient;
@@ -236,6 +237,7 @@ const MarketsView = () => {
         [Styles.SearchOpen]: showFilter,
       })}
     >
+      <SEO {...MARKETS_LIST_HEAD_TAGS} />
       <NetworkMismatchBanner />
       {isLogged ? <AppViewStats showCashAmounts /> : <TopBanner />}
       {isMobile && (

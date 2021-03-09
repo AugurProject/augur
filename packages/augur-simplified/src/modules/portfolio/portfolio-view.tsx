@@ -20,7 +20,10 @@ import {
   useUserStore,
   PARA_CONFIG,
   ApprovalHooks,
+  SEO,
 } from '@augurproject/augur-comps';
+import { PORTFOLIO_HEAD_TAGS } from '../seo-config';
+
 const { claimWinnings } = ContractCalls;
 const { approveERC1155Contract } = ApprovalHooks;
 const { formatCash } = Formatter;
@@ -179,6 +182,7 @@ export const PortfolioView = () => {
 
   return (
     <div className={Styles.PortfolioView}>
+      <SEO {...PORTFOLIO_HEAD_TAGS} />
       <section>
         <NetworkMismatchBanner />
         <AppViewStats />
