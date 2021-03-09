@@ -165,6 +165,7 @@ export const {
   REMOVE_LIQUIDITY,
   ENTER_POSITION,
   EXIT_POSITION,
+  TRANSFER_LIQUIDITY,
 } = ApprovalAction;
 
 export const {
@@ -246,6 +247,17 @@ export const ApprovalButton = ({
           addTransaction(tx);
           break;
         }
+        case TRANSFER_LIQUIDITY: {
+          const tx = await approveERC20Contract(
+            amm?.id,
+            `Transfer Liquidity`,
+            AMMFactory,
+            loginAccount
+          );
+          tx.marketDescription = marketDescription;
+          addTransaction(tx);
+          break;
+        }
         case ADD_LIQUIDITY:
         default: {
           // add liquidity
@@ -292,6 +304,16 @@ export const ApprovalButton = ({
             );
             break;
           }
+          case TRANSFER_LIQUIDITY: {
+            approvalCheck = await checkAllowance(
+              amm?.id,
+              AMMFactory,
+              loginAccount,
+              transactions,
+              updateTransaction
+            );
+            break;
+          }
           case ENTER_POSITION:
           case ADD_LIQUIDITY: {
             approvalCheck = APPROVED;
@@ -317,6 +339,16 @@ export const ApprovalButton = ({
           case REMOVE_LIQUIDITY: {
             approvalCheck = await checkAllowance(
               amm?.invalidPool?.id,
+              AMMFactory,
+              loginAccount,
+              transactions,
+              updateTransaction
+            );
+            break;
+          }
+          case TRANSFER_LIQUIDITY: {
+            approvalCheck = await checkAllowance(
+              amm?.id,
               AMMFactory,
               loginAccount,
               transactions,
@@ -373,6 +405,10 @@ export const ApprovalButton = ({
     }
     case REMOVE_LIQUIDITY: {
       buttonText = 'Approve Removal';
+      break;
+    }
+    case TRANSFER_LIQUIDITY: {
+      buttonText = 'Approve Transfer';
       break;
     }
     default:

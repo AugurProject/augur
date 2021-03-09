@@ -149,23 +149,23 @@ const ModalAddLiquidity = ({
     !mustSetPrices && modalType !== CREATE
       ? amm.ammOutcomes
       : [
-          {
-            id: 0,
-            name: 'Invalid',
-            price: '',
-            isInvalid: true,
-          },
-          {
-            id: 1,
-            name: 'No',
-            price: '',
-          },
-          {
-            id: 2,
-            name: 'Yes',
-            price: '',
-          },
-        ]
+        {
+          id: 0,
+          name: 'Invalid',
+          price: '',
+          isInvalid: true,
+        },
+        {
+          id: 1,
+          name: 'No',
+          price: '',
+        },
+        {
+          id: 2,
+          name: 'Yes',
+          price: '',
+        },
+      ]
   );
   const [showBackView, setShowBackView] = useState(false);
   const [chosenCash, updateCash] = useState<string>(currency ? currency : USDC);
@@ -203,14 +203,21 @@ const ModalAddLiquidity = ({
     };
 
     const checkCanRemoveAmm = async () => {
-      const approvalCheck = await checkAllowance(
+      const approvalCheckOne = await checkAllowance(
         amm?.invalidPool?.id,
         AMMFactory,
         loginAccount,
         transactions,
         updateTransaction
       );
-      setCanRemoveLiquidity(approvalCheck === APPROVED);
+      const approvalCheckTWo = await checkAllowance(
+        amm?.id,
+        AMMFactory,
+        loginAccount,
+        transactions,
+        updateTransaction
+      );
+      setCanRemoveLiquidity(approvalCheckOne === APPROVED && approvalCheckTWo === APPROVED);
     };
 
     if (isLogged && !canAddLiquidity) {
@@ -733,9 +740,9 @@ const ModalAddLiquidity = ({
                 <span className={Styles.SmallLabel}>
                   Set trading fee
                   {generateTooltip(
-                    'Fees earned for providing liquidity.',
-                    'tradingFeeInfo'
-                  )}
+                  'Fees earned for providing liquidity.',
+                  'tradingFeeInfo'
+                )}
                 </span>
                 <MultiButtonSelection
                   options={TRADING_FEE_OPTIONS}
@@ -807,15 +814,24 @@ const ModalAddLiquidity = ({
               infoNumbers={LIQUIDITY_STRINGS[modalType].breakdown}
             />
             {!isApproved && (
-              <ApprovalButton
-                amm={amm}
-                cash={cash}
-                actionType={
-                  modalType !== REMOVE
-                    ? ApprovalAction.ADD_LIQUIDITY
-                    : ApprovalAction.REMOVE_LIQUIDITY
+              <>
+                <ApprovalButton
+                  amm={amm}
+                  cash={cash}
+                  actionType={
+                    modalType !== REMOVE
+                      ? ApprovalAction.ADD_LIQUIDITY
+                      : ApprovalAction.REMOVE_LIQUIDITY
+                  }
+                />
+                {modalType === REMOVE &&
+                  <ApprovalButton
+                    amm={amm}
+                    cash={cash}
+                    actionType={ApprovalAction.TRANSFER_LIQUIDITY}
+                  />
                 }
-              />
+              </>
             )}
 
             <BuySellButton
@@ -836,74 +852,74 @@ const ModalAddLiquidity = ({
           </main>
         </>
       ) : (
-        <>
-          <div className={Styles.Header} onClick={() => setShowBackView(false)}>
-            {BackIcon}
+          <>
+            <div className={Styles.Header} onClick={() => setShowBackView(false)}>
+              {BackIcon}
             Back
           </div>
-          <main>
-            <div className={Styles.MarketTitle}>
-              <span>Market</span>
-              <span>{market.description}</span>
-            </div>
-            <section>
-              <span className={Styles.SmallLabel}>
-                {LIQUIDITY_STRINGS[modalType].confirmOverview.title}
-              </span>
-              <InfoNumbers
-                infoNumbers={
-                  LIQUIDITY_STRINGS[modalType].confirmOverview.breakdown
-                }
-              />
-            </section>
-
-            <section>
-              <span className={Styles.SmallLabel}>
-                {LIQUIDITY_STRINGS[modalType].confirmReceiveOverview.title}
-              </span>
-              <InfoNumbers
-                infoNumbers={
-                  LIQUIDITY_STRINGS[modalType].confirmReceiveOverview.breakdown
-                }
-              />
-            </section>
-            {LIQUIDITY_STRINGS[modalType].marketLiquidityDetails && (
-              <section>
-                <span className={Styles.SmallLabel}>
-                  {LIQUIDITY_STRINGS[modalType].marketLiquidityDetails.title}
-                </span>
-                <InfoNumbers
-                  infoNumbers={
-                    LIQUIDITY_STRINGS[modalType].marketLiquidityDetails
-                      .breakdown
-                  }
-                />
-              </section>
-            )}
-            {LIQUIDITY_STRINGS[modalType].customToken && (
-              <section>
-                <span className={Styles.SmallLabel}>
-                  {LIQUIDITY_STRINGS[modalType].customToken.confirmationTitle}
-                </span>
-                <InfoNumbers
-                  infoNumbers={
-                    LIQUIDITY_STRINGS[modalType].customToken.breakdown
-                  }
-                />
-              </section>
-            )}
-            <BuySellButton
-              text={LIQUIDITY_STRINGS[modalType].confirmButtonText}
-              action={confirmAction}
-            />
-            {LIQUIDITY_STRINGS[modalType].footerText && (
-              <div className={Styles.FooterText}>
-                {LIQUIDITY_STRINGS[modalType].footerText}
+            <main>
+              <div className={Styles.MarketTitle}>
+                <span>Market</span>
+                <span>{market.description}</span>
               </div>
-            )}
-          </main>
-        </>
-      )}
+              <section>
+                <span className={Styles.SmallLabel}>
+                  {LIQUIDITY_STRINGS[modalType].confirmOverview.title}
+                </span>
+                <InfoNumbers
+                  infoNumbers={
+                    LIQUIDITY_STRINGS[modalType].confirmOverview.breakdown
+                  }
+                />
+              </section>
+
+              <section>
+                <span className={Styles.SmallLabel}>
+                  {LIQUIDITY_STRINGS[modalType].confirmReceiveOverview.title}
+                </span>
+                <InfoNumbers
+                  infoNumbers={
+                    LIQUIDITY_STRINGS[modalType].confirmReceiveOverview.breakdown
+                  }
+                />
+              </section>
+              {LIQUIDITY_STRINGS[modalType].marketLiquidityDetails && (
+                <section>
+                  <span className={Styles.SmallLabel}>
+                    {LIQUIDITY_STRINGS[modalType].marketLiquidityDetails.title}
+                  </span>
+                  <InfoNumbers
+                    infoNumbers={
+                      LIQUIDITY_STRINGS[modalType].marketLiquidityDetails
+                        .breakdown
+                    }
+                  />
+                </section>
+              )}
+              {LIQUIDITY_STRINGS[modalType].customToken && (
+                <section>
+                  <span className={Styles.SmallLabel}>
+                    {LIQUIDITY_STRINGS[modalType].customToken.confirmationTitle}
+                  </span>
+                  <InfoNumbers
+                    infoNumbers={
+                      LIQUIDITY_STRINGS[modalType].customToken.breakdown
+                    }
+                  />
+                </section>
+              )}
+              <BuySellButton
+                text={LIQUIDITY_STRINGS[modalType].confirmButtonText}
+                action={confirmAction}
+              />
+              {LIQUIDITY_STRINGS[modalType].footerText && (
+                <div className={Styles.FooterText}>
+                  {LIQUIDITY_STRINGS[modalType].footerText}
+                </div>
+              )}
+            </main>
+          </>
+        )}
     </section>
   );
 };
