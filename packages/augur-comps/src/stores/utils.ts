@@ -76,7 +76,7 @@ export const arrayToKeyedObjectByProp = (ArrayOfObj: any[], prop: string) =>
 
 // CUSTOM HOOKS
 
-export function useCanExitCashPosition({ name, shareToken }: Cash) {
+export function useCanExitCashPosition(cash: Cash) {
   const {
     account,
     loginAccount,
@@ -94,7 +94,8 @@ export function useCanExitCashPosition({ name, shareToken }: Cash) {
   } = PARA_CONFIG;
 
   useEffect(() => {
-    const checkCanCashExit = async () => {
+    const checkCanCashExit = async ({ name, shareToken }) => {
+      if (!name || !shareToken) return setCanExitPosition(false);
       const approvalCheck = await isERC1155ContractApproved(
         shareToken,
         name === ETH ? WethWrapperForAMMExchange : AMMFactory,
@@ -106,8 +107,8 @@ export function useCanExitCashPosition({ name, shareToken }: Cash) {
       if (Boolean(approvalCheck)) approvedAccount.current = loginAccount.account;
     };
 
-    if (!!account && !!shareToken && (account !== approvedAccount.current || calledBlocknumber !== blocknumber)) {
-      checkCanCashExit();
+    if (!!account && !!cash && (account !== approvedAccount.current || calledBlocknumber !== blocknumber)) {
+      checkCanCashExit(cash);
       setCalledBlocknumber(blocknumber);
     }
   }, [
@@ -117,7 +118,7 @@ export function useCanExitCashPosition({ name, shareToken }: Cash) {
     transactions,
     account,
     blocknumber,
-    shareToken
+    cash
   ]);
 
   return canExitPosition;

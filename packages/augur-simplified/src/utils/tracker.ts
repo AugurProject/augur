@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 import ReactGA from 'react-ga';
-import { MAINNET, PARA_CONFIG } from '../modules/stores/constants';
+import { PARA_CONFIG, MAINNET } from '@augurproject/augur-comps';
 import { useLocation } from 'react-router';
-import parsePath from '../modules/routes/helpers/parse-path';
-import parseQuery from '../modules/routes/helpers/parse-query';
+import {
+  Utils,
+} from '@augurproject/augur-comps';
 
 const GA_TRACKING_ID = 'G-6REXDMP9F3';
 let tracker = null;
 const activate = PARA_CONFIG.networkId !== MAINNET;
-const APP_NAME = 'simplifed';
 
 const getTracker = () => {
   if (!tracker && activate) {
@@ -17,7 +17,6 @@ const getTracker = () => {
       debug: true,
       titleCase: false,
       gaOptions: {
-        name: APP_NAME,
         userId: userId,
       }
     });
@@ -26,10 +25,9 @@ const getTracker = () => {
   return tracker;
 }
 
-const pageview = (page: string, data: string[]) => {
+const pageViewed = (page: string, data: string[]) => {
   const tracker = getTracker();
   if (tracker) {
-    console.log('tracker', page, data);
     tracker.pageview(page, data);
   }
 }
@@ -37,11 +35,54 @@ const pageview = (page: string, data: string[]) => {
 export const usePageView = () => {
   const { pathname, search } = useLocation();
   useEffect(() => {
-    const page = parsePath(pathname);
-    const data = parseQuery(search)
-    pageview(page[0], data);
+    const page = Utils.PathUtils.parsePath(pathname);
+    const data = Utils.PathUtils.parseQuery(search)
+    pageViewed(page[0], data);
   }, [pathname, search]);
 }
+
+export const useTrackedEvents = () => {
+  const tradingEstimateEvents = (isBuy: boolean, outputYesShares: boolean, cashType: string, input: string, output: string, fee: string) => getTracker().plugin.execute(
+    "Estimate Trade",
+    isBuy ? "BUY" : "SELL", {
+    shareType: outputYesShares ? "Yes Shares" : "No Shares",
+    cashType,
+    input,
+    output,
+    fee
+  }
+  )
+  const tradingEvents = (isBuy: boolean, outputYesShares: boolean, cashType: string, input: string, output: string, fee: string) => getTracker().plugin.execute(
+    "Trading",
+    isBuy ? "BUY" : "SELL", {
+    shareType: outputYesShares ? "Yes Shares" : "No Shares",
+    cashType,
+    input,
+    output,
+    fee
+  })
+  const liquidityEstimateEvents = (liquidityType: string, cashType: string, cashAmount: string, yesShares, noShares, lpTokens) => getTracker().plugin.execute(
+    "Estimate Liquidity",
+    liquidityType, {
+    cashType,
+    cashAmount,
+    yesShares,
+    noShares,
+    lpTokens
+  })
+  const liquidityEvents = (liquidityType: string, cashType: string, cashAmount: string, yesShares, noShares, lpTokens) => getTracker().plugin.execute(
+    "Liquidity",
+    liquidityType, {
+    cashType,
+    cashAmount,
+    yesShares,
+    noShares,
+    lpTokens
+  })
+  return { tradingEstimateEvents, tradingEvents, liquidityEstimateEvents, liquidityEvents }
+}
+
+
 
 const genUserId = () => {
   let d = new Date().getTime()
