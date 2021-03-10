@@ -42,25 +42,31 @@ export const usePageView = () => {
 }
 
 export const useTrackedEvents = () => {
-  const tradingEstimateEvents = (isBuy: boolean, outputYesShares: boolean, cashType: string, input: string, output: string, fee: string) => getTracker().plugin.execute(
-    "Estimate Trade",
-    isBuy ? "BUY" : "SELL", {
-    shareType: outputYesShares ? "Yes Shares" : "No Shares",
-    cashType,
-    input,
-    output,
-    fee
-  }
-  )
-  const tradingEvents = (isBuy: boolean, outputYesShares: boolean, cashType: string, input: string, output: string, fee: string) => getTracker().plugin.execute(
-    "Trading",
-    isBuy ? "BUY" : "SELL", {
-    shareType: outputYesShares ? "Yes Shares" : "No Shares",
-    cashType,
-    input,
-    output,
-    fee
-  })
+  const tradingEstimateEvents = (isBuy: boolean,
+    outputYesShares: boolean,
+    cashType: string,
+    input: string,
+    output: string) => getTracker().plugin.execute(
+      "Estimate Trade",
+      isBuy ? "BUY" : "SELL", {
+      shareType: outputYesShares ? "Yes Shares" : "No Shares",
+      cashType,
+      input,
+      output
+    }
+    )
+  const tradingEvents = (isBuy: boolean,
+    outputYesShares: boolean,
+    cashType: string,
+    input: string,
+    output: string) => getTracker().plugin.execute(
+      "Trading",
+      isBuy ? "BUY" : "SELL", {
+      shareType: outputYesShares ? "Yes Shares" : "No Shares",
+      cashType,
+      input,
+      output
+    })
   const liquidityEstimateEvents = (liquidityType: string, cashType: string, cashAmount: string, yesShares, noShares, lpTokens) => getTracker().plugin.execute(
     "Estimate Liquidity",
     liquidityType, {

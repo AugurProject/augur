@@ -257,8 +257,7 @@ const TradingForm = ({
         outputYesShares,
         amm?.cash?.name,
         amount,
-        breakdown?.outputValue,
-        amm?.feeInPercent)
+        breakdown?.outputValue)
 
       isMounted && setBreakdown(breakdown);
     };
@@ -346,7 +345,7 @@ const TradingForm = ({
     const outputYesShares = selectedOutcomeId === YES_OUTCOME_ID;
     const userBalances = marketShares?.outcomeSharesRaw || [];
     setShowTradingForm(false);
-    tradingEvents(isBuy, outputYesShares, amm?.cash?.name, amount, worstCaseOutput, amm?.feeInPercent)
+    tradingEvents(isBuy, outputYesShares, amm?.cash?.name, amount, worstCaseOutput)
     doTrade(
       direction,
       amm,
