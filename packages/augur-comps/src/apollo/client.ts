@@ -59,8 +59,15 @@ export async function getMarketsData(updateHeartbeat) {
   let newBlock = null;
   try {
     newBlock = await getPastDayBlockNumber(clientConfig.blockClient);
-    const query = GET_MARKETS(newBlock);
-    response = await augurV2Client(clientConfig.augurClient).query({ query });
+    console.log(newBlock);
+    response = await augurV2Client(clientConfig.augurClient).query({
+      query: GET_MARKETS,
+      arguments: {
+        block: {
+          number: newBlock
+        }
+      }
+    });
     responseUsd = await getCashTokenData(cashes);
   } catch (e) {
     console.error(e);
@@ -90,8 +97,12 @@ export async function searchMarkets(searchString, cb) {
   if (searchString === '') return cb(null, []);
   const searchQuery = searchString.trim().split(' ').join(' & ');
   try {
-    const query = SEARCH_MARKETS(`${searchQuery}:*`);
-    response = await augurV2Client(clientConfig.augurClient).query({ query });
+    response = await augurV2Client(clientConfig.augurClient).query({
+      query: SEARCH_MARKETS,
+      variables: {
+        query: `${searchQuery}:*`
+      }
+    });
   } catch (e) {
     cb(e, []);
     console.error(e);
@@ -122,7 +133,11 @@ async function getPastDayBlockNumber(blockClient) {
  */
 export async function getBlockFromTimestamp(timestamp, url) {
   const result = await blockClient(url).query({
-    query: GET_BLOCK(timestamp),
+    query: GET_BLOCK,
+    variables: {
+      begin: timestamp,
+      end: timestamp + 600
+    }
   });
   return result ? result?.data?.blocks?.[0]?.number : 0;
 }
