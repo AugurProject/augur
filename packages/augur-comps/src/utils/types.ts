@@ -157,6 +157,7 @@ export interface InvalidPool {
   cashWeight: string;
   invalidBalance: string;
   invalidWeight: string;
+  spotPrice: string[];
   swapFee: string;
 }
 export interface AmmExchange {

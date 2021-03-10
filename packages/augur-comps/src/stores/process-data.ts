@@ -117,6 +117,7 @@ interface GraphInvalidPool {
   cashWeight: string;
   invalidBalance: string;
   invalidWeight: string;
+  spotPrice: string[];
   swapFee: string;
 }
 interface GraphAmmExchange {
