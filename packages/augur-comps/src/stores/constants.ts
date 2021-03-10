@@ -66,6 +66,8 @@ export const DEFAULT_USER_STATE: UserState = {
     lpTokens: {},
     marketShares: {},
     claimableWinnings: {},
+    rep: '0',
+    legacyRep: '0',
   },
   loginAccount: null,
   seenPositionWarnings: {},

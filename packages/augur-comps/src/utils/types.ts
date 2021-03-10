@@ -1104,6 +1104,8 @@ export interface UserBalances {
   lpTokens: LPTokens;
   marketShares: AmmMarketShares;
   claimableWinnings: PositionWinnings;
+  rep?: string;
+  legacyRep?: string;
 }
 
 export interface ProcessedData {
@@ -1188,6 +1190,7 @@ export interface TransactionDetails {
   receipt?: any;
   lastCheckedBlockNumber?: number;
   addedTime: number;
+  type?: string;
   confirmedTime?: number;
   timestamp?: number;
   seen?: boolean;

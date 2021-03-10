@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import '../assets/styles/shared.less';
-import { Logo, ConnectAccount } from '@augurproject/augur-comps';
+import { Logo, Stores } from '@augurproject/augur-comps';
 import Styles from './App.styles.less';
 import { Migrate } from './migrate/migrate';
 import { HashRouter } from 'react-router-dom';
 // import { ConnectAccountProvider } from '@augurproject/augur-comps';
-import { AppStatusProvider, useAppStatusStore } from './stores/app-status';
+// import { AppStatusProvider, useAppStatusStore } from './stores/app-status';
 import { UserProvider } from './stores/user';
 import ModalView from './modal/modal-view';
 import { ConnectAccountButton } from './shared/connect-account-button';
@@ -18,8 +18,11 @@ import { PARA_CONFIG } from './stores/constants';
 import { networkSettings } from './constants';
 import { ErrorMessage, NetworkMismatchBanner } from './shared/error-message';
 import { MigrationProvider, useMigrationStore } from './stores/migration-store';
-
-const { ConnectAccountProvider } = ConnectAccount;
+const {
+  ConnectAccount: { ConnectAccountProvider },
+  AppStatus: { AppStatusProvider, useAppStatusStore },
+} = Stores;
+// const { ConnectAccountProvider } = ConnectAccount;
 
 function checkIsMobile(setIsMobile) {
   const isMobile =

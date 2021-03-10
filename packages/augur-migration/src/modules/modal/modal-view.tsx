@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import Styles from './modal.styles.less';
-import { useAppStatusStore } from '../stores/app-status';
-import { Constants, Modals } from '@augurproject/augur-comps';
+import { Constants, Modals, useAppStatusStore } from '@augurproject/augur-comps';
 import { useUserStore } from '../stores/user';
 import { useMigrationStore } from '../stores/migration-store';
 

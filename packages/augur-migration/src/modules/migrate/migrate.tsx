@@ -4,12 +4,11 @@ import classNames from 'classnames';
 import Styles from './migrate.styles.less';
 import {
   ButtonComps,
-  Icons,
   createBigNumber,
   Formatter,
   Constants,
+  useAppStatusStore,
 } from '@augurproject/augur-comps';
-import { useAppStatusStore } from '../stores/app-status';
 import { ConnectAccountButton } from '../shared/connect-account-button';
 import {
   convertV1ToV2Approve,
@@ -22,7 +21,6 @@ import { useMigrationStore } from '../stores/migration-store';
 
 const { TX_STATUS, ZERO } = Constants;
 const { PrimaryButton } = ButtonComps;
-const { PointedArrow } = Icons;
 const { formatRep } = Formatter;
 
 export const Migrate = () => {
