@@ -7,6 +7,7 @@ import {
   getLegacyRepBalance,
   getRepBalance,
   isRepV2Approved,
+  getRepTotalMigrated,
 } from '../../utils/contract-calls';
 
 export async function getRepBalances(provider, address) {
@@ -44,6 +45,30 @@ export function useUserBalances() {
     timestamp,
     isMigrated,
   ]);
+}
+
+export async function getRepMigrated() {
+  const rep = await getRepTotalMigrated();
+  return rep;
+}
+
+export function useRepMigrated() {
+  const {
+    timestamp,
+    isMigrated,
+    actions: { updateTotalRepMigrated },
+  } = useMigrationStore();
+  useEffect(() => {
+    let isMounted = true;
+    const fetchRepMigrated = () => getRepMigrated();
+    fetchRepMigrated().then(
+      (repMigrated) => isMounted && updateTotalRepMigrated(repMigrated)
+    );
+
+    return () => {
+      isMounted = false;
+    };
+  }, [PARA_CONFIG, timestamp, isMigrated]);
 }
 
 export function useFinalizeUserTransactions() {

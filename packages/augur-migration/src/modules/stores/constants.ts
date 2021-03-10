@@ -1,4 +1,10 @@
-import { ParaDeploys } from '../types';
+// import { DEFAULT_MARKET_VIEW_SETTINGS, SETTINGS_SLIPPAGE } from '../constants';
+import {
+  AppStatusState,
+  GraphDataState,
+  UserState,
+  ParaDeploys,
+} from '../types';
 
 // @ts-ignore
 export const PARA_CONFIG: ParaDeploys =
@@ -10,9 +16,10 @@ export const APPROVE = 'APPROVE';
 
 export const STUBBED_MIGRATION_ACTIONS = {
   setTimestamp: (timestamp) => {},
-  updateApproval: isApproved => {},
-  updateMigrated: isMigrated => {},
-  updateTxFailed: txFailed => {}
+  updateApproval: (isApproved) => {},
+  updateMigrated: (isMigrated) => {},
+  updateTxFailed: (txFailed) => {},
+  updateTotalRepMigrated: (totalRepMigrated) => {},
 };
 
 export const DEFAULT_MIGRATION_STATE = {
@@ -20,6 +27,7 @@ export const DEFAULT_MIGRATION_STATE = {
   isApproved: null,
   txFailed: false,
   isMigrated: false,
+  totalRepMigrated: 0
 };
 
 export const MIGRATION_KEYS = {
@@ -27,6 +35,7 @@ export const MIGRATION_KEYS = {
   IS_APPROVED: 'isApproved',
   TX_FAILED: 'txFailed',
   IS_MIGRATED: 'isMigrated',
+  TOTAL_REP_MIGRATED: 'totalRepMigrated'
 };
 
 export const MIGRATION_ACTIONS = {
@@ -34,6 +43,7 @@ export const MIGRATION_ACTIONS = {
   UPDATE_MIGRATED: 'UPDATE_MIGRATED',
   UPDATE_TX_FAILED: 'UPDATE_TX_FAILED',
   UPDATE_APPROVAL: 'UPDATE_APPROVAL',
+  UPDATE_TOTAL_REP_MIGRATED: 'UPDATE_TOTAL_REP_MIGRATED',
 };
 
 export const MOCK_MIGRATION_STATE = {
