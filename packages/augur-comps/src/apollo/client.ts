@@ -1,6 +1,6 @@
 import ApolloClient from 'apollo-boost';
 import {
-  GET_MARKETS,
+  GET_WHITELIST_MARKETS,
   GET_BLOCK,
   CASH_TOKEN_DATA,
 } from './queries';
@@ -51,6 +51,14 @@ export function augurV2Client(uri: string) {
   return client;
 }
 
+const whitelisted = ([
+  `"0xce1b7bec72bdb1de7e3fc277c1ba58e79c105ec3"`,
+  `"0x0af0aaa1e49caa933682d6b39b224241b0c5a775"`,
+  `"0x099400f52cf8905f80eef4f5e218c5be47fadfe9"`,
+  `"0x139d0d9a8e9ea966cbfb196e738236747f1537a6"`,
+  `"0x60d139411a58e0c454bf9e38af158e49e760e30a"`
+]).join(',')
+
 export async function getMarketsData(updateHeartbeat) {
   const cashes = getCashesInfo();
   const clientConfig = getClientConfig();
@@ -60,11 +68,12 @@ export async function getMarketsData(updateHeartbeat) {
   try {
     newBlock = await getPastDayBlockNumber(clientConfig.blockClient);
     response = await augurV2Client(clientConfig.augurClient).query({
-      query: GET_MARKETS,
+      query: GET_WHITELIST_MARKETS,
       arguments: {
         block: {
           number: newBlock
-        }
+        },
+        marketIds: whitelisted
       }
     });
     responseUsd = await getCashTokenData(cashes);

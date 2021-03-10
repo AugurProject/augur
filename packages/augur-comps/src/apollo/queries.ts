@@ -269,6 +269,23 @@ export const GET_MARKETS = gql`
   ${ParaShareToken_fields}
 `;
 
+export const GET_WHITELIST_MARKETS = gql`
+  query getMarkets($block: Block_height, $marketIds: [ID!]) {
+    markets(where: { id_in: [${marketIds}] }) {
+      ...CurrentMarket_fields
+    }
+    past: markets(block: $block, where: { id_in: [${marketIds}] }) {
+      ...HistoricMarket_fields
+    }
+    paraShareTokens {
+      ...ParaShareToken_fields
+    }
+  }
+  ${CurrentMarket_fields}
+  ${HistoricMarket_fields}
+  ${ParaShareToken_fields}
+`;
+
 export const ETH_PRICE = gql`
   query bundles($networkId: String, $block: Block_height) {
     bundles(where: { id: $networkId }, block: $block) {
