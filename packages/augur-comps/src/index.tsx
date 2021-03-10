@@ -14,6 +14,7 @@ import * as _MarketCard from './components/market-card/market-card';
 import _Logo from './components/common/logo';
 import * as _Labels from './components/common/labels';
 import * as _Buttons from './components/common/buttons';
+import * as _Selections from './components/common/selection';
 import * as _Pagination from './components/common/pagination';
 import { ConnectAccountProvider as _ConnectAccountProvider } from './components/ConnectAccount/connect-account-provider';
 import { ConnectAccount as _ConnectAccount } from './components/ConnectAccount/index';
@@ -130,6 +131,7 @@ export const MarketCardComps = _MarketCard;
 export const Logo = _Logo;
 export const ButtonComps = _Buttons;
 export const LabelComps = _Labels;
+export const SelectionComps = _Selections;
 export const Icons = {
   ..._Icons,
   CATEGORIES_ICON_MAP: _CATEGORIES_ICON_MAP,
@@ -163,9 +165,11 @@ export const Components = {
   LabelComps,
   Links,
   Logo,
+  Icons,
   MarketCardComps,
   PaginationComps,
   SEO,
+  SelectionComps,
 };
 export const Modals = {
   ModalConnectWallet
