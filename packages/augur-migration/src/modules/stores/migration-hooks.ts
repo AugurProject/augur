@@ -11,9 +11,10 @@ const {
   UPDATE_APPROVAL,
   UPDATE_MIGRATED,
   UPDATE_TX_FAILED,
+  UPDATE_TOTAL_REP_MIGRATED
 } = MIGRATION_ACTIONS;
 
-const { TIMESTAMP, IS_APPROVED, IS_MIGRATED, TX_FAILED } = MIGRATION_KEYS;
+const { TIMESTAMP, IS_APPROVED, IS_MIGRATED, TX_FAILED, TOTAL_REP_MIGRATED } = MIGRATION_KEYS;
 
 export function MigrationReducer(state, action) {
   const updatedState = { ...state };
@@ -29,6 +30,11 @@ export function MigrationReducer(state, action) {
     }
     case UPDATE_MIGRATED: {
       updatedState[IS_MIGRATED] = action.isMigrated;
+      break;
+    }
+    case UPDATE_TOTAL_REP_MIGRATED: {
+      console.log( action.totalRepMigrated);
+      updatedState[TOTAL_REP_MIGRATED] = action.totalRepMigrated;
       break;
     }
     case UPDATE_TX_FAILED: {
@@ -54,6 +60,8 @@ export const useMigration = (defaultState = MOCK_MIGRATION_STATE) => {
         dispatch({ type: UPDATE_TX_FAILED, txFailed }),
       updateMigrated: (isMigrated) =>
         dispatch({ type: UPDATE_MIGRATED, isMigrated }),
+      updateTotalRepMigrated: (totalRepMigrated) =>
+        dispatch({ type: UPDATE_TOTAL_REP_MIGRATED, totalRepMigrated }),
       updateApproval: (isApproved) =>
         dispatch({ type: UPDATE_APPROVAL, isApproved }),
       setTimestamp: (timestamp) => dispatch({ type: SET_TIMESTAMP, timestamp }),

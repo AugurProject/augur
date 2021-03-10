@@ -6,18 +6,14 @@ import {
   Constants,
   ConnectAccount,
   Formatter,
+  createBigNumber
 } from '@augurproject/augur-comps';
 import { PARA_CONFIG } from '../modules/stores/constants';
 import ReputationTokenABI from './ReputationTokenABI.json';
 import LegacyReputationTokenABI from './LegacyReputationTokenABI.json';
 import { networkSettings } from '../modules/constants';
-const { 
-  ZERO,
-  NULL_ADDRESS,
-} = Constants;
-const {
-   convertOnChainCashAmountToDisplayCashAmount,
-} = Formatter;
+const { ZERO, NULL_ADDRESS } = Constants;
+const { convertOnChainCashAmountToDisplayCashAmount } = Formatter;
 const {
   utils: { getProviderOrSigner },
 } = ConnectAccount;
@@ -294,5 +290,24 @@ export async function convertV1ToV2(provider: Web3Provider, account: string) {
   } catch (e) {
     console.error(e);
   }
+  return response;
+}
+
+export async function getRepTotalMigrated(): Promise<BigNumber> {
+  const repAddress = networkSettings['1'].repAddress;
+  let response = ZERO;
+  try {
+    await fetch(
+      `https://api.etherscan.io/api?module=stats&action=tokensupply&contractaddress=${repAddress}&apikey=619FBIKWWUYDA961ASWDATHW13VW5J2P2J`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        const repMigrated = createBigNumber(data.result).div(1000000000000000000);
+        response = repMigrated.toString();
+      });
+  } catch (e) {
+    console.error(e);
+  }
+
   return response;
 }

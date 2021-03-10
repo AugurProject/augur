@@ -13,6 +13,7 @@ import {
   useUserBalances,
   useFinalizeUserTransactions,
   useUpdateApprovals,
+  useRepMigrated,
 } from './stores/utils';
 import { PARA_CONFIG } from './stores/constants';
 import { networkSettings } from './constants';
@@ -59,6 +60,8 @@ const AppBody = () => {
   useFinalizeUserTransactions();
   useUpdateApprovals();
   useHandleResize();
+  useRepMigrated();
+  
   const { networkId } = PARA_CONFIG;
 
   useEffect(() => {

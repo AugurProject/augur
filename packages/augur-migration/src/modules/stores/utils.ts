@@ -6,6 +6,7 @@ import {
   getLegacyRepBalance,
   getRepBalance,
   isRepV2Approved,
+  getRepTotalMigrated,
 } from '../../utils/contract-calls';
 import { useMigrationStore } from './migration-store';
 
@@ -68,7 +69,37 @@ export function useUserBalances() {
     return () => {
       isMounted = false;
     };
-  }, [loginAccount?.account, loginAccount?.library, PARA_CONFIG, timestamp, isMigrated]);
+  }, [
+    loginAccount?.account,
+    loginAccount?.library,
+    PARA_CONFIG,
+    timestamp,
+    isMigrated,
+  ]);
+}
+
+export async function getRepMigrated() {
+  const rep = await getRepTotalMigrated();
+  return rep;
+}
+
+export function useRepMigrated() {
+  const {
+    timestamp,
+    isMigrated,
+    actions: { updateTotalRepMigrated },
+  } = useMigrationStore();
+  useEffect(() => {
+    let isMounted = true;
+    const fetchRepMigrated = () => getRepMigrated();
+    fetchRepMigrated().then(
+      (repMigrated) => isMounted && updateTotalRepMigrated(repMigrated)
+    );
+
+    return () => {
+      isMounted = false;
+    };
+  }, [PARA_CONFIG, timestamp, isMigrated]);
 }
 
 export function useFinalizeUserTransactions() {
