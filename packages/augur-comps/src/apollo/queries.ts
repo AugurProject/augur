@@ -29,10 +29,10 @@ export const SEARCH_MARKETS = (searchString) => {
 }
 // Get all markets except CATEGORICAL
 // https://thegraph.com/explorer/subgraph/augurproject/augur-v2-staging
-export const GET_MARKETS = blockNumber => {
+export const GET_MARKETS = (blockNumber, marketIds) => {
   const queryString = `
   {
-  markets(where: { marketType: YES_NO, description_not: null, fee_lte: 20000000000000000 }) {
+  markets(where: { id_in: [${marketIds}] }) {
     description
     id
     outcomes {
@@ -190,7 +190,7 @@ export const GET_MARKETS = blockNumber => {
       symbol
     }
   }
-  past: markets(block: { number: ${blockNumber} }, where: { marketType: YES_NO, description_not: null }) {
+  past: markets(block: { number: ${blockNumber} }, where: { id_in: [${marketIds}] }) {
     description
     id
     endTimestamp

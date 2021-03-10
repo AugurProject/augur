@@ -51,6 +51,12 @@ export function augurV2Client(uri: string) {
   return client;
 }
 
+const whitelisted = ([
+  `"0xd36cee6d248699abd09d83a058439583f3ac09ba"`,
+  `"0xc09e9dfde5330caef228e4627a7c53a69e8a3afb"`,
+  `"0x0cc49229b93f87f97f657931b50c67af3f9b7845"`
+]).join(',')
+
 export async function getMarketsData(updateHeartbeat) {
   const cashes = getCashesInfo();
   const clientConfig = getClientConfig();
@@ -59,7 +65,7 @@ export async function getMarketsData(updateHeartbeat) {
   let newBlock = null;
   try {
     newBlock = await getPastDayBlockNumber(clientConfig.blockClient);
-    const query = GET_MARKETS(newBlock);
+    const query = GET_MARKETS(newBlock, whitelisted);
     response = await augurV2Client(clientConfig.augurClient).query({ query });
     responseUsd = await getCashTokenData(cashes);
   } catch (e) {
