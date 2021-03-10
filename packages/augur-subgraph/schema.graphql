@@ -833,7 +833,7 @@ type BPool @entity {
 
   invalidWeight: BigInt!
 
-  spotPrice: BigInt!
+  spotPrice: [BigInt!]!
 
   swapFee: BigInt!
 }
