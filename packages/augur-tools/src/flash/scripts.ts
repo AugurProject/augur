@@ -2235,6 +2235,70 @@ export function addScripts(flash: FlashSession) {
     },
   });
 
+  flash.addScript({
+    name: 'get-market-dispute-window',
+    options: [
+      {
+        name: 'marketId',
+        abbr: 'm',
+        description: 'market of which to get dispute window',
+        required: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      if (this.noProvider()) return;
+      const user = await this.createUser(this.getAccount(), this.config);
+      const marketId = args.marketId as string;
+
+      const market: ContractInterfaces.Market = await user.getMarketContract(
+        marketId
+      );
+
+      const disputeWindow = await market.getDisputeWindow_();
+      const disputePacingOn = await market.getDisputePacingOn_();
+
+      console.log(`Dispute Window: ${disputeWindow}`);
+      console.log(`Dispute Pacing On: ${disputePacingOn}`);
+    },
+  });
+
+  flash.addScript({
+    name: 'get-dispute-window-info',
+    options: [
+      {
+        name: 'window',
+        abbr: 'w',
+        description: 'dispute window address',
+        required: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      if (this.noProvider()) return;
+      const user = await this.createUser(this.getAccount(), this.config);
+      const address = args.window as string;
+
+      const disputeWindow = new ContractInterfaces.DisputeWindow(user.augur.dependencies, address);
+
+      const helper = async (methodName: string) => {
+        const fullMethodName = methodName + '_';
+        const method: (() => Promise<any>) = disputeWindow[fullMethodName];
+        try {
+          const value = await method();
+          console.log(`${methodName}: ${value}`);
+        } catch (err) {
+          console.error(`Failed to call disputeWindow.${methodName}`);
+        }
+      }
+      await helper('getStartTime');
+      await helper('getEndTime');
+      await helper('validityBondTotal');
+      await helper('isActive');
+      await helper('isOver');
+      await helper('getInitialized');
+      await helper('windowId');
+      await helper('universe');
+    },
+  });
 
   flash.addScript({
     name: 'dispute',
