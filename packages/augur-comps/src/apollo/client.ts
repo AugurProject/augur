@@ -59,7 +59,6 @@ export async function getMarketsData(updateHeartbeat) {
   let newBlock = null;
   try {
     newBlock = await getPastDayBlockNumber(clientConfig.blockClient);
-    console.log(newBlock);
     response = await augurV2Client(clientConfig.augurClient).query({
       query: GET_MARKETS,
       arguments: {
