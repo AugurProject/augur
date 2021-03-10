@@ -294,12 +294,15 @@ export async function convertV1ToV2(provider: Web3Provider, account: string) {
 }
 
 export async function getRepTotalMigrated(): Promise<BigNumber> {
-  const repAddress = networkSettings['1'].repAddress;
+  const { networkId } = PARA_CONFIG;
+  const repAddress = networkSettings[networkId].repAddress;
   let response = ZERO;
+  let apiAddress = `https://api.etherscan.io/api?module=stats&action=tokensupply&contractaddress=${repAddress}&apikey=619FBIKWWUYDA961ASWDATHW13VW5J2P2J`;
+  if (networkId === '42') {
+    apiAddress = `https://api-kovan.etherscan.io/api?module=stats&action=tokensupply&contractaddress=${repAddress}&apikey=619FBIKWWUYDA961ASWDATHW13VW5J2P2J`;
+  }
   try {
-    await fetch(
-      `https://api.etherscan.io/api?module=stats&action=tokensupply&contractaddress=${repAddress}&apikey=619FBIKWWUYDA961ASWDATHW13VW5J2P2J`
-    )
+    await fetch(apiAddress)
       .then((response) => response.json())
       .then((data) => {
         const repMigrated = createBigNumber(data.result).div(1000000000000000000);

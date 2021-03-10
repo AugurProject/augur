@@ -33,7 +33,6 @@ export function MigrationReducer(state, action) {
       break;
     }
     case UPDATE_TOTAL_REP_MIGRATED: {
-      console.log( action.totalRepMigrated);
       updatedState[TOTAL_REP_MIGRATED] = action.totalRepMigrated;
       break;
     }

@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import Styles from './migrate.styles.less';
 import {
   ButtonComps,
-  Icons,
   createBigNumber,
   Formatter,
   Constants,
@@ -22,7 +21,6 @@ import { useMigrationStore } from '../stores/migration-store';
 
 const { TX_STATUS, ZERO } = Constants;
 const { PrimaryButton } = ButtonComps;
-const { PointedArrow } = Icons;
 const { formatRep } = Formatter;
 
 export const Migrate = () => {
@@ -56,8 +54,8 @@ export const Migrate = () => {
   return (
     <div className={Styles.Migrate}>
       <span>
-        <span>Migrate your V1 REP to REP V2</span>
-        <span>For example 100 V1 REP will migrate to 100 REP V2.</span>
+        <span>Migrate your REP to REPv2</span>
+        <span>For example 100 REP will migrate to 100 REPv2.</span>
       </span>
       {isLogged && (
         <div>
@@ -66,7 +64,7 @@ export const Migrate = () => {
               [Styles.grey]: createBigNumber(formattedLegacyRep.value).eq(ZERO),
             })}
           >
-            <span>V1 REP Balance</span>
+            <span>REP Balance</span>
             <span>{formattedLegacyRep.formatted}</span>
           </div>
           <div
@@ -74,7 +72,7 @@ export const Migrate = () => {
               [Styles.grey]: createBigNumber(formattedRep.value).eq(ZERO),
             })}
           >
-            <span>V2 REP Balance</span>
+            <span>REPv2 Balance</span>
             <span>{formattedRep.formatted}</span>
           </div>
         </div>
