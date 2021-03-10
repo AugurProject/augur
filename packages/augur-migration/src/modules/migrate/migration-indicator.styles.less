@@ -1,0 +1,50 @@
+@import (reference) '~assets/styles/shared.less';
+
+.MigrationIndicator {
+  .SimpleBorder;
+
+  display: flex;
+  width: 620px;
+  height: 124px;
+  padding: @size-24;
+  border-radius: @size-8;
+  flex-direction: column;
+
+  > span:first-of-type {
+    .text-16-bold;
+
+    margin-bottom: @size-16;
+    color: var(--simple-primary-text);
+  }
+
+  > div {
+    background: var(--simple-border);
+    border-radius: @size-24;
+    height: @size-2;
+
+    > div {
+      border-radius: @size-24;
+      height: @size-2;
+      background-color: var(--simple-yes);
+    }
+  }
+
+  > span:last-of-type {
+    .text-14-semi-bold;
+
+    margin-top: @size-16;
+
+    > span:first-of-type,
+    > span:last-of-type {
+      color: var(--simple-secondary-text);
+    }
+
+    > span:nth-of-type(2) {
+      color: var(--simple-primary-text);
+    }
+  }
+
+  @media @breakpoint-mobile-tablet {
+    width: 363px;
+  }
+}
