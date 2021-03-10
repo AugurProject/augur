@@ -2,29 +2,36 @@ import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
 import Styles from './toasts.styles.less';
-import { CloseIcon, FailedX, ConfirmedCheck } from '../common/icons';
-import { ReceiptLink } from '../routes/helpers/links';
-import { TX_STATUS } from '../constants';
-import { useUserStore } from '../stores/user';
+import {
+  Icons,
+  Constants,
+  useUserStore,
+  Links,
+} from '@augurproject/augur-comps';
+
+const { ReceiptLink } = Links;
+const { CloseIcon, FailedX, ConfirmedCheck } = Icons;
+const { TX_STATUS } = Constants;
 
 export const Toasts = () => {
   const {
     transactions,
     actions: { updateTransaction },
   } = useUserStore();
-  const toasts = transactions.sort((a,b) => a.timestamp - b.timestamp)
-    .filter(t => !t.seen)
-    .filter(t => t.status !== TX_STATUS.PENDING);
+  const toasts = transactions
+    .sort((a, b) => a.timestamp - b.timestamp)
+    .filter((t) => !t.seen)
+    .filter((t) => t.status !== TX_STATUS.PENDING);
   const numToastsToSee = toasts.length;
   return (
     <>
       {numToastsToSee > 0 && (
         <Toast
-          toast={toasts.find(t => !t.seen)}
-          key={`toast-4-${toasts.find(t => !t.seen).hash}`}
+          toast={toasts.find((t) => !t.seen)}
+          key={`toast-4-${toasts.find((t) => !t.seen).hash}`}
           markAsSeen={(toast) => {
             let updates = toasts;
-            const toastIndex= updates.findIndex(t => t.hash === toast.hash);
+            const toastIndex = updates.findIndex((t) => t.hash === toast.hash);
             const update = updates[toastIndex];
             update.seen = true;
             updateTransaction(update.hash, update);
@@ -34,7 +41,6 @@ export const Toasts = () => {
     </>
   );
 };
-
 
 const Toast = ({ toast, markAsSeen }) => {
   const confirmed = toast.status === TX_STATUS.CONFIRMED;
@@ -48,7 +54,7 @@ const Toast = ({ toast, markAsSeen }) => {
 
       return () => {
         clearTimeout(hide);
-      }
+      };
     }
     return undefined;
   }, []);

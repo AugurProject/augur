@@ -1,15 +1,15 @@
 import { MarketTypeName } from '@augurproject/sdk-lite';
-import { createBigNumber } from '../utils/create-big-number';
-import {
+import { Icons, createBigNumber } from '@augurproject/augur-comps';
+const {
+  EthIcon,
+  UsdIcon,
   CryptoIcon,
   EntertainmentIcon,
   FinanceIcon,
   MedicalIcon,
   PoliticsIcon,
   SportsIcon,
-} from './common/category-icons';
-import { EthIcon, UsdIcon } from './common/icons';
-
+} = Icons;
 // # Market Types
 export const YES_NO = MarketTypeName.YesNo;
 export const CATEGORICAL = MarketTypeName.Categorical;
@@ -130,7 +130,7 @@ export const ERROR_AMOUNT = 'Amount is not valid';
 export const CONNECT_ACCOUNT = 'Connect Account';
 export const SET_PRICES = 'Set Prices';
 
-export const SETTINGS_SLIPPAGE = "2"
+export const SETTINGS_SLIPPAGE = '2';
 // graph market status
 export const MARKET_STATUS = {
   TRADING: 'TRADING',
@@ -228,7 +228,7 @@ export const TX_STATUS = {
   CONFIRMED: 'CONFIRMED',
   PENDING: 'PENDING',
   FAILURE: 'FAILURE',
-}
+};
 
 // approvals
 export enum ApprovalState {
@@ -249,7 +249,6 @@ export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 // Modals
 export const MODAL_ADD_LIQUIDITY = 'MODAL_ADD_LIQUIDITY';
-export const MODAL_CONNECT_WALLET = 'MODAL_CONNECT_WALLET';
 
 export const DEFAULT_MARKET_VIEW_SETTINGS = {
   categories: ALL_MARKETS,

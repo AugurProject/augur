@@ -1,4 +1,5 @@
 module.exports = {
+  "testEnvironment": "node",
   "roots": [
     "<rootDir>/src/tests/api",
     "<rootDir>/src/tests/connector",
@@ -24,5 +25,9 @@ module.exports = {
   ],
   "testURL": "http://localhost:8080/",
   "globalSetup": "./setup.js",
-  "setupFilesAfterEnv": ["./setupEnv.js"]
+  "setupFilesAfterEnv": ["./setupEnv.js"],
+  "globals": {
+    "Uint8Array": Uint8Array,
+    "Buffer": Buffer
+  }
 };

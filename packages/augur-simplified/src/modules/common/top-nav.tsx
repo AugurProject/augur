@@ -3,38 +3,42 @@ import { useLocation } from 'react-router';
 import Styles from './top-nav.styles.less';
 import ButtonStyles from './buttons.styles.less';
 import { Link } from 'react-router-dom';
+import Logo from './logo';
+import classNames from 'classnames';
+import { useAppStatusStore } from '../stores/app-status';
+import { Toasts } from '../toasts/toasts';
+import { ToggleSwitch } from '../common/toggle-switch';
+import { generateTooltip } from '../common/labels';
+import { updateTxStatus } from '../modal/modal-add-liquidity';
 import {
+  Icons,
+  useGraphDataStore,
+  useUserStore,
+  ConnectAccount as CompsConnectAccount,
+  useLocalStorage,
+  ButtonComps,
+  PathUtils,
+  PARA_CONFIG,
+  Constants,
+} from '@augurproject/augur-comps';
+const { GearIcon, ThreeLinesIcon } = Icons;
+const { ConnectAccount } = CompsConnectAccount;
+const { SecondaryButton, TinyButton } = ButtonComps;
+const { parsePath, makePath } = PathUtils;
+const {
   MARKET,
   MARKETS,
   PORTFOLIO,
   SIDEBAR_TYPES,
   TX_STATUS,
-} from '../constants';
-import { PARA_CONFIG } from '../stores/constants';
-import makePath from '../routes/helpers/make-path';
-import Logo from './logo';
-import parsePath from '../routes/helpers/parse-path';
-import classNames from 'classnames';
-import { GearIcon, ThreeLinesIcon } from './icons';
-import { useAppStatusStore } from '../stores/app-status';
-import { useLocalStorage } from '../stores/local-storage';
-import ConnectAccount from '../ConnectAccount/index';
-import { SecondaryButton, TinyButton } from './buttons';
-import { Toasts } from '../toasts/toasts';
-import { ToggleSwitch } from 'modules/common/toggle-switch';
-import { generateTooltip } from 'modules/common/labels';
-import { updateTxStatus } from '../modal/modal-add-liquidity';
-import { useGraphDataStore } from '@augurproject/augur-comps';
-import { useUserStore } from '../stores/user';
+} = Constants;
 
 export const SettingsButton = () => {
   const {
     settings: { slippage, showInvalidMarkets, showLiquidMarkets },
     actions: { updateSettings },
   } = useAppStatusStore();
-  const {
-    account
-  } = useUserStore();
+  const { account } = useUserStore();
   const [open, setOpened] = useState(false);
   const [customVal, setCustomVal] = useState('');
   const settingsRef = useRef(null);
@@ -183,7 +187,10 @@ export const SettingsButton = () => {
             <ToggleSwitch
               toggle={showInvalidMarkets}
               setToggle={() =>
-                updateSettings({ showInvalidMarkets: !showInvalidMarkets }, account)
+                updateSettings(
+                  { showInvalidMarkets: !showInvalidMarkets },
+                  account
+                )
               }
             />
           </li>
@@ -192,7 +199,10 @@ export const SettingsButton = () => {
             <ToggleSwitch
               toggle={showLiquidMarkets}
               setToggle={() =>
-                updateSettings({ showLiquidMarkets: !showLiquidMarkets }, account)
+                updateSettings(
+                  { showLiquidMarkets: !showLiquidMarkets },
+                  account
+                )
               }
             />
           </li>
@@ -209,7 +219,7 @@ export const TopNav = () => {
   const {
     isLogged,
     isMobile,
-    actions: { setSidebar },
+    actions: { setSidebar, setModal },
   } = useAppStatusStore();
   const {
     account,
@@ -219,7 +229,7 @@ export const TopNav = () => {
   } = useUserStore();
   const { blocknumber } = useGraphDataStore();
   const [lastUser, setLastUser] = useLocalStorage('lastUser', null);
-  
+
   useEffect(() => {
     if (blocknumber && transactions) {
       transactions
@@ -257,10 +267,7 @@ export const TopNav = () => {
     if (activeWeb3) {
       if (String(networkId) !== String(activeWeb3.chainId)) {
         updateLoginAccount({ chainId: activeWeb3.chainId });
-      } else if (
-        account &&
-        account !== activeWeb3.account
-      ) {
+      } else if (account && account !== activeWeb3.account) {
         logout();
         updateLoginAccount(activeWeb3);
       } else {
@@ -308,6 +315,8 @@ export const TopNav = () => {
             updateLoginAccount: handleAccountUpdate,
             autoLogin,
             transactions,
+            setModal,
+            isMobile,
           }}
         />
         {isMobile ? (

@@ -205,8 +205,6 @@ export class WrappedShareToken extends c.WrappedShareToken<BigNumber> {
 }
 export class WrappedShareTokenFactory extends c.WrappedShareTokenFactory<BigNumber> {
 }
-export class WrappedShareTokenFactoryFactory extends c.WrappedShareTokenFactoryFactory<BigNumber> {
-}
 export class UniswapV2Factory extends c.UniswapV2Factory<BigNumber> {
 }
 export class UniswapV2Pair extends c.UniswapV2Pair<BigNumber> {

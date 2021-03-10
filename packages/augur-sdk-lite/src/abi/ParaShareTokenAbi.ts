@@ -1,4 +1,4 @@
-[
+export const ParaShareTokenAbi = [
   {
     "anonymous": false,
     "inputs": [
@@ -1255,4 +1255,4 @@
     "stateMutability": "nonpayable",
     "type": "function"
   }
-]
+];

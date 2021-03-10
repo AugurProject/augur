@@ -7,7 +7,7 @@ export const WethWrapperForAMMExchangeAbi = [
         "type": "address"
       },
       {
-        "internalType": "contract ParaShareToken",
+        "internalType": "contract IParaShareToken",
         "name": "_shareToken",
         "type": "address"
       }
@@ -93,6 +93,19 @@ export const WethWrapperForAMMExchangeAbi = [
     "type": "event"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "TradingProceedsClaimed",
+    "type": "event"
+  },
+  {
     "payable": true,
     "stateMutability": "payable",
     "type": "fallback"
@@ -124,6 +137,11 @@ export const WethWrapperForAMMExchangeAbi = [
         "internalType": "address",
         "name": "_recipient",
         "type": "address"
+      },
+      {
+        "internalType": "string[]",
+        "name": "_symbols",
+        "type": "string[]"
       }
     ],
     "name": "addAMMWithLiquidity",
@@ -426,12 +444,43 @@ export const WethWrapperForAMMExchangeAbi = [
     "type": "function"
   },
   {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "contract IMarket",
+        "name": "_market",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IParaShareToken",
+        "name": "_para",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_fee",
+        "type": "uint256"
+      }
+    ],
+    "name": "getBPool",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "constant": true,
     "inputs": [],
     "name": "shareToken",
     "outputs": [
       {
-        "internalType": "contract ParaShareToken",
+        "internalType": "contract IParaShareToken",
         "name": "",
         "type": "address"
       }
@@ -455,4 +504,4 @@ export const WethWrapperForAMMExchangeAbi = [
     "stateMutability": "view",
     "type": "function"
   }
-]
+];

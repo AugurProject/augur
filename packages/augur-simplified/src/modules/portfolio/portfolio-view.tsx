@@ -4,27 +4,48 @@ import { AppViewStats } from '../common/labels';
 import Activity from './activity';
 import { PositionsLiquidityViewSwitcher } from '../common/tables';
 import { useAppStatusStore } from '../stores/app-status';
-import { PrimaryButton } from '../common/buttons';
 import { NetworkMismatchBanner } from '../common/labels';
-import { EthIcon, UsdIcon } from '../common/icons';
-import { keyedObjToArray, useCanExitCashPosition, useScrollToTopOnMount } from '../stores/utils';
-import { ACTIVITY, ETH, TABLES, TX_STATUS, USDC } from '../constants';
-import { formatCash } from '../../utils/format-number';
-import { createBigNumber } from '../../utils/create-big-number';
-import { claimWinnings } from '../../utils/contract-calls';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
-import { useGraphDataStore } from '@augurproject/augur-comps';
-import { useUserStore } from '../stores/user';
-import { PARA_CONFIG } from '../stores/constants';
-import { approveERC1155Contract } from '../hooks/use-approval-callback';
+import {
+  ContractCalls,
+  Formatter,
+  Icons,
+  Constants,
+  createBigNumber,
+  Stores,
+  useGraphDataStore,
+  useScrollToTopOnMount,
+  useCanExitCashPosition,
+  useUserStore,
+  PARA_CONFIG,
+  ApprovalHooks,
+  SEO,
+  ButtonComps,
+} from '@augurproject/augur-comps';
+import { PORTFOLIO_HEAD_TAGS } from '../seo-config';
+
+const { claimWinnings } = ContractCalls;
+const { approveERC1155Contract } = ApprovalHooks;
+const { formatCash } = Formatter;
+const { EthIcon, UsdIcon } = Icons;
+const { ACTIVITY, ETH, TABLES, TX_STATUS, USDC } = Constants;
+const {
+  keyedObjToArray
+} = Stores.Utils;
+const { PrimaryButton } = ButtonComps;
 
 const calculateTotalWinnings = (claimbleMarketsPerCash) => {
   let total = createBigNumber('0');
   let marketIds = [];
-  claimbleMarketsPerCash.forEach(({ ammExchange: { marketId }, claimableWinnings: { claimableBalance }}) => {
-    total = total.plus(createBigNumber(claimableBalance));
-    marketIds.push(marketId);
-  });
+  claimbleMarketsPerCash.forEach(
+    ({
+      ammExchange: { marketId },
+      claimableWinnings: { claimableBalance },
+    }) => {
+      total = total.plus(createBigNumber(claimableBalance));
+      marketIds.push(marketId);
+    }
+  );
   return {
     hasWinnings: !total.eq(0),
     total,
@@ -32,34 +53,43 @@ const calculateTotalWinnings = (claimbleMarketsPerCash) => {
   };
 };
 
-const handleClaimAll = (loginAccount, cash, marketIds, addTransaction, updateTransaction, canClaim) => {
+const handleClaimAll = (
+  loginAccount,
+  cash,
+  marketIds,
+  addTransaction,
+  updateTransaction,
+  canClaim
+) => {
   const from = loginAccount?.account;
   const chainId = loginAccount?.chainId;
-  const { addresses: { WethWrapperForAMMExchange } } = PARA_CONFIG;
+  const {
+    addresses: { WethWrapperForAMMExchange },
+  } = PARA_CONFIG;
   if (from && canClaim) {
-    claimWinnings(from, marketIds, cash).then((response) => {
-      // handle transaction response here
-      if (response) {
-        const { hash } = response;
-        addTransaction({
-          hash,
-          chainId,
-          seen: false,
-          status: TX_STATUS.PENDING,
-          from,
-          addedTime: new Date().getTime(),
-          message: `Claim All ${cash.name} Winnings`,
-          marketDescription: '',
-        });
-        response
-          .wait()
-          .then((response) => {
+    claimWinnings(from, marketIds, cash)
+      .then((response) => {
+        // handle transaction response here
+        if (response) {
+          const { hash } = response;
+          addTransaction({
+            hash,
+            chainId,
+            seen: false,
+            status: TX_STATUS.PENDING,
+            from,
+            addedTime: new Date().getTime(),
+            message: `Claim All ${cash.name} Winnings`,
+            marketDescription: '',
+          });
+          response.wait().then((response) => {
             updateTxStatus(response, updateTransaction);
           });
-      }
-    }).catch(e => {
-      // handle error here
-    })
+        }
+      })
+      .catch((e) => {
+        // handle error here
+      });
   } else if (from) {
     const approveEth = async () => {
       const tx = await approveERC1155Contract(
@@ -69,18 +99,14 @@ const handleClaimAll = (loginAccount, cash, marketIds, addTransaction, updateTra
         loginAccount
       );
       addTransaction(tx);
-    }
+    };
     // need to approve here
     approveEth();
   }
-}
-
-
+};
 
 export const ClaimWinningsSection = () => {
-  const {
-    isLogged,
-  } = useAppStatusStore();
+  const { isLogged } = useAppStatusStore();
   const {
     balances: { marketShares },
     loginAccount,
@@ -101,7 +127,7 @@ export const ClaimWinningsSection = () => {
   );
   const ETHTotals = calculateTotalWinnings(claimableEthMarkets);
   const USDCTotals = calculateTotalWinnings(claimableUSDCMarkets);
-  const canClaimETH = useCanExitCashPosition(ethCash?.shareToken);
+  const canClaimETH = useCanExitCashPosition(ethCash);
 
   return (
     <div className={Styles.ClaimableWinningsSection}>
@@ -112,7 +138,14 @@ export const ClaimWinningsSection = () => {
           })`}
           icon={UsdIcon}
           action={() => {
-            handleClaimAll(loginAccount, usdcCash, USDCTotals.marketIds, addTransaction, updateTransaction, true)
+            handleClaimAll(
+              loginAccount,
+              usdcCash,
+              USDCTotals.marketIds,
+              addTransaction,
+              updateTransaction,
+              true
+            );
           }}
         />
       )}
@@ -123,7 +156,14 @@ export const ClaimWinningsSection = () => {
           })`}
           icon={EthIcon}
           action={() => {
-            handleClaimAll(loginAccount, ethCash, ETHTotals.marketIds, addTransaction, updateTransaction, canClaimETH)
+            handleClaimAll(
+              loginAccount,
+              ethCash,
+              ETHTotals.marketIds,
+              addTransaction,
+              updateTransaction,
+              canClaimETH
+            );
           }}
         />
       )}
@@ -139,10 +179,11 @@ export const PortfolioView = () => {
 
   useEffect(() => {
     if (!isMobile) setView(TABLES);
-  }, [isMobile])
+  }, [isMobile]);
 
   return (
     <div className={Styles.PortfolioView}>
+      <SEO {...PORTFOLIO_HEAD_TAGS} />
       <section>
         <NetworkMismatchBanner />
         <AppViewStats />

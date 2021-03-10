@@ -1,27 +1,29 @@
 import React, { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
-import { EthIcon, LinkIcon, UsdIcon, XIcon } from './icons';
 import Styles from './inputs.styles.less';
-import { Cash } from '@augurproject/core/build/libraries/GenericContractInterfaces';
-import { ETH } from '@augurproject/sdk-lite/build';
-import {
-  getCashFormat,
-  formatCash,
-  formatSimpleShares,
-  formatCashPrice,
-  formatDai,
-} from '../../utils/format-number';
-import {
+import { useAppStatusStore } from '../stores/app-status';
+import { TinyButton } from './buttons.styles.less';
+import { CurrencyDropdown } from './selection';
+import { AmmOutcome, Cash } from '../types';
+import { Constants, Icons, Formatter } from '@augurproject/augur-comps';
+const {
+  ETH,
   USDC,
   ERROR_AMOUNT,
   SHARES,
   OUTCOME_YES_NAME,
   YES_NO,
-} from '../constants';
-import { useAppStatusStore } from '../stores/app-status';
-import { TinyButton } from './buttons.styles.less';
-import { CurrencyDropdown } from './selection';
-import { AmmOutcome } from '../types';
+} = Constants;
+const {
+  EthIcon, LinkIcon, UsdIcon, XIcon
+} = Icons;
+const {
+  getCashFormat,
+  formatCash,
+  formatSimpleShares,
+  formatCashPrice,
+  formatDai,
+} = Formatter;
 
 const ENTER_CHAR_CODE = 13;
 
@@ -246,7 +248,8 @@ const Outcome = ({
       })}
     >
       {outcome.isInvalid ? (
-        <a href="https://www.google.com/" target="_blank" rel="noopener noreferrer">
+        // TODO: add either balancer pool address or invalid token address, need to research
+        <a href="https://https://balancer.exchange/#/swap/" target="_blank" rel="noopener noreferrer">
           <span>{outcome.name}</span>
           {outcome.isInvalid && LinkIcon}
         </a>

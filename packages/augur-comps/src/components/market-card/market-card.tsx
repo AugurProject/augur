@@ -8,7 +8,7 @@ import { getMarketsData } from '../../apollo/client';
 import { CategoryIcon, CategoryLabel, CurrencyTipIcon, InvalidFlagTipIcon, ReportingStateLabel, ValueLabel } from '../common/labels';
 import { MARKET_STATUS } from '../../utils/constants';
 import { PrimaryButton } from '../common/buttons';
-import { MarketLink } from '../../utils/routes/links';
+import { MarketLink } from '../../utils/links/links';
 import { ConfirmedCheck } from '../common/icons';
 
 export const LoadingMarketCard = () => {

@@ -4,6 +4,10 @@
   "private": true,
   "main": "build",
   "dependencies": {
+    "@augurproject/ethereum-multicall": "^2.3.0-alpha.0",
+    "@augurproject/ethersjs-provider": "^2.3.0-alpha.0",
+    "@augurproject/sdk": "^2.3.0-alpha.0",
+    "@augurproject/sdk-lite": "^2.3.0-alpha.0",
     "@uniswap/sdk": "^3.0.3",
     "@web3-react/abstract-connector": "^6.0.7",
     "@web3-react/core": "^6.1.1",
@@ -19,6 +23,7 @@
     "clipboard": "1.7.1",
     "copy-to-clipboard": "^3.3.1",
     "dayjs": "^1.9.7",
+    "ethers": "^5.0.31",
     "graphql": "^15.4.0",
     "graphql-tag": "^2.11.0",
     "highcharts": "7.2.2",
@@ -27,6 +32,7 @@
     "react-apollo": "^3.1.5",
     "react-dom": "^17.0.1",
     "react-feather": "^2.0.9",
+    "react-helmet": "6.1.0",
     "react-router-dom": "^5.2.0",
     "react-tooltip": "^4.2.11",
     "semver": "7.3.2"
@@ -61,8 +67,8 @@
     ]
   },
   "devDependencies": {
-    "@babel/core": "7.13.1",
     "@babel/cli": "7.13.0",
+    "@babel/core": "7.13.1",
     "@babel/preset-react": "^7.12.13",
     "@babel/preset-typescript": "7.13.0",
     "@pmmmwh/react-refresh-webpack-plugin": "0.4.2",
@@ -117,11 +123,18 @@
   },
   "babel": {
     "presets": [
-      "@babel/preset-env", "@babel/preset-react", ["@babel/preset-typescript", {
-        "isTSX": true,
-        "allExtensions": true
-    }]
-    ], 
-    "plugins": ["@babel/plugin-proposal-class-properties"]
+      "@babel/preset-env",
+      "@babel/preset-react",
+      [
+        "@babel/preset-typescript",
+        {
+          "isTSX": true,
+          "allExtensions": true
+        }
+      ]
+    ],
+    "plugins": [
+      "@babel/plugin-proposal-class-properties"
+    ]
   }
 }

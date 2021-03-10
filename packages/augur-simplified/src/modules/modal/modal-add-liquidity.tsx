@@ -3,7 +3,50 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Styles from './modal.styles.less';
 import { Header } from './common';
 import { useHistory } from 'react-router';
+import { InfoNumbers } from '../market/trading-form';
+import { generateTooltip } from '../common/labels';
+import { MultiButtonSelection } from '../common/selection';
+import classNames from 'classnames';
+import { AmmOutcome, Cash, LiquidityBreakdown, MarketInfo } from '../types';
+import { useAppStatusStore } from '../stores/app-status';
+import { BigNumber as BN } from 'bignumber.js';
 import {
+  AmountInput,
+  isInvalidNumber,
+  OutcomesGrid,
+  TextInput,
+} from '../common/inputs';
+import {
+  ContractCalls,
+  createBigNumber,
+  PARA_CONFIG,
+  useGraphDataStore,
+  useUserStore,
+  UserStore,
+  ApprovalHooks,
+  Formatter,
+  Constants,
+  ButtonComps,
+  Icons,
+} from '@augurproject/augur-comps';
+const { checkAllowance } = ApprovalHooks;
+const {
+  checkConvertLiquidityProperties,
+  doAmmLiquidity,
+  doRemoveAmmLiquidity,
+  estimateAddLiquidity,
+  getRemoveLiquidity,
+} = ContractCalls;
+const {
+  convertDisplayShareAmountToOnChainShareAmount,
+  formatPercent,
+  convertOnChainSharesToDisplayShareAmount,
+  formatSimpleShares,
+  formatCash,
+} = Formatter;
+const { BackIcon } = Icons;
+const { ApprovalButton, APPROVED, BuySellButton } = ButtonComps;
+const {
   YES_NO,
   BUY,
   USDC,
@@ -24,38 +67,7 @@ import {
   ERROR_AMOUNT,
   ETH,
   PORTION_OF_CASH_INVALID_POOL,
-} from '../constants';
-import {
-  InfoNumbers,
-} from '../market/trading-form';
-import { ApprovalButton, APPROVED, BuySellButton } from '../common/buttons';
-import { generateTooltip } from '../common/labels';
-import {
-  convertDisplayShareAmountToOnChainShareAmount,
-  formatPercent,
-  convertOnChainSharesToDisplayShareAmount,
-  formatSimpleShares,
-  formatCash,
-} from '../../utils/format-number';
-import { MultiButtonSelection } from '../common/selection';
-import classNames from 'classnames';
-import { AmmOutcome, LiquidityBreakdown, MarketInfo } from '../types';
-import {
-  checkConvertLiquidityProperties,
-  doAmmLiquidity,
-  doRemoveAmmLiquidity,
-  estimateAddLiquidity,
-  getRemoveLiquidity,
-} from '../../utils/contract-calls';
-import { useAppStatusStore } from '../stores/app-status';
-import { BigNumber as BN } from 'bignumber.js';
-import { createBigNumber } from '../../utils/create-big-number';
-import { BackIcon } from '../common/icons';
-import { checkAllowance } from '../hooks/use-approval-callback';
-import { AmountInput, isInvalidNumber, OutcomesGrid, TextInput } from '../common/inputs';
-import { useGraphDataStore } from '@augurproject/augur-comps';
-import { useUserStore, UserStore } from '../stores/user';
-import { PARA_CONFIG } from '../stores/constants';
+} = Constants;
 
 const TRADING_FEE_OPTIONS = [
   {
@@ -120,7 +132,7 @@ const ModalAddLiquidity = ({
     balances,
     transactions,
     loginAccount,
-    actions: { addTransaction, updateTransaction }
+    actions: { addTransaction, updateTransaction },
   } = useUserStore();
   const { cashes } = useGraphDataStore();
   const history = useHistory();
@@ -137,23 +149,23 @@ const ModalAddLiquidity = ({
     !mustSetPrices && modalType !== CREATE
       ? amm.ammOutcomes
       : [
-          {
-            id: 0,
-            name: 'Invalid',
-            price: '',
-            isInvalid: true,
-          },
-          {
-            id: 1,
-            name: 'No',
-            price: '',
-          },
-          {
-            id: 2,
-            name: 'Yes',
-            price: '',
-          },
-        ]
+        {
+          id: 0,
+          name: 'Invalid',
+          price: '',
+          isInvalid: true,
+        },
+        {
+          id: 1,
+          name: 'No',
+          price: '',
+        },
+        {
+          id: 2,
+          name: 'Yes',
+          price: '',
+        },
+      ]
   );
   const [showBackView, setShowBackView] = useState(false);
   const [chosenCash, updateCash] = useState<string>(currency ? currency : USDC);
@@ -163,16 +175,20 @@ const ModalAddLiquidity = ({
     TRADING_FEE_OPTIONS[2].id
   );
   const [canAddLiquidity, setCanAddLiquidity] = useState(false);
+  const [canRemoveLiquidity, setCanRemoveLiquidity] = useState(false);
 
-  const cash = useMemo(() => {
+  const cash: Cash = useMemo(() => {
     return cashes && chosenCash
       ? Object.values(cashes).find((c) => c.name === chosenCash)
       : Object.values(cashes)[0];
   }, [chosenCash]);
 
   const isETH = cash?.name === ETH;
-  const { addresses: { AMMFactory } } = PARA_CONFIG;
-  const isApproved = modalType === REMOVE ? true : canAddLiquidity;
+  const {
+    addresses: { AMMFactory },
+  } = PARA_CONFIG;
+  const isApproved =
+    modalType === REMOVE ? canRemoveLiquidity : canAddLiquidity;
 
   useEffect(() => {
     const checkCanCashAdd = async () => {
@@ -186,6 +202,24 @@ const ModalAddLiquidity = ({
       setCanAddLiquidity(approvalCheck === APPROVED);
     };
 
+    const checkCanRemoveAmm = async () => {
+      const approvalCheckOne = await checkAllowance(
+        amm?.invalidPool?.id,
+        AMMFactory,
+        loginAccount,
+        transactions,
+        updateTransaction
+      );
+      const approvalCheckTWo = await checkAllowance(
+        amm?.id,
+        AMMFactory,
+        loginAccount,
+        transactions,
+        updateTransaction
+      );
+      setCanRemoveLiquidity(approvalCheckOne === APPROVED && approvalCheckTWo === APPROVED);
+    };
+
     if (isLogged && !canAddLiquidity) {
       if (isETH) {
         setCanAddLiquidity(true);
@@ -193,12 +227,18 @@ const ModalAddLiquidity = ({
         checkCanCashAdd();
       }
     }
+    if (isLogged && !canRemoveLiquidity && modalType === REMOVE) {
+      checkCanRemoveAmm();
+    }
   }, [
     isLogged,
     canAddLiquidity,
+    canRemoveLiquidity,
     setCanAddLiquidity,
+    setCanRemoveLiquidity,
     updateTransaction,
     transactions,
+    modalType,
   ]);
 
   const userTokenBalance = cash?.name ? balances[cash?.name]?.balance : '0';
@@ -214,7 +254,8 @@ const ModalAddLiquidity = ({
   );
 
   const [customName, setCustomName] = useState('');
-  const customNameCapitlized = customName.charAt(0).toUpperCase() + customName.slice(1);
+  const customNameCapitlized =
+    customName.charAt(0).toUpperCase() + customName.slice(1);
 
   const feePercentFormatted = useMemo(() => {
     const feeOption = TRADING_FEE_OPTIONS.find(
@@ -311,7 +352,8 @@ const ModalAddLiquidity = ({
       onChainFee,
       outcomes,
       cash,
-      amm
+      amm,
+      customName
     );
     if (!properties) {
       return setBreakdown(defaultAddLiquidityBreakdown);
@@ -391,7 +433,12 @@ const ModalAddLiquidity = ({
     },
   ];
 
-  const invalidCashAmount = formatCash(createBigNumber(amount === '' ? "0" : amount).times(PORTION_OF_CASH_INVALID_POOL), cash?.name).full;
+  const invalidCashAmount = formatCash(
+    createBigNumber(amount === '' ? '0' : amount).times(
+      PORTION_OF_CASH_INVALID_POOL
+    ),
+    cash?.name
+  ).full;
 
   const confirmAction = async () => {
     const properties = checkConvertLiquidityProperties(
@@ -401,18 +448,14 @@ const ModalAddLiquidity = ({
       onChainFee,
       outcomes,
       cash,
-      amm
+      amm,
+      customName
     );
     if (!properties) {
       setBreakdown(defaultAddLiquidityBreakdown);
     }
     if (modalType === REMOVE) {
-      doRemoveAmmLiquidity(
-        properties.marketId,
-        properties.cash,
-        properties.fee,
-        properties.amount
-      )
+      doRemoveAmmLiquidity(properties)
         .then((response) => {
           const { hash } = response;
           addTransaction({
@@ -444,7 +487,8 @@ const ModalAddLiquidity = ({
           ? amm !== null && amm?.id !== undefined && amm?.liquidity !== '0'
           : false,
         properties.priceNo,
-        properties.priceYes
+        properties.priceYes,
+        properties.symbolRoot
       )
         .then((response) => {
           const { hash } = response;
@@ -504,10 +548,6 @@ const ModalAddLiquidity = ({
           {
             label: 'your share of the liquidity pool',
             value: `${userPercentOfPool}`,
-          },
-          {
-            label: 'your total fees earned',
-            value: '-',
           },
         ],
       },
@@ -604,8 +644,7 @@ const ModalAddLiquidity = ({
           },
         ],
       },
-      footerText:
-        `By adding initial liquidity you'll earn your set trading fee percentage of all trades on this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity. ${invalidCashAmount} will be added to the invalid balancer pool.`,
+      footerText: `By adding initial liquidity you'll earn your set trading fee percentage of all trades on this market proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity. ${invalidCashAmount} will be added to the invalid balancer pool.`,
       breakdown: addCreateBreakdown,
       approvalButtonText: `approve ${chosenCash}`,
       confirmOverview: {
@@ -701,9 +740,9 @@ const ModalAddLiquidity = ({
                 <span className={Styles.SmallLabel}>
                   Set trading fee
                   {generateTooltip(
-                    'Fees earned for providing liquidity.',
-                    'tradingFeeInfo'
-                  )}
+                  'Fees earned for providing liquidity.',
+                  'tradingFeeInfo'
+                )}
                 </span>
                 <MultiButtonSelection
                   options={TRADING_FEE_OPTIONS}
@@ -735,16 +774,15 @@ const ModalAddLiquidity = ({
               <div className={Styles.LineBreak}>
                 <span className={Styles.SmallLabel}>
                   {LIQUIDITY_STRINGS[modalType].customToken.title}
-                  {generateTooltip('Name your AMM outcome share tokens, so they can be distinguished on other trading platforms.', 'customTokenTitle')}
+                  {generateTooltip(
+                    'Name your AMM outcome share tokens, so they can be distinguished on other trading platforms.',
+                    'customTokenTitle'
+                  )}
                 </span>
                 <TextInput
                   placeholder="Enter a custom name"
                   value={customName}
-                  onChange={(value) =>
-                    setCustomName(
-                      value
-                    )
-                  }
+                  onChange={(value) => setCustomName(value)}
                 />
                 <InfoNumbers
                   infoNumbers={
@@ -776,15 +814,24 @@ const ModalAddLiquidity = ({
               infoNumbers={LIQUIDITY_STRINGS[modalType].breakdown}
             />
             {!isApproved && (
-              <ApprovalButton
-                amm={amm}
-                cash={cash}
-                actionType={
-                  modalType !== REMOVE
-                    ? ApprovalAction.ADD_LIQUIDITY
-                    : ApprovalAction.REMOVE_LIQUIDITY
+              <>
+                <ApprovalButton
+                  amm={amm}
+                  cash={cash}
+                  actionType={
+                    modalType !== REMOVE
+                      ? ApprovalAction.ADD_LIQUIDITY
+                      : ApprovalAction.REMOVE_LIQUIDITY
+                  }
+                />
+                {modalType === REMOVE &&
+                  <ApprovalButton
+                    amm={amm}
+                    cash={cash}
+                    actionType={ApprovalAction.TRANSFER_LIQUIDITY}
+                  />
                 }
-              />
+              </>
             )}
 
             <BuySellButton
@@ -805,74 +852,74 @@ const ModalAddLiquidity = ({
           </main>
         </>
       ) : (
-        <>
-          <div className={Styles.Header} onClick={() => setShowBackView(false)}>
-            {BackIcon}
+          <>
+            <div className={Styles.Header} onClick={() => setShowBackView(false)}>
+              {BackIcon}
             Back
           </div>
-          <main>
-            <div className={Styles.MarketTitle}>
-              <span>Market</span>
-              <span>{market.description}</span>
-            </div>
-            <section>
-              <span className={Styles.SmallLabel}>
-                {LIQUIDITY_STRINGS[modalType].confirmOverview.title}
-              </span>
-              <InfoNumbers
-                infoNumbers={
-                  LIQUIDITY_STRINGS[modalType].confirmOverview.breakdown
-                }
-              />
-            </section>
-
-            <section>
-              <span className={Styles.SmallLabel}>
-                {LIQUIDITY_STRINGS[modalType].confirmReceiveOverview.title}
-              </span>
-              <InfoNumbers
-                infoNumbers={
-                  LIQUIDITY_STRINGS[modalType].confirmReceiveOverview.breakdown
-                }
-              />
-            </section>
-            {LIQUIDITY_STRINGS[modalType].marketLiquidityDetails && (
-              <section>
-                <span className={Styles.SmallLabel}>
-                  {LIQUIDITY_STRINGS[modalType].marketLiquidityDetails.title}
-                </span>
-                <InfoNumbers
-                  infoNumbers={
-                    LIQUIDITY_STRINGS[modalType].marketLiquidityDetails
-                      .breakdown
-                  }
-                />
-              </section>
-            )}
-            {LIQUIDITY_STRINGS[modalType].customToken && (
-              <section>
-                <span className={Styles.SmallLabel}>
-                  {LIQUIDITY_STRINGS[modalType].customToken.confirmationTitle}
-                </span>
-                <InfoNumbers
-                  infoNumbers={
-                    LIQUIDITY_STRINGS[modalType].customToken.breakdown
-                  }
-                />
-              </section>
-            )}
-            <BuySellButton
-              text={LIQUIDITY_STRINGS[modalType].confirmButtonText}
-              action={confirmAction}
-            />
-            {LIQUIDITY_STRINGS[modalType].footerText && (
-              <div className={Styles.FooterText}>
-                {LIQUIDITY_STRINGS[modalType].footerText}
+            <main>
+              <div className={Styles.MarketTitle}>
+                <span>Market</span>
+                <span>{market.description}</span>
               </div>
-            )}
-          </main>
-        </>
-      )}
+              <section>
+                <span className={Styles.SmallLabel}>
+                  {LIQUIDITY_STRINGS[modalType].confirmOverview.title}
+                </span>
+                <InfoNumbers
+                  infoNumbers={
+                    LIQUIDITY_STRINGS[modalType].confirmOverview.breakdown
+                  }
+                />
+              </section>
+
+              <section>
+                <span className={Styles.SmallLabel}>
+                  {LIQUIDITY_STRINGS[modalType].confirmReceiveOverview.title}
+                </span>
+                <InfoNumbers
+                  infoNumbers={
+                    LIQUIDITY_STRINGS[modalType].confirmReceiveOverview.breakdown
+                  }
+                />
+              </section>
+              {LIQUIDITY_STRINGS[modalType].marketLiquidityDetails && (
+                <section>
+                  <span className={Styles.SmallLabel}>
+                    {LIQUIDITY_STRINGS[modalType].marketLiquidityDetails.title}
+                  </span>
+                  <InfoNumbers
+                    infoNumbers={
+                      LIQUIDITY_STRINGS[modalType].marketLiquidityDetails
+                        .breakdown
+                    }
+                  />
+                </section>
+              )}
+              {LIQUIDITY_STRINGS[modalType].customToken && (
+                <section>
+                  <span className={Styles.SmallLabel}>
+                    {LIQUIDITY_STRINGS[modalType].customToken.confirmationTitle}
+                  </span>
+                  <InfoNumbers
+                    infoNumbers={
+                      LIQUIDITY_STRINGS[modalType].customToken.breakdown
+                    }
+                  />
+                </section>
+              )}
+              <BuySellButton
+                text={LIQUIDITY_STRINGS[modalType].confirmButtonText}
+                action={confirmAction}
+              />
+              {LIQUIDITY_STRINGS[modalType].footerText && (
+                <div className={Styles.FooterText}>
+                  {LIQUIDITY_STRINGS[modalType].footerText}
+                </div>
+              )}
+            </main>
+          </>
+        )}
     </section>
   );
 };

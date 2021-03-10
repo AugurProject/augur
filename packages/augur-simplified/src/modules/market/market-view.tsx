@@ -19,20 +19,36 @@ import {
 } from '../common/tables';
 import TradingForm from './trading-form';
 import { useAppStatusStore } from '../stores/app-status';
-import { USDC, YES_NO, BUY, MARKET_ID_PARAM_NAME, ETH, DefaultMarketOutcomes } from '../constants';
-import parseQuery from '../routes/helpers/parse-query';
 import { AmmExchange, MarketInfo } from '../types';
-import { formatDai } from '../../utils/format-number';
 import {
-  getMarketEndtimeFull,
-  getMarketEndtimeDate,
-} from '../../utils/date-utils';
-import { getCurrentAmms, useScrollToTopOnMount } from '../stores/utils';
-import { ConfirmedCheck } from '../common/icons';
-import { useGraphDataStore } from '@augurproject/augur-comps';
+  Icons,
+  Constants,
+  useGraphDataStore,
+  useScrollToTopOnMount,
+  SEO,
+  Stores,
+  Utils,
+} from '@augurproject/augur-comps';
 import { OutcomesGrid } from '../common/inputs';
-
 import { AmmOutcome, MarketOutcome } from '../types';
+import { MARKETS_LIST_HEAD_TAGS } from '../seo-config';
+const { ConfirmedCheck } = Icons;
+const {
+  USDC,
+  YES_NO,
+  BUY,
+  MARKET_ID_PARAM_NAME,
+  ETH,
+  DefaultMarketOutcomes,
+} = Constants;
+const {
+  Utils: { getCurrentAmms },
+} = Stores;
+const {
+  DateUtils: { getMarketEndtimeDate, getMarketEndtimeFull },
+  Formatter: { formatDai },
+  PathUtils: { parseQuery },
+} = Utils;
 
 export const combineOutcomeData = (
   ammOutcomes: AmmOutcome[],
@@ -63,7 +79,7 @@ const WinningOutcomeLabel = ({ winningOutcome }) => (
   </span>
 );
 
-const getDetails = market => {
+const getDetails = (market) => {
   const rawInfo = market?.extraInfoRaw || '{}';
   const { longDescription } = JSON.parse(rawInfo, (key, value) => {
     if (key === 'longDescription') {
@@ -88,35 +104,35 @@ const EmptyMarketView = () => {
     <div className={classNames(Styles.MarketView, Styles.EmptyMarketView)}>
       <section>
         <section>
-          <div/>
-          <div/>
-          <div/>
+          <div />
+          <div />
+          <div />
         </section>
         <section>
-          <div/>
-          <div/>
-          <div/>
+          <div />
+          <div />
+          <div />
         </section>
         <section>
-          <div/>
-          <div/>
-          <div/>
-          <div/>
+          <div />
+          <div />
+          <div />
+          <div />
         </section>
         <section>
-          <div/>
-          <div/>
-          <div/>
-          <div/>
+          <div />
+          <div />
+          <div />
+          <div />
         </section>
         <section>
-          <div/>
+          <div />
         </section>
       </section>
       <section>
-        <div/>
-        <div/>
-        <div/>
+        <div />
+        <div />
+        <div />
       </section>
     </div>
   );
@@ -131,7 +147,7 @@ const MarketView = ({ defaultMarket = null }) => {
     actions: { setShowTradingForm },
   } = useAppStatusStore();
   const { markets } = useGraphDataStore();
-  
+
   useScrollToTopOnMount();
 
   const market: MarketInfo = !!defaultMarket
@@ -158,6 +174,12 @@ const MarketView = ({ defaultMarket = null }) => {
   const winningOutcomes = getWinningOutcome(amm?.ammOutcomes, outcomes);
   return (
     <div className={Styles.MarketView}>
+      <SEO
+        {...MARKETS_LIST_HEAD_TAGS}
+        title={market.description}
+        ogTitle={market.description}
+        twitterTitle={market.description}
+      />
       <section>
         <NetworkMismatchBanner />
         {isMobile && <ReportingStateLabel {...{ reportingState, big: true }} />}
@@ -196,7 +218,7 @@ const MarketView = ({ defaultMarket = null }) => {
           outcomes={amm?.ammOutcomes}
           selectedOutcome={amm?.ammOutcomes[2]}
           showAllHighlighted
-          setSelectedOutcome={outcome => {
+          setSelectedOutcome={(outcome) => {
             setSelectedOutcome(outcome);
             setShowTradingForm(true);
           }}

@@ -10,6 +10,7 @@ ATTO = 10 ** 18
 INVALID = 0
 NO = 1
 YES = 2
+SYMBOLS = ["Invalid", "No", "Yes"]
 
 
 @fixture
@@ -42,13 +43,10 @@ def weth_amm(sessionFixture, factory, para_weth_share_token):
     return sessionFixture.uploadWethWrappedAmm(factory, para_weth_share_token)
 
 
-@fixture
-def amm(sessionFixture, factory, market, para_weth_share_token):
-    ammAddress = factory.addAMM(market.address, para_weth_share_token.address, FEE)
-    return sessionFixture.applySignature("AMMExchange", ammAddress)
-
-
 def test_amm_create_with_initial_liquidity(sessionFixture, market, weth_amm, account0):
+    if not sessionFixture.paraAugur:
+        return skip("Test is only for para augur")
+
     initialLiquidity = 5 * ATTO
     numticks = 1000
     (address, lpTokens) = weth_amm.addAMMWithLiquidity(market.address, FEE, ATTO, False, account0,
@@ -57,12 +55,13 @@ def test_amm_create_with_initial_liquidity(sessionFixture, market, weth_amm, acc
     assert lpTokens == initialLiquidity / numticks
 
 
-def test_amm_weth_wrapper_getAMM(market, weth_amm, amm):
+def test_amm_weth_wrapper_getAMM(market, weth_amm, account0):
+    ammAddress = weth_amm.addAMMWithLiquidity(market.address, FEE,  ATTO, True, account0, SYMBOLS, value=ATTO)[0]
     maybe_amm = weth_amm.getAMM(market.address, FEE)
-    assert maybe_amm == amm.address
+    assert maybe_amm == ammAddress
 
 
-def test_amm_weth_60_40_liquidity(sessionFixture, market, weth, para_weth_share_token, weth_amm, account0, amm):
+def test_amm_weth_60_40_liquidity(sessionFixture, market, weth, para_weth_share_token, weth_amm, account0):
     if not sessionFixture.paraAugur:
         return skip("Test is only for para augur")
 
@@ -75,7 +74,8 @@ def test_amm_weth_60_40_liquidity(sessionFixture, market, weth, para_weth_share_
     yesShares = 66666666666666675200  # approximately 2/3 aka 60%
     keptYesShares = sets - yesShares
 
-    lpTokens = weth_amm.addInitialLiquidity(market.address, FEE, ratio, True, account0, value=cost)
+    ammAddress, lpTokens = weth_amm.addAMMWithLiquidity(market.address, FEE, ratio, True, account0, SYMBOLS, value=cost)
+    amm = sessionFixture.applySignature("AMMExchange", ammAddress)
 
     assert lpTokens == 80000000000000006143  # skewed ratio means fewer shares which means fewer LP tokens
     assert amm.balanceOf(account0) == lpTokens
@@ -119,7 +119,7 @@ def test_amm_weth_60_40_liquidity(sessionFixture, market, weth, para_weth_share_
     assert lpTokens > 0
 
 
-def test_amm_weth_yes_position(sessionFixture, market, para_weth_share_token, weth_amm, account0, amm):
+def test_amm_weth_yes_position(sessionFixture, market, para_weth_share_token, weth_amm, account0):
     if not sessionFixture.paraAugur:
         return skip("Test is only for para augur")
 
@@ -128,7 +128,8 @@ def test_amm_weth_yes_position(sessionFixture, market, para_weth_share_token, we
     liquidityCost = sets * numticks
     ratio_50_50 = 10 ** 18
 
-    weth_amm.addInitialLiquidity(market.address, FEE, ratio_50_50, True, account0, value=liquidityCost)
+    ammAddress, lpTokens = weth_amm.addAMMWithLiquidity(market.address, FEE, ratio_50_50, True, account0, SYMBOLS, value=liquidityCost)
+    amm = sessionFixture.applySignature("AMMExchange", ammAddress)
 
     yesPositionSets = 10 * ATTO
     yesPositionCost = yesPositionSets * numticks
@@ -160,7 +161,7 @@ def test_amm_weth_yes_position(sessionFixture, market, para_weth_share_token, we
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, account0) == 0
     assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, account0) == 0
 
-def test_amm_weth_yes_position2(contractsFixture, sessionFixture, market, factory, para_weth_share_token, weth_amm, account0, account1):
+def test_amm_weth_yes_position2(contractsFixture, sessionFixture, market, para_weth_share_token, weth_amm, account0, account1):
     if not sessionFixture.paraAugur:
         return skip("Test is only for para augur")
 
@@ -171,8 +172,7 @@ def test_amm_weth_yes_position2(contractsFixture, sessionFixture, market, factor
 
     para_weth_share_token.setApprovalForAll(weth_amm.address, True)
 
-    factory.addAMM(market.address, para_weth_share_token.address, FEE)
-    weth_amm.addInitialLiquidity(market.address, FEE, ratio_50_50, True, account1, value=liquidityCost)
+    weth_amm.addAMMWithLiquidity(market.address, FEE, ratio_50_50, True, account1, SYMBOLS, value=liquidityCost)
 
     yesPositionSets = 10 * ATTO
     yesPositionCost = yesPositionSets * numticks
@@ -193,7 +193,7 @@ def test_amm_weth_yes_position2(contractsFixture, sessionFixture, market, factor
     assert contractsFixture.ethBalance(account0) > balanceBeforeFinalization
 
 
-def test_amm_weth_claim_from_multiple_markets(sessionFixture, universe, factory, weth_amm, para_weth_share_token, account0, account1):
+def test_amm_weth_claim_from_multiple_markets(sessionFixture, universe, weth_amm, para_weth_share_token, account0, account1):
     if not sessionFixture.paraAugur:
         return skip("Test is only for para augur")
 
@@ -207,8 +207,7 @@ def test_amm_weth_claim_from_multiple_markets(sessionFixture, universe, factory,
         numticks = market.getNumTicks()
         liquidityCost = sets * numticks
 
-        factory.addAMM(market.address, para_weth_share_token.address, FEE)
-        weth_amm.addInitialLiquidity(market.address, FEE, ratio_50_50, True, account1, value=liquidityCost)
+        weth_amm.addAMMWithLiquidity(market.address, FEE, ratio_50_50, True, account1, SYMBOLS, value=liquidityCost)
 
         yesPositionSets = 10 * ATTO
         yesPositionCost = yesPositionSets * numticks

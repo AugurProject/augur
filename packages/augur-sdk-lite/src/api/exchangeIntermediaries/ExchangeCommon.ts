@@ -16,6 +16,12 @@ export interface RemoveLiquidityRate {
   long: BigNumber
 }
 
+export const generateSymbols = (root:string) => ([
+  `i${root}`,
+  `n${root}`,
+  `y${root}`
+]);
+
 export abstract class ExchangeCommon {
   readonly factory: ethers.Contract;
   readonly signerOrProvider: SignerOrProvider;
@@ -43,6 +49,10 @@ export abstract class ExchangeCommon {
     return new BigNumber(lpTokens.toString());
   }
 
+  async addLiquidity(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, recipient: string, symbolRoot:string): Promise<TransactionResponse> {
+    return this.factory.addLiquidity(market, paraShareToken, fee.toFixed(), cash.toFixed(), recipient, cash.idiv(10).toFixed(), generateSymbols(symbolRoot));
+  }
+
   async rateRemoveLiquidity(market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber): Promise<RemoveLiquidityRate> {
     const exchangeAddress = await this.calculateExchangeAddress(market, paraShareToken, fee);
     const amm = this.exchangeContract(exchangeAddress);
@@ -52,10 +62,9 @@ export abstract class ExchangeCommon {
       long: new BigNumber(_longShare.toString()),
     }
   }
-  async removeLiquidity(market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber): Promise<TransactionResponse> {
-    const exchangeAddress = await this.calculateExchangeAddress(market, paraShareToken, fee);
-    const amm = this.exchangeContract(exchangeAddress);
-    return amm.removeLiquidity(lpTokens.toFixed());
+
+  async removeLiquidity(market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber, symbols:string[]): Promise<TransactionResponse> {
+    return this.factory.removeLiquidity(market, paraShareToken, fee.toFixed(), lpTokens.toFixed(), symbols);
   }
 
   async swap(market: string, paraShareToken: string, fee: BigNumber, inputShares: BigNumber, outputLong: Boolean, minShares: BigNumber): Promise<TransactionResponse> {

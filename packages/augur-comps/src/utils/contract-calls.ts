@@ -17,10 +17,11 @@ import { createBigNumber } from './create-big-number';
 import { PARA_CONFIG } from '../stores/constants';
 import ERC20ABI from './ERC20ABI.json';
 import BPoolABI from './BPoolABI.json';
+import ParaShareTokenABI from './ParaShareTokenABI.json';
 
 const isValidPrice = (price: string): boolean => {
   return price !== null && price !== undefined && price !== "0" && price !== "0.00";
-}
+};
 
 const trimDecimalValue = (value: string | BigNumber) => createBigNumber(value).toFixed(6);
 interface LiquidityProperties {
@@ -31,17 +32,24 @@ interface LiquidityProperties {
   fee: string,
   amount: string,
   priceNo: string,
-  priceYes: string
+  priceYes: string,
+  symbols: string[],
+  symbolRoot: string,
 }
 
 export const checkConvertLiquidityProperties = (account: string, marketId: string,
-  amount: string, fee: string, outcomes: AmmOutcome[], cash: Cash, amm: AmmExchange): LiquidityProperties => {
+  amount: string, fee: string, outcomes: AmmOutcome[], cash: Cash, amm: AmmExchange, customName: string): LiquidityProperties => {
   if (!account || !marketId || !amount || !outcomes || outcomes.length === 0 || !cash) return null;
   const priceNo = outcomes[NO_OUTCOME_ID]?.price;
   const priceYes = outcomes[YES_OUTCOME_ID]?.price;
+  let symbolRoot = customName;
   if (!isValidPrice(priceNo) || !isValidPrice(priceYes)) return null;
   if (amount === "0" || amount === "0.00") return null;
   if (Number(fee) < 0) return null;
+  if (amm?.symbols && amm?.symbols.length > 0) {
+    // derive symbol root
+    symbolRoot = amm?.symbols[0].slice(1);
+  }
 
   return {
     account,
@@ -51,7 +59,9 @@ export const checkConvertLiquidityProperties = (account: string, marketId: strin
     fee,
     amount,
     priceNo,
-    priceYes
+    priceYes,
+    symbols: amm?.symbols,
+    symbolRoot
   };
 }
 
@@ -137,6 +147,7 @@ export function doAmmLiquidity(
   hasLiquidity: boolean,
   priceNo: string,
   priceYes: string,
+  symbolRoot: string,
 ): Promise<TransactionResponse | null> {
   const augurClient = augurSdkLite.get();
   if (!augurClient || !augurClient.amm) {
@@ -159,6 +170,8 @@ export function doAmmLiquidity(
     String(priceNo),
     'Yes',
     String(priceYes),
+    'symbol',
+    symbolRoot
   );
 
   // converting odds to pool percentage. odds is the opposit of pool percentage
@@ -175,7 +188,8 @@ export function doAmmLiquidity(
     new BN(fee),
     new BN(amount),
     poolYesPercent,
-    poolNoPercent
+    poolNoPercent,
+    symbolRoot
   );
 }
 
@@ -210,23 +224,20 @@ export async function getRemoveLiquidity(
   };
 }
 
-export function doRemoveAmmLiquidity(
-  marketId: string,
-  cash: Cash,
-  fee: string,
-  lpTokenBalance: string,
+export function doRemoveAmmLiquidity({ marketId, cash, fee, amount, symbols }: { marketId: string, cash: Cash, fee: string, amount: string, symbols: string[] },
 ): Promise<TransactionResponse | null> {
   const augurClient = augurSdkLite.get();
   if (!augurClient || !marketId || !cash?.shareToken || !fee) {
     console.error('doRemoveLiquidity: augurClient is null or no amm address');
     return null;
   }
-  const balance = convertDisplayShareAmountToOnChainShareAmount(lpTokenBalance, cash?.decimals);
+  const balance = convertDisplayShareAmountToOnChainShareAmount(amount, cash?.decimals);
   return augurClient.amm.doRemoveLiquidity(
     marketId,
     cash.shareToken,
     new BN(fee),
     new BN(balance),
+    symbols
   );
 }
 
@@ -544,7 +555,7 @@ export const getUserBalances = async (
           const outcomeShareBalances = [0, 1, 2].map((outcome) => ({
             reference: `${shareToken}-${marketId}-${outcome}`,
             contractAddress: shareToken,
-            abi: ParaShareToken.ABI,
+            abi: ParaShareTokenABI,
             calls: [
               {
                 reference: `${shareToken}-${marketId}-${outcome}`,
@@ -591,7 +602,7 @@ export const getUserBalances = async (
     balananceCalls
   );
 
-  for(let i = 0; i < Object.keys(balanceResult.results).length; i++) {
+  for (let i = 0; i < Object.keys(balanceResult.results).length; i++) {
     const key = Object.keys(balanceResult.results)[i];
     const value = String(
       new BN(
@@ -699,14 +710,14 @@ export const getMarketInvalidity = async (
   cashes: Cashes,
 ): Promise<{ markets: MarketInfos, ammExchanges: AmmExchanges }> => {
 
-  if (!provider) return null;
+  if (!provider) return { markets, ammExchanges };
 
   const CALC_OUT_GIVEN_IN = "calcOutGivenIn";
   const exchanges = Object.values(ammExchanges);
   const invalidMarkets: string[] = [];
 
   const multicall = new Multicall({ ethersProvider: provider });
-  const contractLpBalanceCall: ContractCallContext[] = exchanges.reduce(
+  const contractLpBalanceCall: ContractCallContext[] = exchanges.filter(e => e?.invalidPool?.id && e?.invalidPool?.invalidBalance && e.invalidPool?.invalidBalance !== "0").reduce(
     (p, exchange) => [...p,
     {
       reference: `${exchange?.id}-bPool`,
@@ -721,7 +732,7 @@ export const getMarketInvalidity = async (
             exchange?.invalidPool?.invalidWeight,
             exchange?.invalidPool?.cashBalance,
             exchange?.invalidPool?.cashWeight,
-            String(PORTION_OF_INVALID_POOL_SELL.times(new BN(exchange?.invalidPool?.invalidBalance))),
+            PORTION_OF_INVALID_POOL_SELL.times(new BN(exchange?.invalidPool?.invalidBalance)).toFixed(0),
             exchange?.invalidPool?.swapFee || "0"],
           context: {
             ammExchangeId: exchange?.id
@@ -735,7 +746,7 @@ export const getMarketInvalidity = async (
     contractLpBalanceCall
   );
 
-  for(let i = 0; i < Object.keys(balanceResult.results).length; i++) {
+  for (let i = 0; i < Object.keys(balanceResult.results).length; i++) {
     const key = Object.keys(balanceResult.results)[i];
     const method = String(
       balanceResult.results[key].originalContractCallContext.calls[0].methodName
@@ -745,16 +756,16 @@ export const getMarketInvalidity = async (
     const context = balanceResult.results[key].originalContractCallContext.calls[0].context;
     const rawBalance = new BN(balanceValue.hex).toFixed();
 
-   if (method === CALC_OUT_GIVEN_IN) {
+    if (method === CALC_OUT_GIVEN_IN) {
       const amm = ammExchanges[context.ammExchangeId];
-      amm.swapInvalidForCashInETH = rawBalance
+      const ouputCash = convertOnChainCashAmountToDisplayCashAmount(new BN(rawBalance), amm?.cash?.decimals);
+      amm.swapInvalidForCashInETH = ouputCash.toFixed();
       if (amm.cash.name !== ETH) {
         // converting raw value in cash to cash in ETH. needed for invalidity check
         const ethCash = Object.values(cashes).find(c => c.name === ETH);
-        amm.swapInvalidForCashInETH = new BN(rawBalance).div(new BN(ethCash.usdPrice)).toFixed();
+        amm.swapInvalidForCashInETH = ouputCash.div(new BN(ethCash.usdPrice)).toFixed();
       }
-
-      amm.isAmmMarketInvalid = await getIsMarketInvalid(amm);
+      amm.isAmmMarketInvalid = await getIsMarketInvalid(amm, cashes);
       if (amm.isAmmMarketInvalid) {
         invalidMarkets.push(amm.marketId);
       }
@@ -1015,7 +1026,7 @@ const lastClaimTimestamp = (amm: AmmExchange, isYesOutcome: boolean, account: st
   return claims.reduce((p, c) => Number(c.timestamp) > p ? Number(c.timestamp) : p, 0);
 }
 
-const getIsMarketInvalid = async (amm: AmmExchange): Promise<boolean> => {
+const getIsMarketInvalid = async (amm: AmmExchange, cashes: Cashes): Promise<boolean> => {
   const gasLevels = await getGasStation(PARA_CONFIG.networkId as NetworkId);
   const { invalidPool, market, swapInvalidForCashInETH } = amm;
   const { invalidBalance } = invalidPool;
@@ -1027,10 +1038,19 @@ const getIsMarketInvalid = async (amm: AmmExchange): Promise<boolean> => {
     feeDivisor: Number(market.fee)
   }
 
+  // TODO: there might be more coversion needed because of how wrapped shares works with balancer pool
+  // numTicks might play a roll here
+  // invalid shares are Mega Shares, need to div by num ticks.
+  let sharesSold = convertOnChainSharesToDisplayShareAmount(new BN(invalidBalance).times(PORTION_OF_INVALID_POOL_SELL), 18)
+  if (amm?.cash?.name !== ETH) {
+    // converting shares value based in non-ETH to shares based on ETH.
+    const ethCash = Object.values(cashes).find(c => c.name === ETH);
+    sharesSold = sharesSold.div(new BN(ethCash.usdPrice));
+  }
+
   const isInvalid = marketInvalidityCheck.isMarketInvalid(
     new BN(swapInvalidForCashInETH),
-    new BN(invalidBalance).times(PORTION_OF_INVALID_POOL_SELL),
-    new BN(invalidBalance),
+    sharesSold,
     marketProperties,
     reportingFeeDivisor,
     gasLevels)
@@ -1091,7 +1111,7 @@ export const getErc20Contract = (tokenAddress: string, library: Web3Provider, ac
 export const getErc1155Contract = (tokenAddress: string, library: Web3Provider, account: string): Contract | null => {
   if (!tokenAddress || !library) return null
   try {
-    return getContract(tokenAddress, ParaShareToken.ABI, library, account)
+    return getContract(tokenAddress, ParaShareTokenABI, library, account)
   } catch (error) {
     console.error('Failed to get contract', error)
     return null
@@ -1099,58 +1119,14 @@ export const getErc1155Contract = (tokenAddress: string, library: Web3Provider, 
 }
 
 export const getERC20Allowance = async (tokenAddress: string, provider: Web3Provider, account: string, spender: string): Promise<string> => {
-  const multicall = new Multicall({ ethersProvider: provider });
-
-  const contractAllowanceCall: ContractCallContext[] = [{
-    reference: tokenAddress,
-    contractAddress: tokenAddress,
-    abi: ERC20ABI,
-    calls: [
-      {
-        reference: tokenAddress,
-        methodName: 'allowance',
-        methodParameters: [account, spender],
-      },
-    ],
-  }];
-
-  const allowance: ContractCallResults = await multicall.call(
-    contractAllowanceCall
-  );
-
-  let allowanceAmount = "0";
-  Object.keys(allowance.results).forEach((key) => {
-    const value = allowance.results[key].callsReturnContext[0].returnValues as ethers.utils.Result;
-    allowanceAmount = String(new BN(value.hex));
-  })
-
+  const contract = getErc20Contract(tokenAddress, provider, account);
+  const result = await contract.allowance(account, spender);
+  const allowanceAmount = String(new BN(String(result)));
   return allowanceAmount;
 }
 
 export const getERC1155ApprovedForAll = async (tokenAddress: string, provider: Web3Provider, account: string, spender: string): Promise<boolean> => {
-  const multicall = new Multicall({ ethersProvider: provider });
-
-  const contractAllowanceCall: ContractCallContext[] = [{
-    reference: tokenAddress,
-    contractAddress: tokenAddress,
-    abi: ParaShareToken.ABI,
-    calls: [
-      {
-        reference: tokenAddress,
-        methodName: 'isApprovedForAll',
-        methodParameters: [account, spender],
-      },
-    ],
-  }];
-  const isApprovedResult: ContractCallResults = await multicall.call(
-    contractAllowanceCall
-  );
-
-  let isApproved = false;
-  Object.keys(isApprovedResult.results).forEach((key) => {
-    const value = isApprovedResult.results[key].callsReturnContext[0].returnValues as ethers.utils.Result;
-    isApproved = Boolean(value)
-  })
-
-  return isApproved;
+  const contract = getErc1155Contract(tokenAddress, provider, account);
+  const isApproved = await contract.isApprovedForAll(account, spender);
+  return Boolean(isApproved);
 }

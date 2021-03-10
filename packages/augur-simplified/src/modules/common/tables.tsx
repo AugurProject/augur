@@ -1,19 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import Styles from './tables.styles.less';
-import { EthIcon, UpArrow, UsdIcon } from './icons';
-import { PrimaryButton, SecondaryButton, TinyButton } from './buttons';
 import classNames from 'classnames';
-import {
-  POSITIONS,
-  LIQUIDITY,
-  ALL,
-  ADD,
-  REMOVE,
-  SWAP,
-  TX_STATUS,
-  ETH,
-  TABLES,
-} from '../constants';
 import { SmallDropdown } from './selection';
 import {
   AmmExchange,
@@ -25,23 +12,7 @@ import {
   Winnings,
   TransactionTypes,
 } from '../types';
-import {
-  formatDai,
-  formatCash,
-  formatSimplePrice,
-  formatSimpleShares,
-  formatPercent,
-} from '../../utils/format-number';
-import { MODAL_ADD_LIQUIDITY, USDC } from '../constants';
 import { useAppStatusStore } from '../stores/app-status';
-import {
-  AddressLink,
-  createMarketAmmId,
-  MarketLink,
-  ReceiptLink,
-} from '../routes/helpers/links';
-import { sliceByPage, Pagination } from './pagination';
-import { claimWinnings, getLPCurrentValue } from '../../utils/contract-calls';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
 import {
   InvalidFlagTipIcon,
@@ -49,11 +20,37 @@ import {
   WarningBanner,
   generateTooltip,
 } from './labels';
-import { useGraphDataStore } from '@augurproject/augur-comps';
-import { useUserStore } from '../stores/user';
-import { useCanExitCashPosition } from '../stores/utils';
-import { approveERC1155Contract } from '../hooks/use-approval-callback';
-import { PARA_CONFIG } from '../stores/constants';
+import { PARA_CONFIG, useGraphDataStore, useUserStore, useCanExitCashPosition, Constants, Formatter, Icons, ContractCalls, ApprovalHooks, ButtonComps, Links, PaginationComps } from '@augurproject/augur-comps';
+const { sliceByPage, Pagination } = PaginationComps;
+const { PrimaryButton, SecondaryButton, TinyButton } = ButtonComps;
+const { claimWinnings, getLPCurrentValue } = ContractCalls;
+const {
+  formatDai,
+  formatCash,
+  formatSimplePrice,
+  formatSimpleShares,
+  formatPercent,
+} = Formatter;
+const {
+  MODAL_ADD_LIQUIDITY, USDC,
+  POSITIONS,
+  LIQUIDITY,
+  ALL,
+  ADD,
+  REMOVE,
+  SWAP,
+  TX_STATUS,
+  ETH,
+  TABLES,
+} = Constants;
+const { EthIcon, UpArrow, UsdIcon } = Icons;
+const { approveERC1155Contract } = ApprovalHooks;
+const {
+  AddressLink,
+  createMarketAmmId,
+  MarketLink,
+  ReceiptLink,
+} = Links;
 
 interface PositionsTableProps {
   market: MarketInfo;
@@ -170,7 +167,7 @@ export const PositionFooter = ({
     loginAccount,
     actions: { addTransaction, updateTransaction },
   } = useUserStore();
-  const canClaimETH = useCanExitCashPosition(claimableWinnings?.sharetoken);
+  const canClaimETH = useCanExitCashPosition({ name: amm?.cash?.name, shareToken: claimableWinnings?.sharetoken });
   const isETHClaim = amm?.cash?.name === ETH;
   const { addresses: { WethWrapperForAMMExchange } } = PARA_CONFIG;
 

@@ -10,7 +10,7 @@ import 'ROOT/para/interfaces/IAMMExchange.sol';
 import 'ROOT/para/interfaces/IParaShareToken.sol';
 import 'ROOT/balancer/BFactory.sol';
 import 'ROOT/balancer/BPool.sol';
-import 'ROOT/trading/wrappedShareToken/WrappedShareTokenFactoryFactory.sol';
+import 'ROOT/trading/wrappedShareToken/WrappedShareTokenFactory.sol';
 import 'ROOT/trading/wrappedShareToken/WrappedShareToken.sol';
 
 contract AMMFactory is IAMMFactory, CloneFactory2 {
@@ -18,16 +18,15 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
 
     IAMMExchange internal proxyToClone;
     BFactory internal bFactory;
-    WrappedShareTokenFactoryFactory internal wrappedShareTokenFactoryFactory;
+    WrappedShareTokenFactory internal wrappedShareTokenFactory;
     mapping (address => address) public balancerPools;
 
-    event AMMCreated(IAMMExchange amm, IMarket market, IParaShareToken shareToken, uint256 fee, BPool bPool);
-    event BPoolCreated(WrappedShareToken wrappedShareToken);
+    event AMMCreated(IAMMExchange amm, IMarket market, IParaShareToken shareToken, uint256 fee, BPool bPool, string[] _symbols);
 
-    constructor(address _proxyToClone, BFactory _bFactory, WrappedShareTokenFactoryFactory _wrappedShareTokenFactoryFactory) public {
+    constructor(address _proxyToClone, BFactory _bFactory, WrappedShareTokenFactory _wrappedShareTokenFactory) public {
         bFactory = _bFactory;
         proxyToClone = IAMMExchange(_proxyToClone);
-        wrappedShareTokenFactoryFactory = _wrappedShareTokenFactoryFactory;
+        wrappedShareTokenFactory = _wrappedShareTokenFactory;
     }
 
     function addLiquidity(
@@ -61,7 +60,6 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         uint256 _poolTokensToSell,
         string[] memory _symbols
     ) public returns (uint256 _shortShare, uint256 _longShare) {
-        WrappedShareTokenFactory wrappedShareTokenFactory = wrappedShareTokenFactoryFactory.getOrCreateWrappedShareTokenFactory(_para);
         address _ammAddress = exchanges[address(_market)][address(_para)][_fee];
         IAMMExchange _amm = IAMMExchange(_ammAddress);
 
@@ -96,7 +94,7 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         _bPool.transferFrom(msg.sender, address(this), _lpTokenBalance);
         _bPool.exitPool(_lpTokenBalance, _minAmountsOut);
 
-        wrappedShareTokenFactory.unwrapAllShares(_para.getTokenId(_market, 0), _symbol);
+        wrappedShareTokenFactory.unwrapAllShares(_para, _para.getTokenId(_market, 0), _symbol);
     }
 
     function sendAllShares(
@@ -123,6 +121,14 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         uint256 _fee
     ) public returns (address) {
         return exchanges[address(_market)][address(_para)][_fee];
+    }
+
+    function getBPool(
+        IMarket _market,
+        IParaShareToken _para,
+        uint256 _fee
+    ) public returns (address) {
+        return balancerPools[getAMM(_market, _para, _fee)];
     }
 
     function balanceOf(
@@ -152,19 +158,16 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         _para.cash().approve(address(_para.augur()), 2**256-1);
 
         IAMMExchange _amm = createAMM(_market, _para, _fee);
-        BPool _bPool = createBPool(_ammAddress, _para, _market, _fee, _recipient, _symbols);
-
-        balancerPools[address(_amm)] = address(_bPool);
-
-        emit AMMCreated(_amm, _market, _para, _fee, _bPool);
-
-        _ammAddress = address(_amm);
-
-        _cash = _para.cash().balanceOf(address(this));
 
         // Move 10% of remaining cash to the balancer pool.
         uint256 _cashToSendToPool = (_cash * 10 * 10**16) / 10**18;
-        addLiquidityToBPool(_market, _para, _bPool, _cashToSendToPool, _recipient, _symbols);
+        BPool _bPool = createBPool(_ammAddress, _para, _market, _fee, _recipient, _symbols, _cashToSendToPool);
+
+        balancerPools[address(_amm)] = address(_bPool);
+
+        emit AMMCreated(_amm, _market, _para, _fee, _bPool, _symbols);
+
+        _ammAddress = address(_amm);
 
         _cash = _para.cash().balanceOf(address(this));
         _lpTokens = _amm.addInitialLiquidity(_cash, _ratioFactor, _keepLong, _recipient);
@@ -179,8 +182,6 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         address _recipient,
         string[] memory _symbols
     ) internal {
-        WrappedShareTokenFactory wrappedShareTokenFactory = wrappedShareTokenFactoryFactory.getOrCreateWrappedShareTokenFactory(_para);
-
         uint _poolCashBalance = _bPool.getBalance(address(_para.cash()));
         uint _poolLPTokenTotalSupply = _bPool.totalSupply();
 
@@ -191,7 +192,7 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
 
         _para.publicBuyCompleteSets(_market, _setsToBuy);
 
-        wrappedShareTokenFactory.wrapShares(_para.getTokenId(_market, 0), _symbols[0], address(this), _setsToBuy);
+        wrappedShareTokenFactory.wrapShares(_para, _para.getTokenId(_market, 0), _symbols[0], address(this), _setsToBuy);
 
         uint256[] memory _maxAmountsIn = new uint256[](2);
         // The max amount is constrained by the _lpTokenOut.
@@ -225,13 +226,12 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         exchanges[address(_market)][address(_para)][_fee] = _ammAddress;
     }
 
-    function createBPool(address _ammAddress, IParaShareToken _para, IMarket _market, uint256 _fee, address _recipient, string[] memory _symbols) private returns (BPool _bPool){
+    function createBPool(address _ammAddress, IParaShareToken _para, IMarket _market, uint256 _fee, address _recipient, string[] memory _symbols, uint256 _cashToSendToPool) private returns (BPool _bPool){
         _bPool = bFactory.newBPool();
 
         uint256 _invalidTokenId = _para.getTokenId(_market, 0);
 
-        WrappedShareTokenFactory wrappedShareTokenFactory = wrappedShareTokenFactoryFactory.getOrCreateWrappedShareTokenFactory(_para);
-        WrappedShareToken wrappedShareToken = wrappedShareTokenFactory.getOrCreateWrappedShareToken(_invalidTokenId, _symbols[0]);
+        WrappedShareToken wrappedShareToken = wrappedShareTokenFactory.getOrCreateWrappedShareToken(_para, _invalidTokenId, _symbols[0]);
 
         _para.setApprovalForAll(address(wrappedShareTokenFactory), true);
         wrappedShareToken.approve(address(_bPool), 2**256-1);
@@ -240,23 +240,23 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         uint256 _numTicks = _market.getNumTicks();
 
         // Create pool.
-        // MIN_BALANCE needed to setup pool is 10**18 / 10**12.
-        // Will send MIN_BALANCE * numTicks cash because we need MIN_BALANCE complete sets.
-        uint256 MIN_BALANCE = 10**6 * _numTicks;
+        // Send 90% of the cash as cash to the bpool.
+        uint256 cashToBPool = (_cashToSendToPool * 90 * 10**16) / 10**18;
 
-        // Setup bPool....
-        uint256 _setsToBuy = MIN_BALANCE.div(_numTicks);
+        // Send 10% of the cash as invalid shares to the bpool.
+        uint256 _setsToBuy = (_cashToSendToPool.div(_numTicks) * 10 * 10**16) / 10**18;
         _para.publicBuyCompleteSets(_market, _setsToBuy);
-        wrappedShareTokenFactory.wrapShares(_invalidTokenId, _symbols[0], address(this), _setsToBuy);
+
+        wrappedShareTokenFactory.wrapShares(_para, _invalidTokenId, _symbols[0], address(this), _setsToBuy);
+        uint256 amountToBPool = wrappedShareToken.balanceOf(address(this));
 
         // Send cash to balancer bPool
         // Pool weight == 90%
-        _bPool.bind(address(_para.cash()), MIN_BALANCE, 45 * 10**18);
+        _bPool.bind(address(_para.cash()), cashToBPool, 45 * 10**18);
 
         // Move just minted invalid shares to the balancer pool.
         // Pool weight == 10%
-        _bPool.bind(address(wrappedShareToken),  _setsToBuy, 5 * 10**18);
-
+        _bPool.bind(address(wrappedShareToken),  amountToBPool, 5 * 10**18);
         _bPool.finalize();
 
         uint256[] memory _tokenIds = new uint256[](2);
@@ -268,6 +268,9 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         _amounts[1] = _setsToBuy;
 
         _para.unsafeBatchTransferFrom(address(this), _recipient, _tokenIds, _amounts);
+
+        uint256 _lpTokenBalance = _bPool.balanceOf(address(this));
+        _bPool.transferFrom(address(this), _recipient, _lpTokenBalance);
     }
 
     function transferCash(

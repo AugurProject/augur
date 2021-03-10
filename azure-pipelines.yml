@@ -7,7 +7,7 @@ variables:
   - name: CORE_IMAGE_LATEST
     value: augurproject/augur-core:monorepo
   - name: PRIMARY_NODE_VERSION
-    value: 12.18.x
+    value: 15.11.x
   - name: GETH_VERSION
     value: v1.9.19
   - name: SOLC_VERSION
@@ -163,9 +163,13 @@ jobs:
     timeoutInMinutes: 120
     steps:
       - template: .azure-templates/node-setup.yml
+      - script: |
+          curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain nightly
+          echo "##vso[task.setvariable variable=PATH;]$PATH:$HOME/.cargo/bin"
+        displayName: Install rust
       - task: UsePythonVersion@0
         inputs:
-          versionSpec: '3.6'
+          versionSpec: '3.9'
       - bash: |
           set -euo pipefail
           python3 -m venv venv && \
@@ -277,9 +281,13 @@ jobs:
           TESTS: security:mythril
     steps:
       - template: .azure-templates/node-setup.yml
+      - script: |
+          curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain nightly
+          echo "##vso[task.setvariable variable=PATH;]$PATH:$HOME/.cargo/bin"
+        displayName: Install rust
       - task: UsePythonVersion@0
         inputs:
-          versionSpec: '3.6'
+          versionSpec: '3.9'
       - bash: |
           set -exuo pipefail
           echo "$(SOLC_MD5) */usr/local/bin/solc" > solc.md5 && \
@@ -318,6 +326,8 @@ jobs:
             (cd packages/augur-core && yarn test:unit $(TESTS))
           fi
         displayName: integration tests
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
 
   - job: Docker_populated_geth_images
     dependsOn:
@@ -436,7 +446,7 @@ jobs:
   - template: .azure-templates/migration-ui-build-to-s3.yml
     parameters:
       name: deploy_migration_to_dev
-      environment: v2
+      environment: mainnet
       deployBucketName: migration.augur.sh
       triggerBranch: refs/heads/dev
       cloudfrontDistributionId: E2S9HFAX540JON
@@ -444,7 +454,7 @@ jobs:
   - template: .azure-templates/simplified-ui-build-to-s3.yml
     parameters:
       name: deploy_simplified_to_chad
-      environment: v2
+      environment: chad
       deployBucketName: chad.augur.sh
       triggerBranch: refs/heads/chad
       cloudfrontDistributionId: E2HAMPZED8493G

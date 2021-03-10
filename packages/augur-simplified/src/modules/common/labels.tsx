@@ -2,13 +2,32 @@ import React, { useEffect, useMemo } from 'react';
 import Styles from './labels.styles.less';
 import { useLocation } from 'react-router';
 import classNames from 'classnames';
-import { formatDai } from '../../utils/format-number';
-import { CATEGORIES_ICON_MAP } from './category-icons-map';
 import { useAppStatusStore } from '../stores/app-status';
-import parsePath from '../routes/helpers/parse-path';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from './tooltip.styles.less';
+import { FormattedNumber, MarketInfo } from '../types';
+import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import {
+  useGraphDataStore,
+  useUserStore,
+  Icons,
+  Utils,
+  Constants,
+  PARA_CONFIG,
+} from '@augurproject/augur-comps';
+const {
+  CREATE,
+  USDC,
+  MARKET_STATUS,
+  MODAL_ADD_LIQUIDITY,
+  MARKET,
+  ADD,
+} = Constants;
+const {
+  PathUtils: { parsePath },
+  Formatter: { formatDai },
+} = Utils;
+const {
   HelpIcon,
   USDCIcon,
   AugurBlankIcon,
@@ -18,21 +37,8 @@ import {
   WarningIcon,
   XIcon,
   InvalidFlagIcon,
-} from './icons';
-import {
-  CREATE,
-  USDC,
-  MARKET_STATUS,
-  MODAL_ADD_LIQUIDITY,
-  MARKET,
-  ADD,
-} from '../constants';
-import { FormattedNumber, MarketInfo } from '../types';
-import { useGraphDataStore } from '@augurproject/augur-comps';
-import { PARA_CONFIG } from '../stores/constants';
-import { useUserStore } from '../stores/user';
-import {UnsupportedChainIdError, useWeb3React} from '@web3-react/core';
-
+  CATEGORIES_ICON_MAP,
+} = Icons;
 interface ValueLabelProps {
   large?: boolean;
   label?: string;
@@ -190,33 +196,37 @@ export const ReportingStateLabel = ({ reportingState, big = false }) => {
 
 export const InvalidFlagTipIcon = ({ market, big = false }) => {
   let content;
-  if (market.isInvalid) content = (
-    <span
-      data-big={big}
-      className={classNames(Styles.InvalidFlagTipIcon, TooltipStyles.Container)}
-    >
-      <label
-        className={classNames(TooltipStyles.TooltipHint)}
-        data-tip
-        data-for={`invalidFlag-${market.marketId}`}
-        data-iscapture={true}
+  if (market.isInvalid)
+    content = (
+      <span
+        data-big={big}
+        className={classNames(
+          Styles.InvalidFlagTipIcon,
+          TooltipStyles.Container
+        )}
       >
-        {InvalidFlagIcon}
-      </label>
-      <ReactTooltip
-        id={`invalidFlag-${market.marketId}`}
-        className={TooltipStyles.Tooltip}
-        effect="solid"
-        place="top"
-        type="light"
-        event="mouseover mouseenter"
-        eventOff="mouseleave mouseout scroll mousewheel blur"
-      >
-        <p>High probabilty of resolving Invalid</p>
-      </ReactTooltip>
-    </span>
-  );
-  return (<>{content}</>);
+        <label
+          className={classNames(TooltipStyles.TooltipHint)}
+          data-tip
+          data-for={`invalidFlag-${market.marketId}`}
+          data-iscapture={true}
+        >
+          {InvalidFlagIcon}
+        </label>
+        <ReactTooltip
+          id={`invalidFlag-${market.marketId}`}
+          className={TooltipStyles.Tooltip}
+          effect="solid"
+          place="top"
+          type="light"
+          event="mouseover mouseenter"
+          eventOff="mouseleave mouseout scroll mousewheel blur"
+        >
+          <p>High probabilty of resolving Invalid</p>
+        </ReactTooltip>
+      </span>
+    );
+  return <>{content}</>;
 };
 
 const handleValue = (value) =>
@@ -229,13 +239,8 @@ interface AppViewStatsProps {
 }
 
 export const AppViewStats = ({ showCashAmounts }: AppViewStatsProps) => {
-  const {
-    isMobile,
-    isLogged,
-  } = useAppStatusStore();
-  const {
-    balances
-  } = useUserStore();
+  const { isMobile, isLogged } = useAppStatusStore();
+  const { balances } = useUserStore();
   const totalAccountValue = useMemo(
     () => handleValue(isLogged ? balances?.totalAccountValue : 0),
     [isLogged, balances.totalAccountValue]
@@ -373,7 +378,8 @@ export const NetworkMismatchBanner = () => {
     [chainId, networkId]
   );
   const isGraphError = !!errors;
-  const unsupportedChainIdError = error && error instanceof UnsupportedChainIdError;
+  const unsupportedChainIdError =
+    error && error instanceof UnsupportedChainIdError;
 
   useEffect(() => {
     // in the event of an error, scroll to top to force banner to be seen.

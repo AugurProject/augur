@@ -197,10 +197,10 @@ Deploying to: ${env}
         }
 
         await this.uploadERC20Proxy1155Contracts();
-        await this.uploadWrappedShareTokenFactoryFactory();
+        await this.uploadWrappedShareTokenFactory();
         await this.uploadBFactory();
 
-        await this.uploadAMMContracts(this.contracts.get('BFactory').address, this.contracts.get('WrappedShareTokenFactoryFactory').address);
+        await this.uploadAMMContracts(this.contracts.get('BFactory').address, this.contracts.get('WrappedShareTokenFactory').address);
         await this.uploadAccountLoaderContract(this.augur.address, this.augurTrading.address);
 
         await this.initializeAllContracts();
@@ -338,7 +338,7 @@ Deploying to: ${env}
         mapping['OICash'] = this.contracts.get('OICash').address!;
         mapping['AugurWalletRegistry'] = this.contracts.get('AugurWalletRegistry').address!;
         mapping['AMMFactory'] = this.contracts.get('AMMFactory').address!;
-        mapping['WrappedShareTokenFactoryFactory'] = this.contracts.get('WrappedShareTokenFactoryFactory').address!;
+        mapping['WrappedShareTokenFactory'] = this.contracts.get('WrappedShareTokenFactory').address!;
         mapping['BFactory'] = this.contracts.get('BFactory').address!;
 
         for (let contract of this.contracts) {
@@ -543,15 +543,18 @@ Deploying to: ${env}
         return nexus.address;
     }
 
-    async uploadWrappedShareTokenFactoryFactory(): Promise<string> {
-        console.log('Uploading WrappedShareTokenFactoryFactory contract');
-        const metaFactory = this.contracts.get('WrappedShareTokenFactoryFactory');
-        metaFactory.address = await this.construct(metaFactory, []);
-        return metaFactory.address;
+    async uploadWrappedShareTokenFactory(): Promise<string> {
+        console.log('Uploading WrappedShareTokenFactory contract');
+        const factory = this.contracts.get('WrappedShareTokenFactory');
+        const tokenTemplate = this.contracts.get('WrappedShareToken');
+
+        tokenTemplate.address = await this.construct(tokenTemplate, []);
+        factory.address = await this.construct(factory, [tokenTemplate.address]);
+        return factory.address;
     }
 
     // fee is thousandths of a percent; valid values are [0,30], for max fee of 3%
-    async uploadAMMContracts(bFactory: string, wrappedShareTokenFactoryFactory: string): Promise<string> {
+    async uploadAMMContracts(bFactory: string, wrappedShareTokenFactory: string): Promise<string> {
         console.log('Uploading AMM contracts');
 
         const masterProxy = this.contracts.get('AMMExchange');
@@ -561,7 +564,7 @@ Deploying to: ${env}
         factory.address = await this.construct(factory, [
             masterProxy.address,
             bFactory,
-            wrappedShareTokenFactoryFactory
+            wrappedShareTokenFactory
         ]);
         return factory.address;
     }
@@ -634,7 +637,7 @@ Deploying to: ${env}
         if (contractName === 'ERC20Proxy1155Nexus') return;
         if (contractName === 'AMMExchange') return;
         if (contractName === 'AMMFactory') return;
-        if (contractName === 'WrappedShareTokenFactoryFactory') return;
+        if (contractName === 'WrappedShareTokenFactory') return;
         if (contractName === 'AccountLoader') return;
         // 0x
         if ([
@@ -951,7 +954,7 @@ Deploying to: ${env}
         if (this.contracts.get('Time')) mapping['Time'] = this.contracts.get('Time').address;
 
         if (this.contracts.get('AMMFactory')) mapping['AMMFactory'] = this.contracts.get('AMMFactory').address;
-        if (this.contracts.get('WrappedShareTokenFactoryFactory')) mapping['WrappedShareTokenFactoryFactory'] = this.contracts.get('WrappedShareTokenFactoryFactory').address;
+        if (this.contracts.get('WrappedShareTokenFactory')) mapping['WrappedShareTokenFactory'] = this.contracts.get('WrappedShareTokenFactory').address;
 
         for (const contract of this.contracts) {
             if (!contract.relativeFilePath.startsWith('trading/')) continue;

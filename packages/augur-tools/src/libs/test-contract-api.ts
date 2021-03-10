@@ -6,7 +6,7 @@ import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { API } from '@augurproject/sdk/build/state/getter/API';
 import { BlockAndLogStreamerSyncStrategy } from '@augurproject/sdk/build/state/sync/BlockAndLogStreamerSyncStrategy';
 import { BulkSyncStrategy } from '@augurproject/sdk/build/state/sync/BulkSyncStrategy';
-import { SDKConfiguration } from '@augurproject/utils';
+import { LoggerLevels, SDKConfiguration } from '@augurproject/utils';
 import { SupportedProvider } from 'ethereum-types';
 import { ethers } from 'ethers';
 import { Account } from '../constants';
@@ -42,6 +42,7 @@ export class TestContractAPI extends ContractAPI {
       createBrowserMesh
     );
 
+    client.setLoggerLevel(LoggerLevels.error);
     const db = await makeDbMock(dbPrefix).makeDB(client);
 
     connector.initialize(client, db);

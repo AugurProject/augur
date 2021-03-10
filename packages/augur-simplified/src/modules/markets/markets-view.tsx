@@ -1,13 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import Styles from './markets-view.styles.less';
 import { AppViewStats, NetworkMismatchBanner } from '../common/labels';
-import { FilterIcon } from '../common/icons';
 import classNames from 'classnames';
-import { SearchButton, SecondaryButton } from '../common/buttons';
 import { SquareDropdown } from '../common/selection';
 import { useAppStatusStore } from '../stores/app-status';
 import { MarketInfo } from '../types';
-import {
+import { TopBanner } from '../common/top-banner';
+import { SearchInput } from '../common/inputs';
+import { MarketCardComps, useGraphDataStore, useScrollToTopOnMount, GraphClient, SEO, Icons, ButtonComps, Constants, PaginationComps } from '@augurproject/augur-comps';
+import { MARKETS_LIST_HEAD_TAGS } from '../seo-config';
+
+const { sliceByPage, Pagination } = PaginationComps;
+const { LoadingMarketCard, MarketCardView } = MarketCardComps;
+const { searchMarkets } = GraphClient;
+const { SearchButton, SecondaryButton } = ButtonComps;
+const { FilterIcon } = Icons;
+const {
   SIDEBAR_TYPES,
   ALL_CURRENCIES,
   ALL_MARKETS,
@@ -28,14 +36,8 @@ import {
   TWENTY_FOUR_HOUR_VOLUME,
   CREATE,
   MODAL_ADD_LIQUIDITY,
-} from '../constants';
-import { sliceByPage, Pagination } from '../common/pagination';
-import { TopBanner } from '../common/top-banner';
-import { searchMarkets } from '../apollo/client';
-import { SearchInput } from '../common/inputs';
-import { useScrollToTopOnMount } from '../stores/utils';
-import { MarketCardComps, useGraphDataStore } from '@augurproject/augur-comps';
-const { LoadingMarketCard, MarketCardView } = MarketCardComps;
+} = Constants;
+
 const PAGE_LIMIT = 21;
 
 const applyFiltersAndSort = (
@@ -237,6 +239,7 @@ const MarketsView = () => {
         [Styles.SearchOpen]: showFilter,
       })}
     >
+      <SEO {...MARKETS_LIST_HEAD_TAGS} />
       <NetworkMismatchBanner />
       {isLogged ? <AppViewStats showCashAmounts /> : <TopBanner />}
       {isMobile && (

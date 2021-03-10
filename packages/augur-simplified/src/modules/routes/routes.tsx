@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 
-import makePath from 'modules/routes/helpers/make-path.ts';
+import { Utils } from '@augurproject/augur-comps';
 import MarketsView from 'modules/markets/markets-view';
 import MarketView from 'modules/market/market-view';
 import {
@@ -10,6 +10,7 @@ import {
   PORTFOLIO,
 } from 'modules/constants.ts';
 import PortfolioView from 'modules/portfolio/portfolio-view';
+const { PathUtils: { makePath } } = Utils;
 
 const Routes = p => {
   return (

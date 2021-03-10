@@ -20,7 +20,7 @@ const templateValidations = [
   },
 ];
 
-test('flash :: tempalte validation tests', async () => {
+test.skip('flash :: tempalte validation tests', async () => {
   templateValidations.map(async (t, i) => {
     if (t.skip) {
       console.log('skipping', t.title);

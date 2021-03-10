@@ -151,7 +151,7 @@ dataSources:
         - name: BPool
           file: ./abis/BPool.json
       eventHandlers:
-        - event: AMMCreated(address,address,address,uint256,address)
+        - event: AMMCreated(address,address,address,uint256,address,string[])
           handler: handleAMMCreated
   - kind: ethereum/contract
     name: ParaDeployer

@@ -14,7 +14,7 @@ import type {
   TransactionMetadataParams,
   EthersSigner,
 } from '@augurproject/contract-dependencies-ethers';
-import type { BigNumber } from '../utils/create-big-number';
+import type { BigNumber } from 'bignumber.js';
 import type { Template } from '@augurproject/templates';
 import { JsonRpcProvider } from 'ethers/providers';
 
@@ -194,6 +194,7 @@ export interface AmmExchange {
   ammOutcomes: AmmOutcome[];
   isAmmMarketInvalid: boolean;
   invalidPool: InvalidPool;
+  symbols: string[];
   swapInvalidForCashInETH?: string;
 }
 

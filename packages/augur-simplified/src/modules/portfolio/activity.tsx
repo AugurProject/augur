@@ -1,13 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import Styles from './activity.styles.less';
 import { useAppStatusStore } from '../stores/app-status';
-import { useGraphDataStore } from '@augurproject/augur-comps';
+import { useGraphDataStore, useUserStore, Formatter, ProcessData, Links, PaginationComps } from '@augurproject/augur-comps';
 import { ActivityItem } from '../types';
-import { ReceiptLink } from '../routes/helpers/links';
-import { Pagination, sliceByPage } from '../common/pagination';
-import { getCashFormat } from '../../utils/format-number';
-import { shapeUserActvity } from '../../utils/process-data';
-import { useUserStore } from '../stores/user';
+const { Pagination, sliceByPage } = PaginationComps;
+const { ReceiptLink } = Links;
+const { shapeUserActvity } = ProcessData;
+const { getCashFormat } = Formatter;
 
 const ActivityCard = ({ activity }: { activity: ActivityItem }) => (
   <div className={Styles.ActivityCard}>

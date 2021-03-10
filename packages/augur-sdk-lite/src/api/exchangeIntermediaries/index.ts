@@ -12,31 +12,31 @@ export interface ExchangeContractIntermediary {
   addAMMWithLiquidity(
     market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber,
     ratio: BigNumber, keepLong: Boolean,
-    recipient: string): Promise<TransactionResponse>
+    recipient: string, symbolRoot: string): Promise<TransactionResponse>
 
   rateAddAMMWithLiquidity(
     market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber,
-    ratio: BigNumber, keepLong: Boolean, recipient: string): Promise<BigNumber>
+    ratio: BigNumber, keepLong: Boolean, recipient: string, symbolRoot: string): Promise<BigNumber>
 
   addInitialLiquidity(
     market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber,
     ratio: BigNumber, keepLong: Boolean,
-    recipient: string): Promise<TransactionResponse>
+    recipient: string, symbolRoot: string): Promise<TransactionResponse>
 
   rateAddInitialLiquidity(
     market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber,
-    ratio: BigNumber, keepLong: Boolean, recipient: string): Promise<BigNumber>
+    ratio: BigNumber, keepLong: Boolean, recipient: string, symbolRoot: string): Promise<BigNumber>
 
   addLiquidity(
     market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber,
-    recipient: string): Promise<TransactionResponse>
+    recipient: string, symbolRoot: string): Promise<TransactionResponse>
 
   rateAddLiquidity(
     market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber,
     recipient: string): Promise<BigNumber>
 
   removeLiquidity(
-    market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber
+    market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber, symbols: string[]
   ): Promise<TransactionResponse>
 
   rateRemoveLiquidity(

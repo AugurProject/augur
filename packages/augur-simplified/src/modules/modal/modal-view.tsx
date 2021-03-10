@@ -1,17 +1,35 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import ModalAddLiquidity from './modal-add-liquidity';
-import {useHistory} from 'react-router';
+import { useHistory } from 'react-router';
 import Styles from './modal.styles.less';
-import {useAppStatusStore} from '../stores/app-status';
-import {MODAL_ADD_LIQUIDITY, MODAL_CONNECT_WALLET} from '../constants';
-import ModalConnectWallet from './modal-connect-wallet';
+import { useAppStatusStore } from '../stores/app-status';
+import { MODAL_ADD_LIQUIDITY } from '../constants';
+import { Constants, Modals, useUserStore } from '@augurproject/augur-comps';
+const { ModalConnectWallet } = Modals;
 
-function selectModal(type, modal) {
+function selectModal(
+  type,
+  modal,
+  logout,
+  closeModal,
+  removeTransaction,
+  isLogged,
+  isMobile
+) {
   switch (type) {
     case MODAL_ADD_LIQUIDITY:
       return <ModalAddLiquidity {...modal} />;
-    case MODAL_CONNECT_WALLET:
-      return <ModalConnectWallet {...modal} />
+    case Constants.MODAL_CONNECT_WALLET:
+      return (
+        <ModalConnectWallet
+          {...modal}
+          logout={logout}
+          closeModal={closeModal}
+          isLogged={isLogged}
+          isMobile={isMobile}
+          removeTransaction={removeTransaction}
+        />
+      );
     default:
       return <div />;
   }
@@ -23,11 +41,16 @@ const ModalView = () => {
   const history = useHistory();
   const {
     modal,
+    isLogged,
+    isMobile,
     actions: { closeModal },
   } = useAppStatusStore();
+  const {
+    actions: { logout, removeTransaction },
+  } = useUserStore();
   const [locationKeys, setLocationKeys] = useState([]);
 
-  const handleKeyDown = e => {
+  const handleKeyDown = (e) => {
     if (e.keyCode === ESCAPE_KEYCODE) {
       if (modal && modal.cb) {
         modal.cb();
@@ -42,7 +65,7 @@ const ModalView = () => {
   }, []);
 
   useEffect(() => {
-    return history.listen(location => {
+    return history.listen((location) => {
       if (history.action === 'PUSH') {
         setLocationKeys([location.key]);
       }
@@ -53,7 +76,7 @@ const ModalView = () => {
 
           closeModal();
         } else {
-          setLocationKeys(keys => [location.key, ...keys]);
+          setLocationKeys((keys) => [location.key, ...keys]);
 
           closeModal();
         }
@@ -63,14 +86,17 @@ const ModalView = () => {
 
   const Modal = selectModal(
     modal.type,
-    modal
+    modal,
+    logout,
+    closeModal,
+    removeTransaction,
+    isLogged,
+    isMobile
   );
 
   return (
     <section className={Styles.ModalView}>
-      <div>
-        {Modal}
-      </div>
+      <div>{Modal}</div>
     </section>
   );
 };

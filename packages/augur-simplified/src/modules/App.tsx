@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { ApolloProvider } from 'react-apollo';
-import { client } from './apollo/client';
 import { useLocation } from 'react-router';
 import { HashRouter } from 'react-router-dom';
 import Styles from './App.styles.less';
@@ -8,16 +7,13 @@ import Routes from './routes/routes';
 import TopNav from './common/top-nav';
 import '../assets/styles/shared.less';
 import { AppStatusProvider, useAppStatusStore } from './stores/app-status';
-import { UserProvider, useUserStore } from './stores/user';
 import { Sidebar } from './sidebar/sidebar';
-import { ConnectAccountProvider } from './ConnectAccount/connect-account-provider';
 import classNames from 'classnames';
 import ModalView from './modal/modal-view';
-import parsePath from './routes/helpers/parse-path';
-import { MARKETS } from './constants';
-import { useUserBalances, useFinalizeUserTransactions } from './stores/utils';
-import { Stores, useGraphHeartbeat } from '@augurproject/augur-comps';
 import { usePageView } from '../utils/tracker';
+import { Stores, useUserStore, useGraphHeartbeat, useFinalizeUserTransactions, useUserBalances, GraphClient, PathUtils, Constants } from '@augurproject/augur-comps';
+const { MARKETS } = Constants;
+const { parsePath } = PathUtils;
 
 function checkIsMobile(setIsMobile) {
   const isMobile =
@@ -89,14 +85,20 @@ const AppBody = () => {
 
 function App() {
   const {
+    ConnectAccount: {
+      ConnectAccountProvider
+    },
     GraphData: {
       GraphDataProvider
     },
+    User: {
+      UserProvider
+    }
   } = Stores;
   return (
     <HashRouter hashType="hashbang">
       <ConnectAccountProvider>
-        <ApolloProvider client={client}>
+        <ApolloProvider client={GraphClient.client}>
           <GraphDataProvider>
             <UserProvider>
               <AppStatusProvider>
