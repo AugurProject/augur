@@ -4,8 +4,9 @@ import {
   MOCK_MIGRATION_STATE,
   MIGRATION_KEYS,
 } from './constants';
-import { windowRef } from '@augurproject/augur-comps';
-import { dispatchMiddleware } from './utils';
+import { windowRef, Stores } from '@augurproject/augur-comps';
+
+const { dispatchMiddleware } = Stores.Utils;
 const {
   SET_TIMESTAMP,
   UPDATE_APPROVAL,

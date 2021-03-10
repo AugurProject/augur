@@ -1,6 +1,6 @@
 import React from 'react';
-import { DEFAULT_APP_STATUS_STATE, STUBBED_APP_STATUS_ACTIONS } from '../stores/constants';
-import { useAppStatus } from '../stores/app-status-hooks';
+import { DEFAULT_APP_STATUS_STATE, STUBBED_APP_STATUS_ACTIONS } from './constants';
+import { useAppStatus } from './app-status-hooks';
 import { useUserStore } from './user';
 
 export const AppStatusContext = React.createContext({
@@ -41,3 +41,11 @@ export const AppStatusProvider = ({ children }) => {
 };
 
 export const useAppStatusStore = () => React.useContext(AppStatusContext);
+
+const output = {
+  AppStatusProvider,
+  useAppStatusStore,
+  AppStatusStore
+};
+
+export default output;

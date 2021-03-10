@@ -7,14 +7,14 @@ import {
   createBigNumber,
   Formatter,
   Constants,
+  useAppStatusStore,
+  useUserStore,
 } from '@augurproject/augur-comps';
-import { useAppStatusStore } from '../stores/app-status';
 import { ConnectAccountButton } from '../shared/connect-account-button';
 import {
   convertV1ToV2Approve,
   convertV1ToV2,
 } from '../../utils/contract-calls';
-import { useUserStore } from '../stores/user';
 import { TransactionResponse } from '@ethersproject/providers';
 import { APPROVE, MIGRATE } from '../stores/constants';
 import { useMigrationStore } from '../stores/migration-store';

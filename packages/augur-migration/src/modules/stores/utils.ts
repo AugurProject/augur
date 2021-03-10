@@ -1,45 +1,14 @@
 import { useEffect } from 'react';
 import { TransactionDetails } from '../types';
 import { PARA_CONFIG } from './constants';
-import { useUserStore } from './user';
+import { useUserStore } from '@augurproject/augur-comps';
+import { useMigrationStore } from './migration-store';
 import {
   getLegacyRepBalance,
   getRepBalance,
   isRepV2Approved,
   getRepTotalMigrated,
 } from '../../utils/contract-calls';
-import { useMigrationStore } from './migration-store';
-
-const isAsync = (obj) =>
-  !!obj &&
-  (typeof obj === 'object' || typeof obj === 'function') &&
-  obj.constructor.name === 'AsyncFunction';
-
-const isPromise = (obj) =>
-  !!obj &&
-  (typeof obj === 'object' || typeof obj === 'function') &&
-  typeof obj.then === 'function';
-
-export const middleware = (dispatch, action) => {
-  if (action.payload && isAsync(action.payload)) {
-    (async () => {
-      const v = await action.payload();
-      dispatch({ ...action, payload: v });
-    })();
-  } else if (action.payload && isPromise(action.payload)) {
-    action.payload.then((v) => {
-      dispatch({ ...action, payload: v });
-    });
-  } else {
-    dispatch({ ...action });
-  }
-};
-
-export const getSavedUserInfo = (account) =>
-  JSON.parse(window.localStorage.getItem(account)) || null;
-
-export const dispatchMiddleware = (dispatch) => (action) =>
-  middleware(dispatch, action);
 
 export async function getRepBalances(provider, address) {
   const rep = await getRepBalance(provider, address);

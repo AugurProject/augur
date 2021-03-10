@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import Styles from './error-message.styles.less';
 import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
 import { PARA_CONFIG } from '../stores/constants';
-import { useUserStore } from '../stores/user';
+import { useUserStore } from '@augurproject/augur-comps';
 
 interface ErrorMessageProps {
   type?: string;

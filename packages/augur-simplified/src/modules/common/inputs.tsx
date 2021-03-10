@@ -3,9 +3,8 @@ import classNames from 'classnames';
 import Styles from './inputs.styles.less';
 import { useAppStatusStore } from '../stores/app-status';
 import { TinyButton } from './buttons.styles.less';
-import { CurrencyDropdown } from './selection';
 import { AmmOutcome, Cash } from '../types';
-import { Constants, Icons, Formatter } from '@augurproject/augur-comps';
+import { Constants, Icons, Formatter, SelectionComps } from '@augurproject/augur-comps';
 const {
   ETH,
   USDC,
@@ -14,6 +13,7 @@ const {
   OUTCOME_YES_NAME,
   YES_NO,
 } = Constants;
+const { CurrencyDropdown } = SelectionComps;
 const {
   EthIcon, LinkIcon, UsdIcon, XIcon
 } = Icons;

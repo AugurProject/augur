@@ -4,7 +4,7 @@ import {
   MOCK_APP_STATUS_STATE,
   APP_STATE_KEYS,
 } from './constants';
-import { windowRef } from '@augurproject/augur-comps';
+import { windowRef } from '../utils/window-ref';
 import { dispatchMiddleware } from './utils';
 const {
   SET_IS_MOBILE,

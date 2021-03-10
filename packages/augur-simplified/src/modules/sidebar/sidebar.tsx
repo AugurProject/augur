@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import Styles from './sidebar.styles.less';
 import { useAppStatusStore } from '../stores/app-status';
-import { RadioBarGroup } from '../common/selection';
 import Logo from '../common/logo';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router';
 import { SettingsButton } from '../common/top-nav';
-import { Constants, PathUtils, ButtonComps, Icons } from '@augurproject/augur-comps';
+import { Constants, PathUtils, Components } from '@augurproject/augur-comps';
 const {
   MARKETS,
   PORTFOLIO,
@@ -18,8 +17,11 @@ const {
   marketStatusItems,
   sortByItems,
 } = Constants;
-const { CloseIcon } = Icons;
-const { PrimaryButton, SecondaryButton } = ButtonComps;
+const {
+  SelectionComps: { RadioBarGroup },
+  Icons: { CloseIcon },
+  ButtonComps: { PrimaryButton, SecondaryButton },
+} = Components;
 const { makePath, parsePath } = PathUtils;
 
 interface SideBarHeaderProps {
