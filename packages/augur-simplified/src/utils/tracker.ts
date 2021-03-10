@@ -46,44 +46,30 @@ export const useTrackedEvents = () => {
     outputYesShares: boolean,
     cashType: string,
     input: string,
-    output: string) => getTracker().plugin.execute(
-      "Estimate Trade",
-      isBuy ? "BUY" : "SELL", {
-      shareType: outputYesShares ? "Yes Shares" : "No Shares",
-      cashType,
-      input,
-      output
+    output: string) => getTracker().event({
+      category: `Estimate Trade: ${isBuy ? "BUY" : "SELL"}`,
+      action: outputYesShares ? "Yes Shares" : "No Shares",
+      label: `${cashType}: ${input}: ${output}`
     }
     )
   const tradingEvents = (isBuy: boolean,
     outputYesShares: boolean,
     cashType: string,
     input: string,
-    output: string) => getTracker().plugin.execute(
-      "Trading",
-      isBuy ? "BUY" : "SELL", {
-      shareType: outputYesShares ? "Yes Shares" : "No Shares",
-      cashType,
-      input,
-      output
+    output: string) => getTracker().event({
+      category: `Trade: ${isBuy ? "BUY" : "SELL"}`,
+      action: outputYesShares ? "Yes Shares" : "No Shares",
+      label: `${cashType}: ${input}: ${output}`
     })
-  const liquidityEstimateEvents = (liquidityType: string, cashType: string, cashAmount: string, yesShares, noShares, lpTokens) => getTracker().plugin.execute(
-    "Estimate Liquidity",
-    liquidityType, {
-    cashType,
-    cashAmount,
-    yesShares,
-    noShares,
-    lpTokens
+  const liquidityEstimateEvents = (liquidityType: string, cashType: string, cashAmount: string, yesShares, noShares, lpTokens) => getTracker().event({
+    category: `Estimate Liquidity: ${liquidityType}`,
+    action: `${cashType}: ${cashAmount}`,
+    label: `${yesShares}: ${noShares}: ${lpTokens}`
   })
-  const liquidityEvents = (liquidityType: string, cashType: string, cashAmount: string, yesShares, noShares, lpTokens) => getTracker().plugin.execute(
-    "Liquidity",
-    liquidityType, {
-    cashType,
-    cashAmount,
-    yesShares,
-    noShares,
-    lpTokens
+  const liquidityEvents = (liquidityType: string, cashType: string, cashAmount: string, yesShares, noShares, lpTokens) => getTracker().event({
+    category: `Liquidity: ${liquidityType}`,
+    action: `${cashType}: ${cashAmount}`,
+    label: `${yesShares}: ${noShares}: ${lpTokens}`
   })
   return { tradingEstimateEvents, tradingEvents, liquidityEstimateEvents, liquidityEvents }
 }
