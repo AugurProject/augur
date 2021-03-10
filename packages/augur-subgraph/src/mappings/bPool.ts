@@ -30,8 +30,17 @@ export function updateOrCreateBPool(id: string): void {
   bPoolEntity.invalidBalance = bPool.getBalance(tokens[1]);
   bPoolEntity.invalidWeight = bPool.getNormalizedWeight(tokens[1]);
 
-  let cashPrice = bPool.getSpotPrice(tokens[0], tokens[1]);
-  let invalidPrice = bPool.getSpotPrice(tokens[1], tokens[0]);
+  let cashPrice = BigInt.fromI32(0);
+  let callResult = bPool.try_getSpotPrice(tokens[0], tokens[1]);
+  if (!callResult.reverted) {
+    cashPrice = callResult.value;
+  }
+
+  let invalidPrice = BigInt.fromI32(0);
+  callResult = bPool.try_getSpotPrice(tokens[1], tokens[0]);
+  if (!callResult.reverted) {
+    invalidPrice = callResult.value;
+  }
 
   bPoolEntity.spotPrice = new Array(2);
   bPoolEntity.spotPrice.push(invalidPrice);
