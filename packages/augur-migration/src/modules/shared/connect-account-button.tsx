@@ -1,8 +1,11 @@
 import React, { useEffect } from 'react';
 import { PARA_CONFIG } from '../stores/constants';
-import { useLocalStorage } from '../stores/local-storage';
-import { useUserStore } from '../stores/user';
-import { ConnectAccount as CompsConnectAccount, useAppStatusStore } from '@augurproject/augur-comps';
+import {
+  ConnectAccount as CompsConnectAccount,
+  useAppStatusStore,
+  useUserStore,
+  useLocalStorage,
+} from '@augurproject/augur-comps';
 import { useMigrationStore } from '../stores/migration-store';
 
 const { ConnectAccount } = CompsConnectAccount;
