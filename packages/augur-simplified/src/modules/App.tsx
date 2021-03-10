@@ -10,6 +10,7 @@ import { AppStatusProvider, useAppStatusStore } from './stores/app-status';
 import { Sidebar } from './sidebar/sidebar';
 import classNames from 'classnames';
 import ModalView from './modal/modal-view';
+import { usePageView } from '../utils/tracker';
 import { Stores, useUserStore, useGraphHeartbeat, useFinalizeUserTransactions, useUserBalances, GraphClient, PathUtils, Constants } from '@augurproject/augur-comps';
 const { MARKETS } = Constants;
 const { parsePath } = PathUtils;
@@ -57,6 +58,7 @@ const AppBody = () => {
   useFinalizeUserTransactions();
 
   useHandleResize();
+  usePageView();
 
   useEffect(() => {
     if (showTradingForm) {
