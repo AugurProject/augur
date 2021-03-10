@@ -717,7 +717,7 @@ export const getMarketInvalidity = async (
   const invalidMarkets: string[] = [];
 
   const multicall = new Multicall({ ethersProvider: provider });
-  const contractLpBalanceCall: ContractCallContext[] = exchanges.filter(e => e.invalidPool.invalidBalance !== "0").reduce(
+  const contractLpBalanceCall: ContractCallContext[] = exchanges.filter(e => e?.invalidPool?.id && e?.invalidPool?.invalidBalance && e.invalidPool?.invalidBalance !== "0").reduce(
     (p, exchange) => [...p,
     {
       reference: `${exchange?.id}-bPool`,
@@ -1119,58 +1119,14 @@ export const getErc1155Contract = (tokenAddress: string, library: Web3Provider, 
 }
 
 export const getERC20Allowance = async (tokenAddress: string, provider: Web3Provider, account: string, spender: string): Promise<string> => {
-  const multicall = new Multicall({ ethersProvider: provider });
-
-  const contractAllowanceCall: ContractCallContext[] = [{
-    reference: tokenAddress,
-    contractAddress: tokenAddress,
-    abi: ERC20ABI,
-    calls: [
-      {
-        reference: tokenAddress,
-        methodName: 'allowance',
-        methodParameters: [account, spender],
-      },
-    ],
-  }];
-
-  const allowance: ContractCallResults = await multicall.call(
-    contractAllowanceCall
-  );
-
-  let allowanceAmount = "0";
-  Object.keys(allowance.results).forEach((key) => {
-    const value = allowance.results[key].callsReturnContext[0].returnValues as ethers.utils.Result;
-    allowanceAmount = String(new BN(value.hex));
-  })
-
+  const contract = getErc20Contract(tokenAddress, provider, account);
+  const result = await contract.allowance(account, spender);
+  const allowanceAmount = String(new BN(String(result)));
   return allowanceAmount;
 }
 
 export const getERC1155ApprovedForAll = async (tokenAddress: string, provider: Web3Provider, account: string, spender: string): Promise<boolean> => {
-  const multicall = new Multicall({ ethersProvider: provider });
-
-  const contractAllowanceCall: ContractCallContext[] = [{
-    reference: tokenAddress,
-    contractAddress: tokenAddress,
-    abi: ParaShareTokenABI,
-    calls: [
-      {
-        reference: tokenAddress,
-        methodName: 'isApprovedForAll',
-        methodParameters: [account, spender],
-      },
-    ],
-  }];
-  const isApprovedResult: ContractCallResults = await multicall.call(
-    contractAllowanceCall
-  );
-
-  let isApproved = false;
-  Object.keys(isApprovedResult.results).forEach((key) => {
-    const value = isApprovedResult.results[key].callsReturnContext[0].returnValues as ethers.utils.Result;
-    isApproved = Boolean(value)
-  })
-
-  return isApproved;
+  const contract = getErc1155Contract(tokenAddress, provider, account);
+  const isApproved = await contract.isApprovedForAll(account, spender);
+  return Boolean(isApproved);
 }
