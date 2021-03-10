@@ -6,7 +6,7 @@ import {
   Constants,
   ConnectAccount,
   Formatter,
-  createBigNumber
+  createBigNumber,
 } from '@augurproject/augur-comps';
 import { PARA_CONFIG } from '../modules/stores/constants';
 import ReputationTokenABI from './ReputationTokenABI.json';
@@ -305,7 +305,9 @@ export async function getRepTotalMigrated(): Promise<BigNumber> {
     await fetch(apiAddress)
       .then((response) => response.json())
       .then((data) => {
-        const repMigrated = createBigNumber(data.result).div(1000000000000000000);
+        const repMigrated = createBigNumber(data.result).div(
+          1000000000000000000
+        );
         response = repMigrated.toString();
       });
   } catch (e) {

@@ -11,13 +11,15 @@ export const MigrationIndicator = () => {
   const { totalRepMigrated } = useMigrationStore();
   const formattedRep = formatRep(totalRepMigrated, { decimals: 0, rounded: 0 });
   const formattedTotalRep = formatRep(totalRep, { decimals: 0, rounded: 0 });
-  const percent = formatPercent(createBigNumber(totalRepMigrated)
-    .div(totalRep)
-    .times(createBigNumber(100)));
+  const percent = formatPercent(
+    createBigNumber(totalRepMigrated).div(totalRep).times(createBigNumber(100))
+  );
   return (
     <div className={Styles.MigrationIndicator}>
       <span>Total REP Migrated</span>
-      <div />
+      <div>
+          <div style={{width: `${percent.value}%`}}/>
+      </div>
       <span>
         <span>{formattedRep.minimized} /</span>
         <span> {formattedTotalRep.minimized} REPv2</span>
