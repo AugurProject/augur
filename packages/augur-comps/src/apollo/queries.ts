@@ -209,8 +209,6 @@ const CurrentMarket_fields = gql`
         cashWeight
         invalidBalance
         invalidWeight
-        spotPrice
-        swapFee
       }
     }
   }
