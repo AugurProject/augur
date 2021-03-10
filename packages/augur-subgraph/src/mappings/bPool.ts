@@ -30,5 +30,8 @@ export function updateOrCreateBPool(id: string): void {
   bPoolEntity.invalidBalance = bPool.getBalance(tokens[1]);
   bPoolEntity.invalidWeight = bPool.getNormalizedWeight(tokens[1]);
 
+  bPoolEntity.spotPrice = bPool.getSpotPrice(tokens[0], tokens[1]);
+  bPoolEntity.swapFee = bPool.getSwapFee();
+
   bPoolEntity.save();
 }
