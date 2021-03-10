@@ -6,6 +6,7 @@ import {
 import { Cash, MarketInfo, TransactionDetails } from '../utils/types';
 import { NETWORK_BLOCK_REFRESH_TIME, PARA_CONFIG } from './constants';
 import { ApprovalState, ETH } from '../utils/constants';
+import { useAppStatusStore } from './app-status';
 import { useUserStore } from './user';
 import { useGraphDataStore } from './graph-data';
 import { processGraphMarkets } from './process-data';
@@ -74,7 +75,29 @@ export const arrayToKeyedObjectByProp = (ArrayOfObj: any[], prop: string) =>
     return acc;
   }, {});
 
+function checkIsMobile(setIsMobile) {
+  const isMobile =
+    (
+      window.getComputedStyle(document.body).getPropertyValue('--is-mobile') ||
+      ''
+    ).indexOf('true') !== -1;
+  setIsMobile(isMobile);
+};
+  
 // CUSTOM HOOKS
+export function useHandleResize() {
+  const {
+    actions: { setIsMobile },
+  } = useAppStatusStore();
+  useEffect(() => {
+    const handleResize = () => checkIsMobile(setIsMobile);
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+};
 
 export function useCanExitCashPosition({ name, shareToken }: Cash) {
   const {

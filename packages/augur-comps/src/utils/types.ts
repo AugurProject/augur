@@ -1150,18 +1150,9 @@ export interface SeenPositionWarnings {
 }
 
 export interface AppStatusState {
-  marketsViewSettings: {
-    categories: string;
-    reportingState: string;
-    sortBy: string;
-    currency: string;
-  };
   isMobile: boolean;
   isLogged: boolean;
-  showTradingForm: boolean;
-  sidebarType: string;
   modal: Modal;
-  settings: Settings;
 }
 
 export interface GraphDataState {
