@@ -232,11 +232,18 @@ export function doRemoveAmmLiquidity({ marketId, cash, fee, amount, symbols }: {
     return null;
   }
   const balance = convertDisplayShareAmountToOnChainShareAmount(amount, cash?.decimals);
+  console.log('doRemoveLiquidity',
+  "marketId", marketId,
+  "shareToken", cash.shareToken,
+  "fee", fee,
+  "balance", String(balance),
+  "symbols", symbols
+  )
   return augurClient.amm.doRemoveLiquidity(
     marketId,
     cash.shareToken,
     new BN(fee),
-    new BN(balance),
+    balance,
     symbols
   );
 }
