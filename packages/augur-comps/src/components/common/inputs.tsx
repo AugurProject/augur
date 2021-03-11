@@ -17,7 +17,7 @@ import {
   OUTCOME_YES_NAME,
   YES_NO,
 } from '../../utils/constants';
-import { useAppStatusStore } from '../stores/app-status';
+import { useAppStatusStore } from '../../stores/app-status';
 import { TinyButton } from './buttons.styles.less';
 import { CurrencyDropdown } from './selection';
 import { AmmOutcome, Cash } from '../../utils/types';
