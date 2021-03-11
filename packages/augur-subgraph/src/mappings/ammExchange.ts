@@ -129,7 +129,7 @@ export function handleEnterPosition(event: EnterPositionEvent): void {
   enterPosition.cash = event.params.cash;
 
   let outputTimesNumTick = event.params.outputShares.toBigDecimal().times(numTicks);
-  if(outputTimesNumTick.ge(BigDecimal.fromString('0'))) {
+  if(outputTimesNumTick.gt(BigDecimal.fromString('0'))) {
     enterPosition.price = event.params.cash.toBigDecimal().div(outputTimesNumTick);
   } else {
     enterPosition.price = BigDecimal.fromString('0');
@@ -173,7 +173,7 @@ export function handleExitPosition(event: ExitPositionEvent): void {
   exitPosition.sender = event.params.sender.toHexString();
 
   let totalSharesTimesNumticks = event.params.longShares.plus(event.params.shortShares).toBigDecimal().times(numTicks);
-  if(totalSharesTimesNumticks.ge(BigDecimal.fromString('0'))) {
+  if(totalSharesTimesNumticks.gt(BigDecimal.fromString('0'))) {
     exitPosition.price = event.params.cashPayout.toBigDecimal().div(totalSharesTimesNumticks);
   } else {
     exitPosition.price = BigDecimal.fromString('0');
