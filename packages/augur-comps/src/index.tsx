@@ -14,6 +14,7 @@ import * as _MarketCard from './components/market-card/market-card';
 import _Logo from './components/common/logo';
 import * as _Labels from './components/common/labels';
 import * as _Buttons from './components/common/buttons';
+import * as _Selections from './components/common/selection';
 import * as _Pagination from './components/common/pagination';
 import { ConnectAccountProvider as _ConnectAccountProvider } from './components/ConnectAccount/connect-account-provider';
 import { ConnectAccount as _ConnectAccount } from './components/ConnectAccount/index';
@@ -36,6 +37,7 @@ import _GraphDataStore, {
   GraphDataStore,
 } from './stores/graph-data';
 import _UserDataStore, { useUserStore, UserStore } from './stores/user';
+import _AppStatusStore, { useAppStatusStore, AppStatusStore } from './stores/app-status';
 import * as _StoreConstants from './stores/constants';
 import * as _ProcessData from './stores/process-data';
 import { useLocalStorage } from './stores/local-storage';
@@ -63,6 +65,7 @@ import ModalConnectWallet from './components/modal/modal-connect-wallet';
 export const ContractCalls = _ContractCalls;
 export const GraphClient = _GraphClient;
 export const Stores = {
+  AppStatus: _AppStatusStore,
   GraphData: _GraphDataStore,
   User: _UserDataStore,
   ConnectAccount: {
@@ -130,6 +133,7 @@ export const MarketCardComps = _MarketCard;
 export const Logo = _Logo;
 export const ButtonComps = _Buttons;
 export const LabelComps = _Labels;
+export const SelectionComps = _Selections;
 export const Icons = {
   ..._Icons,
   CATEGORIES_ICON_MAP: _CATEGORIES_ICON_MAP,
@@ -139,6 +143,8 @@ export const ProcessData = _ProcessData;
 export const SEO = _SEO;
 // export extremely commonly used functions as top level non-default exports:
 export {
+  useAppStatusStore,
+  AppStatusStore,
   useLocalStorage,
   useGraphHeartbeat,
   useUserStore,
@@ -163,9 +169,11 @@ export const Components = {
   LabelComps,
   Links,
   Logo,
+  Icons,
   MarketCardComps,
   PaginationComps,
   SEO,
+  SelectionComps,
 };
 export const Modals = {
   ModalConnectWallet

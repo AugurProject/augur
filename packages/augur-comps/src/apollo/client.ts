@@ -1,6 +1,6 @@
 import ApolloClient from 'apollo-boost';
 import {
-  GET_MARKETS,
+  GET_WHITELIST_MARKETS,
   GET_BLOCK,
   CASH_TOKEN_DATA,
 } from './queries';
@@ -51,6 +51,14 @@ export function augurV2Client(uri: string) {
   return client;
 }
 
+const whitelisted = ([
+  `"0xce1b7bec72bdb1de7e3fc277c1ba58e79c105ec3"`,
+  `"0x0af0aaa1e49caa933682d6b39b224241b0c5a775"`,
+  `"0x099400f52cf8905f80eef4f5e218c5be47fadfe9"`,
+  `"0x139d0d9a8e9ea966cbfb196e738236747f1537a6"`,
+  `"0x60d139411a58e0c454bf9e38af158e49e760e30a"`
+]).join(',')
+
 export async function getMarketsData(updateHeartbeat) {
   const cashes = getCashesInfo();
   const clientConfig = getClientConfig();
@@ -59,8 +67,15 @@ export async function getMarketsData(updateHeartbeat) {
   let newBlock = null;
   try {
     newBlock = await getPastDayBlockNumber(clientConfig.blockClient);
-    const query = GET_MARKETS(newBlock);
-    response = await augurV2Client(clientConfig.augurClient).query({ query });
+    response = await augurV2Client(clientConfig.augurClient).query({
+      query: GET_WHITELIST_MARKETS,
+      arguments: {
+        block: {
+          number: newBlock
+        },
+        marketIds: whitelisted
+      }
+    });
     responseUsd = await getCashTokenData(cashes);
   } catch (e) {
     console.error(e);
@@ -90,8 +105,12 @@ export async function searchMarkets(searchString, cb) {
   if (searchString === '') return cb(null, []);
   const searchQuery = searchString.trim().split(' ').join(' & ');
   try {
-    const query = SEARCH_MARKETS(`${searchQuery}:*`);
-    response = await augurV2Client(clientConfig.augurClient).query({ query });
+    response = await augurV2Client(clientConfig.augurClient).query({
+      query: SEARCH_MARKETS,
+      variables: {
+        query: `${searchQuery}:*`
+      }
+    });
   } catch (e) {
     cb(e, []);
     console.error(e);
@@ -122,7 +141,11 @@ async function getPastDayBlockNumber(blockClient) {
  */
 export async function getBlockFromTimestamp(timestamp, url) {
   const result = await blockClient(url).query({
-    query: GET_BLOCK(timestamp),
+    query: GET_BLOCK,
+    variables: {
+      begin: timestamp,
+      end: timestamp + 600
+    }
   });
   return result ? result?.data?.blocks?.[0]?.number : 0;
 }

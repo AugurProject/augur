@@ -1,4 +1,4 @@
-import { Address } from '@graphprotocol/graph-ts';
+import {Address, BigInt, log} from '@graphprotocol/graph-ts';
 import { BPool, LOG_CALL, LOG_EXIT, LOG_JOIN, LOG_SWAP } from '../../generated/templates/BPool/BPool';
 import { BPool as BPoolEntity } from '../../generated/schema';
 
@@ -22,13 +22,14 @@ export function updateOrCreateBPool(id: string): void {
   if(bPoolEntity == null) {
     bPoolEntity = new BPoolEntity(id);
   }
-
   let tokens = bPool.getCurrentTokens();
   bPoolEntity.cashBalance = bPool.getBalance(tokens[0]);
   bPoolEntity.cashWeight = bPool.getNormalizedWeight(tokens[0]);
 
   bPoolEntity.invalidBalance = bPool.getBalance(tokens[1]);
   bPoolEntity.invalidWeight = bPool.getNormalizedWeight(tokens[1]);
+
+  bPoolEntity.swapFee = bPool.getSwapFee();
 
   bPoolEntity.save();
 }

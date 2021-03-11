@@ -234,8 +234,7 @@ const ModalConnectWallet = ({
           icon: (
             <img
               src={
-                require('../ConnectAccount/assets/' + wallet.iconName)
-                  .default
+                require('../ConnectAccount/assets/' + wallet.iconName).default
               }
               alt={wallet.name}
             />
@@ -308,6 +307,7 @@ const ModalConnectWallet = ({
   return (
     <section>
       <Header
+        closeModal={closeModal}
         title={
           walletView !== WALLET_VIEWS.ACCOUNT ? (
             <span

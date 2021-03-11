@@ -5,7 +5,6 @@ import { Header } from './common';
 import { useHistory } from 'react-router';
 import { InfoNumbers } from '../market/trading-form';
 import { generateTooltip } from '../common/labels';
-import { MultiButtonSelection } from '../common/selection';
 import classNames from 'classnames';
 import { AmmOutcome, Cash, LiquidityBreakdown, MarketInfo } from '../types';
 import { useAppStatusStore } from '../stores/app-status';
@@ -26,8 +25,7 @@ import {
   ApprovalHooks,
   Formatter,
   Constants,
-  ButtonComps,
-  Icons,
+  Components,
 } from '@augurproject/augur-comps';
 const { checkAllowance } = ApprovalHooks;
 const {
@@ -44,8 +42,11 @@ const {
   formatSimpleShares,
   formatCash,
 } = Formatter;
-const { BackIcon } = Icons;
-const { ApprovalButton, APPROVED, BuySellButton } = ButtonComps;
+const {
+  Icons: { BackIcon },
+  ButtonComps: { ApprovalButton, APPROVED, BuySellButton },
+  SelectionComps: { MultiButtonSelection },
+} = Components;
 const {
   YES_NO,
   BUY,

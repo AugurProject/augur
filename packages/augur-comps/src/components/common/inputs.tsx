@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 import { EthIcon, LinkIcon, UsdIcon, XIcon } from './icons';
 import Styles from './inputs.styles.less';
-import { Cash } from '@augurproject/core/build/libraries/GenericContractInterfaces';
 import { ETH } from '@augurproject/sdk-lite/build';
 import {
   getCashFormat,
@@ -17,11 +16,11 @@ import {
   SHARES,
   OUTCOME_YES_NAME,
   YES_NO,
-} from '../constants';
-import { useAppStatusStore } from '../stores/app-status';
+} from '../../utils/constants';
+import { useAppStatusStore } from '../../stores/app-status';
 import { TinyButton } from './buttons.styles.less';
 import { CurrencyDropdown } from './selection';
-import { AmmOutcome } from '../types';
+import { AmmOutcome, Cash } from '../../utils/types';
 
 const ENTER_CHAR_CODE = 13;
 

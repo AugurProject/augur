@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import Styles from './tables.styles.less';
 import classNames from 'classnames';
-import { SmallDropdown } from './selection';
 import {
   AmmExchange,
   AmmTransaction,
@@ -20,10 +19,11 @@ import {
   WarningBanner,
   generateTooltip,
 } from './labels';
-import { PARA_CONFIG, useGraphDataStore, useUserStore, useCanExitCashPosition, Constants, Formatter, Icons, ContractCalls, ApprovalHooks, ButtonComps, Links, PaginationComps } from '@augurproject/augur-comps';
+import { PARA_CONFIG, useGraphDataStore, useUserStore, useCanExitCashPosition, Constants, Formatter, Icons, ContractCalls, ApprovalHooks, ButtonComps, Links, PaginationComps, SelectionComps } from '@augurproject/augur-comps';
 const { sliceByPage, Pagination } = PaginationComps;
 const { PrimaryButton, SecondaryButton, TinyButton } = ButtonComps;
 const { claimWinnings, getLPCurrentValue } = ContractCalls;
+const { SmallDropdown } = SelectionComps;
 const {
   formatDai,
   formatCash,

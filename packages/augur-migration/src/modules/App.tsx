@@ -1,25 +1,29 @@
 import React, { useEffect } from 'react';
+import classNames from 'classnames';
+
 import '../assets/styles/shared.less';
-import { Logo, ConnectAccount } from '@augurproject/augur-comps';
+import { Logo, Stores } from '@augurproject/augur-comps';
 import Styles from './App.styles.less';
 import { Migrate } from './migrate/migrate';
 import { HashRouter } from 'react-router-dom';
-// import { ConnectAccountProvider } from '@augurproject/augur-comps';
-import { AppStatusProvider, useAppStatusStore } from './stores/app-status';
-import { UserProvider } from './stores/user';
 import ModalView from './modal/modal-view';
 import { ConnectAccountButton } from './shared/connect-account-button';
 import {
   useUserBalances,
   useFinalizeUserTransactions,
   useUpdateApprovals,
+  useRepMigrated,
 } from './stores/utils';
 import { PARA_CONFIG } from './stores/constants';
 import { networkSettings } from './constants';
 import { ErrorMessage, NetworkMismatchBanner } from './shared/error-message';
 import { MigrationProvider, useMigrationStore } from './stores/migration-store';
-
-const { ConnectAccountProvider } = ConnectAccount;
+import { MigrationIndicator } from './migrate/migration-indicator';
+const {
+  User: { UserProvider },
+  ConnectAccount: { ConnectAccountProvider },
+  AppStatus: { AppStatusProvider, useAppStatusStore },
+} = Stores;
 
 function checkIsMobile(setIsMobile) {
   const isMobile =
@@ -45,10 +49,7 @@ function useHandleResize() {
 }
 
 const AppBody = () => {
-  const {
-    isMobile,
-    modal,
-  } = useAppStatusStore();
+  const { isMobile, modal } = useAppStatusStore();
   const {
     actions: { setTimestamp },
   } = useMigrationStore();
@@ -59,6 +60,8 @@ const AppBody = () => {
   useFinalizeUserTransactions();
   useUpdateApprovals();
   useHandleResize();
+  useRepMigrated();
+
   const { networkId } = PARA_CONFIG;
 
   useEffect(() => {
@@ -71,17 +74,23 @@ const AppBody = () => {
   }, []);
 
   return (
-    <div id="mainContent" className={Styles.App}>
+    <div
+      id="mainContent"
+      className={classNames(Styles.App, {
+        [Styles.BannerShowing]: txFailed || isMigrated,
+      })}
+    >
       {modalShowing && <ModalView />}
       <div>
         <Logo isMobile={isMobile} />
         <ConnectAccountButton />
       </div>
       <NetworkMismatchBanner />
-      <span>Migrate V1 REP</span>
+      <span>Migrate REP</span>
       <Migrate />
       {txFailed && <ErrorMessage type="error" message="Transaction Failed" />}
       {isMigrated && <ErrorMessage message="Migration Successful" />}
+      <MigrationIndicator />
     </div>
   );
 };

@@ -7,7 +7,7 @@
   height: 100vh;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto auto auto 1fr;
+  grid-template-rows: repeat(4, auto) 1fr;
 
   > div:first-of-type {
     border-bottom: @size-1 solid var(--simple-border);
@@ -18,6 +18,7 @@
     align-items: center;
     position: sticky;
     top: 0;
+    background: var(--light-background-color);
 
     > button {
       margin-left: auto;
@@ -34,15 +35,22 @@
     display: flex;
   }
 
-  > div:last-of-type {
+  > div:nth-of-type(2) {
     grid-column: 1 / span 3;
     margin-left: auto;
     margin-right: auto;
   }
   
+  > div:last-of-type {
+    grid-column: 1 / span 3;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: @size-40;
+  }
+
   > span:nth-of-type(2) {
     grid-column: 1 / span 3;
-    margin-top: @size-40;
+    margin-top: @size-24;
     margin-left: auto;
     margin-right: auto;
   }
@@ -54,14 +62,25 @@
   }
 
   @media @breakpoint-mobile-tablet { 
-    margin-bottom: @size-50;
+    margin-bottom: @size-24;
+    height: unset;
+
+    > span:first-of-type {
+      margin: @size-32 0;
+    }
    
-    > div:last-of-type {
+    > div:nth-of-type(2) {
       margin: 0 auto;
     }
 
     > article {
       max-width: 306px;
+    }
+  }
+
+  &.BannerShowing {
+    > div:last-of-type {
+      margin-top: @size-24;
     }
   }
 }

@@ -2,19 +2,27 @@ import React, { useEffect, useState } from 'react';
 import Styles from './markets-view.styles.less';
 import { AppViewStats, NetworkMismatchBanner } from '../common/labels';
 import classNames from 'classnames';
-import { SquareDropdown } from '../common/selection';
 import { useAppStatusStore } from '../stores/app-status';
 import { MarketInfo } from '../types';
 import { TopBanner } from '../common/top-banner';
 import { SearchInput } from '../common/inputs';
-import { MarketCardComps, useGraphDataStore, useScrollToTopOnMount, GraphClient, SEO, Icons, ButtonComps, Constants, PaginationComps } from '@augurproject/augur-comps';
+import {
+  useGraphDataStore,
+  useScrollToTopOnMount,
+  GraphClient,
+  SEO,
+  Constants,
+  Components,
+} from '@augurproject/augur-comps';
 import { MARKETS_LIST_HEAD_TAGS } from '../seo-config';
-
-const { sliceByPage, Pagination } = PaginationComps;
-const { LoadingMarketCard, MarketCardView } = MarketCardComps;
+const {
+  SelectionComps: { SquareDropdown },
+  ButtonComps: { SearchButton, SecondaryButton },
+  Icons: { FilterIcon },
+  MarketCardComps: { LoadingMarketCard, MarketCardView },
+  PaginationComps: { sliceByPage, Pagination },
+} = Components;
 const { searchMarkets } = GraphClient;
-const { SearchButton, SecondaryButton } = ButtonComps;
-const { FilterIcon } = Icons;
 const {
   SIDEBAR_TYPES,
   ALL_CURRENCIES,
@@ -298,7 +306,7 @@ const MarketsView = () => {
       </ul>
       <SearchInput
         value={filter}
-        onChange={e => setFilter(e.target.value)}
+        onChange={(e) => setFilter(e.target.value)}
         clearValue={() => setFilter('')}
         showFilter={showFilter}
       />

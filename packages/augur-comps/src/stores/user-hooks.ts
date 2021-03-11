@@ -4,6 +4,7 @@ import { windowRef } from '../utils/window-ref';
 import { USER_ACTIONS, USER_KEYS, DEFAULT_USER_STATE } from './constants';
 import { UserBalances, TransactionDetails } from '../utils/types';
 import { augurSdkLite } from '../utils/augurlitesdk';
+import { TX_STATUS } from '../utils/constants';
 
 const {
   ADD_TRANSACTION,
@@ -116,6 +117,7 @@ export function UserReducer(state, action) {
       updatedState[TRANSACTIONS].forEach((tx) => {
         if (tx.hash === action.hash) {
           tx.confirmedTime = now;
+          tx.status = TX_STATUS.CONFIRMED;
         }
       });
       break;
