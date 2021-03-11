@@ -68,7 +68,7 @@ export async function getMarketsData(updateHeartbeat) {
   try {
     newBlock = await getPastDayBlockNumber(clientConfig.blockClient);
     response = await augurV2Client(clientConfig.augurClient).query({
-      query: GET_WHITELIST_MARKETS,
+      query: GET_WHITELIST_MARKETS(whitelisted),
       arguments: {
         block: {
           number: newBlock
