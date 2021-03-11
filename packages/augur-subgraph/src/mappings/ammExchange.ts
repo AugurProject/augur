@@ -56,8 +56,14 @@ export function handleAddLiquidity(event: AddLiquidityEvent): void {
   let noShares = addLiquidity.noShares.toBigDecimal();
   let yesShares = addLiquidity.yesShares.toBigDecimal();
   let totalShares = noShares.plus(yesShares);
-  let priceOfNoShares = yesShares.div(totalShares);
-  let priceOfYesShares = noShares.div(totalShares);
+
+  let priceOfNoShares = BigDecimal.fromString('0');
+  let priceOfYesShares = BigDecimal.fromString('0');
+
+  if(totalShares.ge(BigDecimal.fromString('0'))) {
+    priceOfNoShares = yesShares.div(totalShares);
+    priceOfYesShares = noShares.div(totalShares);
+  }
 
   let priceOfGainedShares: BigDecimal;
   // LP mints sets to add to pool, which are equal shares.
@@ -121,7 +127,13 @@ export function handleEnterPosition(event: EnterPositionEvent): void {
   enterPosition.timestamp = event.block.timestamp;
   enterPosition.ammExchange = event.address.toHexString();
   enterPosition.cash = event.params.cash;
-  enterPosition.price = event.params.cash.toBigDecimal().div(event.params.outputShares.toBigDecimal().times(numTicks))
+
+  let outputTimesNumTick = event.params.outputShares.toBigDecimal().times(numTicks);
+  if(outputTimesNumTick.ge(BigDecimal.fromString('0'))) {
+    enterPosition.price = event.params.cash.toBigDecimal().div(outputTimesNumTick);
+  } else {
+    enterPosition.price = BigDecimal.fromString('0');
+  }
 
   if(event.params.buyLong) {
     updateVolumeValues(event.address, BigInt.fromI32(0), event.params.outputShares);
@@ -159,7 +171,14 @@ export function handleExitPosition(event: ExitPositionEvent): void {
   exitPosition.noShares = event.params.shortShares;
   exitPosition.yesShares = event.params.longShares;
   exitPosition.sender = event.params.sender.toHexString();
-  exitPosition.price = event.params.cashPayout.toBigDecimal().div(event.params.longShares.plus(event.params.shortShares).toBigDecimal().times(numTicks));
+
+  let totalSharesTimesNumticks = event.params.longShares.plus(event.params.shortShares).toBigDecimal().times(numTicks);
+  if(totalSharesTimesNumticks.ge(BigDecimal.fromString('0'))) {
+    exitPosition.price = event.params.cashPayout.toBigDecimal().div(totalSharesTimesNumticks);
+  } else {
+    exitPosition.price = BigDecimal.fromString('0');
+  }
+
   exitPosition.save();
 
   updateVolumeValues(
