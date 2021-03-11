@@ -1,4 +1,4 @@
-import {Address, BigInt} from '@graphprotocol/graph-ts';
+import {Address, BigInt, log} from '@graphprotocol/graph-ts';
 import { BPool, LOG_CALL, LOG_EXIT, LOG_JOIN, LOG_SWAP } from '../../generated/templates/BPool/BPool';
 import { BPool as BPoolEntity } from '../../generated/schema';
 
@@ -22,29 +22,12 @@ export function updateOrCreateBPool(id: string): void {
   if(bPoolEntity == null) {
     bPoolEntity = new BPoolEntity(id);
   }
-
   let tokens = bPool.getCurrentTokens();
   bPoolEntity.cashBalance = bPool.getBalance(tokens[0]);
   bPoolEntity.cashWeight = bPool.getNormalizedWeight(tokens[0]);
 
   bPoolEntity.invalidBalance = bPool.getBalance(tokens[1]);
   bPoolEntity.invalidWeight = bPool.getNormalizedWeight(tokens[1]);
-
-  let cashPrice = BigInt.fromI32(0);
-  let callResult = bPool.try_getSpotPrice(tokens[0], tokens[1]);
-  if (!callResult.reverted) {
-    cashPrice = callResult.value;
-  }
-
-  let invalidPrice = BigInt.fromI32(0);
-  callResult = bPool.try_getSpotPrice(tokens[1], tokens[0]);
-  if (!callResult.reverted) {
-    invalidPrice = callResult.value;
-  }
-
-  bPoolEntity.spotPrice = new Array(2);
-  bPoolEntity.spotPrice.push(invalidPrice);
-  bPoolEntity.spotPrice.push(cashPrice);
 
   bPoolEntity.swapFee = bPool.getSwapFee();
 
