@@ -271,10 +271,10 @@ export const GET_MARKETS = gql`
 
 export const GET_WHITELIST_MARKETS = gql`
   query getMarkets($block: Block_height, $marketIds: [ID!]) {
-    markets(where: { id_in: [${marketIds}] }) {
+    markets(where: { id_in: $marketIds }) {
       ...CurrentMarket_fields
     }
-    past: markets(block: $block, where: { id_in: [${marketIds}] }) {
+    past: markets(block: $block, where: { id_in: $marketIds }) {
       ...HistoricMarket_fields
     }
     paraShareTokens {
