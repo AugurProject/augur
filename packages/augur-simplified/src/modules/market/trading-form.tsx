@@ -191,7 +191,10 @@ const TradingForm = ({
   const ammCash = amm?.cash;
   const outcomes = amm?.ammOutcomes || [];
   const isBuy = orderType === BUY;
-  const canExitPosition = useCanExitCashPosition({ name: ammCash?.name, shareToken: ammCash?.shareToken });
+  const canExitPosition = useCanExitCashPosition({
+    name: ammCash?.name,
+    shareToken: ammCash?.shareToken,
+  });
   const canEnterPosition = useCanEnterCashPosition(ammCash);
   const isApprovedTrade = isBuy ? canEnterPosition : canExitPosition;
 
@@ -251,13 +254,13 @@ const TradingForm = ({
         ? await estimateEnterTrade(amm, amount, outputYesShares)
         : await estimateExitTrade(amm, amount, outputYesShares, userBalances);
 
-      tradingEstimateEvents(isBuy
-        ? BUY
-        : SELL,
+      tradingEstimateEvents(
+        isBuy ? BUY : SELL,
         outputYesShares,
         amm?.cash?.name,
         amount,
-        breakdown?.outputValue)
+        breakdown?.outputValue
+      );
 
       isMounted && setBreakdown(breakdown);
     };
@@ -287,8 +290,8 @@ const TradingForm = ({
           ? balances[amm?.cash?.name]?.balance
           : '0'
         : marketShares?.outcomeShares
-          ? marketShares?.outcomeShares[selectedOutcomeId]
-          : '0';
+        ? marketShares?.outcomeShares[selectedOutcomeId]
+        : '0';
     }, [orderType, amm?.cash?.name, amm?.id, selectedOutcomeId, balances])
   );
 
@@ -345,7 +348,13 @@ const TradingForm = ({
     const outputYesShares = selectedOutcomeId === YES_OUTCOME_ID;
     const userBalances = marketShares?.outcomeSharesRaw || [];
     setShowTradingForm(false);
-    tradingEvents(isBuy, outputYesShares, amm?.cash?.name, amount, worstCaseOutput)
+    tradingEvents(
+      isBuy,
+      outputYesShares,
+      amm?.cash?.name,
+      amount,
+      worstCaseOutput
+    );
     doTrade(
       direction,
       amm,
@@ -365,8 +374,9 @@ const TradingForm = ({
             status: TX_STATUS.PENDING,
             from: loginAccount.account,
             addedTime: new Date().getTime(),
-            message: `${direction === TradingDirection.ENTRY ? 'Buy' : 'Sell'
-              } Shares`,
+            message: `${
+              direction === TradingDirection.ENTRY ? 'Buy' : 'Sell'
+            } Shares`,
             marketDescription: amm?.market?.description,
           });
           response
@@ -386,6 +396,7 @@ const TradingForm = ({
           onClick={() => {
             setOrderType(BUY);
             setBreakdown(null);
+            setAmount('');
           }}
           className={classNames({ [Styles.Selected]: isBuy })}
         >
@@ -395,6 +406,7 @@ const TradingForm = ({
           onClick={() => {
             setBreakdown(null);
             setOrderType(SELL);
+            setAmount('');
           }}
           className={classNames({ [Styles.Selected]: !isBuy })}
         >
@@ -436,10 +448,11 @@ const TradingForm = ({
           disabled={!hasLiquidity}
           rate={
             !isNaN(Number(breakdown?.ratePerCash))
-              ? `1 ${amm?.cash?.name} = ${formatSimpleShares(breakdown?.ratePerCash, {
-                denomination: (v) => `${v} Shares`,
-              }).full
-              }`
+              ? `1 ${amm?.cash?.name} = ${
+                  formatSimpleShares(breakdown?.ratePerCash, {
+                    denomination: (v) => `${v} Shares`,
+                  }).full
+                }`
               : null
           }
           isBuy={orderType === BUY}
