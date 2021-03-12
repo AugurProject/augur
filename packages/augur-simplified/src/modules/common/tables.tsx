@@ -718,7 +718,7 @@ const TransactionRow = ({ transaction }: TransactionProps) => {
       </li>
       <li>{formatDai(transaction.cashValueUsd).full}</li>
       <li>{transaction.tokenAmount}</li>
-      <li>{transaction.shareAmount}</li>
+      <li>{formatSimpleShares(transaction.shareAmount).formatted}</li>
       <li>
         <AddressLink account={transaction.sender} short />
       </li>
