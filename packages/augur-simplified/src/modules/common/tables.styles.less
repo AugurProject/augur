@@ -7,7 +7,7 @@
   border-bottom: @size-1 solid var(--simple-border);
   justify-content: center;
   align-items: center;
-  min-width: @size-400;
+  min-width: @size-320;
 
   > a {
     display: flex;
@@ -61,14 +61,14 @@
   overflow: auto;
 
   > ul {
-    grid-column-gap: @size-8;
+    grid-column-gap: @size-4;
   }
 
   > span {
     .EmptyMessage;
 
     border-top: @size-1 solid var(--simple-border);
-    min-width: @size-400;
+    min-width: @size-320;
   }
 }
 
@@ -120,10 +120,10 @@
 
 .PositionRowHeader {
   grid-template-columns: repeat(6, 1fr);
-  min-width: @size-400;
+  min-width: @size-320;
 
   @media @breakpoint-mobile-tablet {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: @size-50 repeat(4, 1fr);
 
     > li:nth-of-type(4) {
       display: none;
