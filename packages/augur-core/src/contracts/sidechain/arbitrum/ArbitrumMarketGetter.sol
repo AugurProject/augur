@@ -76,8 +76,13 @@ contract ArbitrumMarketGetter is IMarketGetter {
 
     function getWinningPayoutNumerator(address _marketAddress, uint256 _outcome) external view returns (uint256) {
         IAugurPushBridge.MarketData memory _market = getMarket(_marketAddress);
-        require(_outcome < _market.winningPayout.length, "No outcome corresponds to given index");
-        return _market.winningPayout[_outcome];
+        require(_outcome < _market.numOutcomes, "No outcome corresponds to given index");
+
+        if (_outcome < _market.winningPayout.length) {
+            return _market.winningPayout[_outcome];
+        } else {
+            return 0;
+        }
     }
 
     function getAffiliateFeeDivisor(address _marketAddress) external view returns (uint256) {

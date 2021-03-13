@@ -407,6 +407,31 @@ export async function isMarketBridged(config: SDKConfiguration, account: Account
     return getter.isValid(marketAddress, ARBITRUM_OVERRIDES);
 }
 
+export async function getMarketInfo(config: SDKConfiguration, account: Account, marketAddress: string) {
+    const { signer } = await setupSideChainDeployer(config, account, ARBITRUM_OVERRIDES);
+    const getterAddress = config.sideChain.addresses.MarketGetter;
+    const getter = ArbitrumMarketGetter__factory.connect(getterAddress, signer);
+
+    const isValid = await getter.isValid(marketAddress, ARBITRUM_OVERRIDES);
+    const isFinalized = await getter.isFinalized(marketAddress, ARBITRUM_OVERRIDES);
+    const getAffiliateFeeDivisor = await getter.getAffiliateFeeDivisor(marketAddress, ARBITRUM_OVERRIDES).then(b => b.toString());
+    const getCreatorFee = await getter.getCreatorFee(marketAddress, ARBITRUM_OVERRIDES).then(b => b.toString());
+    const getNumberOfOutcomes = await getter.getNumberOfOutcomes(marketAddress, ARBITRUM_OVERRIDES).then(b => b.toString());
+    const getOwner = await getter.getOwner(marketAddress, ARBITRUM_OVERRIDES);
+    const getUniverse = await getter.getUniverse(marketAddress, ARBITRUM_OVERRIDES);
+    const getWinningPayoutNumerator0 = await getter.getWinningPayoutNumerator(marketAddress, 0, ARBITRUM_OVERRIDES).then(b => b.toString());
+    const getWinningPayoutNumerator1 = await getter.getWinningPayoutNumerator(marketAddress, 1, ARBITRUM_OVERRIDES).then(b => b.toString());
+    // const getWinningPayoutNumerator2 = await getter.getWinningPayoutNumerator(marketAddress, 2, ARBITRUM_OVERRIDES);
+    const getNumTicks = await getter.getNumTicks(marketAddress, ARBITRUM_OVERRIDES).then(b => b.toString());
+    const isFinalizedAsInvalid = await getter.isFinalizedAsInvalid(marketAddress, ARBITRUM_OVERRIDES);
+
+    return {
+        isValid, isFinalized, getAffiliateFeeDivisor, getCreatorFee, getNumberOfOutcomes, getOwner, getUniverse,
+        getWinningPayoutNumerator0, getWinningPayoutNumerator1, getNumTicks, isFinalizedAsInvalid,
+        // getWinningPayoutNumerator2,
+    }
+}
+
 export async function mintSets(config: SDKConfiguration, account: Account, marketAddress: string, amount: BigNumber): Promise<ethers.ContractTransaction> {
     const { signer } = await setupSideChainDeployer(config, account, ARBITRUM_OVERRIDES);
     const shareTokenAddress = config.sideChain.addresses.ShareToken;

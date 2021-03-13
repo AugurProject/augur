@@ -96,7 +96,7 @@ import {
   registerArbitrumChain,
   mintSets,
   claimWinnings,
-  erc20Balance, erc20Approve,
+  erc20Balance, erc20Approve, getMarketInfo,
 } from '@augurproject/core/build/libraries/SideChainDeployer';
 
 // tslint:disable-next-line:import-blacklist
@@ -1777,7 +1777,7 @@ export function addScripts(flash: FlashSession) {
         flag: true,
       },
       {
-        name: 'para',
+        name: 'also-para',
         abbr: 'P',
         description:
           'deploy para contracts and paras for WETH and USDT',
@@ -2184,28 +2184,41 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
-    name: 'is-market-finalized',
+    name: 'arbitrum-market-info',
     options: [
       {
         name: 'marketId',
         abbr: 'm',
-        description: 'market of which to get rep bond owner',
+        description: 'market to get info for',
         required: true,
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
-      const user = await this.createUser(this.getAccount(), this.config);
       const marketId = args.marketId as string;
 
-      const market: ContractInterfaces.Market = await user.getMarketContract(
-        marketId
-      );
+      const info = await getMarketInfo(this.config, this.getAccount(), marketId);
 
-      const isFinalized = await market.isFinalized_();
-
-      console.log(`Finalized?: ${isFinalized}`);
+      console.log(JSON.stringify(info, null, 2))
     },
+  });
+
+  flash.addScript({
+    name: 'arbitrum-claim-winnings',
+    options: [
+      {
+        name: 'marketId',
+        abbr: 'm',
+        description: 'market to get info for',
+        required: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const marketId = args.marketId as string;
+
+      const r = await claimWinnings(this.config, this.getAccount(), marketId);
+      console.log(r);
+    }
   });
 
   flash.addScript({
@@ -3038,6 +3051,38 @@ export function addScripts(flash: FlashSession) {
       const arbitrum = Boolean(args.arbitrum);
 
       const balance = await erc20Balance(this.config, user.account, this.config.addresses.USDC, target, arbitrum);
+      console.log(balance.toFixed());
+    },
+  });
+
+  flash.addScript({
+    name: 'erc20-balance',
+    options: [
+      {
+        name: 'target',
+        abbr: 't',
+        description: 'which account to check. defaults to current account',
+      },
+      {
+        name: 'erc20',
+        abbr: 'e',
+        description: 'address of erc20',
+        required: true
+      },
+      {
+        name: 'arbitrum',
+        abbr: 'a',
+        description: 'use arbitrum sidechain. defaults to using ethereum',
+        flag: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const user = await this.createUser(this.getAccount(), this.config);
+      const target = args.target as string || user.account.address;
+      const erc20 = String(args.erc20);
+      const arbitrum = Boolean(args.arbitrum);
+
+      const balance = await erc20Balance(this.config, user.account, erc20, target, arbitrum);
       console.log(balance.toFixed());
     },
   });
