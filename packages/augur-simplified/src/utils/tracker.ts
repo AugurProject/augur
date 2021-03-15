@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import ReactGA from 'react-ga';
-import { PARA_CONFIG, MAINNET } from '@augurproject/augur-comps';
+import { PARA_CONFIG, MAINNET, windowRef } from '@augurproject/augur-comps';
 import { useLocation } from 'react-router';
 import {
   Utils,
@@ -34,10 +34,13 @@ const pageViewed = (page: string, data: string[]) => {
 
 export const usePageView = () => {
   const { pathname, search } = useLocation();
+  const hostName = windowRef.location.hostname;
   useEffect(() => {
     const page = Utils.PathUtils.parsePath(pathname);
     const data = Utils.PathUtils.parseQuery(search)
-    pageViewed(page[0], data);
+    if (hostName !== 'localhost') {
+      pageViewed(page[0], data);
+    }
   }, [pathname, search]);
 }
 
