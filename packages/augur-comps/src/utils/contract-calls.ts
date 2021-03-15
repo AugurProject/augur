@@ -440,7 +440,12 @@ export async function doTrade(
     } else {
       longShares = new BN(inputOnChainSharesAmount);
     }
-    const onChainMinAmount = convertDisplayCashAmountToOnChainCashAmount(new BN(minAmount), new BN(amm.cash.decimals)).decimalPlaces(0);
+    let onChainMinAmount = convertDisplayCashAmountToOnChainCashAmount(new BN(minAmount), new BN(amm.cash.decimals)).decimalPlaces(0);
+
+    if (onChainMinAmount.lt(0)) {
+      onChainMinAmount = new BN(0);
+    }
+
     console.log(
       'doExitPosition:',
       amm.marketId,
