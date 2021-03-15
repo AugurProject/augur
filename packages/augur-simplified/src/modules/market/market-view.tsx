@@ -34,6 +34,7 @@ import { AmmOutcome, MarketOutcome } from '../types';
 import { MARKETS_LIST_HEAD_TAGS } from '../seo-config';
 const { ConfirmedCheck } = Icons;
 const {
+  MARKET_STATUS,
   USDC,
   YES_NO,
   BUY,
@@ -193,9 +194,10 @@ const MarketView = ({ defaultMarket = null }) => {
           <CurrencyLabel name={amm?.cash?.name} />
         </div>
         <h1>{market.description}</h1>
-        {winningOutcomes.length > 0 && (
-          <WinningOutcomeLabel winningOutcome={winningOutcomes[0]} />
-        )}
+        {reportingState === MARKET_STATUS.FINALIZED &&
+          winningOutcomes.length > 0 && (
+            <WinningOutcomeLabel winningOutcome={winningOutcomes[0]} />
+          )}
         <ul className={Styles.StatsRow}>
           <li>
             <span>24hr Volume</span>

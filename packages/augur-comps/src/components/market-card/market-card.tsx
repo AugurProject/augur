@@ -81,9 +81,11 @@ export const outcomesToDisplay = (
 const OutcomesTable = ({
   amm,
   marketOutcomes,
+  reportingState,
 }: {
   amm: AmmExchange;
   marketOutcomes: MarketOutcome[];
+  reportingState: string;
 }) => (
   <div
     className={classNames(Styles.OutcomesTable, {
@@ -92,7 +94,7 @@ const OutcomesTable = ({
   >
     {outcomesToDisplay(amm.ammOutcomes, marketOutcomes).map((outcome) => {
       const isWinner =
-        outcome.isFinalNumerator && outcome.payoutNumerator !== '0';
+        outcome.isFinalNumerator && outcome.payoutNumerator !== '0' && reportingState === MARKET_STATUS.FINALIZED;
       return (
         <div
           key={`${outcome.name}-${amm?.marketId}-${outcome.id}`}
@@ -178,7 +180,7 @@ export const MarketCardView = ({
               value={formatDai(market.amm?.volumeTotalUSD).full}
             />
             <ValueLabel label="APY" value={formattedApy} />
-            <OutcomesTable amm={amm} marketOutcomes={outcomes} />
+            <OutcomesTable amm={amm} marketOutcomes={outcomes} reportingState={reportingState} />
           </MarketLink>
         )}
       </div>
