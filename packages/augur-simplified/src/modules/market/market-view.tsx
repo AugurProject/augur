@@ -28,11 +28,13 @@ import {
   SEO,
   Stores,
   Utils,
+  ButtonComps,
 } from '@augurproject/augur-comps';
 import { OutcomesGrid } from '../common/inputs';
 import { AmmOutcome, MarketOutcome } from '../types';
 import { MARKETS_LIST_HEAD_TAGS } from '../seo-config';
 const { ConfirmedCheck } = Icons;
+const { BuySellButton } = ButtonComps;
 const {
   MARKET_STATUS,
   USDC,
@@ -220,14 +222,10 @@ const MarketView = ({ defaultMarket = null }) => {
           outcomes={amm?.ammOutcomes}
           selectedOutcome={amm?.ammOutcomes[2]}
           showAllHighlighted
-          setSelectedOutcome={(outcome) => {
-            setSelectedOutcome(outcome);
-            setShowTradingForm(true);
-          }}
+          setSelectedOutcome={() => null}
           marketType={YES_NO}
           orderType={BUY}
           ammCash={amm?.cash}
-          showAsButtons
         />
         <SimpleChartSection {...{ market, cash: amm?.cash }} />
         <PositionsLiquidityViewSwitcher ammExchange={amm} />
@@ -263,6 +261,10 @@ const MarketView = ({ defaultMarket = null }) => {
           <span>Transactions</span>
           <TransactionsTable transactions={amm?.transactions} />
         </div>
+        <BuySellButton
+          text="Buy / Sell"
+          action={() => setShowTradingForm(true)}
+        />
       </section>
       <section
         className={classNames({
