@@ -4,13 +4,21 @@ import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
 import Styles from './charts.styles.less';
 import classNames from 'classnames';
 import { MarketInfo } from '../types';
-import { createBigNumber, Formatter, Icons, SelectionComps } from '@augurproject/augur-comps';
+import {
+  createBigNumber,
+  Formatter,
+  Icons,
+  SelectionComps,
+} from '@augurproject/augur-comps';
+
 const { MultiButtonSelection } = SelectionComps;
 const { formatCashPrice } = Formatter;
 const { Checkbox } = Icons;
+
 const HIGHLIGHTED_LINE_WIDTH = 2;
 const NORMAL_LINE_WIDTH = 2;
 const DEFAULT_SELECTED_ID = 2;
+const ONE_MIN_MS = 60000;
 const FIFTEEN_MIN_MS = 900000;
 const ONE_HOUR_MS = 3600 * 1000;
 const ONE_QUARTER_DAY = ONE_HOUR_MS * 6;
@@ -96,7 +104,34 @@ interface HighcartsChart extends Highcharts.Chart {
   renderTo?: string | Element | React.ReactNode;
 }
 
-const determinelastPrice = (sortedOutcomeTrades, startTime) => {
+const calculateRangeSelection = (rangeSelection, market) => {
+  const marketStart = market.creationTimestamp * 1000;
+  let { startTime, tick } = RANGE_OPTIONS[rangeSelection];
+  if (rangeSelection === 3) {
+    // allTime:
+    const timespan = (END_TIME - marketStart);
+    const numHoursRd = Math.round(timespan / ONE_HOUR_MS);
+    tick = ONE_MIN_MS;
+    if (numHoursRd <= 12) {
+      tick = ONE_MIN_MS * 5;
+    } else if (numHoursRd <= 24) {
+      tick = ONE_MIN_MS * 10;
+    } else if (numHoursRd <= 48) {
+      tick = FIFTEEN_MIN_MS;
+    } else if (numHoursRd <= (24 * 7)) {
+      tick = ONE_HOUR_MS;
+    } else if (numHoursRd <= (24 * 30)) {
+      tick = ONE_QUARTER_DAY;
+    } else {
+      tick = ONE_DAY_MS;
+    }
+    startTime = marketStart - tick;
+  }
+  const totalTicks = (END_TIME - startTime) / tick;
+  return { totalTicks, startTime, tick };
+};
+
+const determineLastPrice = (sortedOutcomeTrades, startTime) => {
   let lastPrice = 0;
   const index = sortedOutcomeTrades
     .sort((a, b) => b.timestamp - a.timestamp)
@@ -110,13 +145,15 @@ const determinelastPrice = (sortedOutcomeTrades, startTime) => {
 
 const processPriceTimeData = (formattedOutcomes, market, rangeSelection) => ({
   priceTimeArray: formattedOutcomes.map((outcome) => {
-    const { startTime, tick } = RANGE_OPTIONS[rangeSelection];
-    const totalTicks = (END_TIME - startTime) / tick;
+    const { startTime, tick, totalTicks } = calculateRangeSelection(
+      rangeSelection,
+      market
+    );
     const newArray = [];
     const sortedOutcomeTrades = market.amm.trades[outcome.id].sort(
       (a, b) => a.timestamp - b.timestamp
     );
-    let newLastPrice = determinelastPrice(sortedOutcomeTrades, startTime);
+    let newLastPrice = determineLastPrice(sortedOutcomeTrades, startTime);
     for (let i = 0; i < totalTicks; i++) {
       const curTick = startTime + tick * i;
       const nextTick = curTick + tick;
@@ -148,7 +185,7 @@ export const PriceHistoryChart = ({
   market,
   selectedOutcomes,
   rangeSelection,
-  cash
+  cash,
 }) => {
   const container = useRef(null);
   // eslint-disable-next-line
@@ -164,7 +201,7 @@ export const PriceHistoryChart = ({
       getOptions({
         maxPrice,
         minPrice,
-        cash
+        cash,
       }),
     [maxPrice, minPrice]
   );
@@ -261,7 +298,13 @@ export const SimpleChartSection = ({ market, cash }) => {
         setSelection={(id) => setRangeSelection(id)}
       />
       <PriceHistoryChart
-        {...{ market, formattedOutcomes, selectedOutcomes, rangeSelection, cash }}
+        {...{
+          market,
+          formattedOutcomes,
+          selectedOutcomes,
+          rangeSelection,
+          cash,
+        }}
       />
       <div>
         {formattedOutcomes.map((outcome) => (
@@ -417,7 +460,9 @@ const getOptions = ({
       this.points.forEach((point) => {
         out += `<li><span style="color:${point.color}">&#9679;</span><b>${
           point.series.name
-        }</b><span>${formatCashPrice(createBigNumber(point.y), cash?.name).full}</span></li>`;
+        }</b><span>${
+          formatCashPrice(createBigNumber(point.y), cash?.name).full
+        }</span></li>`;
       });
       out += '</ul>';
       return out;
