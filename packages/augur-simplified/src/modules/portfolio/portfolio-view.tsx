@@ -11,11 +11,6 @@ import {
   Constants,
   createBigNumber,
   Stores,
-  useGraphDataStore,
-  useAppStatusStore,
-  useScrollToTopOnMount,
-  useCanExitCashPosition,
-  useUserStore,
   PARA_CONFIG,
   ApprovalHooks,
   SEO,
@@ -26,11 +21,18 @@ import { PORTFOLIO_HEAD_TAGS } from '../seo-config';
 const { claimWinnings } = ContractCalls;
 const { approveERC1155Contract } = ApprovalHooks;
 const { formatCash } = Formatter;
-const { EthIcon, UsdIcon } = Icons;
 const { ACTIVITY, ETH, TABLES, TX_STATUS, USDC } = Constants;
 const {
-  keyedObjToArray
-} = Stores.Utils;
+  Hooks: {
+    useGraphDataStore,
+    useAppStatusStore,
+    useScrollToTopOnMount,
+    useCanExitCashPosition,
+    useUserStore,
+  },
+  Utils: { keyedObjToArray }
+} = Stores;
+const { EthIcon, UsdIcon } = Icons;
 const { PrimaryButton } = ButtonComps;
 
 const calculateTotalWinnings = (claimbleMarketsPerCash) => {

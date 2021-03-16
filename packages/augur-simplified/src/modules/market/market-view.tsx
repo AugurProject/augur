@@ -15,32 +15,30 @@ import {
 import TradingForm from './trading-form';
 import { AmmExchange, MarketInfo } from '../types';
 import {
-  Icons,
   Constants,
   useAppStatusStore,
   useGraphDataStore,
   useScrollToTopOnMount,
-  SEO,
   Stores,
   Utils,
-  ButtonComps,
-  InputComps,
-  LabelComps,
+  Components,
 } from '@augurproject/augur-comps';
 import { AmmOutcome, MarketOutcome } from '../types';
 import { MARKETS_LIST_HEAD_TAGS } from '../seo-config';
 import { useSimplifiedStore } from '../stores/simplified';
-
 const {
-  CategoryIcon,
-  CategoryLabel,
-  CurrencyLabel,
-  InvalidFlagTipIcon,
-  ReportingStateLabel,
-} = LabelComps;
-const { ConfirmedCheck } = Icons;
-const { BuySellButton } = ButtonComps;
-const { OutcomesGrid } = InputComps;
+  SEO,
+  LabelComps: {
+    CategoryIcon,
+    CategoryLabel,
+    CurrencyLabel,
+    InvalidFlagTipIcon,
+    ReportingStateLabel,
+  },
+  Icons: { ConfirmedCheck },
+  ButtonComps: { BuySellButton },
+  InputComps: { OutcomesGrid },
+} = Components;
 const {
   MARKET_STATUS,
   USDC,

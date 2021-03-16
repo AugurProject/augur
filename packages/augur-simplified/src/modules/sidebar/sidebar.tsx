@@ -9,7 +9,6 @@ import {
   PathUtils,
   Components,
   useAppStatusStore,
-  LinkLogo,
 } from '@augurproject/augur-comps';
 import { useSimplifiedStore } from '../stores/simplified';
 const {
@@ -23,6 +22,7 @@ const {
   sortByItems,
 } = Constants;
 const {
+  LinkLogo,
   SelectionComps: { RadioBarGroup },
   Icons: { CloseIcon },
   ButtonComps: { PrimaryButton, SecondaryButton },

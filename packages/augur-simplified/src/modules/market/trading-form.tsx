@@ -19,22 +19,22 @@ import {
   useUserStore,
   useCanEnterCashPosition,
   useCanExitCashPosition,
-  Icons,
-  ButtonComps,
-  InputComps,
-  LabelComps,
+  Components,
 } from '@augurproject/augur-comps';
 import { useTrackedEvents } from '../../utils/tracker';
 const { doTrade, estimateEnterTrade, estimateExitTrade } = ContractCalls;
-const { CloseIcon } = Icons;
-const { generateTooltip } = LabelComps;
+const {
+  Icons: { CloseIcon },
+  LabelComps: { generateTooltip },
+  InputComps: { AmountInput, OutcomesGrid },
+  ButtonComps: { ApprovalButton, BuySellButton },
+} = Components;
 const {
   formatCash,
   formatCashPrice,
   formatPercent,
   formatSimpleShares,
 } = Formatter;
-const { AmountInput, OutcomesGrid } = InputComps;
 const {
   ApprovalAction,
   SHARES,
@@ -48,7 +48,6 @@ const {
   SELL,
   YES_NO,
 } = Constants;
-const { ApprovalButton, BuySellButton } = ButtonComps;
 const AVG_PRICE_TIP =
   'The difference between the market price and estimated price due to trade size.';
 
@@ -173,9 +172,7 @@ const TradingForm = ({
   marketType = YES_NO,
   amm,
 }: TradingFormProps) => {
-  const {
-    isLogged,
-  } = useAppStatusStore();
+  const { isLogged } = useAppStatusStore();
   const {
     showTradingForm,
     actions: { setShowTradingForm },
