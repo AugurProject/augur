@@ -160,9 +160,9 @@ const MarketView = ({ defaultMarket = null }) => {
     () => getMarketEndtimeDate(market?.endTimestamp),
     [market?.endTimestamp]
   );
-  const [selectedOutcome, setSelectedOutcome] = useState(
-    market ? market.outcomes[2] : DefaultMarketOutcomes[2]
-  );
+  const selectedOutcome = market
+    ? market.outcomes[2]
+    : DefaultMarketOutcomes[2];
   // add end time data full to market details when design is ready
   const endTimeDateFull = useMemo(
     () => getMarketEndtimeFull(market?.endTimestamp),
