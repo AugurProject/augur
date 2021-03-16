@@ -11,7 +11,7 @@ import * as _Types from './utils/types';
 import { windowRef } from './utils/window-ref';
 import * as _Icons from './components/common/icons';
 import * as _MarketCard from './components/market-card/market-card';
-import _Logo from './components/common/logo';
+import _Logo, { LinkLogo } from './components/common/logo';
 import * as _Labels from './components/common/labels';
 import * as _Buttons from './components/common/buttons';
 import * as _Selections from './components/common/selection';
@@ -162,6 +162,7 @@ export {
   PathUtils,
   Links,
   windowRef,
+  LinkLogo,
 };
 export const Components = {
   ButtonComps,
@@ -169,6 +170,7 @@ export const Components = {
   LabelComps,
   Links,
   Logo,
+  LinkLogo,
   Icons,
   MarketCardComps,
   PaginationComps,
