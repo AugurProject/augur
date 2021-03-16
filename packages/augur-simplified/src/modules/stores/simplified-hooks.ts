@@ -6,7 +6,7 @@ import {
 } from './constants';
 import { windowRef, Stores } from '@augurproject/augur-comps';
 const {
-  Utils: { dispatchMiddleware },
+  Utils: { dispatchMiddleware, getSavedUserInfo },
 } = Stores;
 const {
   SET_SHOW_TRADING_FORM,
@@ -23,7 +23,7 @@ const {
 } = SIMPLIFIED_STATE_KEYS;
 
 const updateLocalStorage = (userAccount, updatedState) => {
-  const userData = JSON.parse(window.localStorage.getItem(userAccount)) || null;
+  const userData = getSavedUserInfo(userAccount);
   if (userData) {
     window.localStorage.setItem(
       userAccount,

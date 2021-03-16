@@ -1,6 +1,17 @@
-import React from 'react';
-import { DEFAULT_SIMPLIFIED_STATE, STUBBED_SIMPLIFIED_ACTIONS } from '../stores/constants';
+import React, { useEffect } from 'react';
+import {
+  DEFAULT_SIMPLIFIED_STATE,
+  STUBBED_SIMPLIFIED_ACTIONS,
+  SIMPLIFIED_STATE_KEYS,
+} from '../stores/constants';
 import { useSimplified } from '../stores/simplified-hooks';
+import { useUserStore, Stores } from '@augurproject/augur-comps';
+
+const {
+  Utils: { getSavedUserInfo },
+} = Stores;
+
+const { SETTINGS } = SIMPLIFIED_STATE_KEYS;
 
 export const SimplifiedContext = React.createContext({
   ...DEFAULT_SIMPLIFIED_STATE,
@@ -13,9 +24,26 @@ export const SimplifiedStore = {
   actions: STUBBED_SIMPLIFIED_ACTIONS,
 };
 
+const useLoadUserSettings = () => {
+  const { account } = useUserStore();
+  useEffect(() => {
+    if (account) {
+      const savedUserSettings = getSavedUserInfo(account)[SETTINGS];
+      if (savedUserSettings) {
+        SimplifiedStore.actions.updateSettings(savedUserSettings);
+      }
+    } else {
+      SimplifiedStore.actions.updateSettings(
+        DEFAULT_SIMPLIFIED_STATE[SETTINGS]
+      );
+    }
+  }, [account]);
+};
+
 export const SimplifiedProvider = ({ children }) => {
   const state = useSimplified();
-  
+
+  useLoadUserSettings();
 
   if (!SimplifiedStore.actionsSet) {
     SimplifiedStore.actions = state.actions;
