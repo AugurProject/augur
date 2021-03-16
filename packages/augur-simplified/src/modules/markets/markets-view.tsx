@@ -5,7 +5,6 @@ import classNames from 'classnames';
 import { useSimplifiedStore } from '../stores/simplified';
 import { MarketInfo } from '../types';
 import { TopBanner } from '../common/top-banner';
-import { SearchInput } from '../common/inputs';
 import {
   useAppStatusStore,
   useGraphDataStore,
@@ -22,6 +21,7 @@ const {
   Icons: { FilterIcon },
   MarketCardComps: { LoadingMarketCard, MarketCardView },
   PaginationComps: { sliceByPage, Pagination },
+  InputComps: { SearchInput },
 } = Components;
 const { searchMarkets } = GraphClient;
 const {

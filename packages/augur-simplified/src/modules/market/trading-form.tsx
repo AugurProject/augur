@@ -12,7 +12,6 @@ import {
 import { generateTooltip } from '../common/labels';
 import { BigNumber as BN } from 'bignumber.js';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
-import { AmountInput, OutcomesGrid } from '../common/inputs';
 import {
   Formatter,
   Constants,
@@ -23,6 +22,7 @@ import {
   useCanExitCashPosition,
   Icons,
   ButtonComps,
+  InputComps,
 } from '@augurproject/augur-comps';
 import { useTrackedEvents } from '../../utils/tracker';
 const { doTrade, estimateEnterTrade, estimateExitTrade } = ContractCalls;
@@ -33,6 +33,7 @@ const {
   formatPercent,
   formatSimpleShares,
 } = Formatter;
+const { AmountInput, OutcomesGrid } = InputComps;
 const {
   ApprovalAction,
   SHARES,

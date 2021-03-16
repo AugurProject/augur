@@ -9,12 +9,6 @@ import classNames from 'classnames';
 import { AmmOutcome, Cash, LiquidityBreakdown, MarketInfo } from '../types';
 import { BigNumber as BN } from 'bignumber.js';
 import {
-  AmountInput,
-  isInvalidNumber,
-  OutcomesGrid,
-  TextInput,
-} from '../common/inputs';
-import {
   ContractCalls,
   createBigNumber,
   PARA_CONFIG,
@@ -46,6 +40,12 @@ const {
   Icons: { BackIcon },
   ButtonComps: { ApprovalButton, APPROVED, BuySellButton },
   SelectionComps: { MultiButtonSelection },
+  InputComps: {
+    AmountInput,
+    isInvalidNumber,
+    OutcomesGrid,
+    TextInput,
+  },
 } = Components;
 const {
   YES_NO,

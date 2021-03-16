@@ -29,13 +29,15 @@ import {
   Stores,
   Utils,
   ButtonComps,
+  InputComps,
 } from '@augurproject/augur-comps';
-import { OutcomesGrid } from '../common/inputs';
 import { AmmOutcome, MarketOutcome } from '../types';
 import { MARKETS_LIST_HEAD_TAGS } from '../seo-config';
 import { useSimplifiedStore } from '../stores/simplified';
+
 const { ConfirmedCheck } = Icons;
 const { BuySellButton } = ButtonComps;
+const { OutcomesGrid } = InputComps;
 const {
   MARKET_STATUS,
   USDC,

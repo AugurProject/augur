@@ -10,6 +10,7 @@ import logError from './utils/log-error';
 import * as _Types from './utils/types';
 import { windowRef } from './utils/window-ref';
 import * as _Icons from './components/common/icons';
+import * as _Inputs from './components/common/inputs';
 import * as _MarketCard from './components/market-card/market-card';
 import _Logo, { LinkLogo } from './components/common/logo';
 import * as _Labels from './components/common/labels';
@@ -133,6 +134,7 @@ export const MarketCardComps = _MarketCard;
 export const Logo = _Logo;
 export const ButtonComps = _Buttons;
 export const LabelComps = _Labels;
+export const InputComps = _Inputs;
 export const SelectionComps = _Selections;
 export const Icons = {
   ..._Icons,
@@ -167,6 +169,7 @@ export {
 export const Components = {
   ButtonComps,
   ConnectAccount,
+  InputComps,
   LabelComps,
   Links,
   Logo,
