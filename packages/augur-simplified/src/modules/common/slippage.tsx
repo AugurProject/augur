@@ -3,8 +3,9 @@ import ButtonStyles from './buttons.styles.less';
 import classNames from 'classnames';
 import { useAppStatusStore } from '../stores/app-status';
 import { generateTooltip } from '../common/labels';
-import { ButtonComps } from '@augurproject/augur-comps';
+import { ButtonComps, useUserStore } from '@augurproject/augur-comps';
 import Styles from './slippage.styles.less';
+import ChevronFlip from './chevron-flip';
 
 const { TinyButton } = ButtonComps;
 
@@ -14,6 +15,7 @@ export const Slippage = () => {
     actions: { updateSettings },
   } = useAppStatusStore();
   const [customVal, setCustomVal] = useState('');
+  const { account } = useUserStore();
   const [showSelection, setShowSelection] = useState(false);
 
   const isSelectedArray = useMemo(() => {
@@ -31,68 +33,81 @@ export const Slippage = () => {
         output[2] = true;
         break;
       }
-      default: {
+      case '3': {
         output[3] = true;
+        break;
+      }
+      default: {
+        output[4] = true;
         break;
       }
     }
     return output;
   }, [slippage]);
 
-  useEffect(() => {
-    if (customVal === '' && !['0.5', '1', '2'].includes(slippage)) {
-      setCustomVal(slippage);
-    }
-  }, [slippage, customVal]);
-
   return (
     <section className={Styles.Slippage}>
-      <label>
+      <label onClick={() => setShowSelection(!showSelection)}>
         Slippage Tolerance
         {generateTooltip(
           'The maximum percentage the price can change and still have your transaction succeed.',
           'slippageToleranceInfo'
         )}
+        <span>{slippage}%</span>
+        <ChevronFlip pointDown={showSelection} />
       </label>
       {showSelection && (
         <ul>
-          <li>
-            <TinyButton
-              text="0.5%"
-              action={() => {
-                updateSettings({ slippage: '0.5' }, account);
-                setCustomVal('');
-              }}
-              selected={isSelectedArray[0]}
-              className={ButtonStyles.TinyTransparentButton}
-            />
-          </li>
-          <li>
-            <TinyButton
-              text="1%"
-              action={() => {
-                updateSettings({ slippage: '1' }, account);
-                setCustomVal('');
-              }}
-              selected={isSelectedArray[1]}
-              className={ButtonStyles.TinyTransparentButton}
-            />
-          </li>
-          <li>
-            <TinyButton
-              text="2%"
-              action={() => {
-                updateSettings({ slippage: '2' }, account);
-                setCustomVal('');
-              }}
-              selected={isSelectedArray[2]}
-              className={ButtonStyles.TinyTransparentButton}
-            />
-          </li>
+          <div>
+            <li>
+              <TinyButton
+                text="0.5%"
+                action={() => {
+                  updateSettings({ slippage: '0.5' }, account);
+                  setCustomVal('');
+                }}
+                selected={isSelectedArray[0]}
+                className={ButtonStyles.TinyTransparentButton}
+              />
+            </li>
+            <li>
+              <TinyButton
+                text="1%"
+                action={() => {
+                  updateSettings({ slippage: '1' }, account);
+                  setCustomVal('');
+                }}
+                selected={isSelectedArray[1]}
+                className={ButtonStyles.TinyTransparentButton}
+              />
+            </li>
+            <li>
+              <TinyButton
+                text="2%"
+                action={() => {
+                  updateSettings({ slippage: '2' }, account);
+                  setCustomVal('');
+                }}
+                selected={isSelectedArray[2]}
+                className={ButtonStyles.TinyTransparentButton}
+              />
+            </li>
+            <li>
+              <TinyButton
+                text="3%"
+                action={() => {
+                  updateSettings({ slippage: '3' }, account);
+                  setCustomVal('');
+                }}
+                selected={isSelectedArray[3]}
+                className={ButtonStyles.TinyTransparentButton}
+              />
+            </li>
+          </div>
           <li>
             <div
               className={classNames({
-                [Styles.Selected]: isSelectedArray[3],
+                [Styles.Selected]: isSelectedArray[4],
               })}
             >
               <input
@@ -100,27 +115,23 @@ export const Slippage = () => {
                 step="0.1"
                 value={customVal}
                 onChange={(v) => {
-                  setCustomVal(v.target.value);
-                }}
-                onBlur={() => {
-                  if (customVal !== slippage) {
-                    if (
-                      customVal === '' ||
-                      isNaN(Number(customVal)) ||
-                      Number(customVal) > 1000 ||
-                      Number(customVal) <= 0
-                    ) {
-                      setCustomVal(slippage);
-                    } else {
-                      updateSettings({ slippage: customVal }, account);
-                    }
+                  const val = v.target.value;
+                  setCustomVal(val);
+                  if (
+                    !(
+                      val === '' ||
+                      isNaN(Number(val)) ||
+                      Number(val) > 1000 ||
+                      Number(val) <= 0
+                    )
+                  ) {
+                    updateSettings({ slippage: val }, account);
                   }
                 }}
-                placeholder="custom"
+                placeholder="Custom"
                 max="1000"
                 min="0.1"
               />
-              <span>%</span>
             </div>
           </li>
         </ul>

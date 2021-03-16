@@ -2,32 +2,67 @@
 @import (reference) '~modules/common/buttons.styles.less';
 
 .Slippage {
-  > h2 {
-    .text-16-bold;
-
-    color: var(--simple-primary-text);
-    margin: 0;
-  }
+  margin-top: @size-12;
 
   > label {
-    .text-14;
+    .text-12-semi-bold;
 
-    color: var(--simple-primary-text);
-    margin-bottom: @size-12;
+    color: var(--simple-secondary-text);
     display: flex;
     align-items: center;
-    line-height: @size-22;
+    justify-content: center;
+    margin-bottom: 0;
 
-    > span {
+    > span:first-of-type {
       margin-left: @size-5;
+    }
+
+    > span:nth-of-type(2) {
+      .text-12-semi-bold;
+
+      flex: 1;
+      display: flex;
+      justify-content: flex-end;
+      color: var(--simple-primary-text);
+      margin-right: @size-8;
     }
   }
 
   > ul {
     display: flex;
     flex-flow: row nowrap;
-    grid-gap: @size-8;
-    align-self: flex-end;
+    margin-top: @size-12;
+    justify-content: flex-end;
+
+    > div {
+      .SimpleBorder;
+      display: flex;
+
+      > li > button {
+        border-color: transparent;
+      }
+    }
+    > li {
+      margin-left: @size-8;
+    }
+
+    > div > li > button {
+      &:active,
+      &:focus,
+      &:hover,
+      &:not(:disabled):not(.Disabled)[class*='Selected'],
+      &:not(:disabled):not(.Disabled):hover,
+      &:not(:disabled):not(.Disabled):focus,
+      &[class*='Selected'] {
+        color: var(--simple-primary-text);
+        border-color: var(--simple-secondary-text);
+        background-color: var(--simple-alternate-background);
+        min-height: @size-27;
+        height: @size-27;
+        margin-top: -@size-1;
+        margin-bottom: -@size-1;
+      }
+    }
 
     > li > div {
       .SimpleBorder;
@@ -82,17 +117,10 @@
         }
 
         &:not(:disabled):not(.Disabled) {
-          &:hover {
-            background-color: var(--simple-alternate-background);
-            border: @size-1 solid var(--simple-secondary-text);
-          }
-
-          &:focus {
-            background-color: var(--simple-alternate-background);
-          }
-
+          &:hover,
           &:active {
             background-color: var(--simple-alternate-background);
+            border: @size-1 solid var(--simple-secondary-text);
           }
         }
       }
