@@ -1,0 +1,101 @@
+@import (reference) '~assets/styles/shared';
+@import (reference) '~modules/common/buttons.styles.less';
+
+.Slippage {
+  > h2 {
+    .text-16-bold;
+
+    color: var(--simple-primary-text);
+    margin: 0;
+  }
+
+  > label {
+    .text-14;
+
+    color: var(--simple-primary-text);
+    margin-bottom: @size-12;
+    display: flex;
+    align-items: center;
+    line-height: @size-22;
+
+    > span {
+      margin-left: @size-5;
+    }
+  }
+
+  > ul {
+    display: flex;
+    flex-flow: row nowrap;
+    grid-gap: @size-8;
+    align-self: flex-end;
+
+    > li > div {
+      .SimpleBorder;
+
+      background-color: transparent;
+      box-sizing: border-box;
+      display: flex;
+      flex-flow: row nowrap;
+      padding: @size-5 @size-8;
+      max-height: @size-25;
+      min-height: @size-25;
+      align-items: center;
+      justify-content: center;
+
+      > input[type='number'] {
+        -moz-appearance: textfield;
+        .text-12-semi-bold;
+
+        background: transparent;
+        color: var(--simple-secondary-text);
+        padding: 0;
+        text-align: right;
+        outline-style: none;
+        border: none;
+        min-width: @size-45;
+
+        &::-webkit-outer-spin-button,
+        &::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+        }
+
+        &:focus {
+          color: var(--simple-primary-text);
+          outline-style: none;
+          border: none;
+        }
+      }
+
+      > span {
+        .text-12-semi-bold;
+
+        color: var(--simple-primary-text);
+        margin-left: @size-4;
+      }
+
+      &[class*='Selected'] {
+        background-color: var(--simple-alternate-background);
+        border: @size-1 solid var(--simple-secondary-text);
+
+        > input {
+          color: var(--simple-primary-text);
+        }
+
+        &:not(:disabled):not(.Disabled) {
+          &:hover {
+            background-color: var(--simple-alternate-background);
+            border: @size-1 solid var(--simple-secondary-text);
+          }
+
+          &:focus {
+            background-color: var(--simple-alternate-background);
+          }
+
+          &:active {
+            background-color: var(--simple-alternate-background);
+          }
+        }
+      }
+    }
+  }
+}
