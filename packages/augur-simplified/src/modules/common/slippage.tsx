@@ -14,7 +14,6 @@ export const Slippage = () => {
     settings: { slippage },
     actions: { updateSettings },
   } = useAppStatusStore();
-  const [customVal, setCustomVal] = useState('');
   const { account } = useUserStore();
   const [showSelection, setShowSelection] = useState(false);
 
@@ -44,7 +43,7 @@ export const Slippage = () => {
     }
     return output;
   }, [slippage]);
-  console.log(isSelectedArray);
+  const [customVal, setCustomVal] = useState(isSelectedArray[4] ? slippage : '');
   const [error, setError] = useState('');
 
   return (
