@@ -330,7 +330,11 @@ export const estimateExitTrade = async (
   const slippagePercent = (new BN(averagePrice).minus(price)).div(price).times(100).toFixed(2);
   const ratePerCash = new BN(estimateCash).div(new BN(inputDisplayAmount)).toFixed(6);
   const displayShares = convertOnChainSharesToDisplayShareAmount(shares, amm.cash.decimals);
-  const remainingShares = String(new BN(displayShares || "0").minus(new BN(inputDisplayAmount)).toFixed(6));
+  let remainingShares = new BN(displayShares || "0").minus(new BN(inputDisplayAmount));
+
+  if (remainingShares.lt(new BN(0))) {
+    remainingShares = new BN(0);
+  }
 
   return {
     outputValue: String(estimateCash),
@@ -339,7 +343,7 @@ export const estimateExitTrade = async (
     maxProfit: null,
     slippagePercent,
     ratePerCash,
-    remainingShares,
+    remainingShares: remainingShares.toFixed(6),
   }
 }
 
@@ -979,7 +983,9 @@ const getInitPositionValues = (trades: UserTrades, amm: AmmExchange, isYesOutcom
 
   const allInputShareAmounts = sharesRemoveLiquidity.shares.plus(sharesAddLiquidity.shares).plus(sharesEntered.shares);
   const netShareAmounts = allInputShareAmounts.minus(sharesExited.shares);
-  const allCashShareAmounts = sharesRemoveLiquidity.cashAmount.plus(sharesAddLiquidity.cashAmount).plus(sharesEntered.cashAmount);
+
+  const allCashShareAmounts = sharesRemoveLiquidity.cashAmount.plus(sharesAddLiquidity.cashAmount).plus(sharesEntered.cashAmount).minus(sharesExited.cashAmount);
+
   const avgPrice = (netShareAmounts.gt(0) ? allCashShareAmounts.div(netShareAmounts) : new BN(0)).toFixed(4);
 
   return { avgPrice: String(avgPrice), initCostCash: initCostCash.toFixed(4), initCostUsd: cost.toFixed(4), positionFromLiquidity, positionFromRemoveLiquidity }
