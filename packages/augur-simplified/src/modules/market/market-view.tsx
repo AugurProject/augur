@@ -5,13 +5,8 @@ import classNames from 'classnames';
 import SimpleChartSection from '../common/charts';
 import {
   AddLiquidity,
-  CategoryIcon,
-  CategoryLabel,
   NetworkMismatchBanner,
-  CurrencyLabel,
   AddCurrencyLiquidity,
-  ReportingStateLabel,
-  InvalidFlagTipIcon,
 } from '../common/labels';
 import {
   PositionsLiquidityViewSwitcher,
@@ -30,11 +25,19 @@ import {
   Utils,
   ButtonComps,
   InputComps,
+  LabelComps,
 } from '@augurproject/augur-comps';
 import { AmmOutcome, MarketOutcome } from '../types';
 import { MARKETS_LIST_HEAD_TAGS } from '../seo-config';
 import { useSimplifiedStore } from '../stores/simplified';
 
+const {
+  CategoryIcon,
+  CategoryLabel,
+  CurrencyLabel,
+  InvalidFlagTipIcon,
+  ReportingStateLabel,
+} = LabelComps;
 const { ConfirmedCheck } = Icons;
 const { BuySellButton } = ButtonComps;
 const { OutcomesGrid } = InputComps;

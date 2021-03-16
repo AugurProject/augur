@@ -9,7 +9,6 @@ import {
   EstimateTradeResult,
   TradingDirection,
 } from '../types';
-import { generateTooltip } from '../common/labels';
 import { BigNumber as BN } from 'bignumber.js';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
 import {
@@ -23,10 +22,12 @@ import {
   Icons,
   ButtonComps,
   InputComps,
+  LabelComps,
 } from '@augurproject/augur-comps';
 import { useTrackedEvents } from '../../utils/tracker';
 const { doTrade, estimateEnterTrade, estimateExitTrade } = ContractCalls;
 const { CloseIcon } = Icons;
+const { generateTooltip } = LabelComps;
 const {
   formatCash,
   formatCashPrice,

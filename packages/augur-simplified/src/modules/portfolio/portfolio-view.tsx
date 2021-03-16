@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Styles from './portfolio-view.styles.less';
-import { AppViewStats } from '../common/labels';
 import Activity from './activity';
 import { PositionsLiquidityViewSwitcher } from '../common/tables';
-import { NetworkMismatchBanner } from '../common/labels';
+import { AppViewStats, NetworkMismatchBanner } from '../common/labels';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
 import {
   ContractCalls,

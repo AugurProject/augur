@@ -12,17 +12,17 @@ import {
   TransactionTypes,
 } from '../types';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
-import {
-  InvalidFlagTipIcon,
-  MovementLabel,
-  WarningBanner,
-  generateTooltip,
-} from './labels';
-import { PARA_CONFIG, useAppStatusStore, useGraphDataStore, useUserStore, useCanExitCashPosition, Constants, Formatter, Icons, ContractCalls, ApprovalHooks, ButtonComps, Links, PaginationComps, SelectionComps } from '@augurproject/augur-comps';
+import { PARA_CONFIG, useAppStatusStore, useGraphDataStore, useUserStore, useCanExitCashPosition, Constants, Formatter, Icons, ContractCalls, ApprovalHooks, ButtonComps, Links, PaginationComps, SelectionComps, LabelComps } from '@augurproject/augur-comps';
 const { sliceByPage, Pagination } = PaginationComps;
 const { PrimaryButton, SecondaryButton, TinyButton } = ButtonComps;
 const { claimWinnings, getLPCurrentValue } = ContractCalls;
 const { SmallDropdown } = SelectionComps;
+const {
+  InvalidFlagTipIcon,
+  MovementLabel,
+  generateTooltip,
+  WarningBanner,
+} = LabelComps;
 const {
   formatDai,
   formatCash,

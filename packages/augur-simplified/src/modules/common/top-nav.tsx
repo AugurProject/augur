@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { Toasts } from '../toasts/toasts';
 import { ToggleSwitch } from '../common/toggle-switch';
-import { generateTooltip } from '../common/labels';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
 import { useSimplifiedStore } from '../stores/simplified';
 import {
@@ -21,7 +20,9 @@ import {
   PARA_CONFIG,
   Constants,
   LinkLogo,
+  LabelComps,
 } from '@augurproject/augur-comps';
+const { generateTooltip } = LabelComps;
 const { GearIcon, ThreeLinesIcon } = Icons;
 const { ConnectAccount } = CompsConnectAccount;
 const { SecondaryButton, TinyButton } = ButtonComps;

@@ -4,7 +4,6 @@ import Styles from './modal.styles.less';
 import { Header } from './common';
 import { useHistory } from 'react-router';
 import { InfoNumbers } from '../market/trading-form';
-import { generateTooltip } from '../common/labels';
 import classNames from 'classnames';
 import { AmmOutcome, Cash, LiquidityBreakdown, MarketInfo } from '../types';
 import { BigNumber as BN } from 'bignumber.js';
@@ -46,6 +45,9 @@ const {
     OutcomesGrid,
     TextInput,
   },
+  LabelComps: {
+    generateTooltip
+  }
 } = Components;
 const {
   YES_NO,
