@@ -33,6 +33,7 @@
     flex-flow: row nowrap;
     margin-top: @size-12;
     justify-content: flex-end;
+    align-items: center;
 
     > div {
       .SimpleBorder;
@@ -72,8 +73,9 @@
       display: flex;
       flex-flow: row nowrap;
       padding: @size-5 @size-8;
-      max-height: @size-25;
-      min-height: @size-25;
+      max-height: @size-27;
+      min-height: @size-27;
+      width: @size-80;
       align-items: center;
       justify-content: center;
 
@@ -126,4 +128,17 @@
       }
     }
   }
+
+  > span {
+      .text-12-semi-bold;
+
+      color: var(--simple-failed);
+      display: flex;
+      justify-content: flex-end;
+      margin-top: @size-8;
+  }
+}
+
+&.Selected {
+    display: flex;
 }

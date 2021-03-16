@@ -19,7 +19,7 @@ export const Slippage = () => {
   const [showSelection, setShowSelection] = useState(false);
 
   const isSelectedArray = useMemo(() => {
-    let output = [false, false, false, false];
+    let output = [false, false, false, false, false];
     switch (slippage) {
       case '0.5': {
         output[0] = true;
@@ -44,6 +44,8 @@ export const Slippage = () => {
     }
     return output;
   }, [slippage]);
+  console.log(isSelectedArray);
+  const [error, setError] = useState('');
 
   return (
     <section className={Styles.Slippage}>
@@ -65,6 +67,7 @@ export const Slippage = () => {
                 action={() => {
                   updateSettings({ slippage: '0.5' }, account);
                   setCustomVal('');
+                  setError('');
                 }}
                 selected={isSelectedArray[0]}
                 className={ButtonStyles.TinyTransparentButton}
@@ -76,6 +79,7 @@ export const Slippage = () => {
                 action={() => {
                   updateSettings({ slippage: '1' }, account);
                   setCustomVal('');
+                  setError('');
                 }}
                 selected={isSelectedArray[1]}
                 className={ButtonStyles.TinyTransparentButton}
@@ -87,6 +91,7 @@ export const Slippage = () => {
                 action={() => {
                   updateSettings({ slippage: '2' }, account);
                   setCustomVal('');
+                  setError('');
                 }}
                 selected={isSelectedArray[2]}
                 className={ButtonStyles.TinyTransparentButton}
@@ -98,6 +103,7 @@ export const Slippage = () => {
                 action={() => {
                   updateSettings({ slippage: '3' }, account);
                   setCustomVal('');
+                  setError('');
                 }}
                 selected={isSelectedArray[3]}
                 className={ButtonStyles.TinyTransparentButton}
@@ -107,7 +113,7 @@ export const Slippage = () => {
           <li>
             <div
               className={classNames({
-                [Styles.Selected]: isSelectedArray[4],
+                [Styles.Selected]: isSelectedArray[4] === true,
               })}
             >
               <input
@@ -125,7 +131,10 @@ export const Slippage = () => {
                       Number(val) <= 0
                     )
                   ) {
+                    setError('');
                     updateSettings({ slippage: val }, account);
+                  } else if (val !== '') {
+                    setError('Enter a valid slippage percentage');
                   }
                 }}
                 placeholder="Custom"
@@ -136,6 +145,7 @@ export const Slippage = () => {
           </li>
         </ul>
       )}
+      {error && <span>{error}</span>}
     </section>
   );
 };
