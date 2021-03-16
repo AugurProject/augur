@@ -1,5 +1,5 @@
 import React from 'react';
-import Styles from 'modules/common/toggle-switch.styles.less';
+import Styles from './toggle-switch.styles.less';
 import classNames from 'classnames';
 
 export const ToggleSwitch = ({toggle, setToggle}) => (

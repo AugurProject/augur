@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Styles from './sidebar.styles.less';
-import Logo from '../common/logo';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router';
@@ -10,6 +9,7 @@ import {
   PathUtils,
   Components,
   useAppStatusStore,
+  LinkLogo,
 } from '@augurproject/augur-comps';
 import { useSimplifiedStore } from '../stores/simplified';
 const {
@@ -39,7 +39,7 @@ const SideBarHeader = ({ header, showLogo }: SideBarHeaderProps) => {
   } = useSimplifiedStore();
   return (
     <div className={Styles.Header}>
-      {showLogo && <Logo />}
+      {showLogo && <LinkLogo />}
       <span>{header}</span>
       <span onClick={() => setSidebar(null)}>{CloseIcon}</span>
     </div>

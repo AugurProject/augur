@@ -3,7 +3,6 @@ import { useLocation } from 'react-router';
 import Styles from './top-nav.styles.less';
 import ButtonStyles from './buttons.styles.less';
 import { Link } from 'react-router-dom';
-import Logo from './logo';
 import classNames from 'classnames';
 import { Toasts } from '../toasts/toasts';
 import { ToggleSwitch } from '../common/toggle-switch';
@@ -21,6 +20,7 @@ import {
   PathUtils,
   PARA_CONFIG,
   Constants,
+  LinkLogo,
 } from '@augurproject/augur-comps';
 const { GearIcon, ThreeLinesIcon } = Icons;
 const { ConnectAccount } = CompsConnectAccount;
@@ -280,7 +280,7 @@ export const TopNav = () => {
       })}
     >
       <section>
-        <Logo />
+        <LinkLogo />
         {!isMobile && (
           <ol>
             <li className={classNames({ [Styles.Active]: path === MARKETS })}>

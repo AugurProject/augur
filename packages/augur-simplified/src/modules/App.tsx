@@ -7,7 +7,6 @@ import Routes from './routes/routes';
 import TopNav from './common/top-nav';
 import '../assets/styles/shared.less';
 import { SimplifiedProvider, useSimplifiedStore } from './stores/simplified';
-// import { AppStatusProvider, useAppStatusStore } from './stores/app-status';
 import { Sidebar } from './sidebar/sidebar';
 import classNames from 'classnames';
 import ModalView from './modal/modal-view';
