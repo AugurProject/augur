@@ -141,6 +141,7 @@ export class AMM {
   }
 
   async doRemoveLiquidity(market: string, paraShareToken: string, fee: BigNumber, lpTokens: BigNumber, symbols: string[]): Promise<TransactionResponse> {
+    debugger;
     return this.intermediary(paraShareToken).removeLiquidity(market, paraShareToken, fee, lpTokens, symbols);
   }
 

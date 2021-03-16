@@ -4,7 +4,7 @@
   "uploadBlockNumber": 21486181,
   "ethereum": {
     "network": "kovan",
-    "http": "https://kovan.infura.io/v3/595111ad66e2410784d484708624f7b1",
+    "http": "https://eth-kovan.alchemyapi.io/jsonrpc/1FomA6seLdWDvpIRvL9J5NhwPHLIGbWA",
     "rpcRetryCount": 5,
     "rpcRetryInterval": 0,
     "rpcConcurrency": 8,
@@ -117,15 +117,15 @@
     "USDC": "0x03722982dBb5b038348feF5a1Bc7f6e0f3d4C34E",
     "USDT": "0x1997d08B1a9aeD5143b995e929707400625D5f6C",
     "AccountLoader": "0x8953852710001CfF9884234D0c9d3c7f6e65881a",
-    "OINexus": "0x8afae9ad3362Efa569E919e4907D2eB6758Ed0D7",
+    "OINexus": "0x914C0f4844fCAb5D9A5791F82DC47c25E047416E",
     "HotLoadingUniversal": "0xb16e90e03F86250688DE907083B5B141B6dF6789",
-    "AMMFactory": "0x973d3336b355D4E5512568c81D1B81BD54F75F65",
+    "AMMFactory": "0x83C9cB59f3A1bC493d2B91E5E1A47eeB46D55163",
     "ERC20Proxy1155Nexus": "0xC0e95BEef0f4E943E9eD0D0C71BE43c07A864755",
-    "ParaDeployer": "0x4DEb88CF839450464F4fB2Bc1d7e07d399CAa15b",
-    "WethWrapperForAMMExchange": "0x749254581B4d4A79fd4e2f84BE1f19f05862aa7f",
-    "BFactory": "0x477A4b26B026D7Bf24abfa399aCf25f5F9e1556c",
+    "ParaDeployer": "0xF7BD73F11A38C315C9CC92c523957401174111Db",
+    "WethWrapperForAMMExchange": "0x328E25Af9a51c904Cafd19a87AD149f2e2469378",
+    "BFactory": "0xdc1E379655b97E5A0373E9f8DAA4A9F1BD8F9a41",
     "WrappedShareTokenFactoryFactory": "0xa1f5dA68aC6c4Fc5130587A3819f1D5E73c01D84",
-    "WrappedShareTokenFactory": "0xFE393CAE4a2EeA35D55Ec64B5Bfc75D0259349a8"
+    "WrappedShareTokenFactory": "0xB7b50214d3Ab89009589BeDd344a510baA44a2a2"
   },
   "server": {
     "httpPort": 9003,
@@ -193,22 +193,22 @@
     "0x1997d08B1a9aeD5143b995e929707400625D5f6C": {
       "name": "USDT",
       "decimals": 6,
-      "uploadBlockNumber": 23198328,
+      "uploadBlockNumber": 23874599,
       "addresses": {
-        "Augur": "0x7986883396c653140e9F5836fc70f14607d68a64",
-        "AugurTrading": "0xDe1Ae752809Ce9319e899fb48DF9445dB699B034",
-        "Universe": "0x9Eec1fb0E5D74F61116448fC46a1DE5b2A7bB999",
+        "Augur": "0x5B8c0f2741523831E76081f63174C7Af238454e7",
+        "AugurTrading": "0x90839eB226D8d8A10302614f2156eF2d75493C55",
+        "Universe": "0xb446151Fe67C04b5c179bE4D51414762A4D39ff2",
         "Cash": "0x1997d08B1a9aeD5143b995e929707400625D5f6C",
-        "ShareToken": "0xF09f6e1Cfc2Fb1e966C4340fD09b0f3e16dDaEe0",
-        "OICash": "0x548111eC5873Cd99584fb961F797381842b65a1e",
-        "CancelOrder": "0xC9Ee39b5389e811212D862A8a5AA65b6940d1f2d",
-        "CreateOrder": "0x6DE077A423f2F92e7d8AAC28E8E43d094474372C",
-        "FillOrder": "0xD780Dd258F0F9B176e087FaF0f46D0725dABde2E",
-        "Orders": "0x4175e2B8eA3CC38CAdB27E8d460C2E80A9374930",
-        "Trade": "0xE126Bb630D6F5f60E2C253b99B9efC960803f0F5",
-        "SimulateTrade": "0xDAA157211cD9A953a360Fb2205D45494D66843C4",
-        "ZeroXTrade": "0x6EFef5EE1c52839a9563d8674d88c04559CC83A2",
-        "ProfitLoss": "0xcd6F84f1C3dBd6ff3BED3e6B239186DD05Ec9333"
+        "ShareToken": "0x18e2C670a6fAFdb472f77195D0F9302ea608Ff52",
+        "OICash": "0x8d69d71d555AebF3a7F7D69D2df8ca6f8F433c88",
+        "CancelOrder": "0x4aBB7751A3d1D603Ca63Db027133D1bed3A0cb46",
+        "CreateOrder": "0x1ea4980023F49528F7728Df18D11327B0a48a39D",
+        "FillOrder": "0xAB3718ddd09a1b4E1ff7d14FBdD81ADfC3b16658",
+        "Orders": "0x75e1992834298a8C42066e1abe627682816DA803",
+        "Trade": "0xb5289a2e9A001e6849d879cD144cabB511d0A250",
+        "SimulateTrade": "0x735F7D07aA4a52DBE635d533c84E9a681dF7266B",
+        "ZeroXTrade": "0x45559E403cf9378fb6e7707A39eCCdcb2c1035f2",
+        "ProfitLoss": "0x89CF606aa2A6f883A33deA600e2d6471DD00C838"
       }
     }
   }
