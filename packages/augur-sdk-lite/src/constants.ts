@@ -229,6 +229,7 @@ export const NORMAL_FILL = {
 };
 export const CLAIM_GAS_COST = new BigNumber(794379);
 export const INVALID_SWAP_GAS_COST = new BigNumber(20000);
+export const BUY_COMPLETE_SETS_GAS_COST = new BigNumber(221912);
 
 export const ORDER_TYPES = {
   BID: new BigNumber(0),

@@ -1,6 +1,6 @@
 import { GasStation } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
-import { CLAIM_GAS_COST, DEFAULT_GAS_PRICE_IN_GWEI, INVALID_SWAP_GAS_COST, EULERS_NUMBER, SECONDS_IN_A_YEAR } from '../constants';
+import { CLAIM_GAS_COST, DEFAULT_GAS_PRICE_IN_GWEI, INVALID_SWAP_GAS_COST, EULERS_NUMBER, SECONDS_IN_A_YEAR, BUY_COMPLETE_SETS_GAS_COST } from '../constants';
 
 // A Market is marked as True in the invalidFilter if the any bid for Invalid on the book would be profitable to take were the market Valid
 export const isMarketInvalid = (
@@ -26,6 +26,7 @@ export const isMarketInvalid = (
   // gas estimates in ETH
   const estimatedTradeGasCostInETH = INVALID_SWAP_GAS_COST.times(gasPriceInGwei).div(10 ** 9);
   const estimatedClaimGasCostInETH = CLAIM_GAS_COST.times(gasPriceInGwei).div(10 ** 9);
+  const estimatedBuyCompleteSetsInETH = BUY_COMPLETE_SETS_GAS_COST.times(gasPriceInGwei).div(10 ** 9);
 
   let timeTillMarketFinalizesInSeconds = new BigNumber(
     marketData.endTime
@@ -37,7 +38,7 @@ export const isMarketInvalid = (
     SECONDS_IN_A_YEAR
   );
 
-  const baseRevenue = numTicks.times(feeMultiplier).times(
+  const baseRevenue = feeMultiplier.times(
     (
       EULERS_NUMBER **
       timeTillMarketFinalizesInYears
@@ -49,22 +50,19 @@ export const isMarketInvalid = (
 
   const invalidEstimatesInETH = estimatedTradeGasCostInETH.plus(
     estimatedClaimGasCostInETH
-  );
+  ).plus(estimatedBuyCompleteSetsInETH);
 
   /**
    * cost is TVoM and transaction cost and the origianl purchase amount for shares
    */
-  const totalInvalidCost = (invalidAmountSold.times(baseRevenue)).plus(invalidEstimatesInETH).plus(invalidAmountSold);
+  const totalInvalidCost = (invalidAmountSold.times(baseRevenue)).plus(invalidEstimatesInETH).plus(invalidAmountSold.times(numTicks));
 
-  /*
+/*
   console.log(sellInvalidProfitInETH.minus(totalInvalidCost).gt(0),
   'invalidAmountSold', invalidAmountSold.toFixed(8),
-  'baseRevenue', baseRevenue.toFixed(8),
+  'TVoM', invalidAmountSold.times(baseRevenue).toFixed(8),
   'totalInvalidCost', totalInvalidCost.toFixed(8),
   'sellInvalidProfitInETH', sellInvalidProfitInETH.toFixed(8))
 */
-  return sellInvalidProfitInETH
-    .minus(totalInvalidCost)
-    .gt(0)
-    ? true : false;
+  return sellInvalidProfitInETH.gt(totalInvalidCost);
 }

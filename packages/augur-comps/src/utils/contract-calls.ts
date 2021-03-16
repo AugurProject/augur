@@ -776,12 +776,12 @@ export const getMarketInvalidity = async (
 
     if (method === CALC_OUT_GIVEN_IN) {
       const amm = ammExchanges[context.ammExchangeId];
-      const ouputCash = convertOnChainCashAmountToDisplayCashAmount(new BN(rawBalance), amm?.cash?.decimals);
-      amm.swapInvalidForCashInETH = ouputCash.toFixed();
+      const outputCash = convertOnChainCashAmountToDisplayCashAmount(new BN(rawBalance), amm?.cash?.decimals);
+      amm.swapInvalidForCashInETH = outputCash.toFixed();
       if (amm.cash.name !== ETH) {
         // converting raw value in cash to cash in ETH. needed for invalidity check
         const ethCash = Object.values(cashes).find(c => c.name === ETH);
-        amm.swapInvalidForCashInETH = ouputCash.div(new BN(ethCash.usdPrice)).toFixed();
+        amm.swapInvalidForCashInETH = outputCash.div(new BN(ethCash.usdPrice)).toFixed();
       }
       amm.isAmmMarketInvalid = await getIsMarketInvalid(amm, cashes);
       if (amm.isAmmMarketInvalid) {
@@ -1064,7 +1064,7 @@ const getIsMarketInvalid = async (amm: AmmExchange, cashes: Cashes): Promise<boo
   // TODO: there might be more coversion needed because of how wrapped shares works with balancer pool
   // numTicks might play a roll here
   // invalid shares are Mega Shares, need to div by num ticks.
-  let sharesSold = convertOnChainSharesToDisplayShareAmount(new BN(invalidBalance).times(PORTION_OF_INVALID_POOL_SELL), 18)
+  let sharesSold = convertOnChainCashAmountToDisplayCashAmount(new BN(invalidBalance).times(PORTION_OF_INVALID_POOL_SELL), 18)
   if (amm?.cash?.name !== ETH) {
     // converting shares value based in non-ETH to shares based on ETH.
     const ethCash = Object.values(cashes).find(c => c.name === ETH);
