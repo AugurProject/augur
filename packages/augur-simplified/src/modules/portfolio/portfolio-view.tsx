@@ -3,7 +3,6 @@ import Styles from './portfolio-view.styles.less';
 import { AppViewStats } from '../common/labels';
 import Activity from './activity';
 import { PositionsLiquidityViewSwitcher } from '../common/tables';
-import { useAppStatusStore } from '../stores/app-status';
 import { NetworkMismatchBanner } from '../common/labels';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
 import {
@@ -14,6 +13,7 @@ import {
   createBigNumber,
   Stores,
   useGraphDataStore,
+  useAppStatusStore,
   useScrollToTopOnMount,
   useCanExitCashPosition,
   useUserStore,

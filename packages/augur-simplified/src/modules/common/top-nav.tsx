@@ -5,13 +5,14 @@ import ButtonStyles from './buttons.styles.less';
 import { Link } from 'react-router-dom';
 import Logo from './logo';
 import classNames from 'classnames';
-import { useAppStatusStore } from '../stores/app-status';
 import { Toasts } from '../toasts/toasts';
 import { ToggleSwitch } from '../common/toggle-switch';
 import { generateTooltip } from '../common/labels';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
+import { useSimplifiedStore } from '../stores/simplified';
 import {
   Icons,
+  useAppStatusStore,
   useGraphDataStore,
   useUserStore,
   ConnectAccount as CompsConnectAccount,
@@ -25,19 +26,13 @@ const { GearIcon, ThreeLinesIcon } = Icons;
 const { ConnectAccount } = CompsConnectAccount;
 const { SecondaryButton, TinyButton } = ButtonComps;
 const { parsePath, makePath } = PathUtils;
-const {
-  MARKET,
-  MARKETS,
-  PORTFOLIO,
-  SIDEBAR_TYPES,
-  TX_STATUS,
-} = Constants;
+const { MARKET, MARKETS, PORTFOLIO, SIDEBAR_TYPES, TX_STATUS } = Constants;
 
 export const SettingsButton = () => {
   const {
     settings: { slippage, showInvalidMarkets, showLiquidMarkets },
     actions: { updateSettings },
-  } = useAppStatusStore();
+  } = useSimplifiedStore();
   const { account } = useUserStore();
   const [open, setOpened] = useState(false);
   const [customVal, setCustomVal] = useState('');
@@ -219,8 +214,9 @@ export const TopNav = () => {
   const {
     isLogged,
     isMobile,
-    actions: { setSidebar, setModal },
+    actions: { setModal },
   } = useAppStatusStore();
+  const { actions: { setSidebar } } = useSimplifiedStore();
   const {
     account,
     loginAccount,

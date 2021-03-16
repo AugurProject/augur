@@ -7,7 +7,6 @@ import { InfoNumbers } from '../market/trading-form';
 import { generateTooltip } from '../common/labels';
 import classNames from 'classnames';
 import { AmmOutcome, Cash, LiquidityBreakdown, MarketInfo } from '../types';
-import { useAppStatusStore } from '../stores/app-status';
 import { BigNumber as BN } from 'bignumber.js';
 import {
   AmountInput,
@@ -19,6 +18,7 @@ import {
   ContractCalls,
   createBigNumber,
   PARA_CONFIG,
+  useAppStatusStore,
   useGraphDataStore,
   useUserStore,
   UserStore,

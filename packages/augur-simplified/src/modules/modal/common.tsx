@@ -1,9 +1,7 @@
 import React from 'react';
 
 import Styles from './modal.styles.less';
-import { useAppStatusStore } from '../stores/app-status';
-import { Icons } from '@augurproject/augur-comps';
-const { CloseIcon } = Icons;
+import { Icons, useAppStatusStore } from '@augurproject/augur-comps';
 
 export const Header = ({ title, subtitle }) => {
   const {
@@ -19,7 +17,7 @@ export const Header = ({ title, subtitle }) => {
           <span>{subtitle.value}</span>
         </div>
       )}
-      <button onClick={() => closeModal()}>{CloseIcon}</button>
+      <button onClick={() => closeModal()}>{Icons.CloseIcon}</button>
     </div>
   );
 };

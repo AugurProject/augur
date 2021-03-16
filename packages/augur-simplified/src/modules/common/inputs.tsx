@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 import Styles from './inputs.styles.less';
-import { useAppStatusStore } from '../stores/app-status';
 import { TinyButton } from './buttons.styles.less';
 import { AmmOutcome, Cash } from '../types';
-import { Constants, Icons, Formatter, SelectionComps } from '@augurproject/augur-comps';
+import { Constants, Icons, Formatter, SelectionComps, useAppStatusStore } from '@augurproject/augur-comps';
 const {
   ETH,
   USDC,

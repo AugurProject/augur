@@ -2,12 +2,12 @@ import React, { useEffect, useMemo } from 'react';
 import Styles from './labels.styles.less';
 import { useLocation } from 'react-router';
 import classNames from 'classnames';
-import { useAppStatusStore } from '../stores/app-status';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from './tooltip.styles.less';
 import { FormattedNumber, MarketInfo } from '../types';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import {
+  useAppStatusStore,
   useGraphDataStore,
   useUserStore,
   Icons,

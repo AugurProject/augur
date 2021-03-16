@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import Styles from './markets-view.styles.less';
 import { AppViewStats, NetworkMismatchBanner } from '../common/labels';
 import classNames from 'classnames';
-import { useAppStatusStore } from '../stores/app-status';
+import { useSimplifiedStore } from '../stores/simplified';
 import { MarketInfo } from '../types';
 import { TopBanner } from '../common/top-banner';
 import { SearchInput } from '../common/inputs';
 import {
+  useAppStatusStore,
   useGraphDataStore,
   useScrollToTopOnMount,
   GraphClient,
@@ -160,10 +161,13 @@ const MarketsView = () => {
   const {
     isMobile,
     isLogged,
-    marketsViewSettings,
-    actions: { setSidebar, updateMarketsViewSettings, setModal },
-    settings: { showLiquidMarkets, showInvalidMarkets },
+    actions: { setModal },
   } = useAppStatusStore();
+  const {
+    marketsViewSettings,
+    settings: { showLiquidMarkets, showInvalidMarkets },
+    actions: { setSidebar, updateMarketsViewSettings }
+  } = useSimplifiedStore();
   const {
     blocknumber,
     ammExchanges,
@@ -350,3 +354,4 @@ const MarketsView = () => {
 };
 
 export default MarketsView;
+

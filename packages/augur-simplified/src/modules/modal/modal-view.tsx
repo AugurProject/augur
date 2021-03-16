@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import ModalAddLiquidity from './modal-add-liquidity';
 import { useHistory } from 'react-router';
 import Styles from './modal.styles.less';
-import { useAppStatusStore } from '../stores/app-status';
 import { MODAL_ADD_LIQUIDITY } from '../constants';
-import { Constants, Modals, useUserStore } from '@augurproject/augur-comps';
+import { Constants, Modals, useUserStore, useAppStatusStore } from '@augurproject/augur-comps';
 const { ModalConnectWallet } = Modals;
 
 function selectModal(

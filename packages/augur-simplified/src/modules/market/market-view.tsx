@@ -18,11 +18,11 @@ import {
   TransactionsTable,
 } from '../common/tables';
 import TradingForm from './trading-form';
-import { useAppStatusStore } from '../stores/app-status';
 import { AmmExchange, MarketInfo } from '../types';
 import {
   Icons,
   Constants,
+  useAppStatusStore,
   useGraphDataStore,
   useScrollToTopOnMount,
   SEO,
@@ -33,6 +33,7 @@ import {
 import { OutcomesGrid } from '../common/inputs';
 import { AmmOutcome, MarketOutcome } from '../types';
 import { MARKETS_LIST_HEAD_TAGS } from '../seo-config';
+import { useSimplifiedStore } from '../stores/simplified';
 const { ConfirmedCheck } = Icons;
 const { BuySellButton } = ButtonComps;
 const {
@@ -144,11 +145,11 @@ const EmptyMarketView = () => {
 const MarketView = ({ defaultMarket = null }) => {
   const [showMoreDetails, setShowMoreDetails] = useState(false);
   const marketId = useMarketQueryId();
+  const { isMobile } = useAppStatusStore();
   const {
-    isMobile,
     showTradingForm,
     actions: { setShowTradingForm },
-  } = useAppStatusStore();
+  } = useSimplifiedStore();
   const { markets } = useGraphDataStore();
 
   useScrollToTopOnMount();

@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import Styles from './activity.styles.less';
-import { useAppStatusStore } from '../stores/app-status';
-import { useGraphDataStore, useUserStore, Formatter, ProcessData, Links, PaginationComps } from '@augurproject/augur-comps';
+import { useAppStatusStore, useGraphDataStore, useUserStore, Formatter, ProcessData, Links, PaginationComps } from '@augurproject/augur-comps';
 import { ActivityItem } from '../types';
 const { Pagination, sliceByPage } = PaginationComps;
 const { ReceiptLink } = Links;

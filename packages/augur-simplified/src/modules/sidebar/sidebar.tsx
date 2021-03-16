@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
 import Styles from './sidebar.styles.less';
-import { useAppStatusStore } from '../stores/app-status';
 import Logo from '../common/logo';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router';
 import { SettingsButton } from '../common/top-nav';
-import { Constants, PathUtils, Components } from '@augurproject/augur-comps';
+import {
+  Constants,
+  PathUtils,
+  Components,
+  useAppStatusStore,
+} from '@augurproject/augur-comps';
+import { useSimplifiedStore } from '../stores/simplified';
 const {
   MARKETS,
   PORTFOLIO,
@@ -31,7 +36,7 @@ interface SideBarHeaderProps {
 const SideBarHeader = ({ header, showLogo }: SideBarHeaderProps) => {
   const {
     actions: { setSidebar },
-  } = useAppStatusStore();
+  } = useSimplifiedStore();
   return (
     <div className={Styles.Header}>
       {showLogo && <Logo />}
@@ -45,7 +50,7 @@ const FilterSideBar = () => {
   const {
     marketsViewSettings,
     actions: { updateMarketsViewSettings, setSidebar },
-  } = useAppStatusStore();
+  } = useSimplifiedStore();
   const [localSettings, setLocalSettings] = useState(marketsViewSettings);
   const filtersAreReset =
     JSON.stringify(localSettings) ===
@@ -115,9 +120,9 @@ const FilterSideBar = () => {
 
 const NavigationSideBar = () => {
   const {
-    isLogged,
     actions: { setSidebar },
-  } = useAppStatusStore();
+  } = useSimplifiedStore();
+  const { isLogged } = useAppStatusStore();
   const location = useLocation();
   const path = parsePath(location.pathname)[0];
   return (
@@ -147,11 +152,9 @@ const NavigationSideBar = () => {
 };
 
 export const Sidebar = () => {
-  const { sidebarType } = useAppStatusStore();
+  const { sidebarType } = useSimplifiedStore();
   return (
-    <div
-      className={Styles.Sidebar}
-    >
+    <div className={Styles.Sidebar}>
       {sidebarType === SIDEBAR_TYPES.FILTERS && <FilterSideBar />}
       {sidebarType === SIDEBAR_TYPES.NAVIGATION && <NavigationSideBar />}
     </div>

@@ -1,8 +1,7 @@
 import React from 'react';
 
 import Styles from './logo.styles.less';
-import { useAppStatusStore } from '../stores/app-status';
-import { Icons, Links } from '@augurproject/augur-comps';
+import { Icons, Links, useAppStatusStore } from '@augurproject/augur-comps';
 
 const { MarketsLink } = Links;
 const { AugurTextLogo, v2AugurLogo } = Icons;

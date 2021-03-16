@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import Styles from 'modules/market/trading-form.styles.less';
 import classNames from 'classnames';
-import { useAppStatusStore } from '../stores/app-status';
+import { useSimplifiedStore } from '../stores/simplified';
 import {
   AmmExchange,
   AmmOutcome,
@@ -17,6 +17,7 @@ import {
   Formatter,
   Constants,
   ContractCalls,
+  useAppStatusStore,
   useUserStore,
   useCanEnterCashPosition,
   useCanExitCashPosition,
@@ -172,10 +173,12 @@ const TradingForm = ({
 }: TradingFormProps) => {
   const {
     isLogged,
+  } = useAppStatusStore();
+  const {
     showTradingForm,
     actions: { setShowTradingForm },
     settings: { slippage },
-  } = useAppStatusStore();
+  } = useSimplifiedStore();
   const {
     loginAccount,
     balances,
