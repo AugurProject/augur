@@ -43,7 +43,9 @@ export const Slippage = () => {
     }
     return output;
   }, [slippage]);
-  const [customVal, setCustomVal] = useState(isSelectedArray[4] ? slippage : '');
+  const [customVal, setCustomVal] = useState(
+    isSelectedArray[4] ? slippage : ''
+  );
   const [error, setError] = useState('');
 
   return (
@@ -132,7 +134,10 @@ export const Slippage = () => {
                   ) {
                     setError('');
                     updateSettings({ slippage: val }, account);
-                  } else if (val !== '') {
+                  } else if (val === '') {
+                    setError('');
+                    updateSettings({ slippage: 0 }, account);
+                  } else {
                     setError('Enter a valid slippage percentage');
                   }
                 }}
