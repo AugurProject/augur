@@ -686,7 +686,8 @@ export const getUserBalances = async (
         const existingMarketShares = userBalances.marketShares[amm.id];
         const trades = getUserTrades(account, amm.transactions);
         if (existingMarketShares) {
-          existingMarketShares.positions.push(getPositionUsdValues(trades, rawBalance, balance, outcome, amm, account));
+          const position = getPositionUsdValues(trades, rawBalance, balance, outcome, amm, account);
+          if (position) existingMarketShares.positions.push(position);
           userBalances.marketShares[amm.id].outcomeSharesRaw[Number(outcome)] = rawBalance;
           userBalances.marketShares[amm.id].outcomeShares[Number(outcome)] = String(convertOnChainSharesToDisplayShareAmount(rawBalance, cash.decimals));
         } else if (balance !== "0") {
@@ -696,7 +697,8 @@ export const getUserBalances = async (
             outcomeSharesRaw: ["0", "0", "0"],
             outcomeShares: ["0", "0", "0"],
           }
-          userBalances.marketShares[amm.id].positions.push(getPositionUsdValues(trades, rawBalance, balance, outcome, amm, account));
+          const position = getPositionUsdValues(trades, rawBalance, balance, outcome, amm, account);
+          if (position) userBalances.marketShares[amm.id].positions.push(position);
           userBalances.marketShares[amm.id].outcomeSharesRaw[Number(outcome)] = rawBalance;
           userBalances.marketShares[amm.id].outcomeShares[Number(outcome)] = String(convertOnChainSharesToDisplayShareAmount(rawBalance, cash.decimals));
         }
@@ -823,6 +825,7 @@ const normalizeNoInvalidPositionsBalances = (ammMarketShares: AmmMarketShares, a
     const marketShares = ammMarketShares[ammId];
     const amm = ammExchanges[ammId];
     const minNoInvalidBalance = String(Math.min(Number(marketShares.outcomeShares[0]), Number(marketShares.outcomeShares[1])));
+    marketShares.outcomeShares[1] = minNoInvalidBalance;
     const minNoInvalidRawBalance = String(BigNumber.min(new BN(marketShares.outcomeSharesRaw[0]), new BN(marketShares.outcomeSharesRaw[1])));
     marketShares.positions.forEach(position => {
       // user can only sell the min of 'No' and 'Invalid' shares
@@ -830,7 +833,7 @@ const normalizeNoInvalidPositionsBalances = (ammMarketShares: AmmMarketShares, a
         const { priceNo, past24hrPriceNo } = amm;
         position.balance = minNoInvalidBalance;
         position.rawBalance = minNoInvalidRawBalance;
-        position.quantity = trimDecimalValue(position.balance);
+        position.quantity = trimDecimalValue(minNoInvalidBalance);
         position.usdValue = String(new BN(minNoInvalidBalance).times(new BN(priceNo)).times(amm.cash.usdPrice));
         position.past24hrUsdValue = past24hrPriceNo ? String(new BN(minNoInvalidBalance).times(new BN(past24hrPriceNo))) : null;
       }
@@ -898,6 +901,8 @@ const getPositionUsdValues = (trades: UserTrades, rawBalance: string, balance: s
     positionFromLiquidity = !result.positionFromRemoveLiquidity && result.positionFromLiquidity;
     positionFromRemoveLiquidity = result.positionFromRemoveLiquidity;
   }
+
+  if (new BN(avgPrice).eq(0)) return null;
 
   return {
     balance,
