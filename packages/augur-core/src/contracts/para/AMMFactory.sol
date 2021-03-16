@@ -105,7 +105,7 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
     ) internal returns (uint256, uint256) {
         address _ammAddress = exchanges[address(_market)][address(_para)][_fee];
         IAMMExchange _amm = IAMMExchange(_ammAddress);
-        (uint256 _invalidAmount, uint256  _yesAmount, uint256  _noAmount) = _amm.shareBalances(address(this));
+        (uint256 _invalidAmount, uint256  _noAmount, uint256  _yesAmount) = _amm.shareBalances(address(this));
 
         shareTransferInternal(_market, _para, _fee, address(this), msg.sender, _invalidAmount, _noAmount, _yesAmount);
 

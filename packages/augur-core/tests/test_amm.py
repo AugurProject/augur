@@ -135,6 +135,37 @@ def test_amm_add_additional_liquidity(contractsFixture, market, cash, shareToken
     assert shareToken.balanceOfMarketOutcome(market.address, YES, account1) == (setsToBuy * 95) // 100
     assert cash.balanceOf(account1) == (setsToBuy * 5 * numticks) // 100
 
+def test_amm_add_and_remove_liquidity_after_swap_USDC(contractsFixture, market, cash, shareToken, factory, account0, account1):
+    if not contractsFixture.paraAugur:
+        return skip("Test is only for para augur")
+
+    cash.setDecimals(6)
+    cost = 10**9
+    keepYes = True
+
+    cash.faucet(cost)
+    cash.approve(factory.address, 2**256-1)
+
+    ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, cost, RATIO_50_50, keepYes, account0, SYMBOLS)[0]
+    amm = contractsFixture.applySignature("AMMExchange", ammAddress)
+
+    ammCreatedEvent = factory.getLogs('AMMCreated')
+    bPool = contractsFixture.applySignature("BPool", ammCreatedEvent[0].args.bPool)
+
+    bPoolBalance = bPool.balanceOf(account0)
+    bPool.approve(factory.address, bPoolBalance)
+
+    amm.approve(factory.address, amm.balanceOf(account0))
+
+    lpTokens = amm.balanceOf(account0)
+
+    cash.faucet(cost,sender=account1)
+    cash.approve(factory.address, 2**256-1,sender=account1)
+
+    amm.enterPosition(cost//100, True, 0, sender=account1)
+
+    factory.removeLiquidity(market.address, shareToken.address, FEE, lpTokens, SYMBOLS)
+
 def test_amm_add_additional_liquidity_USDC(contractsFixture, market, cash, shareToken, factory, account0, account1):
     if not contractsFixture.paraAugur:
         return skip("Test is only for para augur")
