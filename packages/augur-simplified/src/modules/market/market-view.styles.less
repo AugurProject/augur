@@ -10,6 +10,10 @@
       display: flex;
       flex-flow: column nowrap;
 
+      > button {
+        display: none;
+      }
+
       > h1 {
         .text-30-bold;
 
@@ -22,7 +26,7 @@
         hyphens: auto;
       }
 
-      > div[class*="Outcomes"] {
+      > div[class*='Outcomes'] {
         display: none;
       }
 
@@ -50,7 +54,7 @@
 .EmptyMarketView {
   > section {
     display: grid;
-    > section > div, 
+    > section > div,
     > div {
       .ShimmerEmptyBlock;
 
@@ -59,10 +63,10 @@
       background-size: 1600px 400px;
       background-image: linear-gradient(
         to right,
-        #EDEFF1 0%,
+        #edeff1 0%,
         #f6f7f8 20%,
-        #EDEFF1 40%,
-        #EDEFF1 100%
+        #edeff1 40%,
+        #edeff1 100%
       );
     }
   }
@@ -128,7 +132,6 @@
       margin-left: auto;
     }
 
-
     > section:last-of-type {
       > div {
         width: 781px;
@@ -171,16 +174,16 @@
     height: @size-32;
   }
 
-  > div[class*="CategoryLabel"] {
+  > div[class*='CategoryLabel'] {
     margin-left: @size-8;
     margin-right: auto;
   }
 
-  > span[class*="CurrencyLabel"] {
+  > span[class*='CurrencyLabel'] {
     margin-left: @size-8;
   }
 
-  > span[class*="InvalidFlagTipIcon"] {
+  > span[class*='InvalidFlagTipIcon'] {
     margin-left: @size-8;
   }
 }
@@ -337,9 +340,10 @@
 @media @breakpoint-mobile-tiny {
   .MarketView {
     grid-template-columns: 1fr;
+    padding-bottom: @size-72;
 
     > section {
-      &:first-of-type > div[class*="Outcomes"] {
+      &:first-of-type > div[class*='Outcomes'] {
         display: grid;
       }
 
@@ -354,6 +358,15 @@
           overflow: hidden;
           transition: top 200ms ease-in-out, height 200ms ease-in-out;
         }
+      }
+    }
+
+    > section:first-of-type {
+      > button {
+        display: flex;
+        position: fixed;
+        bottom: @size-16;
+        width: calc(100% - @size-32);
       }
     }
   }
@@ -379,7 +392,7 @@
 
 @media @breakpoint-mobile-tablet {
   .MarketView {
-    padding: @size-24 @size-16 @size-40;
+    padding: @size-24 @size-16 @size-72;
     position: relative;
 
     > section:first-of-type {
@@ -397,7 +410,7 @@
         margin-bottom: @size-24;
       }
 
-      > section[class*="SimpleChartSection"] {
+      > section[class*='SimpleChartSection'] {
         margin-bottom: @size-16;
       }
     }
@@ -415,7 +428,7 @@
 
   .StatsRow {
     display: grid;
-    grid-template-columns: repeat(3,1fr);
+    grid-template-columns: repeat(3, 1fr);
     height: unset;
     margin-bottom: @size-24;
 

@@ -302,7 +302,6 @@ interface OutcomesGridProps {
   editable?: boolean;
   setEditableValue?: Function;
   ammCash: Cash;
-  showAsButtons?: boolean;
   dontFilterInvalid?: boolean;
   error?: boolean;
 }
@@ -316,7 +315,6 @@ export const OutcomesGrid = ({
   editable,
   setEditableValue,
   ammCash,
-  showAsButtons,
   dontFilterInvalid,
   error,
 }: OutcomesGridProps) => {
@@ -325,7 +323,6 @@ export const OutcomesGrid = ({
       className={classNames(Styles.Outcomes, {
         [Styles.YesNo]: marketType === YES_NO,
         [Styles.nonSelectable]: nonSelectable,
-        [Styles.showAsButtons]: showAsButtons,
       })}
     >
       {outcomes
@@ -347,7 +344,6 @@ export const OutcomesGrid = ({
             editable={editable}
             setEditableValue={(price) => setEditableValue(price, outcome.id)}
             ammCash={ammCash}
-            showAsButton={showAsButtons}
             invalidSelected={selectedOutcome?.isInvalid}
             error={error}
           />
