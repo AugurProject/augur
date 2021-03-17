@@ -252,12 +252,12 @@ const HistoricMarket_fields = gql`
   ${AMM_removeLiquidity}
 `;
 
-export const GET_MARKETS = gql`
-  query getMarkets($block: Block_height, $marketType: MarketType = YES_NO) {
+export const GET_MARKETS = (block) => gql`
+  query getMarkets($marketType: MarketType = YES_NO) {
     markets(where: { marketType: $marketType, description_not: null, fee_lte: 20000000000000000 }) {
       ...CurrentMarket_fields
     }
-    past: markets(block: $block, where: { marketType: $marketType, description_not: null }) {
+    past: markets(block: { number: ${block}}, where: { marketType: $marketType, description_not: null }) {
       ...HistoricMarket_fields
     }
     paraShareTokens {
