@@ -51,11 +51,13 @@ export const ValueLabel = ({
 interface IconLabelProps {
   icon: Object;
   value: string | number;
+  label: string;
 }
 
-export const IconLabel = ({ icon, value }: IconLabelProps) => {
+export const IconLabel = ({ icon, value, label }: IconLabelProps) => {
   return (
     <div className={classNames(Styles.IconLabel)}>
+      <span>{label}</span>
       <span>{icon}</span>
       <span>{value}</span>
     </div>

@@ -67,16 +67,34 @@
 }
 
 .IconLabel {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  
+  > span {
+    display: flex;
+    align-items: center;
 
-  > span:nth-of-type(2) {
-    .text-14;
+    > svg {
+      display: flex;
+      width: @size-32;
+      height: @size-32;
+    }
+    
+    &:first-of-type {
+      .text-16-semi-bold;
+
+      color: var(--simple-secondary-text);
+      margin-bottom: @size-8;
+      grid-column: 1 / span 2;
+    }
+  }
+
+  > span:nth-of-type(3) {
+    .text-36-bold;
 
     color: var(--simple-primary-text);
-    margin-top: @size-12;
+    margin-left: @size-8;
   }
 }
 

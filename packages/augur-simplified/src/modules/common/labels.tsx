@@ -14,35 +14,20 @@ import {
   PARA_CONFIG,
   LabelComps,
 } from '@augurproject/augur-comps';
-const {
-  CREATE,
-  USDC,
-  MODAL_ADD_LIQUIDITY,
-  MARKET,
-  ADD,
-} = Constants;
+const { CREATE, USDC, MODAL_ADD_LIQUIDITY, MARKET, ADD } = Constants;
 const { ValueLabel, IconLabel } = LabelComps;
 const {
   PathUtils: { parsePath },
   Formatter: { formatDai },
 } = Utils;
-const {
-  USDCIcon,
-  EthIcon,
-  PlusIcon,
-  UsdIcon,
-} = Icons;
+const { USDCIcon, EthIcon, PlusIcon, UsdIcon } = Icons;
 
 const handleValue = (value) =>
   formatDai(value, {
     bigUnitPostfix: true,
   }).full;
 
-interface AppViewStatsProps {
-  showCashAmounts?: boolean;
-}
-
-export const AppViewStats = ({ showCashAmounts }: AppViewStatsProps) => {
+export const AppViewStats = () => {
   const { isMobile, isLogged } = useAppStatusStore();
   const { balances } = useUserStore();
   const totalAccountValue = useMemo(
@@ -53,10 +38,6 @@ export const AppViewStats = ({ showCashAmounts }: AppViewStatsProps) => {
     () => handleValue(isLogged ? balances?.totalPositionUsd : 0),
     [isLogged, balances.totalPositionUsd]
   );
-  const availableFunds = useMemo(
-    () => handleValue(isLogged ? balances?.availableFundsUsd : 0),
-    [isLogged, balances.availableFundsUsd]
-  );
   const usdValueETH = useMemo(() => handleValue(balances?.ETH?.usdValue || 0), [
     balances?.ETH?.usdValue,
   ]);
@@ -65,11 +46,7 @@ export const AppViewStats = ({ showCashAmounts }: AppViewStatsProps) => {
     [balances?.USDC?.usdValue]
   );
   return (
-    <div
-      className={classNames(Styles.AppStats, {
-        [Styles.CashAmounts]: showCashAmounts,
-      })}
-    >
+    <div className={Styles.AppStats}>
       <ValueLabel
         large
         label={isMobile ? 'total acc. value' : 'total account value'}
@@ -82,18 +59,8 @@ export const AppViewStats = ({ showCashAmounts }: AppViewStatsProps) => {
         light={!isLogged}
         value={positionsValue}
       />
-      <ValueLabel
-        large
-        light={!isLogged}
-        label="available funds"
-        value={availableFunds}
-      />
-      {showCashAmounts && (
-        <>
-          <IconLabel icon={EthIcon} value={usdValueETH} />
-          <IconLabel icon={UsdIcon} value={usdValueUSDC} />
-        </>
-      )}
+      <IconLabel icon={UsdIcon} label="Available USDC" value={usdValueUSDC} />
+      <IconLabel icon={EthIcon} label="Available ETH" value={usdValueETH} />
     </div>
   );
 };
