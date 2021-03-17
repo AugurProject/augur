@@ -3,6 +3,7 @@
 
 .Slippage {
   margin-top: @size-12;
+  cursor: pointer;
 
   > label {
     .text-12-semi-bold;
@@ -48,11 +49,16 @@
     }
 
     > div > li > button {
+      &:hover,
+      &:not(:disabled):not(.Disabled):hover {
+        color: var(--simple-primary-text);
+        border-color: transparent;
+        background-color: transparent;
+      }
+
       &:active,
       &:focus,
-      &:hover,
       &:not(:disabled):not(.Disabled)[class*='Selected'],
-      &:not(:disabled):not(.Disabled):hover,
       &:not(:disabled):not(.Disabled):focus,
       &[class*='Selected'] {
         color: var(--simple-primary-text);
@@ -130,15 +136,15 @@
   }
 
   > span {
-      .text-12-semi-bold;
+    .text-12-semi-bold;
 
-      color: var(--simple-failed);
-      display: flex;
-      justify-content: flex-end;
-      margin-top: @size-8;
+    color: var(--simple-failed);
+    display: flex;
+    justify-content: flex-end;
+    margin-top: @size-8;
   }
 }
 
 &.Selected {
-    display: flex;
+  display: flex;
 }
