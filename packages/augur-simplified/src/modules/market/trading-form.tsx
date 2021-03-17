@@ -191,6 +191,7 @@ const TradingForm = ({
   const { tradingEstimateEvents, tradingEvents } = useTrackedEvents();
   const [breakdown, setBreakdown] = useState<EstimateTradeResult>(null);
   const [amount, setAmount] = useState<string>('');
+  const [waitingToSign, setWaitingToSign] = useState(false);
   const ammCash = amm?.cash;
   const outcomes = amm?.ammOutcomes || [];
   const isBuy = orderType === BUY;
@@ -322,10 +323,14 @@ const TradingForm = ({
         new BN(breakdown?.slippagePercent)
       )
     ) {
-      subText = `(Adjust slippage tolerance in settings to ${Math.ceil(
+      subText = `(Adjust slippage tolerance to ${Math.ceil(
         Number(breakdown.slippagePercent)
       )}%)`;
       disabled = true;
+    } else if (waitingToSign) {
+      actionText = "Waiting for Confirmation";
+      disabled = true;
+      subText = "(Confirm the transaction in your wallet)";
     }
 
     return {
@@ -341,6 +346,7 @@ const TradingForm = ({
     breakdown?.slippagePercent,
     slippage,
     hasLiquidity,
+    waitingToSign
   ]);
 
   const makeTrade = () => {
@@ -350,6 +356,7 @@ const TradingForm = ({
     const direction = isBuy ? TradingDirection.ENTRY : TradingDirection.EXIT;
     const outputYesShares = selectedOutcomeId === YES_OUTCOME_ID;
     const userBalances = marketShares?.outcomeSharesRaw || [];
+    setWaitingToSign(true);
     setShowTradingForm(false);
     tradingEvents(
       isBuy,
@@ -370,6 +377,7 @@ const TradingForm = ({
         if (response) {
           const { hash } = response;
           setAmount('');
+          setWaitingToSign(false);
           addTransaction({
             hash,
             chainId: loginAccount.chainId,
@@ -389,6 +397,7 @@ const TradingForm = ({
       })
       .catch((e) => {
         //TODO: handle errors here
+        setWaitingToSign(false);
       });
   };
 
