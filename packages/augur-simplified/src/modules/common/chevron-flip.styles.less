@@ -1,0 +1,17 @@
+@import (reference) '~assets/styles/shared';
+
+.ChevronFlip {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  width: @size-14;
+  display: flex;
+
+  &.pointDown {
+    transform: rotate(-180deg);
+  }
+
+  > svg {
+    display: flex;
+  }
+}
+
