@@ -4,21 +4,14 @@ import Styles from './modal.styles.less';
 import { Header } from './common';
 import { useHistory } from 'react-router';
 import { InfoNumbers } from '../market/trading-form';
-import { generateTooltip } from '../common/labels';
 import classNames from 'classnames';
 import { AmmOutcome, Cash, LiquidityBreakdown, MarketInfo } from '../types';
-import { useAppStatusStore } from '../stores/app-status';
 import { BigNumber as BN } from 'bignumber.js';
-import {
-  AmountInput,
-  isInvalidNumber,
-  OutcomesGrid,
-  TextInput,
-} from '../common/inputs';
 import {
   ContractCalls,
   createBigNumber,
   PARA_CONFIG,
+  useAppStatusStore,
   useGraphDataStore,
   useUserStore,
   UserStore,
@@ -46,6 +39,15 @@ const {
   Icons: { BackIcon },
   ButtonComps: { ApprovalButton, APPROVED, BuySellButton },
   SelectionComps: { MultiButtonSelection },
+  InputComps: {
+    AmountInput,
+    isInvalidNumber,
+    OutcomesGrid,
+    TextInput,
+  },
+  LabelComps: {
+    generateTooltip
+  }
 } = Components;
 const {
   YES_NO,

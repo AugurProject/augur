@@ -5,36 +5,40 @@ import classNames from 'classnames';
 import SimpleChartSection from '../common/charts';
 import {
   AddLiquidity,
-  CategoryIcon,
-  CategoryLabel,
   NetworkMismatchBanner,
-  CurrencyLabel,
   AddCurrencyLiquidity,
-  ReportingStateLabel,
-  InvalidFlagTipIcon,
 } from '../common/labels';
 import {
   PositionsLiquidityViewSwitcher,
   TransactionsTable,
 } from '../common/tables';
 import TradingForm from './trading-form';
-import { useAppStatusStore } from '../stores/app-status';
 import { AmmExchange, MarketInfo } from '../types';
 import {
-  Icons,
   Constants,
+  useAppStatusStore,
   useGraphDataStore,
   useScrollToTopOnMount,
-  SEO,
   Stores,
   Utils,
-  ButtonComps,
+  Components,
 } from '@augurproject/augur-comps';
-import { OutcomesGrid } from '../common/inputs';
 import { AmmOutcome, MarketOutcome } from '../types';
 import { MARKETS_LIST_HEAD_TAGS } from '../seo-config';
-const { ConfirmedCheck } = Icons;
-const { BuySellButton } = ButtonComps;
+import { useSimplifiedStore } from '../stores/simplified';
+const {
+  SEO,
+  LabelComps: {
+    CategoryIcon,
+    CategoryLabel,
+    CurrencyLabel,
+    InvalidFlagTipIcon,
+    ReportingStateLabel,
+  },
+  Icons: { ConfirmedCheck },
+  ButtonComps: { BuySellButton },
+  InputComps: { OutcomesGrid },
+} = Components;
 const {
   MARKET_STATUS,
   USDC,
@@ -144,11 +148,11 @@ const EmptyMarketView = () => {
 const MarketView = ({ defaultMarket = null }) => {
   const [showMoreDetails, setShowMoreDetails] = useState(false);
   const marketId = useMarketQueryId();
+  const { isMobile } = useAppStatusStore();
   const {
-    isMobile,
     showTradingForm,
     actions: { setShowTradingForm },
-  } = useAppStatusStore();
+  } = useSimplifiedStore();
   const { markets } = useGraphDataStore();
 
   useScrollToTopOnMount();
@@ -160,9 +164,9 @@ const MarketView = ({ defaultMarket = null }) => {
     () => getMarketEndtimeDate(market?.endTimestamp),
     [market?.endTimestamp]
   );
-  const [selectedOutcome, setSelectedOutcome] = useState(
-    market ? market.outcomes[2] : DefaultMarketOutcomes[2]
-  );
+  const selectedOutcome = market
+    ? market.outcomes[2]
+    : DefaultMarketOutcomes[2];
   // add end time data full to market details when design is ready
   const endTimeDateFull = useMemo(
     () => getMarketEndtimeFull(market?.endTimestamp),

@@ -7,5 +7,6 @@ console.log(comps);
 windowRef.appStatus = {};
 windowRef.graphData = {};
 windowRef.user = {};
+windowRef.simplified = {};
 
 render(<App />, document.getElementById('root'));

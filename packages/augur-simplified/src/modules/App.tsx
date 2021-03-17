@@ -6,12 +6,22 @@ import Styles from './App.styles.less';
 import Routes from './routes/routes';
 import TopNav from './common/top-nav';
 import '../assets/styles/shared.less';
-import { AppStatusProvider, useAppStatusStore } from './stores/app-status';
+import { SimplifiedProvider, useSimplifiedStore } from './stores/simplified';
 import { Sidebar } from './sidebar/sidebar';
 import classNames from 'classnames';
 import ModalView from './modal/modal-view';
 import { usePageView } from '../utils/tracker';
-import { Stores, useUserStore, useGraphHeartbeat, useFinalizeUserTransactions, useUserBalances, GraphClient, PathUtils, Constants } from '@augurproject/augur-comps';
+import {
+  Stores,
+  useUserStore,
+  useAppStatusStore,
+  useGraphHeartbeat,
+  useFinalizeUserTransactions,
+  useUserBalances,
+  GraphClient,
+  PathUtils,
+  Constants,
+} from '@augurproject/augur-comps';
 const { MARKETS } = Constants;
 const { parsePath } = PathUtils;
 
@@ -39,15 +49,9 @@ function useHandleResize() {
 }
 
 const AppBody = () => {
-  const {
-    sidebarType,
-    showTradingForm,
-    isMobile,
-    modal,
-  } = useAppStatusStore();
-  const {
-    loginAccount,
-  } = useUserStore();
+  const { isMobile, modal } = useAppStatusStore();
+  const { sidebarType, showTradingForm } = useSimplifiedStore();
+  const { loginAccount } = useUserStore();
   const modalShowing = Object.keys(modal).length !== 0;
   const location = useLocation();
   const path = parsePath(location.pathname)[0];
@@ -72,7 +76,7 @@ const AppBody = () => {
       className={classNames(Styles.App, {
         [Styles.SidebarOut]: sidebarOut,
         [Styles.TwoToneContent]: path !== MARKETS,
-        [Styles.ModalShowing]: modalShowing || showTradingForm
+        [Styles.ModalShowing]: modalShowing || showTradingForm,
       })}
     >
       {modalShowing && <ModalView />}
@@ -85,15 +89,10 @@ const AppBody = () => {
 
 function App() {
   const {
-    ConnectAccount: {
-      ConnectAccountProvider
-    },
-    GraphData: {
-      GraphDataProvider
-    },
-    User: {
-      UserProvider
-    }
+    AppStatus: { AppStatusProvider },
+    ConnectAccount: { ConnectAccountProvider },
+    GraphData: { GraphDataProvider },
+    User: { UserProvider },
   } = Stores;
   return (
     <HashRouter hashType="hashbang">
@@ -102,7 +101,9 @@ function App() {
           <GraphDataProvider>
             <UserProvider>
               <AppStatusProvider>
-                <AppBody />
+                <SimplifiedProvider>
+                  <AppBody />
+                </SimplifiedProvider>
               </AppStatusProvider>
             </UserProvider>
           </GraphDataProvider>

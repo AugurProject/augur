@@ -1,7 +1,6 @@
 import React from 'react';
 import Styles from './labels.styles.less';
 import classNames from 'classnames';
-import { formatDai } from '../../utils/format-number';
 import { CATEGORIES_ICON_MAP } from './category-icons-map';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from './tooltip.styles.less';
@@ -204,11 +203,6 @@ export const InvalidFlagTipIcon = ({ market, big = false }) => {
   );
   return (<>{content}</>);
 };
-
-const handleValue = (value) =>
-  formatDai(value, {
-    bigUnitPostfix: true,
-  }).full;
 
 export const ErrorBlock = ({ text }) => {
   return <div className={Styles.ErrorBlock}>{text}</div>;

@@ -339,7 +339,7 @@ module.exports = function (webpackEnv) {
                 importLoaders: 3,
                 modules: {
                   exportGlobals: true,
-                  localIdentName: '[hash:base64:10]_[path]_[name]_[local]',
+                  localIdentName: '[hash:base64:10]_[name]_[local]',
                   exportLocalsConvention: 'camelCase',
                 }
               }, 'less-loader'),

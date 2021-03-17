@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Styles from './portfolio-view.styles.less';
-import { AppViewStats } from '../common/labels';
 import Activity from './activity';
 import { PositionsLiquidityViewSwitcher } from '../common/tables';
-import { useAppStatusStore } from '../stores/app-status';
-import { NetworkMismatchBanner } from '../common/labels';
+import { AppViewStats, NetworkMismatchBanner } from '../common/labels';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
 import {
   ContractCalls,
@@ -13,10 +11,6 @@ import {
   Constants,
   createBigNumber,
   Stores,
-  useGraphDataStore,
-  useScrollToTopOnMount,
-  useCanExitCashPosition,
-  useUserStore,
   PARA_CONFIG,
   ApprovalHooks,
   SEO,
@@ -27,11 +21,18 @@ import { PORTFOLIO_HEAD_TAGS } from '../seo-config';
 const { claimWinnings } = ContractCalls;
 const { approveERC1155Contract } = ApprovalHooks;
 const { formatCash } = Formatter;
-const { EthIcon, UsdIcon } = Icons;
 const { ACTIVITY, ETH, TABLES, TX_STATUS, USDC } = Constants;
 const {
-  keyedObjToArray
-} = Stores.Utils;
+  Hooks: {
+    useGraphDataStore,
+    useAppStatusStore,
+    useScrollToTopOnMount,
+    useCanExitCashPosition,
+    useUserStore,
+  },
+  Utils: { keyedObjToArray }
+} = Stores;
+const { EthIcon, UsdIcon } = Icons;
 const { PrimaryButton } = ButtonComps;
 
 const calculateTotalWinnings = (claimbleMarketsPerCash) => {
