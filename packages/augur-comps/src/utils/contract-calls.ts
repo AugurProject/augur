@@ -330,7 +330,11 @@ export const estimateExitTrade = async (
   const slippagePercent = (new BN(averagePrice).minus(price)).div(price).times(100).toFixed(2);
   const ratePerCash = new BN(estimateCash).div(new BN(inputDisplayAmount)).toFixed(6);
   const displayShares = convertOnChainSharesToDisplayShareAmount(shares, amm.cash.decimals);
-  const remainingShares = String(new BN(displayShares || "0").minus(new BN(inputDisplayAmount)).toFixed(6));
+  let remainingShares = new BN(displayShares || "0").minus(new BN(inputDisplayAmount));
+
+  if (remainingShares.lt(new BN(0))) {
+    remainingShares = new BN(0);
+  }
 
   return {
     outputValue: String(estimateCash),
@@ -339,7 +343,7 @@ export const estimateExitTrade = async (
     maxProfit: null,
     slippagePercent,
     ratePerCash,
-    remainingShares,
+    remainingShares: remainingShares.toFixed(6),
   }
 }
 
@@ -682,7 +686,8 @@ export const getUserBalances = async (
         const existingMarketShares = userBalances.marketShares[amm.id];
         const trades = getUserTrades(account, amm.transactions);
         if (existingMarketShares) {
-          existingMarketShares.positions.push(getPositionUsdValues(trades, rawBalance, balance, outcome, amm, account));
+          const position = getPositionUsdValues(trades, rawBalance, balance, outcome, amm, account);
+          if (position) existingMarketShares.positions.push(position);
           userBalances.marketShares[amm.id].outcomeSharesRaw[Number(outcome)] = rawBalance;
           userBalances.marketShares[amm.id].outcomeShares[Number(outcome)] = String(convertOnChainSharesToDisplayShareAmount(rawBalance, cash.decimals));
         } else if (balance !== "0") {
@@ -692,7 +697,8 @@ export const getUserBalances = async (
             outcomeSharesRaw: ["0", "0", "0"],
             outcomeShares: ["0", "0", "0"],
           }
-          userBalances.marketShares[amm.id].positions.push(getPositionUsdValues(trades, rawBalance, balance, outcome, amm, account));
+          const position = getPositionUsdValues(trades, rawBalance, balance, outcome, amm, account);
+          if (position) userBalances.marketShares[amm.id].positions.push(position);
           userBalances.marketShares[amm.id].outcomeSharesRaw[Number(outcome)] = rawBalance;
           userBalances.marketShares[amm.id].outcomeShares[Number(outcome)] = String(convertOnChainSharesToDisplayShareAmount(rawBalance, cash.decimals));
         }
@@ -770,12 +776,12 @@ export const getMarketInvalidity = async (
 
     if (method === CALC_OUT_GIVEN_IN) {
       const amm = ammExchanges[context.ammExchangeId];
-      const ouputCash = convertOnChainCashAmountToDisplayCashAmount(new BN(rawBalance), amm?.cash?.decimals);
-      amm.swapInvalidForCashInETH = ouputCash.toFixed();
+      const outputCash = convertOnChainCashAmountToDisplayCashAmount(new BN(rawBalance), amm?.cash?.decimals);
+      amm.swapInvalidForCashInETH = outputCash.toFixed();
       if (amm.cash.name !== ETH) {
         // converting raw value in cash to cash in ETH. needed for invalidity check
         const ethCash = Object.values(cashes).find(c => c.name === ETH);
-        amm.swapInvalidForCashInETH = ouputCash.div(new BN(ethCash.usdPrice)).toFixed();
+        amm.swapInvalidForCashInETH = outputCash.div(new BN(ethCash.usdPrice)).toFixed();
       }
       amm.isAmmMarketInvalid = await getIsMarketInvalid(amm, cashes);
       if (amm.isAmmMarketInvalid) {
@@ -819,6 +825,7 @@ const normalizeNoInvalidPositionsBalances = (ammMarketShares: AmmMarketShares, a
     const marketShares = ammMarketShares[ammId];
     const amm = ammExchanges[ammId];
     const minNoInvalidBalance = String(Math.min(Number(marketShares.outcomeShares[0]), Number(marketShares.outcomeShares[1])));
+    marketShares.outcomeShares[1] = minNoInvalidBalance;
     const minNoInvalidRawBalance = String(BigNumber.min(new BN(marketShares.outcomeSharesRaw[0]), new BN(marketShares.outcomeSharesRaw[1])));
     marketShares.positions.forEach(position => {
       // user can only sell the min of 'No' and 'Invalid' shares
@@ -826,7 +833,7 @@ const normalizeNoInvalidPositionsBalances = (ammMarketShares: AmmMarketShares, a
         const { priceNo, past24hrPriceNo } = amm;
         position.balance = minNoInvalidBalance;
         position.rawBalance = minNoInvalidRawBalance;
-        position.quantity = trimDecimalValue(position.balance);
+        position.quantity = trimDecimalValue(minNoInvalidBalance);
         position.usdValue = String(new BN(minNoInvalidBalance).times(new BN(priceNo)).times(amm.cash.usdPrice));
         position.past24hrUsdValue = past24hrPriceNo ? String(new BN(minNoInvalidBalance).times(new BN(past24hrPriceNo))) : null;
       }
@@ -894,6 +901,8 @@ const getPositionUsdValues = (trades: UserTrades, rawBalance: string, balance: s
     positionFromLiquidity = !result.positionFromRemoveLiquidity && result.positionFromLiquidity;
     positionFromRemoveLiquidity = result.positionFromRemoveLiquidity;
   }
+
+  if (new BN(avgPrice).eq(0)) return null;
 
   return {
     balance,
@@ -979,7 +988,9 @@ const getInitPositionValues = (trades: UserTrades, amm: AmmExchange, isYesOutcom
 
   const allInputShareAmounts = sharesRemoveLiquidity.shares.plus(sharesAddLiquidity.shares).plus(sharesEntered.shares);
   const netShareAmounts = allInputShareAmounts.minus(sharesExited.shares);
-  const allCashShareAmounts = sharesRemoveLiquidity.cashAmount.plus(sharesAddLiquidity.cashAmount).plus(sharesEntered.cashAmount);
+
+  const allCashShareAmounts = sharesRemoveLiquidity.cashAmount.plus(sharesAddLiquidity.cashAmount).plus(sharesEntered.cashAmount).minus(sharesExited.cashAmount);
+
   const avgPrice = (netShareAmounts.gt(0) ? allCashShareAmounts.div(netShareAmounts) : new BN(0)).toFixed(4);
 
   return { avgPrice: String(avgPrice), initCostCash: initCostCash.toFixed(4), initCostUsd: cost.toFixed(4), positionFromLiquidity, positionFromRemoveLiquidity }
@@ -1053,7 +1064,7 @@ const getIsMarketInvalid = async (amm: AmmExchange, cashes: Cashes): Promise<boo
   // TODO: there might be more coversion needed because of how wrapped shares works with balancer pool
   // numTicks might play a roll here
   // invalid shares are Mega Shares, need to div by num ticks.
-  let sharesSold = convertOnChainSharesToDisplayShareAmount(new BN(invalidBalance).times(PORTION_OF_INVALID_POOL_SELL), 18)
+  let sharesSold = convertOnChainCashAmountToDisplayCashAmount(new BN(invalidBalance).times(PORTION_OF_INVALID_POOL_SELL), 18)
   if (amm?.cash?.name !== ETH) {
     // converting shares value based in non-ETH to shares based on ETH.
     const ethCash = Object.values(cashes).find(c => c.name === ETH);

@@ -22,6 +22,7 @@ import {
   Components,
 } from '@augurproject/augur-comps';
 import { useTrackedEvents } from '../../utils/tracker';
+import { Slippage } from '../common/slippage';
 const { doTrade, estimateEnterTrade, estimateExitTrade } = ContractCalls;
 const {
   Icons: { CloseIcon },
@@ -459,6 +460,7 @@ const TradingForm = ({
           }
           isBuy={orderType === BUY}
         />
+        <Slippage />
         <InfoNumbers infoNumbers={formatBreakdown(isBuy, breakdown, ammCash)} />
         {isLogged && !isApprovedTrade && (
           <ApprovalButton

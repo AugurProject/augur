@@ -1,0 +1,144 @@
+@import (reference) '~assets/styles/shared';
+@import (reference) '~modules/common/buttons.styles.less';
+
+.Slippage {
+  margin-top: @size-12;
+
+  > label {
+    .text-12-semi-bold;
+
+    color: var(--simple-secondary-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0;
+
+    > span:first-of-type {
+      margin-left: @size-5;
+    }
+
+    > span:nth-of-type(2) {
+      .text-12-semi-bold;
+
+      flex: 1;
+      display: flex;
+      justify-content: flex-end;
+      color: var(--simple-primary-text);
+      margin-right: @size-8;
+    }
+  }
+
+  > ul {
+    display: flex;
+    flex-flow: row nowrap;
+    margin-top: @size-12;
+    justify-content: flex-end;
+    align-items: center;
+
+    > div {
+      .SimpleBorder;
+      display: flex;
+
+      > li > button {
+        border-color: transparent;
+      }
+    }
+    > li {
+      margin-left: @size-8;
+    }
+
+    > div > li > button {
+      &:active,
+      &:focus,
+      &:hover,
+      &:not(:disabled):not(.Disabled)[class*='Selected'],
+      &:not(:disabled):not(.Disabled):hover,
+      &:not(:disabled):not(.Disabled):focus,
+      &[class*='Selected'] {
+        color: var(--simple-primary-text);
+        border-color: var(--simple-secondary-text);
+        background-color: var(--simple-alternate-background);
+        min-height: @size-27;
+        height: @size-27;
+        margin-top: -@size-1;
+        margin-bottom: -@size-1;
+      }
+    }
+
+    > li > div {
+      .SimpleBorder;
+
+      background-color: transparent;
+      box-sizing: border-box;
+      display: flex;
+      flex-flow: row nowrap;
+      padding: @size-5 @size-8;
+      max-height: @size-27;
+      min-height: @size-27;
+      width: @size-80;
+      align-items: center;
+      justify-content: center;
+
+      > input[type='number'] {
+        -moz-appearance: textfield;
+        .text-12-semi-bold;
+
+        background: transparent;
+        color: var(--simple-secondary-text);
+        padding: 0;
+        text-align: right;
+        outline-style: none;
+        border: none;
+        min-width: @size-45;
+
+        &::-webkit-outer-spin-button,
+        &::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+        }
+
+        &:focus {
+          color: var(--simple-primary-text);
+          outline-style: none;
+          border: none;
+        }
+      }
+
+      > span {
+        .text-12-semi-bold;
+
+        color: var(--simple-primary-text);
+        margin-left: @size-4;
+      }
+
+      &[class*='Selected'] {
+        background-color: var(--simple-alternate-background);
+        border: @size-1 solid var(--simple-secondary-text);
+
+        > input {
+          color: var(--simple-primary-text);
+        }
+
+        &:not(:disabled):not(.Disabled) {
+          &:hover,
+          &:active {
+            background-color: var(--simple-alternate-background);
+            border: @size-1 solid var(--simple-secondary-text);
+          }
+        }
+      }
+    }
+  }
+
+  > span {
+      .text-12-semi-bold;
+
+      color: var(--simple-failed);
+      display: flex;
+      justify-content: flex-end;
+      margin-top: @size-8;
+  }
+}
+
+&.Selected {
+    display: flex;
+}
