@@ -27,7 +27,7 @@ const handleValue = (value) =>
     bigUnitPostfix: true,
   }).full;
 
-export const AppViewStats = () => {
+export const AppViewStats = ({ small }) => {
   const { isMobile, isLogged } = useAppStatusStore();
   const { balances } = useUserStore();
   const totalAccountValue = useMemo(
@@ -48,19 +48,31 @@ export const AppViewStats = () => {
   return (
     <div className={Styles.AppStats}>
       <ValueLabel
-        large
+        large={!small}
         label={isMobile ? 'total acc. value' : 'total account value'}
         light={!isLogged}
         value={totalAccountValue}
+        small={small}
       />
       <ValueLabel
-        large
+        large={!small}
         label="positions"
         light={!isLogged}
         value={positionsValue}
+        small={small}
       />
-      <IconLabel icon={UsdIcon} label="Available USDC" value={usdValueUSDC} />
-      <IconLabel icon={EthIcon} label="Available ETH" value={usdValueETH} />
+      <IconLabel
+        icon={UsdIcon}
+        small={small}
+        label="Available USDC"
+        value={usdValueUSDC}
+      />
+      <IconLabel
+        icon={EthIcon}
+        small={small}
+        label="Available ETH"
+        value={usdValueETH}
+      />
     </div>
   );
 };

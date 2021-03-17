@@ -42,26 +42,6 @@
       }
     }
   }
-
-  @media @breakpoint-max-desktop {
-    &.CashAmounts > div:nth-of-type(5) {
-      padding-right: 0;
-      border-right: none;
-    }
-  }
-
-  @media @breakpoint-tiny {
-    > div {
-      &:nth-of-type(3) {
-        border-right: none;
-      }
-
-      &:nth-of-type(4),
-      &:nth-of-type(5) {
-        display: none;
-      }
-    }
-  }
 }
 
 .AddLiquidity {
@@ -120,39 +100,38 @@
 
 @media @breakpoint-mobile-tablet {
   .AppStats {
-    display: flex;
-    height: @size-85;
-    justify-content: center;
-    border-radius: @size-8;
-    padding: 0;
+    height: @size-86;
+    padding: 0 @size-21;
 
     > div {
-      flex: 1;
-      position: relative;
-      padding: 0;
-    }
+      padding: @size-18 @size-20;
+      display: flex;
+      flex-direction: column;
+      height: @size-86;
+      justify-content: center;
 
-    > div:nth-of-type(4),
-    > div:nth-of-type(5) {
-      display: none;
-    }
+      > span:first-of-type {
+        text-align: center;
+        white-space: pre-wrap;
+      }
 
-    > div:nth-of-type(3) {
-      margin: 0;
-      border-right: 0;
-      padding: 0;
-      border-left: @size-1 solid var(--simple-border);
-    }
+      &:nth-of-type(3),
+      &:nth-of-type(4) {
+        display: grid;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-template-rows: auto auto;
+        padding: @size-14 @size-21;
 
-    > div:nth-of-type(2) {
-      border: 0;
-      height: fit-content;
-      margin: auto;
-      padding: 0;
-    }
+        > span:first-of-type {
+          margin-bottom: @size-2;
+          text-align: center;
+        }
 
-    > div:nth-of-type(1) {
-      padding: 0;
+        > span:last-of-type  {
+          margin-left: @size-4;
+        }
+      }
     }
   }
 }

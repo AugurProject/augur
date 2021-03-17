@@ -24,6 +24,7 @@ interface ValueLabelProps {
   sublabel?: string;
   value: string | number;
   light?: boolean;
+  small?: boolean;
 }
 
 export const ValueLabel = ({
@@ -32,6 +33,7 @@ export const ValueLabel = ({
   sublabel,
   value,
   light,
+  small
 }: ValueLabelProps) => {
   return (
     <div
@@ -39,6 +41,7 @@ export const ValueLabel = ({
         [Styles.large]: large,
         [Styles.Sublabel]: sublabel,
         [Styles.light]: light,
+        [Styles.small]: small
       })}
     >
       <span>{label}</span>
@@ -52,11 +55,12 @@ interface IconLabelProps {
   icon: Object;
   value: string | number;
   label: string;
+  small?: boolean;
 }
 
-export const IconLabel = ({ icon, value, label }: IconLabelProps) => {
+export const IconLabel = ({ icon, value, label, small }: IconLabelProps) => {
   return (
-    <div className={classNames(Styles.IconLabel)}>
+    <div className={classNames(Styles.IconLabel, {[Styles.small]: small})}>
       <span>{label}</span>
       <span>{icon}</span>
       <span>{value}</span>

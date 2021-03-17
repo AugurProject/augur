@@ -187,7 +187,7 @@ export const PortfolioView = () => {
       <SEO {...PORTFOLIO_HEAD_TAGS} />
       <section>
         <NetworkMismatchBanner />
-        <AppViewStats />
+        <AppViewStats small />
         <ClaimWinningsSection />
         <PositionsLiquidityViewSwitcher
           showActivityButton={isMobile}
