@@ -28,9 +28,7 @@ export class ExchangeERC20 extends ExchangeCommon implements ExchangeContractInt
   }
 
   async addInitialLiquidity(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, ratio: BigNumber, keepLong: Boolean, recipient: string): Promise<TransactionResponse> {
-    const exchangeAddress = await this.calculateExchangeAddress(market, paraShareToken, fee);
-    const amm = this.exchangeContract(exchangeAddress);
-    return amm.addInitialLiquidity(cash.toFixed(), ratio.toFixed(), keepLong, recipient);
+    return this.factory.addInitialLiquidity(market, paraShareToken, fee, cash.toFixed(), ratio.toFixed(), keepLong, recipient);
   }
 
   async enterPosition(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, buyLong: Boolean, minShares: BigNumber): Promise<TransactionResponse> {

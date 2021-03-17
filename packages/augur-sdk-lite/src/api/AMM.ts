@@ -38,10 +38,6 @@ export class AMM {
       : this.erc20Intermediary;
   }
 
-  async createExchange(market: string, paraShareToken: string, fee: BigNumber): Promise<TransactionResponse> {
-    return this.intermediary(paraShareToken).addAMM(market, paraShareToken, fee);
-  }
-
   async doAddLiquidity(
     recipient: string,
     existingAmmAddress: string,
@@ -58,11 +54,7 @@ export class AMM {
 
     // Just create new AMM
     if (cash.eq(0)) {
-      if (AMM.exchangeExists(exchangeAddress)) {
-        AMM.throwExchangeAlreadyExists(market, paraShareToken, fee);
-      } else {
-        return this.createExchange(market, paraShareToken, fee);
-      }
+      throw new Error('Cannot create AMM without liquidity.');
     }
 
     // Just add liquidity
@@ -172,7 +164,7 @@ export class AMM {
 
   async getEnterPosition(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, buyLong: Boolean, includeFee: Boolean): Promise<BigNumber> {
     const exchange = await this.intermediary(paraShareToken).calculateExchangeAddress(market, paraShareToken, fee);
-    let { yes: poolYes, no: poolNo } = await this.intermediary(paraShareToken).shareBalances(market, paraShareToken, fee, exchange);
+    const { yes: poolYes, no: poolNo } = await this.intermediary(paraShareToken).shareBalances(market, paraShareToken, fee, exchange);
     const setsToBuy = cash.idiv(NUMTICKS);
 
     let swappedForShares = buyLong

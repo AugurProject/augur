@@ -53,6 +53,20 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         return _amm.addLiquidity(_cash, _recipient);
     }
 
+    function addInitialLiquidity(
+        IMarket _market,
+        IParaShareToken _para,
+        uint256 _fee,
+        uint256 _cash,
+        uint256 _ratioFactor,
+        bool _keepLong,
+        address _recipient) external returns (uint256) {
+        address _ammAddress = exchanges[address(_market)][address(_para)][_fee];
+        IAMMExchange _amm = IAMMExchange(_ammAddress);
+
+        return _amm.addInitialLiquidity(_cash, _ratioFactor, _keepLong, _recipient);
+    }
+
     function removeLiquidity(
         IMarket _market,
         IParaShareToken _para,
@@ -84,6 +98,7 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         BPool _bPool = BPool(balancerPools[_ammAddress]);
 
         uint256 _lpTokenBalance = _bPool.balanceOf(msg.sender);
+        if(_lpTokenBalance == 0) return;
 
         uint256[] memory _minAmountsOut = new uint256[](2);
         // The min amount is constrained by the _lpTokenBalance.
