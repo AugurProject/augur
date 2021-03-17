@@ -5,10 +5,6 @@ import { RemoveLiquidityRate, ShareBalances } from './ExchangeCommon';
 export interface ExchangeContractIntermediary {
   forEth: Boolean
 
-  addAMM(
-    market: string, paraShareToken: string,
-    fee: BigNumber): Promise<TransactionResponse>
-
   addAMMWithLiquidity(
     market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber,
     ratio: BigNumber, keepLong: Boolean,

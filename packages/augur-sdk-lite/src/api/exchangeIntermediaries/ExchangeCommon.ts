@@ -31,10 +31,6 @@ export abstract class ExchangeCommon {
     this.factory = new ethers.Contract(factoryAddress, AMMFactoryAbi, signerOrProvider);
   }
 
-  async addAMM(market: string, paraShareToken: string, fee: BigNumber): Promise<TransactionResponse> {
-    return this.factory.addAMM(market, paraShareToken, fee.toFixed());
-  }
-
   async rateAddInitialLiquidity(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber, ratio: BigNumber, keepLong: Boolean, recipient: string): Promise<BigNumber> {
     const exchangeAddress = await this.calculateExchangeAddress(market, paraShareToken, fee);
     const amm = this.exchangeContract(exchangeAddress);
