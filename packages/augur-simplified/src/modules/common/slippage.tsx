@@ -1,9 +1,10 @@
 import React, { useState, useMemo } from 'react';
 import ButtonStyles from './buttons.styles.less';
 import classNames from 'classnames';
-import { useAppStatusStore, LabelComps, ButtonComps, useUserStore } from '@augurproject/augur-comps';
+import { LabelComps, ButtonComps, useUserStore } from '@augurproject/augur-comps';
 import Styles from './slippage.styles.less';
 import ChevronFlip from './chevron-flip';
+import { useSimplifiedStore } from '../stores/simplified';
 
 const { generateTooltip } = LabelComps;
 const { TinyButton } = ButtonComps;
@@ -12,7 +13,7 @@ export const Slippage = () => {
   const {
     settings: { slippage },
     actions: { updateSettings },
-  } = useAppStatusStore();
+  } = useSimplifiedStore();
   const { account } = useUserStore();
   const [showSelection, setShowSelection] = useState(false);
 
