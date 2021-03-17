@@ -230,6 +230,7 @@ const MarketView = ({ defaultMarket = null }) => {
           marketType={YES_NO}
           orderType={BUY}
           ammCash={amm?.cash}
+          noClick
         />
         <SimpleChartSection {...{ market, cash: amm?.cash }} />
         <PositionsLiquidityViewSwitcher ammExchange={amm} />
