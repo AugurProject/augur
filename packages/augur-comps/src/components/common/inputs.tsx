@@ -214,6 +214,7 @@ const Outcome = ({
   showAsButton,
   invalidSelected,
   error,
+  noClick
 }) => {
   const [customVal, setCustomVal] = useState('');
   const input = useRef(null);
@@ -243,6 +244,7 @@ const Outcome = ({
         [Styles.loggedOut]: !isLogged,
         [Styles.disabled]: !isLogged && outcome.isInvalid,
         [Styles.Error]: error,
+        [Styles.noClick]: noClick,
       })}
     >
       <span>{outcome.name}</span>
@@ -297,6 +299,7 @@ interface OutcomesGridProps {
   showAsButtons?: boolean;
   dontFilterInvalid?: boolean;
   error?: boolean;
+  noClick?: boolean;
 }
 export const OutcomesGrid = ({
   outcomes,
@@ -311,6 +314,7 @@ export const OutcomesGrid = ({
   showAsButtons,
   dontFilterInvalid,
   error,
+  noClick
 }: OutcomesGridProps) => {
   return (
     <div
@@ -342,6 +346,7 @@ export const OutcomesGrid = ({
             showAsButton={showAsButtons}
             invalidSelected={selectedOutcome?.isInvalid}
             error={error}
+            noClick={noClick}
           />
         ))}
     </div>
