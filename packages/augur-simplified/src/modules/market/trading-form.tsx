@@ -201,20 +201,7 @@ const TradingForm = ({
   });
   const canEnterPosition = useCanEnterCashPosition(ammCash);
   const isApprovedTrade = isBuy ? canEnterPosition : canExitPosition;
-
   const hasLiquidity = amm.liquidity !== '0';
-
-  useEffect(() => {
-    let isMounted = true;
-    if (initialSelectedOutcome.id !== selectedOutcomeId && isMounted) {
-      setSelectedOutcome(initialSelectedOutcome);
-      setAmount('');
-    }
-    return () => {
-      isMounted = false;
-    };
-  }, [initialSelectedOutcome]);
-
   const approvalAction = !isApprovedTrade
     ? isBuy
       ? ApprovalAction.ENTER_POSITION
