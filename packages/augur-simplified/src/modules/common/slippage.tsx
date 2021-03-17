@@ -1,12 +1,11 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import ButtonStyles from './buttons.styles.less';
 import classNames from 'classnames';
-import { useAppStatusStore } from '../stores/app-status';
-import { generateTooltip } from '../common/labels';
-import { ButtonComps, useUserStore } from '@augurproject/augur-comps';
+import { useAppStatusStore, LabelComps, ButtonComps, useUserStore } from '@augurproject/augur-comps';
 import Styles from './slippage.styles.less';
 import ChevronFlip from './chevron-flip';
 
+const { generateTooltip } = LabelComps;
 const { TinyButton } = ButtonComps;
 
 export const Slippage = () => {

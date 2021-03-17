@@ -73,6 +73,9 @@ export const Stores = {
     ConnectAccountProvider: _ConnectAccountProvider,
   },
   Hooks: {
+    useAppStatusStore,
+    useUserStore,
+    useGraphDataStore,
     useGraphHeartbeat,
     useCanExitCashPosition,
     useCanEnterCashPosition,
