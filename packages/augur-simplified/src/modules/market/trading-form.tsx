@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import Styles from 'modules/market/trading-form.styles.less';
 import classNames from 'classnames';
-import { useAppStatusStore } from '../stores/app-status';
+import { useSimplifiedStore } from '../stores/simplified';
 import {
   AmmExchange,
   AmmOutcome,
@@ -9,24 +9,27 @@ import {
   EstimateTradeResult,
   TradingDirection,
 } from '../types';
-import { generateTooltip } from '../common/labels';
 import { BigNumber as BN } from 'bignumber.js';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
-import { AmountInput, OutcomesGrid } from '../common/inputs';
 import {
   Formatter,
   Constants,
   ContractCalls,
+  useAppStatusStore,
   useUserStore,
   useCanEnterCashPosition,
   useCanExitCashPosition,
-  Icons,
-  ButtonComps,
+  Components,
 } from '@augurproject/augur-comps';
 import { useTrackedEvents } from '../../utils/tracker';
 import { Slippage } from '../common/slippage';
 const { doTrade, estimateEnterTrade, estimateExitTrade } = ContractCalls;
-const { CloseIcon } = Icons;
+const {
+  Icons: { CloseIcon },
+  LabelComps: { generateTooltip },
+  InputComps: { AmountInput, OutcomesGrid },
+  ButtonComps: { ApprovalButton, BuySellButton },
+} = Components;
 const {
   formatCash,
   formatCashPrice,
@@ -46,7 +49,6 @@ const {
   SELL,
   YES_NO,
 } = Constants;
-const { ApprovalButton, BuySellButton } = ButtonComps;
 const AVG_PRICE_TIP =
   'The difference between the market price and estimated price due to trade size.';
 
@@ -171,12 +173,12 @@ const TradingForm = ({
   marketType = YES_NO,
   amm,
 }: TradingFormProps) => {
+  const { isLogged } = useAppStatusStore();
   const {
-    isLogged,
     showTradingForm,
     actions: { setShowTradingForm },
     settings: { slippage },
-  } = useAppStatusStore();
+  } = useSimplifiedStore();
   const {
     loginAccount,
     balances,

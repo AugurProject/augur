@@ -8,7 +8,7 @@ import PortisIcon from '../ConnectAccount/assets/portisIcon.png';
 import Styles from './get-wallet-icon.styles.less';
 import {TinyButton} from './buttons';
 import {AbstractConnector} from '@web3-react/abstract-connector';
-// import {useAppStatusStore} from 'modules/stores/app-status';
+import { useAppStatusStore } from '../../stores/app-status';
 
 interface GetWalletIconProps {
   account: string;
@@ -17,8 +17,7 @@ interface GetWalletIconProps {
 };
 
 export const GetWalletIcon = ({connector, account, showPortisButton = false }: GetWalletIconProps) => {
-//   const { isMobile } = useAppStatusStore();
-    const isMobile = false;
+  const { isMobile } = useAppStatusStore();
   let icon;
   let iconAlt;
 

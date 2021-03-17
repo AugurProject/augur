@@ -11,19 +11,33 @@ import {
   Winnings,
   TransactionTypes,
 } from '../types';
-import { useAppStatusStore } from '../stores/app-status';
 import { updateTxStatus } from '../modal/modal-add-liquidity';
 import {
-  InvalidFlagTipIcon,
-  MovementLabel,
-  WarningBanner,
-  generateTooltip,
-} from './labels';
-import { PARA_CONFIG, useGraphDataStore, useUserStore, useCanExitCashPosition, Constants, Formatter, Icons, ContractCalls, ApprovalHooks, ButtonComps, Links, PaginationComps, SelectionComps } from '@augurproject/augur-comps';
-const { sliceByPage, Pagination } = PaginationComps;
-const { PrimaryButton, SecondaryButton, TinyButton } = ButtonComps;
+  PARA_CONFIG,
+  useAppStatusStore,
+  useGraphDataStore,
+  useUserStore,
+  useCanExitCashPosition,
+  Constants,
+  Formatter,
+  ContractCalls,
+  ApprovalHooks,
+  Components,
+} from '@augurproject/augur-comps';
+const {
+  LabelComps: {
+    InvalidFlagTipIcon,
+    MovementLabel,
+    generateTooltip,
+    WarningBanner,
+  },
+  PaginationComps: { sliceByPage, Pagination },
+  ButtonComps: { PrimaryButton, SecondaryButton, TinyButton },
+  SelectionComps: { SmallDropdown },
+  Links: { AddressLink, createMarketAmmId, MarketLink, ReceiptLink },
+  Icons: { EthIcon, UpArrow, UsdIcon },
+} = Components;
 const { claimWinnings, getLPCurrentValue } = ContractCalls;
-const { SmallDropdown } = SelectionComps;
 const {
   formatDai,
   formatCash,
@@ -32,7 +46,8 @@ const {
   formatPercent,
 } = Formatter;
 const {
-  MODAL_ADD_LIQUIDITY, USDC,
+  MODAL_ADD_LIQUIDITY,
+  USDC,
   POSITIONS,
   LIQUIDITY,
   ALL,
@@ -43,14 +58,7 @@ const {
   ETH,
   TABLES,
 } = Constants;
-const { EthIcon, UpArrow, UsdIcon } = Icons;
 const { approveERC1155Contract } = ApprovalHooks;
-const {
-  AddressLink,
-  createMarketAmmId,
-  MarketLink,
-  ReceiptLink,
-} = Links;
 
 interface PositionsTableProps {
   market: MarketInfo;
@@ -73,17 +81,15 @@ const MarketTableHeader = ({
 }: {
   market: MarketInfo;
   ammExchange: AmmExchange;
-}) => {
-  return (
-    <div className={Styles.MarketTableHeader}>
-      <MarketLink id={market.marketId} ammId={market.amm?.id}>
-        <span>{market.description}</span>
-        <InvalidFlagTipIcon {...{ market }} />
-        {ammExchange.cash.name === USDC ? UsdIcon : EthIcon}
-      </MarketLink>
-    </div>
-  );
-};
+}) => (
+  <div className={Styles.MarketTableHeader}>
+    <MarketLink id={market.marketId} ammId={market.amm?.id}>
+      <span>{market.description}</span>
+      <InvalidFlagTipIcon {...{ market }} />
+      {ammExchange.cash.name === USDC ? UsdIcon : EthIcon}
+    </MarketLink>
+  </div>
+);
 
 const PositionHeader = () => {
   const { isMobile } = useAppStatusStore();
@@ -98,8 +104,8 @@ const PositionHeader = () => {
             owned
           </>
         ) : (
-            'quantity owned'
-          )}
+          'quantity owned'
+        )}
       </li>
       <li>
         {isMobile ? (
@@ -109,8 +115,8 @@ const PositionHeader = () => {
             price
           </>
         ) : (
-            'avg. price paid'
-          )}
+          'avg. price paid'
+        )}
       </li>
       <li>init. value</li>
       <li>cur.{isMobile ? <br /> : ' '}value</li>
@@ -145,8 +151,8 @@ const PositionRow = ({
           numberValue={parseFloat(position.totalChangeUsd)}
         />
       ) : (
-          '-'
-        )}
+        '-'
+      )}
     </li>
   </ul>
 );
@@ -167,9 +173,14 @@ export const PositionFooter = ({
     loginAccount,
     actions: { addTransaction, updateTransaction },
   } = useUserStore();
-  const canClaimETH = useCanExitCashPosition({ name: amm?.cash?.name, shareToken: claimableWinnings?.sharetoken });
+  const canClaimETH = useCanExitCashPosition({
+    name: amm?.cash?.name,
+    shareToken: claimableWinnings?.sharetoken,
+  });
   const isETHClaim = amm?.cash?.name === ETH;
-  const { addresses: { WethWrapperForAMMExchange } } = PARA_CONFIG;
+  const {
+    addresses: { WethWrapperForAMMExchange },
+  } = PARA_CONFIG;
 
   const claim = async () => {
     if (amm && account) {
@@ -221,13 +232,16 @@ export const PositionFooter = ({
     <div className={Styles.PositionFooter}>
       {claimableWinnings && (
         <>
-          <span>{`${formatPercent(settlementFee).full
-            } fee charged on settlement`}</span>
+          <span>{`${
+            formatPercent(settlementFee).full
+          } fee charged on settlement`}</span>
           <PrimaryButton
-            text={`${isETHClaim && !canClaimETH ? 'Approve to ' : ''
-              }Claim Winnings (${formatCash(claimableWinnings?.claimableBalance, amm?.cash?.name)
+            text={`${
+              isETHClaim && !canClaimETH ? 'Approve to ' : ''
+            }Claim Winnings (${
+              formatCash(claimableWinnings?.claimableBalance, amm?.cash?.name)
                 .full
-              })`}
+            })`}
             action={claim}
           />
         </>
@@ -247,13 +261,13 @@ export const AllPositionTable = ({ page, claimableFirst = false }) => {
   } = useUserStore();
   const positions = marketShares
     ? ((Object.values(marketShares) as unknown[]) as {
-      ammExchange: AmmExchange;
-      positions: PositionBalance[];
-      claimableWinnings: Winnings;
-    }[])
+        ammExchange: AmmExchange;
+        positions: PositionBalance[];
+        claimableWinnings: Winnings;
+      }[])
     : [];
   if (claimableFirst) {
-    positions.sort((a, b) => a?.claimableWinnings?.claimableBalance ? -1 : 1);
+    positions.sort((a, b) => (a?.claimableWinnings?.claimableBalance ? -1 : 1));
   }
   const positionVis = sliceByPage(
     positions,
@@ -318,7 +332,7 @@ export const PositionTable = ({
       {!seenMarketPositionWarningAdd &&
         singleMarket &&
         positions.filter((position) => position.positionFromLiquidity).length >
-        0 && (
+          0 && (
           <WarningBanner
             className={Styles.MarginTop}
             title="Why do I have a position after adding liquidity?"
@@ -368,7 +382,9 @@ const LiquidityRow = ({
       }
     };
     getCurrentValue(liquidity.balance, amm);
-    return () => (isMounted = false);
+    return () => {
+      isMounted = false;
+    };
   }, []);
   return (
     <ul className={Styles.LiquidityRow}>
@@ -418,10 +434,10 @@ export const AllLiquidityTable = ({ page }) => {
   const { ammExchanges } = useGraphDataStore();
   const liquidities = lpTokens
     ? Object.keys(lpTokens).map((ammId) => ({
-      ammExchange: ammExchanges[ammId],
-      market: ammExchanges[ammId].market,
-      lpTokens: lpTokens[ammId],
-    }))
+        ammExchange: ammExchanges[ammId],
+        market: ammExchanges[ammId].market,
+        lpTokens: lpTokens[ammId],
+      }))
     : [];
   const liquiditiesViz = sliceByPage(
     liquidities,
@@ -528,17 +544,17 @@ export const PositionsLiquidityViewSwitcher = ({
 
   const positions = marketShares
     ? ((Object.values(marketShares) as unknown[]) as {
-      ammExchange: AmmExchange;
-      positions: PositionBalance[];
-      claimableWinnings: Winnings;
-    }[])
+        ammExchange: AmmExchange;
+        positions: PositionBalance[];
+        claimableWinnings: Winnings;
+      }[])
     : [];
   const liquidities = lpTokens
     ? Object.keys(lpTokens).map((ammId) => ({
-      ammExchange: ammExchanges[ammId],
-      market: ammExchanges[ammId].market,
-      lpTokens: lpTokens[ammId],
-    }))
+        ammExchange: ammExchanges[ammId],
+        market: ammExchanges[ammId].market,
+        lpTokens: lpTokens[ammId],
+      }))
     : [];
   return (
     <div className={Styles.PositionsLiquidityViewSwitcher}>
@@ -580,7 +596,9 @@ export const PositionsLiquidityViewSwitcher = ({
         <div>
           {!ammId && (positions.length > 0 || liquidities.length > 0) && (
             <>
-              {tableView === POSITIONS && <AllPositionTable page={page} claimableFirst={claimableFirst} />}
+              {tableView === POSITIONS && (
+                <AllPositionTable page={page} claimableFirst={claimableFirst} />
+              )}
               {tableView === LIQUIDITY && <AllLiquidityTable page={page} />}
             </>
           )}
@@ -654,41 +672,41 @@ const TransactionsHeader = ({
             defaultValue={ALL}
           />
         ) : (
-            <>
-              <span
-                className={classNames({
-                  [Styles.Selected]: selectedType === ALL,
-                })}
-                onClick={() => setSelectedType(ALL)}
-              >
-                all
+          <>
+            <span
+              className={classNames({
+                [Styles.Selected]: selectedType === ALL,
+              })}
+              onClick={() => setSelectedType(ALL)}
+            >
+              all
             </span>
-              <span
-                className={classNames({
-                  [Styles.Selected]: selectedType === SWAP,
-                })}
-                onClick={() => setSelectedType(SWAP)}
-              >
-                swaps
+            <span
+              className={classNames({
+                [Styles.Selected]: selectedType === SWAP,
+              })}
+              onClick={() => setSelectedType(SWAP)}
+            >
+              swaps
             </span>
-              <span
-                className={classNames({
-                  [Styles.Selected]: selectedType === ADD,
-                })}
-                onClick={() => setSelectedType(ADD)}
-              >
-                adds
+            <span
+              className={classNames({
+                [Styles.Selected]: selectedType === ADD,
+              })}
+              onClick={() => setSelectedType(ADD)}
+            >
+              adds
             </span>
-              <span
-                className={classNames({
-                  [Styles.Selected]: selectedType === REMOVE,
-                })}
-                onClick={() => setSelectedType(REMOVE)}
-              >
-                removes
+            <span
+              className={classNames({
+                [Styles.Selected]: selectedType === REMOVE,
+              })}
+              onClick={() => setSelectedType(REMOVE)}
+            >
+              removes
             </span>
-            </>
-          )}
+          </>
+        )}
       </li>
       <li>total value</li>
       <li>token amount</li>
@@ -710,22 +728,20 @@ interface TransactionProps {
 
 const TX_PAGE_LIMIT = 10;
 
-const TransactionRow = ({ transaction }: TransactionProps) => {
-  return (
-    <ul className={Styles.TransactionRow} key={transaction.id}>
-      <li>
-        <ReceiptLink hash={transaction.tx_hash} label={transaction.subheader} />
-      </li>
-      <li>{formatDai(transaction.cashValueUsd).full}</li>
-      <li>{transaction.tokenAmount}</li>
-      <li>{formatSimpleShares(transaction.shareAmount).formatted}</li>
-      <li>
-        <AddressLink account={transaction.sender} short />
-      </li>
-      <li>{transaction.time}</li>
-    </ul>
-  );
-};
+const TransactionRow = ({ transaction }: TransactionProps) => (
+  <ul className={Styles.TransactionRow} key={transaction.id}>
+    <li>
+      <ReceiptLink hash={transaction.tx_hash} label={transaction.subheader} />
+    </li>
+    <li>{formatDai(transaction.cashValueUsd).full}</li>
+    <li>{transaction.tokenAmount}</li>
+    <li>{formatSimpleShares(transaction.shareAmount).formatted}</li>
+    <li>
+      <AddressLink account={transaction.sender} short />
+    </li>
+    <li>{transaction.time}</li>
+  </ul>
+);
 
 interface TransactionsProps {
   transactions: AmmTransaction[];
