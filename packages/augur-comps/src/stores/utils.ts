@@ -5,7 +5,7 @@ import {
 } from './use-approval-callback';
 import { Cash, MarketInfo, TransactionDetails } from '../utils/types';
 import { NETWORK_BLOCK_REFRESH_TIME, PARA_CONFIG } from './constants';
-import { ApprovalState, ETH } from '../utils/constants';
+import { ApprovalState, ETH, TX_STATUS } from '../utils/constants';
 import { useAppStatusStore } from './app-status';
 import { useUserStore } from './user';
 import { useGraphDataStore } from './graph-data';
@@ -83,7 +83,7 @@ function checkIsMobile(setIsMobile) {
     ).indexOf('true') !== -1;
   setIsMobile(isMobile);
 };
-  
+
 // CUSTOM HOOKS
 export function useHandleResize() {
   const {
@@ -152,7 +152,6 @@ export function useCanEnterCashPosition({ name, address }: Cash) {
     account,
     loginAccount,
     transactions,
-    actions: { updateTransaction },
   } = useUserStore();
   const approvedAccount = useRef(null);
   const [canEnterPosition, setCanEnterPosition] = useState(name === ETH);
@@ -165,8 +164,7 @@ export function useCanEnterCashPosition({ name, address }: Cash) {
         address,
         AMMFactory,
         loginAccount,
-        transactions,
-        updateTransaction
+        transactions
       );
       setCanEnterPosition(approvalCheck === APPROVED || name === ETH);
       if (approvalCheck === APPROVED || name === ETH) approvedAccount.current = loginAccount.account;
@@ -177,7 +175,6 @@ export function useCanEnterCashPosition({ name, address }: Cash) {
   }, [
     canEnterPosition,
     setCanEnterPosition,
-    updateTransaction,
     transactions,
     account,
   ]);
@@ -281,10 +278,15 @@ export function useFinalizeUserTransactions() {
   useEffect(() => {
     if (loginAccount?.account && blocknumber && transactions?.length > 0) {
       transactions
-        .filter((t) => !t.confirmedTime)
+        .filter((t) => t.status === TX_STATUS.PENDING)
         .forEach((t: TransactionDetails) => {
           loginAccount.library.getTransactionReceipt(t.hash).then((receipt) => {
-            if (receipt) finalizeTransaction(t.hash);
+            if (receipt) {
+              finalizeTransaction(t.hash, receipt.status ? TX_STATUS.CONFIRMED : TX_STATUS.FAILURE);
+            }
+          }).catch(e => {
+            // for debugging to see if error occurs when MM drops tx
+            console.log('transaction error', e);
           });
         });
     }

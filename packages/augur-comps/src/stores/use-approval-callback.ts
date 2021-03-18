@@ -61,7 +61,7 @@ const useHasPendingTransaction = (
     const tx = Object.values(transactions).find(
       (tx) =>
         tx.approval &&
-        !tx.receipt &&
+        tx.status === TX_STATUS.PENDING &&
         tx?.approval?.spender === spender &&
         tx?.approval?.tokenAddress === tokenAddress
     );
@@ -347,8 +347,7 @@ export async function checkAllowance(
   tokenAddress: string,
   spender: string,
   loginAccount: LoginAccount,
-  transactions: TransactionDetails[],
-  updateTransactions: Function
+  transactions: TransactionDetails[]
 ): Promise<ApprovalState> {
   const { account, library } = loginAccount;
   const allowance = await getERC20Allowance(
@@ -358,18 +357,6 @@ export async function checkAllowance(
     spender
   );
   if (allowance && new BN(allowance).gt(0)) {
-    const updateTxState = transactions.find(
-      (tx) =>
-        tx.approval &&
-        !tx.receipt &&
-        tx?.approval?.spender === spender &&
-        tx?.approval?.tokenAddress === tokenAddress
-    );
-
-    if (updateTxState) {
-      updateTxState.status = TX_STATUS.CONFIRMED;
-      updateTransactions(updateTxState.hash, updateTxState);
-    }
     return ApprovalState.APPROVED;
   }
   const isPending = await hasPendingTransaction(
@@ -385,8 +372,7 @@ export const isERC1155ContractApproved = async (
   erc1155Address: string,
   spender: string,
   loginAccount: LoginAccount,
-  transactions: TransactionDetails[],
-  updateTransactions: Function
+  transactions: TransactionDetails[]
 ) => {
   const { account, library } = loginAccount;
   const isPending = await hasPendingTransaction(
@@ -401,21 +387,6 @@ export const isERC1155ContractApproved = async (
     account,
     spender
   );
-
-  if (isApproved) {
-    const updateTxState = transactions.find(
-      (tx) =>
-        tx.approval &&
-        !tx.receipt &&
-        tx?.approval?.spender === spender &&
-        tx?.approval?.tokenAddress === erc1155Address
-    );
-
-    if (updateTxState) {
-      updateTxState.status = TX_STATUS.CONFIRMED;
-      updateTransactions(updateTxState.hash, updateTxState);
-    }
-  }
 
   return isApproved
     ? ApprovalState.APPROVED

@@ -117,7 +117,7 @@ export function UserReducer(state, action) {
       updatedState[TRANSACTIONS].forEach((tx) => {
         if (tx.hash === action.hash) {
           tx.confirmedTime = now;
-          tx.status = TX_STATUS.CONFIRMED;
+          tx.status = action.status;
         }
       });
       break;
@@ -165,8 +165,8 @@ export const useUser = (defaultState = DEFAULT_USER_STATE) => {
         dispatch({ type: ADD_TRANSACTION, transaction }),
       removeTransaction: (hash: string) =>
         dispatch({ type: REMOVE_TRANSACTION, hash }),
-      finalizeTransaction: (hash) =>
-        dispatch({ type: FINALIZE_TRANSACTION, hash }),
+      finalizeTransaction: (hash, status) =>
+        dispatch({ type: FINALIZE_TRANSACTION, hash, status }),
       updateSeenPositionWarning: (id, seenPositionWarning, warningType) =>
         dispatch({
           type: UPDATE_SEEN_POSITION_WARNING,
