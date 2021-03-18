@@ -273,17 +273,13 @@
   display: flex;
   color: var(--simple-primary-text);
   cursor: pointer;
-  padding: @size-10 @size-16;
+  padding: @size-10 @size-24;
   flex: 1;
   text-transform: capitalize;
   min-height: @size-106;
   height: @size-106;
   max-height: @size-106;
   justify-content: center;
-
-  &.noClick {
-    pointer-events: none;
-  }
 
   > span {
     &:first-of-type {
@@ -504,6 +500,22 @@
       &:not(.Yes) {
         border-left-color: transparent;
       }
+    }
+  }
+
+  &.noClick {
+    pointer-events: none;
+    border: 0;
+    padding-left: @size-32;
+
+    &.Selected {
+      &.Yes {
+        border: 0;
+      }
+    }
+
+    &.ShowAllHighlighted {
+      border: 0;
     }
   }
 }
