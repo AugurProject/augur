@@ -141,7 +141,7 @@ const PositionRow = ({
   <ul className={Styles.PositionRow}>
     <li>{position.outcomeName}</li>
     <li>{formatSimpleShares(position.quantity).formattedValue}</li>
-    <li>{formatSimplePrice(position.avgPrice).formattedValue}</li>
+    <li>{formatSimplePrice(position.avgPrice).full}</li>
     <li>{formatDai(position.initCostUsd).full}</li>
     <li>{hasLiquidity ? formatDai(position.usdValue).full : '-'}</li>
     <li>
