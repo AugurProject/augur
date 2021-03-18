@@ -64,19 +64,60 @@
       color: var(--simple-secondary-text);
     }
   }
+
+  @media @breakpoint-mobile-tablet {
+    > span:first-of-type {
+      .text-12;
+    }
+    > span:last-of-type {
+      .text-14-semi-bold;
+    }
+  }
 }
 
 .IconLabel {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  
+  > span {
+    display: flex;
+    align-items: center;
 
-  > span:nth-of-type(2) {
-    .text-14;
+    > svg {
+      display: flex;
+      width: @size-32;
+      height: @size-32;
+    }
+
+    &:first-of-type {
+      .text-16-semi-bold;
+
+      color: var(--simple-secondary-text);
+      margin-bottom: @size-8;
+      grid-column: 1 / span 2;
+    }
+  }
+
+  > span:nth-of-type(3) {
+    .text-36-bold;
 
     color: var(--simple-primary-text);
-    margin-top: @size-12;
+    margin-left: @size-8;
+  }
+
+  @media @breakpoint-mobile-tablet {
+    > span:first-of-type {
+      .text-12;
+    }
+    > span:nth-of-type(2) {
+      > svg {
+        width: @size-10;
+        height: @size-10;
+      }
+    }
+    > span:last-of-type {
+      .text-14-semi-bold;
+    }
   }
 }
 
@@ -587,5 +628,24 @@
 
   &_negative {
     color: var(--simple-no);
+  }
+}
+
+&.small {
+  > span:first-of-type {
+    .text-16-semi-bold;
+
+    white-space: nowrap;
+  }
+
+  > span:nth-of-type(2) {
+    > svg {
+      width: @size-16;
+      height: @size-16;
+    }
+  }
+
+  > span:last-of-type {
+    .text-20-bold;
   }
 }
