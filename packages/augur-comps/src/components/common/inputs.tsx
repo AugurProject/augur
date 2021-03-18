@@ -18,7 +18,7 @@ import {
   YES_NO,
 } from '../../utils/constants';
 import { useAppStatusStore } from '../../stores/app-status';
-import { TinyButton } from './buttons.styles.less';
+import { TinyButton } from './buttons';
 import { CurrencyDropdown } from './selection';
 import { AmmOutcome, Cash } from '../../utils/types';
 
@@ -137,12 +137,15 @@ export const AmountInput = ({
     >
       <span>amount</span>
       <span onClick={setMax}>
-        {isLogged &&
-          `balance: ${
-            isBuy
+        {isLogged && (
+          <>
+            <span>balance:</span>{' '}
+            {isBuy
               ? formatCash(maxValue, ammCash?.name).full
-              : formatSimpleShares(maxValue).formatted
-          }`}
+              : formatSimpleShares(maxValue).formatted}
+            <TinyButton text={'Max'} />
+          </>
+        )}
       </span>
       <div
         className={classNames(Styles.AmountInputField, {
@@ -185,7 +188,7 @@ export const AmountInput = ({
         )}
       </div>
       <span className={Styles.RateLabel}>
-        <span>Rate</span>
+        <span>Rate:</span>
         {rate}
       </span>
     </div>
@@ -214,7 +217,7 @@ const Outcome = ({
   showAsButton,
   invalidSelected,
   error,
-  noClick
+  noClick,
 }) => {
   const [customVal, setCustomVal] = useState('');
   const input = useRef(null);
@@ -314,7 +317,7 @@ export const OutcomesGrid = ({
   showAsButtons,
   dontFilterInvalid,
   error,
-  noClick
+  noClick,
 }: OutcomesGridProps) => {
   return (
     <div

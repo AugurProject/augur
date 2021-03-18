@@ -5,7 +5,7 @@
   min-height: @size-32;
   max-height: @size-32;
 
-  &[data-big="true"] {
+  &[data-big='true'] {
     height: @size-44;
     min-height: @size-44;
     max-height: @size-44;
@@ -78,7 +78,7 @@
 .IconLabel {
   display: grid;
   grid-template-columns: auto 1fr;
-  
+
   > span {
     display: flex;
     align-items: center;
@@ -109,14 +109,17 @@
     > span:first-of-type {
       .text-12;
     }
-    > span:nth-of-type(2) {
-      > svg {
-        width: @size-10;
-        height: @size-10;
-      }
-    }
     > span:last-of-type {
       .text-14-semi-bold;
+    }
+
+    &.small {
+      > span:first-of-type {
+        .text-12;
+      }
+      > span:last-of-type {
+        .text-14-semi-bold;
+      }
     }
   }
 }
@@ -135,12 +138,12 @@
   white-space: nowrap;
   display: flex;
   align-items: center;
-  
+
   @media @breakpoint-mobile-tablet {
     max-width: @size-180;
   }
 
-  &[data-big="true"] {
+  &[data-big='true'] {
     .text-16;
 
     padding: @size-11 @size-16;
@@ -280,7 +283,7 @@
     width: @size-20;
   }
 
-  &[data-big="true"] {
+  &[data-big='true'] {
     width: @size-55;
     min-width: @size-55;
     max-width: @size-55;
@@ -407,6 +410,16 @@
       }
     }
 
+    &.small {
+      > span:first-of-type {
+        .text-12;
+      }
+
+      > span:last-of-type {
+        .text-14-semi-bold;
+      }
+    }
+
     &.Sublabel {
       > span:nth-of-type(2) {
         .text-12-semi-bold;
@@ -519,7 +532,7 @@
   margin-right: @size-8;
   width: fit-content;
 
-  &[data-big="true"] {
+  &[data-big='true'] {
     .text-16;
 
     padding: @size-11 @size-16;
@@ -565,7 +578,7 @@
     }
   }
 
-  &[data-big="true"] > label > svg {
+  &[data-big='true'] > label > svg {
     height: @size-32;
     width: @size-32;
     max-height: @size-32;
@@ -573,7 +586,7 @@
   }
 
   @media @breakpoint-min-tiny {
-    &[data-big="true"] {
+    &[data-big='true'] {
       height: @size-44;
       min-height: @size-44;
       max-height: @size-44;
