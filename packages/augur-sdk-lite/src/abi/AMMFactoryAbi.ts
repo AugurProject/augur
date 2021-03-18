@@ -149,6 +149,57 @@ export const AMMFactoryAbi = [
         "type": "uint256"
       },
       {
+        "internalType": "uint256",
+        "name": "_ratioFactor",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_keepLong",
+        "type": "bool"
+      },
+      {
+        "internalType": "address",
+        "name": "_recipient",
+        "type": "address"
+      }
+    ],
+    "name": "addInitialLiquidity",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "contract IMarket",
+        "name": "_market",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IParaShareToken",
+        "name": "_para",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_fee",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_cash",
+        "type": "uint256"
+      },
+      {
         "internalType": "address",
         "name": "_recipient",
         "type": "address"
