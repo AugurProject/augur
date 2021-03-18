@@ -9116,8 +9116,7 @@ export class AMMFactory<TBigNumber> extends Contract<TBigNumber> {
 		return <{_ammAddress: string, _lpTokens: TBigNumber}>result
 	}
 
-	public addInitialLiquidity = async (market: string, para: string, fee: TBigNumber, cash: TBigNumber, ratioFactor: TBigNumber, keepLong: boolean, recipient: string, options?: { sender?: string }): Promise<Array<Event>> => {
-	public addInitialLiquidity = async (market: string, para: string, fee: TBigNumber, cash: TBigNumber, ratioFactor: TBigNumber, keepLong: boolean, recipient: string, options?: { sender?: string }): Promise<Array<Event>> => {
+public addInitialLiquidity = async (market: string, para: string, fee: TBigNumber, cash: TBigNumber, ratioFactor: TBigNumber, keepLong: boolean, recipient: string, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"contract IParaShareToken","name":"_para","type":"address"},{"internalType":"uint256","name":"_fee","type":"uint256"},{"internalType":"uint256","name":"_cash","type":"uint256"},{"internalType":"uint256","name":"_ratioFactor","type":"uint256"},{"internalType":"bool","name":"_keepLong","type":"bool"},{"internalType":"address","name":"_recipient","type":"address"}],"name":"addInitialLiquidity","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		return await this.remoteCall(abi, [market, para, fee, cash, ratioFactor, keepLong, recipient], 'addInitialLiquidity', options.sender)
