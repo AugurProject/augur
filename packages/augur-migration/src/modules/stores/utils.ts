@@ -9,6 +9,7 @@ import {
   isRepV2Approved,
   getRepTotalMigrated,
 } from '../../utils/contract-calls';
+import { TX_STATUS } from '../../../../augur-simplified/src/modules/constants';
 
 export async function getRepBalances(provider, address) {
   const rep = await getRepBalance(provider, address);
@@ -84,13 +85,15 @@ export function useFinalizeUserTransactions() {
   useEffect(() => {
     if (loginAccount?.account && transactions?.length > 0) {
       transactions
-        .filter((t) => !t.confirmedTime)
+        .filter((t) => t.status === TX_STATUS.PENDING)
         .forEach((t: TransactionDetails) => {
           loginAccount.library.getTransactionReceipt(t.hash).then((receipt) => {
             if (receipt && t.type === 'MIGRATE') {
               updateMigrated(true);
             }
-            if (receipt) finalizeTransaction(t.hash);
+            if (receipt) {
+              finalizeTransaction(t.hash, receipt.status ? TX_STATUS.CONFIRMED : TX_STATUS.FAILURE);
+            }
           });
         });
     }

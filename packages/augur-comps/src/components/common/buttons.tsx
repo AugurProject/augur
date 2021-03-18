@@ -289,8 +289,7 @@ export const ApprovalButton = ({
               shareToken,
               WethWrapperForAMMExchange,
               loginAccount,
-              transactions,
-              updateTransaction
+              transactions
             );
             break;
           }
@@ -299,8 +298,7 @@ export const ApprovalButton = ({
               amm?.invalidPool?.id,
               AMMFactory,
               loginAccount,
-              transactions,
-              updateTransaction
+              transactions
             );
             break;
           }
@@ -309,8 +307,7 @@ export const ApprovalButton = ({
               amm?.id,
               AMMFactory,
               loginAccount,
-              transactions,
-              updateTransaction
+              transactions
             );
             break;
           }
@@ -331,8 +328,7 @@ export const ApprovalButton = ({
               shareToken,
               AMMFactory,
               loginAccount,
-              transactions,
-              updateTransaction
+              transactions
             );
             break;
           }
@@ -341,8 +337,7 @@ export const ApprovalButton = ({
               amm?.invalidPool?.id,
               AMMFactory,
               loginAccount,
-              transactions,
-              updateTransaction
+              transactions
             );
             break;
           }
@@ -351,8 +346,7 @@ export const ApprovalButton = ({
               amm?.id,
               AMMFactory,
               loginAccount,
-              transactions,
-              updateTransaction
+              transactions
             );
             break;
           }
@@ -362,8 +356,7 @@ export const ApprovalButton = ({
               cash?.address,
               AMMFactory,
               loginAccount,
-              transactions,
-              updateTransaction
+              transactions
             );
             break;
           }
