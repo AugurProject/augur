@@ -96,7 +96,7 @@ export class AMM {
     const keepLong = AMM.keepLong(longPercent, shortPercent);
     const ratio = AMM.calculateLiquidityRatio(longPercent, shortPercent);
 
-    const setsToBuy = cash.div(NUMTICKS);
+    const setsToBuy = cash.minus(cash.idiv(10)).div(NUMTICKS);
     let longShares = setsToBuy;
     let shortShares = setsToBuy;
 
