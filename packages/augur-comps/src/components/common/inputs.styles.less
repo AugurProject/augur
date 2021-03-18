@@ -62,17 +62,31 @@
 
     text-transform: capitalize;
     color: var(--simple-secondary-text);
+    align-items: center;
+    display: flex;
   }
 
   > span:nth-of-type(2) {
-    .text-14;
+    .text-14-bold;
 
     display: flex;
     justify-content: flex-end;
     text-transform: capitalize;
-    color: var(--simple-secondary-text);
+    color: var(--simple-primary-text);
     cursor: pointer;
     text-align: right;
+    align-items: center;
+
+    > span {
+      .text-14;
+
+      color: var(--simple-secondary-text);
+      margin-right: @size-4;
+    }
+
+    > button {
+      margin-left: @size-6;
+    }
   }
 
   > span.RateLabel {
@@ -176,18 +190,19 @@
 }
 
 .RateLabel {
-  .text-14;
+  .text-14-bold;
 
-  color: var(--simple-secondary-text);
+  color: var(--simple-primary-text);
   margin-top: @size-12;
   margin-left: auto;
   grid-column: 1 / span 2;
   height: @size-16;
 
   > span {
-    .text-14-semi-bold;
+    .text-14;
 
     margin-right: @size-4;
+    color: var(--simple-secondary-text);
   }
 }
 
