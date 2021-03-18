@@ -304,6 +304,9 @@
     background: var(--light-background-color);
     border: @size-1 solid var(--simple-border);
     color: var(--simple-secondary-text);
+    // purposeful override for specifically just this button to be a bit less
+    // transparent when disabled for readability.
+    opacity: .8;
   }
 
   &.Error {
