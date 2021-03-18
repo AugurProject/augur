@@ -118,7 +118,7 @@ describe('AMM Middleware for ETH', () => {
       expect(result).toEqual({
         cash: ONE_ETH,
         long:  bn(0),
-        lpTokens: ONE_ETH_DIV_BY_NUMTICKS,
+        lpTokens: ONE_ETH_DIV_BY_NUMTICKS.multipliedBy(90).idiv(100),
         short:  bn(0)
       });
     });
@@ -140,7 +140,7 @@ describe('AMM Middleware for ETH', () => {
       expect(result).toEqual({
         cash: ONE_ETH,
         long: bn(0),
-        lpTokens: ONE_ETH_DIV_BY_NUMTICKS,
+        lpTokens: ONE_ETH_DIV_BY_NUMTICKS.multipliedBy(90).idiv(100),
         short: bn(0)
       });
     });
@@ -155,6 +155,8 @@ describe('AMM Middleware for ETH', () => {
 
       const middleware = makeAMMMiddleware(mary);
 
+
+
       console.log('Create AMM with initial liquidity');
       await middleware.doAddLiquidity(
         mary.account.address,
@@ -168,6 +170,11 @@ describe('AMM Middleware for ETH', () => {
         shortPercent,
         SYMBOL_ROOT,
       );
+
+      // Approve the max amount.
+      await middleware.approveBalancerPoolForAMMFactory(market.address, wethParaShare.address, fee, bn(2).pow(256).minus(1));
+      await middleware.approveSpendingOfLiquidityTokens(market.address, wethParaShare.address, fee, config.addresses.AMMFactory, bn(2).pow(256).minus(1));
+
     });
 
     test('amm exists', async () => {
@@ -180,7 +187,7 @@ describe('AMM Middleware for ETH', () => {
     test('liquidity minted lp tokens', async () => {
       const middleware = makeAMMMiddleware(mary);
       console.log('Verify the LP token supply');
-      const expectedLPTokens = ONE_ETH.idiv(numTicks);
+      const expectedLPTokens = ONE_ETH.idiv(numTicks).multipliedBy(90).idiv(100);
       const actualLPTokens = await middleware.supplyOfLiquidityTokens(market.address, wethParaShare.address, fee);
       expect(actualLPTokens).toEqual(expectedLPTokens);
 
@@ -203,7 +210,7 @@ describe('AMM Middleware for ETH', () => {
       expect(withFee.toNumber()).toEqual(withoutFee.minus(mintedShares).times(0.99).plus(mintedShares).toNumber());
 
       console.log('Verifying that the entry estimation is correct, to a hardcoded value')
-      expect(withoutFee.toNumber()).toEqual(19900990099009900);
+      expect(withoutFee.toNumber()).toEqual(19890109890109892);
 
       console.log('Entering position');
       await middleware.doEnterPosition(market.address, wethParaShare.address, fee, cash, buyLong, withFee);
@@ -307,8 +314,8 @@ describe('AMM Middleware for ETH', () => {
       const dontSell = await middleware.getRemoveLiquidity(market.address, wethParaShare.address, fee, lpTokensToBurn);
 
       expect(dontSell).toEqual({
-        short: bn('333374069166798453'),
-        long: bn('333367511571361245'),
+        short: bn('300039736203327355'),
+        long: bn('300035191439391848'),
       });
 
       console.log('Selling 1/3rd of LP tokens via removeLiquidity, then selling the resulting shares');
@@ -318,9 +325,9 @@ describe('AMM Middleware for ETH', () => {
       const postNo = await wethParaShare.balanceOf_(mary.account.address, NO);
       const postYes = await wethParaShare.balanceOf_(mary.account.address, YES);
 
-      expect(postInvalid.toNumber()).toEqual(dontSell.short.toNumber());
-      expect(postNo.toNumber()).toEqual(dontSell.short.toNumber());
-      expect(postYes.toNumber()).toEqual(dontSell.long.toNumber());
+      expect(postInvalid.toNumber()).toEqual(310039736203327360);
+      expect(postNo.toNumber()).toEqual(310039736203327360);
+      expect(postYes.toNumber()).toEqual(310035191439391900);
     });
 
     test('remove all liquidity', async () => {

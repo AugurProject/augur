@@ -118,7 +118,7 @@ describe('AMM Middleware for ERC20', () => {
     test('liquidity minted lp tokens', async () => {
       const middleware = makeAMMMiddleware(mary);
       console.log('Verify the LP token supply');
-      const expectedLPTokens = initialLiquidity.idiv(await market.getNumTicks_());
+      const expectedLPTokens = initialLiquidity.idiv(await market.getNumTicks_()).multipliedBy(90).idiv(100);;
       const actualLPTokens = await middleware.supplyOfLiquidityTokens(market.address, usdtParaShare.address, fee);
       expect(actualLPTokens).toEqual(expectedLPTokens);
 
@@ -144,7 +144,7 @@ describe('AMM Middleware for ERC20', () => {
       expect(withFee.toNumber()).toEqual(withoutFee.minus(mintedShares).times(0.99).idiv(1).plus(mintedShares).toNumber());
 
       console.log('Verifying that the entry estimation is correct, to a hardcoded value')
-      expect(withoutFee.toNumber()).toEqual(19901);
+      expect(withoutFee.toNumber()).toEqual(19891);
 
       console.log('Entering position');
       await middleware.doEnterPosition(market.address, usdtParaShare.address, fee, cash, buyLong, withFee);
@@ -234,12 +234,16 @@ describe('AMM Middleware for ERC20', () => {
       const lpTokens = await middleware.liquidityTokenBalance(market.address, usdtParaShare.address, fee, mary.account.address);
       const lpTokensToBurn = lpTokens.idiv(3);
 
+      // Approve the max amount.
+      await middleware.approveBalancerPoolForAMMFactory(market.address, usdtParaShare.address, fee, bn(2).pow(256).minus(1));
+      await middleware.approveSpendingOfLiquidityTokens(market.address, usdtParaShare.address, fee, config.addresses.AMMFactory, bn(2).pow(256).minus(1));
+
       console.log('Estimating removeLiquidity gains, without swapping shares for complete sets then burning them');
       const dontSell = await middleware.getRemoveLiquidity(market.address, usdtParaShare.address, fee, lpTokensToBurn);
 
       expect(dontSell).toEqual({
-        short: bn(333373),
-        long: bn(333367),
+        short: bn(300039),
+        long: bn(300035),
       });
 
       console.log('Selling 1/3rd of LP tokens via removeLiquidity, then selling the resulting shares');
@@ -249,15 +253,21 @@ describe('AMM Middleware for ERC20', () => {
       const postNo = await usdtParaShare.balanceOf_(mary.account.address, NO);
       const postYes = await usdtParaShare.balanceOf_(mary.account.address, YES);
 
-      expect(postInvalid.toNumber()).toEqual(dontSell.short.toNumber());
-      expect(postNo.toNumber()).toEqual(dontSell.short.toNumber());
-      expect(postYes.toNumber()).toEqual(dontSell.long.toNumber());
+      // The actual remove call will include cash recovered from the BPool.
+      expect(postInvalid.toNumber()).toEqual(310039);
+      expect(postNo.toNumber()).toEqual(310039);
+      expect(postYes.toNumber()).toEqual(310035);
     });
 
     test('remove all liquidity without selling shares', async () => {
       const middleware = makeAMMMiddleware(mary);
 
       const lpTokens = await middleware.liquidityTokenBalance(market.address, usdtParaShare.address, fee, mary.account.address);
+
+      // Approve the max amount.
+      await middleware.approveBalancerPoolForAMMFactory(market.address, usdtParaShare.address, fee, bn(2).pow(256).minus(1));
+      await middleware.approveSpendingOfLiquidityTokens(market.address, usdtParaShare.address, fee, config.addresses.AMMFactory, bn(2).pow(256).minus(1));
+
 
       const priorInvalid = await usdtParaShare.balanceOf_(mary.account.address, INVALID);
       const priorNo = await usdtParaShare.balanceOf_(mary.account.address, NO);

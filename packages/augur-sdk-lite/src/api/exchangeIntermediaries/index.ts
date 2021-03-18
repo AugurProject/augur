@@ -62,6 +62,10 @@ export interface ExchangeContractIntermediary {
   totalSupply(
     market: string, paraShareToken: string, fee: BigNumber): Promise<BigNumber>
 
+  getBPoolLPBalance(
+    market: string, paraShareToken: string, fee: BigNumber,
+    account:string): Promise<BigNumber>
+
   balanceOf(
     market: string, paraShareToken: string, fee: BigNumber,
     account: string): Promise<BigNumber>
@@ -73,6 +77,13 @@ export interface ExchangeContractIntermediary {
   approveLPTokens(
     market: string, paraShareToken: string, fee: BigNumber, spender: string,
     amount: BigNumber): Promise<void>
+  approveBPool(
+    market: string, paraShareToken: string, fee: BigNumber, spender: string,
+    amount: BigNumber): Promise<void>
+
+  approveFactoryForBPool(
+    market: string, paraShareToken: string, fee: BigNumber, amount: BigNumber
+  ): Promise<void>
 }
 export { ExchangeERC20 } from './ExchangeERC20';
 export { ExchangeETH } from './ExchangeETH';

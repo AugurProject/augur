@@ -229,12 +229,24 @@ export class AMM {
     return this.intermediary(paraShareToken).totalSupply(market, paraShareToken, fee)
   }
 
+  async getBPoolLPBalance(market: string, paraShareToken: string, fee: BigNumber, account:string): Promise<BigNumber> {
+    return this.intermediary(paraShareToken).getBPoolLPBalance(market, paraShareToken, fee, account);
+  }
+
   async liquidityTokenBalance(market: string, paraShareToken: string, fee: BigNumber, account: string): Promise<BigNumber> {
     return this.intermediary(paraShareToken).balanceOf(market, paraShareToken, fee, account);
   }
 
   async approveSpendingOfLiquidityTokens(market: string, paraShareToken: string, fee: BigNumber, spender: string, amount: BigNumber) {
     return this.intermediary(paraShareToken).approveLPTokens(market, paraShareToken, fee, spender, amount);
+  }
+
+  async approveBalancerPool(market: string, paraShareToken: string, fee: BigNumber, spender: string, amount: BigNumber) {
+    return this.intermediary(paraShareToken).approveBPool(market, paraShareToken, fee, spender, amount);
+  }
+
+  async approveBalancerPoolForAMMFactory(market: string, paraShareToken: string, fee: BigNumber, amount: BigNumber) {
+    return this.intermediary(paraShareToken).approveFactoryForBPool(market, paraShareToken, fee, amount);
   }
 
   // Private methods
