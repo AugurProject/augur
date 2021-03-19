@@ -121,7 +121,7 @@ const ModalAddLiquidity = ({
     balances,
     transactions,
     loginAccount,
-    actions: { addTransaction, updateTransaction },
+    actions: { addTransaction },
   } = useUserStore();
   const { cashes } = useGraphDataStore();
   const history = useHistory();
@@ -186,7 +186,6 @@ const ModalAddLiquidity = ({
         AMMFactory,
         loginAccount,
         transactions,
-        updateTransaction
       );
       setCanAddLiquidity(approvalCheck === APPROVED);
     };
@@ -197,14 +196,12 @@ const ModalAddLiquidity = ({
         AMMFactory,
         loginAccount,
         transactions,
-        updateTransaction
       );
       const approvalCheckTWo = await checkAllowance(
         amm?.id,
         AMMFactory,
         loginAccount,
         transactions,
-        updateTransaction
       );
       setCanRemoveLiquidity(approvalCheckOne === APPROVED && approvalCheckTWo === APPROVED);
     };
@@ -225,7 +222,6 @@ const ModalAddLiquidity = ({
     canRemoveLiquidity,
     setCanAddLiquidity,
     setCanRemoveLiquidity,
-    updateTransaction,
     transactions,
     modalType,
   ]);

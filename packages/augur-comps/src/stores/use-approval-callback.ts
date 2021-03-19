@@ -361,7 +361,7 @@ export async function checkAllowance(
   }
   const isPending = await hasPendingTransaction(
     transactions,
-    loginAccount.account,
+    account,
     tokenAddress,
     spender
   );

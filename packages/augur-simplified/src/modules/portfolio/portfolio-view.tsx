@@ -58,7 +58,6 @@ const handleClaimAll = (
   cash,
   marketIds,
   addTransaction,
-  updateTransaction,
   canClaim
 ) => {
   const from = loginAccount?.account;
@@ -107,7 +106,7 @@ export const ClaimWinningsSection = () => {
   const {
     balances: { marketShares },
     loginAccount,
-    actions: { addTransaction, updateTransaction },
+    actions: { addTransaction },
   } = useUserStore();
   const { cashes } = useGraphDataStore();
   const claimableMarkets = marketShares
@@ -140,7 +139,6 @@ export const ClaimWinningsSection = () => {
               usdcCash,
               USDCTotals.marketIds,
               addTransaction,
-              updateTransaction,
               true
             );
           }}
@@ -158,7 +156,6 @@ export const ClaimWinningsSection = () => {
               ethCash,
               ETHTotals.marketIds,
               addTransaction,
-              updateTransaction,
               canClaimETH
             );
           }}
