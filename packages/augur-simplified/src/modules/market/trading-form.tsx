@@ -28,6 +28,7 @@ const {
   LabelComps: { generateTooltip },
   InputComps: { AmountInput, OutcomesGrid },
   ButtonComps: { ApprovalButton, BuySellButton },
+  BuySellToggleSwitch,
 } = Components;
 const {
   formatCash,
@@ -314,9 +315,9 @@ const TradingForm = ({
       )}%)`;
       disabled = true;
     } else if (waitingToSign) {
-      actionText = "Waiting for Confirmation";
+      actionText = 'Waiting for Confirmation';
       disabled = true;
-      subText = "(Confirm the transaction in your wallet)";
+      subText = '(Confirm the transaction in your wallet)';
     }
 
     return {
@@ -332,7 +333,7 @@ const TradingForm = ({
     breakdown?.slippagePercent,
     slippage,
     hasLiquidity,
-    waitingToSign
+    waitingToSign,
   ]);
 
   const makeTrade = () => {
@@ -387,26 +388,18 @@ const TradingForm = ({
   return (
     <div className={Styles.TradingForm}>
       <div>
-        <span
-          onClick={() => {
-            setOrderType(BUY);
+        <BuySellToggleSwitch
+          toggle={isBuy}
+          setToggle={() => {
+            if (isBuy) {
+              setOrderType(SELL);
+            } else {
+              setOrderType(BUY);
+            }
             setBreakdown(null);
             setAmount('');
           }}
-          className={classNames({ [Styles.Selected]: isBuy })}
-        >
-          {BUY}
-        </span>
-        <span
-          onClick={() => {
-            setBreakdown(null);
-            setOrderType(SELL);
-            setAmount('');
-          }}
-          className={classNames({ [Styles.Selected]: !isBuy })}
-        >
-          {SELL}
-        </span>
+        />
         <div>
           <span>fee</span>
           <span>{formatPercent(amm?.feeInPercent).full}</span>

@@ -62,6 +62,7 @@ import {
 import * as _ApprovalHooks from './stores/use-approval-callback';
 import * as _GraphClient from './apollo/client';
 import ModalConnectWallet from './components/modal/modal-connect-wallet';
+import { ToggleSwitch, BuySellToggleSwitch } from './components/common/toggle-switch';
 
 export const ContractCalls = _ContractCalls;
 export const GraphClient = _GraphClient;
@@ -182,6 +183,8 @@ export const Components = {
   PaginationComps,
   SEO,
   SelectionComps,
+  ToggleSwitch,
+  BuySellToggleSwitch
 };
 export const Modals = {
   ModalConnectWallet
