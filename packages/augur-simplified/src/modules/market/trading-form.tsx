@@ -10,7 +10,6 @@ import {
   TradingDirection,
 } from '../types';
 import { BigNumber as BN } from 'bignumber.js';
-import { updateTxStatus } from '../modal/modal-add-liquidity';
 import {
   Formatter,
   Constants,
@@ -182,7 +181,7 @@ const TradingForm = ({
   const {
     loginAccount,
     balances,
-    actions: { addTransaction, updateTransaction },
+    actions: { addTransaction },
   } = useUserStore();
   const [orderType, setOrderType] = useState(BUY);
   const [selectedOutcome, setSelectedOutcome] = useState(
@@ -377,9 +376,6 @@ const TradingForm = ({
             } Shares`,
             marketDescription: amm?.market?.description,
           });
-          response
-            .wait()
-            .then((response) => updateTxStatus(response, updateTransaction));
         }
       })
       .catch((e) => {

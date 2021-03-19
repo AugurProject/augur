@@ -14,7 +14,6 @@ import {
   useAppStatusStore,
   useGraphDataStore,
   useUserStore,
-  UserStore,
   ApprovalHooks,
   Formatter,
   Constants,
@@ -107,19 +106,6 @@ interface ModalAddLiquidityProps {
   liquidityModalType: string;
   currency?: string;
 }
-
-export const updateTxStatus = (txResponse, updateTransaction) => {
-  if (txResponse.confirmations > 0) {
-    const tx = UserStore.get().transactions;
-    const updateTxState = tx.find(
-      (tx) => tx.hash === txResponse.transactionHash
-    );
-    if (updateTxState) {
-      updateTxState.status = TX_STATUS.CONFIRMED;
-      updateTransaction(txResponse.transactionHash, updateTxState);
-    }
-  }
-};
 
 const ModalAddLiquidity = ({
   market,
@@ -471,9 +457,6 @@ const ModalAddLiquidity = ({
             message: `Remove Liquidity`,
             marketDescription: market.description,
           });
-          response
-            .wait()
-            .then((response) => updateTxStatus(response, updateTransaction));
         })
         .catch((e) => {
           //TODO: handle errors here
@@ -505,9 +488,6 @@ const ModalAddLiquidity = ({
             message: `Add Liquidity`,
             marketDescription: market.description,
           });
-          response
-            .wait()
-            .then((response) => updateTxStatus(response, updateTransaction));
         })
         .catch((e) => {
           // TODO: handle error

@@ -3,7 +3,6 @@ import Styles from './portfolio-view.styles.less';
 import Activity from './activity';
 import { PositionsLiquidityViewSwitcher } from '../common/tables';
 import { AppViewStats, NetworkMismatchBanner } from '../common/labels';
-import { updateTxStatus } from '../modal/modal-add-liquidity';
 import {
   ContractCalls,
   Formatter,
@@ -82,9 +81,6 @@ const handleClaimAll = (
             addedTime: new Date().getTime(),
             message: `Claim All ${cash.name} Winnings`,
             marketDescription: '',
-          });
-          response.wait().then((response) => {
-            updateTxStatus(response, updateTransaction);
           });
         }
       })

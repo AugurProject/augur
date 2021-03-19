@@ -17,6 +17,7 @@ import {
   useAppStatusStore,
   useGraphHeartbeat,
   useFinalizeUserTransactions,
+  useUserTransactionsUpdates,
   useUserBalances,
   GraphClient,
   PathUtils,
@@ -59,6 +60,7 @@ const AppBody = () => {
 
   useGraphHeartbeat(loginAccount ? loginAccount.library : null);
   useUserBalances();
+  useUserTransactionsUpdates();
   useFinalizeUserTransactions();
 
   useHandleResize();

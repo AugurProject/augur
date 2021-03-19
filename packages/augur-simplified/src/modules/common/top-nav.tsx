@@ -5,12 +5,10 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { Toasts } from '../toasts/toasts';
 import { ToggleSwitch } from '../common/toggle-switch';
-import { updateTxStatus } from '../modal/modal-add-liquidity';
 import { useSimplifiedStore } from '../stores/simplified';
 import {
   Icons,
   useAppStatusStore,
-  useGraphDataStore,
   useUserStore,
   ConnectAccount as CompsConnectAccount,
   useLocalStorage,
@@ -26,7 +24,7 @@ const { GearIcon, ThreeLinesIcon } = Icons;
 const { ConnectAccount } = CompsConnectAccount;
 const { SecondaryButton } = ButtonComps;
 const { parsePath, makePath } = PathUtils;
-const { MARKET, MARKETS, PORTFOLIO, SIDEBAR_TYPES, TX_STATUS } = Constants;
+const { MARKET, MARKETS, PORTFOLIO, SIDEBAR_TYPES } = Constants;
 
 export const SettingsButton = () => {
   const {
@@ -114,32 +112,9 @@ export const TopNav = () => {
     account,
     loginAccount,
     transactions,
-    actions: { updateLoginAccount, logout, updateTransaction },
+    actions: { updateLoginAccount, logout },
   } = useUserStore();
-  const { blocknumber } = useGraphDataStore();
   const [lastUser, setLastUser] = useLocalStorage('lastUser', null);
-
-  useEffect(() => {
-    if (blocknumber && transactions) {
-      transactions
-        .filter((tx) => tx?.status === TX_STATUS.PENDING)
-        .forEach((tx) => {
-          const isTransactionMined = async (transactionHash, provider) => {
-            const txReceipt = await provider.getTransactionReceipt(
-              transactionHash
-            );
-            if (txReceipt && txReceipt.blockNumber) {
-              return txReceipt;
-            }
-          };
-          isTransactionMined(tx.hash, loginAccount.library).then((response) => {
-            if (response?.confirmations > 0) {
-              updateTxStatus(response, updateTransaction);
-            }
-          });
-        });
-    }
-  }, [transactions, blocknumber]);
 
   useEffect(() => {
     const isMetaMask = loginAccount?.library?.provider?.isMetaMask;
