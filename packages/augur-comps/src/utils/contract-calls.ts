@@ -827,8 +827,9 @@ const normalizeNoInvalidPositionsBalances = (ammMarketShares: AmmMarketShares, a
     const minNoInvalidBalance = String(Math.min(Number(marketShares.outcomeShares[0]), Number(marketShares.outcomeShares[1])));
     marketShares.outcomeShares[1] = minNoInvalidBalance;
     const minNoInvalidRawBalance = String(BigNumber.min(new BN(marketShares.outcomeSharesRaw[0]), new BN(marketShares.outcomeSharesRaw[1])));
-    marketShares.positions.forEach(position => {
+    const newPositions = marketShares.positions.reduce((p, position) => {
       // user can only sell the min of 'No' and 'Invalid' shares
+      if (position.outcomeId === NO_OUTCOME_ID && minNoInvalidBalance === "0") return p;
       if (position.outcomeId === NO_OUTCOME_ID) {
         const { priceNo, past24hrPriceNo } = amm;
         position.balance = minNoInvalidBalance;
@@ -837,7 +838,9 @@ const normalizeNoInvalidPositionsBalances = (ammMarketShares: AmmMarketShares, a
         position.usdValue = String(new BN(minNoInvalidBalance).times(new BN(priceNo)).times(amm.cash.usdPrice));
         position.past24hrUsdValue = past24hrPriceNo ? String(new BN(minNoInvalidBalance).times(new BN(past24hrPriceNo))) : null;
       }
-    })
+      return [...p, position];
+    }, []);
+    marketShares.positions = newPositions;
   })
 }
 
@@ -902,7 +905,7 @@ const getPositionUsdValues = (trades: UserTrades, rawBalance: string, balance: s
     positionFromRemoveLiquidity = result.positionFromRemoveLiquidity;
   }
 
-  if (new BN(avgPrice).eq(0)) return null;
+  if (new BN(avgPrice).eq(0) || new BN(balance).eq(0)) return null;
 
   return {
     balance,
@@ -985,16 +988,15 @@ const getInitPositionValues = (trades: UserTrades, amm: AmmExchange, isYesOutcom
   const netCashAmounts = allInputCashAmounts.minus(sharesExited.cashAmount);
   const initCostCash = convertOnChainSharesToDisplayShareAmount(netCashAmounts, amm.cash.decimals);
 
-  const shareAmountsLiquidity = sharesRemoveLiquidity.shares.plus(sharesAddLiquidity.shares);
+  const totalLiquidityShares = sharesRemoveLiquidity.shares.plus(sharesAddLiquidity.shares);
   const allCashShareAmounts = sharesRemoveLiquidity.cashAmount.plus(sharesAddLiquidity.cashAmount);
 
-  const avgPriceLiquidity = shareAmountsLiquidity.gt(0) ? allCashShareAmounts.div(shareAmountsLiquidity) : new BN(0);
+  const avgPriceLiquidity = totalLiquidityShares.gt(0) ? allCashShareAmounts.div(totalLiquidityShares) : new BN(0);
 
-  // need to average the average prices if user is LP and trader
-  const avgPrice = enterAvgPriceBN.gt(new BN(0)) ? enterAvgPriceBN : avgPriceLiquidity
-  // const initCostUsd = enterAvgPriceBN.gt(new BN(0)) ? sharesEntered.shares.times(avgPrice).toFixed(4) : allCashShareAmounts.times(avgPrice).toFixed(4);
+  const totalShares = totalLiquidityShares.plus(sharesEntered.shares);
+  const weightedAvgPrice = totalShares.gt(new BN(0)) ? ((avgPriceLiquidity.times(totalLiquidityShares)).div(totalShares)).plus(enterAvgPriceBN.times(sharesEntered.shares).div(totalShares)) : 0;
 
-  return { avgPrice: String(avgPrice), initCostCash: initCostCash.toFixed(4), positionFromLiquidity, positionFromRemoveLiquidity }
+  return { avgPrice: String(weightedAvgPrice), initCostCash: initCostCash.toFixed(4), positionFromLiquidity, positionFromRemoveLiquidity }
 }
 
 const accumSharesPrice = (trades: AmmTransaction[], isYesOutcome: boolean, account: string, cutOffTimestamp: number): { shares: BigNumber, cashAmount: BigNumber } => {
