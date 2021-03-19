@@ -78,9 +78,9 @@ export function useFinalizeUserTransactions() {
     actions: { finalizeTransaction },
   } = useUserStore();
   const {
+    timestamp,
     actions: { updateMigrated },
   } = useMigrationStore();
-  const { timestamp } = useMigrationStore();
   useEffect(() => {
     if (loginAccount?.account && transactions?.length > 0) {
       transactions
@@ -102,9 +102,9 @@ export function useFinalizeUserTransactions() {
 export function useUpdateApprovals() {
   const { loginAccount } = useUserStore();
   const {
+    timestamp,
     actions: { updateApproval },
   } = useMigrationStore();
-  const { timestamp } = useMigrationStore();
   useEffect(() => {
     let isMounted = true;
     const checkApproval = (library, account) =>
