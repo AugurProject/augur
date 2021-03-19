@@ -14,7 +14,6 @@ import {
   useAppStatusStore,
   useGraphDataStore,
   useUserStore,
-  UserStore,
   ApprovalHooks,
   Formatter,
   Constants,
@@ -108,19 +107,6 @@ interface ModalAddLiquidityProps {
   currency?: string;
 }
 
-export const updateTxStatus = (txResponse, updateTransaction) => {
-  if (txResponse.confirmations > 0) {
-    const tx = UserStore.get().transactions;
-    const updateTxState = tx.find(
-      (tx) => tx.hash === txResponse.transactionHash
-    );
-    if (updateTxState) {
-      updateTxState.status = TX_STATUS.CONFIRMED;
-      updateTransaction(txResponse.transactionHash, updateTxState);
-    }
-  }
-};
-
 const ModalAddLiquidity = ({
   market,
   liquidityModalType,
@@ -135,7 +121,7 @@ const ModalAddLiquidity = ({
     balances,
     transactions,
     loginAccount,
-    actions: { addTransaction, updateTransaction },
+    actions: { addTransaction },
   } = useUserStore();
   const { cashes } = useGraphDataStore();
   const history = useHistory();
@@ -200,7 +186,6 @@ const ModalAddLiquidity = ({
         AMMFactory,
         loginAccount,
         transactions,
-        updateTransaction
       );
       setCanAddLiquidity(approvalCheck === APPROVED);
     };
@@ -211,14 +196,12 @@ const ModalAddLiquidity = ({
         AMMFactory,
         loginAccount,
         transactions,
-        updateTransaction
       );
       const approvalCheckTWo = await checkAllowance(
         amm?.id,
         AMMFactory,
         loginAccount,
         transactions,
-        updateTransaction
       );
       setCanRemoveLiquidity(approvalCheckOne === APPROVED && approvalCheckTWo === APPROVED);
     };
@@ -239,7 +222,6 @@ const ModalAddLiquidity = ({
     canRemoveLiquidity,
     setCanAddLiquidity,
     setCanRemoveLiquidity,
-    updateTransaction,
     transactions,
     modalType,
   ]);
@@ -471,9 +453,6 @@ const ModalAddLiquidity = ({
             message: `Remove Liquidity`,
             marketDescription: market.description,
           });
-          response
-            .wait()
-            .then((response) => updateTxStatus(response, updateTransaction));
         })
         .catch((e) => {
           //TODO: handle errors here
@@ -505,9 +484,6 @@ const ModalAddLiquidity = ({
             message: `Add Liquidity`,
             marketDescription: market.description,
           });
-          response
-            .wait()
-            .then((response) => updateTxStatus(response, updateTransaction));
         })
         .catch((e) => {
           // TODO: handle error

@@ -3,7 +3,6 @@ import Styles from './portfolio-view.styles.less';
 import Activity from './activity';
 import { PositionsLiquidityViewSwitcher } from '../common/tables';
 import { AppViewStats, NetworkMismatchBanner } from '../common/labels';
-import { updateTxStatus } from '../modal/modal-add-liquidity';
 import {
   ContractCalls,
   Formatter,
@@ -59,7 +58,6 @@ const handleClaimAll = (
   cash,
   marketIds,
   addTransaction,
-  updateTransaction,
   canClaim
 ) => {
   const from = loginAccount?.account;
@@ -82,9 +80,6 @@ const handleClaimAll = (
             addedTime: new Date().getTime(),
             message: `Claim All ${cash.name} Winnings`,
             marketDescription: '',
-          });
-          response.wait().then((response) => {
-            updateTxStatus(response, updateTransaction);
           });
         }
       })
@@ -111,7 +106,7 @@ export const ClaimWinningsSection = () => {
   const {
     balances: { marketShares },
     loginAccount,
-    actions: { addTransaction, updateTransaction },
+    actions: { addTransaction },
   } = useUserStore();
   const { cashes } = useGraphDataStore();
   const claimableMarkets = marketShares
@@ -144,7 +139,6 @@ export const ClaimWinningsSection = () => {
               usdcCash,
               USDCTotals.marketIds,
               addTransaction,
-              updateTransaction,
               true
             );
           }}
@@ -162,7 +156,6 @@ export const ClaimWinningsSection = () => {
               ethCash,
               ETHTotals.marketIds,
               addTransaction,
-              updateTransaction,
               canClaimETH
             );
           }}

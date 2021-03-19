@@ -37,7 +37,6 @@ export const MarketCard = ({marketId}) => {
   const [market, setMarket] = useState(null);
   useEffect(() => {
     getMarketsData((graphData, block, errors) => {
-      console.log(graphData);
       setMarket(graphData.markets.find(market => market.id === marketId));
     });
   }, []);

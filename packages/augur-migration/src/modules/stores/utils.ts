@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { TransactionDetails } from '../types';
 import { PARA_CONFIG } from './constants';
-import { useUserStore } from '@augurproject/augur-comps';
+import { useUserStore, Constants } from '@augurproject/augur-comps';
 import { useMigrationStore } from './migration-store';
 import {
   getLegacyRepBalance,
@@ -9,7 +9,6 @@ import {
   isRepV2Approved,
   getRepTotalMigrated,
 } from '../../utils/contract-calls';
-import { TX_STATUS } from '../../../../augur-simplified/src/modules/constants';
 
 export async function getRepBalances(provider, address) {
   const rep = await getRepBalance(provider, address);
@@ -71,7 +70,7 @@ export function useRepMigrated() {
     };
   }, [PARA_CONFIG, timestamp, isMigrated]);
 }
-
+const { TX_STATUS } = Constants;
 export function useFinalizeUserTransactions() {
   const {
     loginAccount,
@@ -79,9 +78,9 @@ export function useFinalizeUserTransactions() {
     actions: { finalizeTransaction },
   } = useUserStore();
   const {
+    timestamp,
     actions: { updateMigrated },
   } = useMigrationStore();
-  const { timestamp } = useMigrationStore();
   useEffect(() => {
     if (loginAccount?.account && transactions?.length > 0) {
       transactions
@@ -103,9 +102,9 @@ export function useFinalizeUserTransactions() {
 export function useUpdateApprovals() {
   const { loginAccount } = useUserStore();
   const {
+    timestamp,
     actions: { updateApproval },
   } = useMigrationStore();
-  const { timestamp } = useMigrationStore();
   useEffect(() => {
     let isMounted = true;
     const checkApproval = (library, account) =>

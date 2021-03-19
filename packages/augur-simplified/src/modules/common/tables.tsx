@@ -11,7 +11,6 @@ import {
   Winnings,
   TransactionTypes,
 } from '../types';
-import { updateTxStatus } from '../modal/modal-add-liquidity';
 import {
   PARA_CONFIG,
   useAppStatusStore,
@@ -171,7 +170,7 @@ export const PositionFooter = ({
   const {
     account,
     loginAccount,
-    actions: { addTransaction, updateTransaction },
+    actions: { addTransaction },
   } = useUserStore();
   const canClaimETH = useCanExitCashPosition({
     name: amm?.cash?.name,
@@ -199,9 +198,6 @@ export const PositionFooter = ({
                 addedTime: new Date().getTime(),
                 message: `Claim Winnings`,
                 marketDescription: amm?.market?.description,
-              });
-              response.wait().then((response) => {
-                updateTxStatus(response, updateTransaction);
               });
             }
           })
