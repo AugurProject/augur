@@ -75,17 +75,12 @@
     color: var(--simple-primary-text);
     cursor: pointer;
     text-align: right;
-    align-items: center;
 
     > span {
       .text-14;
 
       color: var(--simple-secondary-text);
       margin-right: @size-4;
-    }
-
-    > button {
-      margin-left: @size-6;
     }
   }
 
@@ -116,6 +111,12 @@
   border: @size-1 solid transparent;
   outline: 0;
   color: var(--simple-secondary-text);
+  align-items: center;
+
+
+  > button {
+    margin-right: @size-8;
+  }
 
   &:focus-within {
     border: @size-1 solid var(--simple-border);

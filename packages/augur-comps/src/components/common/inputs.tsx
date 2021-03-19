@@ -143,7 +143,6 @@ export const AmountInput = ({
             {isBuy
               ? formatCash(maxValue, ammCash?.name).full
               : formatSimpleShares(maxValue).formatted}
-            <TinyButton text={'Max'} />
           </>
         )}
       </span>
@@ -169,6 +168,7 @@ export const AmountInput = ({
           // @ts-ignore
           onWheel={(e) => e?.target?.blur()}
         />
+        <TinyButton text={'Max'} action={() => setMax()} />
         {!!currencyName && chosenCash !== SHARES && !showCurrencyDropdown && (
           <span className={Styles.CurrencyLabel}>
             {icon} {label}
