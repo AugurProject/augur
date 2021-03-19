@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { TransactionDetails } from '../types';
 import { PARA_CONFIG } from './constants';
-import { useUserStore } from '@augurproject/augur-comps';
+import { useUserStore, Constants } from '@augurproject/augur-comps';
 import { useMigrationStore } from './migration-store';
 import {
   getLegacyRepBalance,
@@ -9,7 +9,6 @@ import {
   isRepV2Approved,
   getRepTotalMigrated,
 } from '../../utils/contract-calls';
-import { TX_STATUS } from '../../../../augur-simplified/src/modules/constants';
 
 export async function getRepBalances(provider, address) {
   const rep = await getRepBalance(provider, address);
@@ -71,7 +70,7 @@ export function useRepMigrated() {
     };
   }, [PARA_CONFIG, timestamp, isMigrated]);
 }
-
+const { TX_STATUS } = Constants;
 export function useFinalizeUserTransactions() {
   const {
     loginAccount,

@@ -82,7 +82,7 @@ function checkIsMobile(setIsMobile) {
       ''
     ).indexOf('true') !== -1;
   setIsMobile(isMobile);
-};
+}
 
 // CUSTOM HOOKS
 export function useHandleResize() {
@@ -97,7 +97,7 @@ export function useHandleResize() {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-};
+}
 
 export function useCanExitCashPosition(cash: Cash) {
   const {
@@ -106,9 +106,7 @@ export function useCanExitCashPosition(cash: Cash) {
     transactions,
     actions: { updateTransaction },
   } = useUserStore();
-  const {
-    blocknumber,
-  } = useGraphDataStore();
+  const { blocknumber } = useGraphDataStore();
   const approvedAccount = useRef(null);
   const [canExitPosition, setCanExitPosition] = useState(false);
   const [calledBlocknumber, setCalledBlocknumber] = useState(blocknumber);
@@ -127,10 +125,15 @@ export function useCanExitCashPosition(cash: Cash) {
         updateTransaction
       );
       setCanExitPosition(Boolean(ApprovalState.APPROVED === approvalCheck));
-      if (Boolean(approvalCheck)) approvedAccount.current = loginAccount.account;
+      if (Boolean(approvalCheck))
+        approvedAccount.current = loginAccount.account;
     };
 
-    if (!!account && !!cash && (account !== approvedAccount.current || calledBlocknumber !== blocknumber)) {
+    if (
+      !!account &&
+      !!cash &&
+      (account !== approvedAccount.current || calledBlocknumber !== blocknumber)
+    ) {
       checkCanCashExit(cash);
       setCalledBlocknumber(blocknumber);
     }
@@ -141,18 +144,14 @@ export function useCanExitCashPosition(cash: Cash) {
     transactions,
     account,
     blocknumber,
-    cash
+    cash,
   ]);
 
   return canExitPosition;
 }
 
 export function useCanEnterCashPosition({ name, address }: Cash) {
-  const {
-    account,
-    loginAccount,
-    transactions,
-  } = useUserStore();
+  const { account, loginAccount, transactions } = useUserStore();
   const approvedAccount = useRef(null);
   const [canEnterPosition, setCanEnterPosition] = useState(name === ETH);
   const {
@@ -167,17 +166,13 @@ export function useCanEnterCashPosition({ name, address }: Cash) {
         transactions
       );
       setCanEnterPosition(approvalCheck === APPROVED || name === ETH);
-      if (approvalCheck === APPROVED || name === ETH) approvedAccount.current = loginAccount.account;
+      if (approvalCheck === APPROVED || name === ETH)
+        approvedAccount.current = loginAccount.account;
     };
     if (!!account && !!address && account !== approvedAccount.current) {
       checkCanCashEnter();
     }
-  }, [
-    canEnterPosition,
-    setCanEnterPosition,
-    transactions,
-    account,
-  ]);
+  }, [canEnterPosition, setCanEnterPosition, transactions, account]);
 
   return canEnterPosition;
 }
@@ -188,7 +183,7 @@ export function useGraphHeartbeat(library?: Web3Provider) {
     cashes,
     markets,
     blocknumber,
-    actions: { updateGraphHeartbeat }
+    actions: { updateGraphHeartbeat },
   } = useGraphDataStore();
   useEffect(() => {
     let isMounted = true;
@@ -196,21 +191,29 @@ export function useGraphHeartbeat(library?: Web3Provider) {
     getMarketsData(async (graphData, block, errors) => {
       isMounted && !!errors
         ? updateGraphHeartbeat(
-          { ammExchanges, cashes, markets },
-          blocknumber,
-          errors
-        )
-        : updateGraphHeartbeat(await processGraphMarkets(graphData, library), block, errors);
+            { ammExchanges, cashes, markets },
+            blocknumber,
+            errors
+          )
+        : updateGraphHeartbeat(
+            await processGraphMarkets(graphData, library),
+            block,
+            errors
+          );
     });
     const intervalId = setInterval(() => {
       getMarketsData(async (graphData, block, errors) => {
         isMounted && !!errors
           ? updateGraphHeartbeat(
-            { ammExchanges, cashes, markets },
-            blocknumber,
-            errors
-          )
-          : updateGraphHeartbeat(await processGraphMarkets(graphData, library), block, errors);
+              { ammExchanges, cashes, markets },
+              blocknumber,
+              errors
+            )
+          : updateGraphHeartbeat(
+              await processGraphMarkets(graphData, library),
+              block,
+              errors
+            );
       });
     }, NETWORK_BLOCK_REFRESH_TIME[PARA_CONFIG.networkId] || NETWORK_BLOCK_REFRESH_TIME[1]);
     return () => {
@@ -225,11 +228,7 @@ export function useUserBalances() {
     loginAccount,
     actions: { updateUserBalances },
   } = useUserStore();
-  const {
-    markets,
-    cashes,
-    ammExchanges
-  } = useGraphDataStore();
+  const { markets, cashes, ammExchanges } = useGraphDataStore();
   useEffect(() => {
     let isMounted = true;
     const createClient = (provider, config, account) =>
@@ -267,9 +266,7 @@ export function useUserBalances() {
 }
 
 export function useFinalizeUserTransactions() {
-  const {
-    blocknumber
-  } = useGraphDataStore();
+  const { blocknumber } = useGraphDataStore();
   const {
     loginAccount,
     transactions,
@@ -280,14 +277,20 @@ export function useFinalizeUserTransactions() {
       transactions
         .filter((t) => t.status === TX_STATUS.PENDING)
         .forEach((t: TransactionDetails) => {
-          loginAccount.library.getTransactionReceipt(t.hash).then((receipt) => {
-            if (receipt) {
-              finalizeTransaction(t.hash, receipt.status ? TX_STATUS.CONFIRMED : TX_STATUS.FAILURE);
-            }
-          }).catch(e => {
-            // for debugging to see if error occurs when MM drops tx
-            console.log('transaction error', e);
-          });
+          loginAccount.library
+            .getTransactionReceipt(t.hash)
+            .then((receipt) => {
+              if (receipt) {
+                finalizeTransaction(
+                  t.hash,
+                  receipt.status ? TX_STATUS.CONFIRMED : TX_STATUS.FAILURE
+                );
+              }
+            })
+            .catch((e) => {
+              // for debugging to see if error occurs when MM drops tx
+              console.log('transaction error', e);
+            });
         });
     }
   }, [loginAccount, blocknumber, transactions]);
@@ -299,4 +302,20 @@ export function useScrollToTopOnMount(...optionsTriggers) {
     document.getElementById('mainContent')?.scrollTo(0, 0);
     window.scrollTo(0, 1);
   }, [...optionsTriggers]);
+}
+
+export function useUpdateTXStatus(txResponse) {
+  const {
+    transactions: tx,
+    actions: { updateTransaction },
+  } = useUserStore();
+  if (txResponse.confirmations > 0) {
+    const updateTxState = tx.find(
+      (tx) => tx.hash === txResponse.transactionHash
+    );
+    if (updateTxState) {
+      updateTxState.status = TX_STATUS.CONFIRMED;
+      updateTransaction(txResponse.transactionHash, updateTxState);
+    }
+  }
 }
