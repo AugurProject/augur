@@ -18,24 +18,8 @@
     align-items: center;
     margin-bottom: @size-24;
 
-    > span {
-      .text-20-bold;
-
-      color: var(--simple-secondary-text);
-      text-transform: capitalize;
-      cursor: pointer;
-
-      &:first-of-type {
-        margin-right: @size-40;
-      }
-
-      &.Selected {
-        color: var(--simple-primary-text);
-      }
-
-      &:hover {
-        color: var(--simple-primary-text);
-      }
+    > button {
+      grid-column: 1 / span 2;
     }
 
     > div {

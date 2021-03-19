@@ -25,6 +25,10 @@
 
     &:first-of-type {
       color: var(--simple-secondary-text);
+
+      &:hover {
+        color: var(--simple-primary-text);
+      }
     }
 
     &:last-of-type {
@@ -53,12 +57,68 @@
 
       &:last-of-type {
         color: var(--simple-secondary-text);
+
+        &:hover {
+          color: var(--simple-primary-text);
+        }
       }
     }
 
     > div {
       transform: translateX(0%);
       transition: all 0.1s linear 0s;
+    }
+  }
+
+  &.buySell {
+    width: 170px;
+    height: @size-50;
+
+    > span {
+      .text-20-bold;
+
+      padding: @size-12 @size-24;
+
+      &:first-of-type {
+        color: var(--simple-secondary-text);
+
+        &:hover {
+          color: var(--simple-primary-text);
+        }
+      }
+
+      &:last-of-type {
+        color: var(--simple-light-bg);
+      }
+    }
+
+    > div {
+      width: 84px;
+      height: @size-46;
+      margin-top: -@size-1;
+      border-color: transparent;
+      background-color: var(--simple-primary-text);
+      margin-left: -@size-1;
+    }
+
+    &.On {
+      > span {
+        &:last-of-type {
+          color: var(--simple-secondary-text);
+
+          &:hover {
+            color: var(--simple-primary-text);
+          }
+        }
+
+        &:first-of-type {
+          color: var(--simple-light-bg);
+        }
+      }
+
+      > div {
+        margin-left: @size-1;
+      }
     }
   }
 }

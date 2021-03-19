@@ -4,7 +4,6 @@ import Styles from './top-nav.styles.less';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { Toasts } from '../toasts/toasts';
-import { ToggleSwitch } from '../common/toggle-switch';
 import { useSimplifiedStore } from '../stores/simplified';
 import {
   Icons,
@@ -18,6 +17,7 @@ import {
   Constants,
   LinkLogo,
   LabelComps,
+  Components
 } from '@augurproject/augur-comps';
 const { generateTooltip } = LabelComps;
 const { GearIcon, ThreeLinesIcon } = Icons;
@@ -25,6 +25,7 @@ const { ConnectAccount } = CompsConnectAccount;
 const { SecondaryButton } = ButtonComps;
 const { parsePath, makePath } = PathUtils;
 const { MARKET, MARKETS, PORTFOLIO, SIDEBAR_TYPES } = Constants;
+const { ToggleSwitch } = Components;
 
 export const SettingsButton = () => {
   const {
