@@ -268,12 +268,13 @@ export function useUserBalances() {
 export function useFinalizeUserTransactions() {
   const { blocknumber } = useGraphDataStore();
   const {
+    account,
     loginAccount,
     transactions,
     actions: { finalizeTransaction },
   } = useUserStore();
   useEffect(() => {
-    if (loginAccount?.account && blocknumber && transactions?.length > 0) {
+    if (account && blocknumber && transactions?.length > 0) {
       transactions
         .filter((t) => t.status === TX_STATUS.PENDING)
         .forEach((t: TransactionDetails) => {
@@ -293,7 +294,7 @@ export function useFinalizeUserTransactions() {
             });
         });
     }
-  }, [loginAccount, blocknumber, transactions]);
+  }, [loginAccount, blocknumber, transactions, account]);
 }
 
 export function useScrollToTopOnMount(...optionsTriggers) {
@@ -302,36 +303,4 @@ export function useScrollToTopOnMount(...optionsTriggers) {
     document.getElementById('mainContent')?.scrollTo(0, 0);
     window.scrollTo(0, 1);
   }, [...optionsTriggers]);
-}
-
-export function useUserTransactionsUpdates() {
-  const { blocknumber } = useGraphDataStore();
-  const { loginAccount, transactions, actions: { updateTransaction } } = useUserStore();
-  useEffect(() => {
-    if (blocknumber && transactions) {
-      transactions
-        .filter((tx) => tx?.status === TX_STATUS.PENDING)
-        .forEach((tx) => {
-          const isTransactionMined = async (transactionHash, provider) => {
-            const txReceipt = await provider.getTransactionReceipt(
-              transactionHash
-            );
-            if (txReceipt && txReceipt.blockNumber) {
-              return txReceipt;
-            }
-          };
-          isTransactionMined(tx.hash, loginAccount.library).then((response) => {
-            if (response?.confirmations > 0) {
-              const updateTxState = transactions.find(
-                (tx) => tx.hash === response.transactionHash
-              );
-              if (updateTxState) {
-                updateTxState.status = TX_STATUS.CONFIRMED;
-                updateTransaction(response.transactionHash, updateTxState);
-              }
-            }
-          });
-        });
-    }
-  }, [transactions, blocknumber]);
 }

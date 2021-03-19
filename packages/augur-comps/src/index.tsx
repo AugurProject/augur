@@ -58,7 +58,6 @@ import {
   keyedObjToKeyArray,
   arrayToKeyedObject,
   arrayToKeyedObjectByProp,
-  useUserTransactionsUpdates,
 } from './stores/utils';
 import * as _ApprovalHooks from './stores/use-approval-callback';
 import * as _GraphClient from './apollo/client';
@@ -84,7 +83,6 @@ export const Stores = {
     useFinalizeUserTransactions,
     useScrollToTopOnMount,
     useLocalStorage,
-    useUserTransactionsUpdates,
     ..._ApprovalHooks,
   },
   Utils: {
@@ -160,7 +158,6 @@ export {
   useCanEnterCashPosition,
   useUserBalances,
   useFinalizeUserTransactions,
-  useUserTransactionsUpdates,
   useScrollToTopOnMount,
   useGraphDataStore,
   GraphDataStore,
