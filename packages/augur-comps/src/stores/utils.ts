@@ -104,7 +104,6 @@ export function useCanExitCashPosition(cash: Cash) {
     account,
     loginAccount,
     transactions,
-    actions: { updateTransaction },
   } = useUserStore();
   const { blocknumber } = useGraphDataStore();
   const approvedAccount = useRef(null);
@@ -122,7 +121,6 @@ export function useCanExitCashPosition(cash: Cash) {
         name === ETH ? WethWrapperForAMMExchange : AMMFactory,
         loginAccount,
         transactions,
-        updateTransaction
       );
       setCanExitPosition(Boolean(ApprovalState.APPROVED === approvalCheck));
       if (Boolean(approvalCheck))
@@ -140,7 +138,6 @@ export function useCanExitCashPosition(cash: Cash) {
   }, [
     canExitPosition,
     setCanExitPosition,
-    updateTransaction,
     transactions,
     account,
     blocknumber,
@@ -284,7 +281,7 @@ export function useFinalizeUserTransactions() {
               if (receipt) {
                 finalizeTransaction(
                   t.hash,
-                  receipt.status ? TX_STATUS.CONFIRMED : TX_STATUS.FAILURE
+                  receipt
                 );
               }
             })
