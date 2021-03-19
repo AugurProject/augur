@@ -100,12 +100,7 @@ export function useHandleResize() {
 }
 
 export function useCanExitCashPosition(cash: Cash) {
-  const {
-    account,
-    loginAccount,
-    transactions,
-    actions: { updateTransaction },
-  } = useUserStore();
+  const { account, loginAccount, transactions } = useUserStore();
   const { blocknumber } = useGraphDataStore();
   const approvedAccount = useRef(null);
   const [canExitPosition, setCanExitPosition] = useState(false);
@@ -121,8 +116,7 @@ export function useCanExitCashPosition(cash: Cash) {
         shareToken,
         name === ETH ? WethWrapperForAMMExchange : AMMFactory,
         loginAccount,
-        transactions,
-        updateTransaction
+        transactions
       );
       setCanExitPosition(Boolean(ApprovalState.APPROVED === approvalCheck));
       if (Boolean(approvalCheck))
@@ -140,7 +134,6 @@ export function useCanExitCashPosition(cash: Cash) {
   }, [
     canExitPosition,
     setCanExitPosition,
-    updateTransaction,
     transactions,
     account,
     blocknumber,
@@ -152,6 +145,7 @@ export function useCanExitCashPosition(cash: Cash) {
 
 export function useCanEnterCashPosition({ name, address }: Cash) {
   const { account, loginAccount, transactions } = useUserStore();
+  const { blocknumber } = useGraphDataStore();
   const approvedAccount = useRef(null);
   const [canEnterPosition, setCanEnterPosition] = useState(name === ETH);
   const {
@@ -172,7 +166,13 @@ export function useCanEnterCashPosition({ name, address }: Cash) {
     if (!!account && !!address && account !== approvedAccount.current) {
       checkCanCashEnter();
     }
-  }, [canEnterPosition, setCanEnterPosition, transactions, account]);
+  }, [
+    canEnterPosition,
+    setCanEnterPosition,
+    transactions,
+    account,
+    blocknumber,
+  ]);
 
   return canEnterPosition;
 }
@@ -282,10 +282,7 @@ export function useFinalizeUserTransactions() {
             .getTransactionReceipt(t.hash)
             .then((receipt) => {
               if (receipt) {
-                finalizeTransaction(
-                  t.hash,
-                  receipt.status ? TX_STATUS.CONFIRMED : TX_STATUS.FAILURE
-                );
+                finalizeTransaction(t.hash, receipt);
               }
             })
             .catch((e) => {
