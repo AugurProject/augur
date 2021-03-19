@@ -92,6 +92,15 @@
       }
     }
 
+    > div {
+      width: 84px;
+      height: @size-46;
+      margin-top: -@size-1;
+      border-color: transparent;
+      background-color: var(--simple-primary-text);
+      margin-left: -@size-1;
+    }
+
     &.On {
       > span {
         &:last-of-type {
@@ -106,13 +115,10 @@
           color: var(--simple-light-bg);
         }
       }
-    }
 
-    > div {
-      width: 85px;
-      height: @size-48;
-      border-color: transparent;
-      background-color: var(--simple-primary-text);
+      > div {
+        margin-left: @size-1;
+      }
     }
   }
 }
