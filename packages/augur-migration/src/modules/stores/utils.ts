@@ -91,7 +91,7 @@ export function useFinalizeUserTransactions() {
               updateMigrated(true);
             }
             if (receipt) {
-              finalizeTransaction(t.hash, receipt.status ? TX_STATUS.CONFIRMED : TX_STATUS.FAILURE);
+              finalizeTransaction(t.hash, receipt);
             }
           });
         });

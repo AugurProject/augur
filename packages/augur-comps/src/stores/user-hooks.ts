@@ -4,6 +4,7 @@ import { windowRef } from '../utils/window-ref';
 import { USER_ACTIONS, USER_KEYS, DEFAULT_USER_STATE } from './constants';
 import { UserBalances, TransactionDetails } from '../utils/types';
 import { augurSdkLite } from '../utils/augurlitesdk';
+import { TX_STATUS } from '../utils/constants';
 
 const {
   ADD_TRANSACTION,
@@ -116,7 +117,8 @@ export function UserReducer(state, action) {
       updatedState[TRANSACTIONS].forEach((tx) => {
         if (tx.hash === action.hash) {
           tx.confirmedTime = now;
-          tx.status = action.status;
+          tx.status = action.receipt.status ? TX_STATUS.CONFIRMED : TX_STATUS.FAILURE;
+          tx.receipt = action.receipt;
         }
       });
       break;
@@ -164,8 +166,8 @@ export const useUser = (defaultState = DEFAULT_USER_STATE) => {
         dispatch({ type: ADD_TRANSACTION, transaction }),
       removeTransaction: (hash: string) =>
         dispatch({ type: REMOVE_TRANSACTION, hash }),
-      finalizeTransaction: (hash, status) =>
-        dispatch({ type: FINALIZE_TRANSACTION, hash, status }),
+      finalizeTransaction: (hash, receipt) =>
+        dispatch({ type: FINALIZE_TRANSACTION, hash, receipt }),
       updateSeenPositionWarning: (id, seenPositionWarning, warningType) =>
         dispatch({
           type: UPDATE_SEEN_POSITION_WARNING,
