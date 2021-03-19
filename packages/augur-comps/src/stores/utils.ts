@@ -100,11 +100,7 @@ export function useHandleResize() {
 }
 
 export function useCanExitCashPosition(cash: Cash) {
-  const {
-    account,
-    loginAccount,
-    transactions,
-  } = useUserStore();
+  const { account, loginAccount, transactions } = useUserStore();
   const { blocknumber } = useGraphDataStore();
   const approvedAccount = useRef(null);
   const [canExitPosition, setCanExitPosition] = useState(false);
@@ -120,7 +116,7 @@ export function useCanExitCashPosition(cash: Cash) {
         shareToken,
         name === ETH ? WethWrapperForAMMExchange : AMMFactory,
         loginAccount,
-        transactions,
+        transactions
       );
       setCanExitPosition(Boolean(ApprovalState.APPROVED === approvalCheck));
       if (Boolean(approvalCheck))
@@ -149,6 +145,7 @@ export function useCanExitCashPosition(cash: Cash) {
 
 export function useCanEnterCashPosition({ name, address }: Cash) {
   const { account, loginAccount, transactions } = useUserStore();
+  const { blocknumber } = useGraphDataStore();
   const approvedAccount = useRef(null);
   const [canEnterPosition, setCanEnterPosition] = useState(name === ETH);
   const {
@@ -169,7 +166,13 @@ export function useCanEnterCashPosition({ name, address }: Cash) {
     if (!!account && !!address && account !== approvedAccount.current) {
       checkCanCashEnter();
     }
-  }, [canEnterPosition, setCanEnterPosition, transactions, account]);
+  }, [
+    canEnterPosition,
+    setCanEnterPosition,
+    transactions,
+    account,
+    blocknumber,
+  ]);
 
   return canEnterPosition;
 }
@@ -279,10 +282,7 @@ export function useFinalizeUserTransactions() {
             .getTransactionReceipt(t.hash)
             .then((receipt) => {
               if (receipt) {
-                finalizeTransaction(
-                  t.hash,
-                  receipt
-                );
+                finalizeTransaction(t.hash, receipt);
               }
             })
             .catch((e) => {
