@@ -60,7 +60,7 @@ export const Chevron = (
 export const EthIcon = (
   <svg width="29" height="28" viewBox="0 0 29 28" fill="none">
     <g>
-      <circle cx="14.5" cy="14" r="13.5" fill="#F9FAFB" stroke="#EDEFF1" />
+      <circle cx="14.5" cy="14" r="13.5" fill="#F9FAFB" stroke="#8B959E" />
       <g>
         <path
           d="M14.6362 4.19995L14.5048 4.64657V17.6066L14.6362 17.7377L20.652 14.1818L14.6362 4.19995Z"
