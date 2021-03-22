@@ -13,9 +13,7 @@ import ModalView from './modal/modal-view';
 import { usePageView } from '../utils/tracker';
 import {
   Stores,
-  useUserStore,
   useAppStatusStore,
-  useGraphHeartbeat,
   useFinalizeUserTransactions,
   useUserBalances,
   GraphClient,
@@ -51,16 +49,13 @@ function useHandleResize() {
 const AppBody = () => {
   const { isMobile, modal } = useAppStatusStore();
   const { sidebarType, showTradingForm } = useSimplifiedStore();
-  const { loginAccount } = useUserStore();
   const modalShowing = Object.keys(modal).length !== 0;
   const location = useLocation();
   const path = parsePath(location.pathname)[0];
   const sidebarOut = sidebarType && isMobile;
 
-  useGraphHeartbeat(loginAccount ? loginAccount.library : null);
   useUserBalances();
   useFinalizeUserTransactions();
-
   useHandleResize();
   usePageView();
 
