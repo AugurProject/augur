@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { ApolloProvider } from 'react-apollo';
 import { useLocation } from 'react-router';
 import { HashRouter } from 'react-router-dom';
 import Styles from './App.styles.less';
@@ -16,7 +15,6 @@ import {
   useAppStatusStore,
   useFinalizeUserTransactions,
   useUserBalances,
-  GraphClient,
   PathUtils,
   Constants,
 } from '@augurproject/augur-comps';
@@ -92,17 +90,15 @@ function App() {
   return (
     <HashRouter hashType="hashbang">
       <ConnectAccountProvider>
-        <ApolloProvider client={GraphClient.client}>
-          <GraphDataProvider>
-            <UserProvider>
-              <AppStatusProvider>
-                <SimplifiedProvider>
-                  <AppBody />
-                </SimplifiedProvider>
-              </AppStatusProvider>
-            </UserProvider>
-          </GraphDataProvider>
-        </ApolloProvider>
+        <GraphDataProvider>
+          <UserProvider>
+            <AppStatusProvider>
+              <SimplifiedProvider>
+                <AppBody />
+              </SimplifiedProvider>
+            </AppStatusProvider>
+          </UserProvider>
+        </GraphDataProvider>
       </ConnectAccountProvider>
     </HashRouter>
   );

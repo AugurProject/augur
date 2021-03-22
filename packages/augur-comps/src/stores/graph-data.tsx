@@ -3,6 +3,8 @@ import {
   DEFAULT_GRAPH_DATA_STATE,
   STUBBED_GRAPH_DATA_ACTIONS,
 } from './constants';
+import { ApolloProvider } from 'react-apollo';
+import * as GraphClient from '../apollo/client';
 import { useGraphData } from './graph-data-hooks';
 import { processGraphMarkets } from './process-data';
 import { NETWORK_BLOCK_REFRESH_TIME, PARA_CONFIG } from './constants';
@@ -20,7 +22,7 @@ export const GraphDataStore = {
   actions: STUBBED_GRAPH_DATA_ACTIONS,
 };
 
-export const GraphDataProvider = ({ children }) => {
+export const GraphDataProvider = ({ children, client = GraphClient.client }) => {
   const state = useGraphData();
   const { loginAccount } = useUserStore();
   const library = loginAccount?.library ? loginAccount.library : null;
@@ -78,9 +80,11 @@ export const GraphDataProvider = ({ children }) => {
   }, [library]);
 
   return (
-    <GraphDataContext.Provider value={state}>
-      {children}
-    </GraphDataContext.Provider>
+    <ApolloProvider client={client}>
+      <GraphDataContext.Provider value={state}>
+        {children}
+      </GraphDataContext.Provider>
+    </ApolloProvider>
   );
 };
 

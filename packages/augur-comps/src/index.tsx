@@ -43,7 +43,6 @@ import * as _StoreConstants from './stores/constants';
 import * as _ProcessData from './stores/process-data';
 import { useLocalStorage } from './stores/local-storage';
 import {
-  useGraphHeartbeat,
   useCanExitCashPosition,
   useCanEnterCashPosition,
   useUserBalances,
@@ -77,7 +76,6 @@ export const Stores = {
     useAppStatusStore,
     useUserStore,
     useGraphDataStore,
-    useGraphHeartbeat,
     useCanExitCashPosition,
     useCanEnterCashPosition,
     useUserBalances,
@@ -152,7 +150,6 @@ export {
   useAppStatusStore,
   AppStatusStore,
   useLocalStorage,
-  useGraphHeartbeat,
   useUserStore,
   UserStore,
   useCanExitCashPosition,
