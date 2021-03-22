@@ -46,10 +46,10 @@ export const AppViewStats = ({ small }) => {
     [balances?.USDC?.usdValue]
   );
   return (
-    <div className={Styles.AppStats}>
+    <div className={classNames(Styles.AppStats, {[Styles.small]: small})}>
       <ValueLabel
         large={!small}
-        label={isMobile ? 'total acc. value' : 'total account value'}
+        label={'total acc value'}
         light={!isLogged}
         value={totalAccountValue}
         small={small}
