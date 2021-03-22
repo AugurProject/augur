@@ -4,7 +4,7 @@
   .SimpleBorder;
 
   padding: 0 @size-36;
-  border-radius: @size-16;
+  border-radius: @size-8;
   height: @size-150;
   background: var(--simple-light-bg);
   display: grid;
@@ -13,7 +13,7 @@
 
   > div {
     border-right: @size-1 solid var(--simple-border);
-    padding: @size-36;
+    padding: 0 @size-36;
 
     &:first-of-type {
       padding-left: 0;
@@ -22,12 +22,23 @@
     &:nth-of-type(3),
     &:nth-of-type(4),
     &:nth-of-type(5) {
-      padding: @size-36;
+      padding: 0 @size-36;
     }
 
     &:last-of-type {
       border-right: 0;
       padding-right: 0;
+    }
+
+    > span:first-of-type {
+      margin-top: auto;
+      margin-bottom: @size-16;
+    }
+
+    > span:last-of-type,
+    > span:nth-of-type(2) {
+      margin-bottom: auto;
+      height: @size-24;
     }
   }
 
@@ -39,6 +50,16 @@
 
       &:last-of-type {
         border-right: @size-1 solid var(--simple-border);
+      }
+    }
+  }
+
+  &.small {
+    height: 102px;
+
+    > div {
+      > span:first-of-type {
+        margin-bottom: @size-8;
       }
     }
   }
@@ -101,10 +122,11 @@
 @media @breakpoint-mobile-tablet {
   .AppStats {
     height: @size-86;
-    padding: 0 @size-21;
+    padding: 0;
+    padding-left: @size-8;
 
     > div {
-      padding: @size-18 @size-20;
+      padding: @size-18 @size-8;
       display: flex;
       flex-direction: column;
       height: @size-86;
@@ -113,15 +135,15 @@
       > span:first-of-type {
         text-align: center;
         white-space: pre-wrap;
+        margin-bottom: @size-2;
       }
 
       &:nth-of-type(3),
       &:nth-of-type(4) {
-        display: grid;
-        display: grid;
-        grid-template-columns: auto 1fr;
-        grid-template-rows: auto auto;
-        padding: @size-14 @size-21;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: @size-14 @size-8;
 
         > span:first-of-type {
           margin-bottom: @size-2;
@@ -136,6 +158,10 @@
           margin-left: @size-4;
         }
       }
+    }
+
+    &.small {
+      height: @size-86;
     }
   }
 }
