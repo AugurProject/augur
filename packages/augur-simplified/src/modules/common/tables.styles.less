@@ -23,7 +23,7 @@
     text-decoration: none;
   }
 
-  > a > span[class*="InvalidFlagTipIcon"] {
+  > a > span[class*='InvalidFlagTipIcon'] {
     margin-right: @size-8;
     min-height: @size-20;
     min-width: @size-20;
@@ -184,6 +184,16 @@
     justify-content: space-between;
     padding: @size-20 @size-32;
     min-width: @size-320;
+
+    > button {
+      margin-left: @size-1;
+    }
+  }
+
+  @media @breakpoint-mobile-tablet {
+    > span {
+      padding: @size-20 @size-16;
+    }
   }
 }
 
