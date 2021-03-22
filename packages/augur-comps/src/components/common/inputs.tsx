@@ -177,7 +177,6 @@ export const AmountInput = ({
         {chosenCash === SHARES && !showCurrencyDropdown && (
           <span className={Styles.SharesLabel}>
             Shares
-            <TinyButton action={setMax} text="Max" />
           </span>
         )}
         {showCurrencyDropdown && (

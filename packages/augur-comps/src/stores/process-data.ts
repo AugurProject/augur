@@ -253,12 +253,12 @@ const shapeMarketInfo = (
         outcome: Number(t.outcome),
         rawSharesClaimed: t.numPayoutTokens,
         fees: String(
-          convertOnChainCashAmountToDisplayCashAmount(t.fees, cash.decimals)
+          convertOnChainCashAmountToDisplayCashAmount(t.fees, cash?.decimals)
         ),
         winnings: String(
           convertOnChainCashAmountToDisplayCashAmount(
             t.numPayoutTokens,
-            cash.decimals
+            cash?.decimals
           )
         ),
         timestamp: Number(t.timestamp),
