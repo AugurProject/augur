@@ -21,7 +21,7 @@ export const GraphDataStore = {
   get: () => ({ ...DEFAULT_GRAPH_DATA_STATE }),
   actions: STUBBED_GRAPH_DATA_ACTIONS,
 };
-
+// default to GraphClient.client if no client is passed...
 export const GraphDataProvider = ({ children, client = GraphClient.client }) => {
   const state = useGraphData();
   const { loginAccount } = useUserStore();
@@ -41,7 +41,8 @@ export const GraphDataProvider = ({ children, client = GraphClient.client }) => 
   const readableState = { ...state };
   delete readableState.actions;
   GraphDataStore.get = () => readableState;
-  
+  // useEffect is here to keep data fresh, fetch on mount then use network 
+  // interval map to determine update cadence.
   useEffect(() => {
     let isMounted = true;
     // get data immediately, then setup interval

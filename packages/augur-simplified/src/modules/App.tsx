@@ -21,29 +21,6 @@ import {
 const { MARKETS } = Constants;
 const { parsePath } = PathUtils;
 
-function checkIsMobile(setIsMobile) {
-  const isMobile =
-    (
-      window.getComputedStyle(document.body).getPropertyValue('--is-mobile') ||
-      ''
-    ).indexOf('true') !== -1;
-  setIsMobile(isMobile);
-}
-
-function useHandleResize() {
-  const {
-    actions: { setIsMobile },
-  } = useAppStatusStore();
-  useEffect(() => {
-    const handleResize = () => checkIsMobile(setIsMobile);
-    window.addEventListener('resize', handleResize);
-    handleResize();
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-}
-
 const AppBody = () => {
   const { isMobile, modal } = useAppStatusStore();
   const { sidebarType, showTradingForm } = useSimplifiedStore();
@@ -54,7 +31,6 @@ const AppBody = () => {
 
   useUserBalances();
   useFinalizeUserTransactions();
-  useHandleResize();
   usePageView();
 
   useEffect(() => {
