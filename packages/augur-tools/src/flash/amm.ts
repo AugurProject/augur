@@ -71,6 +71,11 @@ export function addAMMScripts(flash: FlashSession) {
       }
 
       if (deployETHWrapper) {
+        this.config.addresses = {
+          ...this.config.addresses,
+          ...addresses
+        } ;
+
         const wrapper = await deployWethAMMContract(this.provider, this.accounts[0], compilerOutput, this.config);
         console.log(`Deployed Weth AMM to: ${wrapper}`);
         addresses.WethWrapperForAMMExchange = wrapper;
