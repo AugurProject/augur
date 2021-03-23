@@ -61,6 +61,7 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         uint256 _ratioFactor,
         bool _keepLong,
         address _recipient) external returns (uint256) {
+        _para.cash().transferFrom(msg.sender, address(this), _cash);
         address _ammAddress = exchanges[address(_market)][address(_para)][_fee];
         IAMMExchange _amm = IAMMExchange(_ammAddress);
 
