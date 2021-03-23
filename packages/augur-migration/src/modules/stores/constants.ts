@@ -1,8 +1,5 @@
 // import { DEFAULT_MARKET_VIEW_SETTINGS, SETTINGS_SLIPPAGE } from '../constants';
 import {
-  AppStatusState,
-  GraphDataState,
-  UserState,
   ParaDeploys,
 } from '../types';
 
