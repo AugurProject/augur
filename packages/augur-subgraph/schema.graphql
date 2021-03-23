@@ -759,6 +759,13 @@ type Cash @entity {
   paraShareTokens: [ParaShareToken!]! @derivedFrom(field: "cash")
 }
 
+
+type AMMFactory @entity {
+  id: ID!
+
+  exchanges: [AMMExchange!]! @derivedFrom(field: "factory")
+}
+
 type AMMExchange @entity {
   id: ID!
 
@@ -770,6 +777,8 @@ type AMMExchange @entity {
 
   "Balance of Cash on the Exchange"
   cashBalance: BigInt!
+
+  factory: AMMFactory!
 
   "The shareToken to be created, this will specify which para-augur is collateraizing the trading on the AMM"
   shareToken: ParaShareToken!
