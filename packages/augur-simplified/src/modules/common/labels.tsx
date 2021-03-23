@@ -28,7 +28,7 @@ const handleValue = (value) =>
   }).full;
 
 export const AppViewStats = ({ small }) => {
-  const { isMobile, isLogged } = useAppStatusStore();
+  const { isLogged } = useAppStatusStore();
   const { balances } = useUserStore();
   const totalAccountValue = useMemo(
     () => handleValue(isLogged ? balances?.totalAccountValue : 0),
