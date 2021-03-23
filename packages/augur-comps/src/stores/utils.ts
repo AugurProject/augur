@@ -2,18 +2,14 @@ import { useEffect, useState, useRef } from 'react';
 import {
   checkIsERC20Approved,
   checkIsERC1155Approved,
-  checkAllowance,
-  isERC1155ContractApproved,
 } from './use-approval-callback';
 import { Cash, MarketInfo, TransactionDetails } from '../utils/types';
 import { PARA_CONFIG } from './constants';
-import { ApprovalState, ETH, TX_STATUS } from '../utils/constants';
+import { ETH, TX_STATUS } from '../utils/constants';
 import { useAppStatusStore } from './app-status';
 import { useUserStore } from './user';
-import { useGraphDataStore } from './graph-data';
 import { augurSdkLite } from '../utils/augurlitesdk';
 import { getUserBalances } from '../utils/contract-calls';
-const { APPROVED } = ApprovalState;
 
 const isAsync = (obj) =>
   !!obj &&
@@ -112,7 +108,7 @@ export function useCanExitCashPosition(cash: Cash, refresh: any = null) {
         shareToken,
         name === ETH ? WethWrapperForAMMExchange : AMMFactory,
         account,
-        loginAccount.library
+        loginAccount?.library
       );
       setCanExitPosition(isApproved);
       if (isApproved || canExitPosition) {
