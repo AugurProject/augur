@@ -8,7 +8,7 @@ import {
   getErc20Contract,
 } from '../utils/contract-calls';
 import { BigNumber as BN } from 'bignumber.js';
-import { TransactionResponse } from '@ethersproject/providers';
+import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { AmmExchange, LoginAccount, TransactionDetails } from '../utils/types';
 import { useUserStore } from './user';
 import { PARA_CONFIG } from './constants';
@@ -367,6 +367,28 @@ export async function checkAllowance(
   );
   return isPending ? ApprovalState.PENDING : ApprovalState.NOT_APPROVED;
 }
+
+export const checkIsERC20Approved = async (
+  erc20TokenAddress: string,
+  spender: string,
+  account: string,
+  library: Web3Provider
+) => {
+  const allowance = await getERC20Allowance(
+    erc20TokenAddress,
+    library,
+    account,
+    spender
+  );
+  return new BN(allowance || '0').gt(0);
+};
+
+export const checkIsERC1155Approved = async (
+  erc1155Address: string,
+  spender: string,
+  account: string,
+  library: Web3Provider
+) => await getERC1155ApprovedForAll(erc1155Address, library, account, spender);
 
 export const isERC1155ContractApproved = async (
   erc1155Address: string,

@@ -65,9 +65,8 @@ export const checkConvertLiquidityProperties = (account: string, marketId: strin
   };
 }
 
-const convertPriceToPercent = (price: string) => {
-  return String(new BN(price).times(100));
-}
+const convertPriceToPercent = (price: string) => String(new BN(price).times(100));
+
 
 export async function estimateAddLiquidity(
   account: string,
@@ -719,7 +718,6 @@ export const getUserBalances = async (
 
   return { ...userBalances, ...userPositions, totalAccountValue, availableFundsUsd }
 }
-
 
 export const getMarketInvalidity = async (
   provider: Web3Provider,

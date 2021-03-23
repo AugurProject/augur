@@ -16,6 +16,7 @@ import {
   ContractCalls,
   useAppStatusStore,
   useUserStore,
+  useGraphDataStore,
   useCanEnterCashPosition,
   useCanExitCashPosition,
   Components,
@@ -179,6 +180,7 @@ const TradingForm = ({
     actions: { setShowTradingForm },
     settings: { slippage },
   } = useSimplifiedStore();
+  const { blocknumber } = useGraphDataStore()
   const {
     loginAccount,
     balances,
@@ -199,7 +201,7 @@ const TradingForm = ({
     name: ammCash?.name,
     shareToken: ammCash?.shareToken,
   });
-  const canEnterPosition = useCanEnterCashPosition(ammCash);
+  const canEnterPosition = useCanEnterCashPosition(ammCash, blocknumber);
   const isApprovedTrade = isBuy ? canEnterPosition : canExitPosition;
   const hasLiquidity = amm.liquidity !== '0';
   const approvalAction = !isApprovedTrade

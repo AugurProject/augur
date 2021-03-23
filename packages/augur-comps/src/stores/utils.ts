@@ -1,5 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import {
+  checkIsERC20Approved,
+  checkIsERC1155Approved,
   checkAllowance,
   isERC1155ContractApproved,
 } from './use-approval-callback';
@@ -94,7 +96,7 @@ export function useHandleResize() {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-}
+};
 
 export function useCanExitCashPosition(cash: Cash) {
   const { account, loginAccount, transactions } = useUserStore();
@@ -134,42 +136,33 @@ export function useCanExitCashPosition(cash: Cash) {
     transactions,
     account,
     blocknumber,
-    cash,
+    cash
   ]);
 
   return canExitPosition;
 }
 
-export function useCanEnterCashPosition({ name, address }: Cash) {
-  const { account, loginAccount, transactions } = useUserStore();
-  const { blocknumber } = useGraphDataStore();
+export function useCanEnterCashPosition({ name, address }: Cash, refresh: any = null) {
+  const { account, loginAccount } = useUserStore();
   const approvedAccount = useRef(null);
   const [canEnterPosition, setCanEnterPosition] = useState(name === ETH);
   const {
     addresses: { AMMFactory },
   } = PARA_CONFIG;
+
   useEffect(() => {
-    const checkCanCashEnter = async () => {
-      const approvalCheck = await checkAllowance(
-        address,
-        AMMFactory,
-        loginAccount,
-        transactions
-      );
-      setCanEnterPosition(approvalCheck === APPROVED || name === ETH);
-      if (approvalCheck === APPROVED || name === ETH)
-        approvedAccount.current = loginAccount.account;
+    const checkApproval = async (address: string) => {
+      const isApproved = await checkIsERC20Approved(address, AMMFactory, account, loginAccount?.library);
+      setCanEnterPosition(isApproved);
+      if (isApproved || canEnterPosition) {
+        approvedAccount.current = account;
+      }
     };
-    if (!!account && !!address && account !== approvedAccount.current) {
-      checkCanCashEnter();
+
+    if (!canEnterPosition && account !== approvedAccount.current && !!account) {
+      checkApproval(address);
     }
-  }, [
-    canEnterPosition,
-    setCanEnterPosition,
-    transactions,
-    account,
-    blocknumber,
-  ]);
+  }, [address, account, refresh])
 
   return canEnterPosition;
 }
