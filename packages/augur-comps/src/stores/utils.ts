@@ -96,53 +96,42 @@ export function useHandleResize() {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-};
+}
 
-export function useCanExitCashPosition(cash: Cash) {
-  const { account, loginAccount, transactions } = useUserStore();
-  const { blocknumber } = useGraphDataStore();
+export function useCanExitCashPosition(cash: Cash, refresh: any = null) {
+  const { account, loginAccount } = useUserStore();
   const approvedAccount = useRef(null);
   const [canExitPosition, setCanExitPosition] = useState(false);
-  const [calledBlocknumber, setCalledBlocknumber] = useState(blocknumber);
   const {
     addresses: { WethWrapperForAMMExchange, AMMFactory },
   } = PARA_CONFIG;
-
   useEffect(() => {
-    const checkCanCashExit = async ({ name, shareToken }) => {
-      if (!name || !shareToken) return setCanExitPosition(false);
-      const approvalCheck = await isERC1155ContractApproved(
+    const checkApproval = async ({ name, shareToken }: Cash) => {
+      if (!name || !shareToken || !account) return setCanExitPosition(false);
+      const isApproved = await checkIsERC1155Approved(
         shareToken,
         name === ETH ? WethWrapperForAMMExchange : AMMFactory,
-        loginAccount,
-        transactions
+        account,
+        loginAccount.library
       );
-      setCanExitPosition(Boolean(ApprovalState.APPROVED === approvalCheck));
-      if (Boolean(approvalCheck))
-        approvedAccount.current = loginAccount.account;
+      setCanExitPosition(isApproved);
+      if (isApproved || canExitPosition) {
+        approvedAccount.current = account;
+      }
     };
 
-    if (
-      !!account &&
-      !!cash &&
-      (account !== approvedAccount.current || calledBlocknumber !== blocknumber)
-    ) {
-      checkCanCashExit(cash);
-      setCalledBlocknumber(blocknumber);
+    if (!canExitPosition && account !== approvedAccount.current) {
+      checkApproval(cash);
     }
-  }, [
-    canExitPosition,
-    setCanExitPosition,
-    transactions,
-    account,
-    blocknumber,
-    cash
-  ]);
-
+  }, [refresh, cash.shareToken, account, loginAccount]);
+  
   return canExitPosition;
 }
 
-export function useCanEnterCashPosition({ name, address }: Cash, refresh: any = null) {
+export function useCanEnterCashPosition(
+  { name, address }: Cash,
+  refresh: any = null
+) {
   const { account, loginAccount } = useUserStore();
   const approvedAccount = useRef(null);
   const [canEnterPosition, setCanEnterPosition] = useState(name === ETH);
@@ -152,17 +141,23 @@ export function useCanEnterCashPosition({ name, address }: Cash, refresh: any = 
 
   useEffect(() => {
     const checkApproval = async (address: string) => {
-      const isApproved = await checkIsERC20Approved(address, AMMFactory, account, loginAccount?.library);
+      if (!address || !account) return setCanEnterPosition(false);
+      const isApproved = await checkIsERC20Approved(
+        address,
+        AMMFactory,
+        account,
+        loginAccount?.library
+      );
       setCanEnterPosition(isApproved);
       if (isApproved || canEnterPosition) {
         approvedAccount.current = account;
       }
     };
 
-    if (!canEnterPosition && account !== approvedAccount.current && !!account) {
+    if (!canEnterPosition && account !== approvedAccount.current) {
       checkApproval(address);
     }
-  }, [address, account, refresh])
+  }, [address, account, refresh, loginAccount]);
 
   return canEnterPosition;
 }

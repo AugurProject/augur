@@ -200,7 +200,7 @@ const TradingForm = ({
   const canExitPosition = useCanExitCashPosition({
     name: ammCash?.name,
     shareToken: ammCash?.shareToken,
-  });
+  }, blocknumber);
   const canEnterPosition = useCanEnterCashPosition(ammCash, blocknumber);
   const isApprovedTrade = isBuy ? canEnterPosition : canExitPosition;
   const hasLiquidity = amm.liquidity !== '0';
