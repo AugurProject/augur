@@ -174,14 +174,12 @@ export function useCanEnterCashPosition({ name, address }: Cash) {
   return canEnterPosition;
 }
 
-export function useUserBalances() {
+export function useUserBalances(ammExchanges, cashes, markets) {
   const {
     loginAccount,
     actions: { updateUserBalances },
   } = useUserStore();
-  const { markets, cashes, ammExchanges } = useGraphDataStore();
   useEffect(() => {
-    let isMounted = true;
     const createClient = (provider, config, account) =>
       augurSdkLite.makeLiteClient(provider, config, account);
     const fetchUserBalances = (
@@ -200,12 +198,8 @@ export function useUserBalances() {
         ammExchanges,
         cashes,
         markets
-      ).then((userBalances) => isMounted && updateUserBalances(userBalances));
+      ).then((userBalances) => updateUserBalances(userBalances));
     }
-
-    return () => {
-      isMounted = false;
-    };
   }, [
     loginAccount?.account,
     loginAccount?.library,
@@ -216,8 +210,7 @@ export function useUserBalances() {
   ]);
 }
 
-export function useFinalizeUserTransactions() {
-  const { blocknumber } = useGraphDataStore();
+export function useFinalizeUserTransactions(refresh: any = null) {
   const {
     account,
     loginAccount,
@@ -225,24 +218,22 @@ export function useFinalizeUserTransactions() {
     actions: { finalizeTransaction },
   } = useUserStore();
   useEffect(() => {
-    if (account && blocknumber && transactions?.length > 0) {
-      transactions
-        .filter((t) => t.status === TX_STATUS.PENDING)
-        .forEach((t: TransactionDetails) => {
-          loginAccount.library
-            .getTransactionReceipt(t.hash)
-            .then((receipt) => {
-              if (receipt) {
-                finalizeTransaction(t.hash, receipt);
-              }
-            })
-            .catch((e) => {
-              // for debugging to see if error occurs when MM drops tx
-              console.log('transaction error', e);
-            });
-        });
-    }
-  }, [loginAccount, blocknumber, transactions, account]);
+    transactions
+      .filter((t) => t.status === TX_STATUS.PENDING)
+      .forEach((t: TransactionDetails) => {
+        loginAccount.library
+          .getTransactionReceipt(t.hash)
+          .then((receipt) => {
+            if (receipt) {
+              finalizeTransaction(t.hash, receipt);
+            }
+          })
+          .catch((e) => {
+            // for debugging to see if error occurs when MM drops tx
+            console.log('transaction error', e);
+          });
+      });
+  }, [loginAccount, refresh, transactions, account]);
 }
 
 export function useScrollToTopOnMount(...optionsTriggers) {

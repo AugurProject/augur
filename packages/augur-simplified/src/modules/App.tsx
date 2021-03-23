@@ -12,6 +12,7 @@ import ModalView from './modal/modal-view';
 import { usePageView } from '../utils/tracker';
 import {
   Stores,
+  useGraphDataStore,
   useAppStatusStore,
   useFinalizeUserTransactions,
   useUserBalances,
@@ -22,6 +23,7 @@ const { MARKETS } = Constants;
 const { parsePath } = PathUtils;
 
 const AppBody = () => {
+  const { markets, cashes, ammExchanges, blocknumber } = useGraphDataStore();
   const { isMobile, modal } = useAppStatusStore();
   const { sidebarType, showTradingForm } = useSimplifiedStore();
   const modalShowing = Object.keys(modal).length !== 0;
@@ -29,8 +31,8 @@ const AppBody = () => {
   const path = parsePath(location.pathname)[0];
   const sidebarOut = sidebarType && isMobile;
 
-  useUserBalances();
-  useFinalizeUserTransactions();
+  useUserBalances(ammExchanges, cashes, markets);
+  useFinalizeUserTransactions(blocknumber);
   usePageView();
 
   useEffect(() => {
