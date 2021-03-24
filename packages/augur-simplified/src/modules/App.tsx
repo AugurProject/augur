@@ -41,11 +41,9 @@ const AppBody = () => {
     const isHeightUnset = html.style.height === '';
     const eitherOr = (modalShowing || showTradingForm);
     if (eitherOr && isHeightUnset) {
-      console.log(1);
       html.style.height = '100%';
       html.style.overflow = 'hidden';
     } else if (!eitherOr && !isHeightUnset) {
-      console.log(2);
       html.style.height = '';
       html.style.overflow = '';
     }
