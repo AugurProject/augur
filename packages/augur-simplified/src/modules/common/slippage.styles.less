@@ -67,12 +67,48 @@
       &:not(:disabled):not(.Disabled):focus,
       &[class*='Selected'] {
         color: var(--simple-primary-text);
-        border-color: var(--simple-secondary-text);
+        background: transparent;
+        border: transparent;
+      }
+    }
+
+    > div {
+      position: relative;
+      > li {
+        z-index: 2;
+      }
+
+      > div {
+        border: 1px solid var(--simple-secondary-text);
         background-color: var(--simple-alternate-background);
         min-height: @size-27;
         height: @size-27;
         margin-top: -@size-1;
         margin-bottom: -@size-1;
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: @size-42;
+        border-radius: @size-8;
+        z-index: 1;
+        transition: all 0.1s linear 0s;
+
+        &.first {
+          transform: translateX(95%);
+        }
+
+        &.second {
+          transform: translateX(180%);
+        }
+
+        &.third {
+          transform: translateX(258%);
+        }
+
+        &.none {
+          display: none;
+        }
       }
     }
 
