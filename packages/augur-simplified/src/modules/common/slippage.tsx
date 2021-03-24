@@ -1,7 +1,11 @@
 import React, { useState, useMemo } from 'react';
 import ButtonStyles from './buttons.styles.less';
 import classNames from 'classnames';
-import { LabelComps, ButtonComps, useUserStore } from '@augurproject/augur-comps';
+import {
+  LabelComps,
+  ButtonComps,
+  useUserStore,
+} from '@augurproject/augur-comps';
 import Styles from './slippage.styles.less';
 import ChevronFlip from './chevron-flip';
 import { useSimplifiedStore } from '../stores/simplified';
@@ -110,6 +114,14 @@ export const Slippage = () => {
                 className={ButtonStyles.TinyTransparentButton}
               />
             </li>
+            <div
+              className={classNames({
+                [Styles.first]: isSelectedArray[1],
+                [Styles.second]: isSelectedArray[2],
+                [Styles.third]: isSelectedArray[3],
+                [Styles.none]: isSelectedArray[4]
+              })}
+            ></div>
           </div>
           <li>
             <div
