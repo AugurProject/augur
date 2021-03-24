@@ -29,7 +29,7 @@ const {
     useCanExitCashPosition,
     useUserStore,
   },
-  Utils: { keyedObjToArray }
+  Utils: { keyedObjToArray },
 } = Stores;
 const { EthIcon, UsdIcon } = Icons;
 const { PrimaryButton } = ButtonComps;
@@ -58,7 +58,8 @@ const handleClaimAll = (
   cash,
   marketIds,
   addTransaction,
-  canClaim
+  canClaim,
+  setPendingClaim
 ) => {
   const from = loginAccount?.account;
   const chainId = loginAccount?.chainId;
@@ -66,9 +67,11 @@ const handleClaimAll = (
     addresses: { WethWrapperForAMMExchange },
   } = PARA_CONFIG;
   if (from && canClaim) {
+    setPendingClaim(true);
     claimWinnings(from, marketIds, cash)
       .then((response) => {
         // handle transaction response here
+        setPendingClaim(false);
         if (response) {
           const { hash } = response;
           addTransaction({
@@ -84,6 +87,7 @@ const handleClaimAll = (
         }
       })
       .catch((e) => {
+        setPendingClaim(false);
         // handle error here
       });
   } else if (from) {
@@ -108,6 +112,7 @@ export const ClaimWinningsSection = () => {
     loginAccount,
     actions: { addTransaction },
   } = useUserStore();
+  const [pendingClaim, setPendingClaim] = useState(false);
   const { cashes } = useGraphDataStore();
   const claimableMarkets = marketShares
     ? keyedObjToArray(marketShares).filter((m) => !!m?.claimableWinnings)
@@ -129,17 +134,24 @@ export const ClaimWinningsSection = () => {
     <div className={Styles.ClaimableWinningsSection}>
       {isLogged && USDCTotals.hasWinnings && (
         <PrimaryButton
-          text={`Claim Winnings (${
-            formatCash(USDCTotals.total, usdcCash?.name).full
-          })`}
-          icon={UsdIcon}
+          text={
+            !pendingClaim
+              ? `Claim Winnings (${
+                  formatCash(USDCTotals.total, usdcCash?.name).full
+                })`
+              : `Waiting for Confirmation`
+          }
+          subText={pendingClaim && `(Confirm this transaction in your wallet)`}
+          disabled={pendingClaim}
+          icon={!pendingClaim && UsdIcon}
           action={() => {
             handleClaimAll(
               loginAccount,
               usdcCash,
               USDCTotals.marketIds,
               addTransaction,
-              true
+              true,
+              setPendingClaim
             );
           }}
         />

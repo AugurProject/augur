@@ -172,6 +172,7 @@ export const PositionFooter = ({
     loginAccount,
     actions: { addTransaction },
   } = useUserStore();
+  const [pendingClaim, setPendingClaim] = useState(false);
   const canClaimETH = useCanExitCashPosition({
     name: amm?.cash?.name,
     shareToken: claimableWinnings?.sharetoken,
@@ -184,9 +185,11 @@ export const PositionFooter = ({
   const claim = async () => {
     if (amm && account) {
       if (canClaimETH || !isETHClaim) {
+        setPendingClaim(true);
         claimWinnings(account, [marketId], amm?.cash)
           .then((response) => {
             // handle transaction response here
+            setPendingClaim(false);
             if (response) {
               const { hash } = response;
               addTransaction({
@@ -202,6 +205,7 @@ export const PositionFooter = ({
             }
           })
           .catch((e) => {
+            setPendingClaim(false);
             // handle error here
           });
       } else {
@@ -232,12 +236,13 @@ export const PositionFooter = ({
             formatPercent(settlementFee).full
           } fee charged on settlement`}</span>
           <PrimaryButton
-            text={`${
+            text={!pendingClaim ? `${
               isETHClaim && !canClaimETH ? 'Approve to ' : ''
             }Claim Winnings (${
               formatCash(claimableWinnings?.claimableBalance, amm?.cash?.name)
                 .full
-            })`}
+            })` : `Waiting for Confirmation`}
+            subText={pendingClaim && `(Confirm this transaction in your wallet)`}
             action={claim}
           />
         </>
