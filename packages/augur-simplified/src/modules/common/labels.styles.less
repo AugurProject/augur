@@ -123,13 +123,14 @@
   .AppStats {
     height: @size-86;
     padding: 0;
-    padding-left: @size-8;
+    padding-left: @size-4;
+    padding-right: @size-4;
 
     > div {
       padding: @size-18 @size-8;
       display: flex;
       flex-direction: column;
-      height: @size-86;
+      height: auto;
       justify-content: center;
 
       > span:first-of-type {
@@ -161,7 +162,7 @@
     }
 
     &.small {
-      height: @size-86;
+      height: auto;
     }
   }
 }
