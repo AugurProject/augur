@@ -31,7 +31,8 @@
       max-width: 100%;
 
       > div[class*="AppStats"] > div {
-        padding: 0;
+        padding-left: 0;
+        padding-right: 0;
         grid-gap: 0;
         display: flex;
         flex-flow: column nowrap;
@@ -42,6 +43,10 @@
           justify-content: center;
           align-items: center;
           grid-column: span 2;
+
+          &:first-of-type {
+            margin-bottom: @size-2;
+          }
 
           &:last-of-type {
             .text-14-bold;
