@@ -14,21 +14,21 @@ import {
   PARA_CONFIG,
   LabelComps,
 } from '@augurproject/augur-comps';
-const { CREATE, USDC, MODAL_ADD_LIQUIDITY, MARKET, ADD } = Constants;
+const { CREATE, USDC, ETH, MODAL_ADD_LIQUIDITY, MARKET, ADD } = Constants;
 const { ValueLabel, IconLabel } = LabelComps;
 const {
   PathUtils: { parsePath },
-  Formatter: { formatDai },
+  Formatter: { formatCash },
 } = Utils;
 const { USDCIcon, EthIcon, PlusIcon, UsdIcon } = Icons;
 
-const handleValue = (value) =>
-  formatDai(value, {
+const handleValue = (value, cashName = USDC) =>
+  formatCash(value, cashName, {
     bigUnitPostfix: true,
   }).full;
 
 export const AppViewStats = ({ small }) => {
-  const { isMobile, isLogged } = useAppStatusStore();
+  const { isLogged } = useAppStatusStore();
   const { balances } = useUserStore();
   const totalAccountValue = useMemo(
     () => handleValue(isLogged ? balances?.totalAccountValue : 0),
@@ -38,8 +38,8 @@ export const AppViewStats = ({ small }) => {
     () => handleValue(isLogged ? balances?.totalPositionUsd : 0),
     [isLogged, balances.totalPositionUsd]
   );
-  const usdValueETH = useMemo(() => handleValue(balances?.ETH?.usdValue || 0), [
-    balances?.ETH?.usdValue,
+  const ethValue = useMemo(() => handleValue(balances?.ETH?.balance || 0, ETH), [
+    balances?.ETH?.balance,
   ]);
   const usdValueUSDC = useMemo(
     () => handleValue(balances?.USDC?.usdValue || 0),
@@ -49,7 +49,7 @@ export const AppViewStats = ({ small }) => {
     <div className={classNames(Styles.AppStats, {[Styles.small]: small})}>
       <ValueLabel
         large={!small}
-        label={'total acc value'}
+        label='total acc value'
         light={!isLogged}
         value={totalAccountValue}
         small={small}
@@ -71,7 +71,7 @@ export const AppViewStats = ({ small }) => {
         icon={EthIcon}
         small={small}
         label="Available ETH"
-        value={usdValueETH}
+        value={ethValue}
       />
     </div>
   );
