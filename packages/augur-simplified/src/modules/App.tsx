@@ -18,6 +18,7 @@ import {
   useUserBalances,
   PathUtils,
   Constants,
+  windowRef,
 } from '@augurproject/augur-comps';
 const { MARKETS } = Constants;
 const { parsePath } = PathUtils;
@@ -36,11 +37,18 @@ const AppBody = () => {
   usePageView();
 
   useEffect(() => {
-    if (showTradingForm) {
-      window.scrollTo(0, 1);
+    const html = windowRef.document.firstElementChild;
+    const isHeightUnset = html.style.height === '';
+    const eitherOr = (modalShowing || showTradingForm);
+    if (eitherOr && isHeightUnset) {
+      html.style.height = '100%';
+      html.style.overflow = 'hidden';
+    } else if (!eitherOr && !isHeightUnset) {
+      html.style.height = '';
+      html.style.overflow = '';
     }
-  }, [showTradingForm, modalShowing, sidebarOut]);
-
+  }, [modalShowing, showTradingForm]);
+  
   return (
     <div
       id="mainContent"
