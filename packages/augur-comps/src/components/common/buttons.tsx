@@ -58,6 +58,7 @@ const Button = ({
           [Styles.Disabled]: disabled,
           [Styles.Selected]: selected,
           [Styles.Error]: error && error !== '',
+          [Styles.subText]: subText && subText.length > 0
         },
         className
       )}
@@ -79,6 +80,7 @@ const Button = ({
           [Styles.Disabled]: disabled || pending,
           [Styles.Selected]: selected,
           [Styles.Error]: error && error !== '',
+          [Styles.subText]: subText && subText.length > 0
         },
         className
       )}
