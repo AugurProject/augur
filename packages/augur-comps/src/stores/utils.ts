@@ -251,7 +251,6 @@ export function useApprovalStatus({
     loginAccount,
     transactions,
   } = useUserStore();
-  // const [isPendingTx, setIsPendingTx] = useState(false);
   const [isApproved, setIsApproved] = useState(UNKNOWN);
   const {
     addresses: { WethWrapperForAMMExchange, AMMFactory },
@@ -301,7 +300,7 @@ export function useApprovalStatus({
         transactions
       );
 
-      approvalCheck === UNKNOWN && isMounted && setIsApproved(approvalCheck);
+      approvalCheck !== UNKNOWN && isMounted && setIsApproved(approvalCheck);
     };
 
     if (isApproved !== APPROVED && loginAccount?.account) {
@@ -325,6 +324,6 @@ export function useApprovalStatus({
     marketCashType,
     shareToken,
   ]);
-  
+
   return isApproved;
 }

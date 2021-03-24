@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState, useCallback } from 'react';
 import Styles from './buttons.styles.less';
 import classNames from 'classnames';
 import { Arrow, SearchIcon, ViewIcon } from './icons';
@@ -176,17 +176,18 @@ export const ApprovalButton = ({
   amm,
   cash,
   actionType,
+  isApproved,
 }: {
   amm?: AmmExchange;
   cash: Cash;
   actionType: ApprovalAction;
+  isApproved: boolean;
 }) => {
   const [isPendingTx, setIsPendingTx] = useState(false);
   const {
     loginAccount,
     actions: { addTransaction },
   } = useUserStore();
-  const isApproved = useApprovalStatus({ amm, cash, actionType });
   const marketCashType = cash?.name;
   const marketDescription = amm?.market?.description;
   const { shareToken } = cash;
@@ -194,7 +195,7 @@ export const ApprovalButton = ({
   const { AMMFactory, WethWrapperForAMMExchange } = addresses;
   const isETH = marketCashType === ETH;
   
-  const approve = async () => {
+  const approve = useCallback(async () => {
     try {
       setIsPendingTx(true);
       // defaults for ADD_LIQUIDITY/most used values.
@@ -236,9 +237,9 @@ export const ApprovalButton = ({
       setIsPendingTx(false);
       console.error(error);
     }
-  };
+  }, [cash, loginAccount, shareToken, amm]);
   
-  if (!loginAccount || isApproved === APPROVED) {
+  if (!loginAccount || isApproved) {
     return null;
   }
 

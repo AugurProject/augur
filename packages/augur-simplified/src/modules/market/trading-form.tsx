@@ -16,9 +16,7 @@ import {
   ContractCalls,
   useAppStatusStore,
   useUserStore,
-  useGraphDataStore,
-  useCanEnterCashPosition,
-  useCanExitCashPosition,
+  useApprovalStatus,
   Components,
 } from '@augurproject/augur-comps';
 import { useTrackedEvents } from '../../utils/tracker';
@@ -39,6 +37,7 @@ const {
 } = Formatter;
 const {
   ApprovalAction,
+  ApprovalState,
   SHARES,
   YES_OUTCOME_ID,
   INSUFFICIENT_LIQUIDITY,
@@ -180,7 +179,6 @@ const TradingForm = ({
     actions: { setShowTradingForm },
     settings: { slippage },
   } = useSimplifiedStore();
-  const { blocknumber } = useGraphDataStore()
   const {
     loginAccount,
     balances,
@@ -197,18 +195,18 @@ const TradingForm = ({
   const ammCash = amm?.cash;
   const outcomes = amm?.ammOutcomes || [];
   const isBuy = orderType === BUY;
-  const canExitPosition = useCanExitCashPosition({
-    name: ammCash?.name,
-    shareToken: ammCash?.shareToken,
-  }, blocknumber);
-  const canEnterPosition = useCanEnterCashPosition(ammCash, blocknumber);
-  const isApprovedTrade = isBuy ? canEnterPosition : canExitPosition;
-  const hasLiquidity = amm.liquidity !== '0';
-  const approvalAction = !isApprovedTrade
-    ? isBuy
+  const approvalStatus = useApprovalStatus({
+    cash: ammCash,
+    amm,
+    actionType: isBuy
       ? ApprovalAction.ENTER_POSITION
-      : ApprovalAction.EXIT_POSITION
-    : null;
+      : ApprovalAction.EXIT_POSITION,
+  });
+  const isApprovedTrade = approvalStatus === ApprovalState.APPROVED;
+  const hasLiquidity = amm.liquidity !== '0';
+  const approvalAction = isBuy
+    ? ApprovalAction.ENTER_POSITION
+    : ApprovalAction.EXIT_POSITION;
   const selectedOutcomeId = selectedOutcome.id;
   const marketShares =
     balances?.marketShares && balances?.marketShares[amm?.id];
@@ -450,7 +448,7 @@ const TradingForm = ({
         <InfoNumbers infoNumbers={formatBreakdown(isBuy, breakdown, ammCash)} />
         {isLogged && !isApprovedTrade && (
           <ApprovalButton
-            {...{ amm, cash: ammCash, actionType: approvalAction }}
+            {...{ amm, cash: ammCash, actionType: approvalAction, isApproved: isApprovedTrade }}
           />
         )}
         <BuySellButton
