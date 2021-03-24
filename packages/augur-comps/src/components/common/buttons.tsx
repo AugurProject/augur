@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode, useState, useCallback } from 'react';
 import Styles from './buttons.styles.less';
 import classNames from 'classnames';
 import { Arrow, SearchIcon, ViewIcon } from './icons';
@@ -7,13 +7,10 @@ import { ApprovalAction, ApprovalState, ETH } from '../../utils/constants';
 import { AmmExchange, Cash } from '../../utils/types';
 import { PARA_CONFIG } from '../../stores/constants';
 import { useUserStore } from '../../stores/user';
-import * as ApprovalHooks from '../../stores/use-approval-callback';
-const {
+import {
   approveERC20Contract,
   approveERC1155Contract,
-  checkAllowance,
-  isERC1155ContractApproved,
-} = ApprovalHooks;
+} from '../../stores/use-approval-callback';
 
 interface ButtonProps {
   text?: string;
@@ -45,7 +42,7 @@ const Button = ({
   title,
   target = '_blank',
   rel = 'noopener noreferrer',
-  pending
+  pending,
 }: ButtonProps) => {
   return href ? (
     <a
@@ -97,7 +94,9 @@ const Button = ({
 export const PrimaryButton = (props: ButtonProps) => (
   <Button
     {...props}
-    className={classNames(Styles.PrimaryButton, props.className, {[Styles.Dark]: props.darkTheme})}
+    className={classNames(Styles.PrimaryButton, props.className, {
+      [Styles.Dark]: props.darkTheme,
+    })}
   />
 );
 export const SecondaryButton = (props: ButtonProps) => (
@@ -170,221 +169,76 @@ export const {
   TRANSFER_LIQUIDITY,
 } = ApprovalAction;
 
-export const {
-  UNKNOWN,
-  PENDING,
-  APPROVED,
-} = ApprovalState;
+export const { UNKNOWN, PENDING, APPROVED } = ApprovalState;
 
 export const ApprovalButton = ({
   amm,
   cash,
   actionType,
+  isApproved,
 }: {
   amm?: AmmExchange;
   cash: Cash;
   actionType: ApprovalAction;
+  isApproved: boolean;
 }) => {
   const [isPendingTx, setIsPendingTx] = useState(false);
-  const [isApproved, setIsApproved] = useState(UNKNOWN);
   const {
     loginAccount,
-    transactions,
-    actions: { addTransaction, updateTransaction }
+    actions: { addTransaction },
   } = useUserStore();
-
   const marketCashType = cash?.name;
-  const tokenAddress = cash?.address;
-  const approvingName = cash?.name;
   const marketDescription = amm?.market?.description;
   const { shareToken } = cash;
   const { addresses } = PARA_CONFIG;
   const { AMMFactory, WethWrapperForAMMExchange } = addresses;
-  const isETH = cash?.name === ETH;
-
-  const approve = async () => {
+  const isETH = marketCashType === ETH;
+  
+  const approve = useCallback(async () => {
     try {
       setIsPendingTx(true);
+      // defaults for ADD_LIQUIDITY/most used values.
+      let ApprovalAction = approveERC20Contract;
+      let address = cash?.address;
+      let spender = AMMFactory;
+      let text = `Liquidity (${marketCashType})`;
       switch (actionType) {
         case EXIT_POSITION: {
-          let tx = null;
-          if (isETH) {
-            tx = await approveERC1155Contract(
-              shareToken,
-              `To Sell (${approvingName})`,
-              WethWrapperForAMMExchange,
-              loginAccount
-            );
-          } else {
-            tx = await approveERC1155Contract(
-              shareToken,
-              `To Sell (${approvingName})`,
-              AMMFactory,
-              loginAccount
-            );
-          }
-          tx.marketDescription = marketDescription;
-          addTransaction(tx);
+          ApprovalAction = approveERC1155Contract;
+          address = shareToken;
+          text = `To Sell (${marketCashType})`;
+          spender = isETH ? WethWrapperForAMMExchange : AMMFactory;
           break;
         }
         case ENTER_POSITION: {
-          const tx = await approveERC20Contract(
-            cash?.address,
-            `To Buy (${approvingName})`,
-            AMMFactory,
-            loginAccount
-          );
-          tx.marketDescription = marketDescription;
-          addTransaction(tx);
+          text = `To Buy (${marketCashType})`;
           break;
         }
         case REMOVE_LIQUIDITY: {
-          const tx = await approveERC20Contract(
-            amm?.invalidPool?.id,
-            `Liquidity (${approvingName})`,
-            AMMFactory,
-            loginAccount
-          );
-          tx.marketDescription = marketDescription;
-          addTransaction(tx);
+          address = amm?.invalidPool?.id;
+          text = `Liquidity (${marketCashType})`;
           break;
         }
         case TRANSFER_LIQUIDITY: {
-          const tx = await approveERC20Contract(
-            amm?.id,
-            `Transfer Liquidity`,
-            AMMFactory,
-            loginAccount
-          );
-          tx.marketDescription = marketDescription;
-          addTransaction(tx);
+          address = amm?.id;
+          text = `Transfer Liquidity`;
           break;
         }
         case ADD_LIQUIDITY:
         default: {
-          // add liquidity
-          const tx = await approveERC20Contract(
-            cash?.address,
-            `Liquidity (${approvingName})`,
-            AMMFactory,
-            loginAccount
-          );
-          tx.marketDescription = marketDescription;
-          addTransaction(tx);
           break;
         }
       }
+      const tx = await ApprovalAction(address, text, spender, loginAccount);
+      tx.marketDescription = marketDescription;
+      addTransaction(tx);
     } catch (error) {
       setIsPendingTx(false);
       console.error(error);
     }
-  };
-
-  useEffect(() => {
-    let isMounted = true;
-    const checkIfApproved = async () => {
-      let approvalCheck = UNKNOWN;
-      if (isETH) {
-        switch (actionType) {
-          case EXIT_POSITION: {
-            approvalCheck = await isERC1155ContractApproved(
-              shareToken,
-              WethWrapperForAMMExchange,
-              loginAccount,
-              transactions
-            );
-            break;
-          }
-          case REMOVE_LIQUIDITY: {
-            approvalCheck = await checkAllowance(
-              amm?.invalidPool?.id,
-              AMMFactory,
-              loginAccount,
-              transactions
-            );
-            break;
-          }
-          case TRANSFER_LIQUIDITY: {
-            approvalCheck = await checkAllowance(
-              amm?.id,
-              AMMFactory,
-              loginAccount,
-              transactions
-            );
-            break;
-          }
-          case ENTER_POSITION:
-          case ADD_LIQUIDITY: {
-            approvalCheck = APPROVED;
-            break;
-          }
-          default: {
-            break;
-          }
-        }
-        approvalCheck !== UNKNOWN && isMounted && setIsApproved(approvalCheck);
-      } else {
-        switch (actionType) {
-          case EXIT_POSITION: {
-            approvalCheck = await isERC1155ContractApproved(
-              shareToken,
-              AMMFactory,
-              loginAccount,
-              transactions
-            );
-            break;
-          }
-          case REMOVE_LIQUIDITY: {
-            approvalCheck = await checkAllowance(
-              amm?.invalidPool?.id,
-              AMMFactory,
-              loginAccount,
-              transactions
-            );
-            break;
-          }
-          case TRANSFER_LIQUIDITY: {
-            approvalCheck = await checkAllowance(
-              amm?.id,
-              AMMFactory,
-              loginAccount,
-              transactions
-            );
-            break;
-          }
-          case ENTER_POSITION:
-          case ADD_LIQUIDITY: {
-            approvalCheck = await checkAllowance(
-              cash?.address,
-              AMMFactory,
-              loginAccount,
-              transactions
-            );
-            break;
-          }
-          default: {
-            break;
-          }
-        }
-        approvalCheck !== UNKNOWN && isMounted && setIsApproved(approvalCheck);
-      }
-      if (approvalCheck === PENDING) {
-        isMounted && setIsPendingTx(true);
-      } else if (approvalCheck === APPROVED) {
-        isMounted && setIsPendingTx(false);
-      }
-    };
-
-    if (isApproved !== APPROVED && loginAccount?.account) {
-      checkIfApproved();
-    }
-    return () => {
-      isMounted = false;
-    }
-  }, [loginAccount, isApproved, actionType, amm, PARA_CONFIG, tokenAddress, transactions, AMMFactory, WethWrapperForAMMExchange, cash?.address, isETH, marketCashType, shareToken, updateTransaction]);
-
-
-  if (!loginAccount || isApproved === APPROVED) {
+  }, [cash, loginAccount, shareToken, amm]);
+  
+  if (!loginAccount || isApproved) {
     return null;
   }
 
@@ -433,10 +287,7 @@ export interface ExternalLinkButtonProps {
   URL?: string;
 }
 
-export const ExternalLinkButton = ({
-  label,
-  URL,
-}: ExternalLinkButtonProps) => (
+export const ExternalLinkButton = ({ label, URL }: ExternalLinkButtonProps) => (
   <button className={Styles.ExternalLinkButton}>
     {URL && (
       <a href={URL} target="_blank" rel="noopener noreferrer">

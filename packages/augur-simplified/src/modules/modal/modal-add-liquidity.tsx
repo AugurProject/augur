@@ -10,16 +10,14 @@ import { BigNumber as BN } from 'bignumber.js';
 import {
   ContractCalls,
   createBigNumber,
-  PARA_CONFIG,
   useAppStatusStore,
   useGraphDataStore,
+  useApprovalStatus,
   useUserStore,
-  ApprovalHooks,
   Formatter,
   Constants,
   Components,
 } from '@augurproject/augur-comps';
-const { checkAllowance } = ApprovalHooks;
 const {
   checkConvertLiquidityProperties,
   doAmmLiquidity,
@@ -36,7 +34,7 @@ const {
 } = Formatter;
 const {
   Icons: { BackIcon },
-  ButtonComps: { ApprovalButton, APPROVED, BuySellButton },
+  ButtonComps: { ApprovalButton, BuySellButton },
   SelectionComps: { MultiButtonSelection },
   InputComps: {
     AmountInput,
@@ -67,8 +65,8 @@ const {
   INSUFFICIENT_BALANCE,
   ONE,
   ERROR_AMOUNT,
-  ETH,
   PORTION_OF_CASH_INVALID_POOL,
+  ApprovalState,
 } = Constants;
 
 const TRADING_FEE_OPTIONS = [
@@ -113,13 +111,11 @@ const ModalAddLiquidity = ({
   currency,
 }: ModalAddLiquidityProps) => {
   const {
-    isLogged,
     actions: { closeModal },
   } = useAppStatusStore();
   const {
     account,
     balances,
-    transactions,
     loginAccount,
     actions: { addTransaction },
   } = useUserStore();
@@ -163,68 +159,27 @@ const ModalAddLiquidity = ({
   const [tradingFeeSelection, setTradingFeeSelection] = useState<number>(
     TRADING_FEE_OPTIONS[2].id
   );
-  const [canAddLiquidity, setCanAddLiquidity] = useState(false);
-  const [canRemoveLiquidity, setCanRemoveLiquidity] = useState(false);
 
   const cash: Cash = useMemo(() => {
     return cashes && chosenCash
       ? Object.values(cashes).find((c) => c.name === chosenCash)
       : Object.values(cashes)[0];
   }, [chosenCash]);
-
-  const isETH = cash?.name === ETH;
-  const {
-    addresses: { AMMFactory },
-  } = PARA_CONFIG;
-  const isApproved =
-    modalType === REMOVE ? canRemoveLiquidity : canAddLiquidity;
-
-  useEffect(() => {
-    const checkCanCashAdd = async () => {
-      const approvalCheck = await checkAllowance(
-        cash?.address,
-        AMMFactory,
-        loginAccount,
-        transactions,
-      );
-      setCanAddLiquidity(approvalCheck === APPROVED);
-    };
-
-    const checkCanRemoveAmm = async () => {
-      const approvalCheckOne = await checkAllowance(
-        amm?.invalidPool?.id,
-        AMMFactory,
-        loginAccount,
-        transactions,
-      );
-      const approvalCheckTWo = await checkAllowance(
-        amm?.id,
-        AMMFactory,
-        loginAccount,
-        transactions,
-      );
-      setCanRemoveLiquidity(approvalCheckOne === APPROVED && approvalCheckTWo === APPROVED);
-    };
-
-    if (isLogged && !canAddLiquidity) {
-      if (isETH) {
-        setCanAddLiquidity(true);
-      } else {
-        checkCanCashAdd();
-      }
-    }
-    if (isLogged && !canRemoveLiquidity && modalType === REMOVE) {
-      checkCanRemoveAmm();
-    }
-  }, [
-    isLogged,
-    canAddLiquidity,
-    canRemoveLiquidity,
-    setCanAddLiquidity,
-    setCanRemoveLiquidity,
-    transactions,
-    modalType,
-  ]);
+  const isRemove = modalType === REMOVE;
+  const approvedToTransfer = useApprovalStatus({
+    cash,
+    amm,
+    actionType: ApprovalAction.TRANSFER_LIQUIDITY,
+  });
+  const isApprovedToTransfer = approvedToTransfer === ApprovalState.APPROVED;
+  const isApprovedMain = useApprovalStatus({
+    cash,
+    amm,
+    actionType: !isRemove
+    ? ApprovalAction.ADD_LIQUIDITY
+    : ApprovalAction.REMOVE_LIQUIDITY
+  });
+  const isApproved = isRemove ? isApprovedMain && isApprovedToTransfer : isApprovedMain;
 
   const userTokenBalance = cash?.name ? balances[cash?.name]?.balance : '0';
   const shareBalance =
@@ -232,10 +187,10 @@ const ModalAddLiquidity = ({
     balances.lpTokens &&
     balances.lpTokens[amm?.id] &&
     balances.lpTokens[amm?.id]?.balance;
-  const userMaxAmount = modalType === REMOVE ? shareBalance : userTokenBalance;
+  const userMaxAmount = isRemove ? shareBalance : userTokenBalance;
 
   const [amount, updateAmount] = useState(
-    modalType === REMOVE ? userMaxAmount : ''
+    isRemove ? userMaxAmount : ''
   );
 
   const [customName, setCustomName] = useState('');
@@ -276,7 +231,7 @@ const ModalAddLiquidity = ({
             .div(new BN(displaySupply).plus(new BN(estimatedLpAmount)))
             .times(new BN(100))
         );
-      } else if (modalType === REMOVE) {
+      } else if (isRemove) {
         const userBalanceLpTokens =
           balances && balances.lpTokens && balances.lpTokens[amm?.id];
         const userAmount = userBalanceLpTokens?.rawBalance || '0';
@@ -345,7 +300,7 @@ const ModalAddLiquidity = ({
     }
     async function getResults() {
       let results = defaultAddLiquidityBreakdown;
-      if (modalType === REMOVE) {
+      if (isRemove) {
         results = await getRemoveLiquidity(
           properties.marketId,
           cash,
@@ -439,7 +394,7 @@ const ModalAddLiquidity = ({
     if (!properties) {
       setBreakdown(defaultAddLiquidityBreakdown);
     }
-    if (modalType === REMOVE) {
+    if (isRemove) {
       doRemoveAmmLiquidity(properties)
         .then((response) => {
           const { hash } = response;
@@ -679,7 +634,7 @@ const ModalAddLiquidity = ({
     <section
       className={classNames(Styles.ModalAddLiquidity, {
         [Styles.showBackView]: showBackView,
-        [Styles.Remove]: modalType === REMOVE,
+        [Styles.Remove]: isRemove,
       })}
     >
       {!showBackView ? (
@@ -707,7 +662,7 @@ const ModalAddLiquidity = ({
                   initialAmount={amount}
                   maxValue={userMaxAmount}
                   showCurrencyDropdown={!currency}
-                  chosenCash={modalType === REMOVE ? SHARES : chosenCash}
+                  chosenCash={isRemove ? SHARES : chosenCash}
                   updateCash={updateCash}
                   updateAmountError={() => null}
                   error={hasAmountErrors}
@@ -798,12 +753,12 @@ const ModalAddLiquidity = ({
                   amm={amm}
                   cash={cash}
                   actionType={
-                    modalType !== REMOVE
+                    isRemove
                       ? ApprovalAction.ADD_LIQUIDITY
                       : ApprovalAction.REMOVE_LIQUIDITY
                   }
                 />
-                {modalType === REMOVE &&
+                {isRemove &&
                   <ApprovalButton
                     amm={amm}
                     cash={cash}

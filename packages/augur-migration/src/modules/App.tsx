@@ -28,9 +28,10 @@ const {
 const AppBody = () => {
   const { isMobile, modal } = useAppStatusStore();
   const {
+    txFailed,
+    isMigrated,
     actions: { setTimestamp },
   } = useMigrationStore();
-  const { txFailed, isMigrated } = useMigrationStore();
   const modalShowing = Object.keys(modal).length !== 0;
 
   useUserBalances();

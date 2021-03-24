@@ -1,17 +1,17 @@
 import { useEffect, useState, useRef } from 'react';
 import {
+  checkIsERC20Approved,
+  checkIsERC1155Approved,
   checkAllowance,
   isERC1155ContractApproved,
 } from './use-approval-callback';
-import { Cash, MarketInfo, TransactionDetails } from '../utils/types';
+import { Cash, MarketInfo, TransactionDetails, AmmExchange } from '../utils/types';
 import { PARA_CONFIG } from './constants';
-import { ApprovalState, ETH, TX_STATUS } from '../utils/constants';
+import { ETH, TX_STATUS, ApprovalAction, ApprovalState } from '../utils/constants';
 import { useAppStatusStore } from './app-status';
 import { useUserStore } from './user';
-import { useGraphDataStore } from './graph-data';
 import { augurSdkLite } from '../utils/augurlitesdk';
 import { getUserBalances } from '../utils/contract-calls';
-const { APPROVED } = ApprovalState;
 
 const isAsync = (obj) =>
   !!obj &&
@@ -96,92 +96,76 @@ export function useHandleResize() {
   }, []);
 }
 
-export function useCanExitCashPosition(cash: Cash) {
-  const { account, loginAccount, transactions } = useUserStore();
-  const { blocknumber } = useGraphDataStore();
+export function useCanExitCashPosition(cash: Cash, refresh: any = null) {
+  const { account, loginAccount } = useUserStore();
   const approvedAccount = useRef(null);
   const [canExitPosition, setCanExitPosition] = useState(false);
-  const [calledBlocknumber, setCalledBlocknumber] = useState(blocknumber);
   const {
     addresses: { WethWrapperForAMMExchange, AMMFactory },
   } = PARA_CONFIG;
-
   useEffect(() => {
-    const checkCanCashExit = async ({ name, shareToken }) => {
-      if (!name || !shareToken) return setCanExitPosition(false);
-      const approvalCheck = await isERC1155ContractApproved(
+    const checkApproval = async ({ name, shareToken }: Cash) => {
+      if (!name || !shareToken || !account) return setCanExitPosition(false);
+      const isApproved = await checkIsERC1155Approved(
         shareToken,
         name === ETH ? WethWrapperForAMMExchange : AMMFactory,
-        loginAccount,
-        transactions
+        account,
+        loginAccount?.library
       );
-      setCanExitPosition(Boolean(ApprovalState.APPROVED === approvalCheck));
-      if (Boolean(approvalCheck))
-        approvedAccount.current = loginAccount.account;
+      setCanExitPosition(isApproved);
+      if (isApproved || canExitPosition) {
+        approvedAccount.current = account;
+      }
     };
 
-    if (
-      !!account &&
-      !!cash &&
-      (account !== approvedAccount.current || calledBlocknumber !== blocknumber)
-    ) {
-      checkCanCashExit(cash);
-      setCalledBlocknumber(blocknumber);
+    if (!canExitPosition && account !== approvedAccount.current) {
+      checkApproval(cash);
     }
-  }, [
-    canExitPosition,
-    setCanExitPosition,
-    transactions,
-    account,
-    blocknumber,
-    cash,
-  ]);
-
+  }, [refresh, cash.shareToken, account, loginAccount]);
+  
   return canExitPosition;
 }
 
-export function useCanEnterCashPosition({ name, address }: Cash) {
-  const { account, loginAccount, transactions } = useUserStore();
-  const { blocknumber } = useGraphDataStore();
+export function useCanEnterCashPosition(
+  { name, address }: Cash,
+  refresh: any = null
+) {
+  const { account, loginAccount } = useUserStore();
   const approvedAccount = useRef(null);
   const [canEnterPosition, setCanEnterPosition] = useState(name === ETH);
   const {
     addresses: { AMMFactory },
   } = PARA_CONFIG;
+
   useEffect(() => {
-    const checkCanCashEnter = async () => {
-      const approvalCheck = await checkAllowance(
+    const checkApproval = async (address: string) => {
+      if (!address || !account) return setCanEnterPosition(false);
+      const isApproved = await checkIsERC20Approved(
         address,
         AMMFactory,
-        loginAccount,
-        transactions
+        account,
+        loginAccount?.library
       );
-      setCanEnterPosition(approvalCheck === APPROVED || name === ETH);
-      if (approvalCheck === APPROVED || name === ETH)
-        approvedAccount.current = loginAccount.account;
+      setCanEnterPosition(isApproved);
+      if (isApproved || canEnterPosition) {
+        approvedAccount.current = account;
+      }
     };
-    if (!!account && !!address && account !== approvedAccount.current) {
-      checkCanCashEnter();
+
+    if (!canEnterPosition && account !== approvedAccount.current) {
+      checkApproval(address);
     }
-  }, [
-    canEnterPosition,
-    setCanEnterPosition,
-    transactions,
-    account,
-    blocknumber,
-  ]);
+  }, [address, account, refresh, loginAccount]);
 
   return canEnterPosition;
 }
 
-export function useUserBalances() {
+export function useUserBalances(ammExchanges, cashes, markets) {
   const {
     loginAccount,
     actions: { updateUserBalances },
   } = useUserStore();
-  const { markets, cashes, ammExchanges } = useGraphDataStore();
   useEffect(() => {
-    let isMounted = true;
     const createClient = (provider, config, account) =>
       augurSdkLite.makeLiteClient(provider, config, account);
     const fetchUserBalances = (
@@ -200,12 +184,8 @@ export function useUserBalances() {
         ammExchanges,
         cashes,
         markets
-      ).then((userBalances) => isMounted && updateUserBalances(userBalances));
+      ).then((userBalances) => updateUserBalances(userBalances));
     }
-
-    return () => {
-      isMounted = false;
-    };
   }, [
     loginAccount?.account,
     loginAccount?.library,
@@ -216,8 +196,7 @@ export function useUserBalances() {
   ]);
 }
 
-export function useFinalizeUserTransactions() {
-  const { blocknumber } = useGraphDataStore();
+export function useFinalizeUserTransactions(refresh: any = null) {
   const {
     account,
     loginAccount,
@@ -225,24 +204,22 @@ export function useFinalizeUserTransactions() {
     actions: { finalizeTransaction },
   } = useUserStore();
   useEffect(() => {
-    if (account && blocknumber && transactions?.length > 0) {
-      transactions
-        .filter((t) => t.status === TX_STATUS.PENDING)
-        .forEach((t: TransactionDetails) => {
-          loginAccount.library
-            .getTransactionReceipt(t.hash)
-            .then((receipt) => {
-              if (receipt) {
-                finalizeTransaction(t.hash, receipt);
-              }
-            })
-            .catch((e) => {
-              // for debugging to see if error occurs when MM drops tx
-              console.log('transaction error', e);
-            });
-        });
-    }
-  }, [loginAccount, blocknumber, transactions, account]);
+    transactions
+      .filter((t) => t.status === TX_STATUS.PENDING)
+      .forEach((t: TransactionDetails) => {
+        loginAccount.library
+          .getTransactionReceipt(t.hash)
+          .then((receipt) => {
+            if (receipt) {
+              finalizeTransaction(t.hash, receipt);
+            }
+          })
+          .catch((e) => {
+            // for debugging to see if error occurs when MM drops tx
+            console.log('transaction error', e);
+          });
+      });
+  }, [loginAccount, refresh, transactions, account]);
 }
 
 export function useScrollToTopOnMount(...optionsTriggers) {
@@ -251,4 +228,102 @@ export function useScrollToTopOnMount(...optionsTriggers) {
     document.getElementById('mainContent')?.scrollTo(0, 0);
     window.scrollTo(0, 1);
   }, [...optionsTriggers]);
+}
+
+const {
+  ADD_LIQUIDITY,
+  REMOVE_LIQUIDITY,
+  ENTER_POSITION,
+  EXIT_POSITION,
+  TRANSFER_LIQUIDITY,
+} = ApprovalAction;
+export const { UNKNOWN, PENDING, APPROVED } = ApprovalState;
+export function useApprovalStatus({
+  amm,
+  cash,
+  actionType,
+}: {
+  amm?: AmmExchange;
+  cash: Cash;
+  actionType: ApprovalAction;
+}) {
+  const {
+    loginAccount,
+    transactions,
+  } = useUserStore();
+  const [isApproved, setIsApproved] = useState(UNKNOWN);
+  const {
+    addresses: { WethWrapperForAMMExchange, AMMFactory },
+  } = PARA_CONFIG;
+  const marketCashType = cash?.name;
+  const tokenAddress = cash?.address;
+  const { shareToken } = cash;
+  const isETH = marketCashType === ETH;
+
+  useEffect(() => {
+    let isMounted = true;
+    const checkIfApproved = async () => {
+      let approvalCheck = UNKNOWN;
+      let address = null;
+      let spender = AMMFactory;
+      let checkApprovalFunction = checkAllowance;
+      switch (actionType) {
+        case EXIT_POSITION: {
+          checkApprovalFunction = isERC1155ContractApproved;
+          address = shareToken;
+          spender = isETH ? WethWrapperForAMMExchange : AMMFactory;
+          break;
+        }
+        case REMOVE_LIQUIDITY: {
+          address = amm?.invalidPool?.id;
+          break;
+        }
+        case TRANSFER_LIQUIDITY: {
+          address = amm?.id;
+          break;
+        }
+        case ENTER_POSITION:
+        case ADD_LIQUIDITY: {
+          address = isETH ? null : cash?.address;
+          checkApprovalFunction = isETH ? async () => APPROVED : checkAllowance;
+          break;
+        }
+        default: {
+          break;
+        }
+      }
+
+      approvalCheck = await checkApprovalFunction(
+        address,
+        spender,
+        loginAccount,
+        transactions
+      );
+
+      approvalCheck !== UNKNOWN && isMounted && setIsApproved(approvalCheck);
+    };
+
+    if (isApproved !== APPROVED && loginAccount?.account) {
+      checkIfApproved();
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [
+    loginAccount,
+    isApproved,
+    actionType,
+    amm,
+    PARA_CONFIG,
+    tokenAddress,
+    transactions,
+    AMMFactory,
+    WethWrapperForAMMExchange,
+    cash?.address,
+    isETH,
+    marketCashType,
+    shareToken,
+  ]);
+
+  return isApproved;
 }
