@@ -10,17 +10,14 @@ import { BigNumber as BN } from 'bignumber.js';
 import {
   ContractCalls,
   createBigNumber,
-  PARA_CONFIG,
   useAppStatusStore,
   useGraphDataStore,
   useApprovalStatus,
   useUserStore,
-  ApprovalHooks,
   Formatter,
   Constants,
   Components,
 } from '@augurproject/augur-comps';
-const { checkAllowance } = ApprovalHooks;
 const {
   checkConvertLiquidityProperties,
   doAmmLiquidity,
@@ -37,7 +34,7 @@ const {
 } = Formatter;
 const {
   Icons: { BackIcon },
-  ButtonComps: { ApprovalButton, APPROVED, BuySellButton },
+  ButtonComps: { ApprovalButton, BuySellButton },
   SelectionComps: { MultiButtonSelection },
   InputComps: {
     AmountInput,
@@ -68,7 +65,6 @@ const {
   INSUFFICIENT_BALANCE,
   ONE,
   ERROR_AMOUNT,
-  ETH,
   PORTION_OF_CASH_INVALID_POOL,
   ApprovalState,
 } = Constants;

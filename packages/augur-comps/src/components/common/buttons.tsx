@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState, useCallback } from 'react';
+import React, { ReactNode, useState, useCallback } from 'react';
 import Styles from './buttons.styles.less';
 import classNames from 'classnames';
 import { Arrow, SearchIcon, ViewIcon } from './icons';
@@ -10,10 +10,7 @@ import { useUserStore } from '../../stores/user';
 import {
   approveERC20Contract,
   approveERC1155Contract,
-  checkAllowance,
-  isERC1155ContractApproved,
 } from '../../stores/use-approval-callback';
-import { useApprovalStatus } from '../../stores/utils';
 
 interface ButtonProps {
   text?: string;
