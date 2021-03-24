@@ -302,13 +302,6 @@ export function useApprovalStatus({
       );
 
       approvalCheck === UNKNOWN && isMounted && setIsApproved(approvalCheck);
-
-      // if (approvalCheck === PENDING) {
-      //   isMounted && setIsPendingTx(true);
-      // } else if (approvalCheck === APPROVED) {
-      //   isMounted && setIsPendingTx(false);
-      // }
-
     };
 
     if (isApproved !== APPROVED && loginAccount?.account) {
@@ -332,8 +325,6 @@ export function useApprovalStatus({
     marketCashType,
     shareToken,
   ]);
+  
   return isApproved;
-  // return 
-  //   // isPendingTx,
-  //   isApproved,
 }
