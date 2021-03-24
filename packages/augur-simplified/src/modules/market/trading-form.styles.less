@@ -120,8 +120,8 @@
   .TradingForm {
     filter: unset;
     border-radius: unset;
-    position: absolute;
-    top: -@simple-top-bar-height;
+    position: fixed;
+    top: 0;
     bottom: 0;
     left: 0;
     right: 0;
@@ -147,11 +147,5 @@
     > div:nth-of-type(2) {
       padding: 0 @size-16 @size-24;
     }
-  }
-}
-
-@media @breakpoint-tiny {
-  .TradingForm {
-    top: 0;
   }
 }

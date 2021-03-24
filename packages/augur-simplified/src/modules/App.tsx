@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useLocation } from 'react-router';
 import { HashRouter } from 'react-router-dom';
 import Styles from './App.styles.less';
@@ -34,12 +34,6 @@ const AppBody = () => {
   useUserBalances(ammExchanges, cashes, markets);
   useFinalizeUserTransactions(blocknumber);
   usePageView();
-
-  useEffect(() => {
-    if (showTradingForm) {
-      window.scrollTo(0, 1);
-    }
-  }, [showTradingForm, modalShowing, sidebarOut]);
 
   return (
     <div
