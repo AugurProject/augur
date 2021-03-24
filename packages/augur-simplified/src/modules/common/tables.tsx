@@ -244,6 +244,7 @@ export const PositionFooter = ({
             })` : `Waiting for Confirmation`}
             subText={pendingClaim && `(Confirm this transaction in your wallet)`}
             action={claim}
+            disabled={pendingClaim}
           />
         </>
       )}
