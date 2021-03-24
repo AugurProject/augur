@@ -2,10 +2,12 @@ import { useEffect, useState, useRef } from 'react';
 import {
   checkIsERC20Approved,
   checkIsERC1155Approved,
+  checkAllowance,
+  isERC1155ContractApproved,
 } from './use-approval-callback';
-import { Cash, MarketInfo, TransactionDetails } from '../utils/types';
+import { Cash, MarketInfo, TransactionDetails, AmmExchange } from '../utils/types';
 import { PARA_CONFIG } from './constants';
-import { ETH, TX_STATUS } from '../utils/constants';
+import { ETH, TX_STATUS, ApprovalAction, ApprovalState } from '../utils/constants';
 import { useAppStatusStore } from './app-status';
 import { useUserStore } from './user';
 import { augurSdkLite } from '../utils/augurlitesdk';
@@ -226,4 +228,112 @@ export function useScrollToTopOnMount(...optionsTriggers) {
     document.getElementById('mainContent')?.scrollTo(0, 0);
     window.scrollTo(0, 1);
   }, [...optionsTriggers]);
+}
+
+const {
+  ADD_LIQUIDITY,
+  REMOVE_LIQUIDITY,
+  ENTER_POSITION,
+  EXIT_POSITION,
+  TRANSFER_LIQUIDITY,
+} = ApprovalAction;
+export const { UNKNOWN, PENDING, APPROVED } = ApprovalState;
+export function useApprovalStatus({
+  amm,
+  cash,
+  actionType,
+}: {
+  amm?: AmmExchange;
+  cash: Cash;
+  actionType: ApprovalAction;
+}) {
+  const {
+    loginAccount,
+    transactions,
+  } = useUserStore();
+  // const [isPendingTx, setIsPendingTx] = useState(false);
+  const [isApproved, setIsApproved] = useState(UNKNOWN);
+  const {
+    addresses: { WethWrapperForAMMExchange, AMMFactory },
+  } = PARA_CONFIG;
+  const marketCashType = cash?.name;
+  const tokenAddress = cash?.address;
+  const { shareToken } = cash;
+  const isETH = marketCashType === ETH;
+
+  useEffect(() => {
+    let isMounted = true;
+    const checkIfApproved = async () => {
+      let approvalCheck = UNKNOWN;
+      let address = null;
+      let spender = AMMFactory;
+      let checkApprovalFunction = checkAllowance;
+      switch (actionType) {
+        case EXIT_POSITION: {
+          checkApprovalFunction = isERC1155ContractApproved;
+          address = shareToken;
+          spender = isETH ? WethWrapperForAMMExchange : AMMFactory;
+          break;
+        }
+        case REMOVE_LIQUIDITY: {
+          address = amm?.invalidPool?.id;
+          break;
+        }
+        case TRANSFER_LIQUIDITY: {
+          address = amm?.id;
+          break;
+        }
+        case ENTER_POSITION:
+        case ADD_LIQUIDITY: {
+          address = isETH ? null : cash?.address;
+          checkApprovalFunction = isETH ? async () => APPROVED : checkAllowance;
+          break;
+        }
+        default: {
+          break;
+        }
+      }
+
+      approvalCheck = await checkApprovalFunction(
+        address,
+        spender,
+        loginAccount,
+        transactions
+      );
+
+      approvalCheck === UNKNOWN && isMounted && setIsApproved(approvalCheck);
+
+      // if (approvalCheck === PENDING) {
+      //   isMounted && setIsPendingTx(true);
+      // } else if (approvalCheck === APPROVED) {
+      //   isMounted && setIsPendingTx(false);
+      // }
+
+    };
+
+    if (isApproved !== APPROVED && loginAccount?.account) {
+      checkIfApproved();
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [
+    loginAccount,
+    isApproved,
+    actionType,
+    amm,
+    PARA_CONFIG,
+    tokenAddress,
+    transactions,
+    AMMFactory,
+    WethWrapperForAMMExchange,
+    cash?.address,
+    isETH,
+    marketCashType,
+    shareToken,
+  ]);
+  return isApproved;
+  // return 
+  //   // isPendingTx,
+  //   isApproved,
 }
