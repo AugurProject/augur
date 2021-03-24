@@ -1,6 +1,6 @@
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
 import { AMMCreated } from '../../generated/AMMFactory/AMMFactory';
-import { AMMExchange, ParaShareToken, BPool } from '../../generated/schema';
+import {AMMExchange, ParaShareToken, AMMFactory} from '../../generated/schema';
 import { AMMExchange as AMMExchangeTemplate, BPool as BPoolTemplate  } from '../../generated/templates';
 import { updateAMM } from '../utils/helpers/amm';
 import {updateOrCreateBPool} from './bPool';
@@ -16,6 +16,12 @@ export function handleAMMCreated(event: AMMCreated): void {
     return;
   }
 
+  let factory = AMMFactory.load(event.address.toHexString());
+  if(factory === null) {
+    factory = new AMMFactory(event.address.toHexString());
+    factory.save();
+  }
+
   updateOrCreateBPool(event.params.bPool.toHexString());
   BPoolTemplate.create(event.params.bPool);
 
@@ -26,6 +32,7 @@ export function handleAMMCreated(event: AMMCreated): void {
   amm.shareToken = shareTokenId;
   amm.invalidPool = event.params.bPool.toHexString();
   amm.cash = paraShareToken.cash;
+  amm.factory = event.address.toHexString();
   amm.fee = fee;
   amm.feePercent = fee.divDecimal(BigInt.fromI32(100).toBigDecimal());
   amm.liquidity = ZERO;
