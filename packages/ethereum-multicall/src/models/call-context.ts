@@ -14,4 +14,10 @@ export interface CallContext {
    */
   // tslint:disable-next-line: no-any
   methodParameters: any[];
+
+  /**
+   *  Context is a generic databucket
+   */
+  // tslint:disable-next-line: no-any
+  context?: any;
 }

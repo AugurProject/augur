@@ -42,7 +42,7 @@
     "types": "tsc --emitDeclarationOnly",
     "build": "node scripts/build.js",
     "transpile": "yarn types && babel src --out-dir build --extensions \".tsx\",\".ts\" --source-maps inline --copy-files",
-    "transpile:watch": "babel src --out-dir build --extensions \".tsx\",\".ts\" --source-maps inline --copy-files --watch"
+    "transpile:watch": "yarn transpile --watch"
   },
   "eslintConfig": {
     "extends": [

@@ -166,8 +166,7 @@ export const AmountInput = ({
           value={amount}
           placeholder="0"
           disabled={disabled}
-          // @ts-ignore
-          onWheel={(e) => e?.target?.blur()}
+          onWheel={(e: any) => e?.target?.blur()}
         />
         <TinyButton text="Max" action={() => setMax()} />
         {!!currencyName && chosenCash !== SHARES && !showCurrencyDropdown && (
@@ -176,9 +175,7 @@ export const AmountInput = ({
           </span>
         )}
         {chosenCash === SHARES && !showCurrencyDropdown && (
-          <span className={Styles.SharesLabel}>
-            Shares
-          </span>
+          <span className={Styles.SharesLabel}>Shares</span>
         )}
         {showCurrencyDropdown && (
           <CurrencyDropdown
@@ -267,8 +264,7 @@ const Outcome = ({
             type="text"
             placeholder={PLACEHOLDER}
             ref={input}
-            // @ts-ignore
-            onWheel={(e) => e?.target?.blur()}
+            onWheel={(e: any) => e?.target?.blur()}
           />
         </div>
       ) : (

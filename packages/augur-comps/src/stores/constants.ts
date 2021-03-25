@@ -5,9 +5,8 @@ import {
   ParaDeploys,
 } from '../utils/types';
 
-// @ts-ignore
 export const PARA_CONFIG: ParaDeploys =
-  ((process.env.CONFIGURATION as unknown) as ParaDeploys) || {};
+  ((process.env.CONFIGURATION as unknown) as ParaDeploys);
 
 export const STUBBED_GRAPH_DATA_ACTIONS = {
   updateGraphHeartbeat: (processed, blocknumber, errors) => {},

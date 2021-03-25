@@ -118,7 +118,6 @@ export async function searchMarkets(searchString, cb) {
 }
 
 async function getPastDayBlockNumber(blockClient) {
-  // @ts-ignore
   const utcCurrentTime = dayjs.utc();
   const utcOneDayBack = utcCurrentTime.subtract(1, 'day').unix();
   const block = await getBlockFromTimestamp(utcOneDayBack, blockClient);
