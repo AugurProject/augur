@@ -1,3 +1,4 @@
+import './assets/styles/shared.less';
 import * as _ContractCalls from './utils/contract-calls';
 import addCommasToNumber from './utils/add-commas-to-number';
 import { isMobileBrowser, isMobileBrowserTall } from './utils/common-functions';
