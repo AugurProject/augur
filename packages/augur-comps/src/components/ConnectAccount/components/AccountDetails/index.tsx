@@ -15,7 +15,7 @@ import { TX_STATUS } from '../../../../utils/constants';
 import { LinkIcon } from '../../../common/icons';
 import { ChainId } from '@uniswap/sdk';
 
-interface AccountCardProps {
+export interface AccountCardProps {
   account: string;
   connector: AbstractConnector;
   connectorName: string;
@@ -148,7 +148,7 @@ const formatConnectorName = (connector) => {
     .map(k => SUPPORTED_WALLETS[k].name)[0];
 }
 
-interface AccountDetailsProps {
+export interface AccountDetailsProps {
   openOptions: Function;
   darkMode: boolean;
   transactions: object[];

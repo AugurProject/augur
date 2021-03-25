@@ -2,7 +2,7 @@ import React from 'react';
 import Styles from './pagination.styles.less';
 import { DirectionButton } from './buttons';
 
-interface PaginationProps {
+export interface PaginationProps {
   page: number;
   itemsPerPage: number;
   itemCount: number;
@@ -12,13 +12,13 @@ interface PaginationProps {
   maxLimit?: number;
   showPagination?: boolean;
 }
-interface PagesArrayObject {
+
+export interface PagesArrayObject {
   page: number | null;
   active: boolean;
 }
 
 const NullPage = { page: null, active: false };
-
 
 const getOffset = (page, pageLimit) => {
   return (page - 1) * pageLimit;

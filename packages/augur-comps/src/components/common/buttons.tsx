@@ -12,7 +12,7 @@ import {
   approveERC1155Contract,
 } from '../../stores/use-approval-callback';
 
-interface ButtonProps {
+export interface ButtonProps {
   id?: string;
   text?: string;
   subText?: string | null;

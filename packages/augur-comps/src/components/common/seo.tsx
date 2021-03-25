@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 
-interface ReactHelmetConfig {
+export interface ReactHelmetConfig {
   title?: string;
   description?: string;
   canonicalUrl?: string;

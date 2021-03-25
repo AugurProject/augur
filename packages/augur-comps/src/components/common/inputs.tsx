@@ -24,7 +24,7 @@ import { AmmOutcome, Cash } from '../../utils/types';
 
 const ENTER_CHAR_CODE = 13;
 
-interface SearchInputProps {
+export interface SearchInputProps {
   value: string;
   onChange: React.ChangeEventHandler;
   clearValue: React.MouseEventHandler;
@@ -79,7 +79,7 @@ export const TextInput = ({ placeholder, value, onChange }) => {
   );
 };
 
-interface AmountInputProps {
+export interface AmountInputProps {
   updateInitialAmount: (string) => void;
   initialAmount: string;
   maxValue: string;
@@ -288,7 +288,7 @@ const Outcome = ({
   );
 };
 
-interface OutcomesGridProps {
+export interface OutcomesGridProps {
   outcomes: AmmOutcome[];
   selectedOutcome?: AmmOutcome;
   setSelectedOutcome: Function;

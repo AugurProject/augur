@@ -2,13 +2,14 @@ import React from 'react';
 import Styles from './toggle-switch.styles.less';
 import classNames from 'classnames';
 
-interface ToggleSwitchProps {
+export interface ToggleSwitchProps {
   toggle?: boolean;
   setToggle: Function;
   button1Text?: string;
   button2Text?: string;
   buySell?: boolean;
 }
+
 export const ToggleSwitch = ({
   toggle,
   setToggle,

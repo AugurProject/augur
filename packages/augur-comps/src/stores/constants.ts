@@ -124,8 +124,8 @@ export const MOCK_APP_STATUS_STATE = {
   ...DEFAULT_APP_STATUS_STATE,
 };
 
-export const MAINNET = '1';
-export const KOVAN = '42';
+export const MAINNET: string = '1';
+export const KOVAN: string = '42';
 export const NETWORK_NAMES = {
   1: 'Mainnet',
   3: 'Ropsten',

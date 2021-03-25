@@ -51,7 +51,7 @@ const WalletList = ({ walletList }) => (
   </ul>
 );
 
-interface PendingWalletViewProps {
+export interface PendingWalletViewProps {
   connector?: AbstractConnector;
   error?: boolean;
   setPendingError: (error: boolean) => void;
@@ -122,7 +122,7 @@ const PendingWalletView = ({
   );
 };
 
-interface ModalConnectWalletProps {
+export interface ModalConnectWalletProps {
   darkMode: boolean;
   autoLogin: boolean;
   transactions: any;

@@ -1137,7 +1137,7 @@ export interface GraphData {
   };
 }
 
-interface Modal {
+export interface Modal {
   type?: string;
 }
 

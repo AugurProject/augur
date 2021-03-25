@@ -18,7 +18,7 @@ import {
 } from '../../utils/constants';
 import { FormattedNumber } from '../../utils/types';
 
-interface ValueLabelProps {
+export interface ValueLabelProps {
   large?: boolean;
   label?: string;
   sublabel?: string;
@@ -51,7 +51,7 @@ export const ValueLabel = ({
   );
 };
 
-interface IconLabelProps {
+export interface IconLabelProps {
   icon: Object;
   value: string | number;
   label: string;
@@ -240,7 +240,7 @@ export const generateTooltip = (tipText: string, key: string) => {
   );
 };
 
-interface WarningBannerProps {
+export interface WarningBannerProps {
   title: string;
   subtitle: string;
   className: string;

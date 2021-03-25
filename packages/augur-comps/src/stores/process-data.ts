@@ -35,7 +35,7 @@ import {
 import { timeSinceTimestamp } from '../utils/time-since';
 import { getMarketInvalidity } from '../utils/contract-calls';
 import { Web3Provider } from '@ethersproject/providers'
-interface GraphMarket {
+export interface GraphMarket {
   id: string;
   description: string;
   endTimestamp: string;
@@ -59,7 +59,7 @@ interface GraphMarket {
   }
 }
 
-interface GraphClaims {
+export interface GraphClaims {
   id: string;
   shareToken: {
     id: string;
@@ -72,13 +72,13 @@ interface GraphClaims {
   fees: string;
   timestamp: string;
 }
-interface GraphMarketOutcome {
+export interface GraphMarketOutcome {
   id: string;
   isFinalNumerator: boolean;
   payoutNumerator: string;
   value: string;
 }
-interface GraphTransaction {
+export interface GraphTransaction {
   id: string;
   cash: string;
   noShares: string;
@@ -87,15 +87,15 @@ interface GraphTransaction {
   timestamp: string;
   tx_hash: string;
 }
-interface GraphEnter extends GraphTransaction {
+export interface GraphEnter extends GraphTransaction {
   price: string;
 }
 
-interface GraphExit extends GraphTransaction {
+export interface GraphExit extends GraphTransaction {
   price: string;
 }
 
-interface GraphAddLiquidity extends GraphTransaction {
+export interface GraphAddLiquidity extends GraphTransaction {
   ammExchange: GraphAmmExchange;
   cashValue: string;
   lpTokens: string;
@@ -104,14 +104,14 @@ interface GraphAddLiquidity extends GraphTransaction {
   netShares: string;
 }
 
-interface GraphRemoveLiquidity extends GraphTransaction {
+export interface GraphRemoveLiquidity extends GraphTransaction {
   ammExchange: GraphAmmExchange;
   cashValue: string;
   yesShareCashValue: string;
   noShareCashValue: string;
 }
 
-interface GraphInvalidPool {
+export interface GraphInvalidPool {
   id: string;
   cashBalance: string;
   cashWeight: string;
@@ -120,7 +120,7 @@ interface GraphInvalidPool {
   spotPrice: string[];
   swapFee: string;
 }
-interface GraphAmmExchange {
+export interface GraphAmmExchange {
   id: string;
   cashBalance: string;
   shareToken: {
@@ -148,7 +148,7 @@ interface GraphAmmExchange {
   symbols: string[];
 }
 
-interface GraphData {
+export interface GraphData {
   markets: GraphMarket[];
   past: GraphMarket[];
   paraShareTokens: {};
