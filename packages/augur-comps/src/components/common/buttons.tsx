@@ -13,6 +13,7 @@ import {
 } from '../../stores/use-approval-callback';
 
 interface ButtonProps {
+  id?: string;
   text?: string;
   subText?: string | null;
   className?: string;
@@ -30,6 +31,7 @@ interface ButtonProps {
 }
 
 const Button = ({
+  id,
   text,
   subText,
   className,
@@ -46,6 +48,7 @@ const Button = ({
 }: ButtonProps) => {
   return href ? (
     <a
+      id={id}
       title={title}
       href={href}
       className={classNames(
@@ -69,6 +72,7 @@ const Button = ({
     </a>
   ) : (
     <button
+      id={id}
       title={title}
       className={classNames(
         Styles.Button,

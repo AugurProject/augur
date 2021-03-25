@@ -31,13 +31,12 @@
     "esModuleInterop": true,
     "resolveJsonModule": true
   },
-  "files": ["package.json"],
+  "files": [],
   "include": [
     "src/**/*",
     "src/externals.d.ts",
     "src/**/*.json",
     "src/**/*.png",
-    "package.json"
   ],
   "exclude": [
     "./src/**/*.test.ts",

@@ -155,7 +155,7 @@ const ModalConnectWallet = ({
   >();
   const [pendingError, setPendingError] = useState<boolean>();
   const previousAccount = usePrevious(account);
-  const [walletList, setWalletList] = useState();
+  const [walletList, setWalletList] = useState(null);
 
   const tryActivation = useCallback(
     (connector: AbstractConnector | undefined) => {

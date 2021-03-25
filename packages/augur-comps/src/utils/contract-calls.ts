@@ -639,6 +639,8 @@ export const getUserBalances = async (
 
     const balanceValue = balanceResult.results[key].callsReturnContext[0]
       .returnValues as ethers.utils.Result;
+    console.log('getUserBalances', balanceResult.results[key].originalContractCallContext.calls[0], balanceResult.results[key]);
+    //@ts-ignore
     const context = balanceResult.results[key].originalContractCallContext.calls[0].context;
     const rawBalance = new BN(balanceValue.hex).toFixed();
 
@@ -769,6 +771,7 @@ export const getMarketInvalidity = async (
     );
     const balanceValue = balanceResult.results[key].callsReturnContext[0]
       .returnValues as ethers.utils.Result;
+    //@ts-ignore
     const context = balanceResult.results[key].originalContractCallContext.calls[0].context;
     const rawBalance = new BN(balanceValue.hex).toFixed();
 

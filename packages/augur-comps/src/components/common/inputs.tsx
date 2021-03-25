@@ -26,8 +26,8 @@ const ENTER_CHAR_CODE = 13;
 
 interface SearchInputProps {
   value: string;
-  onChange: Function;
-  clearValue: Function;
+  onChange: React.ChangeEventHandler;
+  clearValue: React.MouseEventHandler;
   showFilter: boolean;
 }
 
@@ -37,11 +37,12 @@ export const SearchInput = ({
   clearValue,
   showFilter,
 }: SearchInputProps) => {
+  const input = useRef(null);
+
   useEffect(() => {
-    if (showFilter) input.current && input.current.focus();
+    if (showFilter) input?.current?.focus();
   }, [showFilter]);
 
-  const input = useRef();
   const keypressHandler = (e) => {
     if (e.charCode === ENTER_CHAR_CODE) {
       input.current && input.current.blur();
@@ -168,7 +169,7 @@ export const AmountInput = ({
           // @ts-ignore
           onWheel={(e) => e?.target?.blur()}
         />
-        <TinyButton text={'Max'} action={() => setMax()} />
+        <TinyButton text="Max" action={() => setMax()} />
         {!!currencyName && chosenCash !== SHARES && !showCurrencyDropdown && (
           <span className={Styles.CurrencyLabel}>
             {icon} {label}

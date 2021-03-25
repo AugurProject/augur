@@ -13,12 +13,13 @@ import {GetWalletIcon} from '../../../common/get-wallet-icon';
 import {AbstractConnector} from '@web3-react/abstract-connector';
 import { TX_STATUS } from '../../../../utils/constants';
 import { LinkIcon } from '../../../common/icons';
+import { ChainId } from '@uniswap/sdk';
 
 interface AccountCardProps {
   account: string;
   connector: AbstractConnector;
   connectorName: string;
-  chainId: string;
+  chainId: ChainId;
 }
 
 const AccountCard = ({
@@ -180,7 +181,6 @@ export const AccountDetails = ({
           connector={connector}
           connectorName={connectorName}
           chainId={chainId}
-          switchWalletAction={openOptions}
         />
       </section>
       <section>
