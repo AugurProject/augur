@@ -1,5 +1,5 @@
 import { formatNumber } from "./format-number";
-import { FormattedNumber } from "../modules/types";
+import { FormattedNumber } from "./types";
 // get the precision of the number, the length to the right of the decimal
 export default function getPrecision(value: number | string, defaultValue: number): number {
   if (!value) return defaultValue;

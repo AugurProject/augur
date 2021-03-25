@@ -5,7 +5,7 @@ import {
   encodeNumberAsBase10String,
   encodeNumberAsJSNumber,
   unfix,
-} from '@augurproject/utils';
+} from '@augurproject/sdk-lite';
 import {
   ETHER,
   GWEI_CONVERSION,
