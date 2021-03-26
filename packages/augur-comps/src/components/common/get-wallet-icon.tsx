@@ -10,7 +10,7 @@ import {TinyButton} from './buttons';
 import {AbstractConnector} from '@web3-react/abstract-connector';
 import { useAppStatusStore } from '../../stores/app-status';
 
-interface GetWalletIconProps {
+export interface GetWalletIconProps {
   account: string;
   connector: AbstractConnector;
   showPortisButton?: boolean;

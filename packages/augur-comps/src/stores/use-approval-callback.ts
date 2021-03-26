@@ -426,7 +426,7 @@ export const approveERC20Contract = async (
   const { chainId, account, library } = loginAccount;
   if (!spender) {
     console.error('no spender');
-    return;
+    return null;
   }
 
   const tokenContract = getErc20Contract(tokenAddress, library, account);

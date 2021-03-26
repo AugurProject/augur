@@ -16,7 +16,7 @@ import type {
 } from '@augurproject/contract-dependencies-ethers';
 import type { BigNumber } from '../utils/create-big-number';
 import type { Template } from '@augurproject/templates';
-import { JsonRpcProvider } from 'ethers/providers';
+import { ethers } from 'ethers';
 
 export enum SizeTypes {
   SMALL = 'small',
@@ -787,7 +787,7 @@ export interface LoginAccountMeta {
   accountType: string;
   address: string;
   signer: any | EthersSigner;
-  provider: JsonRpcProvider;
+  provider: ethers.providers.JsonRpcProvider;
   isWeb3: boolean;
   profileImage?: string;
   email?: string;
@@ -1137,7 +1137,7 @@ export interface GraphData {
   };
 }
 
-interface Modal {
+export interface Modal {
   type?: string;
 }
 

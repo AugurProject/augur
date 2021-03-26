@@ -2,7 +2,7 @@ import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 import { ChainId } from "@uniswap/sdk"
 import { Contract, ethers } from "ethers"
 import { AddressZero } from '@ethersproject/constants'
-import { EthersProvider } from '@augurproject/ethersjs-provider'
+import { EthersProvider } from '@augurproject/sdk';
 import {SUPPORTED_WALLETS} from '../constants';
 import {WalletConnectConnector} from '@web3-react/walletconnect-connector';
 import {UnsupportedChainIdError} from '@web3-react/core';

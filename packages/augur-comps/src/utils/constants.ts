@@ -1,5 +1,5 @@
 import { MarketTypeName } from '@augurproject/sdk-lite';
-import { createBigNumber } from './create-big-number';
+import { createBigNumber, BigNumber } from './create-big-number';
 import {
   CryptoIcon,
   EntertainmentIcon,
@@ -16,49 +16,49 @@ export const CATEGORICAL = MarketTypeName.Categorical;
 export const SCALAR = MarketTypeName.Scalar;
 
 // MAIN VIEWS
-export const MARKET = 'market';
-export const MARKETS = 'markets';
-export const PORTFOLIO = 'portfolio';
+export const MARKET: string = 'market';
+export const MARKETS: string = 'markets';
+export const PORTFOLIO: string = 'portfolio';
 
 export const YES_NO_OUTCOMES_NAMES = ['Invalid', 'No', 'Yes'];
 // QUERY_PARAMS
-export const MARKET_ID_PARAM_NAME = 'id';
-export const AFFILIATE_NAME = 'r';
-export const THEME_NAME = 't';
+export const MARKET_ID_PARAM_NAME: string = 'id';
+export const AFFILIATE_NAME: string = 'r';
+export const THEME_NAME: string = 't';
 
-export const OUTCOME_YES_NAME = 'Yes';
-export const OUTCOME_NO_NAME = 'No';
-export const OUTCOME_INVALID_NAME = 'Invalid';
+export const OUTCOME_YES_NAME: string = 'Yes';
+export const OUTCOME_NO_NAME: string = 'No';
+export const OUTCOME_INVALID_NAME: string = 'Invalid';
 
 // Directions
-export const BUY = 'buy';
-export const SELL = 'sell';
+export const BUY: string = 'buy';
+export const SELL: string = 'sell';
 
-export const ADD_LIQUIDITY = 'add liquidity';
+export const ADD_LIQUIDITY: string = 'add liquidity';
 
-export const ETHER = createBigNumber(10).pow(18);
-export const GWEI_CONVERSION = 1000000000;
-export const TEN = createBigNumber(10, 10);
-export const ZERO = createBigNumber(0);
-export const ONE = createBigNumber(1);
-export const HUNDRED = createBigNumber(100);
-export const THOUSAND = createBigNumber(1000);
-export const MILLION = THOUSAND.times(THOUSAND);
-export const BILLION = MILLION.times(THOUSAND);
-export const TRILLION = BILLION.times(THOUSAND);
-export const DAYS_IN_YEAR = createBigNumber(365);
-export const SEC_IN_DAY = createBigNumber(86400);
-export const PORTION_OF_INVALID_POOL_SELL = createBigNumber(0.5);
-export const PORTION_OF_CASH_INVALID_POOL = createBigNumber(0.1);
+export const ETHER: BigNumber = createBigNumber(10).pow(18);
+export const GWEI_CONVERSION: number = 1000000000;
+export const TEN: BigNumber = createBigNumber(10, 10);
+export const ZERO: BigNumber = createBigNumber(0);
+export const ONE: BigNumber = createBigNumber(1);
+export const HUNDRED: BigNumber = createBigNumber(100);
+export const THOUSAND: BigNumber = createBigNumber(1000);
+export const MILLION: BigNumber = THOUSAND.times(THOUSAND);
+export const BILLION: BigNumber = MILLION.times(THOUSAND);
+export const TRILLION: BigNumber = BILLION.times(THOUSAND);
+export const DAYS_IN_YEAR: BigNumber = createBigNumber(365);
+export const SEC_IN_DAY: BigNumber = createBigNumber(86400);
+export const PORTION_OF_INVALID_POOL_SELL: BigNumber = createBigNumber(0.5);
+export const PORTION_OF_CASH_INVALID_POOL: BigNumber = createBigNumber(0.1);
 
 // # Asset Types
-export const ETH = 'ETH';
-export const REP = 'REP';
-export const DAI = 'DAI';
-export const USDT = 'USDT';
-export const USDC = 'USDC';
-export const SHARES = 'SHARES';
-export const ALL_CURRENCIES = 'All Currencies';
+export const ETH: string = 'ETH';
+export const REP: string = 'REP';
+export const DAI: string = 'DAI';
+export const USDT: string = 'USDT';
+export const USDC: string = 'USDC';
+export const SHARES: string = 'SHARES';
+export const ALL_CURRENCIES: string = 'All Currencies';
 
 export const CASH_LABEL_FORMATS = {
   ETH: { symbol: 'Ξ', prepend: true, displayDecimals: 4, icon: EthIcon },
@@ -67,28 +67,28 @@ export const CASH_LABEL_FORMATS = {
 };
 
 // Portfolio table views
-export const POSITIONS = 'positions';
-export const LIQUIDITY = 'liquidity';
-export const TABLES = 'TABLES';
-export const ACTIVITY = 'ACTIVITY';
+export const POSITIONS: string = 'positions';
+export const LIQUIDITY: string = 'liquidity';
+export const TABLES: string = 'TABLES';
+export const ACTIVITY: string = 'ACTIVITY';
 
 // top categories
-export const MEDICAL = 'medical';
-export const POLITICS = 'politics';
-export const FINANCE = 'finance';
-export const CRYPTO = 'crypto';
-export const ENTERTAINMENT = 'entertainment';
-export const ECONOMICS = 'economics';
-export const SPORTS = 'sports';
-export const OTHER = 'other';
-export const ALL_MARKETS = 'all markets';
+export const MEDICAL: string = 'medical';
+export const POLITICS: string = 'politics';
+export const FINANCE: string = 'finance';
+export const CRYPTO: string = 'crypto';
+export const ENTERTAINMENT: string = 'entertainment';
+export const ECONOMICS: string = 'economics';
+export const SPORTS: string = 'sports';
+export const OTHER: string = 'other';
+export const ALL_MARKETS: string = 'all markets';
 
 // sub categories
-export const COVID = 'covid-19';
-export const ELECTORAL_COLLEGE = 'electoral college';
-export const FEDERAL_FUNDS = 'federal funds';
-export const REPUSD = 'REP USD';
-export const PRESIDENTIAL_ELECTION = 'electoral college';
+export const COVID: string = 'covid-19';
+export const ELECTORAL_COLLEGE: string = 'electoral college';
+export const FEDERAL_FUNDS: string = 'federal funds';
+export const REPUSD: string = 'REP USD';
+export const PRESIDENTIAL_ELECTION: string = 'electoral college';
 
 export const POPULAR_CATEGORIES_ICONS = {
   [MEDICAL]: MedicalIcon,
@@ -100,8 +100,8 @@ export const POPULAR_CATEGORIES_ICONS = {
 };
 
 // side bar types
-export const NAVIGATION = 'NAVIGATION';
-export const FILTERS = 'FILTERS';
+export const NAVIGATION: string = 'NAVIGATION';
+export const FILTERS: string = 'FILTERS';
 
 export const SIDEBAR_TYPES = {
   [NAVIGATION]: NAVIGATION,
@@ -109,28 +109,28 @@ export const SIDEBAR_TYPES = {
 };
 
 //  transaction types
-export const ALL = 'all';
-export const SWAP = 'swap';
-export const ADD = 'add';
-export const REMOVE = 'remove';
+export const ALL: string = 'all';
+export const SWAP: string = 'swap';
+export const ADD: string = 'add';
+export const REMOVE: string = 'remove';
 
-export const INVALID_OUTCOME_ID = 0;
-export const NO_OUTCOME_ID = 1;
-export const YES_OUTCOME_ID = 2;
+export const INVALID_OUTCOME_ID: number = 0;
+export const NO_OUTCOME_ID: number = 1;
+export const YES_OUTCOME_ID: number = 2;
 
-export const OPEN = 'Open';
-export const IN_SETTLEMENT = 'In settlement';
-export const RESOLVED = 'Resolved';
+export const OPEN: string = 'Open';
+export const IN_SETTLEMENT: string = 'In settlement';
+export const RESOLVED: string = 'Resolved';
 
-export const INSUFFICIENT_LIQUIDITY = 'Insufficent Liquidity';
-export const INSUFFICIENT_BALANCE = 'Insufficent Balance';
-export const OVER_SLIPPAGE = 'Over Slippage Tolerance';
-export const ENTER_AMOUNT = 'Enter Amount';
-export const ERROR_AMOUNT = 'Amount is not valid';
-export const CONNECT_ACCOUNT = 'Connect Account';
-export const SET_PRICES = 'Set Prices';
+export const INSUFFICIENT_LIQUIDITY: string = 'Insufficent Liquidity';
+export const INSUFFICIENT_BALANCE: string = 'Insufficent Balance';
+export const OVER_SLIPPAGE: string = 'Over Slippage Tolerance';
+export const ENTER_AMOUNT: string = 'Enter Amount';
+export const ERROR_AMOUNT: string = 'Amount is not valid';
+export const CONNECT_ACCOUNT: string = 'Connect Account';
+export const SET_PRICES: string = 'Set Prices';
 
-export const SETTINGS_SLIPPAGE = "2"
+export const SETTINGS_SLIPPAGE: string = "2"
 // graph market status
 export const MARKET_STATUS = {
   TRADING: 'TRADING',
@@ -171,9 +171,9 @@ export const categoryItems = [
   },
 ];
 
-export const TOTAL_VOLUME = 'Total Volume';
-export const TWENTY_FOUR_HOUR_VOLUME = '24hr volume';
-export const ENDING_SOON = 'ending soon';
+export const TOTAL_VOLUME: string = 'Total Volume';
+export const TWENTY_FOUR_HOUR_VOLUME: string = '24hr volume';
+export const ENDING_SOON: string = 'ending soon';
 
 export const sortByItems = [
   {
@@ -246,11 +246,11 @@ export enum ApprovalAction {
   TRANSFER_LIQUIDITY
 }
 
-export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
+export const NULL_ADDRESS: string = '0x0000000000000000000000000000000000000000';
 
 // Modals
-export const MODAL_ADD_LIQUIDITY = 'MODAL_ADD_LIQUIDITY';
-export const MODAL_CONNECT_WALLET = 'MODAL_CONNECT_WALLET';
+export const MODAL_ADD_LIQUIDITY: string = 'MODAL_ADD_LIQUIDITY';
+export const MODAL_CONNECT_WALLET: string = 'MODAL_CONNECT_WALLET';
 
 export const DEFAULT_MARKET_VIEW_SETTINGS = {
   categories: ALL_MARKETS,
@@ -259,7 +259,7 @@ export const DEFAULT_MARKET_VIEW_SETTINGS = {
   currency: ALL_CURRENCIES,
 };
 
-export const CREATE = 'create';
+export const CREATE: string = 'create';
 
 export const DefaultMarketOutcomes = [
   {

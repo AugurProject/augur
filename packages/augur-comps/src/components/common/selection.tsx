@@ -67,8 +67,8 @@ export const Dropdown = ({
   preLabelClean,
   onChange,
 }: DropdownProps) => {
-  const labelRef = useRef();
-  const refDropdown = useRef();
+  const labelRef = useRef(null);
+  const refDropdown = useRef(null);
   const [selected, setSelected] = useState(
     defaultValue !== null ? findSelected(options, defaultValue) : null
   );
@@ -79,11 +79,11 @@ export const Dropdown = ({
     );
   }, [defaultValue]);
 
-  const handleWindowOnClick = (event: React.MouseEvent<HTMLElement>) => {
-    if (refDropdown?.current && !refDropdown.current.contains(event.target)) {
+  const handleWindowOnClick = (event: MouseEvent) => {
+    if (refDropdown?.current && !refDropdown?.current.contains(event.target)) {
       setShowList(false);
     }
-  };
+  }
 
   useEffect(() => {
     window.addEventListener('click', handleWindowOnClick);

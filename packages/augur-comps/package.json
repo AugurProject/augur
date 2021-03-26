@@ -5,7 +5,6 @@
   "main": "build",
   "dependencies": {
     "@augurproject/ethereum-multicall": "^2.3.0-alpha.0",
-    "@augurproject/ethersjs-provider": "^2.3.0-alpha.0",
     "@augurproject/sdk": "^2.3.0-alpha.0",
     "@augurproject/sdk-lite": "^2.3.0-alpha.0",
     "@uniswap/sdk": "^3.0.3",
@@ -38,9 +37,12 @@
     "semver": "7.3.2"
   },
   "scripts": {
+    "check": "tsc --noEmit",
+    "check:watch": "npm run type-check -- --watch",
+    "types": "tsc --emitDeclarationOnly",
     "build": "node scripts/build.js",
-    "transpile": "babel src --out-dir build --extensions \".tsx\",\".ts\" --source-maps inline --copy-files",
-    "transpile:watch": "babel src --out-dir build --extensions \".tsx\",\".ts\" --source-maps inline --copy-files --watch"
+    "transpile": "yarn types && babel src --out-dir build --extensions \".tsx\",\".ts\" --source-maps inline --copy-files",
+    "transpile:watch": "yarn transpile --watch"
   },
   "eslintConfig": {
     "extends": [
@@ -123,10 +125,10 @@
   },
   "babel": {
     "presets": [
-      "@babel/preset-env",
-      "@babel/preset-react",
+      "@babel/env",
+      "@babel/react",
       [
-        "@babel/preset-typescript",
+        "@babel/typescript",
         {
           "isTSX": true,
           "allExtensions": true

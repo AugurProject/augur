@@ -1,9 +1,8 @@
-import { AugurLite } from '@augurproject/sdk-lite';
-import { NetworkId } from '@augurproject/utils';
+import { AugurLite, NetworkId } from '@augurproject/sdk-lite';
 import { ethers } from 'ethers';
 import { getProviderOrSigner } from '../components/ConnectAccount/utils';
 import { createBigNumber } from './create-big-number';
-import { Web3Provider } from '@ethersproject/providers'
+import { Web3Provider } from '@ethersproject/providers';
 
 export class SDKLite {
   client: AugurLite | null = null;

@@ -24,10 +24,10 @@ import { AmmOutcome, Cash } from '../../utils/types';
 
 const ENTER_CHAR_CODE = 13;
 
-interface SearchInputProps {
+export interface SearchInputProps {
   value: string;
-  onChange: Function;
-  clearValue: Function;
+  onChange: React.ChangeEventHandler;
+  clearValue: React.MouseEventHandler;
   showFilter: boolean;
 }
 
@@ -37,11 +37,12 @@ export const SearchInput = ({
   clearValue,
   showFilter,
 }: SearchInputProps) => {
+  const input = useRef(null);
+
   useEffect(() => {
-    if (showFilter) input.current && input.current.focus();
+    if (showFilter) input?.current?.focus();
   }, [showFilter]);
 
-  const input = useRef();
   const keypressHandler = (e) => {
     if (e.charCode === ENTER_CHAR_CODE) {
       input.current && input.current.blur();
@@ -78,7 +79,7 @@ export const TextInput = ({ placeholder, value, onChange }) => {
   );
 };
 
-interface AmountInputProps {
+export interface AmountInputProps {
   updateInitialAmount: (string) => void;
   initialAmount: string;
   maxValue: string;
@@ -165,19 +166,16 @@ export const AmountInput = ({
           value={amount}
           placeholder="0"
           disabled={disabled}
-          // @ts-ignore
-          onWheel={(e) => e?.target?.blur()}
+          onWheel={(e: any) => e?.target?.blur()}
         />
-        <TinyButton text={'Max'} action={() => setMax()} />
+        <TinyButton text="Max" action={() => setMax()} />
         {!!currencyName && chosenCash !== SHARES && !showCurrencyDropdown && (
           <span className={Styles.CurrencyLabel}>
             {icon} {label}
           </span>
         )}
         {chosenCash === SHARES && !showCurrencyDropdown && (
-          <span className={Styles.SharesLabel}>
-            Shares
-          </span>
+          <span className={Styles.SharesLabel}>Shares</span>
         )}
         {showCurrencyDropdown && (
           <CurrencyDropdown
@@ -266,8 +264,7 @@ const Outcome = ({
             type="text"
             placeholder={PLACEHOLDER}
             ref={input}
-            // @ts-ignore
-            onWheel={(e) => e?.target?.blur()}
+            onWheel={(e: any) => e?.target?.blur()}
           />
         </div>
       ) : (
@@ -287,7 +284,7 @@ const Outcome = ({
   );
 };
 
-interface OutcomesGridProps {
+export interface OutcomesGridProps {
   outcomes: AmmOutcome[];
   selectedOutcome?: AmmOutcome;
   setSelectedOutcome: Function;

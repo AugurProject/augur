@@ -5,9 +5,8 @@ import {
   ParaDeploys,
 } from '../utils/types';
 
-// @ts-ignore
 export const PARA_CONFIG: ParaDeploys =
-  ((process.env.CONFIGURATION as unknown) as ParaDeploys) || {};
+  ((process.env.CONFIGURATION as unknown) as ParaDeploys);
 
 export const STUBBED_GRAPH_DATA_ACTIONS = {
   updateGraphHeartbeat: (processed, blocknumber, errors) => {},
@@ -124,8 +123,8 @@ export const MOCK_APP_STATUS_STATE = {
   ...DEFAULT_APP_STATUS_STATE,
 };
 
-export const MAINNET = '1';
-export const KOVAN = '42';
+export const MAINNET: string = '1';
+export const KOVAN: string = '42';
 export const NETWORK_NAMES = {
   1: 'Mainnet',
   3: 'Ropsten',

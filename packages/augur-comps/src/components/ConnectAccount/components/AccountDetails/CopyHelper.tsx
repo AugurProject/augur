@@ -4,7 +4,7 @@ import { useCopyClipboard } from '../../hooks'
 import {TinyButton} from '../../../common/buttons';
 import { CopyIcon } from '../../../common/icons';
 
-interface CopyHelperProps {
+export interface CopyHelperProps {
   toCopy: string;
   copyText: string;
 };

@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import ReactGA from 'react-ga';
-import { PARA_CONFIG, MAINNET, windowRef } from '@augurproject/augur-comps';
+import { PARA_CONFIG, Stores, windowRef } from '@augurproject/augur-comps';
 import { useLocation } from 'react-router';
 import { Utils } from '@augurproject/augur-comps';
-
+const { Constants: { MAINNET } } = Stores;
 const GA_TRACKING_ID = 'G-6REXDMP9F3';
 let tracker = null;
 const hostName = windowRef.location.hostname;

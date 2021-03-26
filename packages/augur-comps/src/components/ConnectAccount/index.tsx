@@ -11,7 +11,7 @@ import { MODAL_CONNECT_WALLET, TX_STATUS } from '../../utils/constants';
 import { tryAutoLogin } from './utils';
 import { Spinner } from '../common/spinner';
 
-interface LoginButtonProps {
+export interface LoginButtonProps {
   action: Function;
   text: string;
   icon: ReactElement;

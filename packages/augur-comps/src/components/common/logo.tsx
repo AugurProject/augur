@@ -7,7 +7,7 @@ import { MarketsLink } from '../../utils/links/links';
 
 import Styles from './logo.styles.less';
 
-interface LogoProps {
+export interface LogoProps {
   isMobile?: boolean;
   darkTheme?: boolean;
 }

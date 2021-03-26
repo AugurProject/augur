@@ -8,14 +8,10 @@ export default function makePath(paths, match = false) {
     (match && paths.constructor !== Array)
   )
     return "/";
-
   // Matching Regex for Route Component
-  // @ts-ignore
-  if (match) return `^/(${paths.join("|")})/`;
+  if (match) return `^/(${paths.constructor === Array ? paths.join("|") : paths})/`;
 
-  // String Path for Link from Array
-  if (paths.constructor === Array) return `/${paths.join("/")}/`;
-
+  // String Path for Link from Array or
   // String Path for Link from String
-  return `/${paths}`;
+  return paths.constructor === Array ? `/${paths.join("/")}/` : `/${paths}`;
 }

@@ -61,7 +61,7 @@ export async function getMarketsData(updateHeartbeat) {
     block = await getPastDayBlockNumber(clientConfig.blockClient);
     response = await augurV2Client(clientConfig.augurClient).query({
       query: GET_MARKETS(block),
-      arguments: {
+      variables: {
         block: {
           number: block
         }
@@ -118,7 +118,6 @@ export async function searchMarkets(searchString, cb) {
 }
 
 async function getPastDayBlockNumber(blockClient) {
-  // @ts-ignore
   const utcCurrentTime = dayjs.utc();
   const utcOneDayBack = utcCurrentTime.subtract(1, 'day').unix();
   const block = await getBlockFromTimestamp(utcOneDayBack, blockClient);
