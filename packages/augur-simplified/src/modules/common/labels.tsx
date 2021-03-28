@@ -38,18 +38,19 @@ export const AppViewStats = ({ small }) => {
     () => handleValue(isLogged ? balances?.totalPositionUsd : 0),
     [isLogged, balances.totalPositionUsd]
   );
-  const ethValue = useMemo(() => handleValue(balances?.ETH?.balance || 0, ETH), [
-    balances?.ETH?.balance,
-  ]);
+  const ethValue = useMemo(
+    () => handleValue(balances?.ETH?.balance || 0, ETH),
+    [balances?.ETH?.balance]
+  );
   const usdValueUSDC = useMemo(
     () => handleValue(balances?.USDC?.usdValue || 0),
     [balances?.USDC?.usdValue]
   );
   return (
-    <div className={classNames(Styles.AppStats, {[Styles.small]: small})}>
+    <div className={classNames(Styles.AppStats, { [Styles.small]: small })}>
       <ValueLabel
         large={!small}
-        label='total acc value'
+        label="total acc value"
         light={!isLogged}
         value={totalAccountValue}
         small={small}
@@ -61,14 +62,14 @@ export const AppViewStats = ({ small }) => {
         value={positionsValue}
         small={small}
       />
-      <IconLabel
-        icon={UsdIcon}
+      <ValueLabel
+        large={!small}
         small={small}
         label="Available USDC"
         value={usdValueUSDC}
       />
-      <IconLabel
-        icon={EthIcon}
+      <ValueLabel
+        large={!small}
         small={small}
         label="Available ETH"
         value={ethValue}
