@@ -83,7 +83,7 @@ const ConnectAccountButton = ({
     if (account) {
       updateLoginAccount(activeWeb3);
     }
-  }, [account, activeWeb3]);
+  }, [account, activeWeb3.library, activeWeb3.connector, activeWeb3.chainId, activeWeb3.error, activeWeb3.active]);
 
   let buttonProps = {
     action: () =>
@@ -136,16 +136,15 @@ export const ConnectAccount = ({
   transactions,
   isMobile,
   setModal
-}) => {
-  return (
-    <ConnectAccountButton
-      autoLogin={autoLogin}
-      updateLoginAccount={updateLoginAccount}
-      darkMode={darkMode}
-      transactions={transactions}
-      isMobile={isMobile}
-      setModal={setModal}
-    />
-  );
-};
+}) => 
+(
+  <ConnectAccountButton
+    autoLogin={autoLogin}
+    updateLoginAccount={updateLoginAccount}
+    darkMode={darkMode}
+    transactions={transactions}
+    isMobile={isMobile}
+    setModal={setModal}
+  />
+);
 
