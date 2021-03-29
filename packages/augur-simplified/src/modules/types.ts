@@ -18,28 +18,18 @@ import type { BigNumber } from 'bignumber.js';
 import type { Template } from '@augurproject/templates';
 import { JsonRpcProvider } from 'ethers/providers';
 
-export enum SizeTypes {
-  SMALL = 'small',
-  NORMAL = 'normal',
-  LARGE = 'large',
-}
-
 export const TransactionTypes = {
   ENTER: 'ENTER',
   EXIT: 'EXIT',
   ADD_LIQUIDITY: 'ADD_LIQUIDITY',
   REMOVE_LIQUIDITY: 'REMOVE_LIQUIDITY',
 };
+
 export interface TextLink {
   text: string;
   link?: string;
   linkText?: string;
   lighten?: boolean;
-}
-
-export interface TextObject {
-  title: string;
-  subheader: TextLink[];
 }
 
 export interface Alert {
@@ -313,11 +303,6 @@ export interface Universe extends Getters.Universe.UniverseDetails {
   maxMarketEndTime?: number;
 }
 
-export interface UserReports {
-  markets?: {
-    [universeId: string]: string;
-  };
-}
 export interface FormattedNumber {
   fullPrecision: number | string;
   roundedValue: number | string;
@@ -330,21 +315,6 @@ export interface FormattedNumber {
   rounded: number | string;
   full: string;
   percent: number | string;
-}
-
-export interface FormattedNumberOptions {
-  decimals?: number;
-  decimalsRounded?: number;
-  denomination?: Function;
-  roundUp?: boolean;
-  roundDown?: boolean;
-  positiveSign?: boolean;
-  zeroStyled?: boolean;
-  minimized?: boolean;
-  blankZero?: boolean;
-  bigUnitPostfix?: boolean;
-  removeComma?: boolean;
-  precisionFullLabel?: boolean;
 }
 
 export interface CreateMarketData {
@@ -372,6 +342,7 @@ export interface PendingQueue {
     };
   };
 }
+
 export interface PendingOrdersType {
   [marketId: string]: UIOrder[];
 }
@@ -383,15 +354,11 @@ export interface QuantityOrderBookOrder extends MarketOrderBookOrder {
   price: string;
   cumulativeShares: string;
 }
-export interface QuantityOutcomeOrderBook {
-  spread: string | BigNumber | null;
-  bids: QuantityOrderBookOrder[];
-  asks: QuantityOrderBookOrder[];
-}
 
 export interface OutcomeTestTradingOrder {
   [outcomeId: number]: TestTradingOrder[];
 }
+
 export interface TestTradingOrder {
   disappear: boolean;
   avgPrice: FormattedNumber;
@@ -409,14 +376,13 @@ export interface TestTradingOrder {
   type: string;
   unmatchedShares: FormattedNumber;
 }
-export interface OrderBooks {
-  [marketId: string]: MarketOrderBook;
-}
+
 export interface IndividualOutcomeOrderBook {
   spread: string | BigNumber | null;
   bids: MarketOrderBookOrder[];
   asks: MarketOrderBookOrder[];
 }
+
 export interface MyPositionsSummary {
   currentValue: FormattedNumber;
   totalPercent: FormattedNumber;
@@ -542,6 +508,7 @@ export interface DateTimeComponents {
   offset: number;
   timezone: string;
 }
+
 export interface NewMarket {
   uniqueId: string;
   isValid: boolean;
@@ -689,19 +656,9 @@ export interface ReportingListState {
     isLoading: boolean;
   };
 }
+
 export interface FilledOrders {
   [account: string]: MarketTradingHistory;
-}
-
-export interface OpenOrders {
-  [account: string]: Orders;
-}
-
-export interface GasPriceInfo {
-  average: number;
-  fast: number;
-  safeLow: number;
-  userDefinedGasPrice: number;
 }
 
 export enum INVALID_OPTIONS {
@@ -736,14 +693,6 @@ export interface Category {
   nonFinalizedOpenInterest: string;
   openInterest: string;
   tags: Array<string>;
-}
-
-export interface Blockchain {
-  currentBlockNumber: number;
-  lastSyncedBlockNumber: number;
-  blocksBehindCurrent: number;
-  percentSynced: string;
-  currentAugurTimestamp: number;
 }
 
 export interface AppStatus {
@@ -827,62 +776,11 @@ export interface Web3 {
   currentProvider: any;
 }
 
-export interface WindowApp extends Window {
-  app?: any;
-  web3?: Web3;
-  ethereum?: {
-    selectedAddress;
-    networkVersion: string;
-    isMetaMask?: boolean;
-    on?: Function;
-    enable?: Function;
-    send?: Function;
-    request?: Function;
-    chainId?: string;
-  };
-  localStorage: Storage;
-  integrationHelpers: any;
-  fm?: any;
-  torus?: any;
-  portis?: any;
-  stores?: {
-    appStatus?: any;
-    markets?: any;
-    betslip?: any;
-    trading?: any;
-    pendingOrders?: any;
-  };
-  appStatus?: any;
-  graphData?: any;
-  markets?: any;
-  betslip?: any;
-  trading?: any;
-  user?: any;
-  pendingOrders?: any;
-  showIndexedDbSize?: Function;
-}
-
 export type ButtonActionType = (
   event: MouseEvent<HTMLButtonElement | HTMLAnchorElement>
 ) => void;
 
-export type NodeStyleCallback = (
-  err: Error | string | null,
-  result?: any
-) => void;
-
 export type DataCallback = (result?: any) => void;
-
-export interface EthereumWallet {
-  appId: string;
-  appIds: string[];
-  archived: boolean;
-  deleted: boolean;
-  sortIndex: number;
-  id: string;
-  type: string;
-  keys: { ethereumAddress: string };
-}
 
 export interface EdgeUiAccount {
   signEthereumTransaction: Function;
@@ -901,16 +799,6 @@ export interface WalletObject {
 export enum TradingDirection {
   ENTRY = 'ENTRY',
   EXIT = 'EXIT',
-}
-export interface TradeInfo {
-  marketId: string;
-  amm: AmmExchange;
-  tradeType: TradingDirection;
-  buyYesShares: boolean;
-  inputDisplayAmount?: string;
-  minDisplayAmount?: string;
-  estimatedAmount?: string;
-  userBalances?: string[];
 }
 
 export interface EstimateTradeResult {
@@ -988,16 +876,6 @@ export interface DisputeInputtedValues {
   inputToAttoRep: string;
 }
 
-export interface NavMenuItem {
-  route: string;
-  title: string;
-  requireLogin?: boolean;
-  disabled?: boolean;
-  showAlert?: boolean;
-  button?: boolean;
-  alternateStyle?: boolean;
-}
-
 export interface SortedGroup {
   value: string;
   label: string;
@@ -1024,12 +902,6 @@ export interface Initialized3box {
   openComments?: boolean;
 }
 
-export interface ActivityData {
-  date?: string;
-  sortableMonthDay?: number;
-  activity?: ActivityItem[];
-}
-
 export interface ActivityItem {
   id: string;
   type: string;
@@ -1051,9 +923,11 @@ export interface LPTokenBalance extends SimpleBalance {
   initCostUsd?: string;
   usdValue?: string;
 }
+
 export interface LPTokens {
   [ammId: string]: LPTokenBalance;
 }
+
 export interface CurrencyBalance extends SimpleBalance {
   usdValue: string;
 }
@@ -1063,9 +937,11 @@ export interface Winnings {
   claimableBalance: string;
   userBalances: string[];
 }
+
 export interface PositionWinnings {
   [ammId: string]: Winnings;
 }
+
 export interface PositionBalance extends SimpleBalance {
   usdValue: string;
   past24hrUsdValue?: string;
@@ -1209,7 +1085,4 @@ export interface LiquidityBreakdown {
   noShares: string;
   lpTokens?: string;
   cashAmount?: string;
-}
-export interface AddLiquidityBreakdown extends LiquidityBreakdown {
-  lpTokens: string;
 }
