@@ -319,7 +319,7 @@ export function useApprovalStatus({
       if (forceCheck.current) forceCheck.current = false;
     };
 
-    if ((forceCheck || isApproved !== APPROVED) && account) {
+    if ((forceCheck.current || isApproved !== APPROVED) && account) {
       checkIfApproved();
     }
     return () => {
