@@ -15,12 +15,12 @@ import {
   LabelComps,
 } from '@augurproject/augur-comps';
 const { CREATE, USDC, ETH, MODAL_ADD_LIQUIDITY, MARKET, ADD } = Constants;
-const { ValueLabel, IconLabel } = LabelComps;
+const { ValueLabel } = LabelComps;
 const {
   PathUtils: { parsePath },
   Formatter: { formatCash },
 } = Utils;
-const { USDCIcon, EthIcon, PlusIcon, UsdIcon } = Icons;
+const { USDCIcon, EthIcon, PlusIcon } = Icons;
 
 const handleValue = (value, cashName = USDC) =>
   formatCash(value, cashName, {
