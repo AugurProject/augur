@@ -721,16 +721,6 @@ export interface UnrealizedRevenue {
   unrealizedRevenue24hChangePercent: string;
 }
 
-// TODO: to be provided by SDK the comes from user stats
-export interface TimeframeData {
-  positions: number;
-  numberOfTrades: number;
-  marketsTraded: number;
-  marketsCreated: number;
-  successfulDisputes: number;
-  redeemedPositions: number;
-}
-
 export interface LoginAccountMeta {
   accountType: string;
   address: string;

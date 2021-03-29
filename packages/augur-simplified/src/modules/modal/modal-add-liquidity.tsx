@@ -299,7 +299,7 @@ const ModalAddLiquidity = ({
       return setBreakdown(defaultAddLiquidityBreakdown);
     }
     async function getResults() {
-      let results = defaultAddLiquidityBreakdown;
+      let results: LiquidityBreakdown;
       if (isRemove) {
         results = await getRemoveLiquidity(
           properties.marketId,
@@ -409,8 +409,8 @@ const ModalAddLiquidity = ({
             marketDescription: market.description,
           });
         })
-        .catch((e) => {
-          //TODO: handle errors here
+        .catch(error => {
+          console.log('Error when trying to remove AMM liquidity: ', error?.message);
         });
     } else {
       await doAmmLiquidity(
@@ -427,7 +427,7 @@ const ModalAddLiquidity = ({
         properties.priceYes,
         properties.symbolRoot
       )
-        .then((response) => {
+        .then(response => {
           const { hash } = response;
           addTransaction({
             hash,
@@ -440,8 +440,8 @@ const ModalAddLiquidity = ({
             marketDescription: market.description,
           });
         })
-        .catch((e) => {
-          // TODO: handle error
+        .catch(error => {
+          console.log('Error when trying to add AMM liquidity: ', error?.message);
         });
     }
     closeModal();

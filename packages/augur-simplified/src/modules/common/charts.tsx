@@ -189,7 +189,6 @@ export const PriceHistoryChart = ({
 }) => {
   const container = useRef(null);
   // eslint-disable-next-line
-  const [forceRender, setForceRender] = useState(false);
   const { maxPriceBigNumber: maxPrice, minPriceBigNumber: minPrice } = market;
   const { priceTimeArray } = processPriceTimeData(
     formattedOutcomes,
@@ -240,10 +239,6 @@ export const PriceHistoryChart = ({
     const chart: HighcartsChart = Highcharts.charts.find(
       (chart: HighcartsChart) => chart?.renderTo === chartContainer
     );
-    if (!chart || chart?.renderTo !== chartContainer) {
-      // needs to be done because container ref is null on first load.
-      setForceRender(true);
-    }
     return () => {
       Highcharts.charts
         .find((chart: HighcartsChart) => chart?.renderTo === chartContainer)
