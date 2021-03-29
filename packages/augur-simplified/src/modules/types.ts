@@ -6,9 +6,7 @@ import type {
   MarketInfoOutcome,
   MarketOrderBookOrder,
   OutcomeOrderBook,
-  MarketOrderBook,
   MarketTradingHistory,
-  Orders,
 } from '@augurproject/sdk-lite';
 import type {
   TransactionMetadataParams,
