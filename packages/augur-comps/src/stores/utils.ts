@@ -248,17 +248,32 @@ export function useApprovalStatus({
   actionType: ApprovalAction;
 }) {
   const {
+    account,
     loginAccount,
     transactions,
   } = useUserStore();
   const [isApproved, setIsApproved] = useState(UNKNOWN);
+  const forceCheck = useRef(false);
   const {
     addresses: { WethWrapperForAMMExchange, AMMFactory },
   } = PARA_CONFIG;
-  const marketCashType = cash?.name;
-  const tokenAddress = cash?.address;
-  const { shareToken } = cash;
+  const {
+    name: marketCashType,
+    address: tokenAddress,
+    shareToken,
+  } = cash;
+  const invalidPoolId = amm?.invalidPool?.id;
+  const ammId = amm?.id;
   const isETH = marketCashType === ETH;
+
+  useEffect(() => {
+    let isMounted = true;
+    // if we switch make sure to check if we are approved.
+    if (isApproved === APPROVED && isMounted) forceCheck.current = true;
+    return () => {
+      isMounted = false;
+    };
+  }, [marketCashType, tokenAddress, shareToken, ammId, invalidPoolId, actionType, account]);
 
   useEffect(() => {
     let isMounted = true;
@@ -275,16 +290,16 @@ export function useApprovalStatus({
           break;
         }
         case REMOVE_LIQUIDITY: {
-          address = amm?.invalidPool?.id;
+          address = invalidPoolId;
           break;
         }
         case TRANSFER_LIQUIDITY: {
-          address = amm?.id;
+          address = ammId;
           break;
         }
         case ENTER_POSITION:
         case ADD_LIQUIDITY: {
-          address = isETH ? null : cash?.address;
+          address = isETH ? null : tokenAddress;
           checkApprovalFunction = isETH ? async () => APPROVED : checkAllowance;
           break;
         }
@@ -299,30 +314,27 @@ export function useApprovalStatus({
         loginAccount,
         transactions
       );
-
-      approvalCheck !== UNKNOWN && isMounted && setIsApproved(approvalCheck);
+      
+      (forceCheck.current || approvalCheck !== isApproved) && isMounted && setIsApproved(approvalCheck);
+      if (forceCheck.current) forceCheck.current = false;
     };
 
-    if (isApproved !== APPROVED && loginAccount?.account) {
+    if ((forceCheck || isApproved !== APPROVED) && account) {
       checkIfApproved();
     }
     return () => {
       isMounted = false;
     };
   }, [
-    loginAccount,
+    account,
     isApproved,
     actionType,
-    amm,
+    invalidPoolId,
+    ammId,
     PARA_CONFIG,
-    tokenAddress,
-    transactions,
-    AMMFactory,
-    WethWrapperForAMMExchange,
-    cash?.address,
-    isETH,
     marketCashType,
-    shareToken,
+    tokenAddress,
+    shareToken
   ]);
 
   return isApproved;
