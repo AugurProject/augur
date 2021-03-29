@@ -7,19 +7,21 @@ import { PortisConnector } from '@web3-react/portis-connector'
 import { FortmaticConnector } from './Fortmatic'
 import { NetworkConnector } from './NetworkConnector'
 import { ChainId } from '@uniswap/sdk'
+import { PARA_CONFIG } from '../../../stores/constants';
 
+const networkId = PARA_CONFIG.networkId;
 const PORTIS_ID = 'ede221f9-710f-44c9-a429-ed28bbb54376'
 const FORTMATIC_API_KEY = 'pk_live_8001A50CCA35D8CB'
 const FORTMATIC_API_TEST_KEY = 'pk_test_5185BE42CA372148'
 let FORMATIC_KEY = FORTMATIC_API_TEST_KEY
 
-export const NETWORK_CHAIN_ID: number = process.env.CHAIN_ID ? parseInt(process.env.CHAIN_ID) : ChainId.KOVAN
+export const NETWORK_CHAIN_ID: number = networkId ? parseInt(networkId) : ChainId.KOVAN
 
 if (NETWORK_CHAIN_ID === ChainId.MAINNET) {
   FORMATIC_KEY = FORTMATIC_API_KEY
 }
 
-const NETWORK_URL = process.env.REACT_APP_NETWORK_URL || NETWORK_CHAIN_ID === ChainId.MAINNET
+const NETWORK_URL = NETWORK_CHAIN_ID === ChainId.MAINNET
   ? 'https://eth-mainnet.alchemyapi.io/v2/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM'
   : 'https://eth-kovan.alchemyapi.io/v2/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM'
 

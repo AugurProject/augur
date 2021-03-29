@@ -6,6 +6,7 @@ import {
 } from '../utils/types';
 
 export const PARA_CONFIG: ParaDeploys =
+  // @ts-ignore
   ((process.env.CONFIGURATION as unknown) as ParaDeploys);
 
 export const STUBBED_GRAPH_DATA_ACTIONS = {
