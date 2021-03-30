@@ -360,7 +360,7 @@ const TradingForm = ({
       outputYesShares,
       userBalances
     )
-      .then((response) => {
+      .then(response => {
         if (response) {
           const { hash } = response;
           setAmount('');
@@ -379,9 +379,9 @@ const TradingForm = ({
           });
         }
       })
-      .catch((e) => {
-        //TODO: handle errors here
+      .catch(error => {
         setWaitingToSign(false);
+        console.log('Error when trying to trade: ', error?.message);
       });
   };
 

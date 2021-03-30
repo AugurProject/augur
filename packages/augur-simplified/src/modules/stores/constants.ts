@@ -36,19 +36,3 @@ export const SIMPLIFIED_ACTIONS = {
   UPDATE_MARKETS_VIEW_SETTINGS: 'UPDATE_MARKETS_VIEW_SETTINGS',
   UPDATE_SETTINGS: 'UPDATE_SETTINGS',
 };
-
-export const NETWORK_NAMES = {
-  1: 'Mainnet',
-  3: 'Ropsten',
-  4: 'Rinkeby',
-  5: 'Goerli',
-  42: 'Kovan'
-};
-
-export const NETWORK_BLOCK_REFRESH_TIME = {
-  1: 15000,
-  3: 5000,
-  4: 5000,
-  5: 5000,
-  42: 5000,
-};

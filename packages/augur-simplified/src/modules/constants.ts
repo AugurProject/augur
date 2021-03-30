@@ -1,15 +1,6 @@
 import { MarketTypeName } from '@augurproject/sdk-lite';
-import { Icons, createBigNumber } from '@augurproject/augur-comps';
-const {
-  EthIcon,
-  UsdIcon,
-  CryptoIcon,
-  EntertainmentIcon,
-  FinanceIcon,
-  MedicalIcon,
-  PoliticsIcon,
-  SportsIcon,
-} = Icons;
+import { createBigNumber } from '@augurproject/augur-comps';
+
 // # Market Types
 export const YES_NO = MarketTypeName.YesNo;
 export const CATEGORICAL = MarketTypeName.Categorical;
@@ -20,16 +11,6 @@ export const MARKET = 'market';
 export const MARKETS = 'markets';
 export const PORTFOLIO = 'portfolio';
 
-export const YES_NO_OUTCOMES_NAMES = ['Invalid', 'No', 'Yes'];
-// QUERY_PARAMS
-export const MARKET_ID_PARAM_NAME = 'id';
-export const AFFILIATE_NAME = 'r';
-export const THEME_NAME = 't';
-
-export const OUTCOME_YES_NAME = 'Yes';
-export const OUTCOME_NO_NAME = 'No';
-export const OUTCOME_INVALID_NAME = 'Invalid';
-
 // Directions
 export const BUY = 'buy';
 export const SELL = 'sell';
@@ -37,7 +18,6 @@ export const SELL = 'sell';
 export const ADD_LIQUIDITY = 'add liquidity';
 
 export const ETHER = createBigNumber(10).pow(18);
-export const GWEI_CONVERSION = 1000000000;
 export const TEN = createBigNumber(10, 10);
 export const ZERO = createBigNumber(0);
 export const ONE = createBigNumber(1);
@@ -46,10 +26,6 @@ export const THOUSAND = createBigNumber(1000);
 export const MILLION = THOUSAND.times(THOUSAND);
 export const BILLION = MILLION.times(THOUSAND);
 export const TRILLION = BILLION.times(THOUSAND);
-export const DAYS_IN_YEAR = createBigNumber(365);
-export const SEC_IN_DAY = createBigNumber(86400);
-export const PORTION_OF_INVALID_POOL_SELL = createBigNumber(0.5);
-export const PORTION_OF_CASH_INVALID_POOL = createBigNumber(0.1);
 
 // # Asset Types
 export const ETH = 'ETH';
@@ -59,12 +35,6 @@ export const USDT = 'USDT';
 export const USDC = 'USDC';
 export const SHARES = 'SHARES';
 export const ALL_CURRENCIES = 'All Currencies';
-
-export const CASH_LABEL_FORMATS = {
-  ETH: { symbol: 'Ξ', prepend: true, displayDecimals: 4, icon: EthIcon },
-  USDC: { symbol: '$', prepend: true, displayDecimals: 2, icon: UsdIcon },
-  SHARES: { symbol: '', prepend: true, displayDecimals: 4, icon: null },
-};
 
 // Portfolio table views
 export const POSITIONS = 'positions';
@@ -85,50 +55,22 @@ export const ALL_MARKETS = 'all markets';
 
 // sub categories
 export const COVID = 'covid-19';
-export const ELECTORAL_COLLEGE = 'electoral college';
-export const FEDERAL_FUNDS = 'federal funds';
 export const REPUSD = 'REP USD';
-export const PRESIDENTIAL_ELECTION = 'electoral college';
-
-export const POPULAR_CATEGORIES_ICONS = {
-  [MEDICAL]: MedicalIcon,
-  [POLITICS]: PoliticsIcon,
-  [CRYPTO]: CryptoIcon,
-  [FINANCE]: FinanceIcon,
-  [SPORTS]: SportsIcon,
-  [ENTERTAINMENT]: EntertainmentIcon,
-};
 
 // side bar types
 export const NAVIGATION = 'NAVIGATION';
 export const FILTERS = 'FILTERS';
 
-export const SIDEBAR_TYPES = {
-  [NAVIGATION]: NAVIGATION,
-  [FILTERS]: FILTERS,
-};
-
 //  transaction types
 export const ALL = 'all';
-export const SWAP = 'swap';
 export const ADD = 'add';
 export const REMOVE = 'remove';
-
-export const INVALID_OUTCOME_ID = 0;
-export const NO_OUTCOME_ID = 1;
-export const YES_OUTCOME_ID = 2;
 
 export const OPEN = 'Open';
 export const IN_SETTLEMENT = 'In settlement';
 export const RESOLVED = 'Resolved';
 
-export const INSUFFICIENT_LIQUIDITY = 'Insufficent Liquidity';
-export const INSUFFICIENT_BALANCE = 'Insufficent Balance';
-export const OVER_SLIPPAGE = 'Over Slippage Tolerance';
 export const ENTER_AMOUNT = 'Enter Amount';
-export const ERROR_AMOUNT = 'Amount is not valid';
-export const CONNECT_ACCOUNT = 'Connect Account';
-export const SET_PRICES = 'Set Prices';
 
 export const SETTINGS_SLIPPAGE = '2';
 // graph market status

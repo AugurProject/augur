@@ -187,7 +187,7 @@ export const PositionFooter = ({
       if (canClaimETH || !isETHClaim) {
         setPendingClaim(true);
         claimWinnings(account, [marketId], amm?.cash)
-          .then((response) => {
+          .then(response => {
             // handle transaction response here
             setPendingClaim(false);
             if (response) {
@@ -204,9 +204,9 @@ export const PositionFooter = ({
               });
             }
           })
-          .catch((e) => {
+          .catch(error => {
             setPendingClaim(false);
-            // handle error here
+            console.log('Error when trying to claim winnings: ', error?.message);
           });
       } else {
         // need to approve here

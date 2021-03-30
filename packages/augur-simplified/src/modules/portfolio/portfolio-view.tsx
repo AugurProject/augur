@@ -69,7 +69,7 @@ const handleClaimAll = (
   if (from && canClaim) {
     setPendingClaim(true);
     claimWinnings(from, marketIds, cash)
-      .then((response) => {
+      .then(response => {
         // handle transaction response here
         setPendingClaim(false);
         if (response) {
@@ -86,9 +86,9 @@ const handleClaimAll = (
           });
         }
       })
-      .catch((e) => {
+      .catch(error => {
         setPendingClaim(false);
-        // handle error here
+        console.log('Error when trying to claim winnings: ', error?.message);
       });
   } else if (from) {
     const approveEth = async () => {
