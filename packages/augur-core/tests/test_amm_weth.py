@@ -49,117 +49,17 @@ def test_amm_create_with_initial_liquidity(sessionFixture, market, weth_amm, acc
 
     initialLiquidity = 5 * ATTO
     numticks = 1000
-    (address, lpTokens) = weth_amm.addAMMWithLiquidity(market.address, FEE, ATTO, False, account0,
+    (address, lpTokens) = weth_amm.addAMMWithLiquidity(market.address, FEE, ATTO, False, account0, SYMBOLS,
                                                        value=initialLiquidity)
     assert address != '0x' + ('0' * 40)
-    assert lpTokens == initialLiquidity / numticks
 
+    # Expect 90% of the initialLiquidity as lpTokens
+    assert lpTokens == (initialLiquidity * 90) // (numticks * 100)
 
 def test_amm_weth_wrapper_getAMM(market, weth_amm, account0):
     ammAddress = weth_amm.addAMMWithLiquidity(market.address, FEE,  ATTO, True, account0, SYMBOLS, value=ATTO)[0]
     maybe_amm = weth_amm.getAMM(market.address, FEE)
     assert maybe_amm == ammAddress
-
-
-def test_amm_weth_60_40_liquidity(sessionFixture, market, weth, para_weth_share_token, weth_amm, account0):
-    if not sessionFixture.paraAugur:
-        return skip("Test is only for para augur")
-
-    sets = 100 * ATTO
-    cost = sets * 1000
-
-    yesPercent = 0.4
-    noPercent = 1 - yesPercent
-    ratio = 10 ** 18 * yesPercent / noPercent
-    yesShares = 66666666666666675200  # approximately 2/3 aka 60%
-    keptYesShares = sets - yesShares
-
-    ammAddress, lpTokens = weth_amm.addAMMWithLiquidity(market.address, FEE, ratio, True, account0, SYMBOLS, value=cost)
-    amm = sessionFixture.applySignature("AMMExchange", ammAddress)
-
-    assert lpTokens == 80000000000000006143  # skewed ratio means fewer shares which means fewer LP tokens
-    assert amm.balanceOf(account0) == lpTokens
-
-    # all cash was used to buy complete sets
-    assert weth.balanceOf(account0) == 0
-    assert weth.balanceOf(weth_amm.address) == 0
-    # user did not get any shares themselves: they go to the AMM
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, INVALID, account0) == 0
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, account0) == keptYesShares
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, account0) == 0
-    # AMM has 60 Yes shares and 40 No shares
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, INVALID, amm.address) == sets
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, amm.address) == yesShares
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, amm.address) == sets
-
-    removedLPTokens = 8000000000000000615  # remove 1/10th of liquidity (rounded up)
-    recoveredInvalidShares = sets // 10
-    recoveredNoShares = sets // 10
-    recoveredYesShares = yesShares // 10
-    remainingInvalidShares = sets - recoveredInvalidShares
-    remainingNoShares = sets - recoveredNoShares
-    remainingYesShares = yesShares - recoveredYesShares
-    amm.removeLiquidity(removedLPTokens)
-
-    assert weth.balanceOf(account0) == 0  # user did not receive cash, just shares
-    assert weth.balanceOf(amm.address) == 0  # shares are just passed along to user; no cash suddenly appears
-
-    # user receives 10 of each share
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, INVALID, account0) == recoveredInvalidShares
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, account0) == recoveredNoShares
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, account0) == recoveredYesShares + keptYesShares
-    # AMM still has 90 of each share
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, INVALID, amm.address) == remainingInvalidShares
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, amm.address) == remainingNoShares
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, amm.address) == remainingYesShares
-
-    finalSets = 100 * ATTO
-    finalCost = finalSets * 1000
-    lpTokens = weth_amm.addLiquidity(market.address, FEE, account0, value=finalCost)
-    assert lpTokens > 0
-
-
-def test_amm_weth_yes_position(sessionFixture, market, para_weth_share_token, weth_amm, account0):
-    if not sessionFixture.paraAugur:
-        return skip("Test is only for para augur")
-
-    numticks = market.getNumTicks()
-    sets = 100 * ATTO
-    liquidityCost = sets * numticks
-    ratio_50_50 = 10 ** 18
-
-    ammAddress, lpTokens = weth_amm.addAMMWithLiquidity(market.address, FEE, ratio_50_50, True, account0, SYMBOLS, value=liquidityCost)
-    amm = sessionFixture.applySignature("AMMExchange", ammAddress)
-
-    yesPositionSets = 10 * ATTO
-    yesPositionCost = yesPositionSets * numticks
-
-    # Enter position
-    sharesReceived = weth_amm.enterPosition(market.address, FEE, True, 0, value=yesPositionCost)
-    assert sharesReceived > yesPositionSets
-    assert sharesReceived < 2 * yesPositionSets
-
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, INVALID, account0) == 0
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, account0) == 0
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, account0) == sharesReceived
-
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, INVALID, amm.address) == sets + yesPositionSets
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, amm.address) == sets + yesPositionSets
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, amm.address) == sets - (sharesReceived - yesPositionSets)
-
-    # Exiting requires you to send shares to the weth-amm wrapper for it to pass along.
-    para_weth_share_token.setApprovalForAll(weth_amm.address, True)
-
-    payoutAll = weth_amm.exitAll(market.address, FEE, 0)
-    assert payoutAll == 9751022193891319200732
-
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, INVALID, weth_amm.address) == 0
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, weth_amm.address) == 0
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, weth_amm.address) == 0
-
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, INVALID, account0) == 0
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, NO, account0) == 0
-    assert para_weth_share_token.balanceOfMarketOutcome(market.address, YES, account0) == 0
 
 def test_amm_weth_yes_position2(contractsFixture, sessionFixture, market, para_weth_share_token, weth_amm, account0, account1):
     if not sessionFixture.paraAugur:

@@ -4,6 +4,7 @@ import { ethers } from 'ethers';
 import { AMMExchangeAbi } from '../../abi/AMMExchangeAbi';
 import { AMMFactoryAbi } from '../../abi/AMMFactoryAbi';
 import { SignerOrProvider } from '../../constants';
+import {BPoolAbi} from '../../abi/BPool';
 
 export interface ShareBalances {
   invalid: BigNumber
@@ -106,6 +107,27 @@ export abstract class ExchangeCommon {
     const exchangeAddress = await this.calculateExchangeAddress(market, paraShareToken, fee);
     const amm = this.exchangeContract(exchangeAddress);
     return amm.approve(spender, amount.toString());
+  }
+
+  async approveFactoryForBPool(market: string, paraShareToken: string, fee: BigNumber, amount: BigNumber): Promise<void> {
+    return this.approveBPool(market, paraShareToken, fee, this.factory.address, amount);
+  }
+
+  async getBPoolLPBalance(market: string, paraShareToken: string, fee: BigNumber, account:string): Promise<BigNumber> {
+    const exchangeAddress = await this.calculateExchangeAddress(market, paraShareToken, fee);
+    const bPoolAddress = await this.factory.balancerPools(exchangeAddress);
+
+    const bPool = new ethers.Contract(bPoolAddress, BPoolAbi, this.signerOrProvider);
+
+    return bPool.balanceOf(account);
+  }
+
+  async approveBPool(market: string, paraShareToken: string, fee: BigNumber, spender: string, amount: BigNumber): Promise<void> {
+    const exchangeAddress = await this.calculateExchangeAddress(market, paraShareToken, fee);
+    const bPoolAddress = await this.factory.balancerPools(exchangeAddress);
+
+    const bPool = new ethers.Contract(bPoolAddress, BPoolAbi, this.signerOrProvider);
+    return bPool.approve(spender, amount.toString());
   }
 
   protected exchangeContract(address: string): ethers.Contract {
