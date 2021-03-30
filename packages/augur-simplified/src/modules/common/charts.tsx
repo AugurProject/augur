@@ -188,7 +188,6 @@ export const PriceHistoryChart = ({
   cash,
 }) => {
   const container = useRef(null);
-  // eslint-disable-next-line
   const { maxPriceBigNumber: maxPrice, minPriceBigNumber: minPrice } = market;
   const { priceTimeArray } = processPriceTimeData(
     formattedOutcomes,
@@ -234,11 +233,9 @@ export const PriceHistoryChart = ({
   }, [selectedOutcomes, options, priceTimeArray]);
 
   useEffect(() => {
+    // set no data chart and cleanup chart on dismount
     const chartContainer = container.current;
-    NoDataToDisplay(Highcharts);
-    const chart: HighcartsChart = Highcharts.charts.find(
-      (chart: HighcartsChart) => chart?.renderTo === chartContainer
-    );
+    NoDataToDisplay(Highcharts);   
     return () => {
       Highcharts.charts
         .find((chart: HighcartsChart) => chart?.renderTo === chartContainer)
