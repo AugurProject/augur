@@ -1,4 +1,8 @@
-# Contracts Overview
+---
+title: Augur V2 Contract Overview
+---
+
+# Augur V2 Contracts Overview
 
 ### Augur
 
