@@ -4,7 +4,7 @@ module.exports = {
       type: 'category',
       label: 'Overview',
       items: [
-        'overview/whatisaugur',
+        'SUMMARY',
         'contracts/overview'
       ],
     },
