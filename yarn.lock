@@ -18425,7 +18425,7 @@ lodash.values@^4.3.0:
   resolved "https://registry.yarnpkg.com/lodash.values/-/lodash.values-4.3.0.tgz#a3a6c2b0ebecc5c2cba1c17e6e620fe81b53d347"
   integrity sha1-o6bCsOvsxcLLocF+bmIP6BtT00c=
 
-lodash@4.17.14, lodash@4.17.15, lodash@4.17.19, lodash@=3.10.1, lodash@^4.0.0, lodash@^4.1.0, lodash@^4.1.1, lodash@^4.14.2, lodash@^4.15.0, lodash@^4.17.11, lodash@^4.17.12, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.2.1, lodash@~4.17.10:
+lodash@4.17.14, lodash@4.17.15, lodash@4.17.21, lodash@=3.10.1, lodash@^4.0.0, lodash@^4.1.0, lodash@^4.1.1, lodash@^4.14.2, lodash@^4.15.0, lodash@^4.17.11, lodash@^4.17.12, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.2.1, lodash@~4.17.10:
   version "4.17.15"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
   integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
@@ -23000,6 +23000,7 @@ pull-window@^2.1.4:
 
 "pull-ws@https://github.com/pull-stream/pull-ws.git", pull-ws@hugomrdias/pull-ws#fix/bundle-size:
   version "3.3.2"
+  uid "9c1a9cf612ff6d1a030b763cb64b02922ae3c824"
   resolved "https://github.com/pull-stream/pull-ws.git#9c1a9cf612ff6d1a030b763cb64b02922ae3c824"
   dependencies:
     relative-url "^1.0.2"
@@ -23053,6 +23054,7 @@ punycode@^2.1.0, punycode@^2.1.1:
 
 puppeteer@1.20.0, "puppeteer@https://github.com/AugurProject/blackhole.git", scrypt@^6.0.2, "scrypt@https://github.com/AugurProject/blackhole.git":
   version "1.0.0"
+  uid f8230443bf4fc9d5921655e06ebe2755d84afbcd
   resolved "https://github.com/AugurProject/blackhole.git#f8230443bf4fc9d5921655e06ebe2755d84afbcd"
 
 pushdata-bitcoin@^1.0.1:

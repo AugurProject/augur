@@ -59,7 +59,7 @@
     "ethjs-signer": "0.1.1",
     "ganache-core": "2.9.1",
     "ipfs": "0.40.0",
-    "lodash": "4.17.19",
+    "lodash": "4.17.21",
     "options-parser": "0.4.0",
     "readline-sync": "^1.4.10",
     "tsyringe": "3.2.0"
