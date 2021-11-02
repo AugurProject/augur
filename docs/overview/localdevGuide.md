@@ -1,3 +1,0 @@
----
-title: 'Local Dev Guide'
----
