@@ -2,8 +2,6 @@
 title: Augur V2 Contract Overview
 ---
 
-# Augur V2 Contracts Overview
-
 ### Augur
 
 The Augur contract is the first contract in any deployment and serves as:
