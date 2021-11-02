@@ -13740,10 +13740,10 @@ hide-powered-by@1.1.0:
   resolved "https://registry.yarnpkg.com/hide-powered-by/-/hide-powered-by-1.1.0.tgz#be3ea9cab4bdb16f8744be873755ca663383fa7a"
   integrity sha512-Io1zA2yOA1YJslkr+AJlWSf2yWFkKjvkcL9Ni1XSUqnGLr/qRQe2UI3Cn/J9MsJht7yEVCe0SscY1HgVMujbgg==
 
-highcharts@7.2.0:
-  version "7.2.0"
-  resolved "https://registry.yarnpkg.com/highcharts/-/highcharts-7.2.0.tgz#d6bd00240767cfab67210ead47c6cd015384e74d"
-  integrity sha512-jOlMzj3oRuqNBoJg+rqHZI9vnlLHipwVfceJr00gAreXu8268UwahEh7yBGI/m1wa6Uc/XoBMIuzMpXUFMvFdg==
+highcharts@9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/highcharts/-/highcharts-9.0.0.tgz#2e5d382481f71c50ac7f086e7bdead394fab71d4"
+  integrity sha512-MJCtidFytGSQvsV3OEM+vFTLpjUcp7jmFpLn8h3oL4WKp0gxUOQg6Nw00sqMWGdiadst0gOZO4804zynTcYjZQ==
 
 highlight.js@9.15.10:
   version "9.15.10"
@@ -23000,6 +23000,7 @@ pull-window@^2.1.4:
 
 "pull-ws@https://github.com/pull-stream/pull-ws.git", pull-ws@hugomrdias/pull-ws#fix/bundle-size:
   version "3.3.2"
+  uid "9c1a9cf612ff6d1a030b763cb64b02922ae3c824"
   resolved "https://github.com/pull-stream/pull-ws.git#9c1a9cf612ff6d1a030b763cb64b02922ae3c824"
   dependencies:
     relative-url "^1.0.2"
@@ -23053,6 +23054,7 @@ punycode@^2.1.0, punycode@^2.1.1:
 
 puppeteer@1.20.0, "puppeteer@https://github.com/AugurProject/blackhole.git", scrypt@^6.0.2, "scrypt@https://github.com/AugurProject/blackhole.git":
   version "1.0.0"
+  uid f8230443bf4fc9d5921655e06ebe2755d84afbcd
   resolved "https://github.com/AugurProject/blackhole.git#f8230443bf4fc9d5921655e06ebe2755d84afbcd"
 
 pushdata-bitcoin@^1.0.1:
