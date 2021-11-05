@@ -11,7 +11,7 @@ For more information about the Augur protocol, [check out the FAQ.](https://www.
 
 ## Branches
 
-* [release](https://github.com/AugurProject/augur/tree/dev) -- This branch tracks the current release versions of Augur v2
+* [release](https://github.com/AugurProject/augur/tree/release) -- This branch tracks the current release versions of Augur v2
 * [dev](https://github.com/AugurProject/augur/tree/dev) -- The *default* branch is for future updates. *THIS BRANCH IS UNSTABLE*
 
 ## Development Guides
