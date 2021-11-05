@@ -73,7 +73,7 @@
     "lz-string": "1.4.4",
     "moment": "2.26.0",
     "websocket-as-promised": "1.0.1",
-    "ws": "7.1.2"
+    "ws": "7.4.6"
   },
   "devDependencies": {
     "@0x/mesh-browser": "9.3.0",
