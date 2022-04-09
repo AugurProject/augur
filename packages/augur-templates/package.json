@@ -15,7 +15,7 @@
   "dependencies": {
     "@augurproject/sdk-lite": "^2.1.13",
     "ethers": "4.0.47",
-    "moment": "2.26.0"
+    "moment": "2.29.2"
   },
   "devDependencies": {
     "typescript": "3.9.7"
