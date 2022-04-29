@@ -5751,10 +5751,10 @@ async@2.6.2:
   dependencies:
     lodash "^4.17.11"
 
-async@3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/async/-/async-3.1.0.tgz#42b3b12ae1b74927b5217d8c0016baaf62463772"
-  integrity sha512-4vx/aaY6j/j3Lw3fbCHNWP0pPaTCew3F6F3hYyl/tHs/ndmV1q7NW9T5yuJ2XAGwdQrP+6Wu20x06U4APo/iQQ==
+async@3.2.2:
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/async/-/async-3.2.2.tgz#2eb7671034bb2194d45d30e31e24ec7e7f9670cd"
+  integrity sha512-H0E+qZaDEfx/FY4t7iLRv1W2fFI6+pyCeTw1uN20AQPiwqwM6ojPxHxdLv4z8hi2DtnW9BOckSspLucW7pIE5g==
 
 async@^2.0.1, async@^2.1.2, async@^2.1.4, async@^2.4.0, async@^2.4.1, async@^2.5.0, async@^2.6.1, async@^2.6.2, async@^2.6.3:
   version "2.6.3"
@@ -23000,6 +23000,7 @@ pull-window@^2.1.4:
 
 "pull-ws@https://github.com/pull-stream/pull-ws.git", pull-ws@hugomrdias/pull-ws#fix/bundle-size:
   version "3.3.2"
+  uid "9c1a9cf612ff6d1a030b763cb64b02922ae3c824"
   resolved "https://github.com/pull-stream/pull-ws.git#9c1a9cf612ff6d1a030b763cb64b02922ae3c824"
   dependencies:
     relative-url "^1.0.2"
@@ -23053,6 +23054,7 @@ punycode@^2.1.0, punycode@^2.1.1:
 
 puppeteer@1.20.0, "puppeteer@https://github.com/AugurProject/blackhole.git", scrypt@^6.0.2, "scrypt@https://github.com/AugurProject/blackhole.git":
   version "1.0.0"
+  uid f8230443bf4fc9d5921655e06ebe2755d84afbcd
   resolved "https://github.com/AugurProject/blackhole.git#f8230443bf4fc9d5921655e06ebe2755d84afbcd"
 
 pushdata-bitcoin@^1.0.1:
