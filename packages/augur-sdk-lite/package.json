@@ -27,7 +27,7 @@
   "dependencies": {
     "@augurproject/artifacts": "^2.1.13",
     "@augurproject/utils": "^2.1.13",
-    "async": "3.1.0",
+    "async": "3.2.2",
     "ethers": "4.0.47",
     "lz-string": "1.4.4"
   },

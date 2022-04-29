@@ -49,7 +49,7 @@
     "@augurproject/templates": "^2.1.13",
     "@augurproject/utils": "^2.1.13",
     "abi-decoder": "2.3.0",
-    "async": "3.1.0",
+    "async": "3.2.2",
     "axios": "0.19.2",
     "bs58": "4.0.1",
     "cid-tool": "0.4.0",
