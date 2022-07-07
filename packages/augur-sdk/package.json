@@ -71,7 +71,7 @@
     "isomorphic-ws": "4.0.1",
     "lodash": "4.17.19",
     "lz-string": "1.4.4",
-    "moment": "2.26.0",
+    "moment": "2.29.4",
     "websocket-as-promised": "1.0.1",
     "ws": "7.1.2"
   },
