@@ -76,7 +76,7 @@
     "memoizee": "0.4.14",
     "mnid": "0.1.3",
     "moment": "2.26.0",
-    "moment-timezone": "0.5.26",
+    "moment-timezone": "0.5.35",
     "prop-types": "15.7.2",
     "qrcode.react": "0.9.3",
     "query-string": "6.8.3",
