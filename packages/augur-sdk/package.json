@@ -62,7 +62,7 @@
     "ethereumjs-tx": "2.1.2",
     "ethereumjs-util": "6.1.0",
     "ethers": "4.0.47",
-    "express": "4.17.1",
+    "express": "4.17.3",
     "flexsearch": "0.6.32",
     "helmet": "3.23.3",
     "io-ts": "1.10.4",
